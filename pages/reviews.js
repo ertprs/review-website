@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import layout from "../hoc/layout/layout";
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "./Styles/reviewsPageStyles";
+import VerifiedBtn from "../Components/Widgets/VerifiedBtn/VerifiedBtn";
 import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
+import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 
 export const config = { amp: "hybrid" };
 
@@ -45,27 +46,71 @@ const renderReviewHeader = () => {
                   <span style={{ marginLeft: "5px" }}>google.com</span>
                 </h3>
               </div>
-              <div style={{ margin: "1.5% 0 2% 0" }}>
-                <span
-                  style={{
-                    color: "#6b6b6b",
-                    fontSize: "1.1rem",
-                    marginLeft: "4px"
-                  }}
-                >
-                  Domain Description
-                </span>
+              <div className="domainDescContainer">
+                <span className="domainDesc">Domain Description</span>
               </div>
               <div className="ratingsColumn">
-                  {/* Convert Rating from API to number */}
-                  {/* <RatingsBadge rating={4.5} typeOfWidget="star" widgetRatedColors="golden" widgetDimensions="50px" widgetSpacings="7px"/> */}
-                  <div style={{flexBasis:"11%"}}><RatingsBadge bgColor="golden" ratingCount="4.5" /></div>
-                  <div style={{flexBasis:""}}>stars</div>
-              </div>
+                {/* Convert Rating from API to number */}
+                <div className="ratingsBadgeCont">
+                  <div>
+                    <RatingsBadge bgColor="golden" ratingCount="4.5" />
+                  </div>
+                </div>
+                <div className="ratingsIndCont">
+                  <div>
+                    <RatingIndicators
+                      rating={4.5}
+                      typeOfWidget="star"
+                      widgetRatedColors="#febe42"
+                      widgetDimensions="20px"
+                      widgetSpacings="3px"
+                    />
+                  </div>
+                </div>
 
+                <div className="reviewFlag">
+                  <AmpImgWrapper
+                    src="https://thetrustsearch.com/themes/watchdog/assets/panel/images/flags/ch.svg"
+                    width="22"
+                    height="16"
+                    layout="responsive"
+                    imgContainerStyles={{ height: "16px", width: "22px" }}
+                    style={{
+                      height: "16px",
+                      width: "22px",
+                      display: "inline-block"
+                    }}
+                  />{" "}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                      marginLeft: "5px"
+                    }}
+                  >
+                    Swiss
+                  </span>
+                </div>
+                <div className="reviewVerifiedBtn">
+                  <VerifiedBtn />
+                </div>
+              </div>
             </div>
           </div>
-          <div className="col-md-3" />
+          <div className="col-md-3 bigRatingInd">
+            <div>
+              <RatingIndicators
+                rating={4.5}
+                typeOfWidget="star"
+                widgetRatedColors="#FFFFFF"
+                widgetDimensions="42px"
+                widgetSpacings="3px"
+              />
+            </div>
+            <div className="bigRatingCaption">
+              <h3>Good &amp; Safe Website</h3>
+            </div>
+          </div>
         </div>
       </div>
     </div>
