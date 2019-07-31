@@ -10,7 +10,8 @@ const AmpLinkWrapper = props => {
       </a>
     </>
   ) : (
-    <a href={`${props.href}?amp=1`} style={{ ...props.styles }}>
+    //?amp=1 append, but also look for sharebtn fix
+    <a href={`${props.href}`} style={{ ...props.styles }}>
       {props.children}
     </a>
   );

@@ -73,4 +73,9 @@ export const reviewPageStyles = css`
     vertical-align:middle;
     margin-right:8px
   }
+
+  .reviewDescription{
+    margin-top:3%;
+    font-size:0.9rem;
+  }
 `;

@@ -6,6 +6,8 @@ import VerifiedBtn from "../Components/Widgets/VerifiedBtn/VerifiedBtn";
 import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
+import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
+
 import uuid from "uuid/v1";
 
 export const config = { amp: "hybrid" };
@@ -124,8 +126,11 @@ const renderAnalysisCards = analysisReport => {
   for (let reportItem in analysisReport) {
     cardsArray = [
       ...cardsArray,
-      <div className="col-md-4" key={uuid()}>
-        <AnalysisCard analysisTitle={reportItem.split("_").join(" ")} analysisInfo={analysisReport[reportItem]}/>
+      <div className="col-lg-4 col-md-6" key={uuid()}>
+        <AnalysisCard
+          analysisTitle={reportItem.split("_").join(" ")}
+          analysisInfo={analysisReport[reportItem]}
+        />
       </div>
     ];
   }
@@ -144,16 +149,43 @@ const renderAnalysisReport = analysisReport => {
               Analyze Reports
             </h4>
           </div>
-          {/* Analysis Cards Here */}
           <div className="row">{renderAnalysisCards(analysisReport)}</div>
+          <div className="row">
+            <div className="col-md-12">
+              <div className="reviewDescription">
+                <h6>Description</h6>
+                {/* TODO: find description in the API response */}
+                <p>This website don't have meta description :( </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
   );
 };
 
+const renderShareBtn = (shareURL, btnText, shareIcon) => {
+  return (
+    <div className="container">
+      <div className="row" style={{ textAlign: "center", margin: "0 0 5% 0" }}>
+        <div className="col-md-12">
+          <ShareBtn
+            shareURL={shareURL}
+            btnText={btnText}
+            shareIcon={shareIcon}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
+  //log to be removed
+  console.log(analysisData.response);
+
   const data = { ...analysisData.response };
   const analysisReport = {
     registration_Date: (
@@ -179,7 +211,7 @@ const Reviews = props => {
       ? ((((data || {}).ssl || {}).payload || {}).organisation || {}).value
       : "Nothing found",
 
-    etherscam_Db: ((((data || {}).etherscam || {}).payload || {}).status || {})
+    etherscam_DB: ((((data || {}).etherscam || {}).payload || {}).status || {})
       .value
       ? ((((data || {}).etherscam || {}).payload || {}).status || {}).value
       : "Nothing found",
@@ -195,8 +227,9 @@ const Reviews = props => {
       ? ((((data || {}).wot || {}).payload || {}).trust || {}).value
       : 0,
 
-    indexPage_Analysis: ((((data || {}).deface || {}).payload || {}).index || {})
-      .value
+    index_Page_Analysis: (
+      (((data || {}).deface || {}).payload || {}).index || {}
+    ).value
       ? ((((data || {}).deface || {}).payload || {}).index || {}).value
       : "Nothing found",
 
@@ -209,6 +242,13 @@ const Reviews = props => {
     <div>
       {renderReviewHeader()}
       <div>{renderAnalysisReport(analysisReport)}</div>
+      <div>
+        {renderShareBtn(
+          "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp",
+          "Share your experience and earn rewards",
+          "fa fa-gift"
+        )}
+      </div>
     </div>
   );
 };
