@@ -7,7 +7,6 @@ import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
-
 import uuid from "uuid/v1";
 
 export const config = { amp: "hybrid" };
@@ -153,7 +152,14 @@ const renderAnalysisReport = analysisReport => {
           <div className="row">
             <div className="col-md-12">
               <div className="reviewDescription">
-                <h6>Description</h6>
+                <h6>
+                  {" "}
+                  <i
+                    className="fa fa-angle-right"
+                    style={{ marginRight: "3px" }}
+                  />{" "}
+                  Description
+                </h6>
                 {/* TODO: find description in the API response */}
                 <p>This website don't have meta description :( </p>
               </div>
@@ -181,13 +187,30 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
   );
 };
 
-const Reviews = props => {
-  const [analysisData, setAnalysisData] = useState(props.analysisData);
-  //log to be removed
-  console.log(analysisData.response);
+const renderVideoReviews = () => {
+  return (
+    <div className="reviewVideosContainer">
+      <style jsx>
+        {reviewPageStyles}
+      </style>
+      <div className="container">
+      <div className="reviewVideosHeader">
+        <h5 style={{ fontWeight: "400" }}>
+          <i className="fa fa-file-video-o" style={{ marginRight: "11px" }} />
+          Video reviews
+        </h5>
+      </div>
+      <div>
+        {/* TODO: AMP Image Wrapper, need to replace with original videos */}
+        <img src="/static/images/video_reviews.png" alt="video reviews" style={{maxWidth:"100%", height:"auto"}}/>
+      </div>
+      </div>
+    </div>
+  );
+};
 
-  const data = { ...analysisData.response };
-  const analysisReport = {
+const getAnalysisReportObject = data => {
+  return {
     registration_Date: (
       (((data || {}).whois || {}).payload || {}).registration || {}
     ).value
@@ -238,17 +261,29 @@ const Reviews = props => {
       ? ((((data || {}).deface || {}).payload || {}).redirect || {}).value
       : "Nothing found"
   };
+};
+
+const Reviews = props => {
+  const [analysisData, setAnalysisData] = useState(props.analysisData);
+  //log to be removed
+  console.log(analysisData.response);
+
+  const data = { ...analysisData.response };
+  const analysisReport = getAnalysisReportObject(data);
+  const share_url =
+    "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
   return (
     <div>
       {renderReviewHeader()}
       <div>{renderAnalysisReport(analysisReport)}</div>
       <div>
         {renderShareBtn(
-          "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp",
+          share_url,
           "Share your experience and earn rewards",
           "fa fa-gift"
         )}
       </div>
+      <div>{renderVideoReviews()}</div>
     </div>
   );
 };

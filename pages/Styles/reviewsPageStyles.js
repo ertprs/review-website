@@ -78,4 +78,12 @@ export const reviewPageStyles = css`
     margin-top:3%;
     font-size:0.9rem;
   }
+
+  .reviewVideosContainer{
+    margin-bottom:5%;
+  }
+
+  .reviewVideosHeader{
+    margin-bottom:2%;
+  }
 `;
