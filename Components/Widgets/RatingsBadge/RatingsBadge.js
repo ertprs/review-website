@@ -7,7 +7,7 @@ const RatingBadge = (props)=>{
            <style jsx>
                {ratingBadgeStyles}
            </style>
-           <div className="ratingBadgeContainer">
+           <div className="ratingBadgeContainer" style={{...props.style}}>
              {props.ratingCount}
            </div>
        </div>

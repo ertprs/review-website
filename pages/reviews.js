@@ -7,11 +7,13 @@ import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
+import ReviewCard from "..//Components/Widgets/ReviewCard/ReviewCard";
 import uuid from "uuid/v1";
 
 export const config = { amp: "hybrid" };
 
-const renderReviewHeader = () => {
+const renderReviewHeader = (data, domain) => {
+  const ratings = data.general_analysis.payload.ratings.watchdog;
   return (
     <div className="reviewHeaderContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -20,7 +22,7 @@ const renderReviewHeader = () => {
           <div className="col-md-3">
             <div className="reviewImgContainer">
               <AmpImgWrapper
-                src="/static/images/review_demo.png"
+                src={`http://api.screenshotlayer.com/api/capture?access_key=dc13fa64cde0b342fdbe7ddf8b56d1b8&url=https://${domain}&viewport=1440x900&width=250`}
                 alt="Trust search logo"
                 height="156"
                 width="250"
@@ -31,7 +33,6 @@ const renderReviewHeader = () => {
             </div>
           </div>
           <div className="col-md-6">
-            {/* TO DO: get dynamic domain for favicon, try to migrate from css in js to external as much as possible*/}
             <div
               className="row"
               style={{ flexDirection: "column", marginLeft: "2%" }}
@@ -39,30 +40,29 @@ const renderReviewHeader = () => {
               <div>
                 <h3 style={{ fontWeight: "400" }}>
                   <AmpImgWrapper
-                    src="http://www.google.com/s2/favicons?domain=google.com"
+                    src={`http://www.google.com/s2/favicons?domain=https://${domain}`}
                     width="16"
                     height="16"
                     alt="favicon"
                     layout="responsive"
                     imgContainerStyles={{ height: "16px", width: "16px" }}
                   />
-                  <span style={{ marginLeft: "5px" }}>google.com</span>
+                  <span style={{ marginLeft: "5px" }}>{domain}</span>
                 </h3>
               </div>
               <div className="domainDescContainer">
                 <span className="domainDesc">Domain Description</span>
               </div>
               <div className="ratingsColumn">
-                {/* Convert Rating from API to number */}
                 <div className="ratingsBadgeCont">
                   <div>
-                    <RatingsBadge bgColor="golden" ratingCount="4.5" />
+                    <RatingsBadge bgColor="golden" ratingCount={ratings} />
                   </div>
                 </div>
                 <div className="ratingsIndCont">
                   <div>
                     <RatingIndicators
-                      rating={4.5}
+                      rating={Number(ratings)}
                       typeOfWidget="star"
                       widgetRatedColors="#febe42"
                       widgetDimensions="20px"
@@ -190,20 +190,53 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
 const renderVideoReviews = () => {
   return (
     <div className="reviewVideosContainer">
-      <style jsx>
-        {reviewPageStyles}
-      </style>
+      <style jsx>{reviewPageStyles}</style>
       <div className="container">
-      <div className="reviewVideosHeader">
-        <h5 style={{ fontWeight: "400" }}>
-          <i className="fa fa-file-video-o" style={{ marginRight: "11px" }} />
-          Video reviews
-        </h5>
+        <div className="reviewVideosHeader">
+          <h5>
+            <i className="fa fa-file-video-o" />
+            Video reviews
+          </h5>
+        </div>
+        <div>
+          {/* TODO: AMP Image Wrapper, need to replace with original videos */}
+          <img
+            src="/static/images/video_reviews.png"
+            alt="video reviews"
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        </div>
       </div>
+    </div>
+  );
+};
+
+const renderReviewCard = (commentsToRender)=>{
+  return commentsToRender.map(item =>{
+    return(
       <div>
-        {/* TODO: AMP Image Wrapper, need to replace with original videos */}
-        <img src="/static/images/video_reviews.png" alt="video reviews" style={{maxWidth:"100%", height:"auto"}}/>
+        <ReviewCard {...item} />
       </div>
+    )
+  })
+}
+
+const renderTextualReviews = comments => {
+  let commentsToRender =
+    comments.length > 10 ? [...comments.splice(0, 10)] : [...comments];
+  return (
+    <div className="textualReviewsContainer">
+      <style jsx>{reviewPageStyles}</style>
+      <div className="container">
+        <div className="textualReviewHeader">
+          <h5>
+            <i className="fa fa-pencil-square-o	" />
+            Textual Review
+          </h5>
+        </div>
+        <div className="textualReviewsGrid">
+          {renderReviewCard(commentsToRender)}
+        </div>
       </div>
     </div>
   );
@@ -228,10 +261,12 @@ const getAnalysisReportObject = data => {
       ? ((((data || {}).ssl || {}).payload || {}).enabled || {}).value
       : "Nothing found",
 
+    //API Mis-spelled organization to ogranisation
+
     organization_Check: (
-      (((data || {}).ssl || {}).payload || {}).organisation || {}
+      (((data || {}).ssl || {}).payload || {}).ogranisation || {}
     ).value
-      ? ((((data || {}).ssl || {}).payload || {}).organisation || {}).value
+      ? ((((data || {}).ssl || {}).payload || {}).ogranisation || {}).value
       : "Nothing found",
 
     etherscam_DB: ((((data || {}).etherscam || {}).payload || {}).status || {})
@@ -257,7 +292,7 @@ const getAnalysisReportObject = data => {
       : "Nothing found",
 
     redirect_Count: ((((data || {}).deface || {}).payload || {}).redirect || {})
-      .value
+      .color
       ? ((((data || {}).deface || {}).payload || {}).redirect || {}).value
       : "Nothing found"
   };
@@ -265,16 +300,19 @@ const getAnalysisReportObject = data => {
 
 const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
-  //log to be removed
-  console.log(analysisData.response);
-
+  const domain = props.domain;
   const data = { ...analysisData.response };
   const analysisReport = getAnalysisReportObject(data);
+  const comments =
+    (((data || {}).wot || {}).payload || {}).comments.length > 0
+      ? (((data || {}).wot || {}).payload || {}).comments
+      : [];
+
   const share_url =
     "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
   return (
     <div>
-      {renderReviewHeader()}
+      {renderReviewHeader(data, domain)}
       <div>{renderAnalysisReport(analysisReport)}</div>
       <div>
         {renderShareBtn(
@@ -284,18 +322,21 @@ const Reviews = props => {
         )}
       </div>
       <div>{renderVideoReviews()}</div>
+      <div>{renderTextualReviews(comments)}</div>
     </div>
   );
 };
 
 Reviews.getInitialProps = async ({ query }) => {
-  //todo try to get the query param from the URL
-  console.log(query);
+  const searchURL = query.domain
+    ? `https://${query.domain}`
+    : "https://google.com";
+  const domain = query.domain ? query.domain : "google.com";
   const res = await axios.post(
     "https://watchdog-api-v1.cryptopolice.com/api/verify",
-    { domain: "https://google.com" }
+    { domain: searchURL }
   );
-  return { analysisData: { ...res.data } };
+  return { analysisData: { ...res.data }, domain };
 };
 
 export default Reviews;

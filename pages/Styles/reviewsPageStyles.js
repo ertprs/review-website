@@ -28,62 +28,100 @@ export const reviewPageStyles = css`
   .ratingsColumn {
     display: flex;
   }
-  .ratingsBadgeCont{
+  .ratingsBadgeCont {
     flex-basis: 11%;
     margin-top: 1%;
   }
-  .ratingsIndCont{
+  .ratingsIndCont {
     flex-basis: 28.5%;
   }
-  .reviewFlag{
-    margin-top:0.5%;
-    flex-basis:18%;
+  .reviewFlag {
+    margin-top: 0.5%;
+    flex-basis: 18%;
   }
 
-  .reviewVerifiedBtn{
+  .reviewVerifiedBtn {
     margin-top: 1%;
     flex-basis: 18%;
   }
-  .bigRatingInd{
-    display:flex;
-     flex-direction:column; 
-     justify-content:center;
+  .bigRatingInd {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
-  .bigRatingCaption{
-    text-align:center;
-    color:#fff;
+  .bigRatingCaption {
+    text-align: center;
+    color: #fff;
     margin-top: 4%;
   }
 
-  .reviewAnalysisReport{
-    padding:1%;
-    margin : 5% 0 5% 0;
+  .reviewAnalysisReport {
+    padding: 1%;
+    margin: 5% 0 5% 0;
   }
 
-  .reviewAnalysisHeading{
-    margin-bottom:3%;
+  .reviewAnalysisHeading {
+    margin-bottom: 3%;
   }
 
-  .reviewAnalysisHeading h4{
-    font-weight:400;
+  .reviewAnalysisHeading h4 {
+    font-weight: 400;
   }
 
-  .reviewAnalysisHeading i{
-    font-size:1.1rem;
-    vertical-align:middle;
-    margin-right:8px
+  .reviewAnalysisHeading i {
+    font-size: 1.1rem;
+    vertical-align: middle;
+    margin-right: 8px;
   }
 
-  .reviewDescription{
-    margin-top:3%;
-    font-size:0.9rem;
+  .reviewDescription {
+    margin-top: 3%;
+    font-size: 0.9rem;
   }
 
-  .reviewVideosContainer{
-    margin-bottom:5%;
+  .reviewVideosContainer,
+  .textualReviewsContainer {
+    margin-bottom: 5%;
   }
 
-  .reviewVideosHeader{
-    margin-bottom:2%;
+  .reviewVideosHeader,
+  .textualReviewHeader {
+    margin-bottom: 2%;
+  }
+
+  .reviewVideosHeader i,
+  .textualReviewHeader i {
+    margin-right: 11px;
+  }
+
+  .reviewVideosHeader h5,
+  .textualReviewHeader h5 {
+    font-weight: 400;
+  }
+
+  .textualReviewsGrid {
+    display: flex;
+    flex-wrap:wrap;
+    overflow:hidden;
+  }
+
+  .textualReviewsGrid >div {
+    flex-basis:1 1 50%;
+  }
+  
+  .textualReviewsGrid > div:nth-child(odd) {
+    margin-right: 5%;
+  }
+
+  @media only screen and (max-width: 1199px) {
+    .textualReviewsGrid > div:nth-child(odd) {
+      margin-right: 3%;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .textualReviewsGrid {
+      flex-direction: column;
+    }
   }
 `;
