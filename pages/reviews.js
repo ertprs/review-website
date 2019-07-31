@@ -5,6 +5,8 @@ import { reviewPageStyles } from "./Styles/reviewsPageStyles";
 import VerifiedBtn from "../Components/Widgets/VerifiedBtn/VerifiedBtn";
 import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
+import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
+import uuid from "uuid/v1";
 
 export const config = { amp: "hybrid" };
 
@@ -117,10 +119,98 @@ const renderReviewHeader = () => {
   );
 };
 
+const renderAnalysisCards = analysisReport => {
+  let cardsArray = [];
+  for (let reportItem in analysisReport) {
+    cardsArray = [
+      ...cardsArray,
+      <div className="col-md-4" key={uuid()}>
+        <AnalysisCard analysisTitle={reportItem.split("_").join(" ")} analysisInfo={analysisReport[reportItem]}/>
+      </div>
+    ];
+  }
+  return cardsArray;
+};
+
+const renderAnalysisReport = analysisReport => {
+  return (
+    <>
+      <style jsx>{reviewPageStyles}</style>
+      <div className="reviewAnalysisReport">
+        <div className="container">
+          <div className="reviewAnalysisHeading">
+            <h4>
+              <i className="fa fa-bar-chart" />
+              Analyze Reports
+            </h4>
+          </div>
+          {/* Analysis Cards Here */}
+          <div className="row">{renderAnalysisCards(analysisReport)}</div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
-  console.log(analysisData.response);
-  return <div>{renderReviewHeader()}</div>;
+  const data = { ...analysisData.response };
+  const analysisReport = {
+    registration_Date: (
+      (((data || {}).whois || {}).payload || {}).registration || {}
+    ).value
+      ? ((((data || {}).whois || {}).payload || {}).registration || {}).value
+      : "Nothing found",
+
+    expiration_Date: (
+      (((data || {}).whois || {}).payload || {}).expiration || {}
+    ).value
+      ? ((((data || {}).whois || {}).payload || {}).expiration || {}).value
+      : "Nothing found",
+
+    connection_Safety: ((((data || {}).ssl || {}).payload || {}).enabled || {})
+      .value
+      ? ((((data || {}).ssl || {}).payload || {}).enabled || {}).value
+      : "Nothing found",
+
+    organization_Check: (
+      (((data || {}).ssl || {}).payload || {}).organisation || {}
+    ).value
+      ? ((((data || {}).ssl || {}).payload || {}).organisation || {}).value
+      : "Nothing found",
+
+    etherscam_Db: ((((data || {}).etherscam || {}).payload || {}).status || {})
+      .value
+      ? ((((data || {}).etherscam || {}).payload || {}).status || {}).value
+      : "Nothing found",
+
+    phishtank_Status: (
+      (((data || {}).phishtank || {}).payload || {}).status || {}
+    ).value
+      ? ((((data || {}).phishtank || {}).payload || {}).status || {}).value
+      : "Nothing found",
+
+    trustworthiness: ((((data || {}).wot || {}).payload || {}).trust || {})
+      .value
+      ? ((((data || {}).wot || {}).payload || {}).trust || {}).value
+      : 0,
+
+    indexPage_Analysis: ((((data || {}).deface || {}).payload || {}).index || {})
+      .value
+      ? ((((data || {}).deface || {}).payload || {}).index || {}).value
+      : "Nothing found",
+
+    redirect_Count: ((((data || {}).deface || {}).payload || {}).redirect || {})
+      .value
+      ? ((((data || {}).deface || {}).payload || {}).redirect || {}).value
+      : "Nothing found"
+  };
+  return (
+    <div>
+      {renderReviewHeader()}
+      <div>{renderAnalysisReport(analysisReport)}</div>
+    </div>
+  );
 };
 
 Reviews.getInitialProps = async ({ query }) => {

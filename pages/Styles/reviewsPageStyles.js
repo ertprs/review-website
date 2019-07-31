@@ -54,4 +54,23 @@ export const reviewPageStyles = css`
     color:#fff;
     margin-top: 4%;
   }
+
+  .reviewAnalysisReport{
+    padding:1%;
+    margin : 5% 0 5% 0;
+  }
+
+  .reviewAnalysisHeading{
+    margin-bottom:3%;
+  }
+
+  .reviewAnalysisHeading h4{
+    font-weight:400;
+  }
+
+  .reviewAnalysisHeading i{
+    font-size:1.1rem;
+    vertical-align:middle;
+    margin-right:8px
+  }
 `;
