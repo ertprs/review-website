@@ -27,7 +27,7 @@ const renderReviewHeader = (data, domain) => {
                 height="156"
                 width="250"
                 layout="responsive"
-                imgContainerStyles={{ width: "156px", height: "250px" }}
+                imgContainerStyles={{ width: "250px", height: "156px" }}
                 style={{ maxWidth: "100%", maxheight: "100%" }}
               />
             </div>
@@ -103,7 +103,7 @@ const renderReviewHeader = (data, domain) => {
           <div className="col-md-3 bigRatingInd">
             <div>
               <RatingIndicators
-                rating={4.5}
+                rating={Number(ratings)}
                 typeOfWidget="star"
                 widgetRatedColors="#FFFFFF"
                 widgetDimensions="42px"
@@ -215,7 +215,7 @@ const renderReviewCard = (commentsToRender)=>{
   return commentsToRender.map(item =>{
     return(
       <div className="col-md-6" style={{marginBottom:"2%"}}>
-        <ReviewCard {...item} />
+        <ReviewCard {...item} ampImgHeight="75" ampImgWidth="75"/>
       </div>
     )
   })
@@ -302,9 +302,10 @@ const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
   const domain = props.domain;
   const data = { ...analysisData.response };
+  console.log(data)
   const analysisReport = getAnalysisReportObject(data);
   const comments =
-    (((data || {}).wot || {}).payload || {}).comments.length > 0
+    ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
       ? (((data || {}).wot || {}).payload || {}).comments
       : [];
 

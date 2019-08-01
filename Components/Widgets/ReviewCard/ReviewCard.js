@@ -17,8 +17,9 @@ const ReviewCard = props => {
             alt="avatar"
             style={{ maxWidth: "100%", height: "auto", borderRadius: "50%" }}
             layout="responsive"
-            height=""
-            width=""
+            height={props.ampImgHeight}
+            width={props.ampImgWidth}
+            ampImgStyles={{ maxWidth: "100%", height: "auto", borderRadius: "50%" }}
           />
         </div>
       </div>
