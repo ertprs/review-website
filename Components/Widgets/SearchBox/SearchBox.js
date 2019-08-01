@@ -7,7 +7,8 @@ const SearchBox = ({ value, onchange, handleSearchSubmit, stateMethod }) => {
       <style jsx>
         {searchBoxStyles}
       </style>
-      <AmpFormWrapper onSubmit={(e)=>{e.preventDefault(); handleSearchSubmit(value)}} formMethod="post" isXHR={true} submitURL="/documentation/examples/api/submit-form-input-text-xhr" formTarget="_top">
+      {/* TODO: Make AmpFormWrapper props dynamic from the parent component */}
+      <AmpFormWrapper onSubmit={(e)=>{e.preventDefault(); handleSearchSubmit(value)}} formMethod="get" isXHR={false} submitURL="http://localhost:3000/reviews" formTarget="_top">
         <div className="searchBoxContainer">
           <div className="searchBoxInput">
             <input
@@ -15,8 +16,10 @@ const SearchBox = ({ value, onchange, handleSearchSubmit, stateMethod }) => {
               placeholder="Enter any website domain for verification"
               onChange={e => onchange(e, stateMethod)}
               value={value}
+              name="domain"
             />
           </div>
+          <input type="hidden" name="amp" value="1"/>
           <div className="searchBtnContainer">
             <button
               className="searchBtn"
