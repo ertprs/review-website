@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {useAmp} from 'next/amp';
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "./Styles/reviewsPageStyles";
@@ -45,9 +46,9 @@ const renderReviewHeader = (data, domain) => {
                     height="16"
                     alt="favicon"
                     layout="responsive"
-                    imgContainerStyles={{ height: "16px", width: "16px" }}
+                    imgContainerStyles={{ height: "16px", width: "16px", display:"inline-block"}}
                   />
-                  <span style={{ marginLeft: "5px" }}>{domain}</span>
+                  <span style={{ marginLeft: "5px"}}>{domain}</span>
                 </h3>
               </div>
               <div className="domainDescContainer">
@@ -77,7 +78,7 @@ const renderReviewHeader = (data, domain) => {
                     width="22"
                     height="16"
                     layout="responsive"
-                    imgContainerStyles={{ height: "16px", width: "22px" }}
+                    imgContainerStyles={{ height: "16px", width: "22px", display:"inline-block", marginTop:"5%"}}
                     style={{
                       height: "16px",
                       width: "22px",
@@ -87,7 +88,7 @@ const renderReviewHeader = (data, domain) => {
                   <span
                     style={{
                       display: "inline-block",
-                      verticalAlign: "middle",
+                      verticalAlign: useAmp() ? "" : "middle",
                       marginLeft: "5px"
                     }}
                   >
