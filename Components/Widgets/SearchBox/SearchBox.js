@@ -8,6 +8,7 @@ const SearchBox = ({ value, onchange, handleSearchSubmit, stateMethod }) => {
         {searchBoxStyles}
       </style>
       {/* TODO: Make AmpFormWrapper props dynamic from the parent component */}
+      {/* TODO: AMP requires https -> so change the same below */}
       <AmpFormWrapper onSubmit={(e)=>{e.preventDefault(); handleSearchSubmit(value)}} formMethod="get" isXHR={false} submitURL="http://localhost:3000/reviews" formTarget="_top">
         <div className="searchBoxContainer">
           <div className="searchBoxInput">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {useAmp} from 'next/amp';
+import { useAmp } from "next/amp";
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "./Styles/reviewsPageStyles";
@@ -15,8 +15,9 @@ export const config = { amp: "hybrid" };
 
 const renderReviewHeader = (data, domain) => {
   const ratings = data.general_analysis.payload.ratings.watchdog;
+  const headerBgColor = Number(ratings) >= 3.5 ? "green" : "red";
   return (
-    <div className="reviewHeaderContainer">
+    <div className="reviewHeaderContainer"  style={{background:`linear-gradient(to right,rgba(247, 247, 247, 1) 50%,rgba(247, 247, 247, 0.5) 70%,rgba(247, 247, 247, 0.1) 90%),url("https://thetrustsearch.com/themes/watchdog/assets/images/${headerBgColor}.png")`}}>
       <style jsx>{reviewPageStyles}</style>
       <div className="container">
         <div className="row">
@@ -46,9 +47,13 @@ const renderReviewHeader = (data, domain) => {
                     height="16"
                     alt="favicon"
                     layout="responsive"
-                    imgContainerStyles={{ height: "16px", width: "16px", display:"inline-block"}}
+                    imgContainerStyles={{
+                      height: "16px",
+                      width: "16px",
+                      display: "inline-block"
+                    }}
                   />
-                  <span style={{ marginLeft: "5px"}}>{domain}</span>
+                  <span style={{ marginLeft: "5px" }}>{domain}</span>
                 </h3>
               </div>
               <div className="domainDescContainer">
@@ -78,7 +83,12 @@ const renderReviewHeader = (data, domain) => {
                     width="22"
                     height="16"
                     layout="responsive"
-                    imgContainerStyles={{ height: "16px", width: "22px", display:"inline-block", marginTop:"5%"}}
+                    imgContainerStyles={{
+                      height: "16px",
+                      width: "22px",
+                      display: "inline-block",
+                      marginTop: "5%"
+                    }}
                     style={{
                       height: "16px",
                       width: "22px",
@@ -112,7 +122,11 @@ const renderReviewHeader = (data, domain) => {
               />
             </div>
             <div className="bigRatingCaption">
-              <h3>Good &amp; Safe Website</h3>
+              <h3>
+                {Number(ratings) > 3.5
+                  ? "Good & Safe Website"
+                  : "Low rating. Be careful"}
+              </h3>
             </div>
           </div>
         </div>
@@ -212,15 +226,15 @@ const renderVideoReviews = () => {
   );
 };
 
-const renderReviewCard = (commentsToRender)=>{
-  return commentsToRender.map(item =>{
-    return(
-      <div className="col-md-6" style={{marginBottom:"2%"}}>
-        <ReviewCard {...item} ampImgHeight="75" ampImgWidth="75"/>
+const renderReviewCard = commentsToRender => {
+  return commentsToRender.map(item => {
+    return (
+      <div className="col-md-6" style={{ marginBottom: "2%" }}>
+        <ReviewCard {...item} ampImgHeight="75" ampImgWidth="75" />
       </div>
-    )
-  })
-}
+    );
+  });
+};
 
 const renderTextualReviews = comments => {
   let commentsToRender =
@@ -235,9 +249,7 @@ const renderTextualReviews = comments => {
             Textual Review
           </h5>
         </div>
-        <div className="row">
-          {renderReviewCard(commentsToRender)}
-        </div>
+        <div className="row">{renderReviewCard(commentsToRender)}</div>
       </div>
     </div>
   );
@@ -303,7 +315,7 @@ const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
   const domain = props.domain;
   const data = { ...analysisData.response };
-  console.log(data)
+  console.log(data);
   const analysisReport = getAnalysisReportObject(data);
   const comments =
     ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
