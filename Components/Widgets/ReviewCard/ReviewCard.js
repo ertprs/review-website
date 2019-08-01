@@ -28,8 +28,8 @@ const ReviewCard = props => {
           {/* TODO: change the static values for rating widgets */}
           <div className="badge">
             <RatingsBadge
-              ratingCount={score.toString()}
-              style={{ padding: "5% 17% 5% 17%" }}
+              ratingCount={"4.5"}
+              style={{ padding: "5% 7% 5% 7%" }}
             />
           </div>
           <div className="rating">

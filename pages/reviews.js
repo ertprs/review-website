@@ -323,6 +323,7 @@ const Reviews = props => {
       </div>
       <div>{renderVideoReviews()}</div>
       <div>{renderTextualReviews(comments)}</div>
+      {renderShareBtn(share_url, "Leave a Review", "fa fa-comments-o")}
     </div>
   );
 };

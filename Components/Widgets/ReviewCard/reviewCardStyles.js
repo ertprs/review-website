@@ -19,7 +19,6 @@ export const reviewCardStyles = css`
   }
   .reviewRatings {
     display: flex;
-    flex: 1;
     margin: 1% 0 1% 0;
   }
   .reviewRatings .badge {
@@ -33,6 +32,15 @@ export const reviewCardStyles = css`
   .reviewRatings .date {
     align-self: flex-end;
     color:#666;
+    font-size:0.9rem;
+  }
+
+  .reviewDetails{
+    flex-basis:80%;
+  }
+
+  .reviewText p{
+    word-break: break-word;
   }
 
   @media only screen and (max-width: 991px) {
