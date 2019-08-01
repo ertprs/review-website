@@ -214,7 +214,7 @@ const renderVideoReviews = () => {
 const renderReviewCard = (commentsToRender)=>{
   return commentsToRender.map(item =>{
     return(
-      <div>
+      <div className="col-md-6" style={{marginBottom:"2%"}}>
         <ReviewCard {...item} />
       </div>
     )
@@ -234,7 +234,7 @@ const renderTextualReviews = comments => {
             Textual Review
           </h5>
         </div>
-        <div className="textualReviewsGrid">
+        <div className="row">
           {renderReviewCard(commentsToRender)}
         </div>
       </div>

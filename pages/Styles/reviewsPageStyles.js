@@ -86,7 +86,7 @@ export const reviewPageStyles = css`
 
   .reviewVideosHeader,
   .textualReviewHeader {
-    margin-bottom: 2%;
+    margin-bottom: 5%;
   }
 
   .reviewVideosHeader i,
@@ -97,31 +97,5 @@ export const reviewPageStyles = css`
   .reviewVideosHeader h5,
   .textualReviewHeader h5 {
     font-weight: 400;
-  }
-
-  .textualReviewsGrid {
-    display: flex;
-    flex-wrap:wrap;
-    overflow:hidden;
-  }
-
-  .textualReviewsGrid >div {
-    flex-basis:1 1 50%;
-  }
-  
-  .textualReviewsGrid > div:nth-child(odd) {
-    margin-right: 5%;
-  }
-
-  @media only screen and (max-width: 1199px) {
-    .textualReviewsGrid > div:nth-child(odd) {
-      margin-right: 3%;
-    }
-  }
-
-  @media only screen and (max-width: 768px) {
-    .textualReviewsGrid {
-      flex-direction: column;
-    }
   }
 `;
