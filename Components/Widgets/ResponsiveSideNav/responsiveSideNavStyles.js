@@ -23,14 +23,7 @@ export default css`
     padding: 5%;
     font-size: 1.2rem;
   }
-
-  .responsiveSideNavItems div:last-child {
-    border: none;
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-
+  
   .responsiveSideNavItems > div > a {
     text-decoration: none;
     color: #28b661;

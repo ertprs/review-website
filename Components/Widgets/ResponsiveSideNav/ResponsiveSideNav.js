@@ -1,7 +1,7 @@
 import React from "react";
 import responsiveSideNavStyles from "./responsiveSideNavStyles";
 
-const ResponsiveSideNav = ({ handleMenuBtnClick }) => {
+const ResponsiveSideNav = (props) => {
   return (
     <nav className="responsiveSideNavContainer">
       <style jsx>
@@ -26,18 +26,6 @@ const ResponsiveSideNav = ({ handleMenuBtnClick }) => {
         <div>
           <a href="/" alt="nav-link">
             Contacts
-          </a>
-        </div>
-        <div>
-          <a
-            href="/"
-            alt="nav-link"
-            onClick={e => {
-              e.preventDefault();
-              handleMenuBtnClick();
-            }}
-          >
-            X
           </a>
         </div>
       </div>

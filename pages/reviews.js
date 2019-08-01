@@ -13,11 +13,18 @@ import uuid from "uuid/v1";
 
 export const config = { amp: "hybrid" };
 
+// TODO: URL cleaning, charts mockup, state amp management.
+
 const renderReviewHeader = (data, domain) => {
   const ratings = data.general_analysis.payload.ratings.watchdog;
   const headerBgColor = Number(ratings) >= 3.5 ? "green" : "red";
   return (
-    <div className="reviewHeaderContainer"  style={{background:`linear-gradient(to right,rgba(247, 247, 247, 1) 50%,rgba(247, 247, 247, 0.5) 70%,rgba(247, 247, 247, 0.1) 90%),url("https://thetrustsearch.com/themes/watchdog/assets/images/${headerBgColor}.png")`}}>
+    <div
+      className="reviewHeaderContainer"
+      style={{
+        background: `linear-gradient(to right,rgba(247, 247, 247, 1) 50%,rgba(247, 247, 247, 0.5) 70%,rgba(247, 247, 247, 0.1) 90%),url("https://thetrustsearch.com/themes/watchdog/assets/images/${headerBgColor}.png")`
+      }}
+    >
       <style jsx>{reviewPageStyles}</style>
       <div className="container">
         <div className="row">
