@@ -24,7 +24,7 @@ export default css`
     font-size: 1.2rem;
   }
   
-  .responsiveSideNavItems > div > a {
+  .responsiveSideNavItems > div :global(a) {
     text-decoration: none;
     color: #28b661;
     cursor: pointer;

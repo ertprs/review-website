@@ -1,32 +1,31 @@
 import React from "react";
+import AmpLinkWrapper from '../../AmpWrappers/AmpLinkWrapper';
 import responsiveSideNavStyles from "./responsiveSideNavStyles";
 
-const ResponsiveSideNav = (props) => {
+const ResponsiveSideNav = props => {
   return (
     <nav className="responsiveSideNavContainer">
-      <style jsx>
-        {responsiveSideNavStyles}
-      </style>
+      <style jsx>{responsiveSideNavStyles}</style>
       <div className="responsiveSideNavItems">
         <div>
-          <a href="/" alt="nav-link">
+          <AmpLinkWrapper href="/" alt="nav-link">
             Home
-          </a>
+          </AmpLinkWrapper>
         </div>
         <div>
-          <a href="/" alt="nav-link">
+          <AmpLinkWrapper href="/" alt="nav-link">
             About
-          </a>
+          </AmpLinkWrapper>
         </div>
         <div>
-          <a href="/" alt="nav-link">
+          <AmpLinkWrapper href="/" alt="nav-link">
             Support
-          </a>
+          </AmpLinkWrapper>
         </div>
         <div>
-          <a href="/" alt="nav-link">
+          <AmpLinkWrapper href="/" alt="nav-link">
             Contacts
-          </a>
+          </AmpLinkWrapper>
         </div>
       </div>
     </nav>
