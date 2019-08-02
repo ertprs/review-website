@@ -5,7 +5,7 @@ import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer/Footer";
 import {layoutStyles} from '../style';
 class MyApp extends App {
-  static async getInitialProps({ Component, ctx }) {
+  static async getInitialProps({ req, Component, ctx }) {
     let pageProps = {};
 
     if (Component.getInitialProps) {

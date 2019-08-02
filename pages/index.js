@@ -19,10 +19,11 @@ const handleSearchSubmit = searchBoxVal => {
   //   })
   //   .then(res => console.log(res.data))
   //   .catch(err => console.log(err));
-  Router.push({
-    pathname:"/reviews",
-    query:{domain:searchBoxVal},
-  });
+  // Router.push({
+  //   pathname:"/reviews",
+  //   query:{domain:searchBoxVal},
+  // });
+  Router.push(`/reviews?domain=${searchBoxVal}`, `/reviews/${searchBoxVal}`);
 
   console.log("data submitted to the parent component => ", searchBoxVal);
 };

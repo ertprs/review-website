@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+
+import { useRouter } from 'next/router';
+
+
 import { useAmp } from "next/amp";
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
@@ -13,7 +17,7 @@ import uuid from "uuid/v1";
 
 export const config = { amp: "hybrid" };
 
-// TODO: URL cleaning, charts mockup, state amp management.
+// TODO: URL cleaning, charts mockup, state amp management, fix full size logo link in amp on small screen devices.
 
 const renderReviewHeader = (data, domain) => {
   const ratings = data.general_analysis.payload.ratings.watchdog;
@@ -236,7 +240,7 @@ const renderVideoReviews = () => {
 const renderReviewCard = commentsToRender => {
   return commentsToRender.map(item => {
     return (
-      <div className="col-md-6" style={{ marginBottom: "2%" }}>
+      <div className="col-md-6" style={{ marginBottom: "2%" }} key={uuid()}>
         <ReviewCard {...item} ampImgHeight="75" ampImgWidth="75" />
       </div>
     );
@@ -322,7 +326,6 @@ const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
   const domain = props.domain;
   const data = { ...analysisData.response };
-  console.log(data);
   const analysisReport = getAnalysisReportObject(data);
   const comments =
     ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
@@ -349,16 +352,17 @@ const Reviews = props => {
   );
 };
 
-Reviews.getInitialProps = async ({ query }) => {
+Reviews.getInitialProps = async ({query}) => {
+
   const searchURL = query.domain
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
-  const res = await axios.post(
+  const response = await axios.post(
     "https://watchdog-api-v1.cryptopolice.com/api/verify",
     { domain: searchURL }
   );
-  return { analysisData: { ...res.data }, domain };
+  return { analysisData: { ...response.data }, domain };
 };
 
 export default Reviews;
