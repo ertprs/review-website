@@ -22,6 +22,14 @@ const SocialMediaGrid = (props)=>{
                     <SocialIconBox iconName="linkedin" caption="followers" followersCount={123598} iconStyles={{color:"#0077B5"}} />
                 </div>
             </div>
+            <div className="row" style={{marginTop:"5%"}}>
+                <div className="col-md-6">
+                    <SocialIconBox iconName="calendar" caption="Monthly unique visitors" followersCount={23720160} iconStyles={{color:"#21BC61"}} />
+                </div>
+                <div className="col-md-6">
+                    <SocialIconBox iconName="eye" caption="Page views" followersCount={123598} iconStyles={{color:"#21BC61"}} />
+                </div>
+            </div>
         </div>
     )
 }

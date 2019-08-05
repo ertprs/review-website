@@ -35,7 +35,7 @@ const renderReviewHeader = (data, domain) => {
             <div className="reviewImgContainer">
               <AmpImgWrapper
                 src={`http://api.screenshotlayer.com/api/capture?access_key=dc13fa64cde0b342fdbe7ddf8b56d1b8&url=https://${domain}&viewport=1440x900&width=250`}
-                alt="Trust search logo"
+                alt="Websites logo"
                 height="156"
                 width="250"
                 layout="responsive"
