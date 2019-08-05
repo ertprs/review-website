@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-
-import { useRouter } from 'next/router';
-
-
+import { useRouter } from "next/router";
 import { useAmp } from "next/amp";
+import SocialMediaGrid from '../Components/Widgets/SocialMediaGrid/SocialMediaGrid';
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "./Styles/reviewsPageStyles";
@@ -14,13 +12,14 @@ import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
 import ReviewCard from "..//Components/Widgets/ReviewCard/ReviewCard";
 import uuid from "uuid/v1";
-
+import TrafficStatsChart from "../Components/Widgets/TrafficStatsChart/TrafficStatsChart";
 export const config = { amp: "hybrid" };
 
-// TODO: URL cleaning, charts mockup, state amp management, fix full size logo link in amp on small screen devices.
+// TODO: AMP Bug for pretty URLs
 
 const renderReviewHeader = (data, domain) => {
   const ratings = data.general_analysis.payload.ratings.watchdog;
+  // const ratings = "5";
   const headerBgColor = Number(ratings) >= 3.5 ? "green" : "red";
   return (
     <div
@@ -151,7 +150,7 @@ const renderAnalysisCards = analysisReport => {
   for (let reportItem in analysisReport) {
     cardsArray = [
       ...cardsArray,
-      <div className="col-lg-4 col-md-6" key={uuid()}>
+      <div className="col-md-6 col-lg-4" key={uuid()}>
         <AnalysisCard
           analysisTitle={reportItem.split("_").join(" ")}
           analysisInfo={analysisReport[reportItem]}
@@ -207,6 +206,32 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
             btnText={btnText}
             shareIcon={shareIcon}
           />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const renderSocialReports = () => {
+  return (
+    <div className="reviewVideosContainer">
+      <style jsx>{reviewPageStyles}</style>
+      <div className="container">
+        <div className="reviewVideosHeader">
+          <h5>
+            <i className="fa fa-commenting-o" />
+            Social Media Reports
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-md-8">
+              <div style={{height:"250px", width:"auto"}}>
+                <TrafficStatsChart />
+              </div>
+          </div>
+          <div className="col-md-4">
+            <SocialMediaGrid />
+          </div>
         </div>
       </div>
     </div>
@@ -345,6 +370,7 @@ const Reviews = props => {
           "fa fa-gift"
         )}
       </div>
+      <div>{renderSocialReports()}</div>
       <div>{renderVideoReviews()}</div>
       <div>{renderTextualReviews(comments)}</div>
       {renderShareBtn(share_url, "Leave a Review", "fa fa-comments-o")}
@@ -352,8 +378,7 @@ const Reviews = props => {
   );
 };
 
-Reviews.getInitialProps = async ({query}) => {
-
+Reviews.getInitialProps = async ({ query }) => {
   const searchURL = query.domain
     ? `https://${query.domain}`
     : "https://google.com";
@@ -362,6 +387,7 @@ Reviews.getInitialProps = async ({query}) => {
     "https://watchdog-api-v1.cryptopolice.com/api/verify",
     { domain: searchURL }
   );
+  console.log(response.data);
   return { analysisData: { ...response.data }, domain };
 };
 

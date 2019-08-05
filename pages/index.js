@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp";
-import layout from "../hoc/layout/layout";
 import { indexPageStyles } from "./Styles/indexPageStyles";
 import SearchBox from "../Components/Widgets/SearchBox/SearchBox";
 import WebStats from "../Components/Widgets/WebStats/WebStats";
 import Head from "next/head";
-import axios from "axios";
 import Router from 'next/router';
 import uuid from "uuid/v1";
 
