@@ -102,6 +102,7 @@ const TrafficGrid = props => {
               {/* AMP image wrapper */}
               <div style={{ height: "auto", width: "300px" }}>
                 <AmpImgWrapper
+                  useImgLoader={true}
                   src={`https://traffic.alexa.com/graph?w=308&h=201&o=f&c=1&y=t&b=ffffff&n=666666&r=6m&u=snapdeal.com`}
                   alt="alexa graph"
                   height="132.34px"
