@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useAmp } from "next/amp";
-import SocialMediaGrid from '../Components/Widgets/SocialMediaGrid/SocialMediaGrid';
-import TrafficGrid from '../Components/Widgets/TrafficGrid/TrafficGrid';
+import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGrid";
+import TrafficGrid from "../Components/Widgets/TrafficGrid/TrafficGrid";
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "./Styles/reviewsPageStyles";
 import VerifiedBtn from "../Components/Widgets/VerifiedBtn/VerifiedBtn";
 import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
-import SocialMediaPieChart from '../Components/Widgets/SocialMediaPieChart/SocialMediaPieChart';
+import SocialMediaPieChart from "../Components/Widgets/SocialMediaPieChart/SocialMediaPieChart";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
@@ -227,9 +227,9 @@ const renderTrafficReports = () => {
         </div>
         <div className="row">
           <div className="col-md-8">
-              <div style={{height:"250px", width:"auto"}}>
-                <TrafficStatsChart />
-              </div>
+            <div style={{ height: "250px", width: "auto" }}>
+              <TrafficStatsChart />
+            </div>
           </div>
           <div className="col-md-4">
             <TrafficGrid />
@@ -253,9 +253,9 @@ const renderSocialReports = () => {
         </div>
         <div className="row">
           <div className="col-md-8">
-              <div style={{height:"250px", width:"auto"}}>
-                <SocialMediaPieChart />
-              </div>
+            <div style={{ height: "250px", width: "auto" }}>
+              <SocialMediaPieChart />
+            </div>
           </div>
           <div className="col-md-4">
             <SocialMediaGrid />
@@ -416,7 +416,6 @@ Reviews.getInitialProps = async ({ query }) => {
     "https://watchdog-api-v1.cryptopolice.com/api/verify",
     { domain: searchURL }
   );
-  console.log(response.data);
   return { analysisData: { ...response.data }, domain };
 };
 
