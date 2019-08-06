@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useAmp } from "next/amp";
 import SocialMediaGrid from '../Components/Widgets/SocialMediaGrid/SocialMediaGrid';
+import TrafficGrid from '../Components/Widgets/TrafficGrid/TrafficGrid';
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "./Styles/reviewsPageStyles";
 import VerifiedBtn from "../Components/Widgets/VerifiedBtn/VerifiedBtn";
 import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
+import SocialMediaPieChart from '../Components/Widgets/SocialMediaPieChart/SocialMediaPieChart';
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
@@ -212,6 +214,32 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
   );
 };
 
+const renderTrafficReports = () => {
+  return (
+    <div className="reviewVideosContainer">
+      <style jsx>{reviewPageStyles}</style>
+      <div className="container">
+        <div className="reviewVideosHeader">
+          <h5>
+            <i className="fa fa-line-chart" />
+            Traffic Analysis Report
+          </h5>
+        </div>
+        <div className="row">
+          <div className="col-md-8">
+              <div style={{height:"250px", width:"auto"}}>
+                <TrafficStatsChart />
+              </div>
+          </div>
+          <div className="col-md-4">
+            <TrafficGrid />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const renderSocialReports = () => {
   return (
     <div className="reviewVideosContainer">
@@ -219,14 +247,14 @@ const renderSocialReports = () => {
       <div className="container">
         <div className="reviewVideosHeader">
           <h5>
-            <i className="fa fa-commenting-o" />
-            Social Media Reports
+            <i className="fa fa-area-chart" />
+            Social Media Stats
           </h5>
         </div>
         <div className="row">
           <div className="col-md-8">
               <div style={{height:"250px", width:"auto"}}>
-                <TrafficStatsChart />
+                <SocialMediaPieChart />
               </div>
           </div>
           <div className="col-md-4">
@@ -370,6 +398,7 @@ const Reviews = props => {
           "fa fa-gift"
         )}
       </div>
+      <div>{renderTrafficReports()}</div>
       <div>{renderSocialReports()}</div>
       <div>{renderVideoReviews()}</div>
       <div>{renderTextualReviews(comments)}</div>

@@ -88,7 +88,7 @@ export default () => {
         layout="responsive"
         sandbox="allow-scripts allow-same-origin allow-popups"
         frameborder="0"
-        src="http://localhost:8000/index"
+        src={`http://localhost:8000/index?data=${JSON.stringify(data)}`}
         scrolling="no"
       />
     </>
