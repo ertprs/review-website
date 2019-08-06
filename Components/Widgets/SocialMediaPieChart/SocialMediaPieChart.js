@@ -44,7 +44,7 @@ export default ()=> {
         <YAxis />
         <Tooltip/>
         <Legend />
-        <Bar dataKey="followers" barSize={20} fill="#28b661" />
+        <Bar dataKey="followers" barSize={20} fill="#28b661" name="Followers"/>
       </BarChart>
       </ResponsiveContainer>
     ) :

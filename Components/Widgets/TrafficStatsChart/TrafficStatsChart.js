@@ -68,6 +68,7 @@ export default () => {
             type="monotone"
             dataKey="daily_unique_visitors"
             stroke="#82ca9d"
+            name="Daily unique visitors"
           />
         </LineChart>
       </ResponsiveContainer>
