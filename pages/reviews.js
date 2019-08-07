@@ -217,25 +217,39 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
 
 const renderTrafficReports = () => {
   return (
-    <div className="reviewVideosContainer">
+    <div className="reviewTrafficContainer">
       <style jsx>{reviewPageStyles}</style>
       <div className="container">
-        <div className="reviewVideosHeader">
+        <div className="reviewTrafficHeader">
           <h5>
             <i className="fa fa-line-chart" />
             Traffic Analysis Report
           </h5>
         </div>
-        <div className="row">
-          <div className="col-md-8">
+        {/* <div className="row">
+          <div className="col-md-8" style={{marginBottom:"5%"}}>
             <div style={{ height: "250px", width: "auto" }}>
               <TrafficStatsChart />
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-4" style={{marginBottom:"5%"}}>
+            <TrafficGrid />
+          </div>
+        </div> */}
+
+        {/* Updated code for responsiveness */}
+        <div className="row reviewStatsFlex">
+          <div className="col-md-8" style={{marginBottom:"8%"}}>
+            <div style={{ height: "250px", width: "auto" }}>
+              <TrafficStatsChart />
+            </div>
+          </div>
+          <div className="col-md-4" style={{marginBottom:"5%"}}>
             <TrafficGrid />
           </div>
         </div>
+
+        {/* Updated code ends here */}
       </div>
     </div>
   );
@@ -243,10 +257,10 @@ const renderTrafficReports = () => {
 
 const renderSocialReports = () => {
   return (
-    <div className="reviewVideosContainer">
+    <div className="reviewSocialContainer">
       <style jsx>{reviewPageStyles}</style>
       <div className="container">
-        <div className="reviewVideosHeader">
+        <div className="reviewSocialHeader">
           <h5>
             <i className="fa fa-area-chart" />
             Social Media Stats

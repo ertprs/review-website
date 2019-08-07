@@ -77,21 +77,29 @@ export const reviewPageStyles = css`
   }
 
   .reviewVideosContainer,
+  .reviewTrafficContainer,
+  .reviewSocialContainer,
   .textualReviewsContainer {
     margin-bottom: 5%;
   }
 
   .reviewVideosHeader,
+  .reviewTrafficHeader,
+  .reviewSocialHeader,
   .textualReviewHeader {
     margin-bottom: 5%;
   }
 
   .reviewVideosHeader i,
+  .reviewTrafficHeader i,
+  .reviewSocialHeader i,
   .textualReviewHeader i {
     margin-right: 11px;
   }
 
   .reviewVideosHeader h5,
+  .reviewTrafficHeader h5,
+  .reviewSocialHeader h5,
   .textualReviewHeader h5 {
     font-weight: 400;
   }
@@ -133,19 +141,34 @@ export const reviewPageStyles = css`
     .bigRatingCaption h3 {
       font-size: 1.5rem;
     }
+
+    .reviewStatsFlex {
+      flex-direction: column;
+    }
+
+    .reviewStatsFlex>div{
+      flex-basis:100%;
+      max-width:100%;
+    }
   }
   @media only screen and (max-width: 768px) {
     .bigRatingInd {
       display: none;
     }
     .reviewShareBtnContainer {
-      margin-bottom: 10%;
+      margin-bottom: 12%;
     }
   }
   @media only screen and (max-width: 767px) {
     .domainDescRow {
       margin-top: 5%;
     }
+    .reviewVideosHeader,
+  .reviewTrafficHeader,
+  .reviewSocialHeader,
+  .textualReviewHeader {
+    margin-bottom: 10%;
+  }
   }
 
   @media only screen and (max-width: 390px) {
