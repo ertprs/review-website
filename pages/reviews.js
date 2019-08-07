@@ -390,9 +390,12 @@ const Reviews = props => {
     "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
   return (
     <div>
+      <style jsx>
+        {reviewPageStyles}
+      </style>
       {renderReviewHeader(data, domain)}
       <div>{renderAnalysisReport(analysisReport)}</div>
-      <div>
+      <div className="reviewShareBtnContainer">
         {renderShareBtn(
           share_url,
           "Share your experience and earn rewards",

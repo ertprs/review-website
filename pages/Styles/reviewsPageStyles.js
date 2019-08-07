@@ -41,7 +41,7 @@ export const reviewPageStyles = css`
   .bigRatingInd {
     display: flex;
     flex-direction: column;
-    justify-content:center;
+    justify-content: center;
   }
   .bigRatingCaption {
     color: #fff;
@@ -65,6 +65,10 @@ export const reviewPageStyles = css`
     font-size: 1.1rem;
     vertical-align: middle;
     margin-right: 8px;
+  }
+
+  .reviewShareBtnContainer {
+    margin-bottom: 5%;
   }
 
   .reviewDescription {
@@ -101,9 +105,9 @@ export const reviewPageStyles = css`
     }
   }
 
-  @media only screen and (max-width: 1017px){
-    .ratings{
-      display:none;
+  @media only screen and (max-width: 1017px) {
+    .ratings {
+      display: none;
     }
   }
 
@@ -122,18 +126,20 @@ export const reviewPageStyles = css`
       flex-basis: 25%;
     }
 
-    .bigRatingCaption{
-      text-align:center;
+    .bigRatingCaption {
+      text-align: center;
     }
 
-    .bigRatingCaption h3{
-      font-size:1.5rem;
-     
+    .bigRatingCaption h3 {
+      font-size: 1.5rem;
     }
   }
   @media only screen and (max-width: 768px) {
     .bigRatingInd {
       display: none;
+    }
+    .reviewShareBtnContainer {
+      margin-bottom: 10%;
     }
   }
   @media only screen and (max-width: 767px) {
@@ -148,13 +154,13 @@ export const reviewPageStyles = css`
     }
     .ratingsIndCont {
       flex-basis: 50%;
-      text-align:center;
+      text-align: center;
     }
     .reviewFlag {
       flex-basis: 30%;
     }
     .reviewVerifiedBtn {
-      display:none;
+      display: none;
     }
   }
 
@@ -164,10 +170,11 @@ export const reviewPageStyles = css`
     }
     .ratingsIndCont {
       flex-basis: 80%;
-      text-align:left;
+      text-align: left;
     }
-    .reviewFlag,  .reviewVerifiedBtn {
-      display:none;
+    .reviewFlag,
+    .reviewVerifiedBtn {
+      display: none;
     }
   }
 `;
