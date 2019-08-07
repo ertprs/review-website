@@ -7,7 +7,7 @@ const AmpImgWrapper = props => {
   return !useAmp() ? (
    !props.useImgLoader ?  <img src={props.src}  alt={props.alt} className={props.classes} style={{...props.style}} /> : <Img
    src={props.src}
-   loader={<div style={{textAlign:"center"}}><Loader /></div>}
+   loader={<Loader styles={{...props.loaderStyles}} />}
  />
   ) : (
     <div style={{...props.imgContainerStyles}}>

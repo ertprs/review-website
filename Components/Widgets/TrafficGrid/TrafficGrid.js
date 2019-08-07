@@ -87,6 +87,8 @@ const TrafficGrid = props => {
                     }}
                     style={{ cursor: "pointer" }}
                     {...props}
+                    role="button"
+                    tabindex="1"
                   >
                     <SocialIconBox
                       iconName="bolt"
@@ -100,9 +102,10 @@ const TrafficGrid = props => {
             }
             <ToolTip visible={showAlexaGraph}>
               {/* AMP image wrapper */}
-              <div style={{ height: "auto", width: "300px" }}>
+              <div style={{ height: "auto", width: "100%" }}>
                 <AmpImgWrapper
                   useImgLoader={true}
+                  loaderStyles={{textAlign:"center", height: "auto", width: "300px"}}
                   src={`https://traffic.alexa.com/graph?w=308&h=201&o=f&c=1&y=t&b=ffffff&n=666666&r=6m&u=snapdeal.com`}
                   alt="alexa graph"
                   height="132.34px"
