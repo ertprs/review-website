@@ -150,6 +150,12 @@ export const reviewPageStyles = css`
       flex-basis:100%;
       max-width:100%;
     }
+
+    .reviewStatsFlex>div:nth-child(2){
+      max-width:80%;
+      margin-left:auto;
+      margin-right:auto;
+    }
   }
   @media only screen and (max-width: 768px) {
     .bigRatingInd {

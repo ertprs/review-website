@@ -226,18 +226,7 @@ const renderTrafficReports = () => {
             Traffic Analysis Report
           </h5>
         </div>
-        {/* <div className="row">
-          <div className="col-md-8" style={{marginBottom:"5%"}}>
-            <div style={{ height: "250px", width: "auto" }}>
-              <TrafficStatsChart />
-            </div>
-          </div>
-          <div className="col-md-4" style={{marginBottom:"5%"}}>
-            <TrafficGrid />
-          </div>
-        </div> */}
-
-        {/* Updated code for responsiveness */}
+        
         <div className="row reviewStatsFlex">
           <div className="col-md-8" style={{marginBottom:"8%"}}>
             <div style={{ height: "250px", width: "auto" }}>
@@ -266,13 +255,15 @@ const renderSocialReports = () => {
             Social Media Stats
           </h5>
         </div>
-        <div className="row">
-          <div className="col-md-8">
+
+        
+        <div className="row reviewStatsFlex">
+          <div className="col-md-8" style={{marginBottom:"8%"}}>
             <div style={{ height: "250px", width: "auto" }}>
               <SocialMediaPieChart />
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-4" style={{marginBottom:"5%"}}>
             <SocialMediaGrid />
           </div>
         </div>

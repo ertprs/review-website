@@ -24,8 +24,8 @@ const TrafficGrid = props => {
         <Amp.AmpState specName="amp-state" id="showAlexaGraph">
           {{ show: true }}
         </Amp.AmpState>
-        <div className="row" style={{marginBottom:"2%"}}>
-          <div className="col-md-6 col-sm-6">
+        <div className="row">
+          <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
             <SocialIconBox
               iconName="pie-chart"
               caption="Daily unique visitors"
@@ -33,7 +33,7 @@ const TrafficGrid = props => {
               iconStyles={{ color: "#ff7043" }}
             />
           </div>
-          <div className="col-md-6 col-sm-6">
+          <div className="col-md-6 col-sm-6"  style={{marginBottom:"2%"}}>
             <SocialIconBox
               iconName="calendar"
               caption="Monthly unique visitors"
@@ -43,8 +43,8 @@ const TrafficGrid = props => {
           </div>
         </div>
 
-        <div className="row"  style={{marginBottom:"2%"}}>
-          <div className="col-md-6 col-sm-6">
+        <div className="row">
+          <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
             <SocialIconBox
               iconName="bullseye"
               caption="Pages per visit"
@@ -52,7 +52,7 @@ const TrafficGrid = props => {
               iconStyles={{ color: "#5c6bc0" }}
             />
           </div>
-          <div className="col-md-6 col-sm-6">
+          <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
             <SocialIconBox
               iconName="chain-broken"
               caption="Bounce rate"
@@ -61,8 +61,8 @@ const TrafficGrid = props => {
             />
           </div>
         </div>
-        <div className="row"  style={{marginBottom:"2%"}}>
-          <div className="col-md-6 col-sm-6">
+        <div className="row">
+          <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
             <SocialIconBox
               iconName="eye"
               caption="Daily page views"
@@ -70,7 +70,7 @@ const TrafficGrid = props => {
               iconStyles={{ color: "#ec407a" }}
             />
           </div>
-          <div className="col-md-6 col-sm-6">
+          <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
             {
               <AmpHelpers.Action
                 events={{
