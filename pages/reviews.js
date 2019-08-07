@@ -48,7 +48,7 @@ const renderReviewHeader = (data, domain) => {
           </div>
           <div className="col-md-6">
             <div
-              className="row"
+              className="row domainDescRow"
               style={{ flexDirection: "column", marginLeft: "2%" }}
             >
               <div>
@@ -124,22 +124,23 @@ const renderReviewHeader = (data, domain) => {
             </div>
           </div>
           <div className="col-md-3 bigRatingInd">
-            <div>
-              <RatingIndicators
-                rating={Number(ratings)}
-                typeOfWidget="star"
-                widgetRatedColors="#FFFFFF"
-                widgetDimensions="42px"
-                widgetSpacings="3px"
-              />
-            </div>
-            <div className="bigRatingCaption">
+          <div className="bigRatingCaption">
               <h3>
                 {Number(ratings) > 3.5
                   ? "Good & Safe Website"
                   : "Low rating. Be careful"}
               </h3>
             </div>
+            <div className="ratings">
+              <RatingIndicators
+                rating={Number(ratings)}
+                typeOfWidget="star"
+                widgetRatedColors="#FFFFFF"
+                widgetDimensions="35px"
+                widgetSpacings="3px"
+              />
+            </div>
+            
           </div>
         </div>
       </div>

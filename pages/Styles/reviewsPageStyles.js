@@ -13,6 +13,7 @@ export const reviewPageStyles = css`
     margin-top: 75.51px;
     padding: 5%;
   }
+
   .reviewImgContainer {
     max-height: 156px;
     max-width: 250px;
@@ -40,10 +41,9 @@ export const reviewPageStyles = css`
   .bigRatingInd {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content:center;
   }
   .bigRatingCaption {
-    text-align: center;
     color: #fff;
     margin-top: 4%;
   }
@@ -90,5 +90,84 @@ export const reviewPageStyles = css`
   .reviewVideosHeader h5,
   .textualReviewHeader h5 {
     font-weight: 400;
+  }
+
+  @media only screen and (max-width: 1199px) {
+    .ratingsBadgeCont {
+      flex-basis: 8%;
+    }
+    .ratingsIndCont {
+      flex-basis: 33%;
+    }
+  }
+
+  @media only screen and (max-width: 1017px){
+    .ratings{
+      display:none;
+    }
+  }
+
+  @media only screen and (max-width: 991px) {
+    .ratingsBadgeCont {
+      flex-basis: 11%;
+    }
+    .ratingsIndCont {
+      flex-basis: 40%;
+    }
+    .reviewFlag {
+      flex-basis: 24%;
+    }
+
+    .reviewVerifiedBtn {
+      flex-basis: 25%;
+    }
+
+    .bigRatingCaption{
+      text-align:center;
+    }
+
+    .bigRatingCaption h3{
+      font-size:1.5rem;
+     
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .bigRatingInd {
+      display: none;
+    }
+  }
+  @media only screen and (max-width: 767px) {
+    .domainDescRow {
+      margin-top: 5%;
+    }
+  }
+
+  @media only screen and (max-width: 390px) {
+    .ratingsBadgeCont {
+      flex-basis: 11%;
+    }
+    .ratingsIndCont {
+      flex-basis: 50%;
+      text-align:center;
+    }
+    .reviewFlag {
+      flex-basis: 30%;
+    }
+    .reviewVerifiedBtn {
+      display:none;
+    }
+  }
+
+  @media only screen and (max-width: 320px) {
+    .ratingsBadgeCont {
+      flex-basis: 15%;
+    }
+    .ratingsIndCont {
+      flex-basis: 80%;
+      text-align:left;
+    }
+    .reviewFlag,  .reviewVerifiedBtn {
+      display:none;
+    }
   }
 `;
