@@ -12,7 +12,7 @@ const renderToolTipBox = (children, styles) => {
             background: #fff;
             animation-duration: 0.4s;
             animation-name: fade;
-            z-index: 10000000;
+            z-index: 1;
             top: 115%;
             right: 0;
             box-shadow: 0px 2px 4px #999;
