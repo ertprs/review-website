@@ -100,9 +100,8 @@ const TrafficGrid = props => {
                 )}
               </AmpHelpers.Action>
             }
-            <ToolTip visible={showAlexaGraph}>
-              {/* AMP image wrapper */}
-              <div style={{ height: "auto", width: "100%" }}>
+            <ToolTip visible={showAlexaGraph} styles={{}}>
+              <div style={{ height: "auto", width: "260px" }}>
                 <AmpImgWrapper
                   useImgLoader={true}
                   loaderStyles={{
@@ -112,11 +111,11 @@ const TrafficGrid = props => {
                   }}
                   src={`https://traffic.alexa.com/graph?w=308&h=201&o=f&c=1&y=t&b=ffffff&n=666666&r=6m&u=snapdeal.com`}
                   alt="alexa graph"
-                  height="132.34px"
-                  width="300px"
+                  height="110.28px"
+                  width="250px"
                   layout="responsive"
-                  imgContainerStyles={{ width: "300px", height: "132.34px" }}
-                  style={{ maxWidth: "100%", maxheight: "100%" }}
+                  imgContainerStyles={{ width: "250px", height: "110.28px" }}
+                  style={{ maxWidth: "100%", height: "auto" }}
                 />
               </div>
             </ToolTip>
