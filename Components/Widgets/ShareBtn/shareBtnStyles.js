@@ -23,12 +23,4 @@ export const shareBtnStyles = css`
     padding-left: 4%;
   }
 
-  @media screen and (max-width: 382px) {
-    .shareBtn i {
-      display: none;
-    }
-    .shareBtn:hover i {
-      display:none;
-    }
-  }
 `;

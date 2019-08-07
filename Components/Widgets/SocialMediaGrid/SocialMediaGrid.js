@@ -5,7 +5,7 @@ const SocialMediaGrid = props => {
   return (
     <div>
       <div className="row">
-        <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
+        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
           <SocialIconBox
             iconName="facebook"
             caption="followers"
@@ -13,7 +13,7 @@ const SocialMediaGrid = props => {
             iconStyles={{ color: "#3C5A99" }}
           />
         </div>
-        <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
+        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
           <SocialIconBox
             iconName="twitter"
             caption="followers"
@@ -24,7 +24,7 @@ const SocialMediaGrid = props => {
       </div>
 
       <div className="row">
-        <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
+        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
           <SocialIconBox
             iconName="pinterest"
             caption="followers"
@@ -32,7 +32,7 @@ const SocialMediaGrid = props => {
             iconStyles={{ color: "#c8232c" }}
           />
         </div>
-        <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
+        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
           <SocialIconBox
             iconName="youtube"
             caption="followers"
@@ -41,8 +41,8 @@ const SocialMediaGrid = props => {
           />
         </div>
       </div>
-      <div className="row" >
-        <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
+      <div className="row">
+        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
           <SocialIconBox
             iconName="medium"
             caption="followers"
@@ -50,7 +50,7 @@ const SocialMediaGrid = props => {
             iconStyles={{ color: "#00ab6c" }}
           />
         </div>
-        <div className="col-md-6 col-sm-6" style={{marginBottom:"2%"}}>
+        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
           <SocialIconBox
             iconName="linkedin"
             caption="followers"

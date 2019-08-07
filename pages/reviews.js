@@ -124,7 +124,7 @@ const renderReviewHeader = (data, domain) => {
             </div>
           </div>
           <div className="col-md-3 bigRatingInd">
-          <div className="bigRatingCaption">
+            <div className="bigRatingCaption">
               <h3>
                 {Number(ratings) > 3.5
                   ? "Good & Safe Website"
@@ -140,7 +140,6 @@ const renderReviewHeader = (data, domain) => {
                 widgetSpacings="3px"
               />
             </div>
-            
           </div>
         </div>
       </div>
@@ -181,11 +180,10 @@ const renderAnalysisReport = analysisReport => {
             <div className="col-md-12">
               <div className="reviewDescription">
                 <h6>
-                  {" "}
                   <i
                     className="fa fa-angle-right"
                     style={{ marginRight: "3px" }}
-                  />{" "}
+                  />
                   Description
                 </h6>
                 {/* TODO: find description in the API response */}
@@ -202,8 +200,9 @@ const renderAnalysisReport = analysisReport => {
 const renderShareBtn = (shareURL, btnText, shareIcon) => {
   return (
     <div className="container">
+      <style jsx>{reviewPageStyles}</style>
       <div className="row" style={{ textAlign: "center", margin: "0 0 5% 0" }}>
-        <div className="col-md-12">
+        <div className="col-md-12 reviewsShareBtnCont">
           <ShareBtn
             shareURL={shareURL}
             btnText={btnText}
@@ -226,14 +225,14 @@ const renderTrafficReports = () => {
             Traffic Analysis Report
           </h5>
         </div>
-        
+
         <div className="row reviewStatsFlex">
-          <div className="col-md-8" style={{marginBottom:"8%"}}>
+          <div className="col-md-8">
             <div style={{ height: "250px", width: "auto" }}>
               <TrafficStatsChart />
             </div>
           </div>
-          <div className="col-md-4" style={{marginBottom:"5%"}}>
+          <div className="col-md-4" style={{ marginBottom: "5%" }}>
             <TrafficGrid />
           </div>
         </div>
@@ -256,14 +255,13 @@ const renderSocialReports = () => {
           </h5>
         </div>
 
-        
         <div className="row reviewStatsFlex">
-          <div className="col-md-8" style={{marginBottom:"8%"}}>
+          <div className="col-md-8">
             <div style={{ height: "250px", width: "auto" }}>
               <SocialMediaPieChart />
             </div>
           </div>
-          <div className="col-md-4" style={{marginBottom:"5%"}}>
+          <div className="col-md-4" style={{ marginBottom: "5%" }}>
             <SocialMediaGrid />
           </div>
         </div>
@@ -395,9 +393,7 @@ const Reviews = props => {
     "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
   return (
     <div>
-      <style jsx>
-        {reviewPageStyles}
-      </style>
+      <style jsx>{reviewPageStyles}</style>
       {renderReviewHeader(data, domain)}
       <div>{renderAnalysisReport(analysisReport)}</div>
       <div className="reviewShareBtnContainer">

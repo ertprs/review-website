@@ -72,7 +72,7 @@ export const reviewPageStyles = css`
   }
 
   .reviewDescription {
-    margin-top: 3%;
+    margin-top: 5%;
     font-size: 0.9rem;
   }
 
@@ -146,15 +146,19 @@ export const reviewPageStyles = css`
       flex-direction: column;
     }
 
-    .reviewStatsFlex>div{
-      flex-basis:100%;
-      max-width:100%;
+    .reviewStatsFlex > div {
+      flex-basis: 100%;
+      max-width: 100%;
     }
 
-    .reviewStatsFlex>div:nth-child(2){
-      max-width:80%;
-      margin-left:auto;
-      margin-right:auto;
+    .reviewStatsFlex > div:first-child {
+      margin-bottom: 8%;
+    }
+
+    .reviewStatsFlex > div:nth-child(2) {
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
     }
   }
   @media only screen and (max-width: 768px) {
@@ -170,11 +174,11 @@ export const reviewPageStyles = css`
       margin-top: 5%;
     }
     .reviewVideosHeader,
-  .reviewTrafficHeader,
-  .reviewSocialHeader,
-  .textualReviewHeader {
-    margin-bottom: 10%;
-  }
+    .reviewTrafficHeader,
+    .reviewSocialHeader,
+    .textualReviewHeader {
+      margin-bottom: 10%;
+    }
   }
 
   @media only screen and (max-width: 390px) {
@@ -190,6 +194,18 @@ export const reviewPageStyles = css`
     }
     .reviewVerifiedBtn {
       display: none;
+    }
+  }
+
+  @media only screen and (max-width: 370px) {
+    .reviewsShareBtnCont {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media only screen and (max-width: 342px) {
+    .reviewsShareBtnCont {
+      font-size: 0.8rem;
     }
   }
 
