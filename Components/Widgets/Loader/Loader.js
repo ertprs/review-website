@@ -5,6 +5,9 @@ const Loader = (props) => {
     <>
       <style jsx>
         {`
+          .loader{
+            text-align:center;
+          }
           .l1,.l2,.l3 {
               animation-name:fade;
               animation-itertion-count:infinite;

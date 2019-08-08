@@ -8,69 +8,31 @@ import * as Amp from "react-amphtml";
 
 export const config = { amp: "hybrid" };
 
-const TrafficGrid = props => {
-  //TODO: GET SOCIAL DETAILS AS AN ARRAY AND LOOP
-  const [showAlexaGraph, setAlexaGraphVisibility] = useState(false);
-  return (
-    <>
-      <Head>
-        <script
-          async
-          custom-element="amp-bind"
-          src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
-        />
-      </Head>
-      <div>
-        <Amp.AmpState specName="amp-state" id="showAlexaGraph">
-          {{ show: true }}
-        </Amp.AmpState>
-        <div className="row">
-          <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-            <SocialIconBox
-              iconName="pie-chart"
-              caption="Daily unique visitors"
-              followersCount="790,672"
-              iconStyles={{ color: "#ff7043" }}
-            />
-          </div>
-          <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-            <SocialIconBox
-              iconName="calendar"
-              caption="Monthly unique visitors"
-              followersCount="23,720,160"
-              iconStyles={{ color: "#009688" }}
-            />
-          </div>
-        </div>
+const renderTrafficGridItems = (
+  props,
+  showAlexaGraph,
+  setAlexaGraphVisibility
+) => {
+  const { trafficData } = props;
+  const icons = {
+    alexa_pageviews: { name: "bolt", color: "#29B6F6" },
+    bounce_rate: { name: "chain-broken", color: "#FF7043" },
+    daily_pageviews: { name: "eye", color: "#ec407a" },
+    daily_unique_visitors: { name: "pie-chart", color: "#ff7043" },
+    monthly_unique_visitors: { name: "calendar", color: "#009688" },
+    pages_per_visit: { name: "bullseye", color: "#5c6bc0" }
+  };
 
-        <div className="row">
-          <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-            <SocialIconBox
-              iconName="bullseye"
-              caption="Pages per visit"
-              followersCount="3.70"
-              iconStyles={{ color: "#5c6bc0" }}
-            />
-          </div>
-          <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-            <SocialIconBox
-              iconName="chain-broken"
-              caption="Bounce rate"
-              followersCount="29.72%"
-              iconStyles={{ color: "#FF7043" }}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-            <SocialIconBox
-              iconName="eye"
-              caption="Daily page views"
-              followersCount="2,925,487"
-              iconStyles={{ color: "#ec407a" }}
-            />
-          </div>
-          <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
+  let output = [];
+  for (let item in trafficData) {
+    if (item !== "alexa_search_traffic") {
+      if (item === "alexa_pageviews") {
+        output = [
+          ...output,
+          <div
+            className="col-md-6 col-sm-6"
+            style={{ marginBottom: "2%", textTransform: "capitalize" }}
+          >
             {
               <AmpHelpers.Action
                 events={{
@@ -91,10 +53,10 @@ const TrafficGrid = props => {
                     tabindex="1"
                   >
                     <SocialIconBox
-                      iconName="bolt"
-                      caption="Alexa page views"
-                      followersCount="1,323"
-                      iconStyles={{ color: "#29B6F6" }}
+                      iconName={icons[item].name}
+                      caption={item.split("_").join(" ")}
+                      followersCount={trafficData[item]}
+                      iconStyles={{ color: icons[item].color }}
                     />
                   </div>
                 )}
@@ -107,9 +69,9 @@ const TrafficGrid = props => {
                   loaderStyles={{
                     textAlign: "center",
                     height: "auto",
-                    width: "300px"
+                    width: "260px"
                   }}
-                  src={`https://traffic.alexa.com/graph?w=308&h=201&o=f&c=1&y=t&b=ffffff&n=666666&r=6m&u=snapdeal.com`}
+                  src={trafficData["alexa_search_traffic"]}
                   alt="alexa graph"
                   height="110.28px"
                   width="250px"
@@ -120,6 +82,50 @@ const TrafficGrid = props => {
               </div>
             </ToolTip>
           </div>
+        ];
+      } else {
+        output = [
+          ...output,
+          <div
+            className="col-md-6 col-sm-6"
+            style={{ marginBottom: "2%", textTransform: "capitalize" }}
+          >
+            <SocialIconBox
+              iconName={icons[item].name}
+              caption={item.split("_").join(" ")}
+              followersCount={trafficData[item]}
+              iconStyles={{ color: icons[item].color }}
+            />
+          </div>
+        ];
+      }
+    }
+  }
+
+  return output;
+};
+
+const TrafficGrid = props => {
+  const [showAlexaGraph, setAlexaGraphVisibility] = useState(false);
+  return (
+    <>
+      <Head>
+        <script
+          async
+          custom-element="amp-bind"
+          src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
+        />
+      </Head>
+      <div>
+        <Amp.AmpState specName="amp-state" id="showAlexaGraph">
+          {{ show: true }}
+        </Amp.AmpState>
+        <div className="row">
+          {renderTrafficGridItems(
+            props,
+            showAlexaGraph,
+            setAlexaGraphVisibility
+          )}
         </div>
       </div>
     </>

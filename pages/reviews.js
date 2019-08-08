@@ -214,7 +214,7 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
   );
 };
 
-const renderTrafficReports = () => {
+const renderTrafficReports = trafficData => {
   return (
     <div className="reviewTrafficContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -233,11 +233,9 @@ const renderTrafficReports = () => {
             </div>
           </div>
           <div className="col-md-4" style={{ marginBottom: "5%" }}>
-            <TrafficGrid />
+            <TrafficGrid trafficData={trafficData} />
           </div>
         </div>
-
-        {/* Updated code ends here */}
       </div>
     </div>
   );
@@ -379,11 +377,66 @@ const getAnalysisReportObject = data => {
   };
 };
 
+const getTrafficReportObject = data => {
+  console.log(data);
+  return {
+    daily_unique_visitors: (
+      (((data || {}).traffic || {}).payload || {}).visits || {}
+    ).daily_unique_visitors
+      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
+          .daily_unique_visitors
+      : "Nothing found",
+
+    monthly_unique_visitors: (
+      (((data || {}).traffic || {}).payload || {}).visits || {}
+    ).monthly_unique_visitors
+      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
+          .monthly_unique_visitors
+      : "Nothing found",
+
+    pages_per_visit: ((((data || {}).traffic || {}).payload || {}).visits || {})
+      .pages_per_visit
+      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
+          .pages_per_visit
+      : "Nothing found",
+
+    bounce_rate: ((((data || {}).traffic || {}).payload || {}).visits || {})
+      .bounce_rate
+      ? ((((data || {}).traffic || {}).payload || {}).visits || {}).bounce_rate
+      : "Nothing found",
+
+    daily_pageviews: ((((data || {}).traffic || {}).payload || {}).visits || {})
+      .daily_pageviews
+      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
+          .daily_pageviews
+      : "Nothing found",
+
+    alexa_pageviews: ((((data || {}).traffic || {}).payload || {}).visits || {})
+      .alexa_pageviews
+      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
+          .alexa_pageviews
+      : "Nothing found",
+
+    alexa_search_traffic: (
+      (((data || {}).traffic || {}).payload || {}).traffic_stats_links || {}
+    ).alexa_search_traffic
+      ? ((((data || {}).traffic || {}).payload || {}).traffic_stats_links || {})
+          .alexa_search_traffic
+      : "Nothing found"
+  };
+};
+
 const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
   const domain = props.domain;
   const data = { ...analysisData.response };
   const analysisReport = getAnalysisReportObject(data);
+
+  //new change
+  const trafficData = getTrafficReportObject(data);
+  console.log(trafficData);
+  //end
+
   const comments =
     ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
       ? (((data || {}).wot || {}).payload || {}).comments
@@ -403,7 +456,7 @@ const Reviews = props => {
           "fa fa-gift"
         )}
       </div>
-      <div>{renderTrafficReports()}</div>
+      <div>{renderTrafficReports(trafficData)}</div>
       <div>{renderSocialReports()}</div>
       <div>{renderVideoReviews()}</div>
       <div>{renderTextualReviews(comments)}</div>
@@ -413,12 +466,13 @@ const Reviews = props => {
 };
 
 Reviews.getInitialProps = async ({ query }) => {
+  // const oldURL = "https://watchdog-api-v1.cryptopolice.com/api/verify";
   const searchURL = query.domain
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
   const response = await axios.post(
-    "https://watchdog-api-v1.cryptopolice.com/api/verify",
+    "https://search-api-dev.cryptopolice.com/api/verify",
     { domain: searchURL }
   );
   return { analysisData: { ...response.data }, domain };
