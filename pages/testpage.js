@@ -1,21 +1,18 @@
 import React from 'react';
-import axios from 'axios';
+import TestComponent from '../Components/TestComponent/TestComponent';
+
 const TestPage =  (props) =>{
-    console.log(props.data)
+    
     return(
-        <div>API Test page</div>
+        <div style={{margin:"150px 0 150px 25px"}}>
+            <TestComponent domain={props.domain} />
+        </div>
     )
 }
 
-TestPage.getInitialProps= async ({query})=>{
+TestPage.getInitialProps=  ({query})=>{
     const url = "https://search-api-dev.cryptopolice.com/api/verify";
-
-    const response = await axios.post(
-        url,
-        { domain: "https://www.google.com" }
-      );
-
-      return {data:{...response.data}}
+    return {domain:query.domain}
 
 }
 

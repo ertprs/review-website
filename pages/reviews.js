@@ -241,7 +241,7 @@ const renderTrafficReports = trafficData => {
   );
 };
 
-const renderSocialReports = () => {
+const renderSocialReports = (socialData) => {
   return (
     <div className="reviewSocialContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -256,11 +256,11 @@ const renderSocialReports = () => {
         <div className="row reviewStatsFlex">
           <div className="col-md-8">
             <div style={{ height: "250px", width: "auto" }}>
-              <SocialMediaPieChart />
+              <SocialMediaPieChart socialData={socialData}/>
             </div>
           </div>
           <div className="col-md-4" style={{ marginBottom: "5%" }}>
-            <SocialMediaGrid />
+            <SocialMediaGrid socialData={socialData} />
           </div>
         </div>
       </div>
@@ -327,18 +327,18 @@ const getAnalysisReportObject = data => {
       (((data || {}).whois || {}).payload || {}).registration || {}
     ).value
       ? ((((data || {}).whois || {}).payload || {}).registration || {}).value
-      : "Nothing found",
+      : "N/A",
 
     expiration_Date: (
       (((data || {}).whois || {}).payload || {}).expiration || {}
     ).value
       ? ((((data || {}).whois || {}).payload || {}).expiration || {}).value
-      : "Nothing found",
+      : "N/A",
 
     connection_Safety: ((((data || {}).ssl || {}).payload || {}).enabled || {})
       .value
       ? ((((data || {}).ssl || {}).payload || {}).enabled || {}).value
-      : "Nothing found",
+      : "N/A",
 
     //API Mis-spelled organization to ogranisation
 
@@ -346,18 +346,18 @@ const getAnalysisReportObject = data => {
       (((data || {}).ssl || {}).payload || {}).ogranisation || {}
     ).value
       ? ((((data || {}).ssl || {}).payload || {}).ogranisation || {}).value
-      : "Nothing found",
+      : "N/A",
 
     etherscam_DB: ((((data || {}).etherscam || {}).payload || {}).status || {})
       .value
       ? ((((data || {}).etherscam || {}).payload || {}).status || {}).value
-      : "Nothing found",
+      : "N/A",
 
     phishtank_Status: (
       (((data || {}).phishtank || {}).payload || {}).status || {}
     ).value
       ? ((((data || {}).phishtank || {}).payload || {}).status || {}).value
-      : "Nothing found",
+      : "N/A",
 
     trustworthiness: ((((data || {}).wot || {}).payload || {}).trust || {})
       .value
@@ -368,75 +368,78 @@ const getAnalysisReportObject = data => {
       (((data || {}).deface || {}).payload || {}).index || {}
     ).value
       ? ((((data || {}).deface || {}).payload || {}).index || {}).value
-      : "Nothing found",
+      : "N/A",
 
     redirect_Count: ((((data || {}).deface || {}).payload || {}).redirect || {})
       .color
       ? ((((data || {}).deface || {}).payload || {}).redirect || {}).value
-      : "Nothing found"
+      : "N/A"
   };
 };
 
 const getTrafficReportObject = data => {
-  console.log(data);
   return {
     daily_unique_visitors: (
       (((data || {}).traffic || {}).payload || {}).visits || {}
     ).daily_unique_visitors
       ? ((((data || {}).traffic || {}).payload || {}).visits || {})
           .daily_unique_visitors
-      : "Nothing found",
+      : "N/A",
 
     monthly_unique_visitors: (
       (((data || {}).traffic || {}).payload || {}).visits || {}
     ).monthly_unique_visitors
       ? ((((data || {}).traffic || {}).payload || {}).visits || {})
           .monthly_unique_visitors
-      : "Nothing found",
+      : "N/A",
 
     pages_per_visit: ((((data || {}).traffic || {}).payload || {}).visits || {})
       .pages_per_visit
       ? ((((data || {}).traffic || {}).payload || {}).visits || {})
           .pages_per_visit
-      : "Nothing found",
+      : "N/A",
 
     bounce_rate: ((((data || {}).traffic || {}).payload || {}).visits || {})
       .bounce_rate
       ? ((((data || {}).traffic || {}).payload || {}).visits || {}).bounce_rate
-      : "Nothing found",
+      : "N/A",
 
     daily_pageviews: ((((data || {}).traffic || {}).payload || {}).visits || {})
       .daily_pageviews
       ? ((((data || {}).traffic || {}).payload || {}).visits || {})
           .daily_pageviews
-      : "Nothing found",
+      : "N/A",
 
     alexa_pageviews: ((((data || {}).traffic || {}).payload || {}).visits || {})
       .alexa_pageviews
       ? ((((data || {}).traffic || {}).payload || {}).visits || {})
           .alexa_pageviews
-      : "Nothing found",
+      : "N/A",
 
     alexa_search_traffic: (
       (((data || {}).traffic || {}).payload || {}).traffic_stats_links || {}
     ).alexa_search_traffic
       ? ((((data || {}).traffic || {}).payload || {}).traffic_stats_links || {})
           .alexa_search_traffic
-      : "Nothing found"
+      : "N/A"
   };
 };
+
+const getSocialReportObject = data => {
+  return {
+    ...(((data || {}).social || {}).payload || {})
+      ? ((data || {}).social || {}).payload
+      : "N/A",
+    }
+}
 
 const Reviews = props => {
   const [analysisData, setAnalysisData] = useState(props.analysisData);
   const domain = props.domain;
   const data = { ...analysisData.response };
   const analysisReport = getAnalysisReportObject(data);
-
-  //new change
   const trafficData = getTrafficReportObject(data);
-  console.log(trafficData);
-  //end
-
+   const socialData = getSocialReportObject(data);
   const comments =
     ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
       ? (((data || {}).wot || {}).payload || {}).comments
@@ -457,7 +460,7 @@ const Reviews = props => {
         )}
       </div>
       <div>{renderTrafficReports(trafficData)}</div>
-      <div>{renderSocialReports()}</div>
+      <div>{renderSocialReports(socialData)}</div>
       <div>{renderVideoReviews()}</div>
       <div>{renderTextualReviews(comments)}</div>
       {renderShareBtn(share_url, "Leave a Review", "fa fa-comments-o")}
@@ -467,6 +470,7 @@ const Reviews = props => {
 
 Reviews.getInitialProps = async ({ query }) => {
   // const oldURL = "https://watchdog-api-v1.cryptopolice.com/api/verify";
+
   const searchURL = query.domain
     ? `https://${query.domain}`
     : "https://google.com";

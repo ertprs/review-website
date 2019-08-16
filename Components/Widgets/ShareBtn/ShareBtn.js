@@ -11,7 +11,7 @@ const ShareBtn = (props)=>{
                 {shareBtnStyles}
             </style>
             <AmpLinkWrapper href={props.shareURL} alt="Share Button" styles={{textDecoration:"none", color:"#fff"}}>
-            <div className="shareBtn">
+            <div className="shareBtn" style={{...props.btnStyles}}>
                 <span>{props.btnText}</span> {props.shareIcon ? <i className={props.shareIcon}></i> : null}
             </div>
             </AmpLinkWrapper>

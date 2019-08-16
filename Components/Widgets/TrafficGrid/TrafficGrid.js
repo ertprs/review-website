@@ -62,7 +62,7 @@ const renderTrafficGridItems = (
                 )}
               </AmpHelpers.Action>
             }
-            <ToolTip visible={showAlexaGraph} styles={{}}>
+           {trafficData[item]!=="N/A" ?  <ToolTip visible={showAlexaGraph} styles={{}}>
               <div style={{ height: "auto", width: "260px" }}>
                 <AmpImgWrapper
                   useImgLoader={true}
@@ -80,7 +80,7 @@ const renderTrafficGridItems = (
                   style={{ maxWidth: "100%", height: "auto" }}
                 />
               </div>
-            </ToolTip>
+            </ToolTip> : ""}
           </div>
         ];
       } else {
