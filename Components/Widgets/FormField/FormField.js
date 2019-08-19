@@ -21,7 +21,7 @@ const FormField = ({
             <style jsx>
                 {formFieldStyles}
             </style>
-            <textarea placeholder={placeholder} value={value} onChange={(e)=>handleChange(e,id)} name={name} className="formField" rows={rows} cols={cols}></textarea>
+            <textarea placeholder={placeholder} value={value} onChange={(e)=>handleChange(e,id)} name={name} className={!valid && touched ? "formField invalidField": "formField"} rows={rows} cols={cols}></textarea>
             </div>
         )
         default : return null;
