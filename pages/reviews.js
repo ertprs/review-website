@@ -5,7 +5,7 @@ import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGr
 import TrafficGrid from "../Components/Widgets/TrafficGrid/TrafficGrid";
 import axios from "axios";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
-import { reviewPageStyles } from "./Styles/reviewsPageStyles";
+import { reviewPageStyles } from "../Components/Styles/reviewsPageStyles";
 import VerifiedBtn from "../Components/Widgets/VerifiedBtn/VerifiedBtn";
 import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
 import SocialMediaPieChart from "../Components/Widgets/SocialMediaPieChart/SocialMediaPieChart";

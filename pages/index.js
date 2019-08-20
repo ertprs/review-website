@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp";
-import { indexPageStyles } from "./Styles/indexPageStyles";
+import { indexPageStyles } from "../Components/Styles/indexPageStyles";
 import SearchBox from "../Components/Widgets/SearchBox/SearchBox";
 import WebStats from "../Components/Widgets/WebStats/WebStats";
 import Head from "next/head";

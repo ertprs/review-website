@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Ratings from "react-ratings-declarative";
 import BigLoader from "../Components/Widgets/BigLoader/BigLoader";
-import { leaveReviewStyles } from "./Styles/leaveReviewPageStyles";
+import { leaveReviewStyles } from "../Components/Styles/leaveReviewPageStyles";
 import FormField from "../Components/Widgets/FormField/FormField";
 import validate from "../utility/validate";
 
