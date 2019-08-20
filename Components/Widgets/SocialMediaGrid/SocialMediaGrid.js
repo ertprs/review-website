@@ -1,6 +1,6 @@
 import React from "react";
 import SocialIconBox from "../SocialIconBox/SocialIconBox";
-
+import uuid from 'uuid/v1';
 const icons = {
   1: { name: "facebook", color: "#3C5A99" },
   2: { name: "youtube", color: "#ff0000" },
@@ -28,7 +28,7 @@ const renderSocialMediaItems = socialData => {
     // if(socialData[item].verified){
       output = [
         ...output,
-        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
+        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }} key={uuid()}>
           <SocialIconBox
             iconName={icons[item].name}
             caption="followers"
@@ -40,7 +40,7 @@ const renderSocialMediaItems = socialData => {
     // }
   }
 
-  return output.length > 0 ? output: <div className ="col-md-12"><h6  style={{textAlign:"center", fontWeight:"400"}}>No social media record found :(</h6></div>;
+  return output.length > 0 ? output: null;
 };
 
 const SocialMediaGrid = ({ socialData }) => {
@@ -48,59 +48,6 @@ const SocialMediaGrid = ({ socialData }) => {
     <div>
       <div className="row">
         {renderSocialMediaItems(socialData)}
-        {/* <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-          <SocialIconBox
-            iconName="facebook"
-            caption="followers"
-            followersCount="7277704"
-            iconStyles={{ color: "#3C5A99" }}
-          />
-        </div>
-        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-          <SocialIconBox
-            iconName="twitter"
-            caption="followers"
-            followersCount="884173"
-            iconStyles={{ color: "#38A1F3" }}
-          />
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-          <SocialIconBox
-            iconName="pinterest"
-            caption="followers"
-            followersCount="N/A"
-            iconStyles={{ color: "#c8232c" }}
-          />
-        </div>
-        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-          <SocialIconBox
-            iconName="youtube"
-            caption="followers"
-            followersCount="N/A"
-            iconStyles={{ color: "#ff0000" }}
-          />
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-          <SocialIconBox
-            iconName="medium"
-            caption="followers"
-            followersCount="N/A"
-            iconStyles={{ color: "#00ab6c" }}
-          />
-        </div>
-        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }}>
-          <SocialIconBox
-            iconName="linkedin"
-            caption="followers"
-            followersCount="N/A"
-            iconStyles={{ color: "#0077B5" }}
-          />
-        </div> */}
       </div>
     </div>
   );

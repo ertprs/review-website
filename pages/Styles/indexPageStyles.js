@@ -3,7 +3,7 @@ import css from 'styled-jsx/css';
 export const indexPageStyles = css.global`
   .homeContainer {
     margin-top: 75.51px;
-    height: 100vh;
+    height:100%;
     background: linear-gradient(
         to right,
         rgba(250, 250, 250, 1) 20%,
@@ -18,9 +18,10 @@ export const indexPageStyles = css.global`
   }
 
   .homeContainerInner {
-    align-self: center;
+    // align-self: center;
     width: 85%;
-    margin: -6% auto 0 auto;
+    // margin: -6% auto 0 auto;
+    margin:50px auto 0px auto;
   }
 
   .heroHeading{
@@ -54,9 +55,15 @@ export const indexPageStyles = css.global`
     -o-border-radius: 3px;
   }
 
+  /*------ SearchBox Container ------*/
+  .homeSearchBoxContainer{
+    margin:1% 0 3% 0;
+  }
+
   /*------ WebStatItem styling --------*/
   .homeWebStatsContainer {
     display: flex;
+    margin-bottom:6%;
   }
   .homeWebStatItem {
     flex: auto;
@@ -72,6 +79,10 @@ export const indexPageStyles = css.global`
 
   /*----- Media queries for responsiveness to different screen sizes ----*/
   @media only screen and (max-width: 767px) {
+    .homeSearchBoxContainer{
+      margin: 3% 0 11% 0;
+      position:relative;
+    }
     .homeWebStatsContainer {
       display: none;
     }

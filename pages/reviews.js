@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAmp } from "next/amp";
 import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGrid";
@@ -17,11 +17,8 @@ import uuid from "uuid/v1";
 import TrafficStatsChart from "../Components/Widgets/TrafficStatsChart/TrafficStatsChart";
 export const config = { amp: "hybrid" };
 
-// TODO: AMP Bug for pretty URLs
-
 const renderReviewHeader = (data, domain) => {
   const ratings = data.general_analysis.payload.ratings.watchdog;
-  // const ratings = "5";
   const headerBgColor = Number(ratings) >= 3.5 ? "green" : "red";
   return (
     <div
@@ -241,7 +238,7 @@ const renderTrafficReports = trafficData => {
   );
 };
 
-const renderSocialReports = (socialData) => {
+const renderSocialReports = socialData => {
   return (
     <div className="reviewSocialContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -254,14 +251,24 @@ const renderSocialReports = (socialData) => {
         </div>
 
         <div className="row reviewStatsFlex">
-          <div className="col-md-8">
-            <div style={{ height: "250px", width: "auto" }}>
-              <SocialMediaPieChart socialData={socialData}/>
+          {Object.keys(socialData).length > 0 ? (
+            <>
+              <div className="col-md-8">
+                <div style={{ height: "250px", width: "auto" }}>
+                  <SocialMediaPieChart socialData={socialData} />
+                </div>
+              </div>
+              <div className="col-md-4" style={{ marginBottom: "5%" }}>
+                <SocialMediaGrid socialData={socialData} />
+              </div>
+            </>
+          ) : (
+            <div className="col-md-12">
+              <div style={{ textAlign: "center" }}>
+                No social media records found :(
+              </div>
             </div>
-          </div>
-          <div className="col-md-4" style={{ marginBottom: "5%" }}>
-            <SocialMediaGrid socialData={socialData} />
-          </div>
+          )}
         </div>
       </div>
     </div>
@@ -315,7 +322,17 @@ const renderTextualReviews = comments => {
             Textual Review
           </h5>
         </div>
-        <div className="row">{renderReviewCard(commentsToRender)}</div>
+        <div className="row">
+          {commentsToRender.length > 0 ? (
+            renderReviewCard(commentsToRender)
+          ) : (
+            <div className="col-md-12">
+              <div style={{ textAlign: "center", marginLeft: "15px" }}>
+                No text reviews found :(
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -378,43 +395,56 @@ const getAnalysisReportObject = data => {
 };
 
 const getTrafficReportObject = data => {
+  const timeline = (((data || {}).traffic || {}).payload || {}).timeline || [];
+  const isTimeLinePresent = timeline.length > 0;
   return {
-    daily_unique_visitors: (
-      (((data || {}).traffic || {}).payload || {}).visits || {}
-    ).daily_unique_visitors
-      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
-          .daily_unique_visitors
-      : "N/A",
+    daily_unique_visitors:
+      isTimeLinePresent &&
+      (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+        .daily_unique_visitors
+        ? (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+            .daily_unique_visitors
+        : "N/A",
 
-    monthly_unique_visitors: (
-      (((data || {}).traffic || {}).payload || {}).visits || {}
-    ).monthly_unique_visitors
-      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
-          .monthly_unique_visitors
-      : "N/A",
+    monthly_unique_visitors:
+      isTimeLinePresent &&
+      (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+        .monthly_unique_visitors
+        ? (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+            .monthly_unique_visitors
+        : "N/A",
 
-    pages_per_visit: ((((data || {}).traffic || {}).payload || {}).visits || {})
-      .pages_per_visit
-      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
-          .pages_per_visit
-      : "N/A",
+    pages_per_visit:
+      isTimeLinePresent &&
+      (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+        .pages_per_visit
+        ? (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+            .pages_per_visit
+        : "N/A",
 
-    bounce_rate: ((((data || {}).traffic || {}).payload || {}).visits || {})
-      .bounce_rate
-      ? ((((data || {}).traffic || {}).payload || {}).visits || {}).bounce_rate
-      : "N/A",
+    bounce_rate:
+      isTimeLinePresent &&
+      (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+        .bounce_rate
+        ? (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+            .bounce_rate
+        : "N/A",
 
-    daily_pageviews: ((((data || {}).traffic || {}).payload || {}).visits || {})
-      .daily_pageviews
-      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
-          .daily_pageviews
-      : "N/A",
+    daily_pageviews:
+      isTimeLinePresent &&
+      (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+        .daily_pageviews
+        ? (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+            .daily_pageviews
+        : "N/A",
 
-    alexa_pageviews: ((((data || {}).traffic || {}).payload || {}).visits || {})
-      .alexa_pageviews
-      ? ((((data || {}).traffic || {}).payload || {}).visits || {})
-          .alexa_pageviews
-      : "N/A",
+    alexa_pageviews:
+      isTimeLinePresent &&
+      (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+        .alexa_pageviews
+        ? (((data || {}).traffic || {}).payload || {}).timeline[0].visits
+            .alexa_pageviews
+        : "N/A",
 
     alexa_search_traffic: (
       (((data || {}).traffic || {}).payload || {}).traffic_stats_links || {}
@@ -427,19 +457,24 @@ const getTrafficReportObject = data => {
 
 const getSocialReportObject = data => {
   return {
-    ...(((data || {}).social || {}).payload || {})
+    ...(((data || {}).social || {}).payload || {}
       ? ((data || {}).social || {}).payload
-      : "N/A",
-    }
-}
+      : "N/A")
+  };
+};
 
 const Reviews = props => {
+  console.log(props);
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  });
   const [analysisData, setAnalysisData] = useState(props.analysisData);
   const domain = props.domain;
   const data = { ...analysisData.response };
   const analysisReport = getAnalysisReportObject(data);
   const trafficData = getTrafficReportObject(data);
-   const socialData = getSocialReportObject(data);
+  const socialData = getSocialReportObject(data);
   const comments =
     ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
       ? (((data || {}).wot || {}).payload || {}).comments
@@ -475,9 +510,8 @@ Reviews.getInitialProps = async ({ query }) => {
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
-  const response = await axios.post(
-    "https://search-api-dev.cryptopolice.com/api/verify",
-    { domain: searchURL }
+  const response = await axios.get(
+    `https://search-api-dev.cryptopolice.com/api/verify?domain=${searchURL}`
   );
   return { analysisData: { ...response.data }, domain };
 };

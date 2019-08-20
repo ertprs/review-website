@@ -52,6 +52,12 @@ export default css`
     -moz-border-radius: 3px;
     -ms-border-radius: 3px;
     -o-border-radius: 3px;
+    cursor: pointer;
+    transition:all 0.4s;
+  }
+
+  .searchBtn:hover{
+    background:#30ab4a;
   }
 
   @media only screen and (max-width: 539px) {

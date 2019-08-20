@@ -4,38 +4,36 @@ import { indexPageStyles } from "./Styles/indexPageStyles";
 import SearchBox from "../Components/Widgets/SearchBox/SearchBox";
 import WebStats from "../Components/Widgets/WebStats/WebStats";
 import Head from "next/head";
-import Router from 'next/router';
+import Router from "next/router";
 import uuid from "uuid/v1";
+import BigLoader from "../Components/Widgets/BigLoader/BigLoader";
 
 export const config = { amp: "hybrid" };
 
-const handleSearchSubmit = searchBoxVal => {
-  //make an api call to fetch the requested data and move to a different route
-  // axios
-  //   .post("https://watchdog-api-v1.cryptopolice.com/api/verify", {
-  //     domain: searchBoxVal
-  //   })
-  //   .then(res => console.log(res.data))
-  //   .catch(err => console.log(err));
-  // Router.push({
-  //   pathname:"/reviews",
-  //   query:{domain:searchBoxVal},
-  // });
-  Router.push(`/reviews?domain=${searchBoxVal}`, `/reviews/${searchBoxVal}`);
-
-  console.log("data submitted to the parent component => ", searchBoxVal);
+const handleSearchSubmit = (setLoading, searchBoxVal) => {
+  if (searchBoxVal.trim() !== "") {
+    setLoading(true);
+    Router.push(`/reviews?domain=${searchBoxVal}`, `/reviews/${searchBoxVal}`);
+  }
 };
 
 const handleSearchBoxChange = (e, setSearchBoxVal) => {
   setSearchBoxVal(e.target.value);
 };
 
-const renderHeroContent = (searchBoxVal, setSearchBoxVal) => {
+const renderHeroContent = (
+  searchBoxVal,
+  setSearchBoxVal,
+  loading,
+  setLoading
+) => {
   return (
     <div className="homeContainerInner">
       <style jsx>{indexPageStyles}</style>
       <div>
-        <h3 className="heroHeading">TrustSearch - the search engine for trust! </h3>
+        <h3 className="heroHeading">
+          TrustSearch - the search engine for trust!{" "}
+        </h3>
         <h4 className="heroSubHeading">
           We help you to check
           <span className="heroSubHeadingMainText">trustworthiness</span> to
@@ -43,15 +41,26 @@ const renderHeroContent = (searchBoxVal, setSearchBoxVal) => {
         </h4>
       </div>
 
-      <div className="analyseBtn" style={{marginTop:"1rem", marginBottom:"1rem"}}>Analyse any website</div>
+      <div
+        className="analyseBtn"
+        style={{ marginTop: "1rem", marginBottom: "1rem"}}
+      >
+        Analyse any website
+      </div>
 
-      <div style={{margin:"1% 0 3% 0"}}>
-        <SearchBox
-          onchange={handleSearchBoxChange}
-          value={searchBoxVal}
-          stateMethod={setSearchBoxVal}
-          handleSearchSubmit={handleSearchSubmit}
-        />
+      <div className="homeSearchBoxContainer">
+        {!loading ? (
+          <SearchBox
+            onchange={handleSearchBoxChange}
+            value={searchBoxVal}
+            stateMethod={setSearchBoxVal}
+            handleSearchSubmit={searchBoxVal => {
+              handleSearchSubmit(setLoading, searchBoxVal);
+            }}
+          />
+        ) : (
+          <BigLoader styles={{ borderColor: "#21bc61", top:"50%", left:"50%", position:"relative"}} />
+        )}
       </div>
       <div className="row">
         <div className="col-md-12">
@@ -80,20 +89,22 @@ const renderWebStats = () => {
 };
 
 const Home = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
   const [searchBoxVal, setSearchBoxVal] = useState("");
+  const [loading, setLoading] = useState(false);
   return (
     <>
       <Head>
         {!useAmp() ? (
           <link rel="amphtml" href="http://localhost:3000?amp=1" />
-        ) : (
-          // <link rel="canonical" href="http://localhost:3000" />
-          null
-        )}
+        ) : // <link rel="canonical" href="http://localhost:3000" />
+        null}
       </Head>
       <style jsx>{indexPageStyles}</style>
       <div className="homeContainer">
-        {renderHeroContent(searchBoxVal, setSearchBoxVal)}
+        {renderHeroContent(searchBoxVal, setSearchBoxVal, loading, setLoading)}
       </div>
     </>
   );

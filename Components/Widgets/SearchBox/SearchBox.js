@@ -1,6 +1,8 @@
 import React from "react";
 import searchBoxStyles from './searchBoxStyles';
 import AmpFormWrapper from '../../AmpWrappers/AmpFormWrapper';
+
+
 const SearchBox = ({ value, onchange, handleSearchSubmit, stateMethod }) => {
   return (
     <div>

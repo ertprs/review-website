@@ -3,6 +3,7 @@ import SocialIconBox from "../SocialIconBox/SocialIconBox";
 import ToolTip from "../ToolTip/ToolTip";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import Head from "next/head";
+import uuid from 'uuid/v1';
 import * as AmpHelpers from "react-amphtml/helpers";
 import * as Amp from "react-amphtml";
 
@@ -32,6 +33,7 @@ const renderTrafficGridItems = (
           <div
             className="col-md-6 col-sm-6"
             style={{ marginBottom: "2%", textTransform: "capitalize" }}
+            key={uuid()}
           >
             {
               <AmpHelpers.Action
@@ -43,9 +45,9 @@ const renderTrafficGridItems = (
               >
                 {props => (
                   <div
-                    onMouseEnter={e => setAlexaGraphVisibility(!showAlexaGraph)}
+                    onMouseEnter={e => setAlexaGraphVisibility(true)}
                     onMouseLeave={e => {
-                      setAlexaGraphVisibility(!showAlexaGraph);
+                      setAlexaGraphVisibility(false);
                     }}
                     style={{ cursor: "pointer" }}
                     {...props}
@@ -89,6 +91,7 @@ const renderTrafficGridItems = (
           <div
             className="col-md-6 col-sm-6"
             style={{ marginBottom: "2%", textTransform: "capitalize" }}
+            key={uuid()}
           >
             <SocialIconBox
               iconName={icons[item].name}

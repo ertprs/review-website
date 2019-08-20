@@ -38,6 +38,17 @@ const unBindReceivedKeys = (pusher, channel, domainData) => {
   }
 };
 
+
+//To bind to all keys on component mounting
+// const bindToAllKeys = (payloadKey, setDomainData, domainData, pusher, channel)=>{
+//   channel.bind(payloadKey, data => {
+//     let newDomainData = {[payloadKey]:data.response};
+//     console.log(domainData)
+//     setDomainData({ ...domainData, ...newDomainData });
+//     unBindKeys(pusher,channel, payloadKey, domainData);
+//   });
+// }
+
 const TestComponent = props => {
   const [domainData, setDomainData] = useState({});
   const allKeys = { ...keys };
@@ -53,22 +64,27 @@ const TestComponent = props => {
 
     //Loop to bind to all the keys and unbind on receiving the data
     //closure problem, fix - go for individual keys
+
+    const bindToAllKeys = (payloadKey)=>{
+      channel.bind(payloadKey, data => {
+        let newDomainData = {[payloadKey]:data.response};
+        console.log(domainData)
+        setDomainData({ ...domainData, ...newDomainData });
+        unBindKeys(pusher,channel, payloadKey, domainData);
+      });
+    }
     
     for (let key in allKeys) {
       let payloadKey = allKeys[key]
-      channel.bind(allKeys[key], data => {
-        let newDomainData = {[payloadKey]:data.response};
-        setDomainData({ ...domainData, ...newDomainData });
-        unBindKeys(pusher,channel, allKeys[key], domainData);
-      });
-    }
+      bindToAllKeys(payloadKey)
+    } 
     //loop end
 
     // on connection make a network request for intial keys -
     pusher.connection.bind("connected", () => {
       console.log("connected");
       axios
-        .post(
+        .get(
           `https://search-api-dev.cryptopolice.com/api/verify?domain=https://${domain}`
         )
         .then(res => {
