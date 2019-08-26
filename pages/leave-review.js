@@ -1,36 +1,62 @@
 import React, { useState } from "react";
+import Router from "next/router";
 import Ratings from "react-ratings-declarative";
 import BigLoader from "../Components/Widgets/BigLoader/BigLoader";
 import { leaveReviewStyles } from "../Components/Styles/leaveReviewPageStyles";
 import FormField from "../Components/Widgets/FormField/FormField";
 import validate from "../utility/validate";
+import axios from "axios";
 
 const handleChangeRating = (newRating, setRating) => {
   setRating(newRating);
 };
 
-
-const isValidFormSubmission = (formData)=>{
+const isValidFormSubmission = formData => {
   let valid = true;
   let dataToSubmit = {};
-  for(let item in formData){
+  for (let item in formData) {
     valid = valid && formData[item].valid;
-    dataToSubmit={...dataToSubmit, [item]:formData[item].value}
+    dataToSubmit = { ...dataToSubmit, [item]: formData[item].value.trim() };
   }
-  return {valid, dataToSubmit};
-}
+  return { valid, dataToSubmit };
+};
 
-const handleFormSubmit = (formData, rating, setLoading, setSubmitted) => {
+const handleFormSubmit = (
+  formData,
+  rating,
+  setLoading,
+  setSubmitted,
+  queryData
+) => {
   let data = isValidFormSubmission(formData);
-  if (data.valid){
+  if (data.valid) {
     setLoading(true);
-    let finalDataToSubmit={...data.dataToSubmit, rating:rating}
-    //mimic data post
-    console.log(finalDataToSubmit)
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 2000);
+    let finalDataToSubmit = { ...data.dataToSubmit, rating: rating };
+
+    axios
+      .post(
+        "https://search-api-dev.cryptopolice.com/api/save-order-data-application",
+        {
+          report_category_id: 8,
+          token: queryData.token,
+          campaign_processing_id: queryData.campaignProcessingId,
+          domain_name: queryData.domain_name,
+          data: {
+            review_rate: finalDataToSubmit.rating,
+            review_text: finalDataToSubmit.review.trim()
+          }
+        }
+      )
+      .then(res => {
+        console.log(res);
+        setLoading(false);
+        setSubmitted("yes");
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+        setSubmitted("error");
+      });
   }
 };
 
@@ -41,7 +67,7 @@ const handleFormDataChange = (e, id, setFormData, formData) => {
       ...formData[id],
       value: e.target.value,
       valid: validate(e.target.value, formData[id].validationRules),
-      touched:true
+      touched: true
     }
   });
 };
@@ -70,7 +96,10 @@ const renderTextReviewForm = (
   loading,
   setLoading,
   submitted,
-  setSubmitted
+  setSubmitted,
+  campaignProcessingId,
+  domain_name,
+  token
 ) => {
   return rating > 0 ? (
     !loading ? (
@@ -80,7 +109,11 @@ const renderTextReviewForm = (
         <form
           onSubmit={e => {
             e.preventDefault();
-            handleFormSubmit(formData, rating, setLoading, setSubmitted);
+            handleFormSubmit(formData, rating, setLoading, setSubmitted, {
+              campaignProcessingId,
+              domain_name,
+              token
+            });
           }}
         >
           <FormField
@@ -108,7 +141,7 @@ const renderTextReviewForm = (
 const LeaveReview = props => {
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState("no");
   const [formData, setFormData] = useState({
     review: {
       element: "textarea",
@@ -128,7 +161,7 @@ const LeaveReview = props => {
       <style jsx>{leaveReviewStyles}</style>
       <div className="container">
         <div className="row">
-          {!submitted ? (
+          {submitted === "no" ? (
             <div className="col-md-8 offset-md-2">
               <div className="leaveReviewHeaderContainer">
                 {loading ? (
@@ -150,24 +183,59 @@ const LeaveReview = props => {
                   loading,
                   setLoading,
                   submitted,
-                  setSubmitted
+                  setSubmitted,
+                  props.campaignProcessingId,
+                  props.domain_name,
+                  props.token
                 )}
               </div>
             </div>
           ) : (
             <div className="leaveReviewHeaderContainer">
-              <h3>
-                Review submitted successfully{" "}
-                <i
-                  className="fa fa-check"
-                  style={{ color: "#21bc61", fontSize: "2rem" }}
-                />{" "}
-              </h3>
+              {submitted !== "error" ? (
+                <h4>
+                  Review submitted successfully{" "}
+                  <i
+                    className="fa fa-check"
+                    style={{ color: "#21bc61", fontSize: "2rem" }}
+                  />{" "}
+                </h4>
+              ) : (
+                <h4>
+                  Some error occured, please try again later{" "}
+                  <i
+                    className="fa fa-close"
+                    style={{ color: "red", fontSize: "2rem" }}
+                  />{" "}
+                </h4>
+              )}
             </div>
           )}
         </div>
       </div>
     </div>
   );
+};
+
+LeaveReview.getInitialProps = async ctx => {
+  const { query } = ctx;
+  const campaignProcessingId = query.campaignProcessingId || "";
+  const domain_name = query.domain_name || "";
+  const token = query.token || "";
+  if (
+    campaignProcessingId.trim() === "" ||
+    domain_name.trim === "" ||
+    token.trim() === ""
+  ) {
+    if (ctx && ctx.req) {
+      console.log("server side");
+      ctx.res.writeHead(302, { Location: `/` });
+      ctx.res.end();
+    } else {
+      console.log("client side");
+      Router.push(`/`);
+    }
+  }
+  return { campaignProcessingId, domain_name, token };
 };
 export default LeaveReview;
