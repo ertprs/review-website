@@ -13,38 +13,6 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-
-// const data = [
-//   {
-//     name: "Mon",
-//     daily_unique_visitors: 425000
-//   },
-//   {
-//     name: "Tue",
-//     daily_unique_visitors: 400000
-//   },
-//   {
-//     name: "Wed",
-//     daily_unique_visitors: 375000
-//   },
-//   {
-//     name: "Thur",
-//     daily_unique_visitors: 402000
-//   },
-//   {
-//     name: "Fri",
-//     daily_unique_visitors: 225000
-//   },
-//   {
-//     name: "Sat",
-//     daily_unique_visitors: 500000
-//   },
-//   {
-//     name: "Sun",
-//     daily_unique_visitors: 400000
-//   }
-// ];
-
 export default (props) => {
   console.log(props.data)
   return !useAmp() ? (
@@ -57,7 +25,7 @@ export default (props) => {
           margin={{
             top: 5,
             right: 30,
-            left: 20,
+            left: 40,
             bottom: 5
           }}
         >
@@ -70,7 +38,7 @@ export default (props) => {
             type="monotone"
             dataKey="daily_unique_visitors"
             stroke="#82ca9d"
-            name="Daily unique visitors"
+            name={`Daily unique visitors (${new Date().getFullYear()})`}
           />
         </LineChart>
       </ResponsiveContainer>

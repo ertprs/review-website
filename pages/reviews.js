@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp"; // query.amp==="1"
-import axios from 'axios';
+import axios from "axios";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
 import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGrid";
 import TrafficGrid from "../Components/Widgets/TrafficGrid/TrafficGrid";
@@ -34,10 +34,11 @@ const renderReviewHeader = (data, domain) => {
     ((data || {}).domain_data || {}).domain_desc !== undefined
       ? ((data || {}).domain_data || {}).domain_desc
       : "loading";
-    
-  const flagCode = (((data || {}).domain_data || {}).country || {}).code !== undefined
-  ? (((data || {}).domain_data || {}).country || {}).code
-  : "loading";
+
+  const flagCode =
+    (((data || {}).domain_data || {}).country || {}).code !== undefined
+      ? (((data || {}).domain_data || {}).country || {}).code
+      : "loading";
 
   const headerBgColor =
     ratings !== "loading" ? (Number(ratings) >= 3.5 ? "green" : "red") : null;
@@ -113,9 +114,8 @@ const renderReviewHeader = (data, domain) => {
                   </div>
                 </div>
 
-                
-                  {flagCode !== "loading" ? (
-                    <div className="reviewFlag">
+                {flagCode !== "loading" ? (
+                  <div className="reviewFlag">
                     <>
                       <AmpImgWrapper
                         src={`https://www.countryflags.io/${flagCode}/flat/64.png`}
@@ -144,9 +144,9 @@ const renderReviewHeader = (data, domain) => {
                         {flagCode.toUpperCase()}
                       </span>
                     </>
-                    </div>
-                  ) : null}
-                
+                  </div>
+                ) : null}
+
                 <div className="reviewVerifiedBtn">
                   {is_verified !== "loading" ? (
                     <VerifiedBtn verified={is_verified} />
@@ -269,8 +269,8 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
 
 const renderTrafficReports = parentState => {
   const trafficData = getTrafficReportObject({ ...parentState });
-  const uniqueVisitorsTimeLine = getUniqueVisitorsTimeline({...parentState});
-  console.log(trafficData)
+  const uniqueVisitorsTimeLine = getUniqueVisitorsTimeline({ ...parentState });
+  console.log(trafficData);
   return (
     <div className="reviewTrafficContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -287,7 +287,7 @@ const renderTrafficReports = parentState => {
             <>
               <div className="col-md-8">
                 <div style={{ height: "250px", width: "auto" }}>
-                  <TrafficStatsChart data={uniqueVisitorsTimeLine}/>
+                  <TrafficStatsChart data={uniqueVisitorsTimeLine} />
                 </div>
               </div>
               <div className="col-md-4" style={{ marginBottom: "5%" }}>
@@ -529,17 +529,28 @@ const getTrafficReportObject = data => {
   return { payload: {}, success: true };
 };
 
-const getUniqueVisitorsTimeline = (data)=>{
+const getUniqueVisitorsTimeline = data => {
   const timeline = (((data || {}).traffic || {}).payload || {}).timeline || [];
   const isTimeLinePresent = timeline.length > 0;
-  let uniqueVisitorsTimeline = []
+  let uniqueVisitorsTimeline = [];
   if (isTimeLinePresent) {
-    uniqueVisitorsTimeline = timeline.map(item => {
-      return {name:new Date(item['updated_at']).getMonth() + "/" +new Date(item['updated_at']).getFullYear(), daily_unique_visitors:Number(item.visits['daily_unique_visitors'].split(",").join(""))}
-    })
+    uniqueVisitorsTimeline = timeline
+      .slice(0)
+      .reverse()
+      .map(item => {
+        return {
+          name:
+            new Date(item["updated_at"]).getDate() +
+            "/" +
+            (new Date(item["updated_at"]).getMonth() + 1),
+          daily_unique_visitors: Number(
+            item.visits["daily_unique_visitors"].split(",").join("")
+          )
+        };
+      });
   }
   return uniqueVisitorsTimeline;
-}
+};
 
 const getSocialReportObject = data => {
   if (((data || {}).social || {}).payload) {
@@ -582,10 +593,13 @@ const renderMajorData = (parentState, domain, share_url, comments) => {
 
 const getCommentsObject = parentState => {
   const data = { ...parentState };
-  if (!(((data || {}).wot || {}).payload || {}).comments && ((data || {}).wot || {}).needs_pull===undefined) {
+  if (
+    !(((data || {}).wot || {}).payload || {}).comments &&
+    ((data || {}).wot || {}).needs_pull === undefined
+  ) {
     return ["loading"];
   }
-  if(((data || {}).wot || {}).needs_pull){
+  if (((data || {}).wot || {}).needs_pull) {
     return ["not found"];
   }
   return ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
@@ -594,9 +608,9 @@ const getCommentsObject = parentState => {
 };
 
 const Reviews = props => {
-  let initState ={};
-  if(useAmp()){
-    initState = {...props.analysisData.response}
+  let initState = {};
+  if (useAmp()) {
+    initState = { ...props.analysisData.response };
   }
   const [parentState, setParentState] = useState(initState);
   const domain = props.domain;
@@ -607,12 +621,14 @@ const Reviews = props => {
 
   return (
     <div>
-      {!useAmp() ? <PusherDataComponent
-        domain={props.domain}
-        onChildStateChange={newState => {
-          setParentState({ ...parentState, ...newState });
-        }}
-      /> : null}
+      {!useAmp() ? (
+        <PusherDataComponent
+          domain={props.domain}
+          onChildStateChange={newState => {
+            setParentState({ ...parentState, ...newState });
+          }}
+        />
+      ) : null}
       {renderMajorData(parentState, domain, share_url, comments)}
     </div>
   );
@@ -624,7 +640,7 @@ Reviews.getInitialProps = async ({ query }) => {
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
-  if(query.amp==="1") {
+  if (query.amp === "1") {
     const response = await axios.get(
       `https://search-api-dev.cryptopolice.com/api/verify?domain=${searchURL}`
     );
