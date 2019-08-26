@@ -98,7 +98,7 @@ const Home = () => {
     <>
       <Head>
         {!useAmp() ? (
-          <link rel="amphtml" href="http://localhost:3000?amp=1" />
+          <link rel="amphtml" href="https://thetrustsearch-dev.cryptopolice.com?amp=1" />
         ) : // <link rel="canonical" href="http://localhost:3000" />
         null}
       </Head>
