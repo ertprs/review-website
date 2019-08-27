@@ -251,6 +251,36 @@ class BusinessIndexPage extends React.Component {
     );
   };
 
+  //TODO: to be replaced with actual card component
+  renderCard = ()=>{
+    return(
+      <div className="container" >
+        <style jsx>{businessPageStyles}</style>
+        <div className="row" style={{margin:"5% 0 5% 0"}}>
+          <div className="col-md-4">
+          <div className="subscriptionPlanCard">
+            <div className="subscriptionPlanCardHeader">
+              <h4>Standard</h4>
+            </div>
+            <div className="subscriptionPlanCardBody">
+              <ul>
+                <li>Claim ownership and add trust facts about your business</li>
+                <li>Textual, photo and video reviews</li>
+                <li>Collect &amp; respond to Company reviews</li>
+                <li>100 automated invitations per month</li>
+                <li>Show your reviews and TrustScore on your Website with Widget.</li>
+              </ul>
+            </div>
+            <div className="subscriptionPlanCardFooter">
+              <span className="currency"><i className="fa fa-euro"></i></span> <span className="price">99</span> <span className="duration">month</span>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div>
@@ -259,6 +289,7 @@ class BusinessIndexPage extends React.Component {
         {this.renderBusinessInfoSection()}
         {this.renderBusinessSolutionSection()}
         {this.renderWhyToSection()}
+        {this.renderCard()}
       </div>
     );
   }
