@@ -1,5 +1,6 @@
 import React from "react";
 import SearchBox from "../../Components/Widgets/SearchBox/SearchBox";
+import SolutionForCompaniesList from "../../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
 import { layoutStyles } from "../../style";
 import ReviewCard from "../../Components/Widgets/ReviewCard/ReviewCard";
 import { businessPageStyles } from "../../Components/Styles/business/businessIndexPageStyles";
@@ -140,14 +141,14 @@ class BusinessIndexPage extends React.Component {
             </div>
             <div className="businessSolutionSubHeader">
               <p>
-                Increase your{" "}
+                Increase your
                 <span className="capitalize" style={{ fontWeight: "bold" }}>
                   sales
-                </span>{" "}
-                by improving your{" "}
+                </span>
+                by improving your
                 <span className="capitalize" style={{ fontWeight: "bold" }}>
                   trustworthiness
-                </span>{" "}
+                </span>
                 online.
               </p>
             </div>
@@ -158,33 +159,17 @@ class BusinessIndexPage extends React.Component {
             {businessSolutionPoints.map(item => {
               return (
                 <div className="col-md-4">
-                  <div className="businessSolutionSteps">
-                    <div className="businessSolutionStepCountContainer">
-                      <div className="businessSolutionStepCount">{item.stepCount}</div>
-                    </div>
-                    <div className="businessSolutionStepDetails">
-                      <div className="businessSolutionStepHeader">
-                        <h6>{item.stepTitle}</h6>
-                      </div>
-                      <div className="businessSolutionStepSubHeader">
-                        <p>
-                          {item.stepSubTitle}
-                        </p>
-                      </div>
-                      <div className="businessSolutionStepBody">
-                        <p>
-                          {item.stepBody}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <SolutionForCompaniesList item={item} />
                 </div>
               );
             })}
           </div>
-          <div className="row" style={{marginTop:"2%"}}>
+          <div className="row" style={{ marginTop: "2%" }}>
             <div className="col-md-12">
-              <img src="/static/business/index/images/all_together_text.png" style={{maxWidth:"100%", height:"auto"}} />
+              <img
+                src="/static/business/index/images/all_together_text.png"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
             </div>
           </div>
         </div>
