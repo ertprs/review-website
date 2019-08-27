@@ -80,8 +80,6 @@ const renderReviewHeader = (data, domain) => {
             >
               <div>
                 <h3 style={{ fontWeight: "400" }}>
-                  <span style={{ marginLeft: "5px" }}>{domain}</span>
-                </h3>
                 <AmpImgWrapper
                   src={`http://www.google.com/s2/favicons?domain=https://${domain}`}
                   width="16"
@@ -94,6 +92,8 @@ const renderReviewHeader = (data, domain) => {
                     display: "inline-block"
                   }}
                 />
+                  <span style={{ marginLeft: "5px" }}>{domain}</span>
+                </h3>
               </div>
               <div className="domainDescContainer">
                 {title !== "loading" ? (
