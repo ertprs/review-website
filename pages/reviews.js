@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp"; // query.amp==="1"
 import axios from "axios";
+import Layout from "../hoc/layout/layout";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
 import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGrid";
 import TrafficGrid from "../Components/Widgets/TrafficGrid/TrafficGrid";
@@ -30,9 +31,14 @@ const renderReviewHeader = (data, domain) => {
       ? ((data || {}).domain_data || {}).is_verified
       : "loading";
 
-  const domain_desc =
-    ((data || {}).domain_data || {}).domain_desc !== undefined
-      ? ((data || {}).domain_data || {}).domain_desc
+  const screenshot =
+    ((data || {}).domain_data || {}).screenshot !== undefined
+      ? ((data || {}).domain_data || {}).screenshot
+      : "loading";
+
+  const title =
+    ((data || {}).domain_data || {}).title !== undefined
+      ? ((data || {}).domain_data || {}).title
       : "loading";
 
   const flagCode =
@@ -53,17 +59,19 @@ const renderReviewHeader = (data, domain) => {
       <div className="container">
         <div className="row">
           <div className="col-md-3">
-            <div className="reviewImgContainer">
-              <AmpImgWrapper
-                src={`http://api.screenshotlayer.com/api/capture?access_key=dc13fa64cde0b342fdbe7ddf8b56d1b8&url=https://${domain}&viewport=1440x900&width=250`}
-                alt="Websites screenshot"
-                height="156"
-                width="250"
-                layout="responsive"
-                imgContainerStyles={{ width: "250px", height: "156px" }}
-                style={{ maxWidth: "100%", maxheight: "100%" }}
-              />
-            </div>
+            {is_verified !== "loading" ? (
+             <div className="reviewImgContainer">
+             <AmpImgWrapper
+               src={`${screenshot}`}
+               alt="Websites screenshot"
+               height="156"
+               width="250"
+               layout="responsive"
+               imgContainerStyles={{ width: "250px", height: "156px" }}
+               style={{ maxWidth: "100%", maxheight: "100%" }}
+             />
+           </div>
+            ) : null}
           </div>
           <div className="col-md-6">
             <div
@@ -72,24 +80,24 @@ const renderReviewHeader = (data, domain) => {
             >
               <div>
                 <h3 style={{ fontWeight: "400" }}>
-                  <AmpImgWrapper
-                    src={`http://www.google.com/s2/favicons?domain=https://${domain}`}
-                    width="16"
-                    height="16"
-                    alt="favicon"
-                    layout="responsive"
-                    imgContainerStyles={{
-                      height: "16px",
-                      width: "16px",
-                      display: "inline-block"
-                    }}
-                  />
+                <AmpImgWrapper
+                  src={`http://www.google.com/s2/favicons?domain=https://${domain}`}
+                  width="16"
+                  height="16"
+                  alt="favicon"
+                  layout="responsive"
+                  imgContainerStyles={{
+                    height: "16px",
+                    width: "16px",
+                    display: "inline-block"
+                  }}
+                />
                   <span style={{ marginLeft: "5px" }}>{domain}</span>
                 </h3>
               </div>
               <div className="domainDescContainer">
-                {domain_desc !== "loading" ? (
-                  <span className="domainDesc">domain_desc</span>
+                {title !== "loading" ? (
+                  <span className="domainDesc">{title}</span>
                 ) : null}
               </div>
               <div className="ratingsColumn">
@@ -384,7 +392,12 @@ const renderReviewCard = commentsToRender => {
   return commentsToRender.map(item => {
     return (
       <div className="col-md-6" style={{ marginBottom: "2%" }} key={uuid()}>
-        <ReviewCard {...item} ampImgHeight="75" ampImgWidth="75" />
+        <ReviewCard
+          {...item}
+          ampImgHeight="75"
+          ampImgWidth="75"
+          variant="reviews"
+        />
       </div>
     );
   });
@@ -620,7 +633,7 @@ const Reviews = props => {
     "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
 
   return (
-    <div>
+    <Layout>
       {!useAmp() ? (
         <PusherDataComponent
           domain={props.domain}
@@ -630,7 +643,7 @@ const Reviews = props => {
         />
       ) : null}
       {renderMajorData(parentState, domain, share_url, comments)}
-    </div>
+    </Layout>
   );
 };
 

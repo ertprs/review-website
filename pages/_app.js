@@ -1,8 +1,7 @@
 import React from "react";
 import App, { Container } from "next/app";
 import Head from 'next/head';
-import Header from "../Components/Header/Header";
-import Footer from "../Components/Footer/Footer";
+
 import {layoutStyles} from '../style';
 class MyApp extends App {
   static async getInitialProps({ req, Component, ctx }) {
@@ -30,9 +29,7 @@ class MyApp extends App {
           />
         </Head>
         <Container>
-        <Header />
         <Component {...pageProps} />
-        <Footer />
         </Container>
       </>
     );

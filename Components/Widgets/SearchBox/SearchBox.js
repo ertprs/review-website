@@ -1,39 +1,77 @@
 import React from "react";
-import searchBoxStyles from './searchBoxStyles';
-import AmpFormWrapper from '../../AmpWrappers/AmpFormWrapper';
+import searchBoxStyles from "./searchBoxStyles";
+import AmpFormWrapper from "../../AmpWrappers/AmpFormWrapper";
 
-
-const SearchBox = ({ value, onchange, handleSearchSubmit, stateMethod }) => {
-  return (
-    <div>
-      <style jsx>
-        {searchBoxStyles}
-      </style>
-      {/* TODO: Make AmpFormWrapper props dynamic from the parent component */}
-      {/* TODO: AMP requires https -> so change the same below */}
-      <AmpFormWrapper onSubmit={(e)=>{e.preventDefault(); handleSearchSubmit(value)}} formMethod="get" isXHR={false} submitURL="https://thetrustsearch-dev.cryptopolice.com/reviews" formTarget="_top">
-        <div className="searchBoxContainer">
-          <div className="searchBoxInput">
-            <input
-              type="text"
-              placeholder="Enter any website domain for verification"
-              onChange={e => onchange(e, stateMethod)}
-              value={value}
-              name="domain"
-            />
-          </div>
-          <input type="hidden" name="amp" value="1"/>
-          <div className="searchBtnContainer">
-            <button
-              className="searchBtn"
-            >
-              Search
-            </button>
+const renderSearchBox = ({
+  value,
+  onchange,
+  handleSearchSubmit,
+  stateMethod,
+  variant,
+  text,
+  placeholder
+}) => {
+  switch (variant) {
+    case "business":
+      return (
+        <div>
+          <style jsx>{searchBoxStyles}</style>
+          <div className="businessSearchBoxContainer">
+            <div className="businessSearchBoxInput">
+              <input
+                type="text"
+                placeholder={placeholder ? placeholder : "Enter any website domain for verification"}
+                onChange={e => onchange(e, stateMethod)}
+                value={value}
+                name="domain"
+              />
+            </div>
+            <input type="hidden" name="amp" value="1" />
+            <div className="businessSearchBtnContainer">
+              <button className="businessSearchBtn">{text ? text : "Search"}</button>
+            </div>
           </div>
         </div>
-      </AmpFormWrapper>
-    </div>
-  );
+      );
+    case "thetrustsearchIndex":
+      return (
+        <div>
+          <style jsx>{searchBoxStyles}</style>
+          <AmpFormWrapper
+            onSubmit={e => {
+              e.preventDefault();
+              handleSearchSubmit(value);
+            }}
+            formMethod="get"
+            isXHR={false}
+            submitURL="https://thetrustsearch-dev.cryptopolice.com/reviews"
+            formTarget="_top"
+          >
+            <div className="searchBoxContainer">
+              <div className="searchBoxInput">
+                <input
+                  type="text"
+                  placeholder={placeholder ? placeholder : "Enter any website domain for verification"}
+                  onChange={e => onchange(e, stateMethod)}
+                  value={value}
+                  name="domain"
+                />
+              </div>
+              <input type="hidden" name="amp" value="1" />
+              <div className="searchBtnContainer">
+                <button className="searchBtn">{text ? text : "Search"}</button>
+              </div>
+            </div>
+          </AmpFormWrapper>
+        </div>
+      );
+    default:
+      return null;
+  }
+};
+
+const SearchBox = props => {
+  return <>{renderSearchBox(props)}</>;
 };
 
 export default SearchBox;
