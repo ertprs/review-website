@@ -1,7 +1,7 @@
 import css from "styled-jsx/css";
 
 export default css`
-  .searchBoxContainer {
+  .searchBoxContainer{
     display: flex;
     background: #fff;
     width: 85%;
@@ -58,6 +58,48 @@ export default css`
 
   .searchBtn:hover{
     background:#30ab4a;
+  }
+
+  /* Business searchbox */
+
+  .businessSearchBoxContainer {
+    display:flex;
+    border:1px solid #e1e1e1;
+    width:100%;
+    border-radius:50px;
+  }
+
+  .businessSearchBoxContainer >div:first-child{
+    flex-basis:70%;
+  }
+
+  .businessSearchBoxInput{
+    align-self:center;
+  }
+  .businessSearchBoxInput input{
+    width:100%;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding:5%;
+    border-radius:50px 0px 0px 50px;
+  }
+
+  .businessSearchBtnContainer{
+    margin:0;
+    padding:0;
+    display:flex;
+    align-items:flex-start;
+    flex-basis:30%;
+    text-align:center;
+  }
+  .businessSearchBtn{
+    flex:1;
+    align-self:stretch;
+    border-radius:50px;
+    border:0px solid #000;
+    outline:none;
+    border:none;
   }
 
   @media only screen and (max-width: 539px) {

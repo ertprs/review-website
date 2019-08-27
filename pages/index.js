@@ -7,6 +7,7 @@ import Head from "next/head";
 import Router from "next/router";
 import uuid from "uuid/v1";
 import BigLoader from "../Components/Widgets/BigLoader/BigLoader";
+import Layout from '../hoc/layout/layout';
 
 export const config = { amp: "hybrid" };
 
@@ -54,6 +55,7 @@ const renderHeroContent = (
             onchange={handleSearchBoxChange}
             value={searchBoxVal}
             stateMethod={setSearchBoxVal}
+            variant="thetrustsearchIndex"
             handleSearchSubmit={searchBoxVal => {
               handleSearchSubmit(setLoading, searchBoxVal);
             }}
@@ -95,7 +97,7 @@ const Home = () => {
   const [searchBoxVal, setSearchBoxVal] = useState("");
   const [loading, setLoading] = useState(false);
   return (
-    <>
+    <Layout>
       <Head>
         {!useAmp() ? (
           <link rel="amphtml" href="https://thetrustsearch-dev.cryptopolice.com?amp=1" />
@@ -106,7 +108,7 @@ const Home = () => {
       <div className="homeContainer">
         {renderHeroContent(searchBoxVal, setSearchBoxVal, loading, setLoading)}
       </div>
-    </>
+    </Layout>
   );
 };
 

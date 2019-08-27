@@ -1,6 +1,7 @@
 import css from "styled-jsx/css";
 
 export const reviewCardStyles = css`
+  /*--- review variant styling ------*/
   .reviewCardContainer {
     display: flex;
     color:#666;
@@ -13,6 +14,7 @@ export const reviewCardStyles = css`
     height: 75px;
     width: 75px;
   }
+
   .reviewerName{
     font-weight:500;
     margin-bottom:2%;
@@ -43,6 +45,32 @@ export const reviewCardStyles = css`
     word-break: break-word;
   }
 
+  /*---- Business varinat styling -------*/
+  .businessProfilePic{
+    align-self: flex-start;
+    margin-right: 5%;
+  }
+
+  .businessPicContainer{
+    height:105px;
+    width:105px;
+  }
+
+  .businessDetails{
+    flex-basis:55%;
+  }
+
+  .businessTitle{
+    font-weight:bold;
+    margin-bottom:1%;
+  }
+
+  .businessText{
+    font-size:0.9rem;
+    text-align:left;
+  }
+  /*--------- Business varinat styling end -----*/
+
   @media only screen and (max-width: 991px) {
     
     .reviewRatings {
@@ -66,4 +94,5 @@ export const reviewCardStyles = css`
       margin-bottom:2%;
     }
   }
+
 `;

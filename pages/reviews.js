@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp"; // query.amp==="1"
 import axios from "axios";
+import Layout from "../hoc/layout/layout";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
 import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGrid";
 import TrafficGrid from "../Components/Widgets/TrafficGrid/TrafficGrid";
@@ -384,7 +385,7 @@ const renderReviewCard = commentsToRender => {
   return commentsToRender.map(item => {
     return (
       <div className="col-md-6" style={{ marginBottom: "2%" }} key={uuid()}>
-        <ReviewCard {...item} ampImgHeight="75" ampImgWidth="75" />
+        <ReviewCard {...item} ampImgHeight="75" ampImgWidth="75" variant="reviews" />
       </div>
     );
   });
@@ -620,7 +621,7 @@ const Reviews = props => {
     "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
 
   return (
-    <div>
+    <Layout>
       {!useAmp() ? (
         <PusherDataComponent
           domain={props.domain}
@@ -630,7 +631,7 @@ const Reviews = props => {
         />
       ) : null}
       {renderMajorData(parentState, domain, share_url, comments)}
-    </div>
+    </Layout>
   );
 };
 
