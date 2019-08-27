@@ -141,15 +141,15 @@ class BusinessIndexPage extends React.Component {
             </div>
             <div className="businessSolutionSubHeader">
               <p>
-                Increase your
+                Increase your &nbsp;
                 <span className="capitalize" style={{ fontWeight: "bold" }}>
-                  sales
+                  sales &nbsp;
                 </span>
-                by improving your
+                by improving your &nbsp;
                 <span className="capitalize" style={{ fontWeight: "bold" }}>
                   trustworthiness
-                </span>
-                online.
+                </span>{" "}
+                &nbsp; online.
               </p>
             </div>
           </div>
@@ -177,6 +177,80 @@ class BusinessIndexPage extends React.Component {
     );
   };
 
+  renderWhyToSection = () => {
+    return (
+      <div
+        className="container"
+        style={{ marginTop: "10%", marginBottom: "5%" }}
+      >
+        <style jsx>{businessPageStyles}</style>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="whyToHeader">
+              <h2>
+                Why should you care to gather <br /> reviews from your
+                customers?
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-3">
+            <div className="whyToNumberBox">
+              <div className="whyToNumber">
+                <span className="number" style={{color:"#00D350"}}>63</span>
+                <span className="symbol">%</span>
+              </div>
+              <div className="whyToText">
+                of internet users would rather buy from a website that displays
+                customer reviews and internet user will read an average of 6
+                reviews before feeling confident to make their purchase.
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-3">
+            <div className="whyToNumberBox">
+              <div className="whyToNumber">
+                <span className="number">95</span>
+                <span className="symbol">%</span>
+              </div>
+              <div className="whyToText">
+                of dissatisfied cutomers will come back if their issue is
+                solved.
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-3">
+            <div className="whyToNumberBox">
+              <div className="whyToNumber">
+                <span className="number" style={{color:"#00A7F6"}}>91</span>
+                <span className="symbol">%</span>
+              </div>
+              <div className="whyToText">
+                of buyers consider reviews as the most important factor in their
+                purchase decision.
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-3">
+            <div className="whyToNumberBox">
+              <div className="whyToNumber">
+                <span className="symbol" style={{color:"#888"}}>X</span>
+                <span className="number" style={{color:"#888"}}>12</span>
+              </div>
+              <div className="whyToText">
+                Consumers are 12 x more likely to trust a customers review over a companys product page without one
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div>
@@ -184,6 +258,7 @@ class BusinessIndexPage extends React.Component {
         {this.renderBusinessHeroSection()}
         {this.renderBusinessInfoSection()}
         {this.renderBusinessSolutionSection()}
+        {this.renderWhyToSection()}
       </div>
     );
   }

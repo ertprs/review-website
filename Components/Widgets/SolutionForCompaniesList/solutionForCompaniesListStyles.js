@@ -11,7 +11,7 @@ export const solutionForCompaniesStyles = css`
     }
 
     .businessSolutionStepCount{
-        box-shadow:0px 0px 18px #c5c5c5;
+        box-shadow:0px 0px 18px #d9d9d9;
         border:1px solid #00D350;
         height:40px;
         width:40px;

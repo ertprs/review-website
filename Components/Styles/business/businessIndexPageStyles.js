@@ -65,12 +65,12 @@ export const businessPageStyles = css`
 
     /*---- Business Info section ----*/
 
-    .businessInfoHeader{
+    .businessInfoHeader, .whyToHeader{
         text-align:right;
         margin:2% 0 8% 0;
         padding-right:5%;
     }
-    .businessInfoHeader h2, .businessSolutionHeader h2{
+    .businessInfoHeader h2, .businessSolutionHeader h2, .whyToHeader h2{
         font-weight:360 !important;
         font-size:2.5rem;
     }
@@ -81,6 +81,7 @@ export const businessPageStyles = css`
     /*------- Business Solution section ----*/
     .businessSolutionHeader{
         text-align:left;
+        margin-bottom:3.5%;
     }
     .businessSolutionHeader h2{
         font-size:2.2rem;
@@ -92,5 +93,36 @@ export const businessPageStyles = css`
         font-size:1.05rem;
         font-weight:475;
         margin-bottom:5%;
+    }
+
+    /*----- why to section -----*/
+
+    .whyToHeader{
+        margin: 3% 0 8% 0;
+    }
+
+    .whyToHeader h2{
+        font-size:2.2rem;
+
+    }
+
+    .whyToNumber{
+        text-align:center;
+    }
+
+    .whyToNumber .number{
+        font-weight:bolder;
+        font-size:4.5rem;
+        vertical-align:baseline;
+    }
+
+    .whyToNumber .symbol{
+        margin-left:5%;
+        font-size:2.6rem;
+    }
+
+    .whyToText{
+        font-size:0.8rem;
+        text-align:center;
     }
 `;
