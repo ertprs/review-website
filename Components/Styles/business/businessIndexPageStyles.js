@@ -126,45 +126,48 @@ export const businessPageStyles = css`
     font-size: 0.8rem;
     text-align: center;
   }
-  .subscriptionPlanCard {
-    border: 1px solid #eee;
-    background:#fff;
-  }
-  .subscriptionPlanCardHeader {
-    text-align: center;
-    padding: 5%;
+
+  /*------ Subscription plan cards   -------*/
+  .subscriptionPlanCardsContainer{
+    margin:25% 0 10% 0;
   }
 
-  .subscriptionPlanCardHeader h4{
-    font-weight:400;
+  /*-----  Arrange a meeting Btn ----*/
+  .arrangeMeetingBtnContainer{
+    text-align:center;
+    margin-bottom:5%;
+  }
+  .arrangeMeetingBtn{
+    padding:1.5% 6% 1.5% 6%;
+    border-radius:50px;
+    border-top:1px solid #00a7f6;
+    border-bottom:1px solid #00d350;
+    border-right:1px solid #00a7f6;
+    border-left:1px solid #00a7f6;
+    outline:none;
+    color:#fff;
+    text-transform:uppercase;
+    font-weight:bold;
+    background: linear-gradient(to bottom right, rgba(0,167,246,0.9) 20%, rgba(0,211,80,0.95));
+    transition:all 0.4s;
+    -webkit-transition: all 0.4s;
+    cursor:pointer;
   }
 
-  .subscriptionPlanCardBody ul {
-    list-style-type: none;
-    list-style-image: url("/static/business/index/images/bulletpoint.png");
-
-  }
-  .subscriptionPlanCardBody ul li {
-    padding-left:1rem;
-    margin-bottom:2.7rem;
-  }
-  .subscriptionPlanCardFooter{
-      text-align:center;
+  .arrangeMeetingBtn:link, .arrangeMeetingBtn:visited, .arrangeMeetingBtn:hover, .arrangeMeetingBtn:active{
+    outline:none;
   }
 
-  .subscriptionPlanCardFooter .currency i{
-      vertical-align:top;
-      font-size:20px !important;
-      margin-right:2%;
+  /*------- Footer styles ---------*/
+  .footerLogoContainer{
+    text-align:center;
+    height:90px;
+    width:90px;
+    margin:3% auto 5% auto;
   }
 
-  .subscriptionPlanCardFooter .price{
-      font-size:3.5rem;
-  }
-  .subscriptionPlanCardFooter .duration{
-      font-size:1.7rem;
-      font-weight:lighter;
-      margin-left:1%;
-
+  .footerLogoContainer img{
+    max-width:100%;
+    height:auto;
   }
 `;

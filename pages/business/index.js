@@ -1,12 +1,32 @@
 import React from "react";
 import SearchBox from "../../Components/Widgets/SearchBox/SearchBox";
+import SubscriptionPlanCard from "../../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
 import SolutionForCompaniesList from "../../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
+import EmailSubscription from '../../Components/Widgets/EmailSubscription/EmailSubscription';
+import ScheduleMeeting from '../../Components/Widgets/ScheduleMeeting/ScheduleMeeting';
 import { layoutStyles } from "../../style";
 import ReviewCard from "../../Components/Widgets/ReviewCard/ReviewCard";
 import { businessPageStyles } from "../../Components/Styles/business/businessIndexPageStyles";
 import uuid from "uuid/v1";
+import CustomModal from '../../Components/Widgets/Modal/Modal';
 
 class BusinessIndexPage extends React.Component {
+
+  state={
+    showModal : false
+  }
+
+  handleModalVisibilityToggle = ()=>{
+    this.setState((currentState)=>{
+      return {showModal: !currentState.showModal}
+    })
+  }
+
+  handleSearchBoxSubmit = (e)=>{
+    e.preventDefault();
+    this.handleModalVisibilityToggle()
+  }
+
   renderBusinessHeroSection = () => {
     return (
       <div className="businessHeroContainer">
@@ -31,6 +51,7 @@ class BusinessIndexPage extends React.Component {
               variant="business"
               text="CHECK"
               placeholder="www.domain.com"
+              handleSearchSubmit={this.handleSearchBoxSubmit}
             />
           </div>
         </div>
@@ -198,7 +219,9 @@ class BusinessIndexPage extends React.Component {
           <div className="col-md-3">
             <div className="whyToNumberBox">
               <div className="whyToNumber">
-                <span className="number" style={{color:"#00D350"}}>63</span>
+                <span className="number" style={{ color: "#00D350" }}>
+                  63
+                </span>
                 <span className="symbol">%</span>
               </div>
               <div className="whyToText">
@@ -225,7 +248,9 @@ class BusinessIndexPage extends React.Component {
           <div className="col-md-3">
             <div className="whyToNumberBox">
               <div className="whyToNumber">
-                <span className="number" style={{color:"#00A7F6"}}>91</span>
+                <span className="number" style={{ color: "#00A7F6" }}>
+                  91
+                </span>
                 <span className="symbol">%</span>
               </div>
               <div className="whyToText">
@@ -238,11 +263,16 @@ class BusinessIndexPage extends React.Component {
           <div className="col-md-3">
             <div className="whyToNumberBox">
               <div className="whyToNumber">
-                <span className="symbol" style={{color:"#888"}}>X</span>
-                <span className="number" style={{color:"#888"}}>12</span>
+                <span className="symbol" style={{ color: "#888" }}>
+                  X
+                </span>
+                <span className="number" style={{ color: "#888" }}>
+                  12
+                </span>
               </div>
               <div className="whyToText">
-                Consumers are 12 x more likely to trust a customers review over a companys product page without one
+                Consumers are 12 x more likely to trust a customers review over
+                a companys product page without one
               </div>
             </div>
           </div>
@@ -251,33 +281,104 @@ class BusinessIndexPage extends React.Component {
     );
   };
 
-  //TODO: to be replaced with actual card component
-  renderCard = ()=>{
-    return(
-      <div className="container" >
+  renderSubscriptionPlanCards = () => {
+    const cardsData = [
+      {
+        cardHeader: "Standard",
+        cardBody: [
+          "Claim ownership and add trust facts about your business",
+          "Textual, photo and video reviews",
+          "Collect &amp; respond to Company reviews",
+          "100 automated invitations per month",
+          "Show your reviews and TrustScore on your Website with Widget."
+        ],
+        cardFooter: { price: "99", duration: "month" }
+      },
+
+      {
+        cardHeader: "Premium",
+        cardBody: [
+          "500 automated invitations per month",
+          "Product reviews",
+          "10+ widget designs",
+          "Custom invitation email template",
+          "Google, Facebook, Trustpilot reviews invitations",
+          "Manage all your business reviews in one place"
+        ],
+        cardFooter: { price: "199", duration: "month" }
+      },
+
+      {
+        cardHeader: "Professional",
+        cardBody: [
+          "Unlimited invitations",
+          "Additional invitation channels(SMS, WhatsApp, Messenger, Pop-ups)",
+          "Custom review triggers/campaigns",
+          "Custom testimonials",
+          "Custom widget design",
+          "API (CRM integration)"
+        ],
+        cardFooter: { price: "349", duration: "month" }
+      }
+    ];
+    return (
+      <div className="subscriptionPlanCardsContainer">
         <style jsx>{businessPageStyles}</style>
-        <div className="row" style={{margin:"5% 0 5% 0"}}>
-          <div className="col-md-4">
-          <div className="subscriptionPlanCard">
-            <div className="subscriptionPlanCardHeader">
-              <h4>Standard</h4>
-            </div>
-            <div className="subscriptionPlanCardBody">
-              <ul>
-                <li>Claim ownership and add trust facts about your business</li>
-                <li>Textual, photo and video reviews</li>
-                <li>Collect &amp; respond to Company reviews</li>
-                <li>100 automated invitations per month</li>
-                <li>Show your reviews and TrustScore on your Website with Widget.</li>
-              </ul>
-            </div>
-            <div className="subscriptionPlanCardFooter">
-              <span className="currency"><i className="fa fa-euro"></i></span> <span className="price">99</span> <span className="duration">month</span>
-            </div>
-          </div>
+        <div className="container">
+          <div className="row" style={{ margin: "5% 0 5% 0" }}>
+            {cardsData.map(item => {
+              return (
+                <div className="col-md-4">
+                  <SubscriptionPlanCard {...item} />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
+    );
+  };
+
+  renderArrangeMeetingBtn = () => {
+    return (
+      <div className="container">
+        <style jsx>
+          {businessPageStyles}
+        </style>
+        <div className="col-md-12">
+          <div className="arrangeMeetingBtnContainer">
+            <button className="arrangeMeetingBtn">Arrange a meeting</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  renderFooter = ()=>{
+    return(
+      <>
+      <style jsx>
+        {businessPageStyles}
+      </style>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            <div className="footerLogoContainer">
+              <img src="/static/images/logo_footer.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+      </>
+    )
+  }
+
+  renderModal = ()=>{
+    return(
+      <CustomModal showModal={this.state.showModal} handleModalClose={this.handleModalVisibilityToggle}>
+        <EmailSubscription />
+        {/* <ScheduleMeeting/> */}
+      </CustomModal>
     )
   }
 
@@ -285,11 +386,14 @@ class BusinessIndexPage extends React.Component {
     return (
       <div>
         <style jsx>{layoutStyles}</style>
+        {this.renderModal()}
         {this.renderBusinessHeroSection()}
         {this.renderBusinessInfoSection()}
         {this.renderBusinessSolutionSection()}
         {this.renderWhyToSection()}
-        {this.renderCard()}
+        {this.renderSubscriptionPlanCards()}
+        {this.renderArrangeMeetingBtn()}
+        {this.renderFooter()}
       </div>
     );
   }

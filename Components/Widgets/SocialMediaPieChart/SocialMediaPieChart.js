@@ -12,33 +12,6 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-// const data = [
-//   {
-//     name: "Facebook",
-//     followers: 7277704
-//   },
-//   {
-//     name: "Twitter",
-//     followers: 884173
-//   },
-//   {
-//     name: "Pinterest",
-//     followers: 0
-//   },
-//   {
-//     name: "YouTube",
-//     followers: 0
-//   },
-//   {
-//     name: "Medium",
-//     followers: 0
-//   },
-//   {
-//     name: "LinkedIn",
-//     followers: 0
-//   }
-// ];
-
 const icons = {
   1: { name: "facebook", color: "#3C5A99" },
   2: { name: "youtube", color: "#ff0000" },
@@ -62,21 +35,22 @@ const icons = {
 const getData = (socialData)=>{
   let data = [];
   for(let item in socialData){
+    if(socialData[item].verified){
     data = [...data, {name:icons[item].name, followers:socialData[item].followers}]
+    }
   }
   return data;
 }
 
-export default ({socialData}) => {
-  console.log(socialData)
-    if(Object.keys(socialData).length > 0){
-      return(
-        !useAmp() ? (
-          <ResponsiveContainer height="100%" width="100%">
+
+const renderChart = (data)=>{
+  if(data.length > 0){
+    return(
+      <ResponsiveContainer height="100%" width="100%">
             <BarChart
               width={500}
               height={300}
-              data={getData(socialData)}
+              data={data}
               margin={{
                 top: 5,
                 right: 30,
@@ -92,6 +66,18 @@ export default ({socialData}) => {
               <Bar dataKey="followers" barSize={20} fill="#28b661" name="Followers" />
             </BarChart>
           </ResponsiveContainer>
+    )
+  }
+  else
+  return null;
+}
+
+export default ({socialData}) => {
+    if(Object.keys(socialData).length > 0){
+      const data = getData(socialData)
+      return(
+        !useAmp() ? (
+          renderChart(data)
         ) : (
           <>
             <Head>

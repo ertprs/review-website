@@ -34,7 +34,12 @@ const renderReviewHeader = (data, domain) => {
   const screenshot =
     ((data || {}).domain_data || {}).screenshot !== undefined
       ? ((data || {}).domain_data || {}).screenshot
-      : "loading";
+      : `http://api.screenshotlayer.com/api/capture?access_key=dc13fa64cde0b342fdbe7ddf8b56d1b8&url=${domain}&viewport=1440x900&width=250`;
+
+  const favicon =
+    ((data || {}).domain_data || {}).favicon !== undefined
+      ? ((data || {}).domain_data || {}).favicon
+      : `http://www.google.com/s2/favicons?domain=https://${domain}`;
 
   const title =
     ((data || {}).domain_data || {}).title !== undefined
@@ -60,17 +65,17 @@ const renderReviewHeader = (data, domain) => {
         <div className="row">
           <div className="col-md-3">
             {is_verified !== "loading" ? (
-             <div className="reviewImgContainer">
-             <AmpImgWrapper
-               src={`${screenshot}`}
-               alt="Websites screenshot"
-               height="156"
-               width="250"
-               layout="responsive"
-               imgContainerStyles={{ width: "250px", height: "156px" }}
-               style={{ maxWidth: "100%", maxheight: "100%" }}
-             />
-           </div>
+              <div className="reviewImgContainer">
+                <AmpImgWrapper
+                  src={`${screenshot}`}
+                  alt="Websites screenshot"
+                  height="156"
+                  width="250"
+                  layout="responsive"
+                  imgContainerStyles={{ width: "250px", height: "156px" }}
+                  style={{ maxWidth: "100%", maxheight: "100%" }}
+                />
+              </div>
             ) : null}
           </div>
           <div className="col-md-6">
@@ -80,18 +85,18 @@ const renderReviewHeader = (data, domain) => {
             >
               <div>
                 <h3 style={{ fontWeight: "400" }}>
-                <AmpImgWrapper
-                  src={`http://www.google.com/s2/favicons?domain=https://${domain}`}
-                  width="16"
-                  height="16"
-                  alt="favicon"
-                  layout="responsive"
-                  imgContainerStyles={{
-                    height: "16px",
-                    width: "16px",
-                    display: "inline-block"
-                  }}
-                />
+                  <AmpImgWrapper
+                    src={favicon}
+                    width="16"
+                    height="16"
+                    alt="favicon"
+                    layout="responsive"
+                    imgContainerStyles={{
+                      height: "16px",
+                      width: "16px",
+                      display: "inline-block"
+                    }}
+                  />
                   <span style={{ marginLeft: "5px" }}>{domain}</span>
                 </h3>
               </div>
@@ -278,7 +283,6 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
 const renderTrafficReports = parentState => {
   const trafficData = getTrafficReportObject({ ...parentState });
   const uniqueVisitorsTimeLine = getUniqueVisitorsTimeline({ ...parentState });
-  console.log(trafficData);
   return (
     <div className="reviewTrafficContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -323,6 +327,7 @@ const renderTrafficReports = parentState => {
 
 const renderSocialReports = parentState => {
   const socialData = getSocialReportObject({ ...parentState });
+  console.log(socialData)
   return (
     <div className="reviewSocialContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -444,6 +449,14 @@ const renderTextualReviews = comments => {
 };
 
 const getAnalysisReportObject = data => {
+  let addon = {};
+  const additional_info = ((data || {}).domain_data ||{}).additional_info;
+  if(additional_info !==undefined){
+    for(let item in additional_info){
+      addon = {...addon, [item]: additional_info[item]}
+    }
+  }
+
   return {
     registration_Date: (
       (((data || {}).whois || {}).payload || {}).registration || {}
@@ -495,7 +508,8 @@ const getAnalysisReportObject = data => {
     redirect_Count: ((((data || {}).deface || {}).payload || {}).redirect || {})
       .color
       ? ((((data || {}).deface || {}).payload || {}).redirect || {}).value
-      : "..."
+      : "...",
+    ...addon
   };
 };
 
@@ -567,15 +581,21 @@ const getUniqueVisitorsTimeline = data => {
 
 const getSocialReportObject = data => {
   if (((data || {}).social || {}).payload) {
-    const payload = {
-      ...(((data || {}).social || {}).payload || {}
-        ? ((data || {}).social || {}).payload
-        : "...")
-    };
+    let payload = {};
+    let initPayload = {...data.social.payload};
+    for(let item in initPayload){
+      if(initPayload[item].verified){
+        payload = {...payload, [item]:initPayload[item]}
+      }
+    }
+
     const success = ((data || {}).social || {}).success
       ? ((data || {}).social || {}).success
       : false;
-    return { payload: payload, success: success };
+    
+    return Object.keys(payload).length > 0 ?  { payload: payload, success: success } : 
+    { payload: payload, success: false }
+    
   } else if (((data || {}).social || {}).success === false) {
     return { payload: {}, success: false };
   }

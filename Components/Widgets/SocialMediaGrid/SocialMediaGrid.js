@@ -22,10 +22,10 @@ const icons = {
 };
 
 const renderSocialMediaItems = socialData => {
-  //check for verified true
+  console.log(socialData)
   let output = [];
   for (let item in socialData) {
-    // if(socialData[item].verified){
+    if(socialData[item].verified){
       output = [
         ...output,
         <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }} key={uuid()}>
@@ -37,7 +37,7 @@ const renderSocialMediaItems = socialData => {
           />
         </div>
       ];
-    // }
+    }
   }
 
   return output.length > 0 ? output: null;

@@ -16,21 +16,29 @@ const renderSearchBox = ({
       return (
         <div>
           <style jsx>{searchBoxStyles}</style>
-          <div className="businessSearchBoxContainer">
-            <div className="businessSearchBoxInput">
-              <input
-                type="text"
-                placeholder={placeholder ? placeholder : "Enter any website domain for verification"}
-                onChange={e => onchange(e, stateMethod)}
-                value={value}
-                name="domain"
-              />
+          <form onSubmit={(e)=> handleSearchSubmit(e)}>
+            <div className="businessSearchBoxContainer">
+              <div className="businessSearchBoxInput">
+                <input
+                  type="text"
+                  placeholder={
+                    placeholder
+                      ? placeholder
+                      : "Enter any website domain for verification"
+                  }
+                  onChange={e => onchange(e, stateMethod)}
+                  value={value}
+                  name="domain"
+                />
+              </div>
+              <input type="hidden" name="amp" value="1" />
+              <div className="businessSearchBtnContainer">
+                <button className="businessSearchBtn">
+                  {text ? text : "Search"}
+                </button>
+              </div>
             </div>
-            <input type="hidden" name="amp" value="1" />
-            <div className="businessSearchBtnContainer">
-              <button className="businessSearchBtn">{text ? text : "Search"}</button>
-            </div>
-          </div>
+          </form>
         </div>
       );
     case "thetrustsearchIndex":
@@ -51,7 +59,11 @@ const renderSearchBox = ({
               <div className="searchBoxInput">
                 <input
                   type="text"
-                  placeholder={placeholder ? placeholder : "Enter any website domain for verification"}
+                  placeholder={
+                    placeholder
+                      ? placeholder
+                      : "Enter any website domain for verification"
+                  }
                   onChange={e => onchange(e, stateMethod)}
                   value={value}
                   name="domain"

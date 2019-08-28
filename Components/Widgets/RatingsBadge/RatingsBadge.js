@@ -8,7 +8,7 @@ const RatingBadge = (props)=>{
                {ratingBadgeStyles}
            </style>
            <div className="ratingBadgeContainer" style={{...props.style}}>
-             {props.ratingCount}
+             {Number(props.ratingCount).toFixed(1).toString()}
            </div>
        </div>
     )

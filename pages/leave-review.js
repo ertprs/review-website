@@ -4,6 +4,7 @@ import Ratings from "react-ratings-declarative";
 import BigLoader from "../Components/Widgets/BigLoader/BigLoader";
 import { leaveReviewStyles } from "../Components/Styles/leaveReviewPageStyles";
 import FormField from "../Components/Widgets/FormField/FormField";
+import Layout from "../hoc/layout/layout";
 import validate from "../utility/validate";
 import axios from "axios";
 
@@ -32,7 +33,6 @@ const handleFormSubmit = (
   if (data.valid) {
     setLoading(true);
     let finalDataToSubmit = { ...data.dataToSubmit, rating: rating };
-
     axios
       .post(
         "https://search-api-dev.cryptopolice.com/api/save-order-data-application",
@@ -51,11 +51,17 @@ const handleFormSubmit = (
         console.log(res);
         setLoading(false);
         setSubmitted("yes");
+        setTimeout(()=>{
+          Router.push(`/reviews/${queryData.domain_name}`)
+        }, 2000)
       })
       .catch(err => {
         console.log(err);
         setLoading(false);
         setSubmitted("error");
+        setTimeout(()=>{
+          Router.push(`/reviews/${queryData.domain_name}`)
+        }, 2000)
       });
   }
 };
@@ -157,63 +163,65 @@ const LeaveReview = props => {
     }
   });
   return (
-    <div className="leaveReviewContainer">
-      <style jsx>{leaveReviewStyles}</style>
-      <div className="container">
-        <div className="row">
-          {submitted === "no" ? (
-            <div className="col-md-8 offset-md-2">
+    <Layout>
+      <div className="leaveReviewContainer">
+        <style jsx>{leaveReviewStyles}</style>
+        <div className="container">
+          <div className="row">
+            {submitted === "no" ? (
+              <div className="col-md-8 offset-md-2">
+                <div className="leaveReviewHeaderContainer">
+                  {loading ? (
+                    <h3 style={{ position: "relative", marginBottom: "150px" }}>
+                      Submitting your review ...
+                    </h3>
+                  ) : (
+                    <h3>Share your experience and unlock your gift!</h3>
+                  )}
+                </div>
+                <div className="leaveReviewRatingsContainer">
+                  {!loading ? renderReviewRatings(rating, setRating) : null}
+                </div>
+                <div className="leaveReviewTextContainer">
+                  {renderTextReviewForm(
+                    rating,
+                    formData,
+                    setFormData,
+                    loading,
+                    setLoading,
+                    submitted,
+                    setSubmitted,
+                    props.campaignProcessingId,
+                    props.domain_name,
+                    props.token
+                  )}
+                </div>
+              </div>
+            ) : (
               <div className="leaveReviewHeaderContainer">
-                {loading ? (
-                  <h3 style={{ position: "relative", marginBottom: "150px" }}>
-                    Submitting your review ...
-                  </h3>
+                {submitted !== "error" ? (
+                  <h4>
+                    Thank you for your review, it was submitted successfully{" "}
+                    <i
+                      className="fa fa-check"
+                      style={{ color: "#21bc61", fontSize: "2rem" }}
+                    />{" "}
+                  </h4>
                 ) : (
-                  <h3>Share your experience and unlock your gift!</h3>
+                  <h4>
+                    Some error occured, please try again later{" "}
+                    <i
+                      className="fa fa-close"
+                      style={{ color: "red", fontSize: "2rem" }}
+                    />{" "}
+                  </h4>
                 )}
               </div>
-              <div className="leaveReviewRatingsContainer">
-                {!loading ? renderReviewRatings(rating, setRating) : null}
-              </div>
-              <div className="leaveReviewTextContainer">
-                {renderTextReviewForm(
-                  rating,
-                  formData,
-                  setFormData,
-                  loading,
-                  setLoading,
-                  submitted,
-                  setSubmitted,
-                  props.campaignProcessingId,
-                  props.domain_name,
-                  props.token
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="leaveReviewHeaderContainer">
-              {submitted !== "error" ? (
-                <h4>
-                  Review submitted successfully{" "}
-                  <i
-                    className="fa fa-check"
-                    style={{ color: "#21bc61", fontSize: "2rem" }}
-                  />{" "}
-                </h4>
-              ) : (
-                <h4>
-                  Some error occured, please try again later{" "}
-                  <i
-                    className="fa fa-close"
-                    style={{ color: "red", fontSize: "2rem" }}
-                  />{" "}
-                </h4>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
