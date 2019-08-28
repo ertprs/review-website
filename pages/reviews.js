@@ -449,6 +449,14 @@ const renderTextualReviews = comments => {
 };
 
 const getAnalysisReportObject = data => {
+  let addon = {};
+  const additional_info = ((data || {}).domain_data ||{}).additional_info;
+  if(additional_info !==undefined){
+    for(let item in additional_info){
+      addon = {...addon, [item]: additional_info[item]}
+    }
+  }
+
   return {
     registration_Date: (
       (((data || {}).whois || {}).payload || {}).registration || {}
@@ -500,7 +508,8 @@ const getAnalysisReportObject = data => {
     redirect_Count: ((((data || {}).deface || {}).payload || {}).redirect || {})
       .color
       ? ((((data || {}).deface || {}).payload || {}).redirect || {}).value
-      : "..."
+      : "...",
+    ...addon
   };
 };
 
