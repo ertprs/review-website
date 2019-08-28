@@ -126,45 +126,9 @@ export const businessPageStyles = css`
     font-size: 0.8rem;
     text-align: center;
   }
-  .subscriptionPlanCard {
-    border: 1px solid #eee;
-    background:#fff;
-  }
-  .subscriptionPlanCardHeader {
-    text-align: center;
-    padding: 5%;
-  }
 
-  .subscriptionPlanCardHeader h4{
-    font-weight:400;
-  }
-
-  .subscriptionPlanCardBody ul {
-    list-style-type: none;
-    list-style-image: url("/static/business/index/images/bulletpoint.png");
-
-  }
-  .subscriptionPlanCardBody ul li {
-    padding-left:1rem;
-    margin-bottom:2.7rem;
-  }
-  .subscriptionPlanCardFooter{
-      text-align:center;
-  }
-
-  .subscriptionPlanCardFooter .currency i{
-      vertical-align:top;
-      font-size:20px !important;
-      margin-right:2%;
-  }
-
-  .subscriptionPlanCardFooter .price{
-      font-size:3.5rem;
-  }
-  .subscriptionPlanCardFooter .duration{
-      font-size:1.7rem;
-      font-weight:lighter;
-      margin-left:1%;
-
+  /*------ Subscription plan cards   -------*/
+  .subscriptionPlanCardsContainer{
+    margin:25% 0 10% 0;
   }
 `;
