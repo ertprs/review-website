@@ -34,7 +34,12 @@ const renderReviewHeader = (data, domain) => {
   const screenshot =
     ((data || {}).domain_data || {}).screenshot !== undefined
       ? ((data || {}).domain_data || {}).screenshot
-      : "loading";
+      : `http://api.screenshotlayer.com/api/capture?access_key=dc13fa64cde0b342fdbe7ddf8b56d1b8&url=${domain}&viewport=1440x900&width=250`;
+
+  const favicon =
+    ((data || {}).domain_data || {}).favicon !== undefined
+      ? ((data || {}).domain_data || {}).favicon
+      : `http://www.google.com/s2/favicons?domain=https://${domain}`;
 
   const title =
     ((data || {}).domain_data || {}).title !== undefined
@@ -60,17 +65,17 @@ const renderReviewHeader = (data, domain) => {
         <div className="row">
           <div className="col-md-3">
             {is_verified !== "loading" ? (
-             <div className="reviewImgContainer">
-             <AmpImgWrapper
-               src={`${screenshot}`}
-               alt="Websites screenshot"
-               height="156"
-               width="250"
-               layout="responsive"
-               imgContainerStyles={{ width: "250px", height: "156px" }}
-               style={{ maxWidth: "100%", maxheight: "100%" }}
-             />
-           </div>
+              <div className="reviewImgContainer">
+                <AmpImgWrapper
+                  src={`${screenshot}`}
+                  alt="Websites screenshot"
+                  height="156"
+                  width="250"
+                  layout="responsive"
+                  imgContainerStyles={{ width: "250px", height: "156px" }}
+                  style={{ maxWidth: "100%", maxheight: "100%" }}
+                />
+              </div>
             ) : null}
           </div>
           <div className="col-md-6">
@@ -80,18 +85,18 @@ const renderReviewHeader = (data, domain) => {
             >
               <div>
                 <h3 style={{ fontWeight: "400" }}>
-                <AmpImgWrapper
-                  src={`http://www.google.com/s2/favicons?domain=https://${domain}`}
-                  width="16"
-                  height="16"
-                  alt="favicon"
-                  layout="responsive"
-                  imgContainerStyles={{
-                    height: "16px",
-                    width: "16px",
-                    display: "inline-block"
-                  }}
-                />
+                  <AmpImgWrapper
+                    src={favicon}
+                    width="16"
+                    height="16"
+                    alt="favicon"
+                    layout="responsive"
+                    imgContainerStyles={{
+                      height: "16px",
+                      width: "16px",
+                      display: "inline-block"
+                    }}
+                  />
                   <span style={{ marginLeft: "5px" }}>{domain}</span>
                 </h3>
               </div>
