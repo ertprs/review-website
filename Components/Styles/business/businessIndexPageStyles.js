@@ -148,7 +148,7 @@ export const businessPageStyles = css`
     color:#fff;
     text-transform:uppercase;
     font-weight:bold;
-    background: linear-gradient(to bottom right, rgb(0,167,246) 20%, rgb(0,211,80));
+    background: linear-gradient(to bottom right, rgba(0,167,246,0.9) 20%, rgba(0,211,80,0.95));
     transition:all 0.4s;
     -webkit-transition: all 0.4s;
     cursor:pointer;

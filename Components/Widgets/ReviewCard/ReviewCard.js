@@ -34,16 +34,15 @@ const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeig
           <div className="reviewDetails">
             <div className="reviewerName">{name}</div>
             <div className="reviewRatings">
-              {/* TODO: change the static values for rating widgets */}
               <div className="badge">
                 <RatingsBadge
-                  ratingCount={"4.5"}
+                  ratingCount={(score/20).toFixed(1).toString()}
                   style={{ padding: "5% 7% 5% 7%" }}
                 />
               </div>
               <div className="rating">
                 <RatingIndicators
-                  rating={Number("4.5")}
+                  rating={(score/20)}
                   typeOfWidget="star"
                   widgetRatedColors="#febe42"
                   widgetDimensions="20px"

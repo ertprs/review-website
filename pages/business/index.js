@@ -2,12 +2,31 @@ import React from "react";
 import SearchBox from "../../Components/Widgets/SearchBox/SearchBox";
 import SubscriptionPlanCard from "../../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
 import SolutionForCompaniesList from "../../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
+import EmailSubscription from '../../Components/Widgets/EmailSubscription/EmailSubscription';
+import ScheduleMeeting from '../../Components/Widgets/ScheduleMeeting/ScheduleMeeting';
 import { layoutStyles } from "../../style";
 import ReviewCard from "../../Components/Widgets/ReviewCard/ReviewCard";
 import { businessPageStyles } from "../../Components/Styles/business/businessIndexPageStyles";
 import uuid from "uuid/v1";
+import CustomModal from '../../Components/Widgets/Modal/Modal';
 
 class BusinessIndexPage extends React.Component {
+
+  state={
+    showModal : false
+  }
+
+  handleModalVisibilityToggle = ()=>{
+    this.setState((currentState)=>{
+      return {showModal: !currentState.showModal}
+    })
+  }
+
+  handleSearchBoxSubmit = (e)=>{
+    e.preventDefault();
+    this.handleModalVisibilityToggle()
+  }
+
   renderBusinessHeroSection = () => {
     return (
       <div className="businessHeroContainer">
@@ -32,6 +51,7 @@ class BusinessIndexPage extends React.Component {
               variant="business"
               text="CHECK"
               placeholder="www.domain.com"
+              handleSearchSubmit={this.handleSearchBoxSubmit}
             />
           </div>
         </div>
@@ -353,10 +373,20 @@ class BusinessIndexPage extends React.Component {
     )
   }
 
+  renderModal = ()=>{
+    return(
+      <CustomModal showModal={this.state.showModal} handleModalClose={this.handleModalVisibilityToggle}>
+        <EmailSubscription />
+        {/* <ScheduleMeeting/> */}
+      </CustomModal>
+    )
+  }
+
   render() {
     return (
       <div>
         <style jsx>{layoutStyles}</style>
+        {this.renderModal()}
         {this.renderBusinessHeroSection()}
         {this.renderBusinessInfoSection()}
         {this.renderBusinessSolutionSection()}

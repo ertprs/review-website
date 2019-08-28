@@ -20,9 +20,10 @@ export const solutionForCompaniesStyles = css`
         border-radius:50%;
         text-align:center;
         line-height:37px;
-        background-image: linear-gradient(to top left, #00A7F6, #00D350);
+        background-image: linear-gradient(to top left, rgba(0,167,246,0.9), rgba(0,211,80,0.9));
         background-position:center;
         background-repeat:no-repeat;
+        font-size:1.12rem;
     }
 
     .businessSolutionStepDetails{

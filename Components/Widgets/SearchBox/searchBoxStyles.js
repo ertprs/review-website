@@ -67,6 +67,7 @@ export default css`
     border:1px solid #e1e1e1;
     width:100%;
     border-radius:50px;
+    background:#fff;
   }
 
   .businessSearchBoxContainer >div:first-child{
@@ -92,14 +93,19 @@ export default css`
     align-items:flex-start;
     flex-basis:30%;
     text-align:center;
+
   }
   .businessSearchBtn{
     flex:1;
     align-self:stretch;
     border-radius:50px;
-    border:0px solid #000;
     outline:none;
     border:none;
+    background:linear-gradient(to bottom, rgba(0,167,246,1) 40%, rgba(0,194,74,0.8));
+    color:#fff;
+    font-weight:bold;
+    font-size:0.75rem;
+    cursor:pointer;
   }
 
   @media only screen and (max-width: 539px) {
