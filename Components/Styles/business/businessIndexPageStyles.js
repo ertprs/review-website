@@ -131,4 +131,43 @@ export const businessPageStyles = css`
   .subscriptionPlanCardsContainer{
     margin:25% 0 10% 0;
   }
+
+  /*-----  Arrange a meeting Btn ----*/
+  .arrangeMeetingBtnContainer{
+    text-align:center;
+    margin-bottom:5%;
+  }
+  .arrangeMeetingBtn{
+    padding:1.5% 6% 1.5% 6%;
+    border-radius:50px;
+    border-top:1px solid #00a7f6;
+    border-bottom:1px solid #00d350;
+    border-right:1px solid #00a7f6;
+    border-left:1px solid #00a7f6;
+    outline:none;
+    color:#fff;
+    text-transform:uppercase;
+    font-weight:bold;
+    background: linear-gradient(to bottom right, rgb(0,167,246) 20%, rgb(0,211,80));
+    transition:all 0.4s;
+    -webkit-transition: all 0.4s;
+    cursor:pointer;
+  }
+
+  .arrangeMeetingBtn:link, .arrangeMeetingBtn:visited, .arrangeMeetingBtn:hover, .arrangeMeetingBtn:active{
+    outline:none;
+  }
+
+  /*------- Footer styles ---------*/
+  .footerLogoContainer{
+    text-align:center;
+    height:90px;
+    width:90px;
+    margin:3% auto 5% auto;
+  }
+
+  .footerLogoContainer img{
+    max-width:100%;
+    height:auto;
+  }
 `;

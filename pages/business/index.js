@@ -319,6 +319,40 @@ class BusinessIndexPage extends React.Component {
     );
   };
 
+  renderArrangeMeetingBtn = () => {
+    return (
+      <div className="container">
+        <style jsx>
+          {businessPageStyles}
+        </style>
+        <div className="col-md-12">
+          <div className="arrangeMeetingBtnContainer">
+            <button className="arrangeMeetingBtn">Arrange a meeting</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  renderFooter = ()=>{
+    return(
+      <>
+      <style jsx>
+        {businessPageStyles}
+      </style>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12">
+            <div className="footerLogoContainer">
+              <img src="/static/images/logo_footer.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+      </>
+    )
+  }
+
   render() {
     return (
       <div>
@@ -328,6 +362,8 @@ class BusinessIndexPage extends React.Component {
         {this.renderBusinessSolutionSection()}
         {this.renderWhyToSection()}
         {this.renderSubscriptionPlanCards()}
+        {this.renderArrangeMeetingBtn()}
+        {this.renderFooter()}
       </div>
     );
   }
