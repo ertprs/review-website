@@ -283,7 +283,6 @@ const renderShareBtn = (shareURL, btnText, shareIcon) => {
 const renderTrafficReports = parentState => {
   const trafficData = getTrafficReportObject({ ...parentState });
   const uniqueVisitorsTimeLine = getUniqueVisitorsTimeline({ ...parentState });
-  console.log(trafficData);
   return (
     <div className="reviewTrafficContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -328,6 +327,7 @@ const renderTrafficReports = parentState => {
 
 const renderSocialReports = parentState => {
   const socialData = getSocialReportObject({ ...parentState });
+  console.log(socialData)
   return (
     <div className="reviewSocialContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -581,15 +581,21 @@ const getUniqueVisitorsTimeline = data => {
 
 const getSocialReportObject = data => {
   if (((data || {}).social || {}).payload) {
-    const payload = {
-      ...(((data || {}).social || {}).payload || {}
-        ? ((data || {}).social || {}).payload
-        : "...")
-    };
+    let payload = {};
+    let initPayload = {...data.social.payload};
+    for(let item in initPayload){
+      if(initPayload[item].verified){
+        payload = {...payload, [item]:initPayload[item]}
+      }
+    }
+
     const success = ((data || {}).social || {}).success
       ? ((data || {}).social || {}).success
       : false;
-    return { payload: payload, success: success };
+    
+    return Object.keys(payload).length > 0 ?  { payload: payload, success: success } : 
+    { payload: payload, success: false }
+    
   } else if (((data || {}).social || {}).success === false) {
     return { payload: {}, success: false };
   }

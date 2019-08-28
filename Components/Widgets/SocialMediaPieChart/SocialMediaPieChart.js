@@ -42,16 +42,15 @@ const getData = (socialData)=>{
   return data;
 }
 
-export default ({socialData}) => {
-  console.log(socialData)
-    if(Object.keys(socialData).length > 0){
-      return(
-        !useAmp() ? (
-          <ResponsiveContainer height="100%" width="100%">
+
+const renderChart = (data)=>{
+  if(data.length > 0){
+    return(
+      <ResponsiveContainer height="100%" width="100%">
             <BarChart
               width={500}
               height={300}
-              data={getData(socialData)}
+              data={data}
               margin={{
                 top: 5,
                 right: 30,
@@ -67,6 +66,18 @@ export default ({socialData}) => {
               <Bar dataKey="followers" barSize={20} fill="#28b661" name="Followers" />
             </BarChart>
           </ResponsiveContainer>
+    )
+  }
+  else
+  return null;
+}
+
+export default ({socialData}) => {
+    if(Object.keys(socialData).length > 0){
+      const data = getData(socialData)
+      return(
+        !useAmp() ? (
+          renderChart(data)
         ) : (
           <>
             <Head>
