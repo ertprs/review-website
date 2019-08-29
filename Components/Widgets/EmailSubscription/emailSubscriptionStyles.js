@@ -23,12 +23,12 @@ export const emailSubscriptionStyles = css`
     .emailSubscriptionCheckBox{
         margin: 4% 0 0 0;
         text-align:center;
-        font-size:0.8rem;
+        font-size:0.9rem;
     }
 
     .emailSubscriptionError{
-        text-align:center;
-        margin: 1% 0 1% 0;
+        text-align:left;
+        margin: 1% 0 1% 1%;
         color:red;
         font-size:0.9rem;
     }

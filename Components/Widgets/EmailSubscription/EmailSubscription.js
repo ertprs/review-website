@@ -1,30 +1,49 @@
 import React from "react";
 import SearchBox from "../SearchBox/SearchBox";
-import {emailSubscriptionStyles} from './emailSubscriptionStyles';
+import UniversalLoader from "../UniversalLoader/UniversalLoader";
+import { emailSubscriptionStyles } from "./emailSubscriptionStyles";
 
 class EmailSubscription extends React.Component {
-
-
-  handleSubmit = (e)=>{
+  handleSubmit = e => {
     this.props.handleSubscriptionEmailSubmit(e);
-  }
+  };
 
-  handleOwnerChange = (e)=>{
-    this.props.handleWebsiteOwnerChange(e.target.value)
-  }
+  handleOwnerChange = e => {
+    this.props.handleWebsiteOwnerChange(e.target.value);
+  };
 
-  render() {
+  renderSubscriptionEmailForm = () => {
     return (
       <div className="emailSubscriptionContainer">
-          <style jsx>
-              {emailSubscriptionStyles}
-          </style>
         <div className="emailSubscriptionHeader">
-        <h6 className="heading">
-          Please leave your email to receive suggestions on improving
-          Trustworthiness of your website.
-        </h6>
+          <h6 className="heading">
+            Please leave your email to receive suggestions on improving
+            Trustworthiness of your website.
+          </h6>
         </div>
+        <style jsx>{emailSubscriptionStyles}</style>
+        {this.props.subscriptionEmailSent === "no" ? (
+          this.renderForm()
+        ) : (
+          <UniversalLoader
+            status={this.props.subscriptionEmailSent}
+          >
+            {/* First child for loading state */}
+            <div style={{textAlign:"center"}}>Adding your email ... <i className="fa fa-check"></i></div>
+            {/* Second child for success state */}
+            <div style={{textAlign:"center"}}>Email added successfully <i className="fa fa-check"></i></div>
+            {/* third child for error state */}
+            <div style={{textAlign:"center"}}>Some error occured, please try again later <i className="fa fa-check"></i></div>
+          </UniversalLoader>
+        )}
+      </div>
+    );
+  };
+
+  renderForm = () => {
+    return (
+      <>
+        <style jsx>{emailSubscriptionStyles}</style>
         <div className="emailSubscriptionBoxContainer">
           <SearchBox
             variant="business"
@@ -34,18 +53,33 @@ class EmailSubscription extends React.Component {
             handleSearchSubmit={this.handleSubmit}
             onchange={this.props.handleEmailChange}
           />
+          <div className="emailSubscriptionError">
+            {this.props.touched && !this.props.valid ? (
+              <span>Please enter a valid email address</span>
+            ) : null}
+          </div>
         </div>
         <div className="emailSubscriptionCheckBox">
           <label>
-            <input type="checkbox" onChange={(e)=> this.props.handleWebsiteOwnerChange(e.target.value==="yes" ? "no": "yes")} value={this.props.websiteOwner}
-            checked={this.props.websiteOwner==="yes" ? true : false}/> Check if this is your website
+            <input
+              type="checkbox"
+              onChange={e =>
+                this.props.handleWebsiteOwnerChange(
+                  e.target.value === "yes" ? "no" : "yes"
+                )
+              }
+              value={this.props.websiteOwner}
+              checked={this.props.websiteOwner === "yes" ? true : false}
+            />{" "}
+            Check if this is your website
           </label>
         </div>
-        <div className="emailSubscriptionError">
-          {this.props.touched && !this.props.valid ? <span>please enter valid email address</span> : null}
-        </div>
-      </div>
+      </>
     );
+  };
+
+  render() {
+    return <>{this.renderSubscriptionEmailForm()}</>;
   }
 }
 

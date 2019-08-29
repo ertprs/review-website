@@ -1,5 +1,6 @@
 import React from "react";
 import FormField from "../FormField/FormField";
+import UniversalLoader from "../UniversalLoader/UniversalLoader";
 import {scheduleMeetingStyles} from './scheduleMeetingStyles';
 const formFieldStyles = {
   borderRadius: "25px",
@@ -10,19 +11,13 @@ const formFieldStyles = {
 };
 
 class ScheduleMeeting extends React.Component {
-  render() {
-    return (
-      <div className="scheduleMeetingContainer">
-        <style jsx>
-          {scheduleMeetingStyles}
-        </style>
-        <div className="scheduleMeetingHeader">
-          <h5 className="heading">
-            Schedule a meeting to discuss how TrustSearch can help your
-            organization
-          </h5>
-        </div>
-        <div className="scheduleMeetingFormContainer">
+
+  renderMeetingForm = ()=>{
+    return(
+      <div className="scheduleMeetingFormContainer">
+          <style jsx>
+            {scheduleMeetingStyles}
+          </style>
           <form onSubmit={e=> this.props.handleScheduleMeetingSubmit(e)}>
             <FormField
               {...this.props.formData.name}
@@ -57,6 +52,35 @@ class ScheduleMeeting extends React.Component {
             </div>
           </form>
         </div>
+    )
+  }
+
+  render() {
+    return (
+      <div className="scheduleMeetingContainer">
+        <style jsx>
+          {scheduleMeetingStyles}
+        </style>
+        <div className="scheduleMeetingHeader">
+          <h5 className="heading">
+            Schedule a meeting to discuss how TrustSearch can help your
+            organization
+          </h5>
+        </div>
+        {this.props.meetingScheduled === "no" ? (
+          this.renderMeetingForm()
+        ) : (
+          <UniversalLoader
+            status={this.props.meetingScheduled}
+          >
+            {/* First child for loading state */}
+            <div style={{textAlign:"center"}}>Scheduling your meeting ... <i className="fa fa-clock-o"></i></div>
+            {/* Second child for success state */}
+            <div style={{textAlign:"center"}}>Meeting scheduled successfully <i className="fa fa-check"></i></div>
+            {/* third child for error state */}
+            <div style={{textAlign:"center"}}>Some error occured, please try again later <i className="fa fa-check"></i></div>
+          </UniversalLoader>
+        )}
       </div>
     );
   }

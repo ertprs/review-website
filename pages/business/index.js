@@ -16,6 +16,8 @@ class BusinessIndexPage extends React.Component {
     showModal: false,
     modalId: "",
     websiteOwner: "no",
+    subscriptionEmailSent:"no",
+    meetingScheduled:"no",
     subscriptionEmail: {
       value: "",
       valid: false,
@@ -113,6 +115,10 @@ class BusinessIndexPage extends React.Component {
     this.handleModalVisibilityToggle("email");
   };
 
+  handleSearchBoxChange = e =>{
+    console.log(e.target.value)
+  }
+
   handleArrangeMeetingBtnClick = () => {
     this.handleModalVisibilityToggle("scheduleMeeting");
   };
@@ -149,20 +155,26 @@ class BusinessIndexPage extends React.Component {
   };
 
   handleSubscriptionEmailSubmit = e => {
-    //validation DONE
     e.preventDefault();
     let dataToSubmit = {};
     this.setState({
       subscriptionEmail: { ...this.state.subscriptionEmail, touched: true }
+    }, ()=>{
+      if (this.state.subscriptionEmail.valid) {
+        dataToSubmit = {
+          ...dataToSubmit,
+          email: this.state.subscriptionEmail.value,
+          websiteOwner: this.state.websiteOwner
+        };
+        //mimic data post
+        this.setState({subscriptionEmailSent:"in-progress"}, ()=>{
+          console.log(dataToSubmit);
+          setInterval(()=>{
+            this.setState({subscriptionEmailSent:"success"})
+          },2000)
+        })
+      }
     });
-    if (this.state.subscriptionEmail.valid) {
-      dataToSubmit = {
-        ...dataToSubmit,
-        email: this.state.subscriptionEmail.value,
-        websiteOwner: this.state.websiteOwner
-      };
-      alert(JSON.stringify(dataToSubmit));
-    }
   };
 
   handleScheduleMeetingSubmit = e => {
@@ -180,7 +192,13 @@ class BusinessIndexPage extends React.Component {
       };
     }
     if (valid) {
-      alert(JSON.stringify(dataToSubmit));
+      //mimic data post
+      this.setState({meetingScheduled:"in-progress"}, ()=>{
+        console.log(dataToSubmit);
+        setInterval(()=>{
+          this.setState({meetingScheduled:"success"})
+        },2000)
+      })
     } else {
       this.setState({ formData: { ...newFormData } });
     }
@@ -211,6 +229,7 @@ class BusinessIndexPage extends React.Component {
               text="CHECK"
               placeholder="www.domain.com"
               handleSearchSubmit={this.handleSearchBoxSubmit}
+              onchange={this.handleSearchBoxChange}
             />
           </div>
         </div>
@@ -552,12 +571,14 @@ class BusinessIndexPage extends React.Component {
             handleWebsiteOwnerChange={value =>
               this.setState({ websiteOwner: value })
             }
+            subscriptionEmailSent={this.state.subscriptionEmailSent}
           />
         ) : (
           <ScheduleMeeting
             formData={{ ...this.state.formData }}
             handleInputChange={this.handleInputChange}
             handleScheduleMeetingSubmit={this.handleScheduleMeetingSubmit}
+            meetingScheduled={this.state.meetingScheduled}
           />
         )}
       </CustomModal>
