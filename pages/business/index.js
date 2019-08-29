@@ -15,14 +15,16 @@ class BusinessIndexPage extends React.Component {
   state = {
     showModal: false,
     modalId: "",
-    websiteOwner:"no",
-    subscriptionEmail:{
-      value:"",
-      valid:false,
-      touched:false,
-      validationRules:{
-        required:true,
-        isEmail:true
+    websiteOwner: "no",
+    subscriptionEmailSent:"no",
+    meetingScheduled:"no",
+    subscriptionEmail: {
+      value: "",
+      valid: false,
+      touched: false,
+      validationRules: {
+        required: true,
+        isEmail: true
       }
     },
     formData: {
@@ -74,8 +76,20 @@ class BusinessIndexPage extends React.Component {
             name: "Collect customer feedback",
             value: "collect_customer_feedback"
           },
-          { name: "Objective two", value: "two" },
-          { name: "objective three", value: "three" }
+          {
+            name:
+              "To learn, how we can increase sales by improving online reputation",
+            value:
+              "to_learn_how_we_can_increase_sales_by_improving_online_reputation"
+          },
+          {
+            name: "To receive TrustSearch product demonstration",
+            value: "to_receive_trustsearch_product_demonstration"
+          },
+          {
+            name: "Other",
+            value: "other"
+          }
         ],
         value: "",
         validationRules: {
@@ -101,6 +115,10 @@ class BusinessIndexPage extends React.Component {
     this.handleModalVisibilityToggle("email");
   };
 
+  handleSearchBoxChange = e =>{
+    console.log(e.target.value)
+  }
+
   handleArrangeMeetingBtnClick = () => {
     this.handleModalVisibilityToggle("scheduleMeeting");
   };
@@ -123,28 +141,68 @@ class BusinessIndexPage extends React.Component {
   };
 
   handleSubscriptionEmailChange = e => {
-    this.setState({subscriptionEmail: {...this.state.subscriptionEmail, value:e.target.value, valid: validate(e.target.value, this.state.subscriptionEmail.validationRules), touched:true} });
+    this.setState({
+      subscriptionEmail: {
+        ...this.state.subscriptionEmail,
+        value: e.target.value,
+        valid: validate(
+          e.target.value,
+          this.state.subscriptionEmail.validationRules
+        ),
+        touched: true
+      }
+    });
   };
 
   handleSubscriptionEmailSubmit = e => {
-    //validation DONE
     e.preventDefault();
-    let dataToSubmit={};
-    this.setState({subscriptionEmail: {...this.state.subscriptionEmail, touched:true}})
-    if(this.state.subscriptionEmail.valid){
-      dataToSubmit = {...dataToSubmit, email:this.state.subscriptionEmail.value, websiteOwner:this.state.websiteOwner}
-      alert(JSON.stringify(dataToSubmit));
-    }
+    let dataToSubmit = {};
+    this.setState({
+      subscriptionEmail: { ...this.state.subscriptionEmail, touched: true }
+    }, ()=>{
+      if (this.state.subscriptionEmail.valid) {
+        dataToSubmit = {
+          ...dataToSubmit,
+          email: this.state.subscriptionEmail.value,
+          websiteOwner: this.state.websiteOwner
+        };
+        //mimic data post
+        this.setState({subscriptionEmailSent:"in-progress"}, ()=>{
+          console.log(dataToSubmit);
+          setInterval(()=>{
+            this.setState({subscriptionEmailSent:"success"})
+          },2000)
+        })
+      }
+    });
   };
 
-  handleScheduleMeetingSubmit = (e)=>{
+  handleScheduleMeetingSubmit = e => {
     e.preventDefault();
-    let dataToSubmit = {}
-    // for(let control in formData){
-
-    // }
-    alert("schedule meeting submit")
-  }
+    const { formData } = this.state;
+    let newFormData = {};
+    let dataToSubmit = {};
+    let valid = true;
+    for (let control in formData) {
+      valid = valid && formData[control].valid;
+      dataToSubmit = { ...dataToSubmit, [control]: formData[control].value };
+      newFormData = {
+        ...newFormData,
+        [control]: { ...formData[control], touched: true }
+      };
+    }
+    if (valid) {
+      //mimic data post
+      this.setState({meetingScheduled:"in-progress"}, ()=>{
+        console.log(dataToSubmit);
+        setInterval(()=>{
+          this.setState({meetingScheduled:"success"})
+        },2000)
+      })
+    } else {
+      this.setState({ formData: { ...newFormData } });
+    }
+  };
 
   renderBusinessHeroSection = () => {
     return (
@@ -171,6 +229,7 @@ class BusinessIndexPage extends React.Component {
               text="CHECK"
               placeholder="www.domain.com"
               handleSearchSubmit={this.handleSearchBoxSubmit}
+              onchange={this.handleSearchBoxChange}
             />
           </div>
         </div>
@@ -499,7 +558,7 @@ class BusinessIndexPage extends React.Component {
       <CustomModal
         showModal={this.state.showModal}
         handleModalClose={this.handleModalVisibilityToggle}
-        modalCustomStyles={{ background: "#f9f9f9" }}
+        modalCustomStyles={{ background: "#f9f9f9", border: "1px solid #fff" }}
       >
         {modalId === "email" ? (
           <EmailSubscription
@@ -509,13 +568,17 @@ class BusinessIndexPage extends React.Component {
             handleEmailChange={this.handleSubscriptionEmailChange}
             handleSubscriptionEmailSubmit={this.handleSubscriptionEmailSubmit}
             websiteOwner={this.state.websiteOwner}
-            handleWebsiteOwnerChange = {value => this.setState({websiteOwner:value})}
+            handleWebsiteOwnerChange={value =>
+              this.setState({ websiteOwner: value })
+            }
+            subscriptionEmailSent={this.state.subscriptionEmailSent}
           />
         ) : (
           <ScheduleMeeting
             formData={{ ...this.state.formData }}
             handleInputChange={this.handleInputChange}
-            handleScheduleMeetingSubmit = {this.handleScheduleMeetingSubmit}
+            handleScheduleMeetingSubmit={this.handleScheduleMeetingSubmit}
+            meetingScheduled={this.state.meetingScheduled}
           />
         )}
       </CustomModal>

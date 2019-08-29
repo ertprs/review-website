@@ -22,6 +22,6 @@ export const formFieldStyles = css`
     outline:none;
   }
   .invalidField{
-    border:1px solid red;
+    border:1px solid #ff7158;
   }
 `;
