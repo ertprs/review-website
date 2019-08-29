@@ -25,4 +25,11 @@ export const emailSubscriptionStyles = css`
         text-align:center;
         font-size:0.8rem;
     }
+
+    .emailSubscriptionError{
+        text-align:center;
+        margin: 1% 0 1% 0;
+        color:red;
+        font-size:0.9rem;
+    }
 `;

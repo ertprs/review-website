@@ -19,7 +19,7 @@ class ScheduleMeeting extends React.Component {
           </h5>
         </div>
         <div className="scheduleMeetingFormContainer">
-          <form onSubmit={e=> e.preventDefault()}>
+          <form onSubmit={e=> this.props.handleScheduleMeetingSubmit(e)}>
             <FormField
               {...this.props.formData.name}
               id="name"
