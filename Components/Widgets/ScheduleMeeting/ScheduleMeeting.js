@@ -2,7 +2,11 @@ import React from "react";
 import FormField from "../FormField/FormField";
 import {scheduleMeetingStyles} from './scheduleMeetingStyles';
 const formFieldStyles = {
-  borderRadius: "50px"
+  borderRadius: "25px",
+  padding:"10px",
+  paddingLeft:"25px",
+  backgroundClip:"padding-box",
+  background:"#fff"
 };
 
 class ScheduleMeeting extends React.Component {

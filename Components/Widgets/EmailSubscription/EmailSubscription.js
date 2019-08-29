@@ -42,7 +42,7 @@ class EmailSubscription extends React.Component {
           </label>
         </div>
         <div className="emailSubscriptionError">
-          {this.props.touched && !this.props.valid ? <span>Invalid email address</span> : null}
+          {this.props.touched && !this.props.valid ? <span>please enter valid email address</span> : null}
         </div>
       </div>
     );
