@@ -16,7 +16,7 @@ const renderSearchBox = ({
       return (
         <div>
           <style jsx>{searchBoxStyles}</style>
-          <form onSubmit={(e)=> handleSearchSubmit(e)}>
+          <form onSubmit={(e)=> {handleSearchSubmit(e)}}>
             <div className="businessSearchBoxContainer">
               <div className="businessSearchBoxInput">
                 <input

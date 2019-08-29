@@ -3,8 +3,14 @@ import css from 'styled-jsx/css';
 export const socialIconBoxStyles =   css`
     .socialIconBoxContainer{
         display:flex;
-        margin-bottom:2%
+        margin-bottom:2%;
+        transition:all 0.3s;
     }
+
+    .socialIconBoxContainer:hover{
+        background:#f5f5f5;
+    }
+
     .socialIconContainer{
         display:flex;
         align-items:center;

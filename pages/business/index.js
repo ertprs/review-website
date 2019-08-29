@@ -15,7 +15,7 @@ class BusinessIndexPage extends React.Component {
   state = {
     showModal: false,
     modalId: "",
-    websiteOwner:false,
+    websiteOwner:"no",
     subscriptionEmail:{
       value:"",
       valid:false,
@@ -123,13 +123,28 @@ class BusinessIndexPage extends React.Component {
   };
 
   handleSubscriptionEmailChange = e => {
-    this.setState({subscriptionEmail: {...this.state.subscriptionEmail, value:e.target.value} });
+    this.setState({subscriptionEmail: {...this.state.subscriptionEmail, value:e.target.value, valid: validate(e.target.value, this.state.subscriptionEmail.validationRules), touched:true} });
   };
 
   handleSubscriptionEmailSubmit = e => {
+    //validation DONE
     e.preventDefault();
-    alert("submitting from business index page");
+    let dataToSubmit={};
+    this.setState({subscriptionEmail: {...this.state.subscriptionEmail, touched:true}})
+    if(this.state.subscriptionEmail.valid){
+      dataToSubmit = {...dataToSubmit, email:this.state.subscriptionEmail.value, websiteOwner:this.state.websiteOwner}
+      alert(JSON.stringify(dataToSubmit));
+    }
   };
+
+  handleScheduleMeetingSubmit = (e)=>{
+    e.preventDefault();
+    let dataToSubmit = {}
+    // for(let control in formData){
+
+    // }
+    alert("schedule meeting submit")
+  }
 
   renderBusinessHeroSection = () => {
     return (
@@ -489,6 +504,8 @@ class BusinessIndexPage extends React.Component {
         {modalId === "email" ? (
           <EmailSubscription
             value={this.state.subscriptionEmail.value}
+            touched={this.state.subscriptionEmail.touched}
+            valid={this.state.subscriptionEmail.valid}
             handleEmailChange={this.handleSubscriptionEmailChange}
             handleSubscriptionEmailSubmit={this.handleSubscriptionEmailSubmit}
             websiteOwner={this.state.websiteOwner}
@@ -498,6 +515,7 @@ class BusinessIndexPage extends React.Component {
           <ScheduleMeeting
             formData={{ ...this.state.formData }}
             handleInputChange={this.handleInputChange}
+            handleScheduleMeetingSubmit = {this.handleScheduleMeetingSubmit}
           />
         )}
       </CustomModal>

@@ -1,27 +1,9 @@
 import React from "react";
 import SearchBox from "../SearchBox/SearchBox";
-import FormField from '../FormField/FormField';
 import {emailSubscriptionStyles} from './emailSubscriptionStyles';
 
 class EmailSubscription extends React.Component {
 
-  state = {
-    formData:{
-      websiteOwner: {
-        element: "checkbox",
-        type: "text",
-        value: this.props.websiteOwner,
-        placeholder: "Name",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: false
-        },
-        name: "websiteOwner"
-      },
-    }
-  }
 
   handleSubmit = (e)=>{
     this.props.handleSubscriptionEmailSubmit(e);
@@ -32,7 +14,6 @@ class EmailSubscription extends React.Component {
   }
 
   render() {
-    console.log(this.state.formData.websiteOwner.value)
     return (
       <div className="emailSubscriptionContainer">
           <style jsx>
@@ -55,11 +36,13 @@ class EmailSubscription extends React.Component {
           />
         </div>
         <div className="emailSubscriptionCheckBox">
-        <FormField
-              {...this.state.formData.websiteOwner}
-              id="websiteOwner"
-              handleChange={this.handleOwnerChange}
-        />
+          <label>
+            <input type="checkbox" onChange={(e)=> this.props.handleWebsiteOwnerChange(e.target.value==="yes" ? "no": "yes")} value={this.props.websiteOwner}
+            checked={this.props.websiteOwner==="yes" ? true : false}/> Check if this is your website
+          </label>
+        </div>
+        <div className="emailSubscriptionError">
+          {this.props.touched && !this.props.valid ? <span>Invalid email address</span> : null}
         </div>
       </div>
     );
