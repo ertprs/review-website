@@ -26,7 +26,7 @@ const renderSearchBox = ({
                       ? placeholder
                       : "Enter any website domain for verification"
                   }
-                  onChange={e => onchange(e, stateMethod)}
+                  onChange={e => onchange(e)}
                   value={value}
                   name="domain"
                 />

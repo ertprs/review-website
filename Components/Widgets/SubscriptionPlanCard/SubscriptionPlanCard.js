@@ -1,5 +1,6 @@
 import React from 'react';
 import {subscriptionPlanCardStyles} from './subscriptionPlanCardStyles';
+import uuid from 'uuid/v1';
 const SubscriptionPlanCard = (props)=>{
     const {cardHeader, cardBody, cardFooter} = props;
     return(
@@ -13,7 +14,7 @@ const SubscriptionPlanCard = (props)=>{
             <div className="subscriptionPlanCardBody">
               <ul className={`${cardHeader.toLowerCase()}`}>
                 {cardBody.map(item =>{
-                    return <li>{item}</li>
+                    return <li key={uuid()}>{item}</li>
                 })}
               </ul>
             </div>

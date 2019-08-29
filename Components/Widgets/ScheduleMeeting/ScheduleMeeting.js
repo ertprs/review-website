@@ -1,78 +1,58 @@
 import React from "react";
-import FormField from '../FormField/FormField';
-
+import FormField from "../FormField/FormField";
+import {scheduleMeetingStyles} from './scheduleMeetingStyles';
 const formFieldStyles = {
-    borderRadius:"50px"
-}
+  borderRadius: "50px"
+};
 
 class ScheduleMeeting extends React.Component {
-  state = {
-    formData: {
-      name: {
-        element: "input",
-        type: "text",
-        value: "",
-        placeholder: "Name",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true
-        },
-        name: "name"
-      },
-      email: {
-        element: "input",
-        type: "email",
-        value: "",
-        placeholder: "Email address",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true,
-          isEmail: true
-        },
-        name: "email"
-      },
-      phoneNumber: {
-        element: "input",
-        type: "text",
-        value: "",
-        placeholder: "Phone number",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true,
-          isPhoneNumber: true
-        },
-        name: "phoneNumber"
-      },
-      objective: {
-        element: "select",
-        value: "",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true
-        },
-        name: "objective"
-      }
-    }
-  };
-
-  handleInputChange = (e)=>{
-    console.log(e.target.value)
-  }
-
   render() {
     return (
-      <div>
-        <form>
-            <FormField {...this.state.formData.name} id="name" handleChange={this.handleInputChange} styles={{...formFieldStyles}} />
-        </form>
+      <div className="scheduleMeetingContainer">
+        <style jsx>
+          {scheduleMeetingStyles}
+        </style>
+        <div className="scheduleMeetingHeader">
+          <h5 className="heading">
+            Schedule a meeting to discuss how TrustSearch can help your
+            organization
+          </h5>
+        </div>
+        <div className="scheduleMeetingFormContainer">
+          <form onSubmit={e=> e.preventDefault()}>
+            <FormField
+              {...this.props.formData.name}
+              id="name"
+              handleChange={this.props.handleInputChange}
+              styles={{ ...formFieldStyles }}
+            />
+
+            <FormField
+              {...this.props.formData.email}
+              id="email"
+              handleChange={this.props.handleInputChange}
+              styles={{ ...formFieldStyles }}
+            />
+
+            <FormField
+              {...this.props.formData.phoneNumber}
+              id="phoneNumber"
+              handleChange={this.props.handleInputChange}
+              styles={{ ...formFieldStyles }}
+            />
+            <label className="objectiveLabel">Our main objective for TrustSearch is to</label>
+
+            <FormField
+              {...this.props.formData.objective}
+              id="objective"
+              handleChange={this.props.handleInputChange}
+              styles={{ ...formFieldStyles }}
+            />
+            <div className="scheduleMeetingBtnContainer">
+              <button type="submit">send</button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
