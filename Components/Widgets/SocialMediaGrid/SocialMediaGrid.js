@@ -1,6 +1,6 @@
 import React from "react";
 import SocialIconBox from "../SocialIconBox/SocialIconBox";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 const icons = {
   1: { name: "facebook", color: "#3C5A99" },
   2: { name: "youtube", color: "#ff0000" },
@@ -22,33 +22,39 @@ const icons = {
 };
 
 const renderSocialMediaItems = socialData => {
-  console.log(socialData)
+  console.log(socialData);
   let output = [];
   for (let item in socialData) {
-    if(socialData[item].verified){
+    if (socialData[item].verified) {
       output = [
         ...output,
-        <div className="col-md-6 col-sm-6" style={{ marginBottom: "2%" }} key={uuid()}>
-          <SocialIconBox
-            iconName={icons[item].name}
-            caption="followers"
-            followersCount={socialData[item].followers ? socialData[item].followers : "N/A"}
-            iconStyles={{ color: icons[item].color }}
-          />
+        <div
+          className="col-md-6 col-sm-6"
+          style={{ marginBottom: "2%" }}
+          key={uuid()}
+        >
+          <a href={`${socialData[item].profile_url}`} target="_blank" style={{textDecoration:"none", color:"#000"}}>
+            <SocialIconBox
+              iconName={icons[item].name}
+              caption="followers"
+              followersCount={
+                socialData[item].followers ? socialData[item].followers : "N/A"
+              }
+              iconStyles={{ color: icons[item].color }}
+            />
+          </a>
         </div>
       ];
     }
   }
 
-  return output.length > 0 ? output: null;
+  return output.length > 0 ? output : null;
 };
 
 const SocialMediaGrid = ({ socialData }) => {
   return (
     <div>
-      <div className="row">
-        {renderSocialMediaItems(socialData)}
-      </div>
+      <div className="row">{renderSocialMediaItems(socialData)}</div>
     </div>
   );
 };
