@@ -1,20 +1,21 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import Modal from "react-modal";
-import EmailSubscription from '../EmailSubscription/EmailSubscription';
 Modal.setAppElement('#modal');
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
-  }
-};
+
 
 class CustomModal extends React.Component {
+
+  customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    }
+  };
 
   componentDidMount(){
     this.element = document.querySelector("#modal")
@@ -24,11 +25,12 @@ class CustomModal extends React.Component {
     if (this.element === undefined) {
       return null
     }
+    let modalStyles = {content:{...this.customStyles.content, ...this.props.modalCustomStyles}}
     return(
       ReactDOM.createPortal(<Modal
         isOpen={this.props.showModal}
         onRequestClose={()=>{this.props.handleModalClose()}}
-        style={customStyles}
+        style={modalStyles}
         contentLabel="Example Modal"
       >
         {this.props.children}

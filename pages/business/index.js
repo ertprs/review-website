@@ -2,30 +2,134 @@ import React from "react";
 import SearchBox from "../../Components/Widgets/SearchBox/SearchBox";
 import SubscriptionPlanCard from "../../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
 import SolutionForCompaniesList from "../../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
-import EmailSubscription from '../../Components/Widgets/EmailSubscription/EmailSubscription';
-import ScheduleMeeting from '../../Components/Widgets/ScheduleMeeting/ScheduleMeeting';
+import EmailSubscription from "../../Components/Widgets/EmailSubscription/EmailSubscription";
+import validate from "../../utility/validate";
+import ScheduleMeeting from "../../Components/Widgets/ScheduleMeeting/ScheduleMeeting";
 import { layoutStyles } from "../../style";
 import ReviewCard from "../../Components/Widgets/ReviewCard/ReviewCard";
 import { businessPageStyles } from "../../Components/Styles/business/businessIndexPageStyles";
 import uuid from "uuid/v1";
-import CustomModal from '../../Components/Widgets/Modal/Modal';
+import CustomModal from "../../Components/Widgets/CustomModal/CustomModal";
 
 class BusinessIndexPage extends React.Component {
+  state = {
+    showModal: false,
+    modalId: "",
+    websiteOwner:false,
+    subscriptionEmail:{
+      value:"",
+      valid:false,
+      touched:false,
+      validationRules:{
+        required:true,
+        isEmail:true
+      }
+    },
+    formData: {
+      name: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "Name",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "name"
+      },
+      email: {
+        element: "input",
+        type: "email",
+        value: "",
+        placeholder: "Email address",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          isEmail: true
+        },
+        name: "email"
+      },
+      phoneNumber: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "Phone number",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          isPhoneNumber: true
+        },
+        name: "phoneNumber"
+      },
+      objective: {
+        element: "select",
+        options: [
+          {
+            name: "Collect customer feedback",
+            value: "collect_customer_feedback"
+          },
+          { name: "Objective two", value: "two" },
+          { name: "objective three", value: "three" }
+        ],
+        value: "",
+        validationRules: {
+          required: true
+        },
+        valid: false,
+        name: "objective",
+        touched: false,
+        placeholder: "Select your objective",
+        errorMessage: ""
+      }
+    }
+  };
 
-  state={
-    showModal : false
-  }
+  handleModalVisibilityToggle = id => {
+    this.setState(currentState => {
+      return { showModal: !currentState.showModal, modalId: id };
+    });
+  };
 
-  handleModalVisibilityToggle = ()=>{
-    this.setState((currentState)=>{
-      return {showModal: !currentState.showModal}
-    })
-  }
-
-  handleSearchBoxSubmit = (e)=>{
+  handleSearchBoxSubmit = e => {
     e.preventDefault();
-    this.handleModalVisibilityToggle()
-  }
+    this.handleModalVisibilityToggle("email");
+  };
+
+  handleArrangeMeetingBtnClick = () => {
+    this.handleModalVisibilityToggle("scheduleMeeting");
+  };
+
+  handleInputChange = (e, id) => {
+    this.setState({
+      formData: {
+        ...this.state.formData,
+        [id]: {
+          ...this.state.formData[id],
+          value: e.target.value,
+          touched: true,
+          valid: validate(
+            e.target.value,
+            this.state.formData[id].validationRules
+          )
+        }
+      }
+    });
+  };
+
+  handleSubscriptionEmailChange = e => {
+    this.setState({subscriptionEmail: {...this.state.subscriptionEmail, value:e.target.value} });
+  };
+
+  handleSubscriptionEmailSubmit = e => {
+    e.preventDefault();
+    alert("submitting from business index page");
+  };
 
   renderBusinessHeroSection = () => {
     return (
@@ -179,7 +283,7 @@ class BusinessIndexPage extends React.Component {
           <div className="row">
             {businessSolutionPoints.map(item => {
               return (
-                <div className="col-md-4">
+                <div className="col-md-4" key={uuid()}>
                   <SolutionForCompaniesList item={item} />
                 </div>
               );
@@ -328,7 +432,7 @@ class BusinessIndexPage extends React.Component {
           <div className="row" style={{ margin: "5% 0 5% 0" }}>
             {cardsData.map(item => {
               return (
-                <div className="col-md-4">
+                <div className="col-md-4" key={uuid()}>
                   <SubscriptionPlanCard {...item} />
                 </div>
               );
@@ -342,45 +446,63 @@ class BusinessIndexPage extends React.Component {
   renderArrangeMeetingBtn = () => {
     return (
       <div className="container">
-        <style jsx>
-          {businessPageStyles}
-        </style>
+        <style jsx>{businessPageStyles}</style>
         <div className="col-md-12">
           <div className="arrangeMeetingBtnContainer">
-            <button className="arrangeMeetingBtn">Arrange a meeting</button>
+            <button
+              className="arrangeMeetingBtn"
+              onClick={this.handleArrangeMeetingBtnClick}
+            >
+              Arrange a meeting
+            </button>
           </div>
         </div>
       </div>
     );
   };
 
-  renderFooter = ()=>{
-    return(
+  renderFooter = () => {
+    return (
       <>
-      <style jsx>
-        {businessPageStyles}
-      </style>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12">
-            <div className="footerLogoContainer">
-              <img src="/static/images/logo_footer.png" />
+        <style jsx>{businessPageStyles}</style>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="footerLogoContainer">
+                <img src="/static/images/logo_footer.png" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </>
-    )
-  }
+    );
+  };
 
-  renderModal = ()=>{
-    return(
-      <CustomModal showModal={this.state.showModal} handleModalClose={this.handleModalVisibilityToggle}>
-        <EmailSubscription />
-        {/* <ScheduleMeeting/> */}
+  renderModal = () => {
+    const { modalId } = this.state;
+    return (
+      <CustomModal
+        showModal={this.state.showModal}
+        handleModalClose={this.handleModalVisibilityToggle}
+        modalCustomStyles={{ background: "#f9f9f9" }}
+      >
+        {modalId === "email" ? (
+          <EmailSubscription
+            value={this.state.subscriptionEmail.value}
+            handleEmailChange={this.handleSubscriptionEmailChange}
+            handleSubscriptionEmailSubmit={this.handleSubscriptionEmailSubmit}
+            websiteOwner={this.state.websiteOwner}
+            handleWebsiteOwnerChange = {value => this.setState({websiteOwner:value})}
+          />
+        ) : (
+          <ScheduleMeeting
+            formData={{ ...this.state.formData }}
+            handleInputChange={this.handleInputChange}
+          />
+        )}
       </CustomModal>
-    )
-  }
+    );
+  };
 
   render() {
     return (
