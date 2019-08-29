@@ -29,11 +29,15 @@ class EmailSubscription extends React.Component {
             status={this.props.subscriptionEmailSent}
           >
             {/* First child for loading state */}
-            <div style={{textAlign:"center"}}>Adding your email ... <i className="fa fa-check"></i></div>
+            <div style={{ textAlign: "center" }}>
+              <div style={{height:"32px", width:"32px", textAlign:"center", margin:"0 auto"}}>
+                  <img src="/static/images/dotsLoader.gif" style={{maxWidth:"100%", height:"auto"}}/>
+              </div>
+            </div>
             {/* Second child for success state */}
-            <div style={{textAlign:"center"}}>Email added successfully <i className="fa fa-check"></i></div>
+            <div style={{textAlign:"center", color:"#21bc61"}}>Email added successfully <i className="fa fa-check"></i></div>
             {/* third child for error state */}
-            <div style={{textAlign:"center"}}>Some error occured, please try again later <i className="fa fa-check"></i></div>
+            <div style={{textAlign:"center", color:"red"}}>Some error occured, please try again later <i className="fa fa-close"></i></div>
           </UniversalLoader>
         )}
       </div>
