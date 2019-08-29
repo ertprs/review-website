@@ -53,7 +53,7 @@ const handleFormSubmit = (
         setSubmitted("yes");
         setTimeout(()=>{
           Router.push(`/reviews/${queryData.domain_name}`)
-        }, 2000)
+        }, 6000)
       })
       .catch(err => {
         console.log(err);
@@ -61,7 +61,7 @@ const handleFormSubmit = (
         setSubmitted("error");
         setTimeout(()=>{
           Router.push(`/reviews/${queryData.domain_name}`)
-        }, 2000)
+        }, 6000)
       });
   }
 };
