@@ -178,8 +178,24 @@ export const businessPageStyles = css`
 
 
   /*---- Media queries ----*/
+
+  @media screen and (max-width:768px){
+    /*---- Business info section ----*/
+    .businessInfoHeader{
+      margin-bottom:10%;
+    }
+  }
+
+  @media screen and (max-width:767px){
+    /*---- Business info section ----*/
+    .businessInfoHeader{
+      margin-bottom:10%;
+    }
+  }
+
   @media screen and (max-width:590px){
 
+    /*---- Business hero section ----*/
     .businessHeroSection{
       margin-bottom:17%;
     }
@@ -216,6 +232,14 @@ export const businessPageStyles = css`
     .businessSearchBoxContainer{
       width:90%;
       margin: 4% auto;
+    }
+  }
+
+  @media screen and (max-width:490px){
+    /*---- Business info section ----*/
+    .businessInfoHeader h2{
+      font-size:2rem;
+      margin-bottom:15%;
     }
   }
 `;
