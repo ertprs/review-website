@@ -4,6 +4,7 @@ export const leaveReviewStyles = css`
   .leaveReviewContainer {
     margin-top: 75.5px;
     margin-bottom: 5%;
+    height:99vh;
   }
   .leaveReviewHeaderContainer {
     text-align: center;
