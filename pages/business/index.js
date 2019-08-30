@@ -214,7 +214,7 @@ class BusinessIndexPage extends React.Component {
               <img src="/static/business/index/images/gradientLogo.png" />
             </div>
           </div>
-          <div>
+          <div className="businessHeroHeadingsContainer">
             <h1 className="businessHeroHeading">increase your sales</h1>
             <h3 className="businessHeroSubHeading">
               by improving your trustworthiness online
@@ -265,8 +265,7 @@ class BusinessIndexPage extends React.Component {
     ];
     return (
       <div
-        className="container"
-        style={{ marginTop: "5%", marginBottom: "5%" }}
+        className="container businessInfoContainer"
       >
         <style jsx>{businessPageStyles}</style>
         <div className="row">
@@ -327,8 +326,7 @@ class BusinessIndexPage extends React.Component {
 
     return (
       <div
-        className="container"
-        style={{ marginTop: "5%", marginBottom: "5%" }}
+        className="container businessSolutionContainer"
       >
         <style jsx>{businessPageStyles}</style>
         <div className="row">
@@ -587,7 +585,7 @@ class BusinessIndexPage extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{background:"#f9f9f9"}}>
         <style jsx>{layoutStyles}</style>
         {this.renderModal()}
         {this.renderBusinessHeroSection()}
