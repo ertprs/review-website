@@ -30,7 +30,6 @@ export const subscriptionPlanCardStyles =css`
   }
   .subscriptionPlanCardBody ul li {
     padding-left:1rem;
-
   }
 
   .subscriptionPlanCardBody .standard li{
@@ -39,6 +38,7 @@ export const subscriptionPlanCardStyles =css`
 
   .subscriptionPlanCardBody .premium li{
     margin-bottom:2.03rem;
+
   }
 
   .subscriptionPlanCardBody .professional li{

@@ -137,6 +137,10 @@ export const businessPageStyles = css`
     margin:25% 0 10% 0;
   }
 
+  .cardContainer{
+    max-width:85%;
+    margin:0 auto;
+  }
   /*-----  Arrange a meeting Btn ----*/
   .arrangeMeetingBtnContainer{
     text-align:center;

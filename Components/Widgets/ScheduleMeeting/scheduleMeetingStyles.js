@@ -50,4 +50,10 @@ export const scheduleMeetingStyles = css`
         font-size:0.95rem;
         margin-bottom:5%;
     }
+
+    @media screen and (max-width:343px){
+        .scheduleMeetingHeader .heading{
+            font-size:0.9rem;
+        }
+    }
 `;

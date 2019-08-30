@@ -303,7 +303,7 @@ class BusinessIndexPage extends React.Component {
         stepCount: "1",
         stepTitle: "your website and trustsearch widget",
         stepSubTitle:
-          "Build your trust online &amp; get better conversion rate",
+          "Build your trust online & get better conversion rate",
         stepBody:
           "Calculated trustworthiness based on your client reviews and existing data from around the web about your company.",
         stepImage:"screen_1.png"
@@ -469,7 +469,7 @@ class BusinessIndexPage extends React.Component {
         cardBody: [
           "Claim ownership and add trust facts about your business",
           "Textual, photo and video reviews",
-          "Collect &amp; respond to Company reviews",
+          "Collect & respond to Company reviews",
           "100 automated invitations per month",
           "Show your reviews and TrustScore on your Website with Widget."
         ],
