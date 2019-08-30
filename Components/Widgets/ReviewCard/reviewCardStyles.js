@@ -83,6 +83,12 @@ export const reviewCardStyles = css`
       align-self: flex-start;
       margin: 1% 0 1% 0;
     }
+
+    /*----- business variant ------*/
+    .businessPicContainer{
+      height:90px;
+      width:90px;
+    }
   }
 
   @media only screen and (max-width:480px){
@@ -92,6 +98,15 @@ export const reviewCardStyles = css`
     .reviewProfilePic{
       align-self:flex-start;
       margin-bottom:2%;
+    }
+
+    /*---- business variant ----*/
+    .businessProfilePic{
+      align-self:center;
+      margin : 0 0 5% 0;
+    }
+    .businessText, .businessTitle{
+      text-align:center;
     }
   }
 

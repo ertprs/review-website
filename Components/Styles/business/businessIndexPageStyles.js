@@ -5,25 +5,31 @@ export const businessPageStyles = css`
   .capitalize {
     text-transform: uppercase;
   }
+
+  .triangleBackground{
+    background-image:url("/static/business/index/images/triangle_white.svg");
+    background-size:contain;
+    background-repeat: no-repeat;
+    background-position: top left;
+  }
   /*---- Business hero section ----*/
   .businessHeroContainer {
     display: flex;
-    align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: auto;
     width: 100%;
-    background-image: url("/static/business/index/images/background_image.jpg");
+    background-image: url("/static/business/index/images/background_image.png");
+    background-size:cover;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top;
   }
 
   .businessHeroSection {
+    margin:10% 0 32% 0;
   }
 
   .businessHeroLogoContainer {
-    /* display:flex;
-        justify-content:center; */
     margin-bottom: 9%;
   }
   .businessHeroLogo {
@@ -63,6 +69,11 @@ export const businessPageStyles = css`
   /*---- Business HERO section END----*/
 
   /*---- Business Info section ----*/
+
+  .businessInfoContainer, .businessSolutionContainer{
+    margin-top: 5%;
+    margin-bottom: 18%; 
+  }
 
   .businessInfoHeader,
   .whyToHeader {
@@ -132,6 +143,10 @@ export const businessPageStyles = css`
     margin:25% 0 10% 0;
   }
 
+  .cardContainer{
+    max-width:85%;
+    margin:0 auto;
+  }
   /*-----  Arrange a meeting Btn ----*/
   .arrangeMeetingBtnContainer{
     text-align:center;
@@ -169,5 +184,125 @@ export const businessPageStyles = css`
   .footerLogoContainer img{
     max-width:100%;
     height:auto;
+  }
+
+
+  /*---- Media queries ----*/
+
+
+  @media screen and (max-width:768px){
+    /*---- Business info section ----*/
+    .businessInfoHeader{
+      margin-bottom:10%;
+    }
+  }
+
+  @media screen and (max-width:767px){
+    /*---- Business info section ----*/
+    .businessInfoHeader{
+      margin-bottom:10%;
+    }
+    .businessSolutionCombinedImg{
+      display:none;
+    }
+
+    /*---- Business solution section ----*/
+    .businessSolutionSubHeader{
+      margin-bottom:6%;
+    }
+    .businessSolutionSubHeader p{
+      font-size:1rem;
+    }
+
+    /*---- Whyto section ----*/
+    .whyToNumberBox{
+      margin-bottom:8%;
+    }
+
+    .whyToNumber .symbol{
+      margin-left:3%;
+      font-size:2.3rem;
+    }
+  }
+
+  @media screen and (max-width:590px){
+
+    /*---- Business hero section ----*/
+    .businessHeroSection{
+      margin-bottom:17%;
+    }
+
+    .businessHeroLogoContainer{
+      margin-bottom:7.5%;
+    }
+   
+    .businessHeroLogo{
+      margin:0 0 0 3%;
+      width:200px;
+    }
+
+    .businessHeroHeadingsContainer{
+      max-width:90%;
+      margin:0 auto;
+    }
+
+    .businessHeroHeading{
+      font-size:2.3rem;
+      margin:0 0 4.5% 0;
+    }
+    .businessHeroSubHeading{
+      font-size:1.2rem;
+      margin:0 0 5.2% 0;
+    }
+    .businessSearchboxLabel{
+      text-align:left;
+      max-width:90%;
+      margin: 0 auto;
+      font-size:1.1rem;
+    }
+
+    .businessSearchBoxContainer{
+      width:90%;
+      margin: 4% auto;
+    }
+  }
+
+  @media screen and (max-width:520px){
+    /*---- WhyTo section ----*/
+    .whyToHeader{
+      text-align:center;
+    }
+    .whyToHeader h2{
+      font-size:2.05rem;
+    }
+  }
+
+  @media screen and (max-width:363px){
+    /*---- WhyTo section ----*/
+    .whyToHeader{
+      text-align:right;
+    }
+  }
+
+  @media screen and (max-width:490px){
+    /*---- Business info section ----*/
+    .businessInfoHeader h2{
+      font-size:2rem;
+      margin-bottom:15%;
+    }
+  }
+
+  @media screen and (max-width:417px){
+    .businessSolutionHeader{
+      margin-bottom:7%;
+    }
+
+    .businessSolutionHeader h2{
+      font-size:2.1rem;
+    }
+
+    .businessSolutionSubHeader{
+      margin-bottom:10%;
+    }
   }
 `;

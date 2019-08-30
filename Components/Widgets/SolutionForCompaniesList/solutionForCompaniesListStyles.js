@@ -46,4 +46,63 @@ export const solutionForCompaniesStyles = css`
         font-size:0.9rem;
     }
 
+    .businessSolutionStepImage{
+        display:none;
+    }
+
+    .businessSolutionStepImageContainer{
+        width:100%;
+        height:auto;
+    }
+
+    .businessSolutionStepImageContainer img{
+        max-width:100%;
+        height:auto;
+    }
+
+    /*---- media queries ---*/
+    @media screen and (max-width:991px){
+    .businessSolutionSteps{
+        flex-direction:column;
+    }
+    
+    .businessSolutionStepCountContainer{
+        margin:4% 0 8% 0;
+    }
+    
+    } 
+
+    @media screen and (max-width:767px){
+
+        .businessSolutionSteps{
+            margin-bottom:7%;
+        }
+
+        .businessSolutionStepCountContainer{
+            margin:0;
+        }
+
+        .businessSolutionStepSubHeader{
+            margin-top:3%;
+        }
+
+        .businessSolutionStepBody{
+            margin-top:4.5%;
+        }
+
+        .businessSolutionStepImage{
+            display:block;
+        }
+    }
+
+    @media screen and (max-width:375px){
+        .businessSolutionStepCountContainer{
+        margin:0 0 3% 0;
+        }
+
+        .businessSolutionStepHeader h6{
+            font-size:0.9rem;
+            margin-bottom:5%;
+        }
+    }
 `;

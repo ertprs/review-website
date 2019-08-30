@@ -32,4 +32,10 @@ export const emailSubscriptionStyles = css`
         color:red;
         font-size:0.9rem;
     }
+
+    @media screen and (max-width:374px){
+        .emailSubscriptionHeader .heading{
+            font-size:0.8rem;
+        }
+    }
 `;

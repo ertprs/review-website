@@ -17,6 +17,11 @@ const SolutionForCompaniesList = ({ item }) => {
         <div className="businessSolutionStepBody">
           <p>{item.stepBody}</p>
         </div>
+        <div className="businessSolutionStepImage">
+          <div className="businessSolutionStepImageContainer">
+            <img src={`/static/business/index/images/${item.stepImage}`} />
+          </div>
+        </div>
       </div>
     </div>
   );

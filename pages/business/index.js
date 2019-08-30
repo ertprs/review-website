@@ -214,7 +214,7 @@ class BusinessIndexPage extends React.Component {
               <img src="/static/business/index/images/gradientLogo.png" />
             </div>
           </div>
-          <div>
+          <div className="businessHeroHeadingsContainer">
             <h1 className="businessHeroHeading">increase your sales</h1>
             <h3 className="businessHeroSubHeading">
               by improving your trustworthiness online
@@ -264,11 +264,11 @@ class BusinessIndexPage extends React.Component {
       }
     ];
     return (
+      <div>
+          <style jsx>{businessPageStyles}</style>
       <div
-        className="container"
-        style={{ marginTop: "5%", marginBottom: "5%" }}
+        className="container businessInfoContainer"
       >
-        <style jsx>{businessPageStyles}</style>
         <div className="row">
           <div className="col-md-12">
             <div className="businessInfoHeader">
@@ -295,6 +295,7 @@ class BusinessIndexPage extends React.Component {
           </div>
         </div>
       </div>
+      </div>
     );
   };
 
@@ -304,9 +305,10 @@ class BusinessIndexPage extends React.Component {
         stepCount: "1",
         stepTitle: "your website and trustsearch widget",
         stepSubTitle:
-          "Build your trust online &amp; get better conversion rate",
+          "Build your trust online & get better conversion rate",
         stepBody:
-          "Calculated trustworthiness based on your client reviews and existing data from around the web about your company."
+          "Calculated trustworthiness based on your client reviews and existing data from around the web about your company.",
+        stepImage:"screen_1.png"
       },
       {
         stepCount: "2",
@@ -314,21 +316,22 @@ class BusinessIndexPage extends React.Component {
         stepSubTitle:
           "Your website visitor will click to check proof of your trust with third party - The TrustSearch",
         stepBody:
-          "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversin rate and more clients!"
+          "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversin rate and more clients!",
+          stepImage:"screen_2.png"
       },
       {
         stepCount: "3",
         stepTitle: "buying decision",
         stepSubTitle:
           "The website visitor is persuaded, that he can trust your business.",
-        stepBody: "And then the client BUYS YOUR PRODUCT or BECOMES YOUR CLIENT"
+        stepBody: "And then the client BUYS YOUR PRODUCT or BECOMES YOUR CLIENT",
+        stepImage:"screen_3.png"
       }
     ];
 
     return (
       <div
-        className="container"
-        style={{ marginTop: "5%", marginBottom: "5%" }}
+        className="container businessSolutionContainer"
       >
         <style jsx>{businessPageStyles}</style>
         <div className="row">
@@ -365,10 +368,12 @@ class BusinessIndexPage extends React.Component {
           </div>
           <div className="row" style={{ marginTop: "2%" }}>
             <div className="col-md-12">
+              <div className="businessSolutionCombinedImg">
               <img
                 src="/static/business/index/images/all_together_text.png"
                 style={{ maxWidth: "100%", height: "auto" }}
               />
+              </div>
             </div>
           </div>
         </div>
@@ -441,7 +446,7 @@ class BusinessIndexPage extends React.Component {
           <div className="col-md-3">
             <div className="whyToNumberBox">
               <div className="whyToNumber">
-                <span className="symbol" style={{ color: "#888" }}>
+                <span className="symbol" style={{ color: "#888", marginLeft:"0" }}>
                   X
                 </span>
                 <span className="number" style={{ color: "#888" }}>
@@ -466,7 +471,7 @@ class BusinessIndexPage extends React.Component {
         cardBody: [
           "Claim ownership and add trust facts about your business",
           "Textual, photo and video reviews",
-          "Collect &amp; respond to Company reviews",
+          "Collect & respond to Company reviews",
           "100 automated invitations per month",
           "Show your reviews and TrustScore on your Website with Widget."
         ],
@@ -506,7 +511,7 @@ class BusinessIndexPage extends React.Component {
           <div className="row" style={{ margin: "5% 0 5% 0" }}>
             {cardsData.map(item => {
               return (
-                <div className="col-md-4" key={uuid()}>
+                <div className="col-md-4" style={{marginBottom:"10%"}} key={uuid()}>
                   <SubscriptionPlanCard {...item} />
                 </div>
               );
@@ -587,8 +592,9 @@ class BusinessIndexPage extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{background:"#f9f9f9"}}>
         <style jsx>{layoutStyles}</style>
+        <style jsx>{businessPageStyles}</style>
         {this.renderModal()}
         {this.renderBusinessHeroSection()}
         {this.renderBusinessInfoSection()}
