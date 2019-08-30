@@ -264,10 +264,11 @@ class BusinessIndexPage extends React.Component {
       }
     ];
     return (
+      <div>
+          <style jsx>{businessPageStyles}</style>
       <div
         className="container businessInfoContainer"
       >
-        <style jsx>{businessPageStyles}</style>
         <div className="row">
           <div className="col-md-12">
             <div className="businessInfoHeader">
@@ -293,6 +294,7 @@ class BusinessIndexPage extends React.Component {
             })}
           </div>
         </div>
+      </div>
       </div>
     );
   };
@@ -592,6 +594,7 @@ class BusinessIndexPage extends React.Component {
     return (
       <div style={{background:"#f9f9f9"}}>
         <style jsx>{layoutStyles}</style>
+        <style jsx>{businessPageStyles}</style>
         {this.renderModal()}
         {this.renderBusinessHeroSection()}
         {this.renderBusinessInfoSection()}

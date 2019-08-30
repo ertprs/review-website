@@ -5,6 +5,13 @@ export const businessPageStyles = css`
   .capitalize {
     text-transform: uppercase;
   }
+
+  .triangleBackground{
+    background-image:url("/static/business/index/images/triangle_white.svg");
+    background-size:contain;
+    background-repeat: no-repeat;
+    background-position: top left;
+  }
   /*---- Business hero section ----*/
   .businessHeroContainer {
     display: flex;
@@ -12,6 +19,7 @@ export const businessPageStyles = css`
     height: auto;
     width: 100%;
     background-image: url("/static/business/index/images/background_image.png");
+    background-size:cover;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top;
@@ -22,8 +30,6 @@ export const businessPageStyles = css`
   }
 
   .businessHeroLogoContainer {
-    /* display:flex;
-        justify-content:center; */
     margin-bottom: 9%;
   }
   .businessHeroLogo {
