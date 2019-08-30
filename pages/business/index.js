@@ -444,7 +444,7 @@ class BusinessIndexPage extends React.Component {
           <div className="col-md-3">
             <div className="whyToNumberBox">
               <div className="whyToNumber">
-                <span className="symbol" style={{ color: "#888" }}>
+                <span className="symbol" style={{ color: "#888", marginLeft:"0" }}>
                   X
                 </span>
                 <span className="number" style={{ color: "#888" }}>

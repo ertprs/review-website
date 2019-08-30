@@ -203,6 +203,16 @@ export const businessPageStyles = css`
     .businessSolutionSubHeader p{
       font-size:1rem;
     }
+
+    /*---- Whyto section ----*/
+    .whyToNumberBox{
+      margin-bottom:8%;
+    }
+
+    .whyToNumber .symbol{
+      margin-left:3%;
+      font-size:2.3rem;
+    }
   }
 
   @media screen and (max-width:590px){
@@ -244,6 +254,23 @@ export const businessPageStyles = css`
     .businessSearchBoxContainer{
       width:90%;
       margin: 4% auto;
+    }
+  }
+
+  @media screen and (max-width:520px){
+    /*---- WhyTo section ----*/
+    .whyToHeader{
+      text-align:center;
+    }
+    .whyToHeader h2{
+      font-size:2.05rem;
+    }
+  }
+
+  @media screen and (max-width:363px){
+    /*---- WhyTo section ----*/
+    .whyToHeader{
+      text-align:right;
     }
   }
 
