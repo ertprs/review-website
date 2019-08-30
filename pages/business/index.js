@@ -305,7 +305,8 @@ class BusinessIndexPage extends React.Component {
         stepSubTitle:
           "Build your trust online &amp; get better conversion rate",
         stepBody:
-          "Calculated trustworthiness based on your client reviews and existing data from around the web about your company."
+          "Calculated trustworthiness based on your client reviews and existing data from around the web about your company.",
+        stepImage:"screen_1.png"
       },
       {
         stepCount: "2",
@@ -313,14 +314,16 @@ class BusinessIndexPage extends React.Component {
         stepSubTitle:
           "Your website visitor will click to check proof of your trust with third party - The TrustSearch",
         stepBody:
-          "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversin rate and more clients!"
+          "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversin rate and more clients!",
+          stepImage:"screen_2.png"
       },
       {
         stepCount: "3",
         stepTitle: "buying decision",
         stepSubTitle:
           "The website visitor is persuaded, that he can trust your business.",
-        stepBody: "And then the client BUYS YOUR PRODUCT or BECOMES YOUR CLIENT"
+        stepBody: "And then the client BUYS YOUR PRODUCT or BECOMES YOUR CLIENT",
+        stepImage:"screen_3.png"
       }
     ];
 
@@ -363,10 +366,12 @@ class BusinessIndexPage extends React.Component {
           </div>
           <div className="row" style={{ marginTop: "2%" }}>
             <div className="col-md-12">
+              <div className="businessSolutionCombinedImg">
               <img
                 src="/static/business/index/images/all_together_text.png"
                 style={{ maxWidth: "100%", height: "auto" }}
               />
+              </div>
             </div>
           </div>
         </div>

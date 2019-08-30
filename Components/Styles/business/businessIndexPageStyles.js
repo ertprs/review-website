@@ -179,6 +179,7 @@ export const businessPageStyles = css`
 
   /*---- Media queries ----*/
 
+
   @media screen and (max-width:768px){
     /*---- Business info section ----*/
     .businessInfoHeader{
@@ -190,6 +191,17 @@ export const businessPageStyles = css`
     /*---- Business info section ----*/
     .businessInfoHeader{
       margin-bottom:10%;
+    }
+    .businessSolutionCombinedImg{
+      display:none;
+    }
+
+    /*---- Business solution section ----*/
+    .businessSolutionSubHeader{
+      margin-bottom:6%;
+    }
+    .businessSolutionSubHeader p{
+      font-size:1rem;
     }
   }
 
@@ -240,6 +252,20 @@ export const businessPageStyles = css`
     .businessInfoHeader h2{
       font-size:2rem;
       margin-bottom:15%;
+    }
+  }
+
+  @media screen and (max-width:417px){
+    .businessSolutionHeader{
+      margin-bottom:7%;
+    }
+
+    .businessSolutionHeader h2{
+      font-size:2.1rem;
+    }
+
+    .businessSolutionSubHeader{
+      margin-bottom:10%;
     }
   }
 `;
