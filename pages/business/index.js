@@ -509,7 +509,7 @@ class BusinessIndexPage extends React.Component {
           <div className="row" style={{ margin: "5% 0 5% 0" }}>
             {cardsData.map(item => {
               return (
-                <div className="col-md-4" key={uuid()}>
+                <div className="col-md-4" style={{marginBottom:"10%"}} key={uuid()}>
                   <SubscriptionPlanCard {...item} />
                 </div>
               );
