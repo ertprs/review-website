@@ -13,16 +13,6 @@ export const aboutPageStyles = css`
     position: relative;
   }
 
-  .aboutHeroContainer::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 200px;
-    background: url('/static/business/index/images/triangle_white.svg');
-    background-repeat:no-repeat;
-  }
-
   .aboutHeroLogoContainer {
     height: 100px;
     width: 200px;
@@ -146,5 +136,18 @@ export const aboutPageStyles = css`
     }
     .investorsInfo{
         margin-top: 5%;
+    }
+
+    /*--------- Desktop team section ---------*/
+    .desktopTeamSectionContainer{
+        margin:10% 0 10% 0;
+    }
+
+    .desktopTeamSectionHeader{
+      margin-bottom: 5%;
+    }
+    .desktopTeamSectionHeader h1{
+        text-transform:uppercase;
+        font-weight:400;
     }
 `;

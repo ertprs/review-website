@@ -3,6 +3,7 @@ import uuid from "uuid/v1";
 import { aboutPageStyles } from "../Components/Styles/aboutPageStyles";
 import { layoutStyles } from "../style";
 import SolutionForCompaniesList from "../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
+import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 
 class About extends React.Component {
   renderAboutHero = () => {
@@ -285,6 +286,109 @@ class About extends React.Component {
     );
   };
 
+  renderDesktopTeamSection = () => {
+    const teamProfileData = [
+      {
+        image: "/static/about/images/arturs.png",
+        name: "Arturs Rasnacis",
+        designation: "founder, ceo",
+        specialistIn: ["IT development", "Cyber security"]
+      },
+      {
+        image: "/static/about/images/mikus.png",
+        name: "Mikus Losans",
+        designation: "co-founder, cbo",
+        specialistIn: ["Business development", "Startups"]
+      },
+      {
+        image: "/static/about/images/maxim.png",
+        name: "Maksim Kuzmin",
+        designation: "co-founder, coo",
+        specialistIn: ["Legal issues", "Finance"]
+      },
+      {
+        image: "/static/about/images/agris.png",
+        name: "Agris Vitolins",
+        designation: "senior system administrator",
+        specialistIn: ["IT development"]
+      },
+      {
+        image: "/static/about/images/zane.png",
+        name: "Zane Ingulevica",
+        designation: "developer, designer",
+        specialistIn: ["Design", "IT development"]
+      },
+      {
+        image: "/static/about/images/dmitrijs.png",
+        name: "Dmitrijs Valaks",
+        designation: "senior front-end dev",
+        specialistIn: ["IT development", "blockchain"]
+      },
+      {
+        image: "/static/about/images/vladimirs.png",
+        name: "Vladimir Vorobjovs",
+        designation: "chief technology",
+        specialistIn: ["back-end developer", "blockchain"]
+      },
+      {
+        image: "/static/about/images/guna.png",
+        name: "Guna Rasnace",
+        designation: "marketing specialist",
+        specialistIn: []
+      },
+      {
+        image: "/static/about/images/ronalds.png",
+        name: "Ronalds Sovas",
+        designation: "back-end developer",
+        specialistIn: []
+      },
+      {
+        image: "/static/about/images/mohd.png",
+        name: "Mohd Faisal",
+        designation: "front-end developer & a javascript enthusiast",
+        specialistIn: []
+      },
+      {
+        image: "/static/about/images/ravi.png",
+        name: "Ravi Semwal",
+        designation: "back-end developer",
+        specialistIn: []
+      },
+      {
+        image: "/static/about/images/aivis.png",
+        name: "Aivis Krafts",
+        designation: "graphic designer",
+        specialistIn: []
+      }
+    ];
+
+    return (
+      <div className="desktopTeamSectionContainer">
+        <style jsx>{aboutPageStyles}</style>
+        <div className="container">
+          <div className="desktopTeamSectionHeader">
+            <h1>team</h1>
+          </div>
+          <div className="desktopTeamGrid">
+            <div className="row">
+              {teamProfileData.map(item => {
+                return(<div className="col-md-4" style={{marginBottom:"2%"}}>
+                  <ReviewCard
+                    image={item.image}
+                    name={item.name}
+                    designation={item.designation}
+                    specialistIn={item.specialistIn}
+                    variant="team"
+                  />
+                </div>);
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div style={{ backgroundColor: "#f5f5f5" }}>
@@ -295,6 +399,7 @@ class About extends React.Component {
         {this.renderCompaniesProblemSection()}
         {this.renderTrustHelpSection()}
         {this.renderInvestorsSection()}
+        {this.renderDesktopTeamSection()}
       </div>
     );
   }
