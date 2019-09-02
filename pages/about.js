@@ -369,7 +369,7 @@ class About extends React.Component {
           <div className="desktopTeamSectionHeader">
             <h1>team</h1>
           </div>
-          <div className="desktopTeamGrid">
+          <div className="desktopTeamGridContainer">
             <div className="row">
               {teamProfileData.map(item => {
                 return(<div className="col-md-4" style={{marginBottom:"2%"}}>
@@ -389,6 +389,42 @@ class About extends React.Component {
     );
   };
 
+  renderFooter = ()=>{
+    return(
+      <div className="registerInfoContainer">
+        <style jsx>
+          {aboutPageStyles}
+        </style>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="registerImageContainer">
+                <img src="/static/about/images/attistibas_plans.png" style={{maxWidth:"100%", height:"auto"}} />
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <div className="registerationInfo">
+                <div>Liguma registracijas numurus: IZ-L2019 / 55</div>
+                <div>datums: 03.06.2019 16:14:07</div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <div className="footer">
+              <div className="footerImageContainer">
+                <img src="/static/images/logo_footer.png" style={{maxWidth:"100%", height:"auto"}} />
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div style={{ backgroundColor: "#f5f5f5" }}>
@@ -400,6 +436,7 @@ class About extends React.Component {
         {this.renderTrustHelpSection()}
         {this.renderInvestorsSection()}
         {this.renderDesktopTeamSection()}
+        {this.renderFooter()}
       </div>
     );
   }

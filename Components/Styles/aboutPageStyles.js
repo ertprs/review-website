@@ -35,14 +35,13 @@ export const aboutPageStyles = css`
 
   /*------- User problem section styling -------*/
   .userProblemContainer {
-    margin: 10% 0 18% 0;
+    margin: 10% 0 22% 0;
     position:relative;
   }
 
   .userProblemImageContainer {
     max-height: 400px;
     max-width: 400px;
-    /* margin:0 auto; */
   }
 
   .userProblemText {
@@ -139,6 +138,11 @@ export const aboutPageStyles = css`
     }
 
     /*--------- Desktop team section ---------*/
+    .desktopTeamGridContainer{
+      max-width:99%;
+      margin:0 auto;
+    }
+
     .desktopTeamSectionContainer{
         margin:10% 0 10% 0;
     }
@@ -149,5 +153,31 @@ export const aboutPageStyles = css`
     .desktopTeamSectionHeader h1{
         text-transform:uppercase;
         font-weight:400;
+    }
+
+    /*-------- Register info section ------*/
+    .registerInfoContainer{
+      margin:10% 0 0 0;
+    }
+
+    .registerImageContainer{
+      max-width:80%;
+      margin:0 auto;
+      text-align:center;
+    }
+
+    .registerationInfo{
+      margin-top:5%;
+      text-align:center;
+    }
+    /*------ Styling the footer section ------*/
+    .footer{
+      margin: 5% 0 5% 0;
+    }
+
+    .footerImageContainer{
+      height:80px;
+      width:80px;
+      margin:0 auto;
     }
 `;
