@@ -86,12 +86,52 @@ class About extends React.Component {
     );
   };
 
+  renderUserSolutionSection = () => {
+    return (
+      <div className="userSolutionContainer">
+        <style jsx>{aboutPageStyles}</style>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
+              <div className="userSolutionHeader">
+                <h1>
+                  <span style={{ textTransform: "uppercase" }}>solution</span>{" "}
+                  for internet users
+                </h1>
+              </div>
+              <div className="userSolutionBody">
+                <p>
+                  SearchEngine and Application that gives instant crowd-sourced
+                  trust and safety background check for web pages and companies.
+                  Gathering data from around the web in the search results and
+                  rewarding internet users, who are giving reviews and reports
+                  on websites.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <div className="userSolutionImageContainer">
+                <img
+                  src="/static/about/images/solution.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div style={{ backgroundColor: "#f5f5f5" }}>
         <style jsx>{layoutStyles}</style>
         {this.renderAboutHero()}
         {this.renderUserProblemSection()}
+        {this.renderUserSolutionSection()}
       </div>
     );
   }

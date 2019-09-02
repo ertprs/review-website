@@ -58,4 +58,20 @@ export const aboutPageStyles = css`
     .userProblemTextBody{
 
     }
+
+    /*---- User solution section styling ------*/
+    .userSolutionContainer{
+        margin-bottom:5%;
+    }
+
+    .userSolutionHeader h1{
+        font-weight:lighter;
+        font-weight:400;
+        margin-bottom:2rem;
+    }
+    .userSolutionImageContainer{
+        height:100%;
+        width:100%;
+        margin-top:2%;
+    }
 `;
