@@ -69,6 +69,26 @@ export const reviewCardStyles = css`
     font-size:0.9rem;
     text-align:left;
   }
+
+  /*-------- Team variant styling ---------*/
+  .individualName{
+    font-weight:bold;
+    font-size:1rem;
+  }
+
+  .individualDesignation{
+    text-transform:uppercase;
+    font-size:0.8rem;
+  }
+
+  .specializationItem{
+    font-size:0.7rem;
+  }
+
+  .specializationItem:first-child{
+    margin-top:2%;
+  }
+
   /*--------- Business varinat styling end -----*/
 
   @media only screen and (max-width: 991px) {

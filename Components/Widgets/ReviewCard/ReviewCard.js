@@ -4,7 +4,7 @@ import RatingsBadge from "../RatingsBadge/RatingsBadge";
 import RatingIndicators from "../RatingIndicators/RatingIndicators";
 import { reviewCardStyles } from "./reviewCardStyles";
 
-const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeight, ampImgWidth, title, body, image }) => {
+const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeight, ampImgWidth, title, body, image, designation, specialistIn}) => {
   switch (variant) {
     case "reviews":
       return (
@@ -79,6 +79,29 @@ const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeig
           </div>
         </div>
       );
+    
+    case "team":
+      return(
+        <div className="reviewCardContainer">
+          <style jsx>{reviewCardStyles}</style>
+          <div className="businessProfilePic">
+            <div className="businessPicContainer">
+              <img src={image} style={{height:"auto", maxWidth:"100%"}}/>
+            </div>
+          </div>
+          <div className="businessDetails">
+            <div className="individualName">{name.substring(0,name.indexOf(" "))}</div>
+            <div className="individualName">{name.substring(name.indexOf(" "), name.length)}</div>
+            <div className="individualDesignation">{designation}</div>
+            <div className="individualSpecialization">
+              {specialistIn.length > 0 ? specialistIn.map(item=>{
+                return <div className="specializationItem">{item}</div>
+              }): null}
+            </div>
+            {/* specialistIn */}
+          </div>
+        </div>
+      )
 
     default:
       return null;

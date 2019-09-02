@@ -6,12 +6,6 @@ export const businessPageStyles = css`
     text-transform: uppercase;
   }
 
-  .triangleBackground{
-    background-image:url("/static/business/index/images/triangle_white.svg");
-    background-size:contain;
-    background-repeat: no-repeat;
-    background-position: top left;
-  }
   /*---- Business hero section ----*/
   .businessHeroContainer {
     display: flex;
