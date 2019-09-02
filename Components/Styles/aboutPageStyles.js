@@ -107,4 +107,22 @@ export const aboutPageStyles = css`
   .companiesProblemBody {
     margin-top: 5%;
   }
+
+  /*------- Trust help section ------*/
+  .trustHelpContainer{
+        margin-bottom:5%;
+    }
+
+    .trustHelpHeader{
+        margin-bottom:15%;
+    }
+
+    .trustHelpHeader h1{
+        font-weight:400;
+    }
+
+    .trustHelpImgContainer{
+        height:100%;
+        width:100%;
+    }
 `;

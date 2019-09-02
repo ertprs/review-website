@@ -167,6 +167,62 @@ class About extends React.Component {
     );
   };
 
+  renderTrustHelpSection = () => {
+    const trustSolutionPoints = [
+      {
+        stepCount: "1",
+        stepTitle: "your website and trustsearch widget",
+        stepSubTitle: "Build your trust online & get better conversion rate",
+        stepBody:
+          "Calculated trustworthiness based on your client reviews and existing data from around the web about your company.",
+        stepImage: "screen_1.png"
+      },
+      {
+        stepCount: "2",
+        stepTitle: "your business profile on trustsearch",
+        stepSubTitle:
+          "Your website visitor will click to check proof of your trust with third party - The TrustSearch",
+        stepBody:
+          "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversin rate and more clients!",
+        stepImage: "screen_2.png"
+      }
+    ];
+
+    return (
+      <div className="trustHelpContainer">
+        <style jsx>{aboutPageStyles}</style>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-5">
+              <div className="trustHelpHeader">
+                <h1>How TrustSearch could work for your website?</h1>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            {trustSolutionPoints.map(item => {
+              return (
+                <div className="col-md-5" key={uuid()}>
+                  <SolutionForCompaniesList item={item} />
+                </div>
+              );
+            })}
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <div className="trustHelpImgContainer">
+                <img
+                  src="/static/about/images/how.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div style={{ backgroundColor: "#f5f5f5" }}>
@@ -175,6 +231,7 @@ class About extends React.Component {
         {this.renderUserProblemSection()}
         {this.renderUserSolutionSection()}
         {this.renderCompaniesProblemSection()}
+        {this.renderTrustHelpSection()}
       </div>
     );
   }
