@@ -2,6 +2,7 @@ import React from "react";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import RatingsBadge from "../RatingsBadge/RatingsBadge";
 import RatingIndicators from "../RatingIndicators/RatingIndicators";
+import uuid from 'uuid/v1';
 import { reviewCardStyles } from "./reviewCardStyles";
 
 const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeight, ampImgWidth, title, body, image, designation, specialistIn}) => {
@@ -95,7 +96,7 @@ const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeig
             <div className="individualDesignation">{designation}</div>
             <div className="individualSpecialization">
               {specialistIn.length > 0 ? specialistIn.map(item=>{
-                return <div className="specializationItem">{item}</div>
+                return <div className="specializationItem" key={uuid()}>{item}</div>
               }): null}
             </div>
             {/* specialistIn */}
