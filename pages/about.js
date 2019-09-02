@@ -366,21 +366,23 @@ class About extends React.Component {
       <div className="desktopTeamSectionContainer">
         <style jsx>{aboutPageStyles}</style>
         <div className="container">
-          <div className="desktopTeamSectionHeader">
-            <h1>team</h1>
-          </div>
           <div className="desktopTeamGridContainer">
+            <div className="desktopTeamSectionHeader">
+              <h1>team</h1>
+            </div>
             <div className="row">
               {teamProfileData.map(item => {
-                return(<div className="col-md-4" style={{marginBottom:"2%"}}>
-                  <ReviewCard
-                    image={item.image}
-                    name={item.name}
-                    designation={item.designation}
-                    specialistIn={item.specialistIn}
-                    variant="team"
-                  />
-                </div>);
+                return (
+                  <div className="col-md-4" style={{ marginBottom: "2%" }} key={uuid()}>
+                    <ReviewCard
+                      image={item.image}
+                      name={item.name}
+                      designation={item.designation}
+                      specialistIn={item.specialistIn}
+                      variant="team"
+                    />
+                  </div>
+                );
               })}
             </div>
           </div>
@@ -389,17 +391,18 @@ class About extends React.Component {
     );
   };
 
-  renderFooter = ()=>{
-    return(
+  renderFooter = () => {
+    return (
       <div className="registerInfoContainer">
-        <style jsx>
-          {aboutPageStyles}
-        </style>
+        <style jsx>{aboutPageStyles}</style>
         <div className="container">
           <div className="row">
             <div className="col-md-12">
               <div className="registerImageContainer">
-                <img src="/static/about/images/attistibas_plans.png" style={{maxWidth:"100%", height:"auto"}} />
+                <img
+                  src="/static/about/images/attistibas_plans.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
               </div>
             </div>
           </div>
@@ -414,16 +417,19 @@ class About extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <div className="footer">
-              <div className="footerImageContainer">
-                <img src="/static/images/logo_footer.png" style={{maxWidth:"100%", height:"auto"}} />
-              </div>
+                <div className="footerImageContainer">
+                  <img
+                    src="/static/images/logo_footer.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   render() {
     return (
