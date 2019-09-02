@@ -139,7 +139,7 @@ export const aboutPageStyles = css`
 
     /*--------- Desktop team section ---------*/
     .desktopTeamGridContainer{
-      max-width:99%;
+      max-width:80%;
       margin:0 auto;
     }
 
