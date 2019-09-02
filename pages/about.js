@@ -183,7 +183,7 @@ class About extends React.Component {
         stepSubTitle:
           "Your website visitor will click to check proof of your trust with third party - The TrustSearch",
         stepBody:
-          "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversin rate and more clients!",
+          "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversion rate and more clients!",
         stepImage: "screen_2.png"
       }
     ];
@@ -223,6 +223,68 @@ class About extends React.Component {
     );
   };
 
+  renderInvestorsSection = () => {
+    return (
+      <div className="investorsContainer">
+        <style jsx>{aboutPageStyles}</style>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-10 offset-md-1">
+              <div className="investorsHeader">
+                <h1>Investors and Partners</h1>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-2 offset-md-1">
+              <img
+                src="/static/about/images/inbox_grey.png"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div>
+            <div className="col-md-2">
+              <img
+                src="/static/about/images/cvlabs_grey.png"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div>
+            <div className="col-md-2">
+              <img
+                src="/static/about/images/qube_grey.png"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div>
+            <div className="col-md-2">
+              <img
+                src="/static/about/images/rtu_color.png"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div>
+            <div className="col-md-2">
+              <img
+                src="/static/about/images/bitdefender_grey.png"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-10 offset-md-1">
+              <div className="investorsInfo">
+                <p>
+                  The Information Technology Institute of Riga Technical
+                  University and Professor Janis Gabris are supporting
+                  TrustSearch in the simulation and development of a multi-level
+                  verification algorithm and implementation of Artificial
+                  Intelligence.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div style={{ backgroundColor: "#f5f5f5" }}>
@@ -232,9 +294,9 @@ class About extends React.Component {
         {this.renderUserSolutionSection()}
         {this.renderCompaniesProblemSection()}
         {this.renderTrustHelpSection()}
+        {this.renderInvestorsSection()}
       </div>
     );
   }
 }
 export default About;
-

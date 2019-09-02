@@ -10,16 +10,18 @@ export const aboutPageStyles = css`
     padding-top: 2%;
     padding-bottom: 10%;
     margin-bottom: 5%;
+    position: relative;
   }
 
-  /* .aboutHeroContainer::after {
+  .aboutHeroContainer::after {
     content: "";
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 200px;
     background: url('/static/business/index/images/triangle_white.svg');
-  } */
+    background-repeat:no-repeat;
+  }
 
   .aboutHeroLogoContainer {
     height: 100px;
@@ -44,6 +46,7 @@ export const aboutPageStyles = css`
   /*------- User problem section styling -------*/
   .userProblemContainer {
     margin: 10% 0 18% 0;
+    position:relative;
   }
 
   .userProblemImageContainer {
@@ -124,5 +127,24 @@ export const aboutPageStyles = css`
     .trustHelpImgContainer{
         height:100%;
         width:100%;
+    }
+
+    /*---- Investors section ----*/
+
+    .investorsContainer{
+        margin: 20% 0 10% 0;
+    }
+
+    .investorsHeader{
+        text-align:right;
+        margin-bottom:10%;
+    }
+
+    .investorsHeader h1{
+        font-weight:350;
+        text-transform:uppercase;
+    }
+    .investorsInfo{
+        margin-top: 5%;
     }
 `;
