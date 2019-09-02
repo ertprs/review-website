@@ -125,6 +125,48 @@ class About extends React.Component {
     );
   };
 
+  renderCompaniesProblemSection = () => {
+    return (
+      <div className="companiesProblemContainer">
+        <style jsx>{aboutPageStyles}</style>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
+              <div className="companiesProblemImgContainer">
+                <img
+                  src="/static/about/images/trust.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
+            <div
+              className="col-md-6"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <div className="companiesProblemText">
+                <div className="companiesProblemHeader">
+                  <h1 className="heading1">
+                    <span style={{ textTransform: "uppercase" }}>Problem</span>
+                  </h1>
+                  <h1 className="heading2">for companies</h1>
+                </div>
+                <div className="companiesProblemBody">
+                  <div>
+                    For website owners/companies the problem is increase
+                    conversion rate by achieving trust and safety with their
+                    band in the eyes of the site visitors that would persuade
+                    their potential clients that the company is honest and
+                    provides good services.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div style={{ backgroundColor: "#f5f5f5" }}>
@@ -132,6 +174,7 @@ class About extends React.Component {
         {this.renderAboutHero()}
         {this.renderUserProblemSection()}
         {this.renderUserSolutionSection()}
+        {this.renderCompaniesProblemSection()}
       </div>
     );
   }

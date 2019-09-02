@@ -1,77 +1,110 @@
-import css from 'styled-jsx/css';
+import css from "styled-jsx/css";
 
 export const aboutPageStyles = css`
-    /*----- Hero section styling -------*/
-    .aboutHeroContainer{
-        background:url('/static/about/images/background_girl_2.png');
-        background-size:cover;
-        background-position:center;
-        background-repeat:no-repeat;
-        padding-top:2%;
-        padding-bottom:10%;
-        margin-bottom:5%;
-    }
+  /*----- Hero section styling -------*/
+  .aboutHeroContainer {
+    background: url("/static/about/images/background_girl_2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-top: 2%;
+    padding-bottom: 10%;
+    margin-bottom: 5%;
+  }
 
-    .aboutHeroLogoContainer{
-        height:100px;
-        width:200px;
-    }
+  /* .aboutHeroContainer::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 200px;
+    background: url('/static/business/index/images/triangle_white.svg');
+  } */
 
-    .aboutHeroHeading{
-        text-transform:uppercase;
-    }
+  .aboutHeroLogoContainer {
+    height: 100px;
+    width: 200px;
+  }
 
-    .aboutHeroHeading .heading{
-        font-size:4rem;
-    }
+  .aboutHeroHeading {
+    text-transform: uppercase;
+  }
 
-    .aboutHeroImage{
-        height:420px;
-        width:100%;
-        text-align:center;
-    }
+  .aboutHeroHeading .heading {
+    font-size: 3.5rem;
+    font-weight: 650;
+  }
 
-     /*------- User problem section styling -------*/
-     .userProblemContainer{
-        margin: 10% 0 10% 0;
-    }
+  .aboutHeroImage {
+    height: 420px;
+    width: 100%;
+    text-align: center;
+  }
 
-    .userProblemImageContainer{
-        height:400px;
-        width:400px;
-        /* margin:0 auto; */
-    }
+  /*------- User problem section styling -------*/
+  .userProblemContainer {
+    margin: 10% 0 18% 0;
+  }
 
-    .userProblemText{
-        text-align:right;
-    }
+  .userProblemImageContainer {
+    max-height: 400px;
+    max-width: 400px;
+    /* margin:0 auto; */
+  }
 
-    .userProblemTextHeader{
-        margin-bottom:5%;
-    }
+  .userProblemText {
+    text-align: right;
+  }
 
-    .userProblemTextHeader .heading1, .heading2{
-        margin-bottom:0;
-        font-weight:400;
-    }
+  .userProblemTextHeader {
+    margin-bottom: 5%;
+  }
 
-    .userProblemTextBody{
+  .userProblemTextHeader .heading1,
+  .heading2 {
+    margin-bottom: 0;
+    font-weight: 400;
+  }
 
-    }
+  .userProblemTextBody {
+  }
 
-    /*---- User solution section styling ------*/
-    .userSolutionContainer{
-        margin-bottom:5%;
-    }
+  /*---- User solution section styling ------*/
+  .userSolutionContainer {
+    margin-bottom: 5%;
+  }
 
-    .userSolutionHeader h1{
-        font-weight:lighter;
-        font-weight:400;
-        margin-bottom:2rem;
-    }
-    .userSolutionImageContainer{
-        height:100%;
-        width:100%;
-        margin-top:2%;
-    }
+  .userSolutionHeader h1 {
+    font-weight: lighter;
+    font-weight: 400;
+    margin-bottom: 2rem;
+  }
+  .userSolutionImageContainer {
+    height: 100%;
+    width: 100%;
+    margin-top: 2%;
+  }
+
+  /*----- Company problems section -----*/
+  .companiesProblemContainer {
+    margin: 15% 0 15% 0;
+  }
+  .companiesProblemImgContainer {
+    height: 100%;
+    width: 100%;
+  }
+
+  .companiesProblemHeader .heading1,
+  .companiesProblemHeader .heading2 {
+    margin-bottom: 0;
+    font-weight: 400;
+  }
+
+  .companiesProblemText {
+    text-align: right;
+  }
+
+  .companiesProblemBody {
+    margin-top: 5%;
+  }
 `;
