@@ -43,11 +43,55 @@ class About extends React.Component {
     );
   };
 
+  renderUserProblemSection = () => {
+    return (
+      <div className="userProblemContainer">
+        <style jsx>{aboutPageStyles}</style>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
+              <div className="userProblemImageContainer">
+                <img
+                  src="/static/about/images/laptop.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="userProblemText">
+                <div className="userProblemTextHeader">
+                  <h1 className="heading1">
+                    <span style={{ textTransform: "uppercase" }}>Problem</span>
+                  </h1>
+                  <h1 className="heading2">for internet users</h1>
+                </div>
+                <div className="userProblemTextBody">
+                  <div style={{ marginBottom: "2%" }}>
+                    For internet users the divroblem is to understand if it's
+                    safe and reliable to use/buy something from this website.
+                    How to avoid scam and fraud online and check the honesty of
+                    a website?{" "}
+                  </div>
+                  <div>
+                    Now internet users are reading reviews in trustpilot, doing
+                    google search for other feedback, checking soc.media sites
+                    etc. Which takes too much time and is not effective.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div style={{ backgroundColor: "#f5f5f5" }}>
         <style jsx>{layoutStyles}</style>
         {this.renderAboutHero()}
+        {this.renderUserProblemSection()}
       </div>
     );
   }
