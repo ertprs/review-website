@@ -81,6 +81,14 @@ class About extends React.Component {
                 </div>
               </div>
             </div>
+            <div className="col-md-6">
+              <div className="userProblemImageSmallContainer">
+                <img
+                  src="/static/about/images/laptop.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -121,6 +129,12 @@ class About extends React.Component {
               </div>
             </div>
           </div>
+          <div className="userSolutionImageSmallContainer">
+                <img
+                  src="/static/about/images/solution_small.png"
+                  style={{ maxHeight: "100%", maxWidth: "100%" }}
+                />
+              </div>
         </div>
       </div>
     );
@@ -160,6 +174,14 @@ class About extends React.Component {
                     provides good services.
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="col-md-6 mb">
+              <div className="companiesProblemImgSmallContainer">
+                <img
+                  src="/static/about/images/trust.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
               </div>
             </div>
           </div>
@@ -236,36 +258,112 @@ class About extends React.Component {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-md-2 offset-md-1">
-              <img
-                src="/static/about/images/inbox_grey.png"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
+          <div className="investorDesktop">
+            <div className="row">
+              <div className="col-md-2 offset-md-1 col-sm-4">
+                <div className="deskInvestorImgContainer">
+                  <img
+                    src="/static/about/images/inbox_grey.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+              </div>
+              <div className="col-md-2 col-sm-4">
+                <div className="deskInvestorImgContainer">
+                  <img
+                    src="/static/about/images/cvlabs_grey.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+              </div>
+              <div className="col-md-2 col-sm-4">
+                <div className="deskInvestorImgContainer">
+                  <img
+                    src="/static/about/images/qube_grey.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+              </div>
+              <div className="col-md-2 col-sm-4">
+                <div className="deskInvestorImgContainer">
+                  <img
+                    src="/static/about/images/rtu_color.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+              </div>
+              <div className="col-md-2 col-sm-4">
+                <div className="deskInvestorImgContainer">
+                  <img
+                    src="/static/about/images/bitdefender_grey.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="col-md-2">
-              <img
-                src="/static/about/images/cvlabs_grey.png"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
-            </div>
-            <div className="col-md-2">
-              <img
-                src="/static/about/images/qube_grey.png"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
-            </div>
-            <div className="col-md-2">
-              <img
-                src="/static/about/images/rtu_color.png"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
-            </div>
-            <div className="col-md-2">
-              <img
-                src="/static/about/images/bitdefender_grey.png"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
+          </div>
+          <div className="investorMobile">
+            <div className="row">
+              <div className="col-md-2 offset-md-1 ">
+                <div className="investorBox">
+                  <div className="investorBoxImageContainer">
+                    <img
+                      src="/static/about/images/inbox_color.png"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
+                  </div>
+                  <div className="investorBoxTextContainer">inbox.lv</div>
+                </div>
+              </div>
+              <div className="col-md-2 offset-md-1 ">
+                <div className="investorBox">
+                  <div className="investorBoxImageContainer">
+                    <img
+                      src="/static/about/images/cvlabs_color.png"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
+                  </div>
+                  <div className="investorBoxTextContainer">
+                    CryptoValley Labs
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-2 offset-md-1 ">
+                <div className="investorBox">
+                  <div className="investorBoxImageContainer">
+                    <img
+                      src="/static/about/images/qube_color.png"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
+                  </div>
+                  <div className="investorBoxTextContainer">Swiss-Qube</div>
+                </div>
+              </div>
+              <div className="col-md-2 offset-md-1 ">
+                <div className="investorBox">
+                  <div className="investorBoxImageContainer">
+                    <img
+                      src="/static/about/images/bitdefender_color.png"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
+                  </div>
+                  <div className="investorBoxTextContainer">Bitdefender</div>
+                </div>
+              </div>
+              <div className="col-md-2 offset-md-1">
+                <div className="investorBox">
+                  <div className="investorBoxImageContainer">
+                    <img
+                      src="/static/about/images/rtu_color.png"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
+                  </div>
+                  <div className="investorBoxTextContainer">
+                    <h6>The Information Technology Institute of Riga Technical
+                    University</h6>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="row">
@@ -373,7 +471,11 @@ class About extends React.Component {
             <div className="row">
               {teamProfileData.map(item => {
                 return (
-                  <div className="col-md-4" style={{ marginBottom: "2%" }} key={uuid()}>
+                  <div
+                    className="col-md-4"
+                    style={{ marginBottom: "2%" }}
+                    key={uuid()}
+                  >
                     <ReviewCard
                       image={item.image}
                       name={item.name}
@@ -408,7 +510,7 @@ class About extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <div className="registerationInfo">
+              <div className="registrationInfo">
                 <div>Liguma registracijas numurus: IZ-L2019 / 55</div>
                 <div>datums: 03.06.2019 16:14:07</div>
               </div>
