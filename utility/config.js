@@ -1,4 +1,4 @@
-export const baseURL = "search-api-dev.cryptopolice.com";
+export const baseURL = "api.thetrustsearch.com";
 export const screenshotURL="http://api.screenshotlayer.com/api/capture";
 export const faviconURL= "http://www.google.com/s2/favicons";
 export const flagsURL = "https://www.countryflags.io";
