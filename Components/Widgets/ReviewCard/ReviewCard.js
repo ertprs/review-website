@@ -37,13 +37,13 @@ const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeig
             <div className="reviewRatings">
               <div className="badge">
                 <RatingsBadge
-                  ratingCount={(score/20).toFixed(1).toString()}
+                  ratingCount={score}
                   style={{ padding: "5% 7% 5% 7%" }}
                 />
               </div>
               <div className="rating">
                 <RatingIndicators
-                  rating={(score/20)}
+                  rating={score}
                   typeOfWidget="star"
                   widgetRatedColors="#febe42"
                   widgetDimensions="20px"
