@@ -1,6 +1,11 @@
 import css from "styled-jsx/css";
 
 export const aboutPageStyles = css`
+  /*----- utility ----*/
+  .mb{
+    margin-bottom:10%;
+  }
+
   /*----- Hero section styling -------*/
   .aboutHeroContainer {
     background: url("/static/about/images/background_girl_2.png");
@@ -35,7 +40,7 @@ export const aboutPageStyles = css`
 
   /*------- User problem section styling -------*/
   .userProblemContainer {
-    margin: 10% 0 22% 0;
+    /* margin: 10% 0 10% 0; */
     position:relative;
   }
 
@@ -79,7 +84,7 @@ export const aboutPageStyles = css`
 
   /*----- Company problems section -----*/
   .companiesProblemContainer {
-    margin: 15% 0 15% 0;
+    /* margin: 15% 0 15% 0; */
   }
   .companiesProblemImgContainer {
     height: 100%;
@@ -121,7 +126,7 @@ export const aboutPageStyles = css`
     /*---- Investors section ----*/
 
     .investorsContainer{
-        margin: 20% 0 10% 0;
+        /* margin: 20% 0 10% 0; */
     }
 
     .investorsHeader{
@@ -144,7 +149,7 @@ export const aboutPageStyles = css`
     }
 
     .desktopTeamSectionContainer{
-        margin:10% 0 10% 0;
+        /* margin:10% 0 10% 0; */
     }
 
     .desktopTeamSectionHeader{
@@ -157,7 +162,7 @@ export const aboutPageStyles = css`
 
     /*-------- Register info section ------*/
     .registerInfoContainer{
-      margin:10% 0 0 0;
+      /* margin:10% 0 0 0; */
     }
 
     .registerImageContainer{
@@ -179,5 +184,30 @@ export const aboutPageStyles = css`
       height:80px;
       width:80px;
       margin:0 auto;
+    }
+
+    /*------ Media queries ----*/
+
+    @media screen and (max-width:767px){
+      .aboutHeroContainer{
+        background:none;
+      }
+
+      .aboutHeroLogoContainer{
+        margin-top:5%;
+        height:50px;
+      }
+
+      .aboutHeroHeading{
+        margin-top:15%;
+      }
+
+      .aboutHeroHeading .heading{
+        font-size:2.4rem;
+      }
+
+      .aboutHeroImage{
+        display:none;
+      }
     }
 `;
