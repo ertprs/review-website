@@ -616,7 +616,7 @@ const renderMajorData = (parentState, domain, share_url, comments) => {
       </div>
       <div>{renderTrafficReports(parentState)}</div>
       <div>{renderSocialReports(parentState)}</div>
-      <div>{renderVideoReviews()}</div>
+      {/* <div>{renderVideoReviews()}</div> */}
       <div>{renderTextualReviews(comments)}</div>
       {renderShareBtn(share_url, "Leave a Review", "fa fa-comments-o")}
     </>
@@ -674,7 +674,7 @@ Reviews.getInitialProps = async ({ query }) => {
   const domain = query.domain ? query.domain : "google.com";
   if (query.amp === "1") {
     const response = await axios.get(
-      `https://search-api-dev.cryptopolice.com/api/verify?domain=${searchURL}`
+      `https://api.thetrustsearch.com/api/verify?domain=${searchURL}`
     );
     return { analysisData: { ...response.data }, domain };
   }
