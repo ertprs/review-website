@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp"; // query.amp==="1"
+import {baseURL, screenshotURL, faviconURL, flagsURL, shareURL} from "../utility/config";
 import axios from "axios";
 import Layout from "../hoc/layout/layout";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
@@ -34,12 +35,12 @@ const renderReviewHeader = (data, domain) => {
   const screenshot =
     ((data || {}).domain_data || {}).screenshot !== undefined
       ? ((data || {}).domain_data || {}).screenshot
-      : `http://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=http://${domain}&viewport=1440x900&width=250`;
+      : `${screenshotURL}?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=http://${domain}&viewport=1440x900&width=250`;
 
   const favicon =
     ((data || {}).domain_data || {}).favicon !== undefined
       ? ((data || {}).domain_data || {}).favicon
-      : `http://www.google.com/s2/favicons?domain=https://${domain}`;
+      : `${faviconURL}?domain=https://${domain}`;
 
   const title =
     ((data || {}).domain_data || {}).title !== undefined
@@ -131,7 +132,7 @@ const renderReviewHeader = (data, domain) => {
                   <div className="reviewFlag">
                     <>
                       <AmpImgWrapper
-                        src={`https://www.countryflags.io/${flagCode}/flat/64.png`}
+                        src={`${flagsURL}/${flagCode}/flat/64.png`}
                         width="22"
                         height="16"
                         layout="responsive"
@@ -648,8 +649,7 @@ const Reviews = props => {
   const domain = props.domain;
   const comments = getCommentsObject({ ...parentState });
 
-  const share_url =
-    "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
+  const share_url = shareURL;
 
   return (
     <Layout>
@@ -674,7 +674,7 @@ Reviews.getInitialProps = async ({ query }) => {
   const domain = query.domain ? query.domain : "google.com";
   if (query.amp === "1") {
     const response = await axios.get(
-      `https://api.thetrustsearch.com/api/verify?domain=${searchURL}`
+      `https://${baseURL}/api/verify?domain=${searchURL}`
     );
     return { analysisData: { ...response.data }, domain };
   }
