@@ -426,12 +426,12 @@ const renderTextualReviews = comments => {
           </h5>
         </div>
         <div className="row">
-          {commentsToRender.length > 0 && commentsToRender[0] !== "loading" ? (
+          {commentsToRender.length > 0 && commentsToRender[0] !== "loading" &&  commentsToRender[0] !== "not found" ? (
             renderReviewCard(commentsToRender)
           ) : (
             <div className="col-md-12">
               <div style={{ textAlign: "center", marginLeft: "15px" }}>
-                {commentsToRender[0] !== "loading" ? (
+                {commentsToRender[0] === "not found" || commentsToRender.length===0 ? (
                   <div>No text reviews found :(</div>
                 ) : (
                   !useAmp() ? <div>
@@ -631,7 +631,7 @@ const getCommentsObject = parentState => {
   ) {
     return ["loading"];
   }
-  if (((data || {}).wot || {}).needs_pull) {
+  else if (((data || {}).wot || {}).needs_pull) {
     return ["not found"];
   }
   return ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
