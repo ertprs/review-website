@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Pusher from "pusher-js";
 import axios from "axios";
+import {baseURL} from '../../utility/config';
 //child component to fetch data and listen to channels and in turn update parent component
 
 
@@ -57,7 +58,7 @@ class PusherDataComponent extends React.Component {
       console.log("connected");
       axios
         .get(
-          `https://api.thetrustsearch.com/api/verify?domain=https://${domain}`
+          `https://${baseURL}/api/verify?domain=https://${domain}`
         )
         .then(res => {
           //set the state and call unbindRecievedKeys
@@ -73,7 +74,7 @@ class PusherDataComponent extends React.Component {
             //else poll till no key comes
             else{
                 let intr = setInterval(()=>{
-                    axios.get(`https://api.thetrustsearch.com/api/verify?domain=https://${domain}`)
+                    axios.get(`https://${baseURL}/api/verify?domain=https://${domain}`)
                     .then(res=>{
                         this.setState({ domainData : {...this.state.domainData, ...res.data.response}}, ()=>{
                         this.props.onChildStateChange(this.state.domainData)
