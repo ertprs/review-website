@@ -163,6 +163,11 @@ export const aboutPageStyles = css`
     margin: 0 auto 4% auto;
   }
 
+  
+  .deskInvestorImgContainer:hover {
+      cursor:pointer;
+    }
+
   .investorMobile {
     display: none;
   }
