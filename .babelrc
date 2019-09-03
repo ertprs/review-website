@@ -1,0 +1,14 @@
+{
+    "presets": [
+      [
+        "next/babel",
+        {
+          "preset-env": {},
+          "transform-runtime": {},
+          "styled-jsx": { "optimizeForSpeed": true },
+          "class-properties": {}
+        }
+      ]
+    ],
+    "plugins": []
+  }
