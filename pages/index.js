@@ -14,7 +14,7 @@ export const config = { amp: "hybrid" };
 const handleSearchSubmit = (setLoading, searchBoxVal) => {
   if (searchBoxVal.trim() !== "") {
     setLoading(true);
-    Router.push(`/reviews?domain=${searchBoxVal}`, `/reviews/${searchBoxVal}`);
+    Router.push(`/reviews?domain=${searchBoxVal.replace(/(^\w+:|^)\/\//, '')}`, `/reviews/${searchBoxVal.replace(/(^\w+:|^)\/\//, '')}`);
   }
 };
 
