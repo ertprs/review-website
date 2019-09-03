@@ -9,6 +9,7 @@ import { layoutStyles } from "../../style";
 import ReviewCard from "../../Components/Widgets/ReviewCard/ReviewCard";
 import { businessPageStyles } from "../../Components/Styles/business/businessIndexPageStyles";
 import uuid from "uuid/v1";
+import axios from 'axios';
 import CustomModal from "../../Components/Widgets/CustomModal/CustomModal";
 
 class BusinessIndexPage extends React.Component {
@@ -55,7 +56,7 @@ class BusinessIndexPage extends React.Component {
         },
         name: "email"
       },
-      phoneNumber: {
+      phone: {
         element: "input",
         type: "text",
         value: "",
@@ -67,28 +68,28 @@ class BusinessIndexPage extends React.Component {
           required: true,
           isPhoneNumber: true
         },
-        name: "phoneNumber"
+        name: "phone"
       },
       objective: {
         element: "select",
         options: [
           {
             name: "Collect customer feedback",
-            value: "collect_customer_feedback"
+            value: "Collect customer feedback"
           },
           {
             name:
               "To learn, how we can increase sales by improving online reputation",
             value:
-              "to_learn_how_we_can_increase_sales_by_improving_online_reputation"
+              "To learn, how we can increase sales by improving online reputation"
           },
           {
             name: "To receive TrustSearch product demonstration",
-            value: "to_receive_trustsearch_product_demonstration"
+            value: "To receive TrustSearch product demonstration"
           },
           {
             name: "Other",
-            value: "other"
+            value: "Other"
           }
         ],
         value: "",
@@ -164,18 +165,25 @@ class BusinessIndexPage extends React.Component {
         dataToSubmit = {
           ...dataToSubmit,
           email: this.state.subscriptionEmail.value,
-          websiteOwner: this.state.websiteOwner
+          websiteOwner: this.state.websiteOwner==="yes" ? true : false
         };
         //mimic data post
         this.setState({subscriptionEmailSent:"in-progress"}, ()=>{
-          console.log(dataToSubmit);
-          setInterval(()=>{
+          console.log(dataToSubmit)
+          axios.post("")
+          .then(res=>{
+            console.log(res);
             this.setState({subscriptionEmailSent:"success"})
-          },2000)
+          })
+          .catch(err=>{
+            console.log(err);
+            this.setState({subscriptionEmailSent:"error"})
+          })
         })
       }
     });
   };
+
 
   handleScheduleMeetingSubmit = e => {
     e.preventDefault();
@@ -195,9 +203,15 @@ class BusinessIndexPage extends React.Component {
       //mimic data post
       this.setState({meetingScheduled:"in-progress"}, ()=>{
         console.log(dataToSubmit);
-        setInterval(()=>{
-          this.setState({meetingScheduled:"success"})
-        },2000)
+          axios.post("",{...dataToSubmit})
+          .then(res=>{
+            console.log(res);
+            this.setState({meetingScheduled:"success"})
+          })
+          .catch(err=>{
+            console.log(err);
+            this.setState({meetingScheduled:"error"})
+          })
       })
     } else {
       this.setState({ formData: { ...newFormData } });
