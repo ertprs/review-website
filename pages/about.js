@@ -6,6 +6,26 @@ import SolutionForCompaniesList from "../Components/Widgets/SolutionForCompanies
 import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 
 class About extends React.Component {
+  state = {
+    selectedInvestor:"rtu",
+    investors: {
+      qube:
+        "Swiss-Qube is TrustSearch Pilot client - food supplement company for losing weight. The Swiss-QUBE nutrition concept was developed by doctors and is a ticket to a new, healthy lifestyle.",
+      cvlabs:
+        "CryptoValley Labs is a unique place in Crypto Valley where great minds and new ideas come together, to discuss and to innovate. TrustSearch have been accepted to CryptoValley Labs for a 3-month accelerator program and received 20k $ with a potential to receive up to 80k $.",
+      inbox:
+        "Inbox.lv is the biggest Latvia email service with more than 1.5 million users. They will invest €30 k into the development of TrustSearch. With the partner TrustSearch has opportunity to be advertised specifically to all Inbox.lv users.",
+      rtu:
+        "The Information Technology Institute of Riga Technical University and Professor Janis Grabis are supporting TrustSearch in the simulation and development of a multi-level verification algorithm and implementation of Artificial Intelligence.",
+      bitdefender:
+        "Bitdefender, based in Romania, is one of the most innovative IT security software vendors in the world, which cooperates with TrustSearch in terms of the TrustSearch system and its technological and functional improvements. With the partner TrustSearch has opportunity to bundle together with Bitdefender’s security packages starting from Russia market. "
+    }
+  };
+
+  changeSelectedInvestor = (selected)=>{
+    this.setState({selectedInvestor:selected})
+  }
+
   renderAboutHero = () => {
     return (
       <div className="aboutHeroContainer">
@@ -130,11 +150,11 @@ class About extends React.Component {
             </div>
           </div>
           <div className="userSolutionImageSmallContainer">
-                <img
-                  src="/static/about/images/solution_small.png"
-                  style={{ maxHeight: "100%", maxWidth: "100%" }}
-                />
-              </div>
+            <img
+              src="/static/about/images/solution_small.png"
+              style={{ maxHeight: "100%", maxWidth: "100%" }}
+            />
+          </div>
         </div>
       </div>
     );
@@ -247,6 +267,7 @@ class About extends React.Component {
   };
 
   renderInvestorsSection = () => {
+    const {selectedInvestor} = this.state;
     return (
       <div className="investorsContainer">
         <style jsx>{aboutPageStyles}</style>
@@ -260,42 +281,52 @@ class About extends React.Component {
           </div>
           <div className="investorDesktop">
             <div className="row">
-              <div className="col-md-2 offset-md-1 col-sm-4">
+              <div className="col-md-2 offset-md-1 col-sm-4" onClick={()=>{
+                this.changeSelectedInvestor("inbox")
+              }}>
                 <div className="deskInvestorImgContainer">
                   <img
-                    src="/static/about/images/inbox_grey.png"
+                    src={`/static/about/images/inbox${selectedInvestor==="inbox" ? "_color":"_grey"}.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4">
+              <div className="col-md-2 col-sm-4" onClick={()=>{
+                this.changeSelectedInvestor("cvlabs")
+              }}>
                 <div className="deskInvestorImgContainer">
-                  <img
-                    src="/static/about/images/cvlabs_grey.png"
+                <img
+                    src={`/static/about/images/cvlabs${selectedInvestor==="cvlabs" ? "_color":"_grey"}.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4">
+              <div className="col-md-2 col-sm-4" onClick={()=>{
+                this.changeSelectedInvestor("qube")
+              }}>
                 <div className="deskInvestorImgContainer">
-                  <img
-                    src="/static/about/images/qube_grey.png"
+                <img
+                    src={`/static/about/images/qube${selectedInvestor==="qube" ? "_color":"_grey"}.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4">
+              <div className="col-md-2 col-sm-4" onClick={()=>{
+                this.changeSelectedInvestor("rtu")
+              }}>
                 <div className="deskInvestorImgContainer">
-                  <img
-                    src="/static/about/images/rtu_color.png"
+                <img
+                    src={`/static/about/images/rtu${selectedInvestor==="rtu" ? "_color":"_grey"}.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4">
+              <div className="col-md-2 col-sm-4" onClick={()=>{
+                this.changeSelectedInvestor("bitdefender")
+              }}>
                 <div className="deskInvestorImgContainer">
-                  <img
-                    src="/static/about/images/bitdefender_grey.png"
+                <img
+                    src={`/static/about/images/bitdefender${selectedInvestor==="bitdefender" ? "_color":"_grey"}.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
@@ -359,8 +390,10 @@ class About extends React.Component {
                     />
                   </div>
                   <div className="investorBoxTextContainer">
-                    <h6>The Information Technology Institute of Riga Technical
-                    University</h6>
+                    <h6>
+                      The Information Technology Institute of Riga Technical
+                      University
+                    </h6>
                   </div>
                 </div>
               </div>
@@ -370,11 +403,7 @@ class About extends React.Component {
             <div className="col-md-10 offset-md-1">
               <div className="investorsInfo">
                 <p>
-                  The Information Technology Institute of Riga Technical
-                  University and Professor Janis Gabris are supporting
-                  TrustSearch in the simulation and development of a multi-level
-                  verification algorithm and implementation of Artificial
-                  Intelligence.
+                  {this.state.investors[this.state.selectedInvestor]}
                 </p>
               </div>
             </div>
