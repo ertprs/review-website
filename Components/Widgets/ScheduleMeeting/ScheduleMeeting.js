@@ -31,8 +31,8 @@ class ScheduleMeeting extends React.Component {
           />
 
           <FormField
-            {...this.props.formData.phoneNumber}
-            id="phoneNumber"
+            {...this.props.formData.phone}
+            id="phone"
             handleChange={this.props.handleInputChange}
             styles={{ ...formFieldStyles }}
           />
