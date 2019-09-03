@@ -218,7 +218,7 @@ const renderAnalysisCards = analysisReport => {
   if (cardsArray.length > 0) {
     return cardsArray;
   } else {
-    return <img src="/static/images/825.gif" />;
+    return !useAmp() ? <img src="/static/images/825.gif" /> : null;
   }
 };
 
@@ -297,11 +297,11 @@ const renderTrafficReports = parentState => {
         <div className="row reviewStatsFlex">
           {Object.keys(trafficData.payload).length > 0 ? (
             <>
-              <div className="col-md-8">
+              {!useAmp() ? <div className="col-md-8">
                 <div style={{ height: "250px", width: "auto" }}>
                   <TrafficStatsChart data={uniqueVisitorsTimeLine} />
                 </div>
-              </div>
+              </div> : null}
               <div className="col-md-4" style={{ marginBottom: "5%" }}>
                 <TrafficGrid trafficData={trafficData.payload} />
               </div>
@@ -310,9 +310,9 @@ const renderTrafficReports = parentState => {
             <div className="col-md-12">
               <div style={{ textAlign: "center" }}>
                 {trafficData.success ? (
-                  <div>
-                    <img src="/static/images/traffic_data.gif" />
-                  </div>
+                  !useAmp() ? <div>
+                  <img src="/static/images/traffic_data.gif" />
+                </div> : null
                 ) : (
                   <div>No traffic records found :(</div>
                 )}
@@ -327,7 +327,6 @@ const renderTrafficReports = parentState => {
 
 const renderSocialReports = parentState => {
   const socialData = getSocialReportObject({ ...parentState });
-  console.log(socialData)
   return (
     <div className="reviewSocialContainer">
       <style jsx>{reviewPageStyles}</style>
@@ -341,11 +340,11 @@ const renderSocialReports = parentState => {
         <div className="row reviewStatsFlex">
           {Object.keys(socialData.payload || {}).length > 0 ? (
             <>
-              <div className="col-md-8">
+              {!useAmp() ? <div className="col-md-8">
                 <div style={{ height: "250px", width: "auto" }}>
                   <SocialMediaPieChart socialData={{ ...socialData.payload }} />
                 </div>
-              </div>
+              </div> : null}
               <div className="col-md-4" style={{ marginBottom: "5%" }}>
                 <SocialMediaGrid socialData={{ ...socialData.payload }} />
               </div>
@@ -354,9 +353,9 @@ const renderSocialReports = parentState => {
             <div className="col-md-12">
               <div style={{ textAlign: "center" }}>
                 {socialData.success ? (
-                  <div>
-                    <img src="/static/images/social_data.gif" />
-                  </div>
+                  !useAmp() ? <div>
+                  <img src="/static/images/social_data.gif" />
+                </div> : null
                 ) : (
                   <div>No social media records found :(</div>
                 )}
@@ -435,9 +434,9 @@ const renderTextualReviews = comments => {
                 {commentsToRender[0] !== "loading" ? (
                   <div>No text reviews found :(</div>
                 ) : (
-                  <div>
-                    <img src="/static/images/253.gif" />
-                  </div>
+                  !useAmp() ? <div>
+                  <img src="/static/images/253.gif" />
+                </div> : null
                 )}
               </div>
             </div>

@@ -50,7 +50,7 @@ class About extends React.Component {
         <style jsx>{aboutPageStyles}</style>
         <div className="container">
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-6 mb">
               <div className="userProblemImageContainer">
                 <img
                   src="/static/about/images/laptop.png"
@@ -58,7 +58,7 @@ class About extends React.Component {
                 />
               </div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-6 mb">
               <div className="userProblemText">
                 <div className="userProblemTextHeader">
                   <h1 className="heading1">
@@ -132,7 +132,7 @@ class About extends React.Component {
         <style jsx>{aboutPageStyles}</style>
         <div className="container">
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-6 mb">
               <div className="companiesProblemImgContainer">
                 <img
                   src="/static/about/images/trust.png"
@@ -141,7 +141,7 @@ class About extends React.Component {
               </div>
             </div>
             <div
-              className="col-md-6"
+              className="col-md-6 mb"
               style={{ display: "flex", alignItems: "center" }}
             >
               <div className="companiesProblemText">
