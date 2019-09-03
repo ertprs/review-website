@@ -52,7 +52,7 @@ const renderSearchBox = ({
             }}
             formMethod="get"
             isXHR={false}
-            submitURL="https://thetrustsearch-dev.cryptopolice.com/reviews"
+            submitURL="https://thetrustsearch.com/reviews"
             formTarget="_top"
           >
             <div className="searchBoxContainer">

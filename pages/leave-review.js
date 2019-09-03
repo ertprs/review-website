@@ -35,7 +35,7 @@ const handleFormSubmit = (
     let finalDataToSubmit = { ...data.dataToSubmit, rating: rating };
     axios
       .post(
-        "https://search-api-dev.cryptopolice.com/api/save-order-data-application",
+        "https://api.thetrustsearch.com/api/save-order-data-application",
         {
           report_category_id: 8,
           token: queryData.token,
