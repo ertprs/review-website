@@ -109,9 +109,11 @@ const renderWebStats = () => {
 };
 
 const Home = () => {
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // });
+
+  useEffect(() => {
+    // code to run on component mount
+    window.scrollTo(0,0);
+  }, [])
   const [searchBoxVal, setSearchBoxVal] = useState("");
   const [loading, setLoading] = useState(false);
   return (

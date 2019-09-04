@@ -36,6 +36,14 @@ class ScheduleMeeting extends React.Component {
             handleChange={this.props.handleInputChange}
             styles={{ ...formFieldStyles }}
           />
+
+          <FormField
+            {...this.props.formData.domain}
+            id="domain"
+            handleChange={this.props.handleInputChange}
+            styles={{ ...formFieldStyles }}
+          />
+
           <label className="objectiveLabel">
             Our main objective for TrustSearch is to
           </label>
@@ -70,16 +78,26 @@ class ScheduleMeeting extends React.Component {
           <UniversalLoader status={this.props.meetingScheduled}>
             {/* First child for loading state */}
             <div style={{ textAlign: "center" }}>
-              <div style={{height:"32px", width:"32px", textAlign:"center", margin:"0 auto"}}>
-                  <img src="/static/images/dotsLoader.gif" style={{maxWidth:"100%", height:"auto"}}/>
+              <div
+                style={{
+                  height: "32px",
+                  width: "32px",
+                  textAlign: "center",
+                  margin: "0 auto"
+                }}
+              >
+                <img
+                  src="/static/images/dotsLoader.gif"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
               </div>
             </div>
             {/* Second child for success state */}
-            <div style={{ textAlign: "center", color:"#21bc61"}}>
+            <div style={{ textAlign: "center", color: "#21bc61" }}>
               Meeting scheduled successfully <i className="fa fa-check"></i>
             </div>
             {/* third child for error state */}
-            <div style={{ textAlign: "center", color:"red"}}>
+            <div style={{ textAlign: "center", color: "red" }}>
               Some error occured, please try again later{" "}
               <i className="fa fa-close"></i>
             </div>

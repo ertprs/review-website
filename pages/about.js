@@ -34,7 +34,7 @@ class About extends React.Component {
         <div className="container">
           <div className="aboutHeroLogoContainer">
             <Link href="/">
-              <a  alt="homepage">
+              <a alt="homepage">
                 <img
                   src="/static/business/index/images/gradientLogo.png"
                   style={{ maxWidth: "100%", height: "auto" }}
@@ -45,16 +45,21 @@ class About extends React.Component {
           <div className="aboutHeroContent">
             <div className="row">
               <div
-                className="col-md-6"
-                style={{ display: "flex", alignItems: "center" }}
+                className="col-md-7"
+                style={{ display: "flex", justifyContent: "center", flexDirection:"column" }}
               >
                 <div className="aboutHeroHeading">
                   <div>
                     <h1 className="heading">Search Engine for trust</h1>
                   </div>
                 </div>
+                <div className="aboutSubHeading">
+                  <div>
+                    <h5 className="subHeading">Internet users check online reputation to websites, but website owners build trustwothiness online</h5>
+                  </div>
+                </div>
               </div>
-              <div className="col-md-6">
+              <div className="col-md-5">
                 <div className="aboutHeroImage">
                   <img
                     src="/static/about/images/mobile.png"

@@ -22,7 +22,6 @@ const icons = {
 };
 
 const renderSocialMediaItems = socialData => {
-  console.log(socialData);
   let output = [];
   for (let item in socialData) {
     if (socialData[item].verified) {

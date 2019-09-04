@@ -564,7 +564,6 @@ const getUniqueVisitorsTimeline = data => {
     uniqueVisitorsTimeline = timeline
       .reverse()
       .map(item => {
-        console.log(item)
         if(item.visits.length > 0 || Object.keys(item.visits).length > 0) {
           return {
             name:
@@ -677,7 +676,7 @@ Reviews.getInitialProps = async ({ query }) => {
   const domain = query.domain ? query.domain : "google.com";
   if (query.amp === "1") {
     const response = await axios.get(
-      `https://${baseURL}/api/verify?domain=${searchURL}`
+      `${baseURL}/api/verify?domain=${searchURL}`
     );
     return { analysisData: { ...response.data }, domain };
   }
