@@ -24,7 +24,7 @@ const handleSearchSubmit = (setLoading, searchBoxVal) => {
       );
     }
     else{
-      alert("Please enter correct doman name!")
+      alert("Please enter domain name in the format: (ex- thetrustsearch.com)")
     }
   }
 };
