@@ -41,23 +41,13 @@ const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
         </div>
         <div className="primaryLinksContainer">
           <div>
-            <AmpLinkWrapper href="/" alt="nav-link">
-              Home
-            </AmpLinkWrapper>
-          </div>
-          <div>
-            <AmpLinkWrapper href="/" alt="nav-link">
+            <AmpLinkWrapper href="/about" alt="nav-link">
               About
             </AmpLinkWrapper>
           </div>
           <div>
-            <AmpLinkWrapper href="/" alt="nav-link">
-              Support
-            </AmpLinkWrapper>
-          </div>
-          <div>
-            <AmpLinkWrapper href="/" alt="nav-link">
-              Contacts
+            <AmpLinkWrapper href="/business" alt="nav-link">
+              Business
             </AmpLinkWrapper>
           </div>
         </div>

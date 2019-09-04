@@ -1,5 +1,6 @@
 import React from "react";
 import uuid from "uuid/v1";
+import Link from "next/link";
 import { aboutPageStyles } from "../Components/Styles/aboutPageStyles";
 import { layoutStyles } from "../style";
 import SolutionForCompaniesList from "../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
@@ -7,7 +8,7 @@ import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 
 class About extends React.Component {
   state = {
-    selectedInvestor:"rtu",
+    selectedInvestor: "rtu",
     investors: {
       qube:
         "Swiss-Qube is TrustSearch Pilot client - food supplement company for losing weight. The Swiss-QUBE nutrition concept was developed by doctors and is a ticket to a new, healthy lifestyle.",
@@ -22,9 +23,9 @@ class About extends React.Component {
     }
   };
 
-  changeSelectedInvestor = (selected)=>{
-    this.setState({selectedInvestor:selected})
-  }
+  changeSelectedInvestor = selected => {
+    this.setState({ selectedInvestor: selected });
+  };
 
   renderAboutHero = () => {
     return (
@@ -32,10 +33,14 @@ class About extends React.Component {
         <style jsx>{aboutPageStyles}</style>
         <div className="container">
           <div className="aboutHeroLogoContainer">
-            <img
-              src="/static/business/index/images/gradientLogo.png"
-              style={{ maxWidth: "100%", height: "auto" }}
-            />
+            <Link href="/">
+              <a  alt="homepage">
+                <img
+                  src="/static/business/index/images/gradientLogo.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </a>
+            </Link>
           </div>
           <div className="aboutHeroContent">
             <div className="row">
@@ -267,7 +272,7 @@ class About extends React.Component {
   };
 
   renderInvestorsSection = () => {
-    const {selectedInvestor} = this.state;
+    const { selectedInvestor } = this.state;
     return (
       <div className="investorsContainer">
         <style jsx>{aboutPageStyles}</style>
@@ -281,52 +286,77 @@ class About extends React.Component {
           </div>
           <div className="investorDesktop">
             <div className="row">
-              <div className="col-md-2 offset-md-1 col-sm-4" onClick={()=>{
-                this.changeSelectedInvestor("inbox")
-              }}>
+              <div
+                className="col-md-2 offset-md-1 col-sm-4"
+                onClick={() => {
+                  this.changeSelectedInvestor("inbox");
+                }}
+              >
                 <div className="deskInvestorImgContainer">
                   <img
-                    src={`/static/about/images/inbox${selectedInvestor==="inbox" ? "_color":"_grey"}.png`}
+                    src={`/static/about/images/inbox${
+                      selectedInvestor === "inbox" ? "_color" : "_grey"
+                    }.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4" onClick={()=>{
-                this.changeSelectedInvestor("cvlabs")
-              }}>
+              <div
+                className="col-md-2 col-sm-4"
+                onClick={() => {
+                  this.changeSelectedInvestor("cvlabs");
+                }}
+              >
                 <div className="deskInvestorImgContainer">
-                <img
-                    src={`/static/about/images/cvlabs${selectedInvestor==="cvlabs" ? "_color":"_grey"}.png`}
+                  <img
+                    src={`/static/about/images/cvlabs${
+                      selectedInvestor === "cvlabs" ? "_color" : "_grey"
+                    }.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4" onClick={()=>{
-                this.changeSelectedInvestor("qube")
-              }}>
+              <div
+                className="col-md-2 col-sm-4"
+                onClick={() => {
+                  this.changeSelectedInvestor("qube");
+                }}
+              >
                 <div className="deskInvestorImgContainer">
-                <img
-                    src={`/static/about/images/qube${selectedInvestor==="qube" ? "_color":"_grey"}.png`}
+                  <img
+                    src={`/static/about/images/qube${
+                      selectedInvestor === "qube" ? "_color" : "_grey"
+                    }.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4" onClick={()=>{
-                this.changeSelectedInvestor("rtu")
-              }}>
+              <div
+                className="col-md-2 col-sm-4"
+                onClick={() => {
+                  this.changeSelectedInvestor("rtu");
+                }}
+              >
                 <div className="deskInvestorImgContainer">
-                <img
-                    src={`/static/about/images/rtu${selectedInvestor==="rtu" ? "_color":"_grey"}.png`}
+                  <img
+                    src={`/static/about/images/rtu${
+                      selectedInvestor === "rtu" ? "_color" : "_grey"
+                    }.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
               </div>
-              <div className="col-md-2 col-sm-4" onClick={()=>{
-                this.changeSelectedInvestor("bitdefender")
-              }}>
+              <div
+                className="col-md-2 col-sm-4"
+                onClick={() => {
+                  this.changeSelectedInvestor("bitdefender");
+                }}
+              >
                 <div className="deskInvestorImgContainer">
-                <img
-                    src={`/static/about/images/bitdefender${selectedInvestor==="bitdefender" ? "_color":"_grey"}.png`}
+                  <img
+                    src={`/static/about/images/bitdefender${
+                      selectedInvestor === "bitdefender" ? "_color" : "_grey"
+                    }.png`}
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
@@ -402,9 +432,7 @@ class About extends React.Component {
           <div className="row">
             <div className="col-md-10 offset-md-1">
               <div className="investorsInfo">
-                <p>
-                  {this.state.investors[this.state.selectedInvestor]}
-                </p>
+                <p>{this.state.investors[this.state.selectedInvestor]}</p>
               </div>
             </div>
           </div>

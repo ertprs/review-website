@@ -562,20 +562,23 @@ const getUniqueVisitorsTimeline = data => {
   let uniqueVisitorsTimeline = [];
   if (isTimeLinePresent) {
     uniqueVisitorsTimeline = timeline
-      .slice(0)
       .reverse()
       .map(item => {
-        return {
-          name:
-            new Date(item["updated_at"]).getDate() +
-            "/" +
-            (new Date(item["updated_at"]).getMonth() + 1),
-          daily_unique_visitors: Number(
-            item.visits["daily_unique_visitors"].split(",").join("")
-          )
-        };
+        console.log(item)
+        if(item.visits.length > 0 || Object.keys(item.visits).length > 0) {
+          return {
+            name:
+              new Date(item["updated_at"]).getDate() +
+              "/" +
+              (new Date(item["updated_at"]).getMonth() + 1),
+            daily_unique_visitors: Number(
+              item.visits["daily_unique_visitors"].split(",").join("")
+            )
+          };
+        }
       });
   }
+
   return uniqueVisitorsTimeline;
 };
 
