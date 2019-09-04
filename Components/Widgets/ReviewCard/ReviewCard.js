@@ -1,11 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import RatingsBadge from "../RatingsBadge/RatingsBadge";
 import RatingIndicators from "../RatingIndicators/RatingIndicators";
 import uuid from 'uuid/v1';
 import { reviewCardStyles } from "./reviewCardStyles";
 
-const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeight, ampImgWidth, title, body, image, designation, specialistIn}) => {
+
+const getColorImg = (image)=>{
+  const imagePath = image.substring(0, image.lastIndexOf("/"));
+  const imageTitle = image.substring(image.lastIndexOf("/")+1, image.lastIndexOf("."));
+  let coloredImgTitle = imageTitle+"_color.png";
+  return imagePath+"/"+coloredImgTitle;
+
+}
+
+const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeight, ampImgWidth, title, body, image, designation, specialistIn}, colorImg, setColorImg) => {
   switch (variant) {
     case "reviews":
       return (
@@ -85,9 +94,13 @@ const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeig
       return(
         <div className="reviewCardContainer">
           <style jsx>{reviewCardStyles}</style>
-          <div className="businessProfilePic">
-            <div className="businessPicContainer">
-              <img src={image} style={{height:"auto", maxWidth:"100%"}}/>
+          <div className="businessProfilePic" onMouseEnter={(e)=>{
+              setColorImg(true)
+            }} onMouseLeave={(e)=>{
+              setColorImg(false)
+            }}>
+            <div className="teamPicContainer">
+              <img src={colorImg ? getColorImg(image) : image} style={{height:"auto", maxWidth:"100%"}}/>
             </div>
           </div>
           <div className="businessDetails">
@@ -110,9 +123,10 @@ const renderReviewCard = ({ avatar, date, name, score, text, variant, ampImgHeig
 };
 
 const ReviewCard = props => {
+  const [colorImg, setColorImg] = useState(false);
   return(
     <>
-      {renderReviewCard(props)}
+      {renderReviewCard(props, colorImg, setColorImg)}
     </>
   )
 };
