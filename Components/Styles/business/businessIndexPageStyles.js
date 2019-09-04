@@ -20,7 +20,7 @@ export const businessPageStyles = css`
   }
 
   .businessHeroSection {
-    margin:10% 0 32% 0;
+    margin:10% 0 18% 0;
   }
 
   .businessHeroLogoContainer {
@@ -66,7 +66,7 @@ export const businessPageStyles = css`
 
   .businessInfoContainer, .businessSolutionContainer{
     margin-top: 5%;
-    margin-bottom: 18%; 
+    margin-bottom: 13%; 
   }
 
   .businessInfoHeader,

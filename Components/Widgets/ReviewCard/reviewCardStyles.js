@@ -51,7 +51,7 @@ export const reviewCardStyles = css`
     margin-right: 5%;
   }
 
-  .businessPicContainer{
+  .businessPicContainer, .teamPicContainer{
     height:105px;
     width:105px;
   }
@@ -71,6 +71,7 @@ export const reviewCardStyles = css`
   }
 
   /*-------- Team variant styling ---------*/
+
   .individualName{
     font-weight:bold;
     font-size:1rem;
@@ -105,7 +106,7 @@ export const reviewCardStyles = css`
     }
 
     /*----- business variant ------*/
-    .businessPicContainer{
+    .businessPicContainer, .teamPicContainer{
       height:90px;
       width:90px;
     }

@@ -1,5 +1,7 @@
 import React from "react";
 import SearchBox from "../../Components/Widgets/SearchBox/SearchBox";
+import Router from 'next/router';
+import Link from "next/link";
 import SubscriptionPlanCard from "../../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
 import SolutionForCompaniesList from "../../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
 import EmailSubscription from "../../Components/Widgets/EmailSubscription/EmailSubscription";
@@ -9,16 +11,17 @@ import { layoutStyles } from "../../style";
 import ReviewCard from "../../Components/Widgets/ReviewCard/ReviewCard";
 import { businessPageStyles } from "../../Components/Styles/business/businessIndexPageStyles";
 import uuid from "uuid/v1";
-import axios from 'axios';
+import axios from "axios";
 import CustomModal from "../../Components/Widgets/CustomModal/CustomModal";
+import {baseURL} from '../../utility/config';
 
 class BusinessIndexPage extends React.Component {
   state = {
     showModal: false,
     modalId: "",
     websiteOwner: "no",
-    subscriptionEmailSent:"no",
-    meetingScheduled:"no",
+    subscriptionEmailSent: "no",
+    meetingScheduled: "no",
     subscriptionEmail: {
       value: "",
       valid: false,
@@ -26,6 +29,15 @@ class BusinessIndexPage extends React.Component {
       validationRules: {
         required: true,
         isEmail: true
+      }
+    },
+    domain:{
+      value: "",
+      valid: false,
+      touched: false,
+      validationRules: {
+        required: true,
+        isDomain: true
       }
     },
     formData: {
@@ -70,6 +82,20 @@ class BusinessIndexPage extends React.Component {
         },
         name: "phone"
       },
+      domain: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "https://google.com",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          isDomain: true
+        },
+        name: "domain"
+      },
       objective: {
         element: "select",
         options: [
@@ -113,12 +139,25 @@ class BusinessIndexPage extends React.Component {
 
   handleSearchBoxSubmit = e => {
     e.preventDefault();
-    this.handleModalVisibilityToggle("email");
+    const {domain} = this.state;
+    if(domain.valid){
+      this.handleModalVisibilityToggle("email");
+    }
   };
 
-  handleSearchBoxChange = e =>{
-    console.log(e.target.value)
-  }
+  handleSearchBoxChange = e => {
+    this.setState({
+      domain: {
+        ...this.state.domain,
+        value: e.target.value,
+        valid: validate(
+          e.target.value,
+          this.state.domain.validationRules
+        ),
+        touched: true
+      }
+    });;
+  };
 
   handleArrangeMeetingBtnClick = () => {
     this.handleModalVisibilityToggle("scheduleMeeting");
@@ -158,32 +197,45 @@ class BusinessIndexPage extends React.Component {
   handleSubscriptionEmailSubmit = e => {
     e.preventDefault();
     let dataToSubmit = {};
-    this.setState({
-      subscriptionEmail: { ...this.state.subscriptionEmail, touched: true }
-    }, ()=>{
-      if (this.state.subscriptionEmail.valid) {
-        dataToSubmit = {
-          ...dataToSubmit,
-          email: this.state.subscriptionEmail.value,
-          websiteOwner: this.state.websiteOwner==="yes" ? true : false
-        };
-        //mimic data post
-        this.setState({subscriptionEmailSent:"in-progress"}, ()=>{
-          console.log(dataToSubmit)
-          axios.post("")
-          .then(res=>{
-            console.log(res);
-            this.setState({subscriptionEmailSent:"success"})
-          })
-          .catch(err=>{
-            console.log(err);
-            this.setState({subscriptionEmailSent:"error"})
-          })
-        })
+    this.setState(
+      {
+        subscriptionEmail: { ...this.state.subscriptionEmail, touched: true }
+      },
+      () => {
+        if (this.state.subscriptionEmail.valid) {
+          dataToSubmit = {
+            ...dataToSubmit,
+            email: this.state.subscriptionEmail.value,
+            domain:this.state.domain.value,
+            websiteOwner: this.state.websiteOwner === "yes" ? true : false,
+            type:"check_website"
+          };
+          //mimic data post
+          this.setState({ subscriptionEmailSent: "in-progress" }, () => {
+            console.log(dataToSubmit);
+            axios
+              .post(`${baseURL}/api/leads`, {...dataToSubmit})
+              .then(res => {
+                console.log(res);
+                this.setState({ subscriptionEmailSent: "success" });
+              })
+              .then(()=>{
+                setTimeout(()=>{
+                  Router.push("/");
+                }, 2000)
+              })
+              .catch(err => {
+                console.log(err);
+                this.setState({ subscriptionEmailSent: "error" });
+                setTimeout(()=>{
+                  Router.push("/");
+                }, 2000)
+              });
+          });
+        }
       }
-    });
+    );
   };
-
 
   handleScheduleMeetingSubmit = e => {
     e.preventDefault();
@@ -200,19 +252,27 @@ class BusinessIndexPage extends React.Component {
       };
     }
     if (valid) {
-      //mimic data post
-      this.setState({meetingScheduled:"in-progress"}, ()=>{
-        console.log(dataToSubmit);
-          axios.post("",{...dataToSubmit})
-          .then(res=>{
+      this.setState({ meetingScheduled: "in-progress" }, () => {
+        console.log({...dataToSubmit, type:"schedule_meeting"});
+        axios
+          .post(`${baseURL}/api/leads`, { ...dataToSubmit, type:"schedule_meeting" })
+          .then(res => {
             console.log(res);
-            this.setState({meetingScheduled:"success"})
+            this.setState({ meetingScheduled: "success" });
           })
-          .catch(err=>{
+          .then(()=>{
+            setTimeout(()=>{
+              Router.push("/");
+            }, 2000)
+          })
+          .catch(err => {
             console.log(err);
-            this.setState({meetingScheduled:"error"})
-          })
-      })
+            this.setState({ meetingScheduled: "error" });
+            setTimeout(()=>{
+              Router.push("/");
+            }, 2000)
+          });
+      });
     } else {
       this.setState({ formData: { ...newFormData } });
     }
@@ -225,7 +285,11 @@ class BusinessIndexPage extends React.Component {
         <div className="businessHeroSection">
           <div className="businessHeroLogoContainer">
             <div className="businessHeroLogo">
-              <img src="/static/business/index/images/gradientLogo.png" />
+              <Link href="/">
+                <a alt="homepage">
+                  <img src="/static/business/index/images/gradientLogo.png" />
+                </a>
+              </Link>
             </div>
           </div>
           <div className="businessHeroHeadingsContainer">
@@ -241,10 +305,11 @@ class BusinessIndexPage extends React.Component {
             <SearchBox
               variant="business"
               text="CHECK"
-              placeholder="www.domain.com"
+              placeholder="https://domain.com"
               handleSearchSubmit={this.handleSearchBoxSubmit}
               onchange={this.handleSearchBoxChange}
             />
+            {!this.state.domain.valid && this.state.domain.touched ? <div style={{fontSize:"0.8rem", color:"red", marginLeft:"2%"}}>please enter valid domain</div> : <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div>}
           </div>
         </div>
       </div>
@@ -279,36 +344,34 @@ class BusinessIndexPage extends React.Component {
     ];
     return (
       <div>
-          <style jsx>{businessPageStyles}</style>
-      <div
-        className="container businessInfoContainer"
-      >
-        <div className="row">
-          <div className="col-md-12">
-            <div className="businessInfoHeader">
-              <h2>How TrustSearch can help you</h2>
+        <style jsx>{businessPageStyles}</style>
+        <div className="container businessInfoContainer">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="businessInfoHeader">
+                <h2>How TrustSearch can help you</h2>
+              </div>
+            </div>
+          </div>
+          <div className="container">
+            <div className="row">
+              {helpPoints.map(item => {
+                return (
+                  <div className="col-md-6" key={uuid()}>
+                    <div className="businessInfoHelpPoint">
+                      <ReviewCard
+                        title={item.title}
+                        image={item.image}
+                        body={item.body}
+                        variant="business"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
-        <div className="container">
-          <div className="row">
-            {helpPoints.map(item => {
-              return (
-                <div className="col-md-6" key={uuid()}>
-                  <div className="businessInfoHelpPoint">
-                    <ReviewCard
-                      title={item.title}
-                      image={item.image}
-                      body={item.body}
-                      variant="business"
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
       </div>
     );
   };
@@ -318,11 +381,10 @@ class BusinessIndexPage extends React.Component {
       {
         stepCount: "1",
         stepTitle: "your website and trustsearch widget",
-        stepSubTitle:
-          "Build your trust online & get better conversion rate",
+        stepSubTitle: "Build your trust online & get better conversion rate",
         stepBody:
           "Calculated trustworthiness based on your client reviews and existing data from around the web about your company.",
-        stepImage:"screen_1.png"
+        stepImage: "screen_1.png"
       },
       {
         stepCount: "2",
@@ -331,22 +393,21 @@ class BusinessIndexPage extends React.Component {
           "Your website visitor will click to check proof of your trust with third party - The TrustSearch",
         stepBody:
           "Your customer sees proof to your trustworthiness that they can check, it leads to higher conversin rate and more clients!",
-          stepImage:"screen_2.png"
+        stepImage: "screen_2.png"
       },
       {
         stepCount: "3",
         stepTitle: "buying decision",
         stepSubTitle:
           "The website visitor is persuaded, that he can trust your business.",
-        stepBody: "And then the client BUYS YOUR PRODUCT or BECOMES YOUR CLIENT",
-        stepImage:"screen_3.png"
+        stepBody:
+          "And then the client BUYS YOUR PRODUCT or BECOMES YOUR CLIENT",
+        stepImage: "screen_3.png"
       }
     ];
 
     return (
-      <div
-        className="container businessSolutionContainer"
-      >
+      <div className="container businessSolutionContainer">
         <style jsx>{businessPageStyles}</style>
         <div className="row">
           <div className="col-md-12">
@@ -383,10 +444,10 @@ class BusinessIndexPage extends React.Component {
           <div className="row" style={{ marginTop: "2%" }}>
             <div className="col-md-12">
               <div className="businessSolutionCombinedImg">
-              <img
-                src="/static/business/index/images/all_together_text.png"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
+                <img
+                  src="/static/business/index/images/all_together_text.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
               </div>
             </div>
           </div>
@@ -460,7 +521,10 @@ class BusinessIndexPage extends React.Component {
           <div className="col-md-3">
             <div className="whyToNumberBox">
               <div className="whyToNumber">
-                <span className="symbol" style={{ color: "#888", marginLeft:"0" }}>
+                <span
+                  className="symbol"
+                  style={{ color: "#888", marginLeft: "0" }}
+                >
                   X
                 </span>
                 <span className="number" style={{ color: "#888" }}>
@@ -525,7 +589,11 @@ class BusinessIndexPage extends React.Component {
           <div className="row" style={{ margin: "5% 0 5% 0" }}>
             {cardsData.map(item => {
               return (
-                <div className="col-md-4" style={{marginBottom:"10%"}} key={uuid()}>
+                <div
+                  className="col-md-4"
+                  style={{ marginBottom: "10%" }}
+                  key={uuid()}
+                >
                   <SubscriptionPlanCard {...item} />
                 </div>
               );
@@ -606,7 +674,7 @@ class BusinessIndexPage extends React.Component {
 
   render() {
     return (
-      <div style={{background:"#f9f9f9"}}>
+      <div style={{ background: "#f9f9f9" }}>
         <style jsx>{layoutStyles}</style>
         <style jsx>{businessPageStyles}</style>
         {this.renderModal()}

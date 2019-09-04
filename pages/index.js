@@ -7,14 +7,25 @@ import Head from "next/head";
 import Router from "next/router";
 import uuid from "uuid/v1";
 import BigLoader from "../Components/Widgets/BigLoader/BigLoader";
-import Layout from '../hoc/layout/layout';
+import Layout from "../hoc/layout/layout";
 
 export const config = { amp: "hybrid" };
 
 const handleSearchSubmit = (setLoading, searchBoxVal) => {
   if (searchBoxVal.trim() !== "") {
-    setLoading(true);
-    Router.push(`/reviews?domain=${searchBoxVal.replace(/(^\w+:|^)\/\//, '')}`, `/reviews/${searchBoxVal.replace(/(^\w+:|^)\/\//, '')}`);
+    if (
+      /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/.test(searchBoxVal)
+    ) {
+      let domainName = searchBoxVal.toLowerCase().trim();
+      setLoading(true);
+      Router.push(
+        `/reviews?domain=${domainName}`,
+        `/reviews/${domainName}`
+      );
+    }
+    else{
+      alert("Please enter correct doman name!")
+    }
   }
 };
 
@@ -44,7 +55,7 @@ const renderHeroContent = (
 
       <div
         className="analyseBtn"
-        style={{ marginTop: "1rem", marginBottom: "1rem"}}
+        style={{ marginTop: "1rem", marginBottom: "1rem" }}
       >
         Analyse any website
       </div>
@@ -61,7 +72,14 @@ const renderHeroContent = (
             }}
           />
         ) : (
-          <BigLoader styles={{ borderColor: "#21bc61", top:"50%", left:"50%", position:"relative"}} />
+          <BigLoader
+            styles={{
+              borderColor: "#21bc61",
+              top: "50%",
+              left: "50%",
+              position: "relative"
+            }}
+          />
         )}
       </div>
       <div className="row">
@@ -91,9 +109,11 @@ const renderWebStats = () => {
 };
 
 const Home = () => {
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  });
+    // code to run on component mount
+    window.scrollTo(0,0);
+  }, [])
   const [searchBoxVal, setSearchBoxVal] = useState("");
   const [loading, setLoading] = useState(false);
   return (

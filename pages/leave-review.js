@@ -7,6 +7,7 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import Layout from "../hoc/layout/layout";
 import validate from "../utility/validate";
 import axios from "axios";
+import {baseURL} from '../utility/config';
 
 const handleChangeRating = (newRating, setRating) => {
   setRating(newRating);
@@ -35,7 +36,7 @@ const handleFormSubmit = (
     let finalDataToSubmit = { ...data.dataToSubmit, rating: rating };
     axios
       .post(
-        "https://api.thetrustsearch.com/api/save-order-data-application",
+        `${baseURL}/api/save-order-data-application`,
         {
           report_category_id: 8,
           token: queryData.token,
@@ -48,7 +49,6 @@ const handleFormSubmit = (
         }
       )
       .then(res => {
-        console.log(res);
         setLoading(false);
         setSubmitted("yes");
         setTimeout(()=>{
@@ -236,11 +236,9 @@ LeaveReview.getInitialProps = async ctx => {
     token.trim() === ""
   ) {
     if (ctx && ctx.req) {
-      console.log("server side");
       ctx.res.writeHead(302, { Location: `/` });
       ctx.res.end();
     } else {
-      console.log("client side");
       Router.push(`/`);
     }
   }
