@@ -35,7 +35,7 @@ class EmailSubscription extends React.Component {
               </div>
             </div>
             {/* Second child for success state */}
-            <div style={{textAlign:"center", color:"#21bc61"}}>Email added successfully <i className="fa fa-check"></i></div>
+            <div style={{textAlign:"center", color:"#21bc61"}}>Thank you for the email - we will contact with you soon <i className="fa fa-check"></i></div>
             {/* third child for error state */}
             <div style={{textAlign:"center", color:"red"}}>Some error occured, please try again later <i className="fa fa-close"></i></div>
           </UniversalLoader>

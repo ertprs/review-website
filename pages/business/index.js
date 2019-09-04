@@ -1,5 +1,6 @@
 import React from "react";
 import SearchBox from "../../Components/Widgets/SearchBox/SearchBox";
+import Router from 'next/router';
 import Link from "next/link";
 import SubscriptionPlanCard from "../../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
 import SolutionForCompaniesList from "../../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
@@ -27,6 +28,15 @@ class BusinessIndexPage extends React.Component {
       validationRules: {
         required: true,
         isEmail: true
+      }
+    },
+    domain:{
+      value: "",
+      valid: false,
+      touched: false,
+      validationRules: {
+        required: true,
+        isDomain: true
       }
     },
     formData: {
@@ -71,6 +81,20 @@ class BusinessIndexPage extends React.Component {
         },
         name: "phone"
       },
+      domain: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "https://google.com",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          isDomain: true
+        },
+        name: "domain"
+      },
       objective: {
         element: "select",
         options: [
@@ -114,11 +138,24 @@ class BusinessIndexPage extends React.Component {
 
   handleSearchBoxSubmit = e => {
     e.preventDefault();
-    this.handleModalVisibilityToggle("email");
+    const {domain} = this.state;
+    if(domain.valid){
+      this.handleModalVisibilityToggle("email");
+    }
   };
 
   handleSearchBoxChange = e => {
-    console.log(e.target.value);
+    this.setState({
+      domain: {
+        ...this.state.domain,
+        value: e.target.value,
+        valid: validate(
+          e.target.value,
+          this.state.domain.validationRules
+        ),
+        touched: true
+      }
+    });;
   };
 
   handleArrangeMeetingBtnClick = () => {
@@ -168,20 +205,30 @@ class BusinessIndexPage extends React.Component {
           dataToSubmit = {
             ...dataToSubmit,
             email: this.state.subscriptionEmail.value,
-            websiteOwner: this.state.websiteOwner === "yes" ? true : false
+            domain:this.state.domain.value,
+            websiteOwner: this.state.websiteOwner === "yes" ? true : false,
+            type:"check_website"
           };
           //mimic data post
           this.setState({ subscriptionEmailSent: "in-progress" }, () => {
             console.log(dataToSubmit);
             axios
-              .post("")
+              .post("https://search-api-dev.cryptopolice.com/api/leads", {...dataToSubmit})
               .then(res => {
                 console.log(res);
                 this.setState({ subscriptionEmailSent: "success" });
               })
+              .then(()=>{
+                setTimeout(()=>{
+                  Router.push("/");
+                }, 2000)
+              })
               .catch(err => {
                 console.log(err);
                 this.setState({ subscriptionEmailSent: "error" });
+                setTimeout(()=>{
+                  Router.push("/");
+                }, 2000)
               });
           });
         }
@@ -204,18 +251,25 @@ class BusinessIndexPage extends React.Component {
       };
     }
     if (valid) {
-      //mimic data post
       this.setState({ meetingScheduled: "in-progress" }, () => {
-        console.log(dataToSubmit);
+        console.log({...dataToSubmit, type:"schedule_meeting"});
         axios
-          .post("", { ...dataToSubmit })
+          .post("https://search-api-dev.cryptopolice.com/api/leads", { ...dataToSubmit, type:"schedule_meeting" })
           .then(res => {
             console.log(res);
             this.setState({ meetingScheduled: "success" });
           })
+          .then(()=>{
+            setTimeout(()=>{
+              Router.push("/");
+            }, 2000)
+          })
           .catch(err => {
             console.log(err);
             this.setState({ meetingScheduled: "error" });
+            setTimeout(()=>{
+              Router.push("/");
+            }, 2000)
           });
       });
     } else {
@@ -250,10 +304,11 @@ class BusinessIndexPage extends React.Component {
             <SearchBox
               variant="business"
               text="CHECK"
-              placeholder="www.domain.com"
+              placeholder="https://domain.com"
               handleSearchSubmit={this.handleSearchBoxSubmit}
               onchange={this.handleSearchBoxChange}
             />
+            {!this.state.domain.valid && this.state.domain.touched ? <div style={{fontSize:"0.8rem", color:"red", marginLeft:"2%"}}>please enter valid domain</div> : <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div>}
           </div>
         </div>
       </div>
