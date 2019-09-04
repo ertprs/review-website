@@ -35,7 +35,7 @@ const renderReviewHeader = (data, domain) => {
   const screenshot =
     ((data || {}).domain_data || {}).screenshot !== undefined
       ? ((data || {}).domain_data || {}).screenshot
-      : `${screenshotURL}?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=http://${domain}&viewport=1440x900&width=250`;
+      : `${screenshotURL}?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://${domain}&viewport=1440x900&width=250`;
 
   const favicon =
     ((data || {}).domain_data || {}).favicon !== undefined
