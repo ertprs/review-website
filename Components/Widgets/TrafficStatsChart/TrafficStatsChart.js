@@ -14,7 +14,6 @@ import {
 } from "recharts";
 
 export default (props) => {
-  console.log(props.data)
   return !useAmp() ? (
     <>
       <ResponsiveContainer height="100%" width="100%">

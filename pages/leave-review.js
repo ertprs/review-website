@@ -49,7 +49,6 @@ const handleFormSubmit = (
         }
       )
       .then(res => {
-        console.log(res);
         setLoading(false);
         setSubmitted("yes");
         setTimeout(()=>{
@@ -237,11 +236,9 @@ LeaveReview.getInitialProps = async ctx => {
     token.trim() === ""
   ) {
     if (ctx && ctx.req) {
-      console.log("server side");
       ctx.res.writeHead(302, { Location: `/` });
       ctx.res.end();
     } else {
-      console.log("client side");
       Router.push(`/`);
     }
   }
