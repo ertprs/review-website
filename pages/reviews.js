@@ -677,7 +677,7 @@ Reviews.getInitialProps = async ({ query }) => {
   const domain = query.domain ? query.domain : "google.com";
   if (query.amp === "1") {
     const response = await axios.get(
-      `https://${baseURL}/api/verify?domain=${searchURL}`
+      `${baseURL}/api/verify?domain=${searchURL}`
     );
     return { analysisData: { ...response.data }, domain };
   }

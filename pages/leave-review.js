@@ -7,6 +7,7 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import Layout from "../hoc/layout/layout";
 import validate from "../utility/validate";
 import axios from "axios";
+import {baseURL} from '../utility/config';
 
 const handleChangeRating = (newRating, setRating) => {
   setRating(newRating);
@@ -35,7 +36,7 @@ const handleFormSubmit = (
     let finalDataToSubmit = { ...data.dataToSubmit, rating: rating };
     axios
       .post(
-        "https://api.thetrustsearch.com/api/save-order-data-application",
+        `${baseURL}/api/save-order-data-application`,
         {
           report_category_id: 8,
           token: queryData.token,

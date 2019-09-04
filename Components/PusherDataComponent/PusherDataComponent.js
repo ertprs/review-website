@@ -58,7 +58,7 @@ class PusherDataComponent extends React.Component {
       console.log("connected");
       axios
         .get(
-          `https://${baseURL}/api/verify?domain=https://${domain}`
+          `${baseURL}/api/verify?domain=https://${domain}`
         )
         .then(res => {
           //set the state and call unbindRecievedKeys
@@ -74,7 +74,7 @@ class PusherDataComponent extends React.Component {
             //else poll till no key comes
             else{
                 let intr = setInterval(()=>{
-                    axios.get(`https://${baseURL}/api/verify?domain=https://${domain}`)
+                    axios.get(`${baseURL}/api/verify?domain=https://${domain}`)
                     .then(res=>{
                         this.setState({ domainData : {...this.state.domainData, ...res.data.response}}, ()=>{
                         this.props.onChildStateChange(this.state.domainData)
