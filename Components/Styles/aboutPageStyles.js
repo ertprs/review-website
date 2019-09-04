@@ -32,6 +32,14 @@ export const aboutPageStyles = css`
     font-weight: 650;
   }
 
+  .aboutSubHeading {
+    margin-top: 5%;
+  }
+
+  .aboutSubHeading h5 {
+    line-height: 1.5;
+  }
+
   .aboutHeroImage {
     height: 420px;
     width: 100%;
@@ -163,10 +171,9 @@ export const aboutPageStyles = css`
     margin: 0 auto 4% auto;
   }
 
-  
   .deskInvestorImgContainer:hover {
-      cursor:pointer;
-    }
+    cursor: pointer;
+  }
 
   .investorMobile {
     display: none;
@@ -240,16 +247,19 @@ export const aboutPageStyles = css`
 
   /*------ Media queries ----*/
 
-  @media screen and (max-width:991px){
-    .desktopTeamGridContainer{
-      max-width:100%;
-      margin:0 auto;
+  @media screen and (max-width: 991px) {
+    .desktopTeamGridContainer {
+      max-width: 100%;
+      margin: 0 auto;
     }
   }
 
   @media screen and (max-width: 767px) {
     .aboutHeroContainer {
-      background: none;
+      background-image: url("/static/about/images/half_star.png");
+      background-size: contain;
+      background-position: right;
+      background-repeat: no-repeat;
     }
 
     .aboutHeroLogoContainer {
@@ -307,6 +317,10 @@ export const aboutPageStyles = css`
   }
 
   @media screen and (max-width: 575px) {
+    /*----- Hero seciton ------*/
+    .aboutSubHeading {
+      display:none;
+    }
     /*----- Investor section --------*/
     .investorDesktop {
       display: none;
@@ -315,18 +329,19 @@ export const aboutPageStyles = css`
     .investorMobile {
       display: block;
     }
-    .investorsInfo{
-      font-size:0.8rem;
-    }
-
-    /*---- registeration info section------*/
-    .registrationInfo{
+    .investorsInfo {
+      font-size: 0.8rem;
       display:none;
     }
 
+    /*---- registeration info section------*/
+    .registrationInfo {
+      display: none;
+    }
+
     /*------- Footer section -------*/
-    .footer{
-      margin:10% 0 10% 0;
+    .footer {
+      margin: 10% 0 10% 0;
     }
   }
 
@@ -384,17 +399,17 @@ export const aboutPageStyles = css`
     }
   }
 
-  @media screen and (max-width:375px){
-    .registerImageContainer{
-      max-width:95%;
+  @media screen and (max-width: 375px) {
+    .registerImageContainer {
+      max-width: 95%;
     }
 
     /*---- footer ---*/
-    .footer{
-      margin:15% 0 12% 0;
+    .footer {
+      margin: 15% 0 12% 0;
     }
-    .footerImageContainer{
-      height:70px;
+    .footerImageContainer {
+      height: 70px;
       width: 70px;
     }
   }

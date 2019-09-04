@@ -13,6 +13,7 @@ import { businessPageStyles } from "../../Components/Styles/business/businessInd
 import uuid from "uuid/v1";
 import axios from "axios";
 import CustomModal from "../../Components/Widgets/CustomModal/CustomModal";
+import {baseURL} from '../../utility/config';
 
 class BusinessIndexPage extends React.Component {
   state = {
@@ -213,7 +214,7 @@ class BusinessIndexPage extends React.Component {
           this.setState({ subscriptionEmailSent: "in-progress" }, () => {
             console.log(dataToSubmit);
             axios
-              .post("https://search-api-dev.cryptopolice.com/api/leads", {...dataToSubmit})
+              .post(`${baseURL}/api/leads`, {...dataToSubmit})
               .then(res => {
                 console.log(res);
                 this.setState({ subscriptionEmailSent: "success" });
@@ -254,7 +255,7 @@ class BusinessIndexPage extends React.Component {
       this.setState({ meetingScheduled: "in-progress" }, () => {
         console.log({...dataToSubmit, type:"schedule_meeting"});
         axios
-          .post("https://search-api-dev.cryptopolice.com/api/leads", { ...dataToSubmit, type:"schedule_meeting" })
+          .post(`${baseURL}/api/leads`, { ...dataToSubmit, type:"schedule_meeting" })
           .then(res => {
             console.log(res);
             this.setState({ meetingScheduled: "success" });
