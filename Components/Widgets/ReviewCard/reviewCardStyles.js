@@ -56,7 +56,7 @@ export const reviewCardStyles = css`
     width:105px;
   }
 
-  .businessDetails{
+  .businessDetails, .productCardDetails{
     flex-basis:55%;
   }
 
@@ -65,7 +65,7 @@ export const reviewCardStyles = css`
     margin-bottom:1%;
   }
 
-  .businessText{
+  .businessText, .productCardText{
     font-size:0.9rem;
     text-align:left;
   }
@@ -91,6 +91,16 @@ export const reviewCardStyles = css`
   }
 
   /*--------- Business varinat styling end -----*/
+
+  /*---- Product Card -------*/
+  .productCardPicContainer{
+    width:210px;
+    height:auto;
+  }
+
+  .productCardTitle{
+    margin-bottom:2%;
+  }
 
   @media only screen and (max-width: 991px) {
     
@@ -126,7 +136,7 @@ export const reviewCardStyles = css`
       align-self:center;
       margin : 0 0 5% 0;
     }
-    .businessText, .businessTitle{
+    .businessText, .productCardText, .businessTitle{
       text-align:center;
     }
   }
