@@ -167,7 +167,7 @@ const renderReviewCard = (
               <h4>{title}</h4>
             </div>
             <div className="productCardText">
-              <p>{body}</p>
+              <div>{body}</div>
             </div>
           </div>
         </div>

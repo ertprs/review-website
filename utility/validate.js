@@ -14,6 +14,9 @@ const validate = (value, rules) => {
         case "isDomain":
           isValid = isValid && isDomain(value);
           break;
+        case "minLength": 
+          isValid = isValid && isMinLength(value,rules[rule])
+          break;
         default:
           isValid = true;
       }
@@ -40,6 +43,10 @@ const validate = (value, rules) => {
       value
     );
   };
+
+  const isMinLength = (value, minLength)=>{
+    return value.length >= minLength;
+  }
   
   export default validate;
   
