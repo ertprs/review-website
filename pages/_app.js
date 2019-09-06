@@ -16,7 +16,6 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps } = this.props;
-
     return (
       <>
         <style jsx>{layoutStyles}</style>
@@ -27,7 +26,8 @@ class MyApp extends App {
             rel="stylesheet"
             type="text/css"
           />
-          <script
+
+          { process.env.NODE_ENV === 'production' ? <script
             dangerouslySetInnerHTML={{
               __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -35,15 +35,17 @@ class MyApp extends App {
               'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
               })(window,document,'script','dataLayer','GTM-5KPH988');`
             }}
-          />
+          /> : <script></script>}
+          
         </Head>
         <Container>
+        {process.env.NODE_ENV === 'production' ?
           <noscript
             dangerouslySetInnerHTML={{
               __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5KPH988"
               height="0" width="0" style="display:none;visibility:hidden"></iframe>`
             }}
-          />
+          /> : <noscript />}
           <Component {...pageProps} />
         </Container>
       </>
