@@ -53,7 +53,7 @@ export const newLeaveReviewPageStyles = css`
     }
 
     .mainReviewRatingsCaption{
-        margin: 2% 0 4% 0;
+        margin: 2% 0 9% 0;
         color:#999;
         font-style:italic;
     }
@@ -91,6 +91,9 @@ export const newLeaveReviewPageStyles = css`
     }
 
     /*--------- checkbox and btn container ------*/
+    .checkBoxAndBtnContainer{
+        margin-bottom:8%;
+    }
     .checkBoxError{
         margin-top:2%;
     }
