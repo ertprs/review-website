@@ -185,7 +185,7 @@ class NewLeaveReview extends React.Component {
         rating={this.state.ratings.mainRating}
         typeOfWidget="star"
         widgetRatedColors="#21bc61"
-        widgetDimensions="40px"
+        widgetDimensions="35px"
         widgetSpacings="2px"
       />
     );
@@ -376,10 +376,10 @@ class NewLeaveReview extends React.Component {
         modalCustomStyles={{
           background: "#f9f9f9",
           border: "1px solid #fff",
-          minWidth: "450px"
+          maxWidth: "450px"
         }}
       >
-        <div style={{marginBottom:"5%"}}>
+        <div style={{marginBottom:"5%", marginBottom:"5%"}}>
           <h6>The TrustSearch - Internet users check online reputation of websites.</h6>
         </div>
         <div style={{marginBottom:"5%"}}>

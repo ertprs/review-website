@@ -2,9 +2,10 @@ import css from "styled-jsx/css";
 
 export const reviewCardStyles = css`
   /*--- review variant styling ------*/
-  .reviewCardContainer {
+  .reviewCardContainer,
+  .productCardContainer {
     display: flex;
-    color:#666;
+    color: #666;
   }
   .reviewProfilePic {
     align-self: center;
@@ -15,9 +16,9 @@ export const reviewCardStyles = css`
     width: 75px;
   }
 
-  .reviewerName{
-    font-weight:500;
-    margin-bottom:2%;
+  .reviewerName {
+    font-weight: 500;
+    margin-bottom: 2%;
   }
   .reviewRatings {
     display: flex;
@@ -33,77 +34,80 @@ export const reviewCardStyles = css`
   }
   .reviewRatings .date {
     align-self: flex-end;
-    color:#666;
-    font-size:0.9rem;
+    color: #666;
+    font-size: 0.9rem;
   }
 
-  .reviewDetails{
-    flex-basis:80%;
+  .reviewDetails {
+    flex-basis: 80%;
   }
 
-  .reviewText p{
+  .reviewText p {
     word-break: break-word;
   }
 
   /*---- Business varinat styling -------*/
-  .businessProfilePic{
+  .businessProfilePic,
+  .productProfilePic {
     align-self: flex-start;
     margin-right: 5%;
   }
 
-  .businessPicContainer, .teamPicContainer{
-    height:105px;
-    width:105px;
+  .businessPicContainer,
+  .teamPicContainer {
+    height: 105px;
+    width: 105px;
   }
 
-  .businessDetails, .productCardDetails{
-    flex-basis:55%;
+  .businessDetails,
+  .productCardDetails {
+    flex-basis: 55%;
   }
 
-  .businessTitle{
-    font-weight:bold;
-    margin-bottom:1%;
+  .businessTitle {
+    font-weight: bold;
+    margin-bottom: 1%;
   }
 
-  .businessText, .productCardText{
-    font-size:0.9rem;
-    text-align:left;
+  .businessText,
+  .productCardText {
+    font-size: 0.9rem;
+    text-align: left;
   }
 
   /*-------- Team variant styling ---------*/
 
-  .individualName{
-    font-weight:bold;
-    font-size:1rem;
+  .individualName {
+    font-weight: bold;
+    font-size: 1rem;
   }
 
-  .individualDesignation{
-    text-transform:uppercase;
-    font-size:0.8rem;
+  .individualDesignation {
+    text-transform: uppercase;
+    font-size: 0.8rem;
   }
 
-  .specializationItem{
-    font-size:0.7rem;
+  .specializationItem {
+    font-size: 0.7rem;
   }
 
-  .specializationItem:first-child{
-    margin-top:2%;
+  .specializationItem:first-child {
+    margin-top: 2%;
   }
 
   /*--------- Business varinat styling end -----*/
 
   /*---- Product Card -------*/
-  .productCardPicContainer{
-    width:210px;
-    height:auto;
+  .productCardPicContainer {
+    max-width: 210px;
+    height: auto;
   }
 
-  .productCardTitle{
-    margin-bottom:2%;
+  .productCardTitle {
+    margin-bottom: 2%;
   }
 
   @media only screen and (max-width: 991px) {
-    
     .reviewRatings {
       flex-direction: column;
     }
@@ -116,29 +120,48 @@ export const reviewCardStyles = css`
     }
 
     /*----- business variant ------*/
-    .businessPicContainer, .teamPicContainer{
-      height:90px;
-      width:90px;
+    .businessPicContainer,
+    .teamPicContainer {
+      height: 90px;
+      width: 90px;
     }
   }
 
-  @media only screen and (max-width:480px){
+  @media screen and (max-width: 525px) {
+    .productCardContainer {
+      flex-direction: column;
+    }
+    .productProfilePic {
+      align-self: center;
+      margin: 0 0 5% 0;
+    }
+    .productCardText{
+      text-align:center;
+    }
+
+    .productCardTitle{
+      text-align:center;
+      margin:3% 0 5% 0;
+    }
+  }
+
+  @media only screen and (max-width: 480px) {
     .reviewCardContainer {
       flex-direction: column;
     }
-    .reviewProfilePic{
-      align-self:flex-start;
-      margin-bottom:2%;
+    .reviewProfilePic {
+      align-self: flex-start;
+      margin-bottom: 2%;
     }
 
     /*---- business variant ----*/
-    .businessProfilePic{
-      align-self:center;
-      margin : 0 0 5% 0;
+    .businessProfilePic {
+      align-self: center;
+      margin: 0 0 5% 0;
     }
-    .businessText, .productCardText, .businessTitle{
-      text-align:center;
+    .businessText,
+    .businessTitle {
+      text-align: center;
     }
   }
-
 `;

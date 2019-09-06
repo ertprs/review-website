@@ -154,10 +154,34 @@ export const newLeaveReviewPageStyles = css`
         .mainReviewRatingsCaption{
             margin: 3% 0 9% 0;
         }
+        /*----- final review section -----*/
+        .finalReviewSectionHeader, .rateProdAttrContainer, .reviewTextBoxContainer{
+            margin-bottom:5%;
+            padding-bottom:5%;
+        }
+        .rateProdAttrHeader{
+            margin-bottom:5%;
+        }
+
+    }
+
+    @media screen and (max-width:767px){
+        /*----- final review section -------*/
+        .finalReviewSectionHeader, .rateProdAttrContainer, .reviewTextBoxContainer{
+            margin-bottom:8%;
+            padding-bottom:6%;
+        }
+        .checkBoxContainer{
+            margin-bottom:5%;
+        }
+        .reviewSubmitBtn{
+            padding: 3% 2%;
+            font-size:0.92rem;
+        }
     }
 
     @media screen and (max-width:575px){
-        /*----- main review section ------*/
+        /*----- hero section ------*/
         .reviewHeroHeading h3{
             font-size:1.5rem;
         }
@@ -192,6 +216,8 @@ export const newLeaveReviewPageStyles = css`
             padding:10%;
         }
 
+        /*------ main review section ------*/
+
         .mainReviewImageContainer{
             max-width:225px;
         }
@@ -200,6 +226,29 @@ export const newLeaveReviewPageStyles = css`
         }
         .mainReviewRatingsCaption{
             font-size:0.9rem;
+        }
+
+        /*------ final review section ----*/
+        .finalReviewSectionHeader, .rateProdAttrContainer, .reviewTextBoxContainer{
+            margin-bottom:10%;
+            padding-bottom:7%;
+        }
+
+        .rateProdAttrHeader h5, .reviewTextBoxHeader h5{
+            font-size:1.02rem;
+        }
+
+        .rateProdAttrBodyHeader h6{
+            font-size:0.9rem;
+        }
+
+        .reviewTextBoxHeader{
+            margin-bottom:5%;
+        }
+
+        .checkBoxContainer{
+            margin-bottom:8%;
+            font-size:0.8rem;
         }
     }
 `;  
