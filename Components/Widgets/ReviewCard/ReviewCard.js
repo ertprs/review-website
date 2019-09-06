@@ -155,9 +155,9 @@ const renderReviewCard = (
 
     case "productCard":
       return (
-        <div className="reviewCardContainer">
+        <div className="productCardContainer">
           <style jsx>{reviewCardStyles}</style>
-          <div className="businessProfilePic">
+          <div className="productProfilePic">
             <div className="productCardPicContainer">
               <img src={image} style={{ height: "auto", maxWidth: "100%" }} />
             </div>
