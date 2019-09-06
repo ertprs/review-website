@@ -17,6 +17,10 @@ export const newLeaveReviewPageStyles = css`
         width:200px;
     }
 
+    .reviewHeaderLogoContainer img{
+        margin:25px 0 20px 0;
+    }
+
     .reviewHeaderLogoImage{
         max-width:100%;
         height: auto;
@@ -53,7 +57,7 @@ export const newLeaveReviewPageStyles = css`
     }
 
     .mainReviewRatingsCaption{
-        margin: 2% 0 9% 0;
+        margin: 2% 0 15% 0;
         color:#999;
         font-style:italic;
     }
@@ -128,5 +132,74 @@ export const newLeaveReviewPageStyles = css`
     .reviewSubmitBtn:link, .reviewSubmitBtn:visited, .reviewSubmitBtn:hover, .reviewSubmitBtn:active{
         outline:none;
         cursor:pointer;
+    }
+
+    /*------ Media queries ---------*/
+    @media screen and (max-width:991px){
+        /*------- Hero section --------*/
+        .reviewHeroHeading{
+            margin:5% 0 4% 0;
+        }
+        .reviewHeroSubheading{
+            margin-bottom:5%;
+        }
+        .reviewContainerInner{
+            padding:8%;
+        }
+
+        /*----- main review section ----*/
+        .mainReviewHeading{
+            margin:4% 0;
+        }
+        .mainReviewRatingsCaption{
+            margin: 3% 0 9% 0;
+        }
+    }
+
+    @media screen and (max-width:575px){
+        /*----- main review section ------*/
+        .reviewHeroHeading h3{
+            font-size:1.5rem;
+        }
+
+        .reviewContainerInner{
+            padding:10%;
+        }
+        /*----- main review section ----*/
+        .mainReviewHeading{
+            margin:6% 0 4% 0;
+        }
+        .mainReviewRatingsCaption{
+            margin: 4% 0 12%;
+        }
+        .mainReviewRatingsContainer{
+            margin:7% 0 6% 0;
+        }
+    }
+
+    @media screen and (max-width:475px){
+        /*----- main review section ------*/
+        .reviewHeroHeading h3{
+            font-size:1.4rem;
+        }
+
+        .reviewHeroSubheading h6{
+            font-size:0.95rem;
+            margin-bottom:8%;
+        }
+
+        .reviewContainerInner{
+            padding:10%;
+        }
+
+        .mainReviewImageContainer{
+            max-width:225px;
+        }
+        .mainReviewHeading h4{
+            font-size: 1.2rem;
+        }
+        .mainReviewRatingsCaption{
+            font-size:0.9rem;
+        }
     }
 `;  
