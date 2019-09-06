@@ -20,7 +20,7 @@ export const shareBtnStyles = css`
 
   .shareBtn:hover i {
     opacity: 1;
-    padding-left: 4%;
+    padding-left: 0%;
   }
 
 `;
