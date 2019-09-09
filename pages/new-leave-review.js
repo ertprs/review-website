@@ -5,7 +5,6 @@ import Ratings from "react-ratings-declarative";
 import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import FormField from "../Components/Widgets/FormField/FormField";
-import CustomModal from "../Components/Widgets/CustomModal/CustomModal";
 import UniversalLoader from "../Components/Widgets/UniversalLoader/UniversalLoader";
 import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
@@ -16,9 +15,10 @@ class NewLeaveReview extends React.Component {
     ratings: {
       mainRating: 0
     },
-    showModal: false,
+    reviewSubmitted: false,
     errors: {},
     agreement: "no",
+    videoReview: "no",
     formData: {
       review: {
         element: "textarea",
@@ -35,12 +35,6 @@ class NewLeaveReview extends React.Component {
         name: "review"
       }
     }
-  };
-
-  handleModalVisibilityToggle = () => {
-    this.setState(currentState => {
-      return { showModal: !currentState.showModal };
-    });
   };
 
   handleRatingChange = (id, newRating) => {
@@ -101,16 +95,19 @@ class NewLeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
-      this.setState({ showModal: true, reviewSent: "in-progress" }, () => {
-        //axios post dataToSubmit
-        setTimeout(() => {
-          this.setState({ reviewSent: "success" });
-
+      this.setState(
+        { reviewSubmitted: true, reviewSent: "in-progress" },
+        () => {
+          //axios post dataToSubmit
           setTimeout(() => {
-            Router.push("/");
-          }, 2000);
-        }, 3000);
-      });
+            this.setState({ reviewSent: "success" });
+
+            // setTimeout(() => {
+            //   Router.push("/");
+            // }, 2000);
+          }, 3000);
+        }
+      );
     } else {
       this.setState({ errors: { ...errors } });
     }
@@ -260,7 +257,6 @@ class NewLeaveReview extends React.Component {
               </div>
             </div>
           </div>
-
         </div>
         <div className="rateProdAttrError">
           {errors["ratings"] ? (
@@ -290,7 +286,9 @@ class NewLeaveReview extends React.Component {
           styles={{}}
         />
         <div className="reviewError">
-          {errors["review"] && !this.state.formData.review.valid ||  !this.state.formData.review.valid && this.state.formData.review.touched ? (
+          {(errors["review"] && !this.state.formData.review.valid) ||
+          (!this.state.formData.review.valid &&
+            this.state.formData.review.touched) ? (
             <span>Atleast 25 characters</span>
           ) : null}
         </div>
@@ -298,8 +296,12 @@ class NewLeaveReview extends React.Component {
     );
   };
 
-  renderCheckBox = () => {
-    const { agreement } = this.state;
+  handleCheckBoxChange = (e, id) => {
+    this.setState({ [id]: e.target.value === "yes" ? "no" : "yes" });
+  };
+
+  renderCheckBox = ({ id, text, error }) => {
+    const checkBoxVal = this.state[id];
     const { errors } = this.state;
     return (
       <>
@@ -307,52 +309,77 @@ class NewLeaveReview extends React.Component {
         <label style={{ verticalAlign: "middle" }}>
           <input
             type="checkbox"
-            onChange={e =>
-              this.setState({
-                agreement: e.target.value === "yes" ? "no" : "yes"
-              })
-            }
+            onChange={e => this.handleCheckBoxChange(e, id)}
             style={{
               height: "1.01rem",
               width: "1.01rem",
               verticalAlign: "middle"
             }}
-            value={agreement}
-            checked={agreement === "yes" ? true : false}
+            value={checkBoxVal}
+            checked={checkBoxVal === "yes" ? true : false}
           />{" "}
-          I accept the <a href="/">Terms &amp; conditions</a> and{" "}
-          <a href="/">Privacy Policy.</a>
+          {id === "agreement" ? (
+            <span>
+              I accept the <a href="/">Terms &amp; conditions</a> and{" "}
+              <a href="/">Privacy Policy.</a>
+            </span>
+          ) : (
+            text
+          )}
         </label>
         <div className="checkBoxError">
-          {errors["agreement"] && this.state.agreement !== "yes" ? (
-            <span>Please accept terms &amp; conditions</span>
-          ) : null}
+          {errors[id] && this.state[id] !== "yes" ? <span>{error}</span> : null}
         </div>
       </>
     );
   };
 
   renderSubmitBtn = () => {
+    const { reviewSubmitted } = this.state;
     return (
       <>
         <style jsx>{newLeaveReviewPageStyles}</style>
-        <button className="reviewSubmitBtn" onClick={this.handleFormSubmit}>
-          Submit your review
-        </button>
+        {reviewSubmitted ? (
+          this.renderUniversalLoader()
+        ) : (
+          <button className="reviewSubmitBtn" onClick={this.handleFormSubmit}>
+            Submit your review
+          </button>
+        )}
       </>
     );
   };
 
   renderCheckBoxAndBtn = () => {
+    const agreement = {
+      id: "agreement",
+      text: "",
+      error: "Please accept terms & conditions"
+    };
+
+    const videoReview = {
+      id: "videoReview",
+      text: "I also want to upload a video review.",
+      error: ""
+    };
     return (
       <div className="checkBoxAndBtnContainer">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <div className="checkBoxContainer">{this.renderCheckBox()}</div>
+              <div className="checkBoxContainer">
+                {this.renderCheckBox(agreement)}
+              </div>
             </div>
             <div className="col-md-6">
+              <div className="checkBoxContainer">
+                {this.renderCheckBox(videoReview)}
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 offset-md-6">
               <div className="submitBtnContainer">{this.renderSubmitBtn()}</div>
             </div>
           </div>
@@ -381,12 +408,12 @@ class NewLeaveReview extends React.Component {
           </div>
         </div>
         {/* Second child for success state */}
-        <div style={{ textAlign: "center", color: "#21bc61" }}>
+        <div style={{ textAlign: "left", color: "#21bc61" }}>
           Thank you for your review - we will contact with you soon{" "}
           <i className="fa fa-check"></i>
         </div>
         {/* third child for error state */}
-        <div style={{ textAlign: "center", color: "red" }}>
+        <div style={{ textAlign: "left", color: "red" }}>
           Some error occured, please try again later{" "}
           <i className="fa fa-close"></i>
         </div>
@@ -394,27 +421,7 @@ class NewLeaveReview extends React.Component {
     );
   };
 
-  renderModal = () => {
-    return (
-      <CustomModal
-        showModal={this.state.showModal}
-        handleModalClose={this.handleModalVisibilityToggle}
-        modalCustomStyles={{
-          background: "#f9f9f9",
-          border: "1px solid #fff",
-          maxWidth: "450px"
-        }}
-      >
-        <div style={{ marginBottom: "5%", marginBottom: "5%" }}>
-          <h6>
-            The TrustSearch - Internet users check online reputation of
-            websites.
-          </h6>
-        </div>
-        <div style={{ marginBottom: "5%" }}>{this.renderUniversalLoader()}</div>
-      </CustomModal>
-    );
-  };
+  
 
   render() {
     const { mainRating } = this.state.ratings;
@@ -422,7 +429,6 @@ class NewLeaveReview extends React.Component {
       <div style={{ background: "#f5f5f5" }}>
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="container">
-          {this.renderModal()}
           {this.renderReviewHeader()}
           {this.renderReviewHeroSection()}
           <div className="reviewContainerInner">
