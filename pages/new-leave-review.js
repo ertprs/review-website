@@ -1,5 +1,6 @@
 import React from "react";
 import Router from "next/router";
+import VideoUploadForm from '../Components/Widgets/VideoUploadForm/VideoUploadForm';
 import { newLeaveReviewPageStyles } from "../Components/Styles/newLeaveReviewPageStyles";
 import Ratings from "react-ratings-declarative";
 import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
@@ -33,7 +34,33 @@ class NewLeaveReview extends React.Component {
           minLength: 25
         },
         name: "review"
-      }
+      },
+      videoTitle: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "Video Title",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "videoTitle"
+      },
+      videoDescription: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "Video description",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "videoDescription"
+      },
     }
   };
 
@@ -95,6 +122,7 @@ class NewLeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
+      //clear form data
       this.setState(
         { reviewSubmitted: true, reviewSent: "in-progress" },
         () => {
@@ -421,10 +449,49 @@ class NewLeaveReview extends React.Component {
     );
   };
 
-  
+
+  handleVideoUploadSubmit = (e)=>{
+    e.preventDefault();
+    let {formData} = this.state;
+    let newFormData = {};
+    let dataToSubmit = {};
+    let valid = true;
+    for(let item in formData){
+      if(item!=="review"){
+        valid = valid && formData[item].valid;
+        if(valid){
+          dataToSubmit = {...dataToSubmit, [item]:formData[item].value}
+          newFormData = {...newFormData, [item]:formData[item].value}
+        }
+        else{
+
+        }
+      }
+    }
+    if(valid){
+      alert(JSON.stringify(dataToSubmit))
+    }
+    else{
+      alert("error")
+    }
+  }
+
+  renderVideoReviewUpload = ()=>{
+    const {formData} = this.state;
+    return(
+      <div>
+        {this.renderUniversalLoader()}
+        <style jsx>
+          {newLeaveReviewPageStyles}
+        </style>
+        <VideoUploadForm formData={{...formData}} handleFormDataChange={this.handleFormDataChange} handleVideoUploadSubmit={this.handleVideoUploadSubmit}/>
+      </div>
+    )
+  }
 
   render() {
     const { mainRating } = this.state.ratings;
+    const { reviewSent, videoReview } = this.state;
     return (
       <div style={{ background: "#f5f5f5" }}>
         <style jsx>{newLeaveReviewPageStyles}</style>
@@ -432,9 +499,11 @@ class NewLeaveReview extends React.Component {
           {this.renderReviewHeader()}
           {this.renderReviewHeroSection()}
           <div className="reviewContainerInner">
-            {mainRating > 0
-              ? this.renderFinalReviewSection()
-              : this.renderMainReviewSection()}
+            {reviewSent !== "success" || videoReview!=="yes"
+              ? mainRating > 0
+                ? this.renderFinalReviewSection()
+                : this.renderMainReviewSection()
+              : this.renderVideoReviewUpload()}
           </div>
           <div>
             <Footer />
