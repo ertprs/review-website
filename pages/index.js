@@ -14,7 +14,7 @@ export const config = { amp: "hybrid" };
 const handleSearchSubmit = (setLoading, searchBoxVal) => {
   if (searchBoxVal.trim() !== "") {
     if (
-      /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/.test(searchBoxVal)
+      /^[^www.][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(searchBoxVal)
     ) {
       let domainName = searchBoxVal.toLowerCase().trim();
       setLoading(true);
@@ -37,7 +37,8 @@ const renderHeroContent = (
   searchBoxVal,
   setSearchBoxVal,
   loading,
-  setLoading
+  setLoading,
+  mounted
 ) => {
   return (
     <div className="homeContainerInner">
@@ -62,7 +63,7 @@ const renderHeroContent = (
 
       <div className="homeSearchBoxContainer">
         {!loading ? (
-          <SearchBox
+          mounted || useAmp() ? <SearchBox
             onchange={handleSearchBoxChange}
             value={searchBoxVal}
             stateMethod={setSearchBoxVal}
@@ -70,7 +71,14 @@ const renderHeroContent = (
             handleSearchSubmit={searchBoxVal => {
               handleSearchSubmit(setLoading, searchBoxVal);
             }}
-          />
+          /> : <BigLoader
+          styles={{
+            borderColor: "#21bc61",
+            top: "50%",
+            left: "50%",
+            position: "relative"
+          }}
+        />
         ) : (
           <BigLoader
             styles={{
@@ -113,9 +121,11 @@ const Home = () => {
   useEffect(() => {
     // code to run on component mount
     window.scrollTo(0,0);
+    setMounted(true);
   }, [])
   const [searchBoxVal, setSearchBoxVal] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   return (
     <Layout>
       <Head>
@@ -126,7 +136,7 @@ const Home = () => {
       </Head>
       <style jsx>{indexPageStyles}</style>
       <div className="homeContainer">
-        {renderHeroContent(searchBoxVal, setSearchBoxVal, loading, setLoading)}
+        {renderHeroContent(searchBoxVal, setSearchBoxVal, loading, setLoading, mounted)}
       </div>
     </Layout>
   );

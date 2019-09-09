@@ -110,6 +110,7 @@ export const newLeaveReviewPageStyles = css`
 
     .submitBtnContainer{
         text-align:right;
+        margin-top:5%;
     }
 
     .reviewSubmitBtn{
