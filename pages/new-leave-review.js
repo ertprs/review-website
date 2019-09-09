@@ -7,7 +7,7 @@ import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndic
 import FormField from "../Components/Widgets/FormField/FormField";
 import CustomModal from "../Components/Widgets/CustomModal/CustomModal";
 import UniversalLoader from "../Components/Widgets/UniversalLoader/UniversalLoader";
-import Footer from '../Components/Footer/Footer';
+import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
 
 class NewLeaveReview extends React.Component {
@@ -106,8 +106,8 @@ class NewLeaveReview extends React.Component {
         setTimeout(() => {
           this.setState({ reviewSent: "success" });
 
-          setTimeout(()=>{
-            Router.push("/")
+          setTimeout(() => {
+            Router.push("/");
           }, 2000);
         }, 3000);
       });
@@ -152,7 +152,7 @@ class NewLeaveReview extends React.Component {
           <img src="/static/images/capture.png" />
         </div>
         <div className="mainReviewHeading">
-          <h4>https://google.com</h4>
+          <h4>Google.com</h4>
         </div>
         <div className="mainReviewRatingsContainer">
           <Ratings
@@ -196,7 +196,7 @@ class NewLeaveReview extends React.Component {
           <ReviewCard
             variant="productCard"
             image="/static/images/capture.png"
-            title="google.com"
+            title="Google.com"
             body={reviewCardBody}
           />
         </div>
@@ -218,23 +218,49 @@ class NewLeaveReview extends React.Component {
           <h5 style={{ marginTop: "3%" }}>Rate this product's attributes</h5>
           {/* ToDo: replace with dynamic key, value pairs- create dynamic keys and values in the ratings state */}
         </div>
-        <div className="rateProdAttrBody">
-          <div className="rateProdAttrBodyHeader">
-            {/* change with dynamic key */}
-            <h6>Quality</h6>
-            {/* Change with dynamic state key and value */}
-            <RatingIndicators
-              rating={this.state.ratings.quality || 0}
-              typeOfWidget="star"
-              widgetRatedColors="#21bc61"
-              widgetHoverColors="#21bc61"
-              widgetDimensions="22px"
-              widgetSpacings="1px"
-              changeRating={newRating => {
-                this.handleRatingChange("quality", newRating);
-              }}
-            />
+        <div className="row">
+          <div className="col-md-4">
+            <div className="rateProdAttrBody">
+              <div className="rateProdAttrBodyHeader">
+                {/* change with dynamic key */}
+                <h6>Quality</h6>
+                {/* Change with dynamic state key and value */}
+                <RatingIndicators
+                  rating={this.state.ratings.quality || 0}
+                  typeOfWidget="star"
+                  widgetRatedColors="#21bc61"
+                  widgetHoverColors="#21bc61"
+                  widgetDimensions="22px"
+                  widgetSpacings="1px"
+                  changeRating={newRating => {
+                    this.handleRatingChange("quality", newRating);
+                  }}
+                />
+              </div>
+            </div>
           </div>
+
+          <div className="col-md-4">
+            <div className="rateProdAttrBody">
+              <div className="rateProdAttrBodyHeader">
+                {/* change with dynamic key */}
+                <h6>Value</h6>
+                {/* Change with dynamic state key and value */}
+                <RatingIndicators
+                  rating={this.state.ratings.value || 0}
+                  typeOfWidget="star"
+                  widgetRatedColors="#21bc61"
+                  widgetHoverColors="#21bc61"
+                  widgetDimensions="22px"
+                  widgetSpacings="1px"
+                  changeRating={newRating => {
+                    this.handleRatingChange("value", newRating);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
         </div>
         <div className="rateProdAttrError">
           {errors["ratings"] ? (
@@ -264,7 +290,7 @@ class NewLeaveReview extends React.Component {
           styles={{}}
         />
         <div className="reviewError">
-          {errors["review"] && !this.state.formData.review.valid ? (
+          {errors["review"] && !this.state.formData.review.valid ||  !this.state.formData.review.valid && this.state.formData.review.touched ? (
             <span>Atleast 25 characters</span>
           ) : null}
         </div>
@@ -379,12 +405,13 @@ class NewLeaveReview extends React.Component {
           maxWidth: "450px"
         }}
       >
-        <div style={{marginBottom:"5%", marginBottom:"5%"}}>
-          <h6>The TrustSearch - Internet users check online reputation of websites.</h6>
+        <div style={{ marginBottom: "5%", marginBottom: "5%" }}>
+          <h6>
+            The TrustSearch - Internet users check online reputation of
+            websites.
+          </h6>
         </div>
-        <div style={{marginBottom:"5%"}}>
-          {this.renderUniversalLoader()}
-        </div>
+        <div style={{ marginBottom: "5%" }}>{this.renderUniversalLoader()}</div>
       </CustomModal>
     );
   };

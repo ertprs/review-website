@@ -62,11 +62,13 @@ const renderSearchBox = ({
                   placeholder={
                     placeholder
                       ? placeholder
-                      : "Enter any website domain for verification"
+                      : "Enter any website domain for verification (ex format: thetrustsearch.com)"
                   }
                   onChange={e => onchange(e, stateMethod)}
                   value={value}
                   name="domain"
+                  required
+                  pattern="^[^www.][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
                 />
               </div>
               <input type="hidden" name="amp" value="1" />
