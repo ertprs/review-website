@@ -17,6 +17,9 @@ const validate = (value, rules) => {
         case "minLength": 
           isValid = isValid && isMinLength(value,rules[rule])
           break;
+        case "maxLength":
+          isValid = isValid && isMaxLength(value, rules[rule])
+          break;
         default:
           isValid = true;
       }
@@ -46,6 +49,10 @@ const validate = (value, rules) => {
 
   const isMinLength = (value, minLength)=>{
     return value.length >= minLength;
+  }
+
+  const isMaxLength = (value, maxLength)=>{
+    return value.length <= maxLength;
   }
   
   export default validate;

@@ -54,6 +54,7 @@ const FormField = ({
             }
             style={{ ...styles }}
           />
+          <div className="errorMsg">{!valid && touched ? errorMessage : ""}</div>
         </div>
       );
 

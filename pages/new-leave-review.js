@@ -1,6 +1,6 @@
 import React from "react";
 import Router from "next/router";
-import VideoUploadForm from '../Components/Widgets/VideoUploadForm/VideoUploadForm';
+import VideoUploadForm from "../Components/Widgets/VideoUploadForm/VideoUploadForm";
 import { newLeaveReviewPageStyles } from "../Components/Styles/newLeaveReviewPageStyles";
 import Ratings from "react-ratings-declarative";
 import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
@@ -9,60 +9,75 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import UniversalLoader from "../Components/Widgets/UniversalLoader/UniversalLoader";
 import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
+import tus from 'tus-js-client';
+import axios from "axios";
 
 class NewLeaveReview extends React.Component {
-  state = {
-    reviewSent: "no",
-    ratings: {
-      mainRating: 0
-    },
-    reviewSubmitted: false,
-    errors: {},
-    agreement: "no",
-    videoReview: "no",
-    formData: {
-      review: {
-        element: "textarea",
-        value: "",
-        placeholder:
-          "Tell us what you think about this product. Use at least 25 characters.",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true,
-          minLength: 25
-        },
-        name: "review"
+  constructor(props) {
+    super(props);
+    this.fileInput = React.createRef();
+    this.state = {
+      reviewSent: "no",
+      videoUploaded: "no",
+      videoDataSent: "no",
+      ratings: {
+        mainRating: 0
       },
-      videoTitle: {
-        element: "input",
-        type: "text",
-        value: "",
-        placeholder: "Video Title",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true
-        },
-        name: "videoTitle"
+      reviewSubmitted: false,
+      errors: {},
+      agreement: "no",
+      videoReview: "no",
+      videoFile: {
+        errors: {},
+        filename: "",
+        size: 0
       },
-      videoDescription: {
-        element: "input",
-        type: "text",
-        value: "",
-        placeholder: "Video description",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true
+      formData: {
+        review: {
+          element: "textarea",
+          value: "",
+          placeholder:
+            "Tell us what you think about this product. Use at least 25 characters.",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            minLength: 25
+          },
+          name: "review"
         },
-        name: "videoDescription"
-      },
-    }
-  };
+        videoTitle: {
+          element: "input",
+          type: "text",
+          value: "",
+          placeholder: "Video Title",
+          errorMessage: "* required, at most 128 chars",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            maxLength: 128
+          },
+          name: "videoTitle"
+        },
+        videoDescription: {
+          element: "input",
+          type: "text",
+          value: "",
+          placeholder: "Video description",
+          errorMessage: "* required, at most 5000 characters",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            maxLength: 5000
+          },
+          name: "videoDescription"
+        }
+      }
+    };
+  }
 
   handleRatingChange = (id, newRating) => {
     const { ratings } = this.state;
@@ -70,18 +85,52 @@ class NewLeaveReview extends React.Component {
   };
 
   handleFormDataChange = (e, id) => {
-    const { formData } = this.state;
-    this.setState({
-      formData: {
-        ...formData,
-        [id]: {
-          ...formData[id],
-          value: e.target.value,
-          valid: validate(e.target.value, formData[id].validationRules),
-          touched: true
+    const { formData, videoFile } = this.state;
+    if (id === "videoFile") {
+      let errors = {};
+      if (this.fileInput.current.files.length === 1) {
+        const file = this.fileInput.current.files[0];
+        const ext = file.name.match(/\.([^\.]+)$/)[1];
+        const size = file.size;
+        switch (ext) {
+          case "mp4" || "flv" || "quicktime" || "m4v" || "mpeg":
+            errors = { ...errors };
+            break;
+          default:
+            errors = {
+              ...errors,
+              invalidFormat:
+                "Please select between any one of these formats(mp4/flv/quicktime/m4v/mpeg)"
+            };
         }
+        if (size > 524288000) {
+          errors = { ...errors, sizeLimit: "maximum size limit is 500mb" };
+        }
+        this.setState({
+          videoFile: {
+            ...videoFile,
+            filename: this.fileInput.current.files[0].name,
+            size: size,
+            file:file,
+            errors: { ...errors }
+          }
+        });
+      } else {
+        errors = { ...errors, required: "please select a video file" };
       }
-    });
+    } else {
+      this.setState({
+        formData: {
+          ...formData,
+          [id]: {
+            ...formData[id],
+            value: e.target.value,
+            valid: validate(e.target.value, formData[id].validationRules),
+            touched: true
+          }
+        }
+      });
+    }
   };
 
   validateAllFields = () => {
@@ -129,10 +178,11 @@ class NewLeaveReview extends React.Component {
           //axios post dataToSubmit
           setTimeout(() => {
             this.setState({ reviewSent: "success" });
-
-            // setTimeout(() => {
-            //   Router.push("/");
-            // }, 2000);
+            if (this.state.videoReview === "no") {
+              setTimeout(() => {
+                Router.push("/reviews/google.com");
+              }, 2000);
+            }
           }, 3000);
         }
       );
@@ -449,45 +499,107 @@ class NewLeaveReview extends React.Component {
     );
   };
 
-
-  handleVideoUploadSubmit = (e)=>{
+  handleVideoUploadSubmit = e => {
     e.preventDefault();
-    let {formData} = this.state;
+    let { formData, videoFile } = this.state;
     let newFormData = {};
     let dataToSubmit = {};
     let valid = true;
-    for(let item in formData){
-      if(item!=="review"){
+    for (let item in formData) {
+      if (item !== "review") {
         valid = valid && formData[item].valid;
-        if(valid){
-          dataToSubmit = {...dataToSubmit, [item]:formData[item].value}
-          newFormData = {...newFormData, [item]:formData[item].value}
-        }
-        else{
-
+        if (valid) {
+          dataToSubmit = { ...dataToSubmit, [item]: formData[item].value };
+          newFormData = { ...newFormData, [item]: { ...formData[item] } };
+        } else {
+          newFormData = {
+            ...newFormData,
+            [item]: { ...formData[item], touched: true }
+          };
         }
       }
     }
-    if(valid){
-      alert(JSON.stringify(dataToSubmit))
-    }
-    else{
-      alert("All fields are required")
-    }
-  }
+    if (valid && Object.keys(videoFile.errors).length === 0 && videoFile.size > 0) {
+      // alert(JSON.stringify(dataToSubmit));
+      //axios post request
+      //reviewUploadUrl
+      this.setState({ videoDataSent: "in-progress" }, () => {
+        axios
+          .post("https://jsonplaceholder.typicode.com/posts", {
+            name: dataToSubmit.videoTitle,
+            description: dataToSubmit.videoDescription,
+            size: videoFile.size
+          })
+          .then(res => {
+            console.log(res);
+            this.setState({ videoDataSent: "success" }, ()=>{
+              // let res = res.data;
 
-  renderVideoReviewUpload = ()=>{
-    const {formData} = this.state;
-    return(
+              //res.url below replace
+
+              var upload = new tus.Upload(this.state.videoFile.file, {
+                endpoint: "http://localhost:3000/static/uploads",
+                retryDelays: [0, 3000, 5000, 10000, 20000],
+                metadata: {
+                },
+                onError: function(error) {
+                    console.log("Failed because: " + error)
+                },
+                onProgress: function(bytesUploaded, bytesTotal) {
+                    var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
+                    console.log(bytesUploaded, bytesTotal, percentage + "%")
+                },
+                onSuccess: function() {
+                    console.log("Video might take some time to process on Vimeo.")
+                }
+            })
+            upload.start();
+            /////////////////////
+            });
+          })
+          .catch(err => {
+            console.error(err);
+            this.setState({ videoDataSent: "error" })
+          });
+      });
+
+      //submit video also
+    } else {
+      if (videoFile.filename === "") {
+        this.setState({
+          formData: { ...newFormData },
+          videoFile: {
+            ...videoFile,
+            errors: {
+              ...videoFile.errors,
+              required: "* please select a video file"
+            }
+          }
+        });
+      } else {
+        this.setState({ formData: { ...newFormData } });
+      }
+    }
+  };
+
+  renderVideoReviewUpload = () => {
+    const { formData, errors, videoFile, videoDataSent, videoUploaded } = this.state;
+    return (
       <div>
         {this.renderUniversalLoader()}
-        <style jsx>
-          {newLeaveReviewPageStyles}
-        </style>
-        <VideoUploadForm formData={{...formData}} handleFormDataChange={this.handleFormDataChange} handleVideoUploadSubmit={this.handleVideoUploadSubmit}/>
+        <style jsx>{newLeaveReviewPageStyles}</style>
+        {videoUploaded==="no" ? <VideoUploadForm
+          formData={{ ...formData }}
+          handleFormDataChange={this.handleFormDataChange}
+          handleVideoUploadSubmit={this.handleVideoUploadSubmit}
+          errors={errors}
+          ref={this.fileInput}
+          videoFile={videoFile}
+          videoDataSent={videoDataSent}
+        /> : <div>Video Uploaded successfully</div>}
       </div>
-    )
-  }
+    );
+  };
 
   render() {
     const { mainRating } = this.state.ratings;
@@ -499,7 +611,7 @@ class NewLeaveReview extends React.Component {
           {this.renderReviewHeader()}
           {this.renderReviewHeroSection()}
           <div className="reviewContainerInner">
-            {reviewSent !== "success" || videoReview!=="yes"
+            {reviewSent !== "success" || videoReview !== "yes"
               ? mainRating > 0
                 ? this.renderFinalReviewSection()
                 : this.renderMainReviewSection()

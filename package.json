@@ -29,6 +29,7 @@
     "react-slick": "^0.25.2",
     "react-star-ratings": "^2.3.0",
     "recharts": "^1.6.2",
+    "tus-js-client": "^1.8.0-2",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
