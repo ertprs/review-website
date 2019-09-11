@@ -1,13 +1,13 @@
 import React from "react";
 import Router from "next/router";
+import VideoUploadForm from '../Components/Widgets/VideoUploadForm/VideoUploadForm';
 import { newLeaveReviewPageStyles } from "../Components/Styles/newLeaveReviewPageStyles";
 import Ratings from "react-ratings-declarative";
 import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import FormField from "../Components/Widgets/FormField/FormField";
-import CustomModal from "../Components/Widgets/CustomModal/CustomModal";
 import UniversalLoader from "../Components/Widgets/UniversalLoader/UniversalLoader";
-import Footer from '../Components/Footer/Footer';
+import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
 
 class NewLeaveReview extends React.Component {
@@ -16,9 +16,10 @@ class NewLeaveReview extends React.Component {
     ratings: {
       mainRating: 0
     },
-    showModal: false,
+    reviewSubmitted: false,
     errors: {},
     agreement: "no",
+    videoReview: "no",
     formData: {
       review: {
         element: "textarea",
@@ -33,14 +34,34 @@ class NewLeaveReview extends React.Component {
           minLength: 25
         },
         name: "review"
-      }
+      },
+      videoTitle: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "Video Title",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "videoTitle"
+      },
+      videoDescription: {
+        element: "input",
+        type: "text",
+        value: "",
+        placeholder: "Video description",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "videoDescription"
+      },
     }
-  };
-
-  handleModalVisibilityToggle = () => {
-    this.setState(currentState => {
-      return { showModal: !currentState.showModal };
-    });
   };
 
   handleRatingChange = (id, newRating) => {
@@ -101,16 +122,20 @@ class NewLeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
-      this.setState({ showModal: true, reviewSent: "in-progress" }, () => {
-        //axios post dataToSubmit
-        setTimeout(() => {
-          this.setState({ reviewSent: "success" });
+      //clear form data
+      this.setState(
+        { reviewSubmitted: true, reviewSent: "in-progress" },
+        () => {
+          //axios post dataToSubmit
+          setTimeout(() => {
+            this.setState({ reviewSent: "success" });
 
-          setTimeout(()=>{
-            Router.push("/")
-          }, 2000);
-        }, 3000);
-      });
+            // setTimeout(() => {
+            //   Router.push("/");
+            // }, 2000);
+          }, 3000);
+        }
+      );
     } else {
       this.setState({ errors: { ...errors } });
     }
@@ -152,7 +177,7 @@ class NewLeaveReview extends React.Component {
           <img src="/static/images/capture.png" />
         </div>
         <div className="mainReviewHeading">
-          <h4>https://google.com</h4>
+          <h4>Google.com</h4>
         </div>
         <div className="mainReviewRatingsContainer">
           <Ratings
@@ -196,7 +221,7 @@ class NewLeaveReview extends React.Component {
           <ReviewCard
             variant="productCard"
             image="/static/images/capture.png"
-            title="google.com"
+            title="Google.com"
             body={reviewCardBody}
           />
         </div>
@@ -218,22 +243,47 @@ class NewLeaveReview extends React.Component {
           <h5 style={{ marginTop: "3%" }}>Rate this product's attributes</h5>
           {/* ToDo: replace with dynamic key, value pairs- create dynamic keys and values in the ratings state */}
         </div>
-        <div className="rateProdAttrBody">
-          <div className="rateProdAttrBodyHeader">
-            {/* change with dynamic key */}
-            <h6>Quality</h6>
-            {/* Change with dynamic state key and value */}
-            <RatingIndicators
-              rating={this.state.ratings.quality || 0}
-              typeOfWidget="star"
-              widgetRatedColors="#21bc61"
-              widgetHoverColors="#21bc61"
-              widgetDimensions="22px"
-              widgetSpacings="1px"
-              changeRating={newRating => {
-                this.handleRatingChange("quality", newRating);
-              }}
-            />
+        <div className="row">
+          <div className="col-md-4">
+            <div className="rateProdAttrBody">
+              <div className="rateProdAttrBodyHeader">
+                {/* change with dynamic key */}
+                <h6>Quality</h6>
+                {/* Change with dynamic state key and value */}
+                <RatingIndicators
+                  rating={this.state.ratings.quality || 0}
+                  typeOfWidget="star"
+                  widgetRatedColors="#21bc61"
+                  widgetHoverColors="#21bc61"
+                  widgetDimensions="22px"
+                  widgetSpacings="1px"
+                  changeRating={newRating => {
+                    this.handleRatingChange("quality", newRating);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            <div className="rateProdAttrBody">
+              <div className="rateProdAttrBodyHeader">
+                {/* change with dynamic key */}
+                <h6>Value</h6>
+                {/* Change with dynamic state key and value */}
+                <RatingIndicators
+                  rating={this.state.ratings.value || 0}
+                  typeOfWidget="star"
+                  widgetRatedColors="#21bc61"
+                  widgetHoverColors="#21bc61"
+                  widgetDimensions="22px"
+                  widgetSpacings="1px"
+                  changeRating={newRating => {
+                    this.handleRatingChange("value", newRating);
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
         <div className="rateProdAttrError">
@@ -264,7 +314,9 @@ class NewLeaveReview extends React.Component {
           styles={{}}
         />
         <div className="reviewError">
-          {errors["review"] && !this.state.formData.review.valid ? (
+          {(errors["review"] && !this.state.formData.review.valid) ||
+          (!this.state.formData.review.valid &&
+            this.state.formData.review.touched) ? (
             <span>Atleast 25 characters</span>
           ) : null}
         </div>
@@ -272,8 +324,12 @@ class NewLeaveReview extends React.Component {
     );
   };
 
-  renderCheckBox = () => {
-    const { agreement } = this.state;
+  handleCheckBoxChange = (e, id) => {
+    this.setState({ [id]: e.target.value === "yes" ? "no" : "yes" });
+  };
+
+  renderCheckBox = ({ id, text, error }) => {
+    const checkBoxVal = this.state[id];
     const { errors } = this.state;
     return (
       <>
@@ -281,52 +337,77 @@ class NewLeaveReview extends React.Component {
         <label style={{ verticalAlign: "middle" }}>
           <input
             type="checkbox"
-            onChange={e =>
-              this.setState({
-                agreement: e.target.value === "yes" ? "no" : "yes"
-              })
-            }
+            onChange={e => this.handleCheckBoxChange(e, id)}
             style={{
               height: "1.01rem",
               width: "1.01rem",
               verticalAlign: "middle"
             }}
-            value={agreement}
-            checked={agreement === "yes" ? true : false}
+            value={checkBoxVal}
+            checked={checkBoxVal === "yes" ? true : false}
           />{" "}
-          I accept the <a href="/">Terms &amp; conditions</a> and{" "}
-          <a href="/">Privacy Policy.</a>
+          {id === "agreement" ? (
+            <span>
+              I accept the <a href="/">Terms &amp; conditions</a> and{" "}
+              <a href="/">Privacy Policy.</a>
+            </span>
+          ) : (
+            text
+          )}
         </label>
         <div className="checkBoxError">
-          {errors["agreement"] && this.state.agreement !== "yes" ? (
-            <span>Please accept terms &amp; conditions</span>
-          ) : null}
+          {errors[id] && this.state[id] !== "yes" ? <span>{error}</span> : null}
         </div>
       </>
     );
   };
 
   renderSubmitBtn = () => {
+    const { reviewSubmitted } = this.state;
     return (
       <>
         <style jsx>{newLeaveReviewPageStyles}</style>
-        <button className="reviewSubmitBtn" onClick={this.handleFormSubmit}>
-          Submit your review
-        </button>
+        {reviewSubmitted ? (
+          this.renderUniversalLoader()
+        ) : (
+          <button className="reviewSubmitBtn" onClick={this.handleFormSubmit}>
+            Submit your review
+          </button>
+        )}
       </>
     );
   };
 
   renderCheckBoxAndBtn = () => {
+    const agreement = {
+      id: "agreement",
+      text: "",
+      error: "Please accept terms & conditions"
+    };
+
+    const videoReview = {
+      id: "videoReview",
+      text: "I also want to upload a video review.",
+      error: ""
+    };
     return (
       <div className="checkBoxAndBtnContainer">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-              <div className="checkBoxContainer">{this.renderCheckBox()}</div>
+              <div className="checkBoxContainer">
+                {this.renderCheckBox(agreement)}
+              </div>
             </div>
             <div className="col-md-6">
+              <div className="checkBoxContainer">
+                {this.renderCheckBox(videoReview)}
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6 offset-md-6">
               <div className="submitBtnContainer">{this.renderSubmitBtn()}</div>
             </div>
           </div>
@@ -355,12 +436,12 @@ class NewLeaveReview extends React.Component {
           </div>
         </div>
         {/* Second child for success state */}
-        <div style={{ textAlign: "center", color: "#21bc61" }}>
+        <div style={{ textAlign: "left", color: "#21bc61" }}>
           Thank you for your review - we will contact with you soon{" "}
           <i className="fa fa-check"></i>
         </div>
         {/* third child for error state */}
-        <div style={{ textAlign: "center", color: "red" }}>
+        <div style={{ textAlign: "left", color: "red" }}>
           Some error occured, please try again later{" "}
           <i className="fa fa-close"></i>
         </div>
@@ -368,40 +449,61 @@ class NewLeaveReview extends React.Component {
     );
   };
 
-  renderModal = () => {
-    return (
-      <CustomModal
-        showModal={this.state.showModal}
-        handleModalClose={this.handleModalVisibilityToggle}
-        modalCustomStyles={{
-          background: "#f9f9f9",
-          border: "1px solid #fff",
-          maxWidth: "450px"
-        }}
-      >
-        <div style={{marginBottom:"5%", marginBottom:"5%"}}>
-          <h6>The TrustSearch - Internet users check online reputation of websites.</h6>
-        </div>
-        <div style={{marginBottom:"5%"}}>
-          {this.renderUniversalLoader()}
-        </div>
-      </CustomModal>
-    );
-  };
+
+  handleVideoUploadSubmit = (e)=>{
+    e.preventDefault();
+    let {formData} = this.state;
+    let newFormData = {};
+    let dataToSubmit = {};
+    let valid = true;
+    for(let item in formData){
+      if(item!=="review"){
+        valid = valid && formData[item].valid;
+        if(valid){
+          dataToSubmit = {...dataToSubmit, [item]:formData[item].value}
+          newFormData = {...newFormData, [item]:formData[item].value}
+        }
+        else{
+
+        }
+      }
+    }
+    if(valid){
+      alert(JSON.stringify(dataToSubmit))
+    }
+    else{
+      alert("error")
+    }
+  }
+
+  renderVideoReviewUpload = ()=>{
+    const {formData} = this.state;
+    return(
+      <div>
+        {this.renderUniversalLoader()}
+        <style jsx>
+          {newLeaveReviewPageStyles}
+        </style>
+        <VideoUploadForm formData={{...formData}} handleFormDataChange={this.handleFormDataChange} handleVideoUploadSubmit={this.handleVideoUploadSubmit}/>
+      </div>
+    )
+  }
 
   render() {
     const { mainRating } = this.state.ratings;
+    const { reviewSent, videoReview } = this.state;
     return (
       <div style={{ background: "#f5f5f5" }}>
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="container">
-          {this.renderModal()}
           {this.renderReviewHeader()}
           {this.renderReviewHeroSection()}
           <div className="reviewContainerInner">
-            {mainRating > 0
-              ? this.renderFinalReviewSection()
-              : this.renderMainReviewSection()}
+            {reviewSent !== "success" || videoReview!=="yes"
+              ? mainRating > 0
+                ? this.renderFinalReviewSection()
+                : this.renderMainReviewSection()
+              : this.renderVideoReviewUpload()}
           </div>
           <div>
             <Footer />
