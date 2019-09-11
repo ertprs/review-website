@@ -2,12 +2,21 @@ import css from 'styled-jsx/css';
 
 export const videoUploadFormStyles = css`
     .videoUploadFormContainer{
+        margin-top:4.5%;
+    }
 
+    .videoUploadFormHeader{
+        margin:2% 0 4% 0;
+    }
+
+    .uploadVideoBtnContainer{
+        margin-top:2%;
     }
 
     .videoUploadBtn{
         display:inline-block;
         padding:1% 2% 1% 2%;
+        border-radius:25px;
         background:#21bc61;
         color:#fff;
         border:1px solid #21bc61;

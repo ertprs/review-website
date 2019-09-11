@@ -472,7 +472,7 @@ class NewLeaveReview extends React.Component {
       alert(JSON.stringify(dataToSubmit))
     }
     else{
-      alert("error")
+      alert("All fields are required")
     }
   }
 
