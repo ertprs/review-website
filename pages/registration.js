@@ -1,9 +1,14 @@
+// 757926713122 - b99qpe0npfm18ko5vek0ch1tgtruei87.apps.googleusercontent.com;
+
 import React, { Component } from "react";
-import { registrationPageStyles } from "../Components/Styles/registrationPageStyles";
+import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
 import FormField from "../Components/Widgets/FormField/FormField";
 import countrieslist from "../utility/countryList";
 import validate from "../utility/validate";
 import _get from "lodash/get";
+import GoogleLogin from "react-google-login";
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import Layout from "../hoc/layout/layout";
 
 class Registration extends Component {
   state = {
@@ -83,7 +88,10 @@ class Registration extends Component {
       let valid = value === _get(formData, "password.value", "");
       if (!valid) {
         this.setState({
-          errorMsg: { ...errorMsg, [id]: "Password do not match!" },
+          errorMsg: {
+            ...errorMsg,
+            [id]: "Password do not match!"
+          },
           formData: {
             ...formData,
             [id]: {
@@ -96,7 +104,10 @@ class Registration extends Component {
         });
       } else {
         this.setState({
-          errorMsg: { ...errorMsg, [id]: "" },
+          errorMsg: {
+            ...errorMsg,
+            [id]: ""
+          },
           formData: {
             ...formData,
             [id]: {
@@ -127,71 +138,114 @@ class Registration extends Component {
     console.log("clicked");
   };
 
+  responseGoogle = response => {
+    console.log(response, "res");
+  };
+
   render() {
     const { formData, errorMsg } = this.state;
     return (
-      <div className="container">
-        <div className="col-md-6 offset-md-3">
-          <style jsx>{registrationPageStyles}</style>
-          <div className="card">
-            <FormField
-              {...formData.name}
-              handleChange={this.handleChange}
-              id="name"
-              rows="5"
-              col="5"
-            />
-            <FormField
-              {...formData.email}
-              handleChange={this.handleChange}
-              id="email"
-              rows="5"
-              col="5"
-            />
-            <FormField
-              {...formData.password}
-              handleChange={this.handleChange}
-              type="password"
-              id="password"
-              rows="5"
-              col="5"
-            />
-            <FormField
-              {...formData.confirm_password}
-              handleChange={this.handleChange}
-              type="password"
-              id="confirm_password"
-              rows="5"
-              col="5"
-            />
-            <span className="errorMsg">
-              {_get(errorMsg, "confirm_password", "")}
-            </span>
-            <FormField
-              {...formData.country}
-              handleChange={this.handleChange}
-              id="country"
-              rows="5"
-              col="5"
-            />
-            <button
-              disabled={
-                !(
-                  formData.name.valid &&
-                  formData.email.valid &&
-                  formData.password.valid &&
-                  formData.confirm_password.valid &&
-                  formData.country.valid
-                )
-              }
-              className="registerBtn"
-              onClick={this.handleRegisterClick}
-            >
-              Register
-            </button>
+      <Layout>
+        <div className="mainContainer">
+          <div className="container">
+            <div className="col-md-6 offset-md-3">
+              <style jsx> {authenticationPageStyles} </style>{" "}
+              <div className="card">
+                <div className="cardHeading">
+                  <h3> Create a free account </h3>{" "}
+                </div>{" "}
+                <FormField
+                  {...formData.name}
+                  handleChange={this.handleChange}
+                  id="name"
+                  rows="5"
+                  col="5"
+                />
+                <FormField
+                  {...formData.email}
+                  handleChange={this.handleChange}
+                  id="email"
+                  rows="5"
+                  col="5"
+                />
+                <FormField
+                  {...formData.password}
+                  handleChange={this.handleChange}
+                  type="password"
+                  id="password"
+                  rows="5"
+                  col="5"
+                />
+                <FormField
+                  {...formData.confirm_password}
+                  handleChange={this.handleChange}
+                  type="password"
+                  id="confirm_password"
+                  rows="5"
+                  col="5"
+                />
+                <span className="errorMsg">
+                  {" "}
+                  {_get(errorMsg, "confirm_password", "")}{" "}
+                </span>{" "}
+                <FormField
+                  {...formData.country}
+                  handleChange={this.handleChange}
+                  id="country"
+                  rows="5"
+                  col="5"
+                />
+                <button
+                  disabled={
+                    !(
+                      formData.name.valid &&
+                      formData.email.valid &&
+                      formData.password.valid &&
+                      formData.confirm_password.valid &&
+                      formData.country.valid
+                    )
+                  }
+                  className="registerBtn"
+                  onClick={this.handleRegisterClick}
+                >
+                  Register
+                </button>
+                <GoogleLogin
+                  clientId="464520761652-jd9gfi81jvbmpe3l8917u4jqj0pgpq9v.apps.googleusercontent.com"
+                  render={renderProps => (
+                    <button
+                      className="loginBtn loginBtn--google"
+                      onClick={renderProps.onClick}
+                      disabled={renderProps.disabled}
+                    >
+                      Signup with Google
+                    </button>
+                  )}
+                  buttonText="Login with Google"
+                  onSuccess={this.responseGoogle}
+                  onFailure={this.responseGoogle}
+                  // cookiePolicy={"single_host_origin"}
+                />
+                <FacebookLogin
+                  appId="1088597931155576"
+                  // autoLoad={true}
+                  fields="name,email,picture"
+                  // onClick={componentClicked}
+                  // callback={responseFacebook}
+                  render={renderProps => (
+                    <button
+                      className="loginBtn loginBtn--facebook"
+                      onClick={renderProps.onClick}
+                    >
+                      Signup with Facebook
+                    </button>
+                  )}
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 }
