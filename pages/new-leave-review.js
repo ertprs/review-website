@@ -556,6 +556,7 @@ class NewLeaveReview extends React.Component {
                   );
                   // setState for videoProgress
                   console.log(bytesUploaded, bytesTotal, percentage + "%");
+                  
                 },
                 onSuccess: () => {
                   console.log(

@@ -16,6 +16,8 @@ import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
 import ReviewCard from "..//Components/Widgets/ReviewCard/ReviewCard";
 import uuid from "uuid/v1";
+import CustomModal from '../Components/Widgets/CustomModal/CustomModal';
+import TrustDontTrust from '../Components/TrustDontTrust/TrustDontTrust';
 import TrafficStatsChart from "../Components/Widgets/TrafficStatsChart/TrafficStatsChart";
 export const config = { amp: "hybrid" };
 
@@ -53,7 +55,7 @@ const renderReviewHeader = (data, domain) => {
       : "loading";
 
   const headerBgColor =
-    ratings !== "loading" ? (Number(ratings) >= 3.5 ? "green" : "red") : null;
+    ratings !== "loading" ? (Number(ratings) >= 0 ? "green" : "red") : null;
   return (
     <div
       className="reviewHeaderContainer"
@@ -172,7 +174,10 @@ const renderReviewHeader = (data, domain) => {
           <div className="col-md-3 bigRatingInd">
             {ratings !== "loading" ? (
               <>
-                <div className="bigRatingCaption">
+                <div>
+                  <TrustDontTrust />
+                </div>
+                {/* <div className="bigRatingCaption">
                   <h3>
                     {Number(ratings) > 3.5
                       ? "Good & Safe Website"
@@ -187,7 +192,7 @@ const renderReviewHeader = (data, domain) => {
                     widgetDimensions="35px"
                     widgetSpacings="3px"
                   />
-                </div>
+                </div> */}
               </>
             ) : (
               <div>
