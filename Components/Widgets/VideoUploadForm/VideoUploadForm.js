@@ -75,7 +75,7 @@ class VideoUploadForm extends React.Component {
                   {Object.keys(videoFile.errors).length > 0 ? (
                     this.renderErrorsList(videoFile.errors)
                   ) : (
-                    <div style={{ color: "#21bc61", marginTop: "10px" }}>
+                    <div style={{ color: "#21bc61", marginTop: "10px", marginLeft:"5px" }}>
                       Selected file: {videoFile.filename || "none"}
                     </div>
                   )}
@@ -132,6 +132,7 @@ class VideoUploadForm extends React.Component {
             />
           </span>
           </h4>
+          <div>{this.props.videoFile.uploadProgress}</div>
         </div>
         {/* third child for error state */}
         <div style={{ textAlign: "left", color: "red" }}>

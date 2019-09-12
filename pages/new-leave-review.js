@@ -9,7 +9,7 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import UniversalLoader from "../Components/Widgets/UniversalLoader/UniversalLoader";
 import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
-import tus from 'tus-js-client';
+import tus from "tus-js-client";
 import axios from "axios";
 
 class NewLeaveReview extends React.Component {
@@ -30,7 +30,8 @@ class NewLeaveReview extends React.Component {
       videoFile: {
         errors: {},
         filename: "",
-        size: 0
+        size: 0,
+        uploadProgress: 0
       },
       formData: {
         review: {
@@ -111,7 +112,7 @@ class NewLeaveReview extends React.Component {
             ...videoFile,
             filename: this.fileInput.current.files[0].name,
             size: size,
-            file:file,
+            file: file,
             errors: { ...errors }
           }
         });
@@ -519,7 +520,11 @@ class NewLeaveReview extends React.Component {
         }
       }
     }
-    if (valid && Object.keys(videoFile.errors).length === 0 && videoFile.size > 0) {
+    if (
+      valid &&
+      Object.keys(videoFile.errors).length === 0 &&
+      videoFile.size > 0
+    ) {
       // alert(JSON.stringify(dataToSubmit));
       //axios post request
       //reviewUploadUrl
@@ -532,7 +537,7 @@ class NewLeaveReview extends React.Component {
           })
           .then(res => {
             console.log(res);
-            this.setState({ videoDataSent: "success" }, ()=>{
+            this.setState({ videoDataSent: "success" }, () => {
               // let res = res.data;
 
               //res.url below replace
@@ -540,26 +545,32 @@ class NewLeaveReview extends React.Component {
               var upload = new tus.Upload(this.state.videoFile.file, {
                 endpoint: "http://localhost:3000/static/uploads",
                 retryDelays: [0, 3000, 5000, 10000, 20000],
-                metadata: {
+                metadata: {},
+                onError: error => {
+                  this.setState({ videoUploaded: "error" });
+                  console.log("Failed because: " + error);
                 },
-                onError: function(error) {
-                    console.log("Failed because: " + error)
+                onProgress: (bytesUploaded, bytesTotal) => {
+                  var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(
+                    2
+                  );
+                  // setState for videoProgress
+                  console.log(bytesUploaded, bytesTotal, percentage + "%");
                 },
-                onProgress: function(bytesUploaded, bytesTotal) {
-                    var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
-                    console.log(bytesUploaded, bytesTotal, percentage + "%")
-                },
-                onSuccess: function() {
-                    console.log("Video might take some time to process on Vimeo.")
+                onSuccess: () => {
+                  console.log(
+                    "Video might take some time to process on Vimeo."
+                  );
+                  this.setState({ videoUploaded: "success" });
                 }
-            })
-            upload.start();
-            /////////////////////
+              });
+              upload.start();
+              /////////////////////
             });
           })
           .catch(err => {
             console.error(err);
-            this.setState({ videoDataSent: "error" })
+            this.setState({ videoDataSent: "error" });
           });
       });
 
@@ -583,20 +594,39 @@ class NewLeaveReview extends React.Component {
   };
 
   renderVideoReviewUpload = () => {
-    const { formData, errors, videoFile, videoDataSent, videoUploaded } = this.state;
+    const {
+      formData,
+      errors,
+      videoFile,
+      videoDataSent,
+      videoUploaded
+    } = this.state;
     return (
       <div>
         {this.renderUniversalLoader()}
         <style jsx>{newLeaveReviewPageStyles}</style>
-        {videoUploaded==="no" ? <VideoUploadForm
-          formData={{ ...formData }}
-          handleFormDataChange={this.handleFormDataChange}
-          handleVideoUploadSubmit={this.handleVideoUploadSubmit}
-          errors={errors}
-          ref={this.fileInput}
-          videoFile={videoFile}
-          videoDataSent={videoDataSent}
-        /> : <div>Video Uploaded successfully</div>}
+        {videoUploaded === "no" ? (
+          <VideoUploadForm
+            formData={{ ...formData }}
+            handleFormDataChange={this.handleFormDataChange}
+            handleVideoUploadSubmit={this.handleVideoUploadSubmit}
+            errors={errors}
+            ref={this.fileInput}
+            videoFile={videoFile}
+            videoDataSent={videoDataSent}
+          />
+        ) : (
+          <UniversalLoader status={videoUploaded}>
+            <div></div>
+            <div style={{ color: "green", marginTop:"50px", height:"50vh" }}>
+              Video was uploaded successfully
+            </div>
+            <div style={{ color: "red", marginTop:"50px", height:"50vh" }}>
+              Some error occured while uploading video review, please try again
+              later
+            </div>
+          </UniversalLoader>
+        )}
       </div>
     );
   };
