@@ -11,12 +11,14 @@ import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
 import tus from "tus-js-client";
 import axios from "axios";
+import {baseURL} from '../utility/config';
 
 class NewLeaveReview extends React.Component {
   constructor(props) {
     super(props);
     this.fileInput = React.createRef();
     this.state = {
+      productData:[],
       reviewSent: "no",
       videoUploaded: "no",
       videoDataSent: "no",
@@ -78,6 +80,17 @@ class NewLeaveReview extends React.Component {
         }
       }
     };
+  }
+
+  componentDidMount(){
+    console.log("mounted")
+    axios.get(`${baseURL}/api/get-order-data`)
+    .then(res=>{
+      console.log(res.data)
+    })
+    .catch(err =>{
+      console.log(err)
+    })
   }
 
   handleRatingChange = (id, newRating) => {
