@@ -83,7 +83,6 @@ class NewLeaveReview extends React.Component {
   }
 
   componentDidMount(){
-    console.log("mounted")
     axios.get(`${baseURL}/api/get-order-data`)
     .then(res=>{
       console.log(res.data)
