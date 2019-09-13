@@ -118,4 +118,9 @@ export const authenticationPageStyles = css.global`
   .loginBtn--google:focus {
     background: #e74b37;
   }
+
+  .forgotPasswordLink {
+    display: block;
+    margin-bottom: 10px;
+  }
 `;

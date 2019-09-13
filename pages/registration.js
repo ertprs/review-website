@@ -1,14 +1,23 @@
-// 757926713122 - b99qpe0npfm18ko5vek0ch1tgtruei87.apps.googleusercontent.com;
-
 import React, { Component } from "react";
 import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
 import FormField from "../Components/Widgets/FormField/FormField";
 import countrieslist from "../utility/countryList";
 import validate from "../utility/validate";
-import _get from "lodash/get";
 import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Layout from "../hoc/layout/layout";
+import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
+import axios from "axios";
+import {
+  baseURL,
+  registerApi,
+  registerApiOAuth,
+  googleClientId,
+  facebookClientId
+} from "../utility/config";
+import Router from "next/router";
+import Loader from "../components/Widgets/Loader/Loader";
 
 class Registration extends Component {
   state = {
@@ -50,7 +59,7 @@ class Registration extends Component {
         },
         name: "password"
       },
-      confirm_password: {
+      password_confirmation: {
         element: "input",
         value: "",
         placeholder: "Please confirm your password",
@@ -60,7 +69,7 @@ class Registration extends Component {
         validationRules: {
           required: true
         },
-        name: "confirm_password"
+        name: "password_confirmation"
       },
       country: {
         element: "select",
@@ -77,14 +86,15 @@ class Registration extends Component {
       }
     },
     errorMsg: {
-      confirm_password: ""
-    }
+      password_confirmation: ""
+    },
+    isLoading: false
   };
 
   handleChange = (e, id) => {
     const { value } = e.target;
     const { formData, errorMsg } = this.state;
-    if (id === "confirm_password") {
+    if (id === "password_confirmation") {
       let valid = value === _get(formData, "password.value", "");
       if (!valid) {
         this.setState({
@@ -134,16 +144,63 @@ class Registration extends Component {
     }
   };
 
-  handleRegisterClick = () => {
-    console.log("clicked");
+  createReqBody = formData => {
+    let reqBody = {};
+    if (!_isEmpty(formData)) {
+      let ObjectKeysArray = Object.keys(formData);
+      if (!_isEmpty(ObjectKeysArray) && Array.isArray(ObjectKeysArray)) {
+        ObjectKeysArray.map(key => {
+          // if (key !== "password_confirmation") {
+          if (formData.hasOwnProperty([key])) {
+            reqBody[key] = formData[key].value;
+          }
+          // }
+        });
+      }
+    }
+    console.log(reqBody, "reqBody");
+    return reqBody;
   };
 
-  responseGoogle = response => {
+  handleRegisterClick = () => {
+    this.setState({ isLoading: true });
+    const { formData } = this.state;
+    let reqBody = this.createReqBody(formData);
+    axios
+      .post(`${baseURL}${registerApi}`, reqBody)
+      .then(res => {
+        this.setState({ isLoading: false });
+        if (res.data.success) {
+          Router.push("/afterRegistration");
+        }
+      })
+      .catch(error => {
+        console.log(error, "registration error");
+        this.setState({ isLoading: false });
+        alert("Something went wrong!");
+      });
+  };
+
+  OAuthSignup = (response, name) => {
     console.log(response, "res");
+    const reqBody = {
+      provider: name,
+      data: {
+        id_token: _get(response, "Zi.id_token", "")
+      }
+    };
+    axios
+      .post(`${baseURL}${registerApiOAuth}`, reqBody)
+      .then(result => {
+        console.log("oauth register result", result);
+      })
+      .catch(error => {
+        console.log("oauth register error", error);
+      });
   };
 
   render() {
-    const { formData, errorMsg } = this.state;
+    const { formData, errorMsg, isLoading } = this.state;
     return (
       <Layout>
         <div className="mainContainer">
@@ -177,16 +234,16 @@ class Registration extends Component {
                   col="5"
                 />
                 <FormField
-                  {...formData.confirm_password}
+                  {...formData.password_confirmation}
                   handleChange={this.handleChange}
                   type="password"
-                  id="confirm_password"
+                  id="password_confirmation"
                   rows="5"
                   col="5"
                 />
                 <span className="errorMsg">
                   {" "}
-                  {_get(errorMsg, "confirm_password", "")}{" "}
+                  {_get(errorMsg, "password_confirmation", "")}{" "}
                 </span>{" "}
                 <FormField
                   {...formData.country}
@@ -195,23 +252,27 @@ class Registration extends Component {
                   rows="5"
                   col="5"
                 />
-                <button
-                  disabled={
-                    !(
-                      formData.name.valid &&
-                      formData.email.valid &&
-                      formData.password.valid &&
-                      formData.confirm_password.valid &&
-                      formData.country.valid
-                    )
-                  }
-                  className="registerBtn"
-                  onClick={this.handleRegisterClick}
-                >
-                  Register
-                </button>
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <button
+                    disabled={
+                      !(
+                        formData.name.valid &&
+                        formData.email.valid &&
+                        formData.password.valid &&
+                        formData.password_confirmation.valid &&
+                        formData.country.valid
+                      )
+                    }
+                    className="registerBtn"
+                    onClick={this.handleRegisterClick}
+                  >
+                    Register
+                  </button>
+                )}
                 <GoogleLogin
-                  clientId="464520761652-jd9gfi81jvbmpe3l8917u4jqj0pgpq9v.apps.googleusercontent.com"
+                  clientId={googleClientId}
                   render={renderProps => (
                     <button
                       className="loginBtn loginBtn--google"
@@ -222,16 +283,16 @@ class Registration extends Component {
                     </button>
                   )}
                   buttonText="Login with Google"
-                  onSuccess={this.responseGoogle}
-                  onFailure={this.responseGoogle}
-                  // cookiePolicy={"single_host_origin"}
+                  onSuccess={response => this.OAuthSignup(response, "google")}
+                  onFailure={response => this.OAuthSignup(response, "google")}
+                  cookiePolicy={"single_host_origin"}
                 />
                 <FacebookLogin
-                  appId="1088597931155576"
+                  appId={facebookClientId}
                   // autoLoad={true}
                   fields="name,email,picture"
                   // onClick={componentClicked}
-                  // callback={responseFacebook}
+                  callback={response => this.OAuthSignup(response, "facebook")}
                   render={renderProps => (
                     <button
                       className="loginBtn loginBtn--facebook"

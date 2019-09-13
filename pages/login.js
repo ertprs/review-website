@@ -1,13 +1,22 @@
-// 757926713122 - b99qpe0npfm18ko5vek0ch1tgtruei87.apps.googleusercontent.com;
-
 import React, { Component } from "react";
 import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
 import FormField from "../Components/Widgets/FormField/FormField";
 import validate from "../utility/validate";
 import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
+import axios from "axios";
 import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Layout from "../hoc/layout/layout";
+import {
+  baseURL,
+  loginApi,
+  googleClientId,
+  facebookClientId,
+  loginApiOAuth
+} from "../utility/config";
+import Router from "next/router";
+import Loader from "../components/Widgets/Loader/Loader";
 
 class Login extends Component {
   state = {
@@ -37,7 +46,8 @@ class Login extends Component {
         },
         name: "password"
       }
-    }
+    },
+    isLoading: false
   };
 
   handleChange = (e, id) => {
@@ -56,16 +66,75 @@ class Login extends Component {
     });
   };
 
-  handleLoginClick = () => {
-    console.log("clicked");
+  createReqBody = formData => {
+    let reqBody = {};
+    if (!_isEmpty(formData)) {
+      let ObjectKeysArray = Object.keys(formData);
+      if (!_isEmpty(ObjectKeysArray) && Array.isArray(ObjectKeysArray)) {
+        ObjectKeysArray.map(key => {
+          if (formData.hasOwnProperty([key])) {
+            reqBody[key] = formData[key].value;
+          }
+        });
+      }
+    }
+    console.log(reqBody, "reqBody");
+    return reqBody;
   };
 
-  responseGoogle = response => {
+  handleLoginClick = () => {
+    this.setState({ isLoading: true });
+    const { formData } = this.state;
+    let reqBody = this.createReqBody(formData);
+    axios
+      .post(`${baseURL}${loginApi}`, reqBody)
+      .then(result => {
+        this.setState({ isLoading: false });
+        if (result.data.success) {
+          Router.push("/");
+          let token = _get(result, "data.token", "");
+          localStorage.setItem("token", token);
+        }
+      })
+      .catch(error => {
+        console.log(error.response, "login error");
+        this.setState({
+          isLoading: false,
+          formData: {
+            ...formData,
+            password: {
+              ...formData.password,
+              value: ""
+            }
+          }
+        });
+        if (!error.response.data.success) {
+          let msg = _get(error, "response.data.message", "");
+          alert(msg);
+        }
+      });
+  };
+
+  OAuthSignIn = (response, name) => {
     console.log(response, "res");
+    const reqBody = {
+      provider: name,
+      data: {
+        id_token: _get(response, "Zi.id_token", "")
+      }
+    };
+    axios
+      .post(`${baseURL}${loginApiOAuth}`, reqBody)
+      .then(result => {
+        console.log("oauth login result", result);
+      })
+      .catch(error => {
+        console.log("oauth login error", error);
+      });
   };
 
   render() {
-    const { formData } = this.state;
+    const { formData, isLoading } = this.state;
     return (
       <Layout>
         <div className="mainContainer">
@@ -91,42 +160,49 @@ class Login extends Component {
                   rows="5"
                   col="5"
                 />
-                {/* <a href="#">Forgot password?</a> */}
-                <button
-                  disabled={!(formData.email.valid && formData.password.valid)}
-                  className="registerBtn"
-                  onClick={this.handleLoginClick}
-                >
-                  Login
-                </button>
+                <a className="forgotPasswordLink" href="#">
+                  Forgot password?
+                </a>
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <button
+                    disabled={
+                      !(formData.email.valid && formData.password.valid)
+                    }
+                    className="registerBtn"
+                    onClick={this.handleLoginClick}
+                  >
+                    Login
+                  </button>
+                )}
                 <GoogleLogin
-                  clientId="464520761652-jd9gfi81jvbmpe3l8917u4jqj0pgpq9v.apps.googleusercontent.com"
+                  clientId={googleClientId}
                   render={renderProps => (
                     <button
                       className="loginBtn loginBtn--google"
                       onClick={renderProps.onClick}
                       disabled={renderProps.disabled}
                     >
-                      Signin with Google
+                      Login with Google
                     </button>
                   )}
-                  buttonText="Login with Google"
-                  onSuccess={this.responseGoogle}
-                  onFailure={this.responseGoogle}
-                  // cookiePolicy={"single_host_origin"}
+                  onSuccess={response => this.OAuthSignIn(response, "google")}
+                  onFailure={response => this.OAuthSignIn(response, "google")}
+                  cookiePolicy={"single_host_origin"}
                 />
                 <FacebookLogin
-                  appId="1088597931155576"
+                  appId={facebookClientId}
                   // autoLoad={true}
                   fields="name,email,picture"
                   // onClick={componentClicked}
-                  // callback={responseFacebook}
+                  callback={response => this.OAuthSignIn(response, "facebook")}
                   render={renderProps => (
                     <button
                       className="loginBtn loginBtn--facebook"
                       onClick={renderProps.onClick}
                     >
-                      Signin with Facebook
+                      Login with Facebook
                     </button>
                   )}
                 />
