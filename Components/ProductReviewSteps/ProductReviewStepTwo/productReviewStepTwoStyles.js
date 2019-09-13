@@ -109,7 +109,7 @@ export const productReviewStepTwoStyles = css`
 
     /*--------- checkbox and btn container ------*/
     .checkBoxAndBtnContainer{
-        margin-bottom:8%;
+        margin-bottom:6%;
     }
     .checkBoxError{
         margin-top:2%;
@@ -128,7 +128,7 @@ export const productReviewStepTwoStyles = css`
 
     .reviewSubmitBtn{
         display:inline-block;
-        padding:4% 3% 4% 3%;
+        padding:2%;
         background:#21bc61;
         color:#fff;
         border:1px solid #21bc61;

@@ -14,7 +14,7 @@ const formFieldStyles = {
 
 class VideoUploadForm extends React.Component {
   componentDidMount() {
-    window.scrollTo(0, 0);
+    
   }
 
   renderErrorsList = errors => {
