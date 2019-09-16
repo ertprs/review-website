@@ -16,7 +16,7 @@ import {
   loginApiOAuth
 } from "../utility/config";
 import Router from "next/router";
-import Loader from "../components/Widgets/Loader/Loader";
+import Loader from "../Components/Widgets/Loader/Loader";
 
 class Login extends Component {
   state = {
@@ -47,7 +47,8 @@ class Login extends Component {
         name: "password"
       }
     },
-    isLoading: false
+    isLoading: false,
+    isUnauthorized: false
   };
 
   handleChange = (e, id) => {
@@ -90,14 +91,20 @@ class Login extends Component {
       .post(`${baseURL}${loginApi}`, reqBody)
       .then(result => {
         this.setState({ isLoading: false });
-        if (result.data.success) {
-          Router.push("/");
+        let success = _get(result, 'data.success', false)
+        if (success) {
+          this.setState({ isUnauthorized: false })
+          window.location.assign('/')
           let token = _get(result, "data.token", "");
           localStorage.setItem("token", token);
         }
       })
       .catch(error => {
         console.log(error.response, "login error");
+        let message = _get(error, 'response.data.message', '') === 'Unauthorized'
+        if(message) {
+          this.setState({ isUnauthorized: true })
+        }
         this.setState({
           isLoading: false,
           formData: {
@@ -108,10 +115,6 @@ class Login extends Component {
             }
           }
         });
-        if (!error.response.data.success) {
-          let msg = _get(error, "response.data.message", "");
-          alert(msg);
-        }
       });
   };
 
@@ -134,7 +137,7 @@ class Login extends Component {
   };
 
   render() {
-    const { formData, isLoading } = this.state;
+    const { formData, isLoading, isUnauthorized } = this.state;
     return (
       <Layout>
         <div className="mainContainer">
@@ -160,7 +163,7 @@ class Login extends Component {
                   rows="5"
                   col="5"
                 />
-                <a className="forgotPasswordLink" href="#">
+                <a className="forgotPasswordLink" href="/forgot-password">
                   Forgot password?
                 </a>
                 {isLoading ? (
@@ -176,6 +179,9 @@ class Login extends Component {
                     Login
                   </button>
                 )}
+                {isUnauthorized ? <p className="errorMsg">
+                  Please enter the correct credentials.
+                </p> : ''}
                 <GoogleLogin
                   clientId={googleClientId}
                   render={renderProps => (

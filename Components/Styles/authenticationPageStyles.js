@@ -44,6 +44,7 @@ export const authenticationPageStyles = css.global`
   .errorMsg {
     color: red;
     font-size: 14px;
+    margin: 10px 0;
   }
 
   .loginBtn {

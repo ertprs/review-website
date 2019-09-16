@@ -17,7 +17,7 @@ import {
   facebookClientId
 } from "../utility/config";
 import Router from "next/router";
-import Loader from "../components/Widgets/Loader/Loader";
+import Loader from "../Components/Widgets/Loader/Loader";
 
 class Registration extends Component {
   state = {
@@ -30,7 +30,8 @@ class Registration extends Component {
         valid: false,
         touched: false,
         validationRules: {
-          required: true
+          required: true,
+          minLength: 3
         },
         name: "name"
       },
@@ -55,7 +56,8 @@ class Registration extends Component {
         valid: false,
         touched: false,
         validationRules: {
-          required: true
+          required: true,
+          minLength: 8
         },
         name: "password"
       },
@@ -88,7 +90,8 @@ class Registration extends Component {
     errorMsg: {
       password_confirmation: ""
     },
-    isLoading: false
+    isLoading: false,
+    isRegistrationFailed: false
   };
 
   handleChange = (e, id) => {
@@ -169,15 +172,21 @@ class Registration extends Component {
     axios
       .post(`${baseURL}${registerApi}`, reqBody)
       .then(res => {
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: false, isRegistrationFailed: false });
         if (res.data.success) {
-          Router.push("/afterRegistration");
+          window.location.assign('/afterRegistration')
         }
       })
       .catch(error => {
         console.log(error, "registration error");
+        let status = _get(error, 'response.status', 0)
+        if (status === 409) {
+          //navigate user to login page with email id prefilled
+          this.setState({ isRegistrationFailed: false })
+        } else {
+          this.setState({ isRegistrationFailed: true })
+        }
         this.setState({ isLoading: false });
-        alert("Something went wrong!");
       });
   };
 
@@ -192,15 +201,22 @@ class Registration extends Component {
     axios
       .post(`${baseURL}${registerApiOAuth}`, reqBody)
       .then(result => {
+        debugger
         console.log("oauth register result", result);
       })
       .catch(error => {
+        debugger
+        let status = _get(error, 'response.status', 0)
+        let success = _get(error, 'response.data.success', false)
+        if(status == 409) {
+          // navigate him to login
+        }
         console.log("oauth register error", error);
       });
   };
 
   render() {
-    const { formData, errorMsg, isLoading } = this.state;
+    const { formData, errorMsg, isLoading, isRegistrationFailed } = this.state;
     return (
       <Layout>
         <div className="mainContainer">
@@ -255,22 +271,24 @@ class Registration extends Component {
                 {isLoading ? (
                   <Loader />
                 ) : (
-                  <button
-                    disabled={
-                      !(
-                        formData.name.valid &&
-                        formData.email.valid &&
-                        formData.password.valid &&
-                        formData.password_confirmation.valid &&
-                        formData.country.valid
-                      )
-                    }
-                    className="registerBtn"
-                    onClick={this.handleRegisterClick}
-                  >
-                    Register
+                    <button
+                      disabled={
+                        !(
+                          formData.name.valid &&
+                          formData.email.valid &&
+                          formData.password.valid &&
+                          formData.password_confirmation.valid &&
+                          formData.country.valid
+                        )
+                      }
+                      className="registerBtn"
+                      onClick={this.handleRegisterClick}
+                    >
+                      Register
                   </button>
-                )}
+                  )}
+                {isRegistrationFailed ? <p className="errorMsg">Something went wrong!</p>
+                  : ''}
                 <GoogleLogin
                   clientId={googleClientId}
                   render={renderProps => (

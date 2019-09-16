@@ -6,7 +6,7 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
 import { baseURL, forgotPasswordApi } from "../utility/config";
-import Loader from "../components/Widgets/Loader/Loader";
+import Loader from "../Components/Widgets/Loader/Loader";
 import Router from "next/router";
 import Layout from "../hoc/layout/layout";
 
@@ -58,7 +58,7 @@ class ForgotPassword extends Component {
         this.setState({ isLoading: false });
         let success = _get(result, "data.success", false);
         if (success) {
-          Router.push("/afterRegistration");
+          window.location.assign("/afterRegistration");
         }
       })
       .catch(error => {
@@ -78,7 +78,7 @@ class ForgotPassword extends Component {
               <style jsx> {authenticationPageStyles} </style>{" "}
               <div className="card">
                 <div className="cardHeading">
-                  <h3> Create new password </h3>{" "}
+                  <h3> Forgot password </h3>{" "}
                 </div>{" "}
                 <FormField
                   {...formData.email}
@@ -90,14 +90,14 @@ class ForgotPassword extends Component {
                 {isLoading ? (
                   <Loader />
                 ) : (
-                  <button
-                    disabled={!formData.email.valid}
-                    className="registerBtn"
-                    onClick={this.handleForgotPasswordClick}
-                  >
-                    Forgot Password
+                    <button
+                      disabled={!formData.email.valid}
+                      className="registerBtn"
+                      onClick={this.handleForgotPasswordClick}
+                    >
+                      Forgot Password
                   </button>
-                )}
+                  )}
               </div>
             </div>
           </div>

@@ -15,8 +15,9 @@ export const facebookClientId = "389995578342806";
 //Api
 
 export const registerApi = "/api/register";
-export const registerApiOAuth = "/api/register/OAuth";
+export const registerApiOAuth = "/api/register/oauth";
 export const loginApi = "/api/login";
-export const loginApiOAuth = "/api/login/OAuth";
+export const loginApiOAuth = "/api/login/oauth";
 export const forgotPasswordApi = "/api/forgot-password";
 export const resetPasswordApi = "/api/reset-password";
+export const activateUserApi = "/register/activate";

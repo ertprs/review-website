@@ -4,20 +4,25 @@ import ResponsiveSideNav from "../ResponsiveSideNav/ResponsiveSideNav";
 import * as AmpHelpers from "react-amphtml/helpers";
 import AmpLinkWrapper from "../../AmpWrappers/AmpLinkWrapper";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
-import {useAmp} from 'next/amp';
+import { useAmp } from 'next/amp';
+import { GoogleLogout } from 'react-google-login';
+import { googleClientId } from '../../../utility/config';
+
+const onLogout = () => {
+}
 
 const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick) => {
-  if(useAmp()){
+  if (useAmp()) {
     return (<AmpHelpers.Bind hidden="showSideNav.show">
-        {props => (
-          <div {...props} hidden={true}>
-           <ResponsiveSideNav />
-          </div>
-        )}
-      </AmpHelpers.Bind>)
+      {props => (
+        <div {...props} hidden={true}>
+          <ResponsiveSideNav />
+        </div>
+      )}
+    </AmpHelpers.Bind>)
   }
-  else 
-  return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} /> : null;
+  else
+    return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} /> : null;
 };
 
 const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
@@ -54,13 +59,13 @@ const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
         <div className="secondaryLinksContainer">
           <div>
             <i className="fa fa-sign-in" style={{ marginRight: "5px" }} />
-            <AmpLinkWrapper href="/" alt="nav-link">
+            <AmpLinkWrapper href="/login" alt="nav-link">
               Login |{" "}
             </AmpLinkWrapper>
           </div>
           <div>
             <AmpLinkWrapper
-              href="/"
+              href="/registration"
               alt="nav-link"
               styles={{ marginLeft: "5px" }}
             >
@@ -68,6 +73,12 @@ const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
               Register
             </AmpLinkWrapper>
           </div>
+          {/* <GoogleLogout
+            clientId={googleClientId}
+            buttonText="Logout"
+            onLogoutSuccess={onLogout}
+          >
+          </GoogleLogout> */}
         </div>
         <div className="menuIconContainer">
           {
