@@ -9,6 +9,7 @@ import GoogleLoginBtn from "../Widgets/GoogleLoginBtn/GoogleLoginBtn";
 class TrustDontTrust extends React.Component {
   state = {
     step: 1,
+    trustFlag:"",
     formData: {
       review: {
         element: "textarea",
@@ -52,7 +53,10 @@ class TrustDontTrust extends React.Component {
             </div>
             <div
               className="trustIconContainerInner"
-              onClick={this.props.handleModalClose}
+              onClick={()=>{
+                this.setState({trustFlag:"trust"})
+                this.props.handleModalClose()
+              }}
             >
               <img src="/static/images/trust.svg" />
             </div>
@@ -63,7 +67,10 @@ class TrustDontTrust extends React.Component {
             </div>
             <div
               className="dontTrustIconContainerInner"
-              onClick={this.props.handleModalClose}
+              onClick={()=>{
+                this.setState({trustFlag:"dontTrust"})
+                this.props.handleModalClose()
+              }}
             >
               <img src="/static/images/dont_trust.svg" />
             </div>
@@ -162,7 +169,7 @@ class TrustDontTrust extends React.Component {
         <div className="trustReviewModal">
           <div className="tokens">+30 Tokens</div>
           <div className="trustReviewModalHeader">
-            <h5>Tell us, why you trust / don’t trust this company?</h5>
+            <h5>Tell us, why you {this.state.trustFlag==="trust" ? " ": "don't"} trust this company?</h5>
           </div>
           <div className="trustReviewModalForm">
             <FormField
