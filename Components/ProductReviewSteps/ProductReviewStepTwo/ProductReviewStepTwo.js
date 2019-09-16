@@ -55,20 +55,22 @@ class ProductReviewStepTwo extends React.Component {
     return (
       <div className="finalReviewSection">
         <style jsx>{productReviewStepTwoStyles}</style>
-        <div className="finalReviewSectionHeader">
-          <ReviewCard
-            variant="productCard"
-            image="/static/images/product.jpg"
-            title={productToRate.name}
-            body={productToRate.description}
-            productPicStyles={{ height: "150px", width: "auto" }}
-            additionalData={additionalData}
-          />
-        </div>
+        {reviewSent === "no" ? (
+          <div className="finalReviewSectionHeader">
+            <ReviewCard
+              variant="productCard"
+              image="/static/images/product.jpg"
+              title={productToRate.name}
+              body={productToRate.description}
+              productPicStyles={{ height: "150px", width: "auto" }}
+              additionalData={additionalData}
+            />
+          </div>
+        ) : null}
         <div className="finalReviewSectionBody">
           {/* display the below components only till the review is not submitted */}
-          {reviewSent ==="no" ? this.renderRateProductAttributes() : null}
-          {reviewSent ==="no" ? this.renderReviewTextBox(): null}
+          {reviewSent === "no" ? this.renderRateProductAttributes() : null}
+          {reviewSent === "no" ? this.renderReviewTextBox() : null}
           {this.renderCheckBoxAndBtn()}
         </div>
       </div>
@@ -110,7 +112,7 @@ class ProductReviewStepTwo extends React.Component {
   };
 
   renderCheckBoxAndBtn = () => {
-    const {reviewSent} = this.props;
+    const { reviewSent, productToRate, productsAlreadyTagged } = this.props;
     const videoReview = {
       id: "showVideoForm",
       text: "I also want to upload a video review.",
@@ -123,12 +125,12 @@ class ProductReviewStepTwo extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <div className="checkBoxContainer">
-                {reviewSent==="no" ?  this.renderCheckBox(videoReview) : null}
+                {reviewSent === "no" && this.checkAlreadyTagged(productsAlreadyTagged, productToRate.id)===undefined ? this.renderCheckBox(videoReview) : null}
               </div>
             </div>
           </div>
           <div className="row">
-            <div className="col-md-12"> 
+            <div className="col-md-12">
               <div className="submitBtnContainer">{this.renderSubmitBtn()}</div>
             </div>
           </div>
@@ -138,7 +140,7 @@ class ProductReviewStepTwo extends React.Component {
   };
 
   renderUniversalLoader = () => {
-    const {productToRate, showVideoForm} = this.props;
+    const { productToRate, showVideoForm, videoUploaded } = this.props;
     return (
       <UniversalLoader status={this.props.reviewSent}>
         {/* First child for loading state */}
@@ -158,15 +160,22 @@ class ProductReviewStepTwo extends React.Component {
           </div>
         </div>
         {/* Second child for success state */}
-        <div style={{ textAlign: "center", color: "#21bc61" }}>
-          Text review for product {productToRate.name} submitted,
-          {showVideoForm!=="no" ? " please upload video in the form below" : " please click on the button below to proceed"}
-        </div>
+        {videoUploaded === "no" ? (
+          <div style={{ textAlign: "center", color: "#21bc61" }}>
+            Text review for product {productToRate.name} submitted,
+            {showVideoForm !== "no"
+              ? " please upload video in the form below"
+              : " please click on the button below to proceed"}
+          </div>
+        ) : null}
+
         {/* third child for error state */}
-        <div style={{ textAlign: "left", color: "red" }}>
-          Some error occured, please try again later{" "}
-          <i className="fa fa-close"></i>
-        </div>
+        {videoUploaded === "no" ? (
+          <div style={{ textAlign: "left", color: "red" }}>
+            Some error occured, please try again later{" "}
+            <i className="fa fa-close"></i>
+          </div>
+        ) : null}
       </UniversalLoader>
     );
   };
@@ -188,7 +197,7 @@ class ProductReviewStepTwo extends React.Component {
   };
 
   renderReviewTextBox = () => {
-    const {reviewFormSubmissionErrors} = this.props;
+    const { reviewFormSubmissionErrors } = this.props;
     return (
       <div className="reviewTextBoxContainer">
         <style jsx>{productReviewStepTwoStyles}</style>
@@ -206,7 +215,8 @@ class ProductReviewStepTwo extends React.Component {
           styles={{}}
         />
         <div className="reviewError">
-          {(reviewFormSubmissionErrors["review"] && !this.props.formData.review.valid) ||
+          {(reviewFormSubmissionErrors["review"] &&
+            !this.props.formData.review.valid) ||
           (!this.props.formData.review.valid &&
             this.props.formData.review.touched) ? (
             <span>Atleast 25 characters</span>
@@ -268,8 +278,42 @@ class ProductReviewStepTwo extends React.Component {
     );
   };
 
+  checkAlreadyTagged = (productsAlreadyTagged, item)=>{
+    console.log(productsAlreadyTagged)
+    console.log(item)
+    return(
+      productsAlreadyTagged.find(taggedProduct =>{
+        return taggedProduct.value == item
+      })
+    )
+  }
+
+  getSelectOptions = (productsTagged, selectedProducts, productsAlreadyTagged) => {
+    let options = [];
+    for (let item in selectedProducts) {
+        //check if already present in productsTagged
+        let alreadyTagged = this.checkAlreadyTagged(productsAlreadyTagged, item);
+        if(alreadyTagged===undefined){
+          options = [
+            ...options,
+            { value: item, label: selectedProducts[item].name }
+          ];
+        }
+    }
+    return options;
+  };
+
   renderVideoUploadForm = () => {
-    const { formData, videoUploaded } = this.props;
+    const {
+      formData,
+      videoUploaded,
+      productToRate,
+      productsTagged,
+      selectedProducts,
+      productsAlreadyTagged
+    } = this.props;
+    let selectOptions = this.getSelectOptions(productsTagged, selectedProducts, productsAlreadyTagged);
+
     const errors = {};
     return videoUploaded === "no" ? (
       <VideoUploadForm
@@ -280,14 +324,32 @@ class ProductReviewStepTwo extends React.Component {
         ref={this.props.innerRef}
         videoFile={this.props.videoFile}
         videoDataSent={this.props.videoDataSent}
+        select={true}
+        selectOptions={selectOptions}
+        onSelectChange={this.props.handleProductTagsChanged}
       />
     ) : (
       <UniversalLoader status={videoUploaded}>
         <div></div>
-        <div style={{ color: "green", marginTop: "50px", height: "50vh" }}>
-          Video was uploaded successfully
+        <div
+          style={{
+            color: "green",
+            marginTop: "50px",
+            height: "50vh",
+            textAlign: "center"
+          }}
+        >
+          Video for {productToRate.name} was uploaded successfully, please click
+          on the button below to proceed.
         </div>
-        <div style={{ color: "red", marginTop: "50px", height: "50vh" }}>
+        <div
+          style={{
+            color: "red",
+            marginTop: "50px",
+            height: "50vh",
+            textAlign: "center"
+          }}
+        >
           Some error occured while uploading video review, please try again
           later
         </div>
@@ -295,24 +357,37 @@ class ProductReviewStepTwo extends React.Component {
     );
   };
 
+  renderNextBtn = () => {
+    return (
+      <>
+        <style jsx>{productReviewStepTwoStyles}</style>
+        <button
+          className="nextBtn"
+          onClick={() => {
+            this.props.goToNextStep();
+          }}
+        >
+          Next <i className="fa fa-arrow-right"></i>
+        </button>
+      </>
+    );
+  };
+
   render() {
-    const {showVideoForm, reviewSent} = this.props;
+    const { showVideoForm, reviewSent, videoUploaded } = this.props;
     return (
       <div>
-        <style jsx>
-          {productReviewStepTwoStyles}
-        </style>
         {this.renderHeader()}
         {this.renderHeroSection()}
-        {showVideoForm==="yes" && reviewSent!=="no"  ? this.renderVideoUploadForm() : null}
-        {/* <button
-            className="nextBtn"
-            onClick={() => {
-              this.props.goToNextStep();
-            }}
-          >
-            Next <i className="fa fa-arrow-right"></i>
-          </button> */}
+        {showVideoForm === "yes" &&
+        reviewSent !== "no" &&
+        reviewSent !== "in-progress"
+          ? this.renderVideoUploadForm()
+          : null}
+        {(showVideoForm === "no" || videoUploaded !== "no") &&
+        (reviewSent === "success" || reviewSent === "error")
+          ? this.renderNextBtn()
+          : null}
       </div>
     );
   }

@@ -2,12 +2,12 @@ import React from "react";
 import { productReviewStyles } from "../Components/Styles/productReviewStyles";
 import ProductReviewStepOne from "../Components/ProductReviewSteps/ProductReviewStepOne/ProductReviewStepOne";
 import ProductReviewStepTwo from "../Components/ProductReviewSteps/ProductReviewStepTwo/ProductReviewStepTwo";
+import ThankYou from "../Components/ThankYou/ThankYou";
 import { baseURL } from "../utility/config";
 import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
 import axios from "axios";
 import tus from "tus-js-client";
-
 
 class ProductReview extends React.Component {
   constructor(props) {
@@ -19,14 +19,16 @@ class ProductReview extends React.Component {
         mainRating: 0
       },
       products: [],
-      reviewFormSubmissionErrors:{},
+      reviewFormSubmissionErrors: {},
       selectedProducts: {},
+      productsTagged: [],
+      productsAlreadyTagged: [],
       selectedProductKeys: [],
       videoDataSent: "no",
-      videoUploaded:"no",
-      showVideoForm:"no",
-      reviewBtnClicked:false,
-      reviewSent:"no",
+      videoUploaded: "no",
+      showVideoForm: "no",
+      reviewBtnClicked: false,
+      reviewSent: "no",
       formData: {
         review: {
           element: "textarea",
@@ -82,9 +84,76 @@ class ProductReview extends React.Component {
 
   goToNextStep = () => {
     const { step, selectedProductKeys } = this.state;
-    if (step < selectedProductKeys.length) {
+    const initState = {
+      ratings: {
+        mainRating: 0
+      },
+      reviewFormSubmissionErrors: {},
+      videoDataSent: "no",
+      videoUploaded: "no",
+      showVideoForm: "no",
+      reviewBtnClicked: false,
+      reviewSent: "no",
+      formData: {
+        review: {
+          element: "textarea",
+          value: "",
+          placeholder:
+            "Tell us what you think about this product. Use at least 25 characters.",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            minLength: 25
+          },
+          name: "review"
+        },
+        videoTitle: {
+          element: "input",
+          type: "text",
+          value: "",
+          placeholder: "Video Title",
+          errorMessage: "* required, at most 128 chars",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            maxLength: 128
+          },
+          name: "videoTitle"
+        },
+        videoDescription: {
+          element: "input",
+          type: "text",
+          value: "",
+          placeholder: "Video description",
+          errorMessage: "* required, at most 5000 characters",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            maxLength: 5000
+          },
+          name: "videoDescription"
+        }
+      },
+      videoFile: {
+        errors: {},
+        filename: "",
+        size: 0,
+        uploadProgress: 0
+      }
+    };
+    if (step <= selectedProductKeys.length) {
+      //refresh the state and move to next step
       this.setState(currentState => {
-        return { step: currentState.step + 1 };
+        return {
+          ...initState,
+          step: currentState.step + 1,
+          productsTagged: [],
+          productsAlreadyTagged: [...currentState.productsAlreadyTagged]
+        };
       });
     }
   };
@@ -92,6 +161,17 @@ class ProductReview extends React.Component {
   handleRatingChange = (id, newRating) => {
     const { ratings } = this.state;
     this.setState({ ratings: { ...ratings, [id]: newRating } });
+  };
+
+  handleProductTagsChanged = data => {
+    const { productsTagged, productsAlreadyTagged,step } = this.state;
+    if (data) {
+      this.setState({ productsTagged: [...data]});
+    } else {
+      this.setState({
+        productsTagged: []
+      });
+    }
   };
 
   componentDidMount() {
@@ -180,7 +260,6 @@ class ProductReview extends React.Component {
     }
   };
 
-
   validateAllFields = () => {
     const { formData } = this.state;
     const { ratings } = this.state;
@@ -202,8 +281,7 @@ class ProductReview extends React.Component {
     return errorObj;
   };
 
-
-  handleReviewFormSubmit = (e)=>{
+  handleReviewFormSubmit = e => {
     e.preventDefault();
     //validating before submitting
     const reviewFormSubmissionErrors = this.validateAllFields();
@@ -213,11 +291,10 @@ class ProductReview extends React.Component {
       //mimic data post
       const dataToSubmit = {
         ...ratings,
-        review: formData.review.value,
-        agreement: true
+        review: formData.review.value
       };
-      console.log(dataToSubmit)
-      //clear form data
+      console.log(dataToSubmit);
+      //clear form data on clicking next
       this.setState(
         { reviewBtnClicked: true, reviewSent: "in-progress" },
         () => {
@@ -233,13 +310,15 @@ class ProductReview extends React.Component {
         }
       );
     } else {
-      this.setState({ reviewFormSubmissionErrors: { ...reviewFormSubmissionErrors } });
+      this.setState({
+        reviewFormSubmissionErrors: { ...reviewFormSubmissionErrors }
+      });
     }
-  }
+  };
 
   handleVideoUploadSubmit = e => {
     e.preventDefault();
-    let { formData, videoFile } = this.state;
+    let { formData, videoFile, productsTagged } = this.state;
     let newFormData = {};
     let dataToSubmit = {};
     let valid = true;
@@ -266,15 +345,17 @@ class ProductReview extends React.Component {
       //axios post request
       //reviewUploadUrl
       this.setState({ videoDataSent: "in-progress" }, () => {
+        console.log({ ...dataToSubmit, productsTagged });
         axios
           .post("https://jsonplaceholder.typicode.com/posts", {
             name: dataToSubmit.videoTitle,
             description: dataToSubmit.videoDescription,
-            size: videoFile.size
+            size: videoFile.size,
+            productsTagged: productsTagged
           })
           .then(res => {
             console.log(res);
-            this.setState({ videoDataSent: "success" }, () => {
+            this.setState({ videoDataSent: "success", productsAlreadyTagged:[...this.state.productsAlreadyTagged,...this.state.productsTagged] }, () => {
               // let res = res.data;
 
               //res.url below replace
@@ -367,6 +448,8 @@ class ProductReview extends React.Component {
       products,
       selectedProducts,
       selectedProductKeys,
+      productsTagged,
+      productsAlreadyTagged,
       step
     } = this.state;
     const productToRate = selectedProducts[selectedProductKeys[step - 1]];
@@ -379,11 +462,14 @@ class ProductReview extends React.Component {
           goToNextStep={this.goToNextStep}
         />
       );
-    } else {
+    } else if(step<=this.state.selectedProductKeys.length) {
       return (
         <ProductReviewStepTwo
           productToRate={productToRate}
           selectedProductKeys={selectedProductKeys}
+          selectedProducts={selectedProducts}
+          productsTagged={productsTagged}
+          productsAlreadyTagged={productsAlreadyTagged}
           step={step}
           goToNextStep={this.goToNextStep}
           handleRatingChange={this.handleRatingChange}
@@ -396,6 +482,7 @@ class ProductReview extends React.Component {
           reviewFormSubmissionErrors={this.state.reviewFormSubmissionErrors}
           reviewSent={this.state.reviewSent}
           videoFile={this.state.videoFile}
+          handleProductTagsChanged={this.handleProductTagsChanged}
           videoDataSent={this.state.videoDataSent}
           ref={this.fileInput}
           handleVideoUploadSubmit={this.handleVideoUploadSubmit}
@@ -403,6 +490,9 @@ class ProductReview extends React.Component {
           videoUploaded={this.state.videoUploaded}
         />
       );
+    }
+    else{
+      return(<ThankYou />)
     }
   };
 

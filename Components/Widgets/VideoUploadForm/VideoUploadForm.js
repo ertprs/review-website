@@ -3,18 +3,18 @@ import { videoUploadFormStyles } from "./videoUploadFormStyles";
 import FormField from "../FormField/FormField";
 import UniversalLoader from "../UniversalLoader/UniversalLoader";
 import uuid from "uuid/v1";
+import Select from "react-select";
 
 const formFieldStyles = {
-  borderRadius: "25px",
-  padding: "10px",
-  paddingLeft: "25px",
+  
+  padding: "7px",
   backgroundClip: "padding-box",
   background: "#fff"
 };
 
 class VideoUploadForm extends React.Component {
   componentDidMount() {
-    
+    window.scrollTo(0, 0);
   }
 
   renderErrorsList = errors => {
@@ -36,7 +36,9 @@ class VideoUploadForm extends React.Component {
       <div className="">
         <div className="videoUploadFormContainer">
           <style jsx>{videoUploadFormStyles}</style>
-          {videoDataSent==="success" ? null : <h4 className="videoUploadFormHeader">Video upload form</h4>}
+          {videoDataSent === "success" ? null : (
+            <h4 className="videoUploadFormHeader">Video upload form</h4>
+          )}
           {videoDataSent === "no" ? (
             <form onSubmit={e => this.props.handleVideoUploadSubmit(e)}>
               <FormField
@@ -57,6 +59,14 @@ class VideoUploadForm extends React.Component {
                 styles={{ ...formFieldStyles }}
               />
 
+              <div style={{marginBottom:"10px"}}>Tag multiple products :</div>
+              {/* React multi select */}
+              {this.props.select ?  <Select
+                options={this.props.selectOptions}
+                isMulti
+                onChange={data => this.props.onSelectChange(data)}
+              /> : null}
+
               {/* File Upload */}
               <div>
                 <label className="video-file-upload">
@@ -75,7 +85,13 @@ class VideoUploadForm extends React.Component {
                   {Object.keys(videoFile.errors).length > 0 ? (
                     this.renderErrorsList(videoFile.errors)
                   ) : (
-                    <div style={{ color: "#21bc61", marginTop: "10px", marginLeft:"5px" }}>
+                    <div
+                      style={{
+                        color: "#21bc61",
+                        marginTop: "10px",
+                        marginLeft: "5px"
+                      }}
+                    >
                       Selected file: {videoFile.filename || "none"}
                     </div>
                   )}
@@ -117,20 +133,21 @@ class VideoUploadForm extends React.Component {
         </div>
         {/* Second child for success state */}
         <div style={{ textAlign: "left", color: "#21bc61", height: "50vh" }}>
-          <h4>Processing video ...
-          <span
-            style={{
-              height: "32px",
-              width: "32px",
-              textAlign: "center",
-              display:"inline-block"
-            }}
-          >
-            <img
-              src="/static/images/dotsLoader.gif"
-              style={{ maxWidth: "100%", height: "auto" }}
-            />
-          </span>
+          <h4>
+            Processing video ...
+            <span
+              style={{
+                height: "32px",
+                width: "32px",
+                textAlign: "center",
+                display: "inline-block"
+              }}
+            >
+              <img
+                src="/static/images/dotsLoader.gif"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </span>
           </h4>
           <div>{this.props.videoFile.uploadProgress}</div>
         </div>
