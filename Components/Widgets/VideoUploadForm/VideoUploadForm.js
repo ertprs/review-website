@@ -59,8 +59,9 @@ class VideoUploadForm extends React.Component {
                 styles={{ ...formFieldStyles }}
               />
 
-              <div style={{marginBottom:"10px"}}>Tag multiple products :</div>
+              
               {/* React multi select */}
+              {this.props.select ? <div style={{marginBottom:"10px"}}>Tag multiple products :</div> : null}
               {this.props.select ?  <Select
                 options={this.props.selectOptions}
                 isMulti

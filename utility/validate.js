@@ -7,6 +7,7 @@ const validate = (value, rules) => {
           break;
         case "isEmail":
           isValid = isValid && isEmail(value);
+          console.log(isValid)
           break;
         case "isPhoneNumber":
           isValid = isValid && isPhoneNumber(value);

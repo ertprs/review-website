@@ -3,6 +3,7 @@ import { formFieldStyles } from "./formFieldStyles";
 import uuid from "uuid/v1";
 const FormField = ({
   element,
+  readOnly,
   errorMessage,
   handleChange,
   id,
@@ -25,6 +26,7 @@ const FormField = ({
         <div className="formFieldGroup">
           <style jsx>{formFieldStyles}</style>
           <textarea
+            readOnly={readOnly || false}
             placeholder={placeholder}
             value={value}
             onChange={e => handleChange(e, id)}
@@ -36,6 +38,7 @@ const FormField = ({
             cols={cols}
             style={{ ...styles }}
           ></textarea>
+          <div className="errorMsg">{!valid && touched ? errorMessage : ""}</div>
         </div>
       );
 
