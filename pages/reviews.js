@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp"; // query.amp==="1"
+import Head from "next/head";
 import {
   baseURL,
   screenshotURL,
@@ -11,6 +12,7 @@ import axios from "axios";
 import Layout from "../hoc/layout/layout";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
 import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGrid";
+import TrustDontTrustSlider from "../Components/Widgets/TrustDontTrustSlider/TrustDontTrustSlider";
 import TrafficGrid from "../Components/Widgets/TrafficGrid/TrafficGrid";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "../Components/Styles/reviewsPageStyles";
@@ -26,8 +28,13 @@ import uuid from "uuid/v1";
 import TrafficStatsChart from "../Components/Widgets/TrafficStatsChart/TrafficStatsChart";
 export const config = { amp: "hybrid" };
 
-const renderReviewHeader = (data, domain, showTrustModal, handleTrustModalVisibility) => {
-  console.log(showTrustModal)
+const renderReviewHeader = (
+  data,
+  domain,
+  showTrustModal,
+  handleTrustModalVisibility
+) => {
+  console.log(showTrustModal);
   const ratings = (
     (((data || {}).general_analysis || {}).payload || {}).ratings || {}
   ).watchdog
@@ -211,6 +218,7 @@ const renderReviewHeader = (data, domain, showTrustModal, handleTrustModalVisibi
                 background: "#f9f9f9",
                 border: "1px solid #fff"
               }}
+              domain={domain}
             />
           </div>
         </div>
@@ -633,13 +641,37 @@ const getSocialReportObject = data => {
   return { payload: {}, success: true };
 };
 
-const renderMajorData = (parentState, domain, share_url, comments,showTrustModal,
-  handleTrustModalVisibility) => {
+const renderMajorData = (
+  parentState,
+  domain,
+  share_url,
+  comments,
+  showTrustModal,
+  handleTrustModalVisibility
+) => {
   return (
     <>
       <style jsx>{reviewPageStyles}</style>
-      {renderReviewHeader(parentState, domain, showTrustModal,
-        handleTrustModalVisibility)}
+      {renderReviewHeader(
+        parentState,
+        domain,
+        showTrustModal,
+        handleTrustModalVisibility
+      )}
+
+      {/* Add trust dont trust slider */}
+      <div className="container">
+        <div style={{ margin: "50px 0 50px 0" }}>
+          <h4>
+            People who trust this company with their name (192). People who
+            don't trust this company (15)
+          </h4>
+        </div>
+        <div style={{boxShadow:"0px 4px 8px #d5d5d5", padding:"50px"}}>
+          <TrustDontTrustSlider />
+        </div>
+      </div>
+
       <div>{renderAnalysisReport(parentState)}</div>
       <div className="reviewShareBtnContainer">
         {renderShareBtn(
@@ -690,6 +722,19 @@ const Reviews = props => {
 
   return (
     <Layout>
+      <Head>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          charset="UTF-8"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+        />
+      </Head>
       {!useAmp() ? (
         <PusherDataComponent
           domain={props.domain}

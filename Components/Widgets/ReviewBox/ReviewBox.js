@@ -1,19 +1,27 @@
 import React from "react";
 import { reviewBoxStyles } from "./reviewBoxStyles.js";
-import stringHelpers from '../../../utility/stringHelpers';
+import stringHelpers from "../../../utility/stringHelpers";
+import ReviewCard from "../ReviewCard/ReviewCard";
 import StarRatings from "react-star-ratings";
-const renderTextualReviewBox = (review) => {
+
+const renderTextualReviewBox = review => {
   return (
     <div>
       <style jsx>{reviewBoxStyles}</style>
       <div className="reviewHeader">
-        <div className="reviewHeaderTitle">{review.name.length > 7 ? review.name.substring(0, 7)+".." : review.name}</div>
-        <div className="reviewHeaderDate">{stringHelpers("shortenMonths", review.date)}</div>
+        <div className="reviewHeaderTitle">
+          {review.name.length > 7
+            ? review.name.substring(0, 7) + ".."
+            : review.name}
+        </div>
+        <div className="reviewHeaderDate">
+          {stringHelpers("shortenMonths", review.date)}
+        </div>
       </div>
       <div className="reviewRatings">
         <div>
           <StarRatings
-            rating={((review.score)/20)}
+            rating={review.score / 20}
             starRatedColor="#21bc61"
             numberOfStars={5}
             name="rating"
@@ -24,7 +32,65 @@ const renderTextualReviewBox = (review) => {
       </div>
       <div className="reviewText">
         <p>
-          {review.text.length <= 100 ? review.text : review.text.substring(0,97)+"..."}
+          {review.text.length <= 100
+            ? review.text
+            : review.text.substring(0, 97) + "..."}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const renderTrustDontTrustReviewBox = review => {
+  return (
+    <div>
+      <style jsx>{reviewBoxStyles}</style>
+      <div className="reviewHeader">
+        <div className="reviewHeaderTitle">
+          {review.name.length > 7
+            ? review.name.substring(0, 7) + ".."
+            : review.name}
+        </div>
+        <div style={{textAlign:"center"}}>
+          {/* <div style={{ maxWidth: "22px", height: "auto" }}>
+              <img
+                src={`/static/images/${review.image}.svg`}
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div> */}
+          <i
+            className={`fa fa-${
+              review.image === "trust"
+                ? "thumbs-up trustIconGreen"
+                : "thumbs-down trustIconRed"
+            }`} style={{fontSize:"1.2rem"}}
+          ></i>
+        </div>
+        <div className="reviewHeaderDate">
+          {stringHelpers("shortenMonths", review.date)}
+        </div>
+      </div>
+      <div className="reviewRatings">
+        <div className="trustDontTrustIconContainer">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                textTransform: "capitalize",
+                textAlign: "left",
+                flexBasis: "100%",
+                fontWeight:"bold"
+              }}
+            >
+              {review.image ==="trust" ? <span className="trustIconGreen">Trust</span> : <span className="trustIconRed">Don't Trust</span>}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="reviewText">
+        <p>
+          {review.text.length <= 100
+            ? review.text
+            : review.text.substring(0, 97) + "..."}
         </p>
       </div>
     </div>
@@ -42,7 +108,7 @@ const renderVideoReviewBox = () => {
           allowFullScreen
           title="vid"
           frameBorder="0"
-          style={{width:"100%", height:"133px"}}
+          style={{ width: "100%", height: "133px" }}
         />
       </div>
       <div className="videoCaption">
@@ -65,11 +131,16 @@ const renderVideoReviewBox = () => {
     </div>
   );
 };
-const ReviewBox = (props) => {
+const ReviewBox = props => {
   return props.video ? (
     <div className="reviewVideoBox">
       <style jsx>{reviewBoxStyles}</style>
       {renderVideoReviewBox()}
+    </div>
+  ) : props.trustDontTrust ? (
+    <div className="reviewBox">
+      <style jsx>{reviewBoxStyles}</style>
+      {renderTrustDontTrustReviewBox(props.review)}
     </div>
   ) : (
     <div className="reviewBox">

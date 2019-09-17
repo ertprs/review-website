@@ -42,6 +42,24 @@ export const reviewBoxStyles = css`
     word-break:break-all;
   }
 
+  /*---------- Trust don't trust icon container -------------*/
+  .trustDontTrustIconContainer{
+    display:flex;
+    align-items:stretch;
+  }
+
+  .trustDontTrustIconContainer >div{
+    flex-basis:50%;
+  }
+
+  .trustIconGreen{
+    color:green;
+  }
+
+  .trustIconRed{
+    color:#ff7043;
+  }
+
   @media screen and (max-width: 210px) {
     .reviewHeaderDate{
       display:none;

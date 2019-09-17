@@ -3,13 +3,14 @@ import { trustDontTrustStyles } from "./trustDontTrustStyles";
 import CustomModal from "../Widgets/CustomModal/CustomModal";
 import FormField from "../Widgets/FormField/FormField";
 import validate from "../../utility/validate";
-import FaceBookLoginBtn from "../Widgets/FacebookLoginBtn/FacebookLoginBtn";
-import GoogleLoginBtn from "../Widgets/GoogleLoginBtn/GoogleLoginBtn";
+import axios from "axios";
+import UniversalLoader from "../Widgets/UniversalLoader/UniversalLoader";
 
 class TrustDontTrust extends React.Component {
   state = {
     step: 1,
-    trustFlag:"",
+    trustFlag: "",
+    reviewSent: "no",
     formData: {
       review: {
         element: "textarea",
@@ -42,6 +43,26 @@ class TrustDontTrust extends React.Component {
     }
   };
 
+  handleReviewAnonymousSubmit = () => {
+    this.setState({ reviewSent: "in-progress" }, () => {
+      //mimic data post
+      axios
+        .post("https://jsonplaceholder.typicode.com/posts", {
+          trust: this.state.trustFlag === "trust" ? true : false,
+          text: this.state.formData.review,
+          domain: this.props.domain
+        })
+        .then(res => {
+          this.setState({ reviewSent: "success" });
+          console.log(res);
+        })
+        .catch(err => {
+          this.setState({ reviewSent: "error" });
+          console.log(err);
+        });
+    });
+  };
+
   renderTrustDontTrustBox = () => {
     return (
       <div className="trustDontTrustBoxContainer">
@@ -53,9 +74,9 @@ class TrustDontTrust extends React.Component {
             </div>
             <div
               className="trustIconContainerInner"
-              onClick={()=>{
-                this.setState({trustFlag:"trust"})
-                this.props.handleModalClose()
+              onClick={() => {
+                this.setState({ trustFlag: "trust" });
+                this.props.handleModalClose();
               }}
             >
               <img src="/static/images/trust.svg" />
@@ -67,12 +88,12 @@ class TrustDontTrust extends React.Component {
             </div>
             <div
               className="dontTrustIconContainerInner"
-              onClick={()=>{
-                this.setState({trustFlag:"dontTrust"})
-                this.props.handleModalClose()
+              onClick={() => {
+                this.setState({ trustFlag: "dontTrust" });
+                this.props.handleModalClose();
               }}
             >
-              <img src="/static/images/dont_trust.svg" />
+              <img src="/static/images/dont_trust.svg"/>
             </div>
           </div>
         </div>
@@ -131,8 +152,8 @@ class TrustDontTrust extends React.Component {
         <div className="trustReviewModal">
           <div className="trustReviewModalHeader">
             <h5>
-              Signup / Login using any of the methods below and get +15 more
-              tokens
+              Signup / Login using any of the methods on our register / login
+              page and get +15 more tokens
             </h5>
           </div>
           <div className="trustReviewModalForm">
@@ -142,18 +163,31 @@ class TrustDontTrust extends React.Component {
             <div className="row">
               <div className="col-md-12">
                 <div className="registerBtnContainer">
-                  <button className="registerBtn">
-                    Register / Login
-                  </button>
+                  <button className="registerBtn">Register / Login</button>
                 </div>
               </div>
             </div>
-            <div className="row">
+            {/* <div className="row">
               <div className="col-md-6">
                 <FaceBookLoginBtn text="Login with Facebook" />
               </div>
               <div className="col-md-6">
                 <GoogleLoginBtn text="Login with Google" />
+              </div>
+            </div> */}
+            <div className="row">
+              <div className="col-md-12" style={{ textAlign: "center" }}>
+                or
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12" style={{ textAlign: "center" }}>
+                <span
+                  className="anonymousBtn"
+                  onClick={this.handleReviewAnonymousSubmit}
+                >
+                  continue anonymously
+                </span>
               </div>
             </div>
           </div>
@@ -169,7 +203,11 @@ class TrustDontTrust extends React.Component {
         <div className="trustReviewModal">
           <div className="tokens">+30 Tokens</div>
           <div className="trustReviewModalHeader">
-            <h5>Tell us, why you {this.state.trustFlag==="trust" ? " ": "don't"} trust this company?</h5>
+            <h5>
+              Tell us, why you{" "}
+              {this.state.trustFlag === "trust" ? " " : "don't"} trust this
+              company?
+            </h5>
           </div>
           <div className="trustReviewModalForm">
             <FormField
@@ -207,19 +245,19 @@ class TrustDontTrust extends React.Component {
     );
   };
 
-  renderStepThree = () => {
-    return (
-      <>
-        <style jsx>{trustDontTrustStyles}</style>
-        <div className="trustReviewModal">
-          <div className="tokens">+10 Tokens</div>
-          <div className="trustReviewModalHeader">
-            <h5>Would you like to tell us more about this company?</h5>
-          </div>
-        </div>
-      </>
-    );
-  };
+  // renderStepThree = () => {
+  //   return (
+  //     <>
+  //       <style jsx>{trustDontTrustStyles}</style>
+  //       <div className="trustReviewModal">
+  //         <div className="tokens">+10 Tokens</div>
+  //         <div className="trustReviewModalHeader">
+  //           <h5>Would you like to tell us more about this company?</h5>
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // };
 
   renderAppropriateForm = () => {
     const { step } = this.state;
@@ -232,14 +270,49 @@ class TrustDontTrust extends React.Component {
   };
 
   renderTrustDontTrustModal = () => {
+    const { reviewSent } = this.state;
     return (
       <CustomModal
         showModal={this.props.showModal}
         handleModalClose={this.props.handleModalClose}
         modalCustomStyles={{ background: "#f9f9f9", border: "1px solid #fff" }}
       >
-        {this.renderAppropriateForm()}
+        {reviewSent === "no"
+          ? this.renderAppropriateForm()
+          : this.renderUniversalLoader()}
       </CustomModal>
+    );
+  };
+
+  renderUniversalLoader = () => {
+    return (
+      <UniversalLoader status={this.state.reviewSent}>
+        <div style={{ marginTop: "15px" }}>
+          <h5>Submitting your review...</h5>
+          <div style={{ textAlign: "center", margin: "25px 0 25px 0" }}>
+            <img
+              src="/static/images/dotsLoader.gif"
+              style={{ height: "30px", width: "30px" }}
+            />
+          </div>
+        </div>
+        <div style={{ color: "#21bc61", marginTop: "15px" }}>
+          <h5 style={{ margin: "20px 0 20px 0" }}>
+            Your vote was submitted successfully !
+          </h5>
+          <h5 style={{ textAlign: "center" }}>
+            <i className="fa fa-check"></i>
+          </h5>
+        </div>
+        <div style={{ color: "red" }}>
+          <h5 style={{ margin: "20px 0 20px 0" }}>
+            Some error occured, please try again later.
+          </h5>
+          <h5 style={{ textAlign: "center" }}>
+            <i className="fa fa-close"></i>
+          </h5>
+        </div>
+      </UniversalLoader>
     );
   };
 

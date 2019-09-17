@@ -77,4 +77,15 @@ export const trustDontTrustStyles = css`
         background: #26d970;
         border:1px solid #26d970;
     }
+    /*------- anonymous button ---------*/
+    .anonymousBtn{
+        display:inline-block;
+        text-decoration:underline;
+        color:#21bc61;
+        cursor:pointer;
+        transition:all 0.4s;
+    }
+    .anonymousBtn:hover{
+        color:#26d970;
+    }
 `;
