@@ -91,7 +91,8 @@ class Registration extends Component {
       password_confirmation: ""
     },
     isLoading: false,
-    isRegistrationFailed: false
+    isRegistrationFailed: false,
+    success: false
   };
 
   handleChange = (e, id) => {
@@ -172,8 +173,10 @@ class Registration extends Component {
     axios
       .post(`${baseURL}${registerApi}`, reqBody)
       .then(res => {
-        this.setState({ isLoading: false, isRegistrationFailed: false });
-        if (res.data.success) {
+        let success = _get(res, 'data.success', false)
+        this.setState({ isLoading: false });
+        if (success) {
+          this.setState({ isRegistrationFailed: false })
           window.location.assign('/afterRegistration')
         }
       })
@@ -201,15 +204,20 @@ class Registration extends Component {
     axios
       .post(`${baseURL}${registerApiOAuth}`, reqBody)
       .then(result => {
-        debugger
+        let success = _get(error, 'response.data.success', false)
+        if (success) {
+          this.setState({ isLoading: false, isRegistrationFailed: false })
+          window.location.assign('/')
+        }
         console.log("oauth register result", result);
       })
       .catch(error => {
-        debugger
         let status = _get(error, 'response.status', 0)
         let success = _get(error, 'response.data.success', false)
-        if(status == 409) {
+        if (status == 409 && !success) {
           // navigate him to login
+        } else {
+          alert('Some error occured!')
         }
         console.log("oauth register error", error);
       });

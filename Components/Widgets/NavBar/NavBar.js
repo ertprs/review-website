@@ -5,8 +5,8 @@ import * as AmpHelpers from "react-amphtml/helpers";
 import AmpLinkWrapper from "../../AmpWrappers/AmpLinkWrapper";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import { useAmp } from 'next/amp';
-import { GoogleLogout } from 'react-google-login';
-import { googleClientId } from '../../../utility/config';
+// import { GoogleLogout } from 'react-google-login';
+// import { googleClientId } from '../../../utility/config';
 
 const onLogout = () => {
 }

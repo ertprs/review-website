@@ -102,7 +102,7 @@ class Login extends Component {
       .catch(error => {
         console.log(error.response, "login error");
         let message = _get(error, 'response.data.message', '') === 'Unauthorized'
-        if(message) {
+        if (message) {
           this.setState({ isUnauthorized: true })
         }
         this.setState({
@@ -130,6 +130,13 @@ class Login extends Component {
       .post(`${baseURL}${loginApiOAuth}`, reqBody)
       .then(result => {
         console.log("oauth login result", result);
+        let success = _get(result, 'data.success', false)
+        if (success) {
+          this.setState({ isUnauthorized: false })
+          let token = _get(result, "data.token", "");
+          localStorage.setItem("token", token);
+          window.location.assign('/')
+        }
       })
       .catch(error => {
         console.log("oauth login error", error);
@@ -169,16 +176,16 @@ class Login extends Component {
                 {isLoading ? (
                   <Loader />
                 ) : (
-                  <button
-                    disabled={
-                      !(formData.email.valid && formData.password.valid)
-                    }
-                    className="registerBtn"
-                    onClick={this.handleLoginClick}
-                  >
-                    Login
+                    <button
+                      disabled={
+                        !(formData.email.valid && formData.password.valid)
+                      }
+                      className="registerBtn"
+                      onClick={this.handleLoginClick}
+                    >
+                      Login
                   </button>
-                )}
+                  )}
                 {isUnauthorized ? <p className="errorMsg">
                   Please enter the correct credentials.
                 </p> : ''}
