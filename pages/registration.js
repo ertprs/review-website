@@ -18,6 +18,8 @@ import {
 } from "../utility/config";
 import Router from "next/router";
 import Loader from "../Components/Widgets/Loader/Loader";
+import { connect } from 'react-redux';
+import { signUp } from '../store/actions/authActions';
 
 class Registration extends Component {
   state = {
@@ -167,30 +169,35 @@ class Registration extends Component {
   };
 
   handleRegisterClick = () => {
-    this.setState({ isLoading: true });
+    const { signUp } = this.props
+    const { payload } = this.props.auth
     const { formData } = this.state;
-    let reqBody = this.createReqBody(formData);
-    axios
-      .post(`${baseURL}${registerApi}`, reqBody)
-      .then(res => {
-        let success = _get(res, 'data.success', false)
-        this.setState({ isLoading: false });
-        if (success) {
-          this.setState({ isRegistrationFailed: false })
-          window.location.assign('/afterRegistration')
-        }
-      })
-      .catch(error => {
-        console.log(error, "registration error");
-        let status = _get(error, 'response.status', 0)
-        if (status === 409) {
-          //navigate user to login page with email id prefilled
-          this.setState({ isRegistrationFailed: false })
-        } else {
-          this.setState({ isRegistrationFailed: true })
-        }
-        this.setState({ isLoading: false });
-      });
+    let reqBody = this.createReqBody(formData, registerApi);
+    signUp(reqBody, registerApi)
+    if (payload.status === 409) {
+      console.log("navigating to login page")
+    }
+    // axios
+    //   .post(`${baseURL}${registerApi}`, reqBody)
+    //   .then(res => {
+    //     let success = _get(res, 'data.success', false)
+    //     this.setState({ isLoading: false });
+    //     if (success) {
+    //       this.setState({ isRegistrationFailed: false })
+    //       window.location.assign('/afterRegistration')
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log(error, "registration error");
+    //     let status = _get(error, 'response.status', 0)
+    //     if (status === 409) {
+    //       //navigate user to login page with email id prefilled
+    //       this.setState({ isRegistrationFailed: false })
+    //     } else {
+    //       this.setState({ isRegistrationFailed: true })
+    //     }
+    //     this.setState({ isLoading: false });
+    //   });
   };
 
   OAuthSignup = (response, name) => {
@@ -224,7 +231,9 @@ class Registration extends Component {
   };
 
   render() {
+    console.log(this.props)
     const { formData, errorMsg, isLoading, isRegistrationFailed } = this.state;
+    const { payload } = this.props.auth
     return (
       <Layout>
         <div className="mainContainer">
@@ -276,7 +285,7 @@ class Registration extends Component {
                   rows="5"
                   col="5"
                 />
-                {isLoading ? (
+                {payload.isSigningUp ? (
                   <Loader />
                 ) : (
                     <button
@@ -295,7 +304,7 @@ class Registration extends Component {
                       Register
                   </button>
                   )}
-                {isRegistrationFailed ? <p className="errorMsg">Something went wrong!</p>
+                {!signUpSuccess ? <p className="errorMsg">Something went wrong!</p>
                   : ''}
                 <GoogleLogin
                   clientId={googleClientId}
@@ -337,4 +346,9 @@ class Registration extends Component {
   }
 }
 
-export default Registration;
+const mapStateToProps = state => {
+  const { auth } = state
+  return { auth }
+}
+
+export default connect(mapStateToProps, { signUp })(Registration);

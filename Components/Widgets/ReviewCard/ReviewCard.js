@@ -29,7 +29,9 @@ const renderReviewCard = (
     body,
     image,
     designation,
-    specialistIn
+    specialistIn,
+    productPicStyles,
+    additionalData
   },
   colorImg,
   setColorImg
@@ -159,7 +161,7 @@ const renderReviewCard = (
           <style jsx>{reviewCardStyles}</style>
           <div className="productProfilePic">
             <div className="productCardPicContainer">
-              <img src={image} style={{ height: "auto", maxWidth: "100%" }} />
+              <img src={image} style={{ height: "auto", maxWidth: "100%", ...productPicStyles}} />
             </div>
           </div>
           <div className="productCardDetails">
@@ -168,6 +170,9 @@ const renderReviewCard = (
             </div>
             <div className="productCardText">
               <div>{body}</div>
+            </div>
+            <div className="productCardText" style={{marginTop:"15px"}}>
+              <div>{additionalData || ""}</div>
             </div>
           </div>
         </div>

@@ -27,9 +27,9 @@ export const formFieldStyles = css`
   .invalidField {
     border: 1px solid #ff7158;
   }
-  .errorMsg {
-    color: red;
-    font-size: 0.8rem;
-    margin-bottom: 1%;
+  .errorMsg{
+    color:red;
+    font-size:0.8rem;
+    margin-bottom:1%;
   }
 `;
