@@ -14,7 +14,7 @@ import {
   registerApi,
   registerApiOAuth,
   googleClientId,
-  facebookClientId
+  facebookAppId
 } from "../utility/config";
 import Router from "next/router";
 import Loader from "../Components/Widgets/Loader/Loader";
@@ -314,7 +314,7 @@ class Registration extends Component {
                   cookiePolicy={"single_host_origin"}
                 />
                 <FacebookLogin
-                  appId={facebookClientId}
+                  appId={facebookAppId}
                   // autoLoad={true}
                   fields="name,email,picture"
                   // onClick={componentClicked}

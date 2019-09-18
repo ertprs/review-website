@@ -1,7 +1,7 @@
 import React from 'react';
-import { reviewListStyles } from "./reviewCardStyles";
+import { reviewListStyles } from "./reviewListStyles";
 import RatingIndicators from '../RatingIndicators/RatingIndicators';
-import { loadGetInitialProps } from 'next-server/dist/lib/utils';
+import ReplyBox from './ReplyBox';
 
 const ReviewCardBusiness = (props) => {
     return (
@@ -36,7 +36,7 @@ const ReviewCardBusiness = (props) => {
             </div>
             <div className="row bottomBox">
                 <div className="col-md-2"></div>
-                <div className="col-md-6">
+                <div className="col-md-9">
                     <div className="bottomBoxInner">
                         <div className="footerLinks">
                             <p><i className="fa fa-share icons"></i>Reply</p>
@@ -52,8 +52,9 @@ const ReviewCardBusiness = (props) => {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4"></div>
+                <div className="col-md-1"></div>
             </div>
+            <ReplyBox />
         </div>
     )
 }

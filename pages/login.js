@@ -12,7 +12,7 @@ import {
   baseURL,
   loginApi,
   googleClientId,
-  facebookClientId,
+  facebookAppId,
   loginApiOAuth
 } from "../utility/config";
 import Router from "next/router";
@@ -205,7 +205,7 @@ class Login extends Component {
                   cookiePolicy={"single_host_origin"}
                 />
                 <FacebookLogin
-                  appId={facebookClientId}
+                  appId={facebookAppId}
                   // autoLoad={true}
                   fields="name,email,picture"
                   // onClick={componentClicked}

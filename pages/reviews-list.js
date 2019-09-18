@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReviewCard from '../Components/Widgets/ReviewList/ReviewCardBusiness';
+import ReplyBox from '../Components/Widgets/ReviewList/ReplyBox';
 
 class ReviewsList extends Component {
     render() {
