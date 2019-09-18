@@ -17,6 +17,7 @@
     "bootstrap-css-only": "^4.3.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "lodash": "^4.17.15",
     "next": "^9.0.2",
     "pusher": "^2.2.2",
     "pusher-js": "^5.0.0",
@@ -26,9 +27,15 @@
     "react-image": "^2.1.3",
     "react-modal": "^3.10.1",
     "react-ratings-declarative": "^3.4.1",
+    "react-redux": "^7.1.1",
+    "react-select": "^3.0.4",
     "react-slick": "^0.25.2",
     "react-star-ratings": "^2.3.0",
     "recharts": "^1.6.2",
+    "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "tus-js-client": "^1.8.0-2",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

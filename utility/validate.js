@@ -7,6 +7,7 @@ const validate = (value, rules) => {
           break;
         case "isEmail":
           isValid = isValid && isEmail(value);
+          console.log(isValid)
           break;
         case "isPhoneNumber":
           isValid = isValid && isPhoneNumber(value);
@@ -16,6 +17,9 @@ const validate = (value, rules) => {
           break;
         case "minLength": 
           isValid = isValid && isMinLength(value,rules[rule])
+          break;
+        case "maxLength":
+          isValid = isValid && isMaxLength(value, rules[rule])
           break;
         default:
           isValid = true;
@@ -46,6 +50,10 @@ const validate = (value, rules) => {
 
   const isMinLength = (value, minLength)=>{
     return value.length >= minLength;
+  }
+
+  const isMaxLength = (value, maxLength)=>{
+    return value.length <= maxLength;
   }
   
   export default validate;
