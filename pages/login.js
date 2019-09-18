@@ -17,6 +17,8 @@ import {
 } from "../utility/config";
 import Router from "next/router";
 import Loader from "../Components/Widgets/Loader/Loader";
+import { connect } from 'react-redux';
+import { logIn } from '../store/actions/authActions';
 
 class Login extends Component {
   state = {
@@ -84,38 +86,38 @@ class Login extends Component {
   };
 
   handleLoginClick = () => {
-    this.setState({ isLoading: true });
     const { formData } = this.state;
     let reqBody = this.createReqBody(formData);
-    axios
-      .post(`${baseURL}${loginApi}`, reqBody)
-      .then(result => {
-        this.setState({ isLoading: false });
-        let success = _get(result, 'data.success', false)
-        if (success) {
-          this.setState({ isUnauthorized: false })
-          window.location.assign('/')
-          let token = _get(result, "data.token", "");
-          localStorage.setItem("token", token);
-        }
-      })
-      .catch(error => {
-        console.log(error.response, "login error");
-        let message = _get(error, 'response.data.message', '') === 'Unauthorized'
-        if (message) {
-          this.setState({ isUnauthorized: true })
-        }
-        this.setState({
-          isLoading: false,
-          formData: {
-            ...formData,
-            password: {
-              ...formData.password,
-              value: ""
-            }
-          }
-        });
-      });
+    this.props.logIn(reqBody, loginApi)
+    // axios
+    //   .post(`${baseURL}${loginApi}`, reqBody)
+    //   .then(result => {
+    //     this.setState({ isLoading: false });
+    //     let success = _get(result, 'data.success', false)
+    //     if (success) {
+    //       this.setState({ isUnauthorized: false })
+    //       window.location.assign('/')
+    //       let token = _get(result, "data.token", "");
+    //       localStorage.setItem("token", token);
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log(error.response, "login error");
+    //     let message = _get(error, 'response.data.message', '') === 'Unauthorized'
+    //     if (message) {
+    //       this.setState({ isUnauthorized: true })
+    //     }
+    //     this.setState({
+    //       isLoading: false,
+    //       formData: {
+    //         ...formData,
+    //         password: {
+    //           ...formData.password,
+    //           value: ""
+    //         }
+    //       }
+    //     });
+    //   });
   };
 
   OAuthSignIn = (response, name) => {
@@ -145,6 +147,10 @@ class Login extends Component {
 
   render() {
     const { formData, isLoading, isUnauthorized } = this.state;
+    const { payload } = this.props.auth
+    if (_get(payload, 'authorized', false)) {
+      Router.push('/')
+    }
     return (
       <Layout>
         <div className="mainContainer">
@@ -173,7 +179,7 @@ class Login extends Component {
                 <a className="forgotPasswordLink" href="/forgot-password">
                   Forgot password?
                 </a>
-                {isLoading ? (
+                {_get(payload, 'isLoggingIn', false) ? (
                   <Loader />
                 ) : (
                     <button
@@ -186,7 +192,7 @@ class Login extends Component {
                       Login
                   </button>
                   )}
-                {isUnauthorized ? <p className="errorMsg">
+                {_get(payload, 'isWrongCredentials', false) ? <p className="errorMsg">
                   Please enter the correct credentials.
                 </p> : ''}
                 <GoogleLogin
@@ -228,4 +234,9 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => {
+  const { auth } = state
+  return { auth }
+}
+
+export default connect(mapStateToProps, { logIn })(Login);

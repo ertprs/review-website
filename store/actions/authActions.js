@@ -33,10 +33,17 @@ export const signUp = (userData, registerApi) => {
 };
 
 export const logIn = (userData, loginApi) => {
-  return async (dispatch) => {
+  return async dispatch => {
     dispatch({
       type: LOGIN_INIT,
-      payload: { authorized: false, status: -1, isLoggingIn: true, isLoginFailed: false, loginType: 0, token: "" }
+      payload: {
+        authorized: false,
+        status: -1,
+        isLoggingIn: true,
+        isLoginFailed: false,
+        loginType: 0,
+        token: ""
+      }
     });
     try {
       const res = await axios.post(`${baseURL}${loginApi}`, userData);
@@ -45,15 +52,29 @@ export const logIn = (userData, loginApi) => {
       let token = _get(result, "data.token", "");
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: { authorized: success, status: status, isLoggingIn: false, isLoginFailed: success, loginType: 1, token: token }
+        payload: {
+          authorized: success,
+          status: status,
+          isLoggingIn: false,
+          isLoginFailed: success,
+          loginType: 1,
+          token: token
+        }
       });
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
-      let message = _get(error, 'response.data.message', '') === 'Unauthorized'
+      let message = _get(error, "response.data.message", "") === "Unauthorized";
       dispatch({
         type: LOGIN_FAILURE,
-        payload: { authorized: message, status: status, isLoggingIn: false, isLoginFailed: success, loginType: 1, token: "" }
+        payload: {
+          authorized: message,
+          status: status,
+          isLoggingIn: false,
+          isLoginFailed: success,
+          loginType: 1,
+          token: ""
+        }
       });
     }
   };
