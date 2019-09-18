@@ -5,6 +5,9 @@ import FormField from "../Widgets/FormField/FormField";
 import validate from "../../utility/validate";
 import axios from "axios";
 import UniversalLoader from "../Widgets/UniversalLoader/UniversalLoader";
+import { connect } from "react-redux";
+import { sendTrustVote, sendTrustDataLater } from "../../store/actions/trustAction";
+import Router from "next/router";
 
 class TrustDontTrust extends React.Component {
   state = {
@@ -93,7 +96,7 @@ class TrustDontTrust extends React.Component {
                 this.props.handleModalClose();
               }}
             >
-              <img src="/static/images/dont_trust.svg"/>
+              <img src="/static/images/dont_trust.svg" />
             </div>
           </div>
         </div>
@@ -138,12 +141,32 @@ class TrustDontTrust extends React.Component {
 
   handleNextBtnClick = fields => {
     const valid = this.validateFields(fields);
+    const { authorized } = this.props.auth.payload;
+
     if (valid) {
-      this.setState(currentState => {
-        return { step: currentState.step + 1 };
-      });
+      if (authorized) {
+        this.props.sendTrustVote({
+          trust: this.state.trustFlag === "trust" ? true : false,
+          text: this.state.formData.review.value,
+          domain: this.props.domain
+        });
+      } else {
+        this.setState(currentState => {
+          return { step: currentState.step + 1 };
+        });
+      }
     }
   };
+
+  handleRegisterClick = ()=>{
+    this.props.sendTrustDataLater({
+      trust: this.state.trustFlag === "trust" ? true : false,
+      text: this.state.formData.review.value,
+      domain: this.props.domain
+    })
+    Router.push("/login")
+  }
+
 
   renderStepTwo = () => {
     return (
@@ -163,7 +186,7 @@ class TrustDontTrust extends React.Component {
             <div className="row">
               <div className="col-md-12">
                 <div className="registerBtnContainer">
-                  <button className="registerBtn">Register / Login</button>
+                  <button className="registerBtn" onClick={this.handleRegisterClick}>Register / Login</button>
                 </div>
               </div>
             </div>
@@ -317,6 +340,7 @@ class TrustDontTrust extends React.Component {
   };
 
   render() {
+    const {success} = this.props.trustVote.payload || false;
     return (
       <div>
         {this.renderTrustDontTrustModal()}
@@ -326,4 +350,12 @@ class TrustDontTrust extends React.Component {
   }
 }
 
-export default TrustDontTrust;
+const mapStateToProps = state => {
+  const { auth, trustVote } = state;
+  return { auth, trustVote };
+};
+
+export default connect(
+  mapStateToProps,
+  { sendTrustVote, sendTrustDataLater }
+)(TrustDontTrust);

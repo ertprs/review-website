@@ -4,28 +4,31 @@ import ResponsiveSideNav from "../ResponsiveSideNav/ResponsiveSideNav";
 import * as AmpHelpers from "react-amphtml/helpers";
 import AmpLinkWrapper from "../../AmpWrappers/AmpLinkWrapper";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
-import { useAmp } from 'next/amp';
+import { useAmp } from "next/amp";
+import _get from "lodash";
 // import { GoogleLogout } from 'react-google-login';
 // import { googleClientId } from '../../../utility/config';
+import { connect } from "react-redux";
 
-const onLogout = () => {
-}
+const onLogout = () => {};
 
 const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick) => {
   if (useAmp()) {
-    return (<AmpHelpers.Bind hidden="showSideNav.show">
-      {props => (
-        <div {...props} hidden={true}>
-          <ResponsiveSideNav />
-        </div>
-      )}
-    </AmpHelpers.Bind>)
-  }
-  else
+    return (
+      <AmpHelpers.Bind hidden="showSideNav.show">
+        {props => (
+          <div {...props} hidden={true}>
+            <ResponsiveSideNav />
+          </div>
+        )}
+      </AmpHelpers.Bind>
+    );
+  } else
     return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} /> : null;
 };
 
-const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
+const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
+  const { authorized, userData } = auth.payload || false;
   return (
     <>
       <style jsx>{navBarStyles}</style>
@@ -57,13 +60,13 @@ const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
           </div>
         </div>
         <div className="secondaryLinksContainer">
-          <div>
+          {!authorized ? <div>
             <i className="fa fa-sign-in" style={{ marginRight: "5px" }} />
             <AmpLinkWrapper href="/login" alt="nav-link">
               Login |{" "}
             </AmpLinkWrapper>
-          </div>
-          <div>
+          </div>: null}
+          {!authorized ? <div>
             <AmpLinkWrapper
               href="/registration"
               alt="nav-link"
@@ -72,7 +75,21 @@ const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
               {" "}
               Register
             </AmpLinkWrapper>
-          </div>
+          </div> : null}
+
+          {/* {authorized ? <div>
+
+            <AmpLinkWrapper href="/logout" alt="nav-link">
+              Hello, {_get(userData, "name", "")}
+            </AmpLinkWrapper>
+          </div> : null} */}
+
+          {authorized ? <div>
+            <i className="fa fa-sign-out" style={{ marginRight: "5px" }} />
+            <AmpLinkWrapper href="/logout" alt="nav-link">
+              Logout
+            </AmpLinkWrapper>
+          </div> : null}
           {/* <GoogleLogout
             clientId={googleClientId}
             buttonText="Logout"
@@ -107,4 +124,9 @@ const NavBar = ({ showSideNav, handleMenuBtnClick }) => {
   );
 };
 
-export default NavBar;
+const mapStateToProps = state => {
+  const { auth } = state;
+  return { auth };
+};
+
+export default connect(mapStateToProps)(NavBar);

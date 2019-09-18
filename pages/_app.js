@@ -2,6 +2,9 @@ import React from "react";
 import App, { Container } from "next/app";
 import withReduxStore from "../lib/with-redux-store";
 import { Provider } from "react-redux";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+
 import Head from "next/head";
 
 import { layoutStyles } from "../style";
@@ -17,8 +20,13 @@ class MyApp extends App {
     return { pageProps };
   }
 
+  constructor(props) {
+    super(props);
+    this.persistor = persistStore(props.reduxStore);
+  }
+
   render() {
-    const { Component, pageProps, reduxStore} = this.props;
+    const { Component, pageProps, reduxStore } = this.props;
     return (
       <>
         <style jsx>{layoutStyles}</style>
@@ -56,7 +64,12 @@ class MyApp extends App {
             <noscript />
           )}
           <Provider store={reduxStore}>
-            <Component {...pageProps} />
+            <PersistGate
+              loading={<Component {...pageProps} />}
+              persistor={this.persistor}
+            >
+              <Component {...pageProps} />
+            </PersistGate>
           </Provider>
         </Container>
       </>

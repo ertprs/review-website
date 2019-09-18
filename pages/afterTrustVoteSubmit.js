@@ -11,17 +11,12 @@ const AfterTrustVoteSubmit = () => {
             <style jsx> {authenticationPageStyles} </style>{" "}
             <div className="card">
               <div className="cardHeading">
-                <h2> We just sent you an email </h2>{" "}
+                <h2 style={{color:"#21bc61"}}>Thank you for your vote !</h2>{" "}
               </div>
               <p>
-                Thanks for signing up. <br />
-                Please check your email to activate your account.
-              </p>
-              <p>
-                Give it a few minutes, and don't forget to check your spam
-                folder.
-              </p>
-              <p>Didn't receive the email?</p>
+                Your vote submitted successfully <br />
+                Please check your email for further details.
+              </p>              
             </div>
           </div>
         </div>
