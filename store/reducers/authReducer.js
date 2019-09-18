@@ -16,7 +16,8 @@ const initialState = {
   isLoggingIn: false,
   isLoginFailed: false,
   loginType: 0,
-  token: ""
+  token: "",
+  isWrongCredentials: false
 };
 
 const authReducer = (state = initialState, action) => {
