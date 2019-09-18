@@ -12,7 +12,7 @@ import axios from "axios";
 
 export const signUp = (userData, registerApi) => {
   return async (dispatch, getState) => {
-    dispatch({ type: SIGNUP_INIT, payload: { signUpSuccess: false, status: -1, isSigningUp: true } });
+    dispatch({ type: SIGNUP_INIT, payload: { signUpSuccess: false, status: -1, isSigningUp: true, isSignupFailed: false } });
     try {
       const res = await axios.post(`${baseURL}${registerApi}`, userData);
       let success = _get(res, "data.success", false);
@@ -22,11 +22,11 @@ export const signUp = (userData, registerApi) => {
         payload: { signUpSuccess: success, status: status, isSigningUp: false }
       });
     } catch (error) {
-      let success = _get(error, "respnse.data.success", false);
+      let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
       dispatch({
         type: SIGNUP_FAILURE,
-        payload: { signUpSuccess: success, status: status, isSigningUp: false }
+        payload: { signUpSuccess: success, status: status, isSigningUp: false, isSignupFailed: true }
       });
     }
   };

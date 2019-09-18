@@ -10,7 +10,8 @@ import {
 const initialState = {
   signUpSuccess: false,
   status: -1,
-  isSigningUp: false
+  isSigningUp: false,
+  isSignupFailed: false
 };
 
 const authReducer = (state = initialState, action) => {

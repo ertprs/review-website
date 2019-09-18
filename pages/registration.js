@@ -170,13 +170,13 @@ class Registration extends Component {
 
   handleRegisterClick = () => {
     const { signUp } = this.props
-    const { payload } = this.props.auth
+    // const { payload } = this.props.auth
     const { formData } = this.state;
     let reqBody = this.createReqBody(formData, registerApi);
     signUp(reqBody, registerApi)
-    if (payload.status === 409) {
-      console.log("navigating to login page")
-    }
+    // if (payload.status === 409) {
+    //   console.log("navigating to login page")
+    // }
     // axios
     //   .post(`${baseURL}${registerApi}`, reqBody)
     //   .then(res => {
@@ -231,9 +231,11 @@ class Registration extends Component {
   };
 
   render() {
-    console.log(this.props)
     const { formData, errorMsg, isLoading, isRegistrationFailed } = this.state;
     const { payload } = this.props.auth
+    if (_get(payload, 'signUpSuccess', false)) {
+      Router.push('/login')
+    }
     return (
       <Layout>
         <div className="mainContainer">
@@ -285,7 +287,7 @@ class Registration extends Component {
                   rows="5"
                   col="5"
                 />
-                {payload.isSigningUp ? (
+                {_get(payload, 'isSigningUp', false) ? (
                   <Loader />
                 ) : (
                     <button
@@ -304,7 +306,7 @@ class Registration extends Component {
                       Register
                   </button>
                   )}
-                {!signUpSuccess ? <p className="errorMsg">Something went wrong!</p>
+                {_get(payload, 'isSignupFailed', false) ? <p className="errorMsg">Something went wrong!</p>
                   : ''}
                 <GoogleLogin
                   clientId={googleClientId}
