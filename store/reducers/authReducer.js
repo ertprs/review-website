@@ -13,10 +13,11 @@ const initialState = {
   isSignUpFailed: false,
   authorized: false,
   status: -1,
-  isLoggingIn: true,
+  isLoggingIn: false,
   isLoginFailed: false,
   loginType: 0,
-  token: ""
+  token: "",
+  isWrongCredentials: false
 };
 
 const authReducer = (state = initialState, action) => {

@@ -11,6 +11,14 @@ app.prepare().then(() => {
     return app.render(req, res, '/reviews', { domain: req.params.domain });
   });
 
+  server.get('/activate-user/:token', (req, res) => {
+    return app.render(req, res, '/activate-user', { token: req.params.token });
+  });
+
+  server.get('/reset-password/:token', (req, res) => {
+    return app.render(req, res, '/reset-password', { token: req.params.token });
+  });
+
   server.get('*', (req, res) => {
     return handle(req, res)
   })
