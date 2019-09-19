@@ -11,10 +11,10 @@ const AfterTrustVoteSubmit = () => {
             <style jsx> {authenticationPageStyles} </style>{" "}
             <div className="card">
               <div className="cardHeading">
-                <h2 style={{color:"#21bc61"}}>Thank you for your vote !</h2>{" "}
+                <h2 style={{color:"#21bc61"}}>Thank you for your review!</h2>{" "}
               </div>
               <p>
-                Your vote submitted successfully <br />
+                Your review was submitted successfully <br />
                 Please check your email for further details.
               </p>              
             </div>

@@ -18,6 +18,7 @@ class ProductReview extends React.Component {
       ratings: {
         mainRating: 0
       },
+      reviewChoice: "",
       products: [],
       reviewFormSubmissionErrors: {},
       selectedProducts: {},
@@ -164,9 +165,9 @@ class ProductReview extends React.Component {
   };
 
   handleProductTagsChanged = data => {
-    const { productsTagged, productsAlreadyTagged,step } = this.state;
+    const { productsTagged, productsAlreadyTagged, step } = this.state;
     if (data) {
-      this.setState({ productsTagged: [...data]});
+      this.setState({ productsTagged: [...data] });
     } else {
       this.setState({
         productsTagged: []
@@ -316,12 +317,37 @@ class ProductReview extends React.Component {
     }
   };
 
+  getNewSelectedProducts = () => {
+    const { selectedProducts, productsAlreadyTagged } = this.state;
+    const newSelectedProducts = {...selectedProducts};
+    for (let product of productsAlreadyTagged) {
+      if(product.id === selectedProducts[product.id].id){
+        delete newSelectedProducts[product.id]
+      }
+    }
+    return newSelectedProducts;
+  };
+
   handleVideoUploadSubmit = e => {
     e.preventDefault();
-    let { formData, videoFile, productsTagged } = this.state;
+    let { formData, videoFile, productsTagged, ratings } = this.state;
     let newFormData = {};
     let dataToSubmit = {};
     let valid = true;
+    let validRatings = true;
+    let errorObj = {};
+
+    //validate ratings
+    for (let rating in ratings) {
+      //ToDo: change and check for strings
+      validRatings = validRatings && ratings[rating] > 0;
+    }
+
+    if (!validRatings) {
+      //true means key is not valid
+      errorObj = { ...errorObj, ratings: true };
+    }
+
     for (let item in formData) {
       if (item !== "review") {
         valid = valid && formData[item].valid;
@@ -338,59 +364,95 @@ class ProductReview extends React.Component {
     }
     if (
       valid &&
+      validRatings &&
       Object.keys(videoFile.errors).length === 0 &&
       videoFile.size > 0
     ) {
       // alert(JSON.stringify(dataToSubmit));
       //axios post request
       //reviewUploadUrl
-      this.setState({ videoDataSent: "in-progress" }, () => {
-        console.log({ ...dataToSubmit, productsTagged });
-        axios
-          .post("https://jsonplaceholder.typicode.com/posts", {
-            name: dataToSubmit.videoTitle,
-            description: dataToSubmit.videoDescription,
-            size: videoFile.size,
-            productsTagged: productsTagged
-          })
-          .then(res => {
-            console.log(res);
-            this.setState({ videoDataSent: "success", productsAlreadyTagged:[...this.state.productsAlreadyTagged,...this.state.productsTagged] }, () => {
-              // let res = res.data;
-
-              //res.url below replace
-
-              var upload = new tus.Upload(this.state.videoFile.file, {
-                endpoint: "http://localhost:3000/static/uploads",
-                retryDelays: [0, 3000, 5000, 10000, 20000],
-                metadata: {},
-                onError: error => {
-                  this.setState({ videoUploaded: "error" });
-                  console.log("Failed because: " + error);
+      this.setState(
+        {
+          videoDataSent: "in-progress",
+          reviewFormSubmissionErrors: { ...errorObj }
+        },
+        () => {
+          console.log({ ...dataToSubmit, productsTagged, ratings });
+          axios
+            .post("https://jsonplaceholder.typicode.com/posts", {
+              name: dataToSubmit.videoTitle,
+              description: dataToSubmit.videoDescription,
+              size: videoFile.size,
+              productsTagged: productsTagged
+            })
+            .then(res => {
+              console.log(res);
+              const {
+                selectedProducts,
+                selectedProductKeys,
+                step
+              } = this.state;
+              const productToRate =
+                selectedProducts[selectedProductKeys[step - 1]];
+              let newProductsTaggedFormatted = [];
+              if (this.state.productsTagged.length > 0) {
+                newProductsTaggedFormatted = this.state.productsTagged.map(
+                  item => {
+                    return selectedProducts[item.value];
+                  }
+                );
+              }
+              this.setState(
+                {
+                  videoDataSent: "success",
+                  productsAlreadyTagged: [
+                    ...this.state.productsAlreadyTagged,
+                    productToRate,
+                    ...newProductsTaggedFormatted
+                  ]
                 },
-                onProgress: (bytesUploaded, bytesTotal) => {
-                  var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(
-                    2
-                  );
-                  // setState for videoProgress
-                  console.log(bytesUploaded, bytesTotal, percentage + "%");
-                },
-                onSuccess: () => {
-                  console.log(
-                    "Video might take some time to process on Vimeo."
-                  );
-                  this.setState({ videoUploaded: "success" });
+                () => {
+                  // let res = res.data;
+                  // const newSelectedProducts = this.getNewSelectedProducts();
+                  // const newSelectedProductKeys = Object.keys(newSelectedProducts);
+                  
+                  // this.setState({selectedProducts:{...newSelectedProducts}, selectedProductKeys:{...newSelectedProductKeys}})
+                  //res.url below replace
+
+                  var upload = new tus.Upload(this.state.videoFile.file, {
+                    endpoint: "http://localhost:3000/static/uploads",
+                    retryDelays: [0, 3000, 5000, 10000, 20000],
+                    metadata: {},
+                    onError: error => {
+                      this.setState({ videoUploaded: "error" });
+                      console.log("Failed because: " + error);
+                    },
+                    onProgress: (bytesUploaded, bytesTotal) => {
+                      var percentage = (
+                        (bytesUploaded / bytesTotal) *
+                        100
+                      ).toFixed(2);
+                      // setState for videoProgress
+                      console.log(bytesUploaded, bytesTotal, percentage + "%");
+                    },
+                    onSuccess: () => {
+                      console.log(
+                        "Video might take some time to process on Vimeo."
+                      );
+                      this.setState({ videoUploaded: "success" });
+                    }
+                  });
+                  upload.start();
+                  /////////////////////
                 }
-              });
-              upload.start();
-              /////////////////////
+              );
+            })
+            .catch(err => {
+              console.error(err);
+              this.setState({ videoDataSent: "error" });
             });
-          })
-          .catch(err => {
-            console.error(err);
-            this.setState({ videoDataSent: "error" });
-          });
-      });
+        }
+      );
 
       //submit video also
     } else {
@@ -406,13 +468,20 @@ class ProductReview extends React.Component {
           }
         });
       } else {
-        this.setState({ formData: { ...newFormData } });
+        this.setState({
+          formData: { ...newFormData },
+          reviewFormSubmissionErrors: { ...errorObj }
+        });
       }
     }
   };
 
   handleCheckBoxChange = (e, id) => {
     this.setState({ [id]: e.target.value === "yes" ? "no" : "yes" });
+  };
+
+  handleReviewChoiceChange = (e, id) => {
+    this.setState({ [id]: e.target.value });
   };
 
   renderReviewHeader = () => {
@@ -450,7 +519,8 @@ class ProductReview extends React.Component {
       selectedProductKeys,
       productsTagged,
       productsAlreadyTagged,
-      step
+      step,
+      reviewChoice
     } = this.state;
     const productToRate = selectedProducts[selectedProductKeys[step - 1]];
     if (step === 0) {
@@ -462,10 +532,12 @@ class ProductReview extends React.Component {
           goToNextStep={this.goToNextStep}
         />
       );
-    } else if(step<=this.state.selectedProductKeys.length) {
+    } else if (step <= this.state.selectedProductKeys.length) {
       return (
         <ProductReviewStepTwo
           productToRate={productToRate}
+          handleReviewChoiceChange={this.handleReviewChoiceChange}
+          reviewChoice={reviewChoice}
           selectedProductKeys={selectedProductKeys}
           selectedProducts={selectedProducts}
           productsTagged={productsTagged}
@@ -490,9 +562,8 @@ class ProductReview extends React.Component {
           videoUploaded={this.state.videoUploaded}
         />
       );
-    }
-    else{
-      return(<ThankYou />)
+    } else {
+      return <ThankYou />;
     }
   };
 

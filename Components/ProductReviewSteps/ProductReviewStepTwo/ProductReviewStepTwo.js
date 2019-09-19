@@ -32,7 +32,15 @@ class ProductReviewStepTwo extends React.Component {
   };
 
   renderHeroSection = () => {
-    const { productToRate, goToNextStep, ratings, reviewSent } = this.props;
+    const {
+      productToRate,
+      goToNextStep,
+      ratings,
+      reviewSent,
+      reviewChoice,
+      videoUploaded,
+      videoDataSent
+    } = this.props;
     const additionalData = (
       <Ratings
         rating={ratings.mainRating || 0}
@@ -55,7 +63,7 @@ class ProductReviewStepTwo extends React.Component {
     return (
       <div className="finalReviewSection">
         <style jsx>{productReviewStepTwoStyles}</style>
-        {reviewSent === "no" ? (
+        {reviewSent === "no" && videoDataSent === "no" ? (
           <div className="finalReviewSectionHeader">
             <ReviewCard
               variant="productCard"
@@ -68,10 +76,65 @@ class ProductReviewStepTwo extends React.Component {
           </div>
         ) : null}
         <div className="finalReviewSectionBody">
-          {/* display the below components only till the review is not submitted */}
-          {reviewSent === "no" ? this.renderRateProductAttributes() : null}
-          {reviewSent === "no" ? this.renderReviewTextBox() : null}
-          {this.renderCheckBoxAndBtn()}
+          {/* display the below components only till the text_review / video_review is not submitted */}
+          {reviewSent === "no" && videoDataSent === "no"
+            ? this.renderRateProductAttributes()
+            : null}
+
+          {reviewSent === "no" && videoUploaded === "no" ? (
+            <div className="reviewChoice">
+              {this.renderReviewChoiceSection()}
+            </div>
+          ) : null}
+
+          {reviewSent === "no" && reviewChoice === "text_review"
+            ? this.renderReviewTextBox()
+            : null}
+          {reviewChoice === "text_review" ? this.renderCheckBoxAndBtn() : null}
+        </div>
+      </div>
+    );
+  };
+
+  renderReviewChoiceSection = () => {
+    const { reviewChoice } = this.props;
+    return (
+      <div className="finalReviewSectionHeader">
+        <style jsx>{productReviewStepTwoStyles}</style>
+        <div className="rateProdAttrHeader">
+          <h5 style={{ marginTop: "3%", marginBottom: "5%" }}>
+            Please choose the review mode from below -
+          </h5>
+          <div className="reviewChoiceContainer">
+            <div>
+              <label className="reviewChoiceLabel">
+                <input
+                  type="radio"
+                  value="text_review"
+                  name="reviewChoice"
+                  checked={reviewChoice === "text_review" ? true : false}
+                  onChange={e =>
+                    this.props.handleReviewChoiceChange(e, "reviewChoice")
+                  }
+                />{" "}
+                Text Review
+              </label>
+            </div>
+            <div>
+              <label className="reviewChoiceLabel">
+                <input
+                  type="radio"
+                  value="video_review"
+                  name="reviewChoice"
+                  onChange={e =>
+                    this.props.handleReviewChoiceChange(e, "reviewChoice")
+                  }
+                  checked={reviewChoice === "video_review" ? true : false}
+                />{" "}
+                Video Review
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -113,11 +176,11 @@ class ProductReviewStepTwo extends React.Component {
 
   renderCheckBoxAndBtn = () => {
     const { reviewSent, productToRate, productsAlreadyTagged } = this.props;
-    const videoReview = {
-      id: "showVideoForm",
-      text: "I also want to upload a video review.",
-      error: ""
-    };
+    // const videoReview = {
+    //   id: "showVideoForm",
+    //   text: "I also want to upload a video review.",
+    //   error: ""
+    // };
     return (
       <div className="checkBoxAndBtnContainer">
         <style jsx>{productReviewStepTwoStyles}</style>
@@ -125,7 +188,13 @@ class ProductReviewStepTwo extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <div className="checkBoxContainer">
-                {reviewSent === "no" && this.checkAlreadyTagged(productsAlreadyTagged, productToRate.id)===undefined ? this.renderCheckBox(videoReview) : null}
+                {/* {reviewSent === "no" &&
+                this.checkAlreadyTagged(
+                  productsAlreadyTagged,
+                  productToRate.id
+                ) === undefined
+                  ? this.renderCheckBox(videoReview)
+                  : null} */}
               </div>
             </div>
           </div>
@@ -140,7 +209,12 @@ class ProductReviewStepTwo extends React.Component {
   };
 
   renderUniversalLoader = () => {
-    const { productToRate, showVideoForm, videoUploaded } = this.props;
+    const {
+      productToRate,
+      showVideoForm,
+      videoUploaded,
+      reviewChoice
+    } = this.props;
     return (
       <UniversalLoader status={this.props.reviewSent}>
         {/* First child for loading state */}
@@ -160,22 +234,18 @@ class ProductReviewStepTwo extends React.Component {
           </div>
         </div>
         {/* Second child for success state */}
-        {videoUploaded === "no" ? (
+        {reviewChoice === "text_review" ? (
           <div style={{ textAlign: "center", color: "#21bc61" }}>
-            Text review for product {productToRate.name} submitted,
-            {showVideoForm !== "no"
-              ? " please upload video in the form below"
-              : " please click on the button below to proceed"}
+            Text review for product {productToRate.name} submitted, please click
+            on the button below to proceed
           </div>
         ) : null}
 
         {/* third child for error state */}
-        {videoUploaded === "no" ? (
-          <div style={{ textAlign: "left", color: "red" }}>
-            Some error occured, please try again later{" "}
-            <i className="fa fa-close"></i>
-          </div>
-        ) : null}
+        <div style={{ textAlign: "left", color: "red" }}>
+          Some error occured, please try again later{" "}
+          <i className="fa fa-close"></i>
+        </div>
       </UniversalLoader>
     );
   };
@@ -278,27 +348,27 @@ class ProductReviewStepTwo extends React.Component {
     );
   };
 
-  checkAlreadyTagged = (productsAlreadyTagged, item)=>{
-    console.log(productsAlreadyTagged)
-    console.log(item)
-    return(
-      productsAlreadyTagged.find(taggedProduct =>{
-        return taggedProduct.value == item
-      })
-    )
-  }
+  checkAlreadyTagged = (productsAlreadyTagged, item) => {
+    return productsAlreadyTagged.find(taggedProduct => {
+      return taggedProduct.id === item;
+    });
+  };
 
-  getSelectOptions = (productsTagged, selectedProducts, productsAlreadyTagged) => {
+  getSelectOptions = (productsTagged, selectedProducts) => {
     let options = [];
+    const { productToRate, productsAlreadyTagged } = this.props;
     for (let item in selectedProducts) {
-        //check if already present in productsTagged
-        let alreadyTagged = this.checkAlreadyTagged(productsAlreadyTagged, item);
-        if(alreadyTagged===undefined){
-          options = [
-            ...options,
-            { value: item, label: selectedProducts[item].name }
-          ];
-        }
+      //check if already present in productsTagged
+      let alreadyTagged = this.checkAlreadyTagged(
+        productsAlreadyTagged,
+        Number(item)
+      );
+      if (alreadyTagged === undefined && productToRate.id !== Number(item)) {
+        options = [
+          ...options,
+          { value: item, label: selectedProducts[item].name }
+        ];
+      }
     }
     return options;
   };
@@ -312,7 +382,11 @@ class ProductReviewStepTwo extends React.Component {
       selectedProducts,
       productsAlreadyTagged
     } = this.props;
-    let selectOptions = this.getSelectOptions(productsTagged, selectedProducts, productsAlreadyTagged);
+    let selectOptions = this.getSelectOptions(
+      productsTagged,
+      selectedProducts,
+      productsAlreadyTagged
+    );
 
     const errors = {};
     return videoUploaded === "no" ? (
@@ -373,19 +447,70 @@ class ProductReviewStepTwo extends React.Component {
     );
   };
 
-  render() {
-    const { showVideoForm, reviewSent, videoUploaded } = this.props;
+  renderMajorSections = () => {
+    const {
+      showVideoForm,
+      reviewSent,
+      videoUploaded,
+      reviewChoice,
+      videoDataSent
+    } = this.props;
     return (
-      <div>
+      <>
         {this.renderHeader()}
         {this.renderHeroSection()}
-        {showVideoForm === "yes" &&
+        {reviewChoice === "video_review" &&
+        reviewSent === "no" &&
+        reviewSent !== "in-progress"
+          ? this.renderVideoUploadForm()
+          : null}
+        {/* {this.renderNextBtn()} */}
+        {videoDataSent === "yes" &&
         reviewSent !== "no" &&
         reviewSent !== "in-progress"
           ? this.renderVideoUploadForm()
           : null}
-        {(showVideoForm === "no" || videoUploaded !== "no") &&
-        (reviewSent === "success" || reviewSent === "error")
+      </>
+    );
+  };
+
+  render() {
+    const {
+      showVideoForm,
+      reviewSent,
+      videoUploaded,
+      reviewChoice,
+      videoDataSent,
+      productToRate,
+      productsAlreadyTagged
+    } = this.props;
+    //Add you have already tagged this product, please click on next to continue
+    // console.log(
+    //   reviewSent === "no" &&
+    //     videoDataSent === "no" &&
+    //     videoUploaded === "no" &&
+    //     this.checkAlreadyTagged(productsAlreadyTagged, productToRate.id) ===
+    //       undefined
+    // );
+    return (
+      <div>
+        {/* {this.renderMajorSections()} */}
+        {this.checkAlreadyTagged(productsAlreadyTagged, productToRate.id) ===
+          undefined ||
+        (reviewSent !== "no" ||
+          videoDataSent !== "no" ||
+          videoUploaded !== "no") ? (
+          this.renderMajorSections()
+        ) : (
+          <div>
+            You have already rated this product, please click on next button to
+            proceed
+          </div>
+        )}
+        {(videoDataSent !== "no" && videoUploaded !== "no") ||
+        reviewSent !== "no" ||
+        this.checkAlreadyTagged(productsAlreadyTagged, productToRate.id) !==
+          undefined
           ? this.renderNextBtn()
           : null}
       </div>
