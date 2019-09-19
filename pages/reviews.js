@@ -210,7 +210,7 @@ const renderReviewHeader = (
               </div>
             )}
           </div> */}
-          <div className="col-md-3">
+          <div className="col-lg-3">
             <TrustDontTrust
               showModal={showTrustModal}
               handleModalClose={handleTrustModalVisibility}
@@ -661,13 +661,13 @@ const renderMajorData = (
 
       {/* Add trust dont trust slider */}
       <div className="container">
-        <div style={{ margin: "50px 0 50px 0" }}>
+        <div className="sliderHeader">
           <h4>
             People who trust this company with their name (192). People who
             don't trust this company (15)
           </h4>
         </div>
-        <div style={{boxShadow:"0px 4px 8px #d5d5d5", padding:"50px"}}>
+        <div className="sliderContainer">
           <TrustDontTrustSlider />
         </div>
       </div>
