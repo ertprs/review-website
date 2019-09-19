@@ -53,6 +53,18 @@ class Login extends Component {
     isUnauthorized: false
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { formData } = this.state
+    if (this.props !== prevProps) {
+      let isWrongCredentials = _get(this.props, 'auth.logInTemp.isWrongCredentials', false)
+      if (isWrongCredentials) {
+        this.setState({
+          formData: { ...formData, password: { ...formData.password, value: "" } }
+        })
+      }
+    }
+  }
+
   handleChange = (e, id) => {
     const { value } = e.target;
     const { formData } = this.state;
@@ -81,74 +93,44 @@ class Login extends Component {
         });
       }
     }
-    console.log(reqBody, "reqBody");
     return reqBody;
   };
 
   handleLoginClick = () => {
     const { formData } = this.state;
+    const { logIn } = this.props
     let reqBody = this.createReqBody(formData);
-    this.props.logIn(reqBody, loginApi)
-    // axios
-    //   .post(`${baseURL}${loginApi}`, reqBody)
-    //   .then(result => {
-    //     this.setState({ isLoading: false });
-    //     let success = _get(result, 'data.success', false)
-    //     if (success) {
-    //       this.setState({ isUnauthorized: false })
-    //       window.location.assign('/')
-    //       let token = _get(result, "data.token", "");
-    //       localStorage.setItem("token", token);
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response, "login error");
-    //     let message = _get(error, 'response.data.message', '') === 'Unauthorized'
-    //     if (message) {
-    //       this.setState({ isUnauthorized: true })
-    //     }
-    //     this.setState({
-    //       isLoading: false,
-    //       formData: {
-    //         ...formData,
-    //         password: {
-    //           ...formData.password,
-    //           value: ""
-    //         }
-    //       }
-    //     });
-    //   });
+    logIn(reqBody, loginApi, 1)
   };
 
   OAuthSignIn = (response, name) => {
     console.log(response, "res");
-    const reqBody = {
-      provider: name,
-      data: {
-        id_token: _get(response, "Zi.id_token", "")
-      }
-    };
-    axios
-      .post(`${baseURL}${loginApiOAuth}`, reqBody)
-      .then(result => {
-        console.log("oauth login result", result);
-        let success = _get(result, 'data.success', false)
-        if (success) {
-          this.setState({ isUnauthorized: false })
-          let token = _get(result, "data.token", "");
-          localStorage.setItem("token", token);
-          window.location.assign('/')
+    const { logIn } = this.props
+    let reqBody = {}
+    let loginType = 0
+    if (name === 'google') {
+      reqBody = {
+        provider: name,
+        data: {
+          id_token: _get(response, "Zi.id_token", "")
         }
-      })
-      .catch(error => {
-        console.log("oauth login error", error);
-      });
+      }
+      logIn(reqBody, loginApiOAuth, 3)
+    } else if (name === 'facebook') {
+      reqBody = {
+        provider: name,
+        data: {
+          accessToken: response.accessToken
+        }
+      }
+      logIn(reqBody, loginApiOAuth, 2)
+    }
   };
 
   render() {
-    const { formData, isLoading, isUnauthorized } = this.state;
-    const { payload } = this.props.auth
-    if (_get(payload, 'authorized', false)) {
+    const { formData } = this.state;
+    const { logIn, logInTemp } = this.props.auth
+    if (_get(logIn, 'authorized', false)) {
       Router.push('/')
     }
     return (
@@ -179,7 +161,7 @@ class Login extends Component {
                 <a className="forgotPasswordLink" href="/forgot-password">
                   Forgot password?
                 </a>
-                {_get(payload, 'isLoggingIn', false) ? (
+                {_get(logInTemp, 'isLoggingIn', false) ? (
                   <Loader />
                 ) : (
                     <button
@@ -192,9 +174,11 @@ class Login extends Component {
                       Login
                   </button>
                   )}
-                {_get(payload, 'isWrongCredentials', false) ? <p className="errorMsg">
+                {_get(logInTemp, 'isWrongCredentials', false) ? <p className="errorMsg">
                   Please enter the correct credentials.
-                </p> : ''}
+                </p> : _get(logInTemp, 'isLoginFailed', false) ? <p className="errorMsg">
+                    Some error occured!
+                </p> : ""}
                 <GoogleLogin
                   clientId={googleClientId}
                   render={renderProps => (

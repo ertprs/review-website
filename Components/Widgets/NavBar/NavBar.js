@@ -6,11 +6,14 @@ import AmpLinkWrapper from "../../AmpWrappers/AmpLinkWrapper";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import { useAmp } from "next/amp";
 import _get from "lodash";
-// import { GoogleLogout } from 'react-google-login';
-// import { googleClientId } from '../../../utility/config';
+import _isEmpty from 'lodash/isEmpty';
+import { GoogleLogout } from 'react-google-login';
+import { googleClientId } from '../../../utility/config';
 import { connect } from "react-redux";
 
-const onLogout = () => {};
+const onLogout = () => {
+  // do nothing for now
+}
 
 const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick) => {
   if (useAmp()) {
@@ -27,8 +30,28 @@ const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick) => {
     return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} /> : null;
 };
 
+// const logoutFb = () => {
+//   window.FB.logout(res => {
+//     console.log(res, 'yfyfyh')
+//   })
+//   return
+// }
+
 const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
-  const { authorized, userData } = auth.payload || false;
+  const { authorized } = auth.logIn || false;
+  const { userProfile } = auth.logIn || {}
+  let userName = ""
+  if (userProfile) {
+    if (userProfile.hasOwnProperty('name')) {
+      if (userProfile.name.length > 0) {
+        let nameAfterSplit = userProfile.name.split(' ')
+        if (nameAfterSplit.length > 0) {
+          userName = nameAfterSplit[0]
+        }
+      }
+    }
+  }
+
   return (
     <>
       <style jsx>{navBarStyles}</style>
@@ -60,42 +83,43 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
           </div>
         </div>
         <div className="secondaryLinksContainer">
-          {!authorized ? <div>
-            <i className="fa fa-sign-in" style={{ marginRight: "5px" }} />
-            <AmpLinkWrapper href="/login" alt="nav-link">
-              Login |{" "}
+          {!authorized ?
+            <React.Fragment>
+              <div>
+                <i className="fa fa-sign-in" style={{ marginRight: "5px" }} />
+                <AmpLinkWrapper href="/login" alt="nav-link">
+                  Login |{" "}
+                </AmpLinkWrapper>
+              </div>
+              <div>
+                <AmpLinkWrapper
+                  href="/registration"
+                  alt="nav-link"
+                  styles={{ marginLeft: "5px" }}
+                >
+                  {" "}
+                  Register
             </AmpLinkWrapper>
-          </div>: null}
-          {!authorized ? <div>
-            <AmpLinkWrapper
-              href="/registration"
-              alt="nav-link"
-              styles={{ marginLeft: "5px" }}
-            >
-              {" "}
-              Register
+              </div></React.Fragment>
+            : <React.Fragment>
+              <div>
+                Hello, <span style={{ marginRight: "10px" }}>{userName}</span>
+              </div>
+              <div>
+                <i className="fa fa-sign-out" style={{ marginRight: "5px" }} />
+                <AmpLinkWrapper href="/logout" alt="nav-link">
+                  Logout
             </AmpLinkWrapper>
-          </div> : null}
-
-          {/* {authorized ? <div>
-
-            <AmpLinkWrapper href="/logout" alt="nav-link">
-              Hello, {_get(userData, "name", "")}
-            </AmpLinkWrapper>
-          </div> : null} */}
-
-          {authorized ? <div>
-            <i className="fa fa-sign-out" style={{ marginRight: "5px" }} />
-            <AmpLinkWrapper href="/logout" alt="nav-link">
-              Logout
-            </AmpLinkWrapper>
-          </div> : null}
+              </div>
+            </React.Fragment>}
           {/* <GoogleLogout
             clientId={googleClientId}
             buttonText="Logout"
             onLogoutSuccess={onLogout}
           >
           </GoogleLogout> */}
+          {/* <button onClick={() => logoutFb()}>Logout Fb</button> */}
+
         </div>
         <div className="menuIconContainer">
           {

@@ -10,14 +10,16 @@ import {
 import _get from "lodash/get";
 import { baseURL } from "../../utility/config";
 import axios from "axios";
-import {sendTrustVote} from './trustAction';
+import { sendTrustVote } from './trustAction';
 
 export const signUp = (userData, registerApi) => {
   return async (dispatch, getState) => {
     dispatch({
       type: SIGNUP_INIT,
-      payload: {
+      signUp: {
         signUpSuccess: false,
+      },
+      signUpTemp: {
         status: -1,
         isSigningUp: true,
         isSignupFailed: false
@@ -29,11 +31,13 @@ export const signUp = (userData, registerApi) => {
       let status = _get(res, "status", 0);
       dispatch({
         type: SIGNUP_SUCCESS,
-        payload: {
-          signUpSuccess: success,
-          status: status,
+        signUp: {
+          signUpSuccess: success
+        },
+        signUpTemp: {
+          status,
           isSigningUp: false,
-          isSignUpFailed: false
+          isSignupFailed: false
         }
       });
     } catch (error) {
@@ -41,54 +45,62 @@ export const signUp = (userData, registerApi) => {
       let status = _get(error, "response.status", 0);
       dispatch({
         type: SIGNUP_FAILURE,
-        payload: {
-          signUpSuccess: success,
-          status: status,
+        signUp: {
+          signUpSuccess: success
+        },
+        signUpTemp: {
+          status,
           isSigningUp: false,
-          isSignUpFailed: true
+          isSignupFailed: true
         }
       });
     }
   };
 };
 
-export const logIn = (userData, loginApi) => {
-  return async (dispatch,getState) => {
-    const {trustVote} = getState();
-    const {payload} = trustVote;
+export const logIn = (userData, loginApi, loginType) => {
+  return async (dispatch, getState) => {
+    const { trustVote } = getState();
+    const { payload } = trustVote;
     const shouldSend = _get(payload, "shouldSend", false)
     const trustVoteData = _get(payload, "data", {})
     dispatch({
       type: LOGIN_INIT,
-      payload: {
+      logIn: {
         authorized: false,
-        status: -1,
-        isLoggingIn: true,
-        isLoginFailed: false,
         loginType: 0,
-        token: ""
+        token: "",
+        userProfile: {}
+      },
+      logInTemp: {
+        status: -1,
+        isWrongCredentials: false,
+        isLoginFailed: false,
+        isLoggingIn: true
       }
     });
     try {
       const res = await axios.post(`${baseURL}${loginApi}`, userData);
-      console.log(res, "userData");
       let success = _get(res, "data.success", false);
       let userProfile = _get(res, "data.user", {})
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: {
+        logIn: {
           authorized: success,
+          loginType,
+          token,
+          userProfile,
+        },
+        logInTemp: {
           status: status,
-          isLoggingIn: false,
-          isLoginFailed: success,
-          loginType: 1,
-          token: token,
-          userProfile
+          isWrongCredentials: false,
+          isLoginFailed: !success,
+          isLoggingIn: false
         }
       });
-      if(success && shouldSend){
+      if (success && shouldSend) {
         dispatch(sendTrustVote(trustVoteData))
       }
     } catch (error) {
@@ -97,13 +109,17 @@ export const logIn = (userData, loginApi) => {
       let message = _get(error, "response.data.message", "") === "Unauthorized";
       dispatch({
         type: LOGIN_FAILURE,
-        payload: {
+        logIn: {
           authorized: false,
+          loginType: 0,
+          token: "",
+          userProfile: {}
+        },
+        logInTemp: {
           status: status,
-          isLoggingIn: false,
-          isLoginFailed: success,
-          loginType: 1,
-          token: ""
+          isWrongCredentials: message,
+          isLoginFailed: !success,
+          isLoggingIn: false
         }
       });
     }
@@ -111,6 +127,8 @@ export const logIn = (userData, loginApi) => {
 };
 
 export const logOut = () => {
+  localStorage.removeItem('persist:primary')
+  localStorage.removeItem('persist:auth')
   return {
     type: LOGOUT,
     payload: {}

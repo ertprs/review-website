@@ -170,71 +170,44 @@ class Registration extends Component {
 
   handleRegisterClick = () => {
     const { signUp } = this.props
-    // const { payload } = this.props.auth
     const { formData } = this.state;
     let reqBody = this.createReqBody(formData, registerApi);
     signUp(reqBody, registerApi)
-    // if (payload.status === 409) {
-    //   console.log("navigating to login page")
-    // }
-    // axios
-    //   .post(`${baseURL}${registerApi}`, reqBody)
-    //   .then(res => {
-    //     let success = _get(res, 'data.success', false)
-    //     this.setState({ isLoading: false });
-    //     if (success) {
-    //       this.setState({ isRegistrationFailed: false })
-    //       window.location.assign('/afterRegistration')
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log(error, "registration error");
-    //     let status = _get(error, 'response.status', 0)
-    //     if (status === 409) {
-    //       //navigate user to login page with email id prefilled
-    //       this.setState({ isRegistrationFailed: false })
-    //     } else {
-    //       this.setState({ isRegistrationFailed: true })
-    //     }
-    //     this.setState({ isLoading: false });
-    //   });
   };
 
   OAuthSignup = (response, name) => {
     console.log(response, "res");
-    const reqBody = {
-      provider: name,
-      data: {
-        id_token: _get(response, "Zi.id_token", "")
+    const { signUp } = this.props
+    let reqBody = {}
+    if (name === 'google') {
+      reqBody = {
+        provider: name,
+        data: {
+          id_token: _get(response, "Zi.id_token", "")
+        }
       }
-    };
-    axios
-      .post(`${baseURL}${registerApiOAuth}`, reqBody)
-      .then(result => {
-        let success = _get(error, 'response.data.success', false)
-        if (success) {
-          this.setState({ isLoading: false, isRegistrationFailed: false })
-          window.location.assign('/')
+    } else if (name === 'facebook') {
+      reqBody = {
+        provider: name,
+        data: {
+          accessToken: response.accessToken
         }
-        console.log("oauth register result", result);
-      })
-      .catch(error => {
-        let status = _get(error, 'response.status', 0)
-        let success = _get(error, 'response.data.success', false)
-        if (status == 409 && !success) {
-          // navigate him to login
-        } else {
-          alert('Some error occured!')
-        }
-        console.log("oauth register error", error);
-      });
+      }
+    }
+    signUp(reqBody, registerApiOAuth)
   };
 
   render() {
-    const { formData, errorMsg, isLoading, isRegistrationFailed } = this.state;
-    const { payload } = this.props.auth
-    if (_get(payload, 'signUpSuccess', false)) {
+    const { formData, errorMsg } = this.state;
+    const { signUp, signUpTemp } = this.props.auth
+    if (_get(signUp, 'signUpSuccess', false)) {
+      // let him login directly
       Router.push('/login')
+    }
+    if (_get(signUpTemp, 'status', 0) === 409) {
+      console.log('sending to login')
+      // we need to push to login page with this email id with a email already registered message
+      // Router.push('/login')
     }
     return (
       <Layout>
@@ -287,7 +260,7 @@ class Registration extends Component {
                   rows="5"
                   col="5"
                 />
-                {_get(payload, 'isSigningUp', false) ? (
+                {_get(signUpTemp, 'isSigningUp', false) ? (
                   <Loader />
                 ) : (
                     <button
@@ -306,8 +279,10 @@ class Registration extends Component {
                       Register
                   </button>
                   )}
-                {_get(payload, 'isSignupFailed', false) ? <p className="errorMsg">Something went wrong!</p>
-                  : ''}
+                {_get(signUpTemp, 'isSignupFailed', false) ?
+                  _get(signUpTemp, 'status', 0) === 409 ? <p className="errorMsg">Email already registered</p> :
+                    <p className="errorMsg">Something went wrong!</p> : ""
+                }
                 <GoogleLogin
                   clientId={googleClientId}
                   render={renderProps => (
@@ -328,6 +303,7 @@ class Registration extends Component {
                   appId={facebookAppId}
                   // autoLoad={true}
                   fields="name,email,picture"
+                  // scope="public_profile,user_friends,user_actions.books"
                   // onClick={componentClicked}
                   callback={response => this.OAuthSignup(response, "facebook")}
                   render={renderProps => (
