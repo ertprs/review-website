@@ -331,7 +331,7 @@ class ProductReview extends React.Component {
   handleVideoUploadSubmit = e => {
     e.preventDefault();
     let { formData, videoFile, productsTagged, ratings } = this.state;
-    let newFormData = {};
+    let newFormData = this.state.formData;
     let dataToSubmit = {};
     let valid = true;
     let validRatings = true;

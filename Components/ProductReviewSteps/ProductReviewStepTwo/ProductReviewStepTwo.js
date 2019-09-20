@@ -482,7 +482,9 @@ class ProductReviewStepTwo extends React.Component {
       reviewChoice,
       videoDataSent,
       productToRate,
-      productsAlreadyTagged
+      productsAlreadyTagged,
+      selectedProductKeys,
+      step
     } = this.props;
     //Add you have already tagged this product, please click on next to continue
     // console.log(
@@ -503,8 +505,14 @@ class ProductReviewStepTwo extends React.Component {
           this.renderMajorSections()
         ) : (
           <div>
-            You have already rated this product, please click on next button to
-            proceed
+            <style jsx>{productReviewStepTwoStyles}</style>
+            <h6 style={{ textAlign: "right" }}>
+              Review {step} of {selectedProductKeys.length}
+            </h6>
+            <div style={{ margin: "50px 0 80px 0" }}>
+              You have already tagged this product in a video review, please
+              click on next button to proceed
+            </div>
           </div>
         )}
         {(videoDataSent !== "no" && videoUploaded !== "no") ||

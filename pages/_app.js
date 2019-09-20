@@ -31,6 +31,15 @@ class MyApp extends App {
       <>
         <style jsx>{layoutStyles}</style>
         <Head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `function googleTranslateElementInit() {
+                new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+              }`
+            }}
+          />
+          <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+          
           <title>The trust search engine</title>
           <link
             href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"

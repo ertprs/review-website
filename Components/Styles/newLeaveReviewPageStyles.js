@@ -10,6 +10,7 @@ export const newLeaveReviewPageStyles = css`
     /*---- Header section --------*/
     .reviewHeader{
         /* background:#fff; */
+        margin-bottom:50px;
     }
 
     .reviewHeaderLogoContainer{
