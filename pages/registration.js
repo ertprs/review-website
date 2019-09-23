@@ -202,7 +202,7 @@ class Registration extends Component {
     const { signUp, signUpTemp } = this.props.auth
     if (_get(signUp, 'signUpSuccess', false)) {
       // let him login directly
-      Router.push('/login')
+      Router.push('/afterRegistration')
     }
     if (_get(signUpTemp, 'status', 0) === 409) {
       console.log('sending to login')

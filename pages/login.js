@@ -4,7 +4,6 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import axios from "axios";
 import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Layout from "../hoc/layout/layout";

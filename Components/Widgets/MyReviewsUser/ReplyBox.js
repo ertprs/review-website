@@ -1,5 +1,5 @@
 import React from 'react';
-import { reviewListStyles } from './reviewListStyles';
+import { reviewListStyles } from './myReviewsStyles';
 import FormField from "../FormField/FormField";
 
 const ReplyBox = () => {
