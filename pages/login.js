@@ -18,6 +18,7 @@ import Router from "next/router";
 import Loader from "../Components/Widgets/Loader/Loader";
 import { connect } from 'react-redux';
 import { logIn } from '../store/actions/authActions';
+import Snackbar from '../Components/Widgets/Snackbar';
 
 class Login extends Component {
   state = {
@@ -49,8 +50,26 @@ class Login extends Component {
       }
     },
     isLoading: false,
-    isUnauthorized: false
+    isUnauthorized: false,
+    showSnackbar: false
   };
+
+  componentDidMount() {
+    const { auth } = this.props
+    const { formData } = this.state
+    if (auth.type == "REDIRECT_TO_LOGIN_WITH_EMAIL") {
+      const emailPrefill = _get(auth, 'tempEmail.emailPrefill', false)
+      const email = _get(auth, 'tempEmail.email', '')
+      if (emailPrefill) {
+        this.setState({
+          formData: {
+            ...formData,
+            email: { ...formData.email, value: email }
+          }
+        })
+      }
+    }
+  }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { formData } = this.state
@@ -62,6 +81,10 @@ class Login extends Component {
         })
       }
     }
+  }
+
+  componentClicked = (res) => {
+    console.log(res, 'res')
   }
 
   handleChange = (e, id) => {
@@ -125,6 +148,12 @@ class Login extends Component {
       logIn(reqBody, loginApiOAuth, 2)
     }
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.auth.logIn !== prevProps.auth.logIn) {
+      this.setState({ showSnackbar: true })
+    }
+  }
 
   render() {
     const { formData } = this.state;
@@ -197,7 +226,7 @@ class Login extends Component {
                   appId={facebookAppId}
                   // autoLoad={true}
                   fields="name,email,picture"
-                  // onClick={componentClicked}
+                  onClick={this.componentClicked}
                   callback={response => this.OAuthSignIn(response, "facebook")}
                   render={renderProps => (
                     <button
@@ -212,6 +241,12 @@ class Login extends Component {
             </div>
           </div>
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant="success"
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message="Login successfully"
+        />
       </Layout>
     );
   }

@@ -30,12 +30,12 @@ const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick) => {
     return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} /> : null;
 };
 
-// const logoutFb = () => {
-//   window.FB.logout(res => {
-//     console.log(res, 'yfyfyh')
-//   })
-//   return
-// }
+const logoutFb = () => {
+  window.FB.logout(res => {
+    console.log(res, 'yfyfyh')
+  })
+  return
+}
 
 const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
   const { authorized } = auth.logIn || false;
@@ -118,7 +118,7 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
             onLogoutSuccess={onLogout}
           >
           </GoogleLogout> */}
-          {/* <button onClick={() => logoutFb()}>Logout Fb</button> */}
+          {/* <button onClick={logoutFb}>Logout Fb</button> */}
 
         </div>
         <div className="menuIconContainer">

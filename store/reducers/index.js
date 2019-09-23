@@ -7,7 +7,7 @@ import trustReducer from './trustReducer';
 const authPersistConfig = {
     key: 'auth',
     storage: storage,
-    blacklist: ['logInTemp', 'signUpTemp']
+    blacklist: ['logInTemp', 'signUpTemp', 'tempEmail']
 }
 
 export default combineReducers({

@@ -1,3 +1,4 @@
+import Router from "next/router";
 import {
   SIGNUP_INIT,
   SIGNUP_SUCCESS,
@@ -5,22 +6,26 @@ import {
   LOGIN_INIT,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  LOGOUT
+  LOGOUT,
+  REDIRECT_TO_LOGIN_WITH_EMAIL
 } from "./actionTypes";
 import _get from "lodash/get";
-import { baseURL } from "../../utility/config";
+import {
+  baseURL,
+  loginApiOAuth,
+  registerApiOAuth
+} from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from './trustAction';
 
-export const signUp = (userData, registerApi) => {
+export const signUp = (userData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
     dispatch({
       type: SIGNUP_INIT,
-      signUp: {
-        signUpSuccess: false,
-      },
+      signUp: {},
       signUpTemp: {
         status: -1,
+        signUpSuccess: false,
         isSigningUp: true,
         isSignupFailed: false
       }
@@ -31,11 +36,10 @@ export const signUp = (userData, registerApi) => {
       let status = _get(res, "status", 0);
       dispatch({
         type: SIGNUP_SUCCESS,
-        signUp: {
-          signUpSuccess: success
-        },
+        signUp: {},
         signUpTemp: {
           status,
+          signUpSuccess: success,
           isSigningUp: false,
           isSignupFailed: false
         }
@@ -43,13 +47,17 @@ export const signUp = (userData, registerApi) => {
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
+      // if (signUpType == 2 || signUpType == 3) {
+      //   if (status === 409) {
+      //     dispatch(logIn(userData, loginApiOAuth, signUpType))
+      //   }
+      // }
       dispatch({
         type: SIGNUP_FAILURE,
-        signUp: {
-          signUpSuccess: success
-        },
+        signUp: {},
         signUpTemp: {
           status,
+          signUpSuccess: success,
           isSigningUp: false,
           isSignupFailed: true
         }
@@ -59,6 +67,7 @@ export const signUp = (userData, registerApi) => {
 };
 
 export const logIn = (userData, loginApi, loginType) => {
+  debugger
   return async (dispatch, getState) => {
     const { trustVote } = getState();
     const { payload } = trustVote;
@@ -134,3 +143,14 @@ export const logOut = () => {
     payload: {}
   };
 };
+
+export const redirectToLoginWithEmail = (email) => {
+  Router.push('/login')
+  return {
+    type: REDIRECT_TO_LOGIN_WITH_EMAIL,
+    tempEmail: {
+      emailPrefill: true,
+      email
+    }
+  }
+}

@@ -8,18 +8,18 @@ import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props
 import Layout from "../hoc/layout/layout";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import axios from "axios";
 import {
-  baseURL,
   registerApi,
   registerApiOAuth,
   googleClientId,
   facebookAppId
 } from "../utility/config";
 import Router from "next/router";
-import Loader from "../Components/Widgets/Loader/Loader";
+// import Loader from "../Components/Widgets/Loader/Loader";
 import { connect } from 'react-redux';
-import { signUp } from '../store/actions/authActions';
+import { signUp, redirectToLoginWithEmail } from '../store/actions/authActions';
+import Snackbar from '../Components/Widgets/Snackbar';
+import { CircularProgress } from '@material-ui/core';
 
 class Registration extends Component {
   state = {
@@ -94,7 +94,10 @@ class Registration extends Component {
     },
     isLoading: false,
     isRegistrationFailed: false,
-    success: false
+    success: false,
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
   };
 
   handleChange = (e, id) => {
@@ -172,7 +175,7 @@ class Registration extends Component {
     const { signUp } = this.props
     const { formData } = this.state;
     let reqBody = this.createReqBody(formData, registerApi);
-    signUp(reqBody, registerApi)
+    signUp(reqBody, registerApi, 1)
   };
 
   OAuthSignup = (response, name) => {
@@ -186,6 +189,7 @@ class Registration extends Component {
           id_token: _get(response, "Zi.id_token", "")
         }
       }
+      signUp(reqBody, registerApiOAuth, 3)
     } else if (name === 'facebook') {
       reqBody = {
         provider: name,
@@ -193,21 +197,40 @@ class Registration extends Component {
           accessToken: response.accessToken
         }
       }
+      signUp(reqBody, registerApiOAuth, 2)
     }
-    signUp(reqBody, registerApiOAuth)
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.auth !== prevProps.auth) {
+      const { signUpTemp } = this.props.auth
+      const isSignUpFailed = _get(signUpTemp, 'isSignupFailed', false)
+      const isSignupSuccess = _get(signUpTemp, 'signUpSuccess', false)
+      if (isSignUpFailed) {
+        let snackbarMsg = _get(signUpTemp, 'status', 0) === 409 ? "Email already registered" :
+          "Something went wrong!"
+        this.setState({ showSnackbar: true, variant: "error", snackbarMsg })
+      } else {
+        this.setState({ showSnackbar: false })
+      }
+
+      if (isSignupSuccess) {
+        let snackbarMsg = "Registration Successfull!"
+        this.setState({ showSnackbar: true, variant: "success", snackbarMsg })
+      }
+    }
+  }
 
   render() {
     const { formData, errorMsg } = this.state;
-    const { signUp, signUpTemp } = this.props.auth
-    if (_get(signUp, 'signUpSuccess', false)) {
-      // let him login directly
+    const { signUpTemp } = this.props.auth
+    if (_get(signUpTemp, 'signUpSuccess', false)) {
       Router.push('/afterRegistration')
     }
     if (_get(signUpTemp, 'status', 0) === 409) {
-      console.log('sending to login')
-      // we need to push to login page with this email id with a email already registered message
-      // Router.push('/login')
+      // const { redirectToLoginWithEmail } = this.props
+      // let email = _get(this.state, 'formData.email.value', '')
+      // redirectToLoginWithEmail(email)
     }
     return (
       <Layout>
@@ -261,7 +284,9 @@ class Registration extends Component {
                   col="5"
                 />
                 {_get(signUpTemp, 'isSigningUp', false) ? (
-                  <Loader />
+                  <div style={{ textAlign: "center" }}>
+                    <CircularProgress size={30} color="secondary" />
+                  </div>
                 ) : (
                     <button
                       disabled={
@@ -279,10 +304,6 @@ class Registration extends Component {
                       Register
                   </button>
                   )}
-                {_get(signUpTemp, 'isSignupFailed', false) ?
-                  _get(signUpTemp, 'status', 0) === 409 ? <p className="errorMsg">Email already registered</p> :
-                    <p className="errorMsg">Something went wrong!</p> : ""
-                }
                 <GoogleLogin
                   clientId={googleClientId}
                   render={renderProps => (
@@ -319,6 +340,12 @@ class Registration extends Component {
             </div>
           </div>
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </Layout>
     );
   }
@@ -329,4 +356,4 @@ const mapStateToProps = state => {
   return { auth }
 }
 
-export default connect(mapStateToProps, { signUp })(Registration);
+export default connect(mapStateToProps, { signUp, redirectToLoginWithEmail })(Registration);

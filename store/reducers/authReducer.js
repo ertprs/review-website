@@ -5,7 +5,8 @@ import {
   LOGIN_INIT,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  LOGOUT
+  LOGOUT,
+  REDIRECT_TO_LOGIN_WITH_EMAIL
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -14,7 +15,8 @@ const authReducer = (state = {}, action) => {
     logIn,
     signUp,
     signUpTemp,
-    logInTemp
+    logInTemp,
+    tempEmail
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -32,6 +34,8 @@ const authReducer = (state = {}, action) => {
     case LOGOUT:
       state = undefined
       return { type: type, payload: {} }
+    case REDIRECT_TO_LOGIN_WITH_EMAIL:
+      return { type, tempEmail: { ...tempEmail } }
     default:
       return state;
   }
