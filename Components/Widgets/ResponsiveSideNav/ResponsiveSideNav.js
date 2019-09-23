@@ -21,9 +21,9 @@ const ResponsiveSideNav = props => {
         {!authorized ? (
             <React.Fragment>
               <div>
-                <i className="fa fa-sign-in" style={{ marginRight: "5px" }} />
+                <i className="fa fa-sign-in" style={{ marginRight: "5px", color:"#21bc61"}} />
                 <AmpLinkWrapper href="/login" alt="nav-link">
-                  Login |{" "}
+                  Login{" "}
                 </AmpLinkWrapper>
               </div>
               <div>

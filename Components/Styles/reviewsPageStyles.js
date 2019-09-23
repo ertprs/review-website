@@ -121,6 +121,9 @@ export const reviewPageStyles = css`
     .ratingsIndCont {
       flex-basis: 33%;
     }
+    .reviewVerifiedBtn {
+      flex-basis: 29%;
+    }
   }
 
   @media only screen and (max-width: 1017px) {
@@ -138,10 +141,6 @@ export const reviewPageStyles = css`
     }
     .reviewFlag {
       flex-basis: 24%;
-    }
-
-    .reviewVerifiedBtn {
-      flex-basis: 25%;
     }
 
     .bigRatingCaption {

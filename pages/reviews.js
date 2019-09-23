@@ -184,7 +184,7 @@ const renderReviewHeader = (
               </div>
             </div>
           </div>
-          <div className="col-md-3 bigRatingInd">
+          {/* <div className="col-md-3 bigRatingInd">
             {ratings !== "loading" ? (
               <>
                 <div className="bigRatingCaption">
@@ -209,8 +209,8 @@ const renderReviewHeader = (
                 <img src="/static/images/9.gif" />
               </div>
             )}
-          </div>
-          {/* <div className="col-lg-3">
+          </div> */}
+          <div className="col-lg-3">
             <TrustDontTrust
               showModal={showTrustModal}
               handleModalClose={handleTrustModalVisibility}
@@ -220,7 +220,7 @@ const renderReviewHeader = (
               }}
               domain={domain}
             />
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
@@ -660,7 +660,7 @@ const renderMajorData = (
       )}
 
       {/* Add trust dont trust slider */}
-      {/* <div className="container">
+      <div className="container">
         <div className="sliderHeader">
           <h4>
             People who trust this company with their name (192). People who
@@ -670,7 +670,7 @@ const renderMajorData = (
         <div className="sliderContainer">
           <TrustDontTrustSlider />
         </div>
-      </div> */}
+      </div>
 
       <div>{renderAnalysisReport(parentState)}</div>
       <div className="reviewShareBtnContainer">
@@ -722,7 +722,7 @@ const Reviews = props => {
 
   return (
     <Layout>
-      {/* <Head>
+      <Head>
         <link
           rel="stylesheet"
           type="text/css"
@@ -734,7 +734,7 @@ const Reviews = props => {
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
-      </Head> */}
+      </Head>
       {!useAmp() ? (
         <PusherDataComponent
           domain={props.domain}

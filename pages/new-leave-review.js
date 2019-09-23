@@ -188,7 +188,7 @@ class NewLeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
-      // console.log(dataToSubmit);
+      console.log(dataToSubmit);
       //clear form data
       this.setState(
         { reviewSubmitted: true, reviewSent: "in-progress" },
