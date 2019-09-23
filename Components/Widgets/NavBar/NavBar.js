@@ -13,19 +13,19 @@ import { connect } from "react-redux";
 
 const onLogout = () => {};
 
-const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick) => {
+const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick,authorized, userName) => {
   if (useAmp()) {
     return (
       <AmpHelpers.Bind hidden="showSideNav.show">
         {props => (
           <div {...props} hidden={true}>
-            <ResponsiveSideNav />
+            <ResponsiveSideNav authorized={authorized} userName={userName} />
           </div>
         )}
       </AmpHelpers.Bind>
     );
   } else
-    return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} /> : null;
+    return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} authorized={authorized} userName={userName} /> : null;
 };
 
 const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
@@ -138,7 +138,7 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
           }
         </div>
       </nav>
-      {renderResponsiveSideNav(showSideNav, handleMenuBtnClick)}
+      {renderResponsiveSideNav(showSideNav, handleMenuBtnClick, authorized, userName)}
     </>
   );
 };
