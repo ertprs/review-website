@@ -23,6 +23,7 @@ export const newLeaveReviewPageStyles = css`
     }
 
     .reviewHeaderLogoImage{
+        cursor:pointer;
         max-width:100%;
         height: auto;
     }

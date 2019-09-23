@@ -73,8 +73,8 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
             </AmpLinkWrapper>
           </div>
           <div>
-              <div id="google_translate_element"></div>
-            </div>
+              {/* <div id="google_translate_element"></div> */}
+          </div>
         </div>
         <div className="secondaryLinksContainer">
           {!authorized ? (

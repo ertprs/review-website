@@ -12,6 +12,7 @@ import SmallFooter from "../Components/SmallFooter/SmallFooter";
 import validate from "../utility/validate";
 import tus from "tus-js-client";
 import axios from "axios";
+import Link from 'next/link';
 import { baseURL } from "../utility/config";
 
 class NewLeaveReview extends React.Component {
@@ -88,7 +89,7 @@ class NewLeaveReview extends React.Component {
     axios
       .get(`${baseURL}/api/get-order-data`)
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch(err => {
         console.log(err);
@@ -187,7 +188,7 @@ class NewLeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
-      console.log(dataToSubmit);
+      // console.log(dataToSubmit);
       //clear form data
       this.setState(
         { reviewSubmitted: true, reviewSent: "in-progress" },
@@ -213,10 +214,12 @@ class NewLeaveReview extends React.Component {
       <div className="reviewHeader">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="reviewHeaderLogoContainer">
+        <Link href="/">
           <img
             src="/static/business/index/images/gradientLogo.png"
             className="reviewHeaderLogoImage"
           />
+        </Link>
         </div>
       </div>
     );
@@ -646,7 +649,7 @@ class NewLeaveReview extends React.Component {
             size: videoFile.size
           })
           .then(res => {
-            console.log(res);
+            // console.log(res);
             this.setState({ videoDataSent: "success" }, () => {
               // let res = res.data;
 
