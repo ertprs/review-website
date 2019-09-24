@@ -14,7 +14,7 @@ export default function PaperSheet(props) {
 
   return (
     <div>
-      <Paper className={classes.root}>
+      <Paper className={classes.root} style={{...props.paperStyles}}>
         {props.children}
       </Paper>
     </div>

@@ -12,7 +12,7 @@ import SmallFooter from "../Components/SmallFooter/SmallFooter";
 import validate from "../utility/validate";
 import tus from "tus-js-client";
 import axios from "axios";
-import Link from 'next/link';
+import Link from "next/link";
 import { baseURL } from "../utility/config";
 
 class NewLeaveReview extends React.Component {
@@ -86,10 +86,14 @@ class NewLeaveReview extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(`${baseURL}/api/get-order-data`)
+    const { campaignProcessingId, domain_name, token } = this.props;
+    console.log(campaignProcessingId, token);
+    axios.post(`${baseURL}/api/get-order-data`,{
+    campaign_processing_id:campaignProcessingId,
+    token:token
+      })
       .then(res => {
-        // console.log(res.data);
+        console.log(res.data);
       })
       .catch(err => {
         console.log(err);
@@ -214,12 +218,12 @@ class NewLeaveReview extends React.Component {
       <div className="reviewHeader">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="reviewHeaderLogoContainer">
-        <Link href="/">
-          <img
-            src="/static/business/index/images/gradientLogo.png"
-            className="reviewHeaderLogoImage"
-          />
-        </Link>
+          <Link href="/">
+            <img
+              src="/static/business/index/images/gradientLogo.png"
+              className="reviewHeaderLogoImage"
+            />
+          </Link>
         </div>
       </div>
     );
@@ -774,5 +778,25 @@ class NewLeaveReview extends React.Component {
     );
   }
 }
+
+NewLeaveReview.getInitialProps = async ctx => {
+  const { query } = ctx;
+  const campaignProcessingId = query.campaignProcessingId || "";
+  const domain_name = query.domain_name || "";
+  const token = query.token || "";
+  // if (
+  //   campaignProcessingId.trim() === "" ||
+  //   domain_name.trim === "" ||
+  //   token.trim() === ""
+  // ) {
+  //   if (ctx && ctx.req) {
+  //     ctx.res.writeHead(302, { Location: `/` });
+  //     ctx.res.end();
+  //   } else {
+  //     Router.push(`/`);
+  //   }
+  // }
+  return { campaignProcessingId, domain_name, token };
+};
 
 export default NewLeaveReview;

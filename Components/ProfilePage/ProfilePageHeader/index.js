@@ -16,7 +16,7 @@ export default class index extends Component {
       />
     );
     return (
-      <Paper>
+      <Paper paperStyles={{padding:"5px 0 5px 0"}}>
         <div className="profilePageHeaderContainer">
           <style jsx>{profilePageHeaderStyles}</style>
           <div className="container">
