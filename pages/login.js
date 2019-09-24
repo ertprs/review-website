@@ -15,10 +15,10 @@ import {
   loginApiOAuth
 } from "../utility/config";
 import Router from "next/router";
-import Loader from "../Components/Widgets/Loader/Loader";
 import { connect } from 'react-redux';
 import { logIn } from '../store/actions/authActions';
 import Snackbar from '../Components/Widgets/Snackbar';
+import { CircularProgress } from '@material-ui/core';
 
 class Login extends Component {
   state = {
@@ -51,36 +51,28 @@ class Login extends Component {
     },
     isLoading: false,
     isUnauthorized: false,
-    showSnackbar: false
+    showSnackbar: false,
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
   };
 
   componentDidMount() {
-    const { auth } = this.props
-    const { formData } = this.state
-    if (auth.type == "REDIRECT_TO_LOGIN_WITH_EMAIL") {
-      const emailPrefill = _get(auth, 'tempEmail.emailPrefill', false)
-      const email = _get(auth, 'tempEmail.email', '')
-      if (emailPrefill) {
-        this.setState({
-          formData: {
-            ...formData,
-            email: { ...formData.email, value: email }
-          }
-        })
-      }
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { formData } = this.state
-    if (this.props !== prevProps) {
-      let isWrongCredentials = _get(this.props, 'auth.logInTemp.isWrongCredentials', false)
-      if (isWrongCredentials) {
-        this.setState({
-          formData: { ...formData, password: { ...formData.password, value: "" } }
-        })
-      }
-    }
+    // ? This will redirect the user to login page with email prefilled in case of already registered.
+    // const { auth } = this.props
+    // const { formData } = this.state
+    // if (auth.type == "REDIRECT_TO_LOGIN_WITH_EMAIL") {
+    //   const emailPrefill = _get(auth, 'tempEmail.emailPrefill', false)
+    //   const email = _get(auth, 'tempEmail.email', '')
+    //   if (emailPrefill) {
+    //     this.setState({
+    //       formData: {
+    //         ...formData,
+    //         email: { ...formData.email, value: email }
+    //       }
+    //     })
+    //   }
+    // }
   }
 
   componentClicked = (res) => {
@@ -150,17 +142,39 @@ class Login extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.auth.logIn !== prevProps.auth.logIn) {
-      this.setState({ showSnackbar: true })
+    const { logIn, logInTemp } = this.props.auth
+    const { formData } = this.state
+    if (this.props !== prevProps) {
+      let isWrongCredentials = _get(this.props, 'auth.logInTemp.isWrongCredentials', false)
+      if (isWrongCredentials) {
+        this.setState({
+          formData: { ...formData, password: { ...formData.password, value: "" } }
+        })
+      }
+    }
+    if (this.props.auth !== prevProps.auth) {
+      const isWrongCredentials = _get(logInTemp, 'isWrongCredentials', false)
+      const isLoginFailed = _get(logInTemp, 'isLoginFailed', false)
+      const authorized = _get(logIn, 'authorized', false)
+      if (isLoginFailed) {
+        this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+      } else if (isWrongCredentials) {
+        this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Please enter correct credentials!" })
+      } else if (authorized) {
+        this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Logged in successfully!" })
+        setTimeout(() => {
+          this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Redirecting..." })
+          setTimeout(() => {
+            Router.push('/')
+          }, 1000)
+        }, 1000)
+      }
     }
   }
 
   render() {
     const { formData } = this.state;
     const { logIn, logInTemp } = this.props.auth
-    if (_get(logIn, 'authorized', false)) {
-      Router.push('/')
-    }
     return (
       <Layout>
         <div className="mainContainer">
@@ -190,7 +204,9 @@ class Login extends Component {
                   Forgot password?
                 </a>
                 {_get(logInTemp, 'isLoggingIn', false) ? (
-                  <Loader />
+                  <div style={{ textAlign: "center" }}>
+                    <CircularProgress size={30} color="secondary" />
+                  </div>
                 ) : (
                     <button
                       disabled={
@@ -202,11 +218,6 @@ class Login extends Component {
                       Login
                   </button>
                   )}
-                {_get(logInTemp, 'isWrongCredentials', false) ? <p className="errorMsg">
-                  Please enter the correct credentials.
-                </p> : _get(logInTemp, 'isLoginFailed', false) ? <p className="errorMsg">
-                    Some error occured!
-                </p> : ""}
                 <GoogleLogin
                   clientId={googleClientId}
                   render={renderProps => (
@@ -243,9 +254,9 @@ class Login extends Component {
         </div>
         <Snackbar
           open={this.state.showSnackbar}
-          variant="success"
+          variant={this.state.variant}
           handleClose={() => this.setState({ showSnackbar: false })}
-          message="Login successfully"
+          message={this.state.snackbarMsg}
         />
       </Layout>
     );

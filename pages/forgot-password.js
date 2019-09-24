@@ -6,8 +6,9 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
 import { baseURL, forgotPasswordApi } from "../utility/config";
-import Loader from "../Components/Widgets/Loader/Loader";
-import Router from "next/router";
+import Router from 'next/router';
+import Snackbar from '../Components/Widgets/Snackbar';
+import { CircularProgress } from '@material-ui/core';
 import Layout from "../hoc/layout/layout";
 
 class ForgotPassword extends Component {
@@ -27,7 +28,10 @@ class ForgotPassword extends Component {
         name: "email"
       }
     },
-    isLoading: false
+    isLoading: false,
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
   };
 
   handleChange = (e, id) => {
@@ -58,13 +62,18 @@ class ForgotPassword extends Component {
         this.setState({ isLoading: false });
         let success = _get(result, "data.success", false);
         if (success) {
-          window.location.assign("/afterRegistration");
+          this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Email sent successfully!" })
+          setTimeout(() => {
+            this.setState({ snackbarMsg: "Redirecting...", variant: "success" })
+            setTimeout(() => {
+              Router.push('/afterRegistration')
+            }, 1000)
+          }, 2000)
         }
       })
       .catch(error => {
         console.log(error, "registration error");
-        this.setState({ isLoading: false });
-        alert("Something went wrong!");
+        this.setState({ isLoading: false, showSnackbar: true, variant: "error", snackbarMsg: "Something went wrong!" })
       });
   };
 
@@ -88,7 +97,9 @@ class ForgotPassword extends Component {
                   col="5"
                 />
                 {isLoading ? (
-                  <Loader />
+                  <div style={{ textAlign: "center" }}>
+                    <CircularProgress size={30} color="secondary" />
+                  </div>
                 ) : (
                     <button
                       disabled={!formData.email.valid}
@@ -102,6 +113,12 @@ class ForgotPassword extends Component {
             </div>
           </div>
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </Layout>
     );
   }

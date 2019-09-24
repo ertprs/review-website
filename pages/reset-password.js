@@ -9,6 +9,8 @@ import { baseURL, resetPasswordApi } from "../utility/config";
 import Loader from "../Components/Widgets/Loader/Loader";
 import Router from "next/router";
 import Layout from "../hoc/layout/layout";
+import Snackbar from '../Components/Widgets/Snackbar';
+import { CircularProgress } from '@material-ui/core';
 
 class ResetPassword extends Component {
   state = {
@@ -32,7 +34,10 @@ class ResetPassword extends Component {
     token: '',
     success: false,
     isLoadingButton: false,
-    showError: false
+    showError: false,
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
   };
 
   componentDidMount() {
@@ -118,7 +123,9 @@ class ResetPassword extends Component {
               <style jsx> {authenticationPageStyles} </style>{" "}
               <div className="card">
                 {isLoading ? (
-                  <Loader />
+                  <div style={{ textAlign: "center" }}>
+                    <CircularProgress size={30} color="secondary" />
+                  </div>
                 ) : isTokenValid ? (
                   <React.Fragment>
                     <div className="cardHeading">
@@ -155,6 +162,12 @@ class ResetPassword extends Component {
             </div>
           </div>
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </Layout>
     );
   }

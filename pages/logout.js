@@ -6,7 +6,7 @@ import Router from "next/router";
 const Logout = (props) => {
     useEffect(() => {
         props.logOut()
-        Router.push("/")
+        Router.push("/login")
     }, [])
 
     return (

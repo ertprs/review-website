@@ -47,10 +47,11 @@ export const signUp = (userData, registerApi, signUpType) => {
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
-      // if (signUpType == 2 || signUpType == 3) {
-      //   if (status === 409) {
-      //     dispatch(logIn(userData, loginApiOAuth, signUpType))
-      //   }
+      // ? this will let the oauth user login after already registered message
+      //  if (signUpType == 2 || signUpType == 3) {
+      //  if (status === 409) {
+      //    dispatch(logIn(userData, loginApiOAuth, signUpType))
+      //  }
       // }
       dispatch({
         type: SIGNUP_FAILURE,
@@ -67,7 +68,6 @@ export const signUp = (userData, registerApi, signUpType) => {
 };
 
 export const logIn = (userData, loginApi, loginType) => {
-  debugger
   return async (dispatch, getState) => {
     const { trustVote } = getState();
     const { payload } = trustVote;
@@ -144,6 +144,7 @@ export const logOut = () => {
   };
 };
 
+// ? This will redirect the user to login page with email prefilled in case of already registered.
 export const redirectToLoginWithEmail = (email) => {
   Router.push('/login')
   return {

@@ -15,7 +15,6 @@ import {
   facebookAppId
 } from "../utility/config";
 import Router from "next/router";
-// import Loader from "../Components/Widgets/Loader/Loader";
 import { connect } from 'react-redux';
 import { signUp, redirectToLoginWithEmail } from '../store/actions/authActions';
 import Snackbar from '../Components/Widgets/Snackbar';
@@ -210,6 +209,12 @@ class Registration extends Component {
         let snackbarMsg = _get(signUpTemp, 'status', 0) === 409 ? "Email already registered" :
           "Something went wrong!"
         this.setState({ showSnackbar: true, variant: "error", snackbarMsg })
+        setTimeout(() => {
+          this.setState({ snackbarMsg: "Redirecting to login page", variant: "success" })
+          setTimeout(() => {
+            Router.push('/login')
+          }, 1000)
+        }, 2000)
       } else {
         this.setState({ showSnackbar: false })
       }
@@ -217,6 +222,12 @@ class Registration extends Component {
       if (isSignupSuccess) {
         let snackbarMsg = "Registration Successfull!"
         this.setState({ showSnackbar: true, variant: "success", snackbarMsg })
+        setTimeout(() => {
+          this.setState({ snackbarMsg: "Redirecting....", variant: "success" })
+          setTimeout(() => {
+            Router.push('/afterRegistration')
+          }, 1000)
+        }, 2000)
       }
     }
   }
@@ -224,10 +235,8 @@ class Registration extends Component {
   render() {
     const { formData, errorMsg } = this.state;
     const { signUpTemp } = this.props.auth
-    if (_get(signUpTemp, 'signUpSuccess', false)) {
-      Router.push('/afterRegistration')
-    }
     if (_get(signUpTemp, 'status', 0) === 409) {
+      // ? This will redirect the user to login page with email prefilled in case of already registered.
       // const { redirectToLoginWithEmail } = this.props
       // let email = _get(this.state, 'formData.email.value', '')
       // redirectToLoginWithEmail(email)
