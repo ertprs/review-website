@@ -31,7 +31,10 @@ const renderReviewCard = (
     designation,
     specialistIn,
     productPicStyles,
-    additionalData
+    additionalData,
+    subTitle,
+    subTitleStyles,
+    imgContainerStyles
   },
   colorImg,
   setColorImg
@@ -167,6 +170,32 @@ const renderReviewCard = (
           <div className="productCardDetails">
             <div className="productCardTitle">
               <h4>{title}</h4>
+            </div>
+            <div className="productCardText">
+              <div>{body}</div>
+            </div>
+            <div className="productCardText" style={{marginTop:"15px"}}>
+              <div>{additionalData || ""}</div>
+            </div>
+          </div>
+        </div>
+      );
+
+      case "profileHeaderCard":
+      return (
+        <div className="productCardContainer">
+          <style jsx>{reviewCardStyles}</style>
+          <div className="productProfilePic">
+            <div className="productCardPicContainer" style={{...imgContainerStyles}}>
+              <img src={image} style={{ height: "auto", maxWidth: "100%", ...productPicStyles}} />
+            </div>
+          </div>
+          <div className="productCardDetails">
+            <div className="productCardTitle">
+              <h4>{title}</h4>
+            </div>
+            <div className="productSubTitle">
+              <div style={{...subTitleStyles}}>{subTitle}</div>
             </div>
             <div className="productCardText">
               <div>{body}</div>
