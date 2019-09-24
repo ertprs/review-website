@@ -56,8 +56,8 @@ export default class index extends Component {
                 <div className="headerCard">
                   <Card>
                     <div className="companyClaimStatus">
-                      <i className="fa fa-check-circle"></i>
-                      <span className="claimed">Claimed</span>
+                      <i className="fa fa-check-circle" style={{color:"green"}}></i>
+                      <span className="claimed">Verified</span>
                     </div>
                     <div>
                       This company has a Trust Search account but we have no

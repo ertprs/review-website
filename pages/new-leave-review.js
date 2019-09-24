@@ -1,5 +1,6 @@
 import React from "react";
 import Router from "next/router";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import VideoUploadForm from "../Components/Widgets/VideoUploadForm/VideoUploadForm";
 import { newLeaveReviewPageStyles } from "../Components/Styles/newLeaveReviewPageStyles";
 import { productReviewStepTwoStyles } from "../Components/ProductReviewSteps/ProductReviewStepTwo/productReviewStepTwoStyles";
@@ -13,6 +14,7 @@ import validate from "../utility/validate";
 import tus from "tus-js-client";
 import axios from "axios";
 import Link from "next/link";
+import Img from "react-image";
 import { baseURL } from "../utility/config";
 
 class NewLeaveReview extends React.Component {
@@ -20,6 +22,10 @@ class NewLeaveReview extends React.Component {
     super(props);
     this.fileInput = React.createRef();
     this.state = {
+      static: {
+        firstPlaceholder: "",
+        textAreaPlaceholder: ""
+      },
       productData: [],
       reviewChoice: "",
       reviewSent: "no",
@@ -88,11 +94,27 @@ class NewLeaveReview extends React.Component {
   componentDidMount() {
     const { campaignProcessingId, domain_name, token } = this.props;
     console.log(campaignProcessingId, token);
-    axios.post(`${baseURL}/api/get-order-data`,{
-    campaign_processing_id:campaignProcessingId,
-    token:token
+    axios
+      .post(`${baseURL}/api/get-order-data`, {
+        campaign_processing_id: campaignProcessingId,
+        token: token
       })
       .then(res => {
+        const { details } = res.data;
+        this.setState({
+          static: {
+            ...this.state.static,
+            firstPlaceholder: details.intro,
+            textAreaPlaceholder: details.placeholder
+          },
+          formData: {
+            ...this.state.formData,
+            review: {
+              ...this.state.formData["review"],
+              placeholder: details.placeholder
+            }
+          }
+        });
         console.log(res.data);
       })
       .catch(err => {
@@ -181,6 +203,7 @@ class NewLeaveReview extends React.Component {
   };
 
   handleFormSubmit = () => {
+    const { campaignProcessingId, domain_name, token } = this.props;
     //validating before submitting
     const errors = this.validateAllFields();
     const { formData } = this.state;
@@ -198,14 +221,34 @@ class NewLeaveReview extends React.Component {
         { reviewSubmitted: true, reviewSent: "in-progress" },
         () => {
           //axios post dataToSubmit
-          setTimeout(() => {
-            this.setState({ reviewSent: "success" });
-            if (this.state.videoReview === "no") {
-              // setTimeout(() => {
-              //   Router.push("/reviews/google.com");
-              // }, 2000);
-            }
-          }, 3000);
+          axios
+            .post(`${baseURL}/api/save-order-data-application`, {
+              report_category_id: 8,
+              token: token,
+              campaign_processing_id: campaignProcessingId,
+              domain_name: domain_name,
+              data: {
+                review_rate: dataToSubmit.mainRating,
+                review_text: dataToSubmit.review.trim()
+              }
+            })
+            .then(res => {
+              this.setState({ reviewSent: "success" });
+              console.log(res);
+            })
+            .catch(err => {
+              this.setState({ reviewSent: "error" });
+              console.log(err);
+            });
+
+          // setTimeout(() => {
+          //   this.setState({ reviewSent: "success" });
+          //   if (this.state.videoReview === "no") {
+          //     // setTimeout(() => {
+          //     //   Router.push("/reviews/google.com");
+          //     // }, 2000);
+          //   }
+          // }, 3000);
         }
       );
     } else {
@@ -292,14 +335,25 @@ class NewLeaveReview extends React.Component {
   };
 
   renderMainReviewSection = () => {
+    console.log(this.props.domain_name)
     return (
       <div className="mainReviewSection">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="mainReviewImageContainer">
-          <img src="/static/images/capture.png" />
+          <Img
+            src={[
+              `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://${this.props.domain_name}&viewport=1440x900&width=250`,
+              "/static/images/capture.png"
+            ]}
+            loader={
+              <div style={{ textAlign: "center", height:"156px", width:"250"}}>
+                <CircularProgress />
+              </div>
+            }
+          />
         </div>
         <div className="mainReviewHeading">
-          <h4>Google.com</h4>
+          <h4 style={{textTransform:"capitalize"}}>{this.props.domain_name}</h4>
         </div>
         <div className="mainReviewRatingsContainer">
           <Ratings
@@ -320,7 +374,9 @@ class NewLeaveReview extends React.Component {
           </Ratings>
         </div>
         <div className="mainReviewRatingsCaption">
-          How would you rate this product?
+          {this.state.static.firstPlaceholder === ""
+            ? "loading..."
+            : this.state.static.firstPlaceholder}
         </div>
       </div>
     );

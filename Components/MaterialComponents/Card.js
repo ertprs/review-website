@@ -8,10 +8,7 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   card: {
-    minWidth: 275,
-    '&:hover':{
-      background:"#f5f5f5"
-    }
+    minWidth: 275
   },
   bullet: {
     display: 'inline-block',
