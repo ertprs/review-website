@@ -4,7 +4,25 @@ import NewAnalysisCard from "../../Widgets/NewAnalysisCard/NewAnalysisCard";
 import { profilePageBodyRightStyles } from "./profilePageBodyRightStyles";
 
 export default class ProfilePageBodyRight extends Component {
+  renderAnalysisCards = () => {
+    let output = [];
+    const analyzeReports = this.props.analyzeReports;
+    if (Object.keys(analyzeReports).length > 0) {
+      for (let item in analyzeReports) {
+        output = [
+          ...output,
+          <NewAnalysisCard
+            analysisTitle={item.split("_").join(" ")}
+            analysisInfo={analyzeReports[item]}
+          />
+        ];
+      }
+    }
+    return output;
+  };
+
   renderAnalyzeReports = () => {
+    const analyzeReports = this.props.analyzeReports;
     const analysisData = [
       { analysisTitle: "Registration Date", analysisInfo: "1.11.1994" },
       { analysisTitle: "Expiration Date", analysisInfo: "31.10.2024" },
@@ -21,7 +39,7 @@ export default class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{textAlign:"left", marginLeft:"15px"}}>
+            <h5 style={{ textAlign: "left", marginLeft: "15px" }}>
               <i className="fa fa-bar-chart analyzeCardHeaderIcon" />
               Analyze Reports
             </h5>
@@ -33,14 +51,15 @@ export default class ProfilePageBodyRight extends Component {
                   analysisTitle={reportItem.split("_").join(" ")}
                   analysisInfo={analysisReport[reportItem]}
                 /> */}
-                {analysisData.map(item => {
+                {/* {analysisData.map(item => {
                   return (
                     <NewAnalysisCard
                       analysisInfo={item.analysisInfo}
                       analysisTitle={item.analysisTitle}
                     />
                   );
-                })}
+                })} */}
+                {this.renderAnalysisCards()}
               </div>
             </div>
           </div>
@@ -49,21 +68,63 @@ export default class ProfilePageBodyRight extends Component {
     );
   };
 
+  renderTrafficAnalysisCards = () => {
+    const { trafficReports } = this.props;
+    let output = [];
+    if (Object.keys(analyzeReports).length > 0) {
+      for (let item in analyzeReports) {
+        output = [
+          ...output,
+          <NewAnalysisCard
+            analysisTitle={item.split("_").join(" ")}
+            analysisInfo={analyzeReports[item]}
+          />
+        ];
+      }
+    }
+    return output;
+    console.log(trafficReports);
+  };
+
   renderTrafficAnalysisReports = () => {
     const analysisData = [
-      { analysisTitle: "Daily Unique Visitors", analysisInfo: "1,017,574,672", analysisIcon:"pie-chart" },
-      { analysisTitle: "Monthly Unique Visitors", analysisInfo: "30,527,240,160", analysisIcon:"calendar"},
-      { analysisTitle: "Pages Per Visit", analysisInfo: "13.51", analysisIcon:"bullseye" },
-      { analysisTitle: "Bounce Rate", analysisInfo: "27.38%", analysisIcon:"chain-broken" },
-      { analysisTitle: "Daily Pageviews", analysisInfo: "2,147,483,647", analysisIcon:"eye" },
-      { analysisTitle: "Alexa Pageviews", analysisInfo: "1", analysisIcon:"bolt" }
+      {
+        analysisTitle: "Daily Unique Visitors",
+        analysisInfo: "1,017,574,672",
+        analysisIcon: "pie-chart"
+      },
+      {
+        analysisTitle: "Monthly Unique Visitors",
+        analysisInfo: "30,527,240,160",
+        analysisIcon: "calendar"
+      },
+      {
+        analysisTitle: "Pages Per Visit",
+        analysisInfo: "13.51",
+        analysisIcon: "bullseye"
+      },
+      {
+        analysisTitle: "Bounce Rate",
+        analysisInfo: "27.38%",
+        analysisIcon: "chain-broken"
+      },
+      {
+        analysisTitle: "Daily Pageviews",
+        analysisInfo: "2,147,483,647",
+        analysisIcon: "eye"
+      },
+      {
+        analysisTitle: "Alexa Pageviews",
+        analysisInfo: "1",
+        analysisIcon: "bolt"
+      }
     ];
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{textAlign:"left", marginLeft:"15px"}}>
+            <h5 style={{ textAlign: "left", marginLeft: "15px" }}>
               <i className="fa fa-line-chart analyzeCardHeaderIcon" />
               Traffic Reports
             </h5>
@@ -75,7 +136,7 @@ export default class ProfilePageBodyRight extends Component {
                       analysisTitle={reportItem.split("_").join(" ")}
                       analysisInfo={analysisReport[reportItem]}
                     /> */}
-                {analysisData.map(item => {
+                {/* {analysisData.map(item => {
                   return (
                     <NewAnalysisCard
                       analysisInfo={item.analysisInfo}
@@ -83,7 +144,8 @@ export default class ProfilePageBodyRight extends Component {
                       analysisIcon={item.analysisIcon || ""}
                     />
                   );
-                })}
+                })} */}
+                {this.renderTrafficAnalysisCards()}
               </div>
             </div>
           </div>
@@ -94,18 +156,34 @@ export default class ProfilePageBodyRight extends Component {
 
   renderSocialMediaReports = () => {
     const analysisData = [
-      { analysisTitle: "Facebook", analysisInfo: "27992084", analysisIcon:"facebook" },
-      { analysisTitle: "Twitter", analysisInfo: "21498343", analysisIcon:"twitter"},
-      { analysisTitle: "Instagram", analysisInfo: "22598343", analysisIcon:"instagram" },
-      { analysisTitle: "Medium", analysisInfo: "22612369", analysisIcon:"medium" }
+      {
+        analysisTitle: "Facebook",
+        analysisInfo: "27992084",
+        analysisIcon: "facebook"
+      },
+      {
+        analysisTitle: "Twitter",
+        analysisInfo: "21498343",
+        analysisIcon: "twitter"
+      },
+      {
+        analysisTitle: "Instagram",
+        analysisInfo: "22598343",
+        analysisIcon: "instagram"
+      },
+      {
+        analysisTitle: "Medium",
+        analysisInfo: "22612369",
+        analysisIcon: "medium"
+      }
     ];
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{textAlign:"left", marginLeft:"15px"}}>
-              <i className="fa fa-area-chart" style={{marginRight:"7px"}} />
+            <h5 style={{ textAlign: "left", marginLeft: "15px" }}>
+              <i className="fa fa-area-chart" style={{ marginRight: "7px" }} />
               Social Media Stats
             </h5>
           </div>
@@ -136,9 +214,15 @@ export default class ProfilePageBodyRight extends Component {
   render() {
     return (
       <div>
-        <div style={{marginBottom:"25px"}}>{this.renderAnalyzeReports()}</div>
-        <div style={{marginBottom:"25px"}}>{this.renderTrafficAnalysisReports()}</div>
-        <div style={{marginBottom:"25px"}}>{this.renderSocialMediaReports()}</div>
+        <div style={{ marginBottom: "25px" }}>
+          {this.renderAnalyzeReports()}
+        </div>
+        <div style={{ marginBottom: "25px" }}>
+          {this.renderTrafficAnalysisReports()}
+        </div>
+        <div style={{ marginBottom: "25px" }}>
+          {this.renderSocialMediaReports()}
+        </div>
       </div>
     );
   }
