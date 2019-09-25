@@ -335,7 +335,7 @@ class NewLeaveReview extends React.Component {
   };
 
   renderMainReviewSection = () => {
-    console.log(this.props.domain_name)
+    console.log(this.props.domain_name);
     return (
       <div className="mainReviewSection">
         <style jsx>{newLeaveReviewPageStyles}</style>
@@ -343,17 +343,22 @@ class NewLeaveReview extends React.Component {
           <Img
             src={[
               `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://${this.props.domain_name}&viewport=1440x900&width=250`,
-              "/static/images/capture.png"
+              "/static/images/notFound.png"
             ]}
             loader={
-              <div style={{ textAlign: "center", height:"156px", width:"250"}}>
+              <div
+                style={{ textAlign: "center", height: "156px", width: "250" }}
+              >
                 <CircularProgress />
               </div>
             }
+            style={{maxWidth:"100%", height:"auto"}}
           />
         </div>
         <div className="mainReviewHeading">
-          <h4 style={{textTransform:"capitalize"}}>{this.props.domain_name}</h4>
+          <h4 style={{ textTransform: "capitalize" }}>
+            {this.props.domain_name}
+          </h4>
         </div>
         <div className="mainReviewRatingsContainer">
           <Ratings
@@ -411,8 +416,8 @@ class NewLeaveReview extends React.Component {
         <div className="finalReviewSectionHeader">
           <ReviewCard
             variant="productCard"
-            image="/static/images/capture.png"
-            title="Google.com"
+            image={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://${this.props.domain_name}&viewport=1440x900&width=250`}
+            title={this.props.domain_name}
             body={reviewCardBody}
           />
         </div>

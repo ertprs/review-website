@@ -70,6 +70,11 @@ export const newLeaveReviewPageStyles = css`
         padding-bottom:4%;
     }
 
+    .finalReviewSectionBody{
+        margin-top:25px;
+        margin-bottom:25px;
+    }
+
     /*------ rate product attributes ------*/
     .rateProdAttrContainer{
         margin-bottom : 2%;

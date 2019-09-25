@@ -92,11 +92,53 @@ export default class ProfilePageBodyRight extends Component {
     );
   };
 
+  renderSocialMediaReports = () => {
+    const analysisData = [
+      { analysisTitle: "Facebook", analysisInfo: "27992084", analysisIcon:"facebook" },
+      { analysisTitle: "Twitter", analysisInfo: "21498343", analysisIcon:"twitter"},
+      { analysisTitle: "Instagram", analysisInfo: "22598343", analysisIcon:"instagram" },
+      { analysisTitle: "Medium", analysisInfo: "22612369", analysisIcon:"medium" }
+    ];
+    return (
+      <div>
+        <style jsx>{profilePageBodyRightStyles}</style>
+        <Card>
+          <div className="analyzeCardHeader">
+            <h5 style={{textAlign:"left", marginLeft:"15px"}}>
+              <i className="fa fa-area-chart" style={{marginRight:"7px"}} />
+              Social Media Stats
+            </h5>
+          </div>
+          <div className="analyzeCardBody">
+            <div className="row">
+              <div className="col-md-12">
+                {/* <AnalysisCard
+                      analysisTitle={reportItem.split("_").join(" ")}
+                      analysisInfo={analysisReport[reportItem]}
+                    /> */}
+                {analysisData.map(item => {
+                  return (
+                    <NewAnalysisCard
+                      analysisInfo={item.analysisInfo}
+                      analysisTitle={item.analysisTitle}
+                      analysisIcon={item.analysisIcon || ""}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div>
         <div style={{marginBottom:"25px"}}>{this.renderAnalyzeReports()}</div>
-        {this.renderTrafficAnalysisReports()}
+        <div style={{marginBottom:"25px"}}>{this.renderTrafficAnalysisReports()}</div>
+        <div style={{marginBottom:"25px"}}>{this.renderSocialMediaReports()}</div>
       </div>
     );
   }
