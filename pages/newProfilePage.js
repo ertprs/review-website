@@ -1,14 +1,14 @@
 import React from 'react';
-import Navbar from '../Components/MaterialComponents/Navbar';
+import Navbar from '../Components/MaterialComponents/NavBar';
 import ProfilePageHeader from '../Components/ProfilePage/ProfilePageHeader';
 import ProfilePageBody from '../Components/ProfilePage/ProfilePageBody';
-class newProfilePage extends React.Component{
+class newProfilePage extends React.Component {
 
-    render(){
+    render() {
         return (<>
-        <Navbar />
-        <ProfilePageHeader />
-        <ProfilePageBody />
+            <Navbar />
+            <ProfilePageHeader />
+            <ProfilePageBody />
         </>)
     }
 }

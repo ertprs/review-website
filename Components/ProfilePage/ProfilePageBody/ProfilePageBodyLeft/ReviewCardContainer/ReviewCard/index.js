@@ -4,6 +4,8 @@ import styles from '../../ProfilePageBodyLeftStyles';
 import RatingIndicators from '../../../../../Widgets/RatingIndicators/RatingIndicators'
 import LikeIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import FlagIcon from '@material-ui/icons/FlagOutlined';
+import EditIcon from '@material-ui/icons/EditOutlined'
+import ShareIcon from '@material-ui/icons/ShareOutlined';
 
 const ReviewCard = () => {
     return (
@@ -13,15 +15,16 @@ const ReviewCard = () => {
                 <img
                     src="/static/about/images/arturs_color.png"
                     alt="user-img"
-                    style={{
-                        width: "auto",
-                        height: "50px",
-                        borderRadius: "50px"
-                    }}
+                    className="cardImg"
                 />
                 <div className="userNameReview">
-                    <p className="userName">Shubham Chitransh</p>
-                    <span className='reviews'>India</span>
+                    <p className="userName">Arturs Rasnacis</p>
+                    <span className='reviews'>
+                        <EditIcon
+                            style={{ fontSize: "22px", padding: "0 4px 0 0" }}
+                        />
+                        <span>10</span> reviews
+                    </span>
                 </div>
             </div>
             <div className="cardBody">
@@ -43,21 +46,26 @@ const ReviewCard = () => {
                     </p>
                 </div>
             </div>
-            <div className="cardBodyHeader">
+            <div className="cardFooter">
                 <div>
-                    <span style={{ marginRight: "10px" }}>
-                        <LikeIcon />
-                        Useful
+                    <span className="useful">
+                        <LikeIcon
+                            style={{ fontSize: "22px", padding: "0 4px 0 0" }}
+                        />
+                        <span className="iconText">Useful</span>
                     </span>
                     <span>
-                        <i className="fa fa-share"></i>
-                        Share
+                        <ShareIcon
+                            style={{ fontSize: "22px", padding: "0 4px 0 0" }}
+                        />
+                        <span className="iconText">Share</span>
                     </span>
                 </div>
-                <p>
-                    <FlagIcon />
-                    Flag
-                </p>
+                <span>
+                    <FlagIcon
+                        style={{ fontSize: "18px", marginRight: "16px" }}
+                    />
+                </span>
             </div>
         </Card>
     )

@@ -12,15 +12,26 @@ export default css`
         flex-direction: column;
         alignItems: center;
         justify-content: center;
-        margin-left: 5%;
+        margin-left: 3%;
     } 
 
-    .reviews {
+    .cardImg {
+        width: auto;
+        height: 50px;
+        border-radius: 50px;
+    }
 
+    .userName {
+        margin: 0;
+        padding: 2px 0;
+    }
+
+    .reviews {
+        color: #5e5e5e; 
     }
 
     .cardBody {
-        padding-bottom: 10px;
+        padding: 10px 0;
         border-bottom: 1px solid #f1f1f1;
     }
 
@@ -31,13 +42,35 @@ export default css`
     }
 
     .time {
+        color: #5e5e5e;
     }
 
     .cardBodyMain {
+        margin: 0;
+        padding: 0;
+    }
 
+    .cardBodyMain p {
+        margin: 0;
+        padding: 0;
     }
 
     .cardFooter {
+        padding-top: 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 
+    .cardFooter span {
+        color: #5e5e5e;
+    }
+
+    .useful {
+        margin-right: 15px;
+    }
+
+    .iconText {
+        marginLeft: 4px;
     }
 `
