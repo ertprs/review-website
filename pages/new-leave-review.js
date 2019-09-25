@@ -119,6 +119,7 @@ class NewLeaveReview extends React.Component {
       })
       .catch(err => {
         console.log(err);
+        Router.push("/")
       });
   }
 
