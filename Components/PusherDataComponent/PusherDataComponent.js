@@ -7,6 +7,7 @@ import {baseURL} from '../../utility/config';
 
 class PusherDataComponent extends React.Component {
   state = { domainData: {} };
+  pusherCopy=null
 
    unBindKeys = (pusher, channel, key) => {
     channel.unbind(key);
@@ -51,7 +52,7 @@ class PusherDataComponent extends React.Component {
       cluster: "ap2",
       forceTLS: true
     });
-
+    this.pusherCopy = pusher;
     const channel = pusher.subscribe(domain);
     // on connection make a network request for intial keys -
     pusher.connection.bind("connected", () => {
@@ -108,7 +109,7 @@ class PusherDataComponent extends React.Component {
 
   componentWillUnmount(){
     // console.log("pusherdatacomp- unmounted");
-    // pusher.disconnect();
+    this.pusherCopy.disconnect();
   }
 
   render() {

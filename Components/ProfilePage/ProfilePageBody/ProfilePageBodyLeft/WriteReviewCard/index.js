@@ -27,7 +27,7 @@ export default class index extends Component {
                     <div className="writeReviewBox">
                         <div>
                             <img
-                                src="/static/about/images/arturs_color.png"
+                                src="/static/images/noProfileImg.jpg"
                                 alt="user-img"
                                 className="cardImg"
                             />

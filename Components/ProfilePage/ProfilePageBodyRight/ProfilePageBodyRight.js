@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import Card from "../../MaterialComponents/Card";
 import NewAnalysisCard from "../../Widgets/NewAnalysisCard/NewAnalysisCard";
 import { profilePageBodyRightStyles } from "./profilePageBodyRightStyles";
-import { traffIcons } from "../../../utility/constants/trafficReportsConstants";
+import { trafficIcons } from "../../../utility/constants/trafficReportsConstants";
+import uuid from 'uuid/v1';
 
 export default class ProfilePageBodyRight extends Component {
   renderAnalysisCards = () => {
@@ -10,13 +11,15 @@ export default class ProfilePageBodyRight extends Component {
     const analyzeReports = this.props.analyzeReports;
     if (Object.keys(analyzeReports).length > 0) {
       for (let item in analyzeReports) {
-        output = [
-          ...output,
-          <NewAnalysisCard
-            analysisTitle={item.split("_").join(" ")}
-            analysisInfo={analyzeReports[item]}
-          />
-        ];
+        if (analyzeReports[item] !== "") {
+          output = [
+            ...output,
+            <NewAnalysisCard key={uuid()}
+              analysisTitle={item.split("_").join(" ")}
+              analysisInfo={analyzeReports[item]}
+            />
+          ];
+        }
       }
     }
     return output;
@@ -24,17 +27,17 @@ export default class ProfilePageBodyRight extends Component {
 
   renderAnalyzeReports = () => {
     const analyzeReports = this.props.analyzeReports;
-    const analysisData = [
-      { analysisTitle: "Registration Date", analysisInfo: "1.11.1994" },
-      { analysisTitle: "Expiration Date", analysisInfo: "31.10.2024" },
-      { analysisTitle: "Connection Safety", analysisInfo: "Secure" },
-      { analysisTitle: "Organization Check", analysisInfo: "Not Validated" },
-      { analysisTitle: "Etherscam DB", analysisInfo: "Nothing found" },
-      { analysisTitle: "Phishtank Status", analysisInfo: "Nothing Found" },
-      { analysisTitle: "Trustworthiness", analysisInfo: "4.7" },
-      { analysisTitle: "Index Page Analysis", analysisInfo: "Exists" },
-      { analysisTitle: "Redirect Count", analysisInfo: "0" }
-    ];
+    // const analysisData = [
+    //   { analysisTitle: "Registration Date", analysisInfo: "1.11.1994" },
+    //   { analysisTitle: "Expiration Date", analysisInfo: "31.10.2024" },
+    //   { analysisTitle: "Connection Safety", analysisInfo: "Secure" },
+    //   { analysisTitle: "Organization Check", analysisInfo: "Not Validated" },
+    //   { analysisTitle: "Etherscam DB", analysisInfo: "Nothing found" },
+    //   { analysisTitle: "Phishtank Status", analysisInfo: "Nothing Found" },
+    //   { analysisTitle: "Trustworthiness", analysisInfo: "4.7" },
+    //   { analysisTitle: "Index Page Analysis", analysisInfo: "Exists" },
+    //   { analysisTitle: "Redirect Count", analysisInfo: "0" }
+    // ];
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
@@ -71,21 +74,35 @@ export default class ProfilePageBodyRight extends Component {
 
   renderTrafficAnalysisCards = () => {
     const { trafficReports } = this.props;
-    console.log(trafficReports)
+    console.log(trafficReports);
     let output = [];
     if (Object.keys(trafficReports).length > 0) {
       for (let item in trafficReports) {
-        output = [
-          ...output,
-          <NewAnalysisCard
-            analysisTitle={item.split("_").join(" ")}
-            analysisInfo={trafficReports[item]}
-          />
-        ];
+        if (trafficReports[item] !== "") {
+          output = [
+            ...output,
+            <NewAnalysisCard key={uuid()}
+              analysisTitle={item.split("_").join(" ")}
+              analysisInfo={trafficReports[item]}
+              analysisIcon={trafficIcons[item].name}
+            />
+          ];
+        }
       }
     }
     return output;
-    console.log(trafficReports);
+  };
+
+  renderSocialMediaCards = () => {
+    const { socialMediaStats } = this.props;
+    console.log(socialMediaStats);
+    return socialMediaStats.map(item => {
+      return <NewAnalysisCard key={uuid()}
+        analysisTitle={item.name}
+        analysisInfo={item.followers}
+        analysisIcon={item.icon}
+      />;
+    });
   };
 
   renderTrafficAnalysisReports = () => {
@@ -196,7 +213,7 @@ export default class ProfilePageBodyRight extends Component {
                       analysisTitle={reportItem.split("_").join(" ")}
                       analysisInfo={analysisReport[reportItem]}
                     /> */}
-                {analysisData.map(item => {
+                {/* {analysisData.map(item => {
                   return (
                     <NewAnalysisCard
                       analysisInfo={item.analysisInfo}
@@ -204,7 +221,8 @@ export default class ProfilePageBodyRight extends Component {
                       analysisIcon={item.analysisIcon || ""}
                     />
                   );
-                })}
+                })} */}
+                {this.renderSocialMediaCards()}
               </div>
             </div>
           </div>
@@ -214,16 +232,19 @@ export default class ProfilePageBodyRight extends Component {
   };
 
   render() {
+    const socialMediaStats = this.props.socialMediaStats || [];
+    const trafficReports = this.props.trafficReports || {};
+    const analyzeReports = this.props.analyzeReports || {}
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
-          {this.renderAnalyzeReports()}
+          {Object.keys(analyzeReports).length > 0 ? this.renderAnalyzeReports() : null}
         </div>
         <div style={{ marginBottom: "25px" }}>
-          {this.renderTrafficAnalysisReports()}
+          {Object.keys(trafficReports).length > 0 ? this.renderTrafficAnalysisReports() : null}
         </div>
         <div style={{ marginBottom: "25px" }}>
-          {this.renderSocialMediaReports()}
+          {socialMediaStats.length > 0 ? this.renderSocialMediaReports() : null}
         </div>
       </div>
     );

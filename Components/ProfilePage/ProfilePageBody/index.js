@@ -15,6 +15,7 @@ export default class ProfilePageBody extends Component {
                 analyzeReports={this.props.analyzeReports}
                 trafficReports={this.props.trafficReports}
                 socialMediaStats={this.props.socialMediaStats}
+                isMounted={this.props.isMounted}
               />
             </div>
           </div>
