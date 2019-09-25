@@ -21,7 +21,7 @@ export default class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5>
+            <h5 style={{textAlign:"left", marginLeft:"15px"}}>
               <i className="fa fa-bar-chart analyzeCardHeaderIcon" />
               Analyze Reports
             </h5>
@@ -63,7 +63,7 @@ export default class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5>
+            <h5 style={{textAlign:"left", marginLeft:"15px"}}>
               <i className="fa fa-line-chart analyzeCardHeaderIcon" />
               Traffic Reports
             </h5>
