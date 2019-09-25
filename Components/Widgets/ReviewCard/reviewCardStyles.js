@@ -105,6 +105,7 @@ export const reviewCardStyles = css`
 
   .productCardTitle {
     margin-bottom: 2%;
+    text-transform:capitalize;
   }
 
   @media only screen and (max-width: 991px) {

@@ -23,7 +23,7 @@ import TrustDontTrust from "../Components/TrustDontTrust/TrustDontTrust";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
-import ReviewCard from "..//Components/Widgets/ReviewCard/ReviewCard";
+import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 import uuid from "uuid/v1";
 import TrafficStatsChart from "../Components/Widgets/TrafficStatsChart/TrafficStatsChart";
 export const config = { amp: "hybrid" };
@@ -761,12 +761,12 @@ Reviews.getInitialProps = async ({ query }) => {
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
-  if (query.amp === "1") {
-    const response = await axios.get(
-      `${baseURL}/api/verify?domain=${searchURL}`
-    );
-    return { analysisData: { ...response.data }, domain };
-  }
+  // if (query.amp === "1") {
+  //   const response = await axios.get(
+  //     `${baseURL}/api/verify?domain=${searchURL}`
+  //   );
+  //   return { analysisData: { ...response.data }, domain };
+  // }
   return { domain: domain };
 };
 

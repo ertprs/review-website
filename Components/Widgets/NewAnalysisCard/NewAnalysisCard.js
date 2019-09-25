@@ -10,12 +10,13 @@ export default class NewAnalysisCard extends Component {
           display: "flex",
           textAlign: "left",
           padding: "15px",
-          borderBottom: "1px solid #f1f1f1"
+          borderBottom: "1px solid #f1f1f1",
+          textTransform:"capitalize"
         }}
       >
           {<style jsx>{newAnalysisCardStyles}</style>}
-        <div style={{ flex: "1" }}><span style={{marginRight:"5px"}}><i className={`fa fa-${analysisIcon}`}></i></span>{analysisTitle} </div>
-        <div style={{ flex: "1" }}>{analysisInfo}</div>
+        <div style={{ flex: "1", textAlign:"left", fontWeight:"bold" }}><span style={{marginRight:"5px"}}><i className={`fa fa-${analysisIcon}`}></i></span>{analysisTitle} </div>
+        <div style={{ flex: "1", textAlign:"right" }}>{analysisInfo}</div>
       </div>
     );
   }

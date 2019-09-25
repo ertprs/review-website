@@ -119,6 +119,7 @@ class NewLeaveReview extends React.Component {
       })
       .catch(err => {
         console.log(err);
+        Router.push("/")
       });
   }
 
@@ -215,7 +216,7 @@ class NewLeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
-      console.log(dataToSubmit);
+      // console.log(dataToSubmit);
       //clear form data
       this.setState(
         { reviewSubmitted: true, reviewSent: "in-progress" },
@@ -234,7 +235,7 @@ class NewLeaveReview extends React.Component {
             })
             .then(res => {
               this.setState({ reviewSent: "success" });
-              console.log(res);
+              // console.log(res);
             })
             .catch(err => {
               this.setState({ reviewSent: "error" });
@@ -335,7 +336,7 @@ class NewLeaveReview extends React.Component {
   };
 
   renderMainReviewSection = () => {
-    console.log(this.props.domain_name);
+    // console.log(this.props.domain_name);
     return (
       <div className="mainReviewSection">
         <style jsx>{newLeaveReviewPageStyles}</style>
@@ -845,18 +846,18 @@ NewLeaveReview.getInitialProps = async ctx => {
   const campaignProcessingId = query.campaignProcessingId || "";
   const domain_name = query.domain_name || "";
   const token = query.token || "";
-  // if (
-  //   campaignProcessingId.trim() === "" ||
-  //   domain_name.trim === "" ||
-  //   token.trim() === ""
-  // ) {
-  //   if (ctx && ctx.req) {
-  //     ctx.res.writeHead(302, { Location: `/` });
-  //     ctx.res.end();
-  //   } else {
-  //     Router.push(`/`);
-  //   }
-  // }
+  if (
+    campaignProcessingId.trim() === "" ||
+    domain_name.trim === "" ||
+    token.trim() === ""
+  ) {
+    if (ctx && ctx.req) {
+      ctx.res.writeHead(302, { Location: `/` });
+      ctx.res.end();
+    } else {
+      Router.push(`/`);
+    }
+  }
   return { campaignProcessingId, domain_name, token };
 };
 
