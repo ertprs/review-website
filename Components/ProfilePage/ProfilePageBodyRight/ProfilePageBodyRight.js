@@ -68,24 +68,6 @@ export default class ProfilePageBodyRight extends Component {
     );
   };
 
-  renderTrafficAnalysisCards = () => {
-    const { trafficReports } = this.props;
-    let output = [];
-    if (Object.keys(analyzeReports).length > 0) {
-      for (let item in analyzeReports) {
-        output = [
-          ...output,
-          <NewAnalysisCard
-            analysisTitle={item.split("_").join(" ")}
-            analysisInfo={analyzeReports[item]}
-          />
-        ];
-      }
-    }
-    return output;
-    console.log(trafficReports);
-  };
-
   renderTrafficAnalysisReports = () => {
     const analysisData = [
       {

@@ -12,9 +12,9 @@ class MyReviewsUser extends Component {
                     <UserInfoCard />
                     <ReviewCard rating={4} />
                     {/* <ReviewCard rating={3} />
-                <ReviewCard rating={4.5} />
-                <ReviewCard rating={3} />
-                <ReviewCard rating={5} /> */}
+                    <ReviewCard rating={4.5} />
+                    <ReviewCard rating={3} />
+                    <ReviewCard rating={5} /> */}
                     {/* </div> */}
                 </div>
             </Layout>

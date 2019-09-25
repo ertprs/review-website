@@ -107,4 +107,29 @@ export default css`
         cursor: pointer;
         transition: 0.5s;
     }
+
+    .postButton {
+        width: 25%;
+        padding: 10px 30px;
+        border: 1px solid #28b661;
+        background: #28b661;
+        color: #fff;
+        font-weight: 400;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        -ms-border-radius: 3px;
+        -o-border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.4s;
+      }
+    
+      .postButton:hover {
+        background: #30ab4a;
+      }
+    
+      .postButton:disabled {
+        border: 1px solid #baf0d0;
+        background: #baf0d0;
+      }
 `
