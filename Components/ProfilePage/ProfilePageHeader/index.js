@@ -7,6 +7,26 @@ import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
 import _get from "lodash";
 
 export default class index extends Component {
+  state = {
+    headerData: {}
+  };
+
+  componentDidMount() {
+    this.setState({ headerData: { ...this.props.headerData } });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      this.props.headerData.domain_name === nextProps.headerData.domain_name &&
+      this.props.headerData.is_verified === nextProps.headerData.is_verified &&
+      this.props.headerData.rating === nextProps.headerData.rating &&
+      this.props.headerData.review_length === nextProps.headerData.review_length
+    ) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
     const { headerData } = this.props;
     const ratings = (headerData || {}).rating || 0;
@@ -32,7 +52,9 @@ export default class index extends Component {
               <div className="col-md-8" style={{ marginTop: "25px" }}>
                 <ReviewCard
                   variant="profileHeaderCard"
-                  image="/static/images/capture.png"
+                  image={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+                    Math.random() * 10 + 1
+                  )}`}
                   imgContainerStyles={{
                     maxWidth: "300px",
                     marginRight: "30px"
@@ -65,17 +87,25 @@ export default class index extends Component {
                 <div className="headerCard">
                   <Card>
                     <div className="companyClaimStatus">
-                      <i
-                        className="fa fa-check-circle"
-                        style={{ color: "green" }}
-                      ></i>
+                      {is_verified ? (
+                        <i
+                          className="fa fa-check-circle"
+                          style={{ color: "green" }}
+                        ></i>
+                      ) : (
+                        <i
+                          className="fa fa-warning"
+                          style={{ color: "#fcaf16" }}
+                        ></i>
+                      )}
                       <span className="claimed">
                         {is_verified ? "Verified" : "Unverified"}
                       </span>
                     </div>
                     <div>
-                      This company has a Trust Search account but we have no
-                      records of them asking their customers for reviews.
+                      {is_verified
+                        ? "This company has a Trust Search account but we have no records of them asking their customers for reviews."
+                        : "This company does not have a Trust Search account"}
                     </div>
                   </Card>
                 </div>

@@ -15,8 +15,13 @@ class NewProfilePage extends React.Component {
     analyzeReports: {},
     trafficReports: {},
     socialMediaStats: [],
-    domainReviews: []
+    domainReviews: [],
+    isMounted:false
   };
+
+  componentDidMount(){
+      this.setState({isMounted:true})
+  }
 
   updateParentState = newState => {
     const { domainData } = this.state;
@@ -123,7 +128,13 @@ class NewProfilePage extends React.Component {
 
   render() {
     const { domain } = this.props;
-    const {headerData, analyzeReports, trafficReports, socialMediaStats} = this.state;
+    const {
+      headerData,
+      analyzeReports,
+      trafficReports,
+      socialMediaStats
+    } = this.state;
+    console.log("mounted new profile")
     return (
       <>
         <PusherDataComponent
@@ -131,8 +142,13 @@ class NewProfilePage extends React.Component {
           onChildStateChange={this.updateParentState}
         />
         <Navbar />
-        <ProfilePageHeader headerData={headerData}/>
-        <ProfilePageBody analyzeReports={analyzeReports} trafficReports={trafficReports} socialMediaStats={socialMediaStats}/>
+        <ProfilePageHeader headerData={headerData} isMounted={this.state.isMounted}/>
+        <ProfilePageBody
+          analyzeReports={analyzeReports}
+          trafficReports={trafficReports}
+          socialMediaStats={socialMediaStats}
+          isMounted={this.state.isMounted}
+        />
         <Footer />
       </>
     );

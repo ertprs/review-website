@@ -222,8 +222,22 @@ const renderReviewCard = (
               className="productCardPicContainer"
               style={{ ...imgContainerStyles }}
             >
-              <img
-                src={image}
+              <Img
+                src={[
+                  image,
+                  ""
+                ]}
+                loader={
+                  <div
+                    style={{
+                      textAlign: "center",
+                      height: "156px",
+                      width: "250"
+                    }}
+                  >
+                    <CircularProgress />
+                  </div>
+                }
                 style={{
                   height: "auto",
                   maxWidth: "100%",
