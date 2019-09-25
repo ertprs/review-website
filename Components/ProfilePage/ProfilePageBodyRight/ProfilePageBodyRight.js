@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Card from "../../MaterialComponents/Card";
 import NewAnalysisCard from "../../Widgets/NewAnalysisCard/NewAnalysisCard";
 import { profilePageBodyRightStyles } from "./profilePageBodyRightStyles";
+import {traffIcons} from "../../../utility/constants/trafficReportsConstants";
 
 export default class ProfilePageBodyRight extends Component {
   renderAnalysisCards = () => {
@@ -70,14 +71,15 @@ export default class ProfilePageBodyRight extends Component {
 
   renderTrafficAnalysisCards = () => {
     const { trafficReports } = this.props;
+    console.log(trafficReports)
     let output = [];
-    if (Object.keys(analyzeReports).length > 0) {
-      for (let item in analyzeReports) {
+    if (Object.keys(trafficReports).length > 0) {
+      for (let item in trafficReports) {
         output = [
           ...output,
           <NewAnalysisCard
             analysisTitle={item.split("_").join(" ")}
-            analysisInfo={analyzeReports[item]}
+            analysisInfo={trafficReports[item]}
           />
         ];
       }
