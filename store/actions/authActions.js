@@ -1,81 +1,157 @@
+import Router from "next/router";
 import {
   SIGNUP_INIT,
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
   LOGIN_INIT,
   LOGIN_SUCCESS,
-  LOGIN_FAILURE
+  LOGIN_FAILURE,
+  LOGOUT,
+  REDIRECT_TO_LOGIN_WITH_EMAIL
 } from "./actionTypes";
 import _get from "lodash/get";
-import { baseURL } from "../../utility/config";
+import {
+  baseURL,
+  loginApiOAuth,
+  registerApiOAuth
+} from "../../utility/config";
 import axios from "axios";
+import { sendTrustVote } from './trustAction';
 
-export const signUp = (userData, registerApi) => {
+export const signUp = (userData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
-    dispatch({ type: SIGNUP_INIT, payload: { signUpSuccess: false, status: -1, isSigningUp: true, isSignupFailed: false } });
+    dispatch({
+      type: SIGNUP_INIT,
+      signUp: {},
+      signUpTemp: {
+        status: -1,
+        signUpSuccess: false,
+        isSigningUp: true,
+        isSignupFailed: false
+      }
+    });
     try {
       const res = await axios.post(`${baseURL}${registerApi}`, userData);
       let success = _get(res, "data.success", false);
       let status = _get(res, "status", 0);
       dispatch({
         type: SIGNUP_SUCCESS,
-        payload: { signUpSuccess: success, status: status, isSigningUp: false, isSignUpFailed: false }
+        signUp: {},
+        signUpTemp: {
+          status,
+          signUpSuccess: success,
+          isSigningUp: false,
+          isSignupFailed: false
+        }
       });
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
+      // ? this will let the oauth user login after already registered message
+      //  if (signUpType == 2 || signUpType == 3) {
+      //  if (status === 409) {
+      //    dispatch(logIn(userData, loginApiOAuth, signUpType))
+      //  }
+      // }
       dispatch({
         type: SIGNUP_FAILURE,
-        payload: { signUpSuccess: success, status: status, isSigningUp: false, isSignUpFailed: true }
+        signUp: {},
+        signUpTemp: {
+          status,
+          signUpSuccess: success,
+          isSigningUp: false,
+          isSignupFailed: true
+        }
       });
     }
   };
 };
 
-export const logIn = (userData, loginApi) => {
-  return async dispatch => {
+export const logIn = (userData, loginApi, loginType) => {
+  return async (dispatch, getState) => {
+    const { trustVote } = getState();
+    const { payload } = trustVote;
+    const shouldSend = _get(payload, "shouldSend", false)
+    const trustVoteData = _get(payload, "data", {})
     dispatch({
       type: LOGIN_INIT,
-      payload: {
+      logIn: {
         authorized: false,
-        status: -1,
-        isLoggingIn: true,
-        isLoginFailed: false,
         loginType: 0,
-        token: ""
+        token: "",
+        userProfile: {}
+      },
+      logInTemp: {
+        status: -1,
+        isWrongCredentials: false,
+        isLoginFailed: false,
+        isLoggingIn: true
       }
     });
     try {
       const res = await axios.post(`${baseURL}${loginApi}`, userData);
       let success = _get(res, "data.success", false);
+      let userProfile = _get(res, "data.user", {})
       let status = _get(res, "status", 0);
-      let token = _get(result, "data.token", "");
+      let token = _get(res, "data.token", "");
       dispatch({
         type: LOGIN_SUCCESS,
-        payload: {
+        logIn: {
           authorized: success,
+          loginType,
+          token,
+          userProfile,
+        },
+        logInTemp: {
           status: status,
-          isLoggingIn: false,
-          isLoginFailed: success,
-          loginType: 1,
-          token: token
+          isWrongCredentials: false,
+          isLoginFailed: !success,
+          isLoggingIn: false
         }
       });
+      if (success && shouldSend) {
+        dispatch(sendTrustVote(trustVoteData))
+      }
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
       let message = _get(error, "response.data.message", "") === "Unauthorized";
       dispatch({
         type: LOGIN_FAILURE,
-        payload: {
-          authorized: message,
+        logIn: {
+          authorized: false,
+          loginType: 0,
+          token: "",
+          userProfile: {}
+        },
+        logInTemp: {
           status: status,
-          isLoggingIn: false,
-          isLoginFailed: success,
-          loginType: 1,
-          token: ""
+          isWrongCredentials: message,
+          isLoginFailed: !success,
+          isLoggingIn: false
         }
       });
     }
   };
 };
+
+export const logOut = () => {
+  localStorage.removeItem('persist:primary')
+  localStorage.removeItem('persist:auth')
+  return {
+    type: LOGOUT,
+    payload: {}
+  };
+};
+
+// ? This will redirect the user to login page with email prefilled in case of already registered.
+export const redirectToLoginWithEmail = (email) => {
+  Router.push('/login')
+  return {
+    type: REDIRECT_TO_LOGIN_WITH_EMAIL,
+    tempEmail: {
+      emailPrefill: true,
+      email
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import { productReviewStepOneStyles } from "./productReviewStepOneStyles";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 class ProductReviewStepOne extends React.Component {
   renderHeaderSection = () => {
     return (
@@ -17,9 +17,9 @@ class ProductReviewStepOne extends React.Component {
   };
 
   handleProductSelection = item => {
-    const {selectedProducts} = this.props;
+    const { selectedProducts } = this.props;
     //true -> add, false -> delete
-    const operation = selectedProducts[item.id]!==undefined ? false : true;
+    const operation = selectedProducts[item.id] !== undefined ? false : true;
     this.props.handleProductSelection(item, operation);
   };
 
@@ -44,7 +44,12 @@ class ProductReviewStepOne extends React.Component {
           ) : null}
         </div>
         <div className="labelTextContainer">
-          <div><img src="/static/images/product.jpg" style={{height:"100px", width:"auto"}}/></div>
+          <div>
+            <img
+              src="/static/images/product.jpg"
+              style={{ height: "100px", width: "auto" }}
+            />
+          </div>
           <div>{item.name}</div>
         </div>
       </div>
@@ -52,7 +57,7 @@ class ProductReviewStepOne extends React.Component {
   };
 
   renderProductSelectionSection = () => {
-    const { products, selectedProducts} = this.props;
+    const { products, selectedProducts } = this.props;
     return (
       <div className="productSelectionContainer">
         <style jsx>{productReviewStepOneStyles}</style>
@@ -62,14 +67,19 @@ class ProductReviewStepOne extends React.Component {
             -
           </h5>
           <div className="productSelectionSubHeader">
-            <h6>Selected products to review: {Object.keys(selectedProducts).length}</h6>
+            <h6>
+              Selected products to review:{" "}
+              {Object.keys(selectedProducts).length}
+            </h6>
           </div>
         </div>
         <div className="productSelectionLabelsContainer">
           <div className="row">
             {products.map(item => {
               return (
-                <div className="col-md-4" key={uuid()}>{this.renderProductLabel(item)}</div>
+                <div className="col-md-4" key={uuid()}>
+                  {this.renderProductLabel(item)}
+                </div>
               );
             })}
           </div>
@@ -78,14 +88,21 @@ class ProductReviewStepOne extends React.Component {
     );
   };
 
-  renderNextBtn = ()=>{
-    return Object.keys(this.props.selectedProducts).length > 0 ? <div>
-    <style jsx>{productReviewStepOneStyles}</style>
-    <button className="nextBtn" onClick={()=>{
-      this.props.goToNextStep()
-    }} >Next <i className="fa fa-arrow-right"></i></button>
-  </div> : null
-  }
+  renderNextBtn = () => {
+    return Object.keys(this.props.selectedProducts).length > 0 ? (
+      <div>
+        <style jsx>{productReviewStepOneStyles}</style>
+        <button
+          className="nextBtn"
+          onClick={() => {
+            this.props.goToNextStep();
+          }}
+        >
+          Next <i className="fa fa-arrow-right"></i>
+        </button>
+      </div>
+    ) : null;
+  };
 
   render() {
     return (

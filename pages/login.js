@@ -4,7 +4,6 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import axios from "axios";
 import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Layout from "../hoc/layout/layout";
@@ -16,9 +15,10 @@ import {
   loginApiOAuth
 } from "../utility/config";
 import Router from "next/router";
-import Loader from "../Components/Widgets/Loader/Loader";
 import { connect } from 'react-redux';
 import { logIn } from '../store/actions/authActions';
+import Snackbar from '../Components/Widgets/Snackbar';
+import { CircularProgress } from '@material-ui/core';
 
 class Login extends Component {
   state = {
@@ -50,8 +50,34 @@ class Login extends Component {
       }
     },
     isLoading: false,
-    isUnauthorized: false
+    isUnauthorized: false,
+    showSnackbar: false,
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
   };
+
+  componentDidMount() {
+    // ? This will redirect the user to login page with email prefilled in case of already registered.
+    // const { auth } = this.props
+    // const { formData } = this.state
+    // if (auth.type == "REDIRECT_TO_LOGIN_WITH_EMAIL") {
+    //   const emailPrefill = _get(auth, 'tempEmail.emailPrefill', false)
+    //   const email = _get(auth, 'tempEmail.email', '')
+    //   if (emailPrefill) {
+    //     this.setState({
+    //       formData: {
+    //         ...formData,
+    //         email: { ...formData.email, value: email }
+    //       }
+    //     })
+    //   }
+    // }
+  }
+
+  componentClicked = (res) => {
+    console.log(res, 'res')
+  }
 
   handleChange = (e, id) => {
     const { value } = e.target;
@@ -81,76 +107,74 @@ class Login extends Component {
         });
       }
     }
-    console.log(reqBody, "reqBody");
     return reqBody;
   };
 
   handleLoginClick = () => {
     const { formData } = this.state;
+    const { logIn } = this.props
     let reqBody = this.createReqBody(formData);
-    this.props.logIn(reqBody, loginApi)
-    // axios
-    //   .post(`${baseURL}${loginApi}`, reqBody)
-    //   .then(result => {
-    //     this.setState({ isLoading: false });
-    //     let success = _get(result, 'data.success', false)
-    //     if (success) {
-    //       this.setState({ isUnauthorized: false })
-    //       window.location.assign('/')
-    //       let token = _get(result, "data.token", "");
-    //       localStorage.setItem("token", token);
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response, "login error");
-    //     let message = _get(error, 'response.data.message', '') === 'Unauthorized'
-    //     if (message) {
-    //       this.setState({ isUnauthorized: true })
-    //     }
-    //     this.setState({
-    //       isLoading: false,
-    //       formData: {
-    //         ...formData,
-    //         password: {
-    //           ...formData.password,
-    //           value: ""
-    //         }
-    //       }
-    //     });
-    //   });
+    logIn(reqBody, loginApi, 1)
   };
 
   OAuthSignIn = (response, name) => {
     console.log(response, "res");
-    const reqBody = {
-      provider: name,
-      data: {
-        id_token: _get(response, "Zi.id_token", "")
-      }
-    };
-    axios
-      .post(`${baseURL}${loginApiOAuth}`, reqBody)
-      .then(result => {
-        console.log("oauth login result", result);
-        let success = _get(result, 'data.success', false)
-        if (success) {
-          this.setState({ isUnauthorized: false })
-          let token = _get(result, "data.token", "");
-          localStorage.setItem("token", token);
-          window.location.assign('/')
+    const { logIn } = this.props
+    let reqBody = {}
+    let loginType = 0
+    if (name === 'google') {
+      reqBody = {
+        provider: name,
+        data: {
+          id_token: _get(response, "Zi.id_token", "")
         }
-      })
-      .catch(error => {
-        console.log("oauth login error", error);
-      });
+      }
+      logIn(reqBody, loginApiOAuth, 3)
+    } else if (name === 'facebook') {
+      reqBody = {
+        provider: name,
+        data: {
+          accessToken: response.accessToken
+        }
+      }
+      logIn(reqBody, loginApiOAuth, 2)
+    }
   };
 
-  render() {
-    const { formData, isLoading, isUnauthorized } = this.state;
-    const { payload } = this.props.auth
-    if (_get(payload, 'authorized', false)) {
-      Router.push('/')
+  componentDidUpdate(prevProps, prevState) {
+    const { logIn, logInTemp } = this.props.auth
+    const { formData } = this.state
+    if (this.props !== prevProps) {
+      let isWrongCredentials = _get(this.props, 'auth.logInTemp.isWrongCredentials', false)
+      if (isWrongCredentials) {
+        this.setState({
+          formData: { ...formData, password: { ...formData.password, value: "" } }
+        })
+      }
     }
+    if (this.props.auth !== prevProps.auth) {
+      const isWrongCredentials = _get(logInTemp, 'isWrongCredentials', false)
+      const isLoginFailed = _get(logInTemp, 'isLoginFailed', false)
+      const authorized = _get(logIn, 'authorized', false)
+      if (isLoginFailed) {
+        this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+      } else if (isWrongCredentials) {
+        this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Please enter correct credentials!" })
+      } else if (authorized) {
+        this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Logged in successfully!" })
+        setTimeout(() => {
+          this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Redirecting..." })
+          setTimeout(() => {
+            Router.push('/')
+          }, 1000)
+        }, 1000)
+      }
+    }
+  }
+
+  render() {
+    const { formData } = this.state;
+    const { logIn, logInTemp } = this.props.auth
     return (
       <Layout>
         <div className="mainContainer">
@@ -179,8 +203,10 @@ class Login extends Component {
                 <a className="forgotPasswordLink" href="/forgot-password">
                   Forgot password?
                 </a>
-                {_get(payload, 'isLoggingIn', false) ? (
-                  <Loader />
+                {_get(logInTemp, 'isLoggingIn', false) ? (
+                  <div style={{ textAlign: "center" }}>
+                    <CircularProgress size={30} color="secondary" />
+                  </div>
                 ) : (
                     <button
                       disabled={
@@ -192,9 +218,6 @@ class Login extends Component {
                       Login
                   </button>
                   )}
-                {_get(payload, 'isWrongCredentials', false) ? <p className="errorMsg">
-                  Please enter the correct credentials.
-                </p> : ''}
                 <GoogleLogin
                   clientId={googleClientId}
                   render={renderProps => (
@@ -214,7 +237,7 @@ class Login extends Component {
                   appId={facebookAppId}
                   // autoLoad={true}
                   fields="name,email,picture"
-                  // onClick={componentClicked}
+                  onClick={this.componentClicked}
                   callback={response => this.OAuthSignIn(response, "facebook")}
                   render={renderProps => (
                     <button
@@ -229,6 +252,12 @@ class Login extends Component {
             </div>
           </div>
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </Layout>
     );
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { reviewListStyles } from "./reviewListStyles";
+import { reviewListStyles } from "./myReviewsStyles";
 import RatingIndicators from '../RatingIndicators/RatingIndicators';
 import ReplyBox from './ReplyBox';
 

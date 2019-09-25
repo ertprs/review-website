@@ -11,6 +11,10 @@ app.prepare().then(() => {
     return app.render(req, res, '/reviews', { domain: req.params.domain });
   });
 
+  server.get('/newProfilePage/:domain', (req, res) => {
+    return app.render(req, res, '/newProfilePage', { domain: req.params.domain });
+  });
+
   server.get('/activate-user/:token', (req, res) => {
     return app.render(req, res, '/activate-user', { token: req.params.token });
   });

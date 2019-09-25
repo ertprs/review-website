@@ -33,6 +33,7 @@ const renderOnlyScoreWidgetComponent = (parentState, props) => {
       <OnlyScoreWidgetComponent
         requiredData={props.requiredData}
         variant={props.variant}
+        textReviews={props.textReviews}
       />
     );
   }

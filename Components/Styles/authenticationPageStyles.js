@@ -124,4 +124,9 @@ export const authenticationPageStyles = css.global`
     display: block;
     margin-bottom: 10px;
   }
+
+  .contactLink {
+    margin-left: 5px;
+    font-size: 16.5px;
+  }
 `;

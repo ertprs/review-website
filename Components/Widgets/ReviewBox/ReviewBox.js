@@ -4,11 +4,11 @@ import stringHelpers from "../../../utility/stringHelpers";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import StarRatings from "react-star-ratings";
 
-const renderTextualReviewBox = review => {
+const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles) => {
   return (
     <div>
       <style jsx>{reviewBoxStyles}</style>
-      <div className="reviewHeader">
+      <div className="reviewHeader" style={{...reviewHeaderStyles}}>
         <div className="reviewHeaderTitle">
           {review.name.length > 7
             ? review.name.substring(0, 7) + ".."
@@ -18,7 +18,7 @@ const renderTextualReviewBox = review => {
           {stringHelpers("shortenMonths", review.date)}
         </div>
       </div>
-      <div className="reviewRatings">
+      <div className="reviewRatings" style={{...reviewRatingStyles}}>
         <div>
           <StarRatings
             rating={review.score / 20}
@@ -143,9 +143,9 @@ const ReviewBox = props => {
       {renderTrustDontTrustReviewBox(props.review)}
     </div>
   ) : (
-    <div className="reviewBox">
+    <div className="reviewBox" style={{...props.styles}}>
       <style jsx>{reviewBoxStyles}</style>
-      {renderTextualReviewBox(props.review)}
+      {renderTextualReviewBox(props.review, props.reviewRatingStyles, props.reviewHeaderStyles)}
     </div>
   );
 };

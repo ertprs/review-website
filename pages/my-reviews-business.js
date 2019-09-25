@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import ReviewCard from '../Components/Widgets/ReviewList/ReviewCardBusiness';
-import ReplyBox from '../Components/Widgets/ReviewList/ReplyBox';
+import ReviewCard from '../Components/Widgets/MyReviewsBusiness/ReviewCard';
 
-class ReviewsList extends Component {
+class MyReviewsBusiness extends Component {
     render() {
         return (
             <div className="container">
@@ -16,4 +15,4 @@ class ReviewsList extends Component {
     }
 }
 
-export default ReviewsList;
+export default MyReviewsBusiness;

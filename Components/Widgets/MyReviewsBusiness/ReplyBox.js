@@ -1,7 +1,8 @@
 import React from 'react';
-import { reviewListStyles } from './reviewListStyles';
+import { reviewListStyles } from './myReviewsStyles';
+import FormField from "../FormField/FormField";
 
-const RepliedBox = () => {
+const ReplyBox = () => {
     return (
         <div className="replyCard">
             <style jsx> {reviewListStyles}</style>
@@ -23,11 +24,7 @@ const RepliedBox = () => {
                     />
                     <button disabled={false} className="postReplyButton">
                         <i className="fa fa-pencil postReplyIcon"></i>
-                        Edit
-                    </button>
-                    <button disabled={false} className="postReplyButton">
-                        <i className="fa fa-trash-o postReplyIcon"></i>
-                        Delete
+                        Post Reply
                     </button>
                 </div>
             </div>
@@ -35,4 +32,4 @@ const RepliedBox = () => {
     )
 }
 
-export default RepliedBox;
+export default ReplyBox;

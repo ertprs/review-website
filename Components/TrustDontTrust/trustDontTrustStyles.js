@@ -20,7 +20,7 @@ export const trustDontTrustStyles = css`
     .trustHeader, .dontTrustHeader{
         text-transform:uppercase;
         margin-bottom:10px;
-        color:#fff;
+        color:#000;
     }
 
     .trustIconContainerInner img, .dontTrustIconContainerInner img{
@@ -87,5 +87,28 @@ export const trustDontTrustStyles = css`
     }
     .anonymousBtn:hover{
         color:#26d970;
+    }
+
+    @media screen and (max-width:1199px){
+        .trustHeader h6, .dontTrustHeader h6{
+            font-size:0.9rem;
+            text-align:center;
+        }
+
+        .trustIconContainerInner img, .dontTrustIconContainerInner img{
+            height:50px;
+            width:50px;
+        }
+    }
+    
+    @media screen and (max-width:1009px){
+        .trustHeader h6, .dontTrustHeader h6{
+            font-size:0.8rem;
+            text-align:center;
+        }
+        .trustIconContainerInner img, .dontTrustIconContainerInner img{
+            height:50px;
+            width:50px;
+        }
     }
 `;

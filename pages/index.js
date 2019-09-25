@@ -19,8 +19,8 @@ const handleSearchSubmit = (setLoading, searchBoxVal) => {
       let domainName = searchBoxVal.toLowerCase().trim();
       setLoading(true);
       Router.push(
-        `/reviews?domain=${domainName}`,
-        `/reviews/${domainName}`
+        `/newProfilePage?domain=${domainName}`,
+        `/newProfilePage/${domainName}`
       );
     }
     else{

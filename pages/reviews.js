@@ -23,7 +23,7 @@ import TrustDontTrust from "../Components/TrustDontTrust/TrustDontTrust";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
-import ReviewCard from "..//Components/Widgets/ReviewCard/ReviewCard";
+import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 import uuid from "uuid/v1";
 import TrafficStatsChart from "../Components/Widgets/TrafficStatsChart/TrafficStatsChart";
 export const config = { amp: "hybrid" };
@@ -184,7 +184,7 @@ const renderReviewHeader = (
               </div>
             </div>
           </div>
-          {/* <div className="col-md-3 bigRatingInd">
+          <div className="col-md-3 bigRatingInd">
             {ratings !== "loading" ? (
               <>
                 <div className="bigRatingCaption">
@@ -209,8 +209,8 @@ const renderReviewHeader = (
                 <img src="/static/images/9.gif" />
               </div>
             )}
-          </div> */}
-          <div className="col-md-3">
+          </div>
+          {/* <div className="col-lg-3">
             <TrustDontTrust
               showModal={showTrustModal}
               handleModalClose={handleTrustModalVisibility}
@@ -220,7 +220,7 @@ const renderReviewHeader = (
               }}
               domain={domain}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -660,17 +660,17 @@ const renderMajorData = (
       )}
 
       {/* Add trust dont trust slider */}
-      <div className="container">
-        <div style={{ margin: "50px 0 50px 0" }}>
+      {/* <div className="container">
+        <div className="sliderHeader">
           <h4>
             People who trust this company with their name (192). People who
             don't trust this company (15)
           </h4>
         </div>
-        <div style={{boxShadow:"0px 4px 8px #d5d5d5", padding:"50px"}}>
+        <div className="sliderContainer">
           <TrustDontTrustSlider />
         </div>
-      </div>
+      </div> */}
 
       <div>{renderAnalysisReport(parentState)}</div>
       <div className="reviewShareBtnContainer">
@@ -761,12 +761,12 @@ Reviews.getInitialProps = async ({ query }) => {
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
-  if (query.amp === "1") {
-    const response = await axios.get(
-      `${baseURL}/api/verify?domain=${searchURL}`
-    );
-    return { analysisData: { ...response.data }, domain };
-  }
+  // if (query.amp === "1") {
+  //   const response = await axios.get(
+  //     `${baseURL}/api/verify?domain=${searchURL}`
+  //   );
+  //   return { analysisData: { ...response.data }, domain };
+  // }
   return { domain: domain };
 };
 
