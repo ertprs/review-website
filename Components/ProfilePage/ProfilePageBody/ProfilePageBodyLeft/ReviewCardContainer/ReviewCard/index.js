@@ -6,43 +6,44 @@ import LikeIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import FlagIcon from '@material-ui/icons/FlagOutlined';
 import EditIcon from '@material-ui/icons/EditOutlined'
 import ShareIcon from '@material-ui/icons/ShareOutlined';
+import _get from 'lodash/get';
 
-const ReviewCard = () => {
+const ReviewCard = ({ review }) => {
+    const ratings = (review || {}).ratings || 0
     return (
         <Card>
             <style jsx>{styles}</style>
             <div className="cardHeader">
                 <img
-                    src="/static/about/images/arturs_color.png"
+                    src="/static/images/noProfileImg.jpg"
                     alt="user-img"
                     className="cardImg"
                 />
                 <div className="userNameReview">
-                    <p className="userName">Arturs Rasnacis</p>
-                    <span className='reviews'>
+                    <p className="userName">{_get(review, 'userName', '')}</p>
+                    {/* <span className='reviews'>
                         <EditIcon
                             style={{ fontSize: "22px", padding: "0 4px 0 0" }}
                         />
                         <span>10</span> reviews
-                    </span>
+                    </span> */}
                 </div>
             </div>
             <div className="cardBody">
                 <div className="cardBodyHeader">
                     <RatingIndicators
-                        rating={4}
+                        rating={Number(ratings)}
                         typeOfWidget="star"
                         widgetRatedColors="#21bc61"
                         widgetDimensions="20px"
                         widgetSpacings="1px"
                     />
-                    <p className="time">2 hours ago</p>
+                    {/* <p className="time">2 hours ago</p> */}
                 </div>
                 <div className="cardBodyMain">
-                    <h4>Great service and customer care.</h4>
-                    <p>
-                        Great service and customer care.
-                        Awesome prices and fast shipping.
+                    {/* <h4>Great service and customer care.</h4> */}
+                    <p style={{ fontSize: "16px", marginTop: "10px" }}>
+                        {_get(review, 'text', '')}
                     </p>
                 </div>
             </div>

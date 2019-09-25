@@ -111,6 +111,18 @@ class NewProfilePage extends React.Component {
       }
     }
 
+    _get(newState, 'reviews.domain.reviews', []).map(review => {
+      let temp = {
+        ...temp,
+        userName: _get(review, 'user.name', ""),
+        text: _get(review, 'text', ""),
+        ratings: _get(review, 'ratings', 0)
+      }
+      domainReviews = [...domainReviews, temp]
+    })
+
+    console.log(domainReviews, 'domainReviews')
+
     this.setState({
       domainData: { ...newState },
       headerData: { ...headerData },
@@ -123,7 +135,7 @@ class NewProfilePage extends React.Component {
 
   render() {
     const { domain } = this.props;
-    const {headerData, analyzeReports, trafficReports, socialMediaStats} = this.state;
+    const { headerData, analyzeReports, trafficReports, socialMediaStats, domainReviews } = this.state;
     return (
       <>
         <PusherDataComponent
@@ -131,8 +143,13 @@ class NewProfilePage extends React.Component {
           onChildStateChange={this.updateParentState}
         />
         <Navbar />
-        <ProfilePageHeader headerData={headerData}/>
-        <ProfilePageBody analyzeReports={analyzeReports} trafficReports={trafficReports} socialMediaStats={socialMediaStats}/>
+        <ProfilePageHeader headerData={headerData} />
+        <ProfilePageBody
+          analyzeReports={analyzeReports}
+          trafficReports={trafficReports}
+          socialMediaStats={socialMediaStats}
+          domainReviews={domainReviews || []}
+        />
         <Footer />
       </>
     );

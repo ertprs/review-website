@@ -5,7 +5,7 @@ class ProfilePageBodyLeft extends Component {
     render() {
         return (
             <div>
-                <ReviewCardContainer />
+                <ReviewCardContainer {...this.props} />
             </div>
         )
     }

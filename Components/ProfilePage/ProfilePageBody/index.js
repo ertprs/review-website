@@ -8,7 +8,7 @@ export default class ProfilePageBody extends Component {
         <div className="container">
           <div className="row">
             <div className="col-md-8" style={{ marginTop: "50px" }}>
-              <ProfilePageBodyLeft />
+              <ProfilePageBodyLeft {...this.props} />
             </div>
             <div className="col-md-4" style={{ marginTop: "50px" }}>
               <ProfilePageBodyRight
