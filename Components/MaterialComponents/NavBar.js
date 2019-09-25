@@ -15,6 +15,7 @@ import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Button from "@material-ui/core/Button";
+import Router from 'next/router';
 // import Link from "../../src/Link";
 import Link from "next/link";
 
@@ -29,11 +30,18 @@ const useStyles = makeStyles(theme => ({
     display: "none",
     [theme.breakpoints.up("sm")]: {
       display: "block"
+    },
+    "&:hover": {
+      cursor: "pointer"
     }
+
   },
   logoImg: {
     height: "50px",
-    width: "auto"
+    width: "auto",
+    "&:hover": {
+      cursor: "pointer"
+    }
   },
   navLink: {
     color: "#fff",
@@ -44,9 +52,9 @@ const useStyles = makeStyles(theme => ({
       textDecoration: "none"
     }
   },
-  navLinkMobile:{
-    color:"#000",
-    textDecoration:"none",
+  navLinkMobile: {
+    color: "#000",
+    textDecoration: "none",
     "&:hover": {
       color: "#000",
       textDecoration: "none"
@@ -158,30 +166,30 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      
-        {/* <IconButton aria-label="show 4 new mails" color="inherit">
+
+      {/* <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
             <MailIcon />
           </Badge>
         </IconButton>
         <p>Messages</p> */}
-        <Link href="/about">
+      <Link href="/about">
         <MenuItem>
           <a className={classes.navLinkMobile}>About Us</a>
-          </MenuItem>
-        </Link>
+        </MenuItem>
+      </Link>
 
-        <Link href="/login">
+      <Link href="/login">
         <MenuItem>
           <a className={classes.navLinkMobile}>Login</a>
-          </MenuItem>
-        </Link>
+        </MenuItem>
+      </Link>
 
-        <Link href="/registration">
+      <Link href="/registration">
         <MenuItem>
           <a className={classes.navLinkMobile}>Sign up</a>
-          </MenuItem>
-        </Link>
+        </MenuItem>
+      </Link>
       {/* <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
           <Badge badgeContent={11} color="secondary">
@@ -206,9 +214,9 @@ export default function PrimarySearchAppBar() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static">
+      <AppBar style={{ background: "#303030" }} position="static">
         <Toolbar>
-          <div className={classes.logoContainer}>
+          <div onClick={() => Router.push('/')} className={classes.logoContainer}>
             <img
               src="/static/images/logo_footer.png"
               className={classes.logoImg}
@@ -223,7 +231,7 @@ export default function PrimarySearchAppBar() {
             <MenuIcon />
             
           </IconButton> */}
-          <Typography className={classes.title} variant="h6" noWrap>
+          <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap>
             Trust Search
           </Typography>
           <div className={classes.search}>
