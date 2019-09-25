@@ -1,6 +1,10 @@
 import css from 'styled-jsx/css';
 
 export default css`
+    .displayFlex {
+        display: flex;
+    }
+
     .cardHeader {
         display: flex;
         padding-bottom: 10px;
@@ -72,5 +76,35 @@ export default css`
 
     .iconText {
         marginLeft: 4px;
+    }
+
+    .writeReviewContainer {
+        margin-bottom: 25px;
+    }
+
+    .writeReviewBox {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .writeReviewBox div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .writeReviewTxt {
+        margin-left: 20px;
+        font-size: 16px;
+        color: #21bc61;
+    }
+
+    .writeReviewTxt:hover {
+        color: #19914b;
+        cursor: pointer;
+        transition: 0.5s;
     }
 `

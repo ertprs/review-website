@@ -42,7 +42,7 @@ class MyApp extends App {
       <>
         <style jsx>{layoutStyles}</style>
         <Head>
-          <script
+          {/* <script
             dangerouslySetInnerHTML={{
               __html: `function googleTranslateElementInit() {
                 new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
@@ -52,7 +52,7 @@ class MyApp extends App {
           <script
             type="text/javascript"
             src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-          ></script>
+          ></script> */}
 
           <title>The trust search engine</title>
           <link
@@ -72,8 +72,8 @@ class MyApp extends App {
               }}
             />
           ) : (
-            <script></script>
-          )}
+              <script></script>
+            )}
         </Head>
         <Container>
           {process.env.NODE_ENV === "production" ? (
@@ -84,8 +84,8 @@ class MyApp extends App {
               }}
             />
           ) : (
-            <noscript />
-          )}
+              <noscript />
+            )}
           <Provider store={reduxStore}>
             <PersistGate
               loading={<Component {...pageProps} />}
