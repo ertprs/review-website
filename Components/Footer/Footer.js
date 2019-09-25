@@ -200,13 +200,13 @@ const renderFooterBottomSection = () => {
   );
 };
 
-const Footer = () => {
+const Footer = (props) => {
   return (
     <>
     <style jsx>
       {footerStyles}
     </style>
-    <footer className="footer">
+    <footer className="footer" style={{...props.footerStyles}}>
       {renderFooterTopSection()}
       {renderFooterMiddleSection()}
       {renderFooterBottomSection()}

@@ -56,6 +56,25 @@ export const onlyScoreWidgetComponentStyles = css`
     margin:0 auto;
   }
 
+  .carouselWidgetImgContainerV{
+    height:30px;
+    width:80%;
+    margin:0 auto;
+  }
+
+  /*----------- utility classes -----------*/
+  .mb{
+    margin-bottom: 5%;
+  }
+
+  .mbs{
+    margin-bottom:32px;
+  }
+
+  .mt{
+    margin-top: 5%;
+  }
+
   @media screen and (max-width:991px){
       .carouselRatingIndicator{
           display:none;

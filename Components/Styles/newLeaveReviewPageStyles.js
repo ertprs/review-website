@@ -10,6 +10,7 @@ export const newLeaveReviewPageStyles = css`
     /*---- Header section --------*/
     .reviewHeader{
         /* background:#fff; */
+        margin-bottom:50px;
     }
 
     .reviewHeaderLogoContainer{
@@ -22,6 +23,7 @@ export const newLeaveReviewPageStyles = css`
     }
 
     .reviewHeaderLogoImage{
+        cursor:pointer;
         max-width:100%;
         height: auto;
     }
@@ -66,6 +68,11 @@ export const newLeaveReviewPageStyles = css`
     .finalReviewSectionHeader{
         border-bottom:1px solid #d8d8d8;
         padding-bottom:4%;
+    }
+
+    .finalReviewSectionBody{
+        margin-top:25px;
+        margin-bottom:25px;
     }
 
     /*------ rate product attributes ------*/

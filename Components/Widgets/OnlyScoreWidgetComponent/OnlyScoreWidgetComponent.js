@@ -1,16 +1,14 @@
 import React from "react";
 import { layoutStyles } from "../../../style";
-import {onlyScoreWidgetComponentStyles} from './onlyScoreWidgetComponentStyles';
+import { onlyScoreWidgetComponentStyles } from "./onlyScoreWidgetComponentStyles";
 import StarRatings from "react-star-ratings";
 
 const renderStandAloneWidget = requiredData => {
-  console.log(requiredData.ratings)
+  console.log(requiredData.ratings);
   return (
     <div className="widgetBox">
       <style jsx>{layoutStyles}</style>
-      <style jsx>
-       {onlyScoreWidgetComponentStyles}
-      </style>
+      <style jsx>{onlyScoreWidgetComponentStyles}</style>
       <div className="widgetHeader">
         <h3 className="widgetHeading">Trusted site!</h3>
       </div>
@@ -19,25 +17,33 @@ const renderStandAloneWidget = requiredData => {
       </div>
 
       <div className="ratingIndicator">
-        {requiredData.ratings!=="" ? <StarRatings
-          rating={Number(requiredData.ratings)}
-          starRatedColor="#21bc61"
-          starDimension="40px"
-          starSpacing="3px"
-          numberOfStars={5}
-          name="rating"
-        /> : "Loading..."}
+        {requiredData.ratings !== "" ? (
+          <StarRatings
+            rating={Number(requiredData.ratings)}
+            starRatedColor="#21bc61"
+            starDimension="40px"
+            starSpacing="3px"
+            numberOfStars={5}
+            name="rating"
+          />
+        ) : (
+          "Loading..."
+        )}
       </div>
 
       <div className="smallRatingIndicator">
-        {requiredData.ratings!=="" ? <StarRatings
-          rating={Number(requiredData.ratings)}
-          starRatedColor="#21bc61"
-          starDimension="25px"
-          starSpacing="3px"
-          numberOfStars={5}
-          name="rating"
-        /> : "Loading..."}
+        {requiredData.ratings !== "" ? (
+          <StarRatings
+            rating={Number(requiredData.ratings)}
+            starRatedColor="#21bc61"
+            starDimension="25px"
+            starSpacing="3px"
+            numberOfStars={5}
+            name="rating"
+          />
+        ) : (
+          "Loading..."
+        )}
       </div>
 
       <div className="ratingBasis">
@@ -49,7 +55,11 @@ const renderStandAloneWidget = requiredData => {
           reviews.
         </div>
         <div>
-          <a href="https://thetrustsearch.com" className="learnMoreLink" target="_blank">
+          <a
+            href="https://thetrustsearch.com"
+            className="learnMoreLink"
+            target="_blank"
+          >
             Learn More
           </a>
         </div>
@@ -72,54 +82,69 @@ const renderStandAloneWidget = requiredData => {
   );
 };
 
-const renderCarouselVariant = requiredData => {
-
+const renderCarouselVariant = (requiredData, textReviews) => {
   return (
     <div className="carouselWidgetBox">
       <style jsx>{layoutStyles}</style>
-      <style jsx>
-        {onlyScoreWidgetComponentStyles}
-      </style>
-      
-      <div className="ratingText">
+      <style jsx>{onlyScoreWidgetComponentStyles}</style>
+
+      <div className={`ratingText ${textReviews ? "mb mt" : ""}`}>
         <h5 className="widgetRating">{requiredData.ratings} / 5</h5>
       </div>
 
-      <div className="carouselRatingIndicator">
-        {requiredData.ratings!=="" ? <StarRatings
-          rating={Number(requiredData.ratings)}
-          starRatedColor="#21bc61"
-          starDimension="33px"
-          starSpacing="1.5px"
-          numberOfStars={5}
-          name="rating"
-        /> : "Loading...."}
+      <div className={`carouselRatingIndicator ${textReviews ? "mbs mt" : ""}`}>
+        {requiredData.ratings !== "" ? (
+          <StarRatings
+            rating={Number(requiredData.ratings)}
+            starRatedColor="#21bc61"
+            starDimension="33px"
+            starSpacing="1.5px"
+            numberOfStars={5}
+            name="rating"
+          />
+        ) : (
+          "Loading...."
+        )}
       </div>
       <div className="widgetHeader">
-        <h5 className="widgetHeading">Trusted site!</h5>
+        {!textReviews ? <h5 className="widgetHeading">Trusted site!</h5> : null}
       </div>
-      <div className="carouselSmallRatingIndicator">
-        {requiredData.ratings!=="" ? <StarRatings
-          rating={Number(requiredData.ratings)}
-          starRatedColor="#21bc61"
-          starDimension="23px"
-          starSpacing="1.5px"
-          numberOfStars={5}
-          name="rating"
-        /> : "Loading...."}
+      <div className={`carouselSmallRatingIndicator ${textReviews ? "mbs mt" : ""}`}>
+        {requiredData.ratings !== "" ? (
+          <StarRatings
+            rating={Number(requiredData.ratings)}
+            starRatedColor="#21bc61"
+            starDimension="23px"
+            starSpacing="1.5px"
+            numberOfStars={5}
+            name="rating"
+          />
+        ) : (
+          "Loading...."
+        )}
       </div>
 
-      <div className="carouselRatingBasis">
-        <div>
-          <span style={{ fontWeight: "bold" }}>
-            {requiredData.totalReviews}
-          </span>{" "}
-          reviews
-        </div>
+      <div className={`carouselRatingBasis ${textReviews ? "mt" : ""}`}>
+        {!textReviews ? (
+          <div>
+            <span style={{ fontWeight: "bold" }}>
+              {requiredData.totalReviews}
+            </span>{" "}
+            reviews
+          </div>
+        ) : (
+          <div>
+            <span>Based on </span>
+            <span style={{ fontWeight: "bold" }}>
+              {requiredData.totalReviews}
+            </span>{" "}
+            reviews at 
+          </div>
+        )}
       </div>
 
       <div>
-        <div className="carouselWidgetImgContainer">
+        <div className={`${!textReviews ? "carouselWidgetImgContainer" : "carouselWidgetImgContainerV"}`}>
           <img
             src="/static/business/index/images/gradientLogo.png"
             alt="logo"
@@ -134,10 +159,14 @@ const renderCarouselVariant = requiredData => {
   );
 };
 
-const OnlyScoreWidgetComponent = ({requiredData, variant}) => {
-  return <>
-    {variant==="carousel" ? renderCarouselVariant(requiredData) : renderStandAloneWidget(requiredData)}
-  </>;
+const OnlyScoreWidgetComponent = ({ requiredData, variant, textReviews }) => {
+  return (
+    <>
+      {variant === "carousel"
+        ? renderCarouselVariant(requiredData, textReviews)
+        : renderStandAloneWidget(requiredData)}
+    </>
+  );
 };
 
 export default OnlyScoreWidgetComponent;

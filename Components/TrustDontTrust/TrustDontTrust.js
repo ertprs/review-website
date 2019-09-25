@@ -14,6 +14,7 @@ class TrustDontTrust extends React.Component {
     step: 1,
     trustFlag: "",
     reviewSent: "no",
+    loadingBtn: false,
     formData: {
       review: {
         element: "textarea",
@@ -145,6 +146,7 @@ class TrustDontTrust extends React.Component {
 
     if (valid) {
       if (authorized) {
+        this.setState({loadingBtn:true})
         this.props.sendTrustVote({
           trust: this.state.trustFlag === "trust" ? true : false,
           text: this.state.formData.review.value,
@@ -250,7 +252,7 @@ class TrustDontTrust extends React.Component {
                 {/* email: this.state.formData['email'] */}
               </div>
               <div className="col-md-12">
-                <button
+                {!this.state.loadingBtn ? <button
                   className="submitBtn"
                   onClick={() => {
                     this.handleNextBtnClick({
@@ -259,7 +261,7 @@ class TrustDontTrust extends React.Component {
                   }}
                 >
                   Submit
-                </button>
+                </button> : <div style={{textAlign:"center"}}><img src="/static/images/dotsLoader.gif" style={{height:"25px", width:"25px"}} /></div>}
               </div>
             </div>
           </div>

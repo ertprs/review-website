@@ -1,24 +1,33 @@
 import React from "react";
 import Router from "next/router";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import VideoUploadForm from "../Components/Widgets/VideoUploadForm/VideoUploadForm";
 import { newLeaveReviewPageStyles } from "../Components/Styles/newLeaveReviewPageStyles";
+import { productReviewStepTwoStyles } from "../Components/ProductReviewSteps/ProductReviewStepTwo/productReviewStepTwoStyles";
 import Ratings from "react-ratings-declarative";
 import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import FormField from "../Components/Widgets/FormField/FormField";
 import UniversalLoader from "../Components/Widgets/UniversalLoader/UniversalLoader";
-import Footer from "../Components/Footer/Footer";
+import SmallFooter from "../Components/SmallFooter/SmallFooter";
 import validate from "../utility/validate";
 import tus from "tus-js-client";
 import axios from "axios";
-import {baseURL} from '../utility/config';
+import Link from "next/link";
+import Img from "react-image";
+import { baseURL } from "../utility/config";
 
 class NewLeaveReview extends React.Component {
   constructor(props) {
     super(props);
     this.fileInput = React.createRef();
     this.state = {
-      productData:[],
+      static: {
+        firstPlaceholder: "",
+        textAreaPlaceholder: ""
+      },
+      productData: [],
+      reviewChoice: "",
       reviewSent: "no",
       videoUploaded: "no",
       videoDataSent: "no",
@@ -82,14 +91,35 @@ class NewLeaveReview extends React.Component {
     };
   }
 
-  componentDidMount(){
-    axios.get(`${baseURL}/api/get-order-data`)
-    .then(res=>{
-      console.log(res.data)
-    })
-    .catch(err =>{
-      console.log(err)
-    })
+  componentDidMount() {
+    const { campaignProcessingId, domain_name, token } = this.props;
+    console.log(campaignProcessingId, token);
+    axios
+      .post(`${baseURL}/api/get-order-data`, {
+        campaign_processing_id: campaignProcessingId,
+        token: token
+      })
+      .then(res => {
+        const { details } = res.data;
+        this.setState({
+          static: {
+            ...this.state.static,
+            firstPlaceholder: details.intro,
+            textAreaPlaceholder: details.placeholder
+          },
+          formData: {
+            ...this.state.formData,
+            review: {
+              ...this.state.formData["review"],
+              placeholder: details.placeholder
+            }
+          }
+        });
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   handleRatingChange = (id, newRating) => {
@@ -173,6 +203,7 @@ class NewLeaveReview extends React.Component {
   };
 
   handleFormSubmit = () => {
+    const { campaignProcessingId, domain_name, token } = this.props;
     //validating before submitting
     const errors = this.validateAllFields();
     const { formData } = this.state;
@@ -184,19 +215,40 @@ class NewLeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
+      console.log(dataToSubmit);
       //clear form data
       this.setState(
         { reviewSubmitted: true, reviewSent: "in-progress" },
         () => {
           //axios post dataToSubmit
-          setTimeout(() => {
-            this.setState({ reviewSent: "success" });
-            if (this.state.videoReview === "no") {
-              setTimeout(() => {
-                Router.push("/reviews/google.com");
-              }, 2000);
-            }
-          }, 3000);
+          axios
+            .post(`${baseURL}/api/save-order-data-application`, {
+              report_category_id: 8,
+              token: token,
+              campaign_processing_id: campaignProcessingId,
+              domain_name: domain_name,
+              data: {
+                review_rate: dataToSubmit.mainRating,
+                review_text: dataToSubmit.review.trim()
+              }
+            })
+            .then(res => {
+              this.setState({ reviewSent: "success" });
+              console.log(res);
+            })
+            .catch(err => {
+              this.setState({ reviewSent: "error" });
+              console.log(err);
+            });
+
+          // setTimeout(() => {
+          //   this.setState({ reviewSent: "success" });
+          //   if (this.state.videoReview === "no") {
+          //     // setTimeout(() => {
+          //     //   Router.push("/reviews/google.com");
+          //     // }, 2000);
+          //   }
+          // }, 3000);
         }
       );
     } else {
@@ -209,10 +261,60 @@ class NewLeaveReview extends React.Component {
       <div className="reviewHeader">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="reviewHeaderLogoContainer">
-          <img
-            src="/static/business/index/images/gradientLogo.png"
-            className="reviewHeaderLogoImage"
-          />
+          <Link href="/">
+            <img
+              src="/static/business/index/images/gradientLogo.png"
+              className="reviewHeaderLogoImage"
+            />
+          </Link>
+        </div>
+      </div>
+    );
+  };
+
+  handleReviewChoiceChange = (e, id) => {
+    this.setState({ [id]: e.target.value });
+  };
+
+  renderReviewChoiceSection = () => {
+    const { reviewChoice } = this.state;
+    return (
+      <div className="finalReviewSectionHeader">
+        <style jsx>{productReviewStepTwoStyles}</style>
+        <div className="rateProdAttrHeader">
+          <h5 style={{ marginTop: "3%", marginBottom: "5%" }}>
+            Please choose the review mode from below -
+          </h5>
+          <div className="reviewChoiceContainer">
+            <div>
+              <label className="reviewChoiceLabel">
+                <input
+                  type="radio"
+                  value="text_review"
+                  name="reviewChoice"
+                  onChange={e =>
+                    this.handleReviewChoiceChange(e, "reviewChoice")
+                  }
+                  checked={reviewChoice === "text_review" ? true : false}
+                />{" "}
+                Text Review
+              </label>
+            </div>
+            <div>
+              <label className="reviewChoiceLabel">
+                <input
+                  type="radio"
+                  value="video_review"
+                  name="reviewChoice"
+                  onChange={e =>
+                    this.handleReviewChoiceChange(e, "reviewChoice")
+                  }
+                  checked={reviewChoice === "video_review" ? true : false}
+                />{" "}
+                Video Review
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -221,26 +323,42 @@ class NewLeaveReview extends React.Component {
   renderReviewHeroSection = () => {
     return (
       <div className="reviewHeroContainer">
-        <style jsx>{newLeaveReviewPageStyles}</style>
+        {/* <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="reviewHeroHeading">
           <h3>Review your recent purchase</h3>
         </div>
         <div className="reviewHeroSubheading">
           <h6>Your feedback helps others make good choices</h6>
-        </div>
+        </div> */}
       </div>
     );
   };
 
   renderMainReviewSection = () => {
+    console.log(this.props.domain_name);
     return (
       <div className="mainReviewSection">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="mainReviewImageContainer">
-          <img src="/static/images/capture.png" />
+          <Img
+            src={[
+              `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://${this.props.domain_name}&viewport=1440x900&width=250`,
+              "/static/images/notFound.png"
+            ]}
+            loader={
+              <div
+                style={{ textAlign: "center", height: "156px", width: "250" }}
+              >
+                <CircularProgress />
+              </div>
+            }
+            style={{maxWidth:"100%", height:"auto"}}
+          />
         </div>
         <div className="mainReviewHeading">
-          <h4>Google.com</h4>
+          <h4 style={{ textTransform: "capitalize" }}>
+            {this.props.domain_name}
+          </h4>
         </div>
         <div className="mainReviewRatingsContainer">
           <Ratings
@@ -261,13 +379,28 @@ class NewLeaveReview extends React.Component {
           </Ratings>
         </div>
         <div className="mainReviewRatingsCaption">
-          How would you rate this product?
+          {this.state.static.firstPlaceholder === ""
+            ? "loading..."
+            : this.state.static.firstPlaceholder}
         </div>
       </div>
     );
   };
 
+  renderVideoOrText = () => {
+    const { reviewChoice, reviewSent } = this.state;
+    // if (reviewChoice === "text_review") {
+    //   return this.renderReviewTextBox();
+    // } else if (reviewChoice === "video_review") {
+    //   return this.renderVideoReviewUpload();
+    // } else {
+    //   return null;
+    // }
+    return reviewSent === "no" ? this.renderReviewTextBox() : null;
+  };
+
   renderFinalReviewSection = () => {
+    const { reviewSent, videoDataSent } = this.state;
     const reviewCardBody = (
       <RatingIndicators
         rating={this.state.ratings.mainRating}
@@ -283,14 +416,20 @@ class NewLeaveReview extends React.Component {
         <div className="finalReviewSectionHeader">
           <ReviewCard
             variant="productCard"
-            image="/static/images/capture.png"
-            title="Google.com"
+            image={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://${this.props.domain_name}&viewport=1440x900&width=250`}
+            title={this.props.domain_name}
             body={reviewCardBody}
           />
         </div>
         <div className="finalReviewSectionBody">
-          {this.renderRateProductAttributes()}
-          {this.renderReviewTextBox()}
+          {/* {reviewSent === "no" && videoDataSent === "no"
+            ? this.renderRateProductAttributes()
+            : null}
+          {reviewSent === "no" && videoDataSent === "no"
+            ? this.renderReviewChoiceSection()
+            : null} */}
+          {/* {reviewSent === "no" ? this.renderVideoOrText() : null} */}
+          {this.renderVideoOrText()}
           {this.renderCheckBoxAndBtn()}
         </div>
       </div>
@@ -363,9 +502,9 @@ class NewLeaveReview extends React.Component {
     return (
       <div className="reviewTextBoxContainer">
         <style jsx>{newLeaveReviewPageStyles}</style>
-        <div className="reviewTextBoxHeader">
+        {/* <div className="reviewTextBoxHeader">
           <h5>Write review</h5>
-        </div>
+        </div> */}
         <FormField
           {...this.state.formData.review}
           handleChange={(e, id) => {
@@ -426,54 +565,76 @@ class NewLeaveReview extends React.Component {
   };
 
   renderSubmitBtn = () => {
-    const { reviewSubmitted } = this.state;
-    return (
-      <>
+    const { reviewSubmitted, reviewChoice } = this.state;
+    // return reviewChoice === "text_review" ? (
+    //   <div>
+    //     <style jsx>{newLeaveReviewPageStyles}</style>
+    //     <button className="reviewSubmitBtn" onClick={this.handleFormSubmit}>
+    //       Submit your review
+    //     </button>
+    //   </div>
+    // ) : null;
+    return reviewChoice === "" ? (
+      <div>
         <style jsx>{newLeaveReviewPageStyles}</style>
-        {reviewSubmitted ? (
-          this.renderUniversalLoader()
-        ) : (
-          <button className="reviewSubmitBtn" onClick={this.handleFormSubmit}>
-            Submit your review
-          </button>
-        )}
-      </>
-    );
+        <button className="reviewSubmitBtn" onClick={this.handleFormSubmit}>
+          Submit your review
+        </button>
+      </div>
+    ) : null;
   };
 
   renderCheckBoxAndBtn = () => {
+    const { reviewSubmitted, videoDataSent } = this.state;
     const agreement = {
       id: "agreement",
       text: "",
       error: "Please accept terms & conditions"
     };
 
-    const videoReview = {
-      id: "videoReview",
-      text: "I also want to upload a video review.",
-      error: ""
-    };
+    // const videoReview = {
+    //   id: "videoReview",
+    //   text: "I also want to upload a video review.",
+    //   error: ""
+    // };
     return (
       <div className="checkBoxAndBtnContainer">
         <style jsx>{newLeaveReviewPageStyles}</style>
         <div className="container">
           <div className="row">
-            <div className="col-md-6">
-              <div className="checkBoxContainer">
-                {this.renderCheckBox(agreement)}
+            {!reviewSubmitted && videoDataSent === "no" ? (
+              <div className="col-md-6">
+                <div
+                  className="checkBoxContainer"
+                  style={{ marginTop: "25px" }}
+                >
+                  {this.renderCheckBox(agreement)}
+                </div>
               </div>
-            </div>
-            <div className="col-md-6">
+            ) : null}
+            {/* <div className="col-md-6">
               <div className="checkBoxContainer">
                 {this.renderCheckBox(videoReview)}
               </div>
-            </div>
+            </div> */}
           </div>
-          <div className="row">
-            <div className="col-md-6 offset-md-6">
-              <div className="submitBtnContainer">{this.renderSubmitBtn()}</div>
+          {reviewSubmitted ? (
+            <div className="row">
+              <div className="col-md-12">
+                <div style={{ textAlign: "center", marginTop: "50px" }}>
+                  {this.renderUniversalLoader()}
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="row">
+              <div className="col-md-6 offset-md-6">
+                <div className="submitBtnContainer">
+                  {this.renderSubmitBtn()}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -499,14 +660,18 @@ class NewLeaveReview extends React.Component {
           </div>
         </div>
         {/* Second child for success state */}
-        <div style={{ textAlign: "left", color: "#21bc61" }}>
-          Thank you for your review - we will contact with you soon{" "}
-          <i className="fa fa-check"></i>
+        <div style={{ textAlign: "center", color: "#21bc61" }}>
+          <h5>
+            Thank you for your review - we will contact with you soon{" "}
+            <i className="fa fa-check"></i>
+          </h5>
         </div>
         {/* third child for error state */}
-        <div style={{ textAlign: "left", color: "red" }}>
-          Some error occured, please try again later{" "}
-          <i className="fa fa-close"></i>
+        <div style={{ textAlign: "center", color: "red" }}>
+          <h5>
+            Some error occured, please try again later{" "}
+            <i className="fa fa-close"></i>
+          </h5>
         </div>
       </UniversalLoader>
     );
@@ -515,7 +680,7 @@ class NewLeaveReview extends React.Component {
   handleVideoUploadSubmit = e => {
     e.preventDefault();
     let { formData, videoFile } = this.state;
-    let newFormData = {};
+    let newFormData = this.state.formData;
     let dataToSubmit = {};
     let valid = true;
     for (let item in formData) {
@@ -535,7 +700,8 @@ class NewLeaveReview extends React.Component {
     if (
       valid &&
       Object.keys(videoFile.errors).length === 0 &&
-      videoFile.size > 0
+      videoFile.size > 0 &&
+      this.state.agreement === "yes"
     ) {
       // alert(JSON.stringify(dataToSubmit));
       //axios post request
@@ -548,7 +714,7 @@ class NewLeaveReview extends React.Component {
             size: videoFile.size
           })
           .then(res => {
-            console.log(res);
+            // console.log(res);
             this.setState({ videoDataSent: "success" }, () => {
               // let res = res.data;
 
@@ -568,7 +734,6 @@ class NewLeaveReview extends React.Component {
                   );
                   // setState for videoProgress
                   console.log(bytesUploaded, bytesTotal, percentage + "%");
-                  
                 },
                 onSuccess: () => {
                   console.log(
@@ -601,7 +766,10 @@ class NewLeaveReview extends React.Component {
           }
         });
       } else {
-        this.setState({ formData: { ...newFormData } });
+        this.setState({
+          formData: { ...newFormData },
+          errors: { ...this.state.errors, agreement: true }
+        });
       }
     }
   };
@@ -616,7 +784,7 @@ class NewLeaveReview extends React.Component {
     } = this.state;
     return (
       <div>
-        {this.renderUniversalLoader()}
+        {/* {this.renderUniversalLoader()} */}
         <style jsx>{newLeaveReviewPageStyles}</style>
         {videoUploaded === "no" ? (
           <VideoUploadForm
@@ -631,10 +799,10 @@ class NewLeaveReview extends React.Component {
         ) : (
           <UniversalLoader status={videoUploaded}>
             <div></div>
-            <div style={{ color: "green", marginTop:"50px", height:"50vh" }}>
+            <div style={{ color: "green", marginTop: "50px", height: "50vh" }}>
               Video was uploaded successfully
             </div>
-            <div style={{ color: "red", marginTop:"50px", height:"50vh" }}>
+            <div style={{ color: "red", marginTop: "50px", height: "50vh" }}>
               Some error occured while uploading video review, please try again
               later
             </div>
@@ -646,7 +814,7 @@ class NewLeaveReview extends React.Component {
 
   render() {
     const { mainRating } = this.state.ratings;
-    const { reviewSent, videoReview } = this.state;
+    const { reviewSent, videoReview, reviewChoice } = this.state;
     return (
       <div style={{ background: "#f5f5f5" }}>
         <style jsx>{newLeaveReviewPageStyles}</style>
@@ -654,19 +822,42 @@ class NewLeaveReview extends React.Component {
           {this.renderReviewHeader()}
           {this.renderReviewHeroSection()}
           <div className="reviewContainerInner">
-            {reviewSent !== "success" || videoReview !== "yes"
+            {/* {reviewSent !== "success" || videoReview !== "yes"
               ? mainRating > 0
                 ? this.renderFinalReviewSection()
                 : this.renderMainReviewSection()
-              : this.renderVideoReviewUpload()}
+              : this.renderVideoReviewUpload()} */}
+            {mainRating > 0
+              ? this.renderFinalReviewSection()
+              : this.renderMainReviewSection()}
           </div>
           <div>
-            <Footer />
+            <SmallFooter />
           </div>
         </div>
       </div>
     );
   }
 }
+
+NewLeaveReview.getInitialProps = async ctx => {
+  const { query } = ctx;
+  const campaignProcessingId = query.campaignProcessingId || "";
+  const domain_name = query.domain_name || "";
+  const token = query.token || "";
+  // if (
+  //   campaignProcessingId.trim() === "" ||
+  //   domain_name.trim === "" ||
+  //   token.trim() === ""
+  // ) {
+  //   if (ctx && ctx.req) {
+  //     ctx.res.writeHead(302, { Location: `/` });
+  //     ctx.res.end();
+  //   } else {
+  //     Router.push(`/`);
+  //   }
+  // }
+  return { campaignProcessingId, domain_name, token };
+};
 
 export default NewLeaveReview;

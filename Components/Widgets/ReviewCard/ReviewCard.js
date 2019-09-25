@@ -4,6 +4,9 @@ import RatingsBadge from "../RatingsBadge/RatingsBadge";
 import RatingIndicators from "../RatingIndicators/RatingIndicators";
 import uuid from "uuid/v1";
 import { reviewCardStyles } from "./reviewCardStyles";
+import Img from "react-image";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 
 const getColorImg = image => {
   const imagePath = image.substring(0, image.lastIndexOf("/"));
@@ -31,7 +34,10 @@ const renderReviewCard = (
     designation,
     specialistIn,
     productPicStyles,
-    additionalData
+    additionalData,
+    subTitle,
+    subTitleStyles,
+    imgContainerStyles
   },
   colorImg,
   setColorImg
@@ -161,7 +167,36 @@ const renderReviewCard = (
           <style jsx>{reviewCardStyles}</style>
           <div className="productProfilePic">
             <div className="productCardPicContainer">
-              <img src={image} style={{ height: "auto", maxWidth: "100%", ...productPicStyles}} />
+              <Img
+                src={[
+                  image,
+                  ""
+                ]}
+                loader={
+                  <div
+                    style={{
+                      textAlign: "center",
+                      height: "156px",
+                      width: "250"
+                    }}
+                  >
+                    <CircularProgress />
+                  </div>
+                }
+                style={{
+                  height: "auto",
+                  maxWidth: "100%",
+                  ...productPicStyles
+                }}
+              />
+              {/* <img
+                src={image}
+                style={{
+                  height: "auto",
+                  maxWidth: "100%",
+                  ...productPicStyles
+                }}
+              /> */}
             </div>
           </div>
           <div className="productCardDetails">
@@ -171,7 +206,43 @@ const renderReviewCard = (
             <div className="productCardText">
               <div>{body}</div>
             </div>
-            <div className="productCardText" style={{marginTop:"15px"}}>
+            <div className="productCardText" style={{ marginTop: "15px" }}>
+              <div>{additionalData || ""}</div>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "profileHeaderCard":
+      return (
+        <div className="productCardContainer">
+          <style jsx>{reviewCardStyles}</style>
+          <div className="productProfilePic">
+            <div
+              className="productCardPicContainer"
+              style={{ ...imgContainerStyles }}
+            >
+              <img
+                src={image}
+                style={{
+                  height: "auto",
+                  maxWidth: "100%",
+                  ...productPicStyles
+                }}
+              />
+            </div>
+          </div>
+          <div className="productCardDetails">
+            <div className="productCardTitle">
+              <h4>{title}</h4>
+            </div>
+            <div className="productSubTitle">
+              <div style={{ ...subTitleStyles }}>{subTitle}</div>
+            </div>
+            <div className="productCardText">
+              <div>{body}</div>
+            </div>
+            <div className="productCardText" style={{ marginTop: "15px" }}>
               <div>{additionalData || ""}</div>
             </div>
           </div>

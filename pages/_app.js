@@ -4,6 +4,9 @@ import withReduxStore from "../lib/with-redux-store";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { ThemeProvider } from "@material-ui/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import theme from "../src/theme";
 
 import Head from "next/head";
 
@@ -25,12 +28,32 @@ class MyApp extends App {
     this.persistor = persistStore(props.reduxStore);
   }
 
+  componentDidMount() {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector("#jss-server-side");
+    if (jssStyles) {
+      jssStyles.parentNode.removeChild(jssStyles);
+    }
+  }
+
   render() {
     const { Component, pageProps, reduxStore } = this.props;
     return (
       <>
         <style jsx>{layoutStyles}</style>
         <Head>
+          {/* <script
+            dangerouslySetInnerHTML={{
+              __html: `function googleTranslateElementInit() {
+                new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+              }`
+            }}
+          />
+          <script
+            type="text/javascript"
+            src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          ></script> */}
+
           <title>The trust search engine</title>
           <link
             href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -49,8 +72,8 @@ class MyApp extends App {
               }}
             />
           ) : (
-            <script></script>
-          )}
+              <script></script>
+            )}
         </Head>
         <Container>
           {process.env.NODE_ENV === "production" ? (
@@ -61,14 +84,18 @@ class MyApp extends App {
               }}
             />
           ) : (
-            <noscript />
-          )}
+              <noscript />
+            )}
           <Provider store={reduxStore}>
             <PersistGate
               loading={<Component {...pageProps} />}
               persistor={this.persistor}
             >
-              <Component {...pageProps} />
+              <ThemeProvider theme={theme}>
+                {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                <CssBaseline />
+                <Component {...pageProps} />
+              </ThemeProvider>
             </PersistGate>
           </Provider>
         </Container>

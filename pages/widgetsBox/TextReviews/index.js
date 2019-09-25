@@ -62,6 +62,12 @@ const renderTextReviewsWidget = (parentState, settings, props) => {
           height: 100%; //affected by the height passed as a prop to the widget
         }
 
+        @media screen and (max-width:991px){
+          .flexContainer > div:last-child{
+            flex-basis:100%;
+          }
+        }
+
         @media screen and (max-width: 989px) {
           .textReviewsContainer {
             padding: 0 4% 0 4%;
@@ -93,7 +99,11 @@ const renderTextReviewsWidget = (parentState, settings, props) => {
         }
       `}</style>
       <div className="scoreWidgetContainer">
-        <OnlyScoreWidget requiredData={requiredData} variant="carousel" />
+        <OnlyScoreWidget
+          requiredData={requiredData}
+          variant="carousel"
+          textReviews={true}
+        />
       </div>
       <div className="textReviewsContainer">
         <Head>
@@ -114,7 +124,7 @@ const renderTextReviewsWidget = (parentState, settings, props) => {
             {requiredData.topFifteenReviews.map(item => {
               return (
                 <div key={uuid()}>
-                  <ReviewBox review={item} />
+                  <ReviewBox review={item} styles={{height:"200px"}} reviewRatingStyles={{margin:"8px 0 8px 0"}} reviewHeaderStyles={{marginTop:"5px"}} />
                 </div>
               );
             })}
@@ -130,19 +140,19 @@ function SampleNextArrow(props) {
   const { className, style, onClick } = props;
   return (
     <>
-    <style jsx>
-      {`
-        .sampleNextArrow::before{
-          content:'>>';
-          color:#000;
-        }
-      `}
-    </style>
-    <div
-      className={className+" "+"sampleNextArrow"}
-      style={{ ...style}}
-      onClick={onClick}
-    />
+      <style jsx>
+        {`
+          .sampleNextArrow::before {
+            content: "\\00BB";
+            color: #000;
+          }
+        `}
+      </style>
+      <div
+        className={className + " " + "sampleNextArrow"}
+        style={{ ...style }}
+        onClick={onClick}
+      />
     </>
   );
 }
@@ -151,19 +161,19 @@ function SamplePrevArrow(props) {
   const { className, style, onClick } = props;
   return (
     <>
-    <style jsx>
-      {`
-        .samplePrevArrow::before{
-          content:'<<';
-          color:#000;
-        }
-      `}
-    </style>
-    <div
-      className={className+" "+"samplePrevArrow"}
-      style={{ ...style}}
-      onClick={onClick}
-    />
+      <style jsx>
+        {`
+          .samplePrevArrow::before {
+            content: "\\00AB";
+            color: #000;
+          }
+        `}
+      </style>
+      <div
+        className={className + " " + "samplePrevArrow"}
+        style={{ ...style }}
+        onClick={onClick}
+      />
     </>
   );
 }
