@@ -3,6 +3,7 @@ import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import authReducer from './authReducer';
 import trustReducer from './trustReducer';
+import domainProfileReducer from './domainProfileReducer';
 
 const authPersistConfig = {
     key: 'auth',
@@ -12,5 +13,6 @@ const authPersistConfig = {
 
 export default combineReducers({
     auth: persistReducer(authPersistConfig, authReducer),
-    trustVote: trustReducer
+    trustVote: trustReducer,
+    profileData: domainProfileReducer
 })
