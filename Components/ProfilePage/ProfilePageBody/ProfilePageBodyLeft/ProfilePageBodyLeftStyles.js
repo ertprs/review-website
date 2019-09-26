@@ -11,17 +11,31 @@ export default css`
         border-bottom: 1px solid #f1f1f1;
     }
 
+    .cardHeader div{
+        flex:1;
+    }
+
     .userNameReview {
         display: flex;
         flex-direction: column;
-        alignItems: center;
+        
         justify-content: center;
         margin-left: 3%;
     } 
 
+    .userReviewRating{
+        display:flex;
+        align-items:center;
+        text-align:right;
+    }
+
+    .userReviewRatingSm{
+        display:none;
+    }
+
     .cardImg {
-        width: auto;
-        height: 50px;
+        max-width: 50px;
+        height: auto;
         border-radius: 50px;
     }
 
@@ -77,7 +91,7 @@ export default css`
     }
 
     .iconText {
-        marginLeft: 4px;
+        margin-left: 4px;
     }
 
     .writeReviewContainer {
@@ -133,5 +147,27 @@ export default css`
       .postButton:disabled {
         border: 1px solid #baf0d0;
         background: #baf0d0;
+      }
+
+      /*------- Media queries ----------*/
+      @media screen and (max-width:475px){
+        .writeReviewBox{
+            flex-direction:column;
+        }
+        .reviewIndicator{
+            margin-top:8px;
+        }
+      }
+
+      @media screen and (max-width:390px){
+        .cardHeader{
+            flex-direction:column;
+        }
+        .userNameReview{
+            margin:13px 0 0 0;
+        }
+        .userReviewRating{
+            text-align:left;
+        }
       }
 `

@@ -47,7 +47,7 @@ export default class index extends Component {
       <Paper paperStyles={{ padding: "5px 0 5px 0" }}>
         <div className="profilePageHeaderContainer">
           <style jsx>{profilePageHeaderStyles}</style>
-          <div className="container">
+          <div className="container ">
             <div className="row">
               <div className="col-md-8" style={{ marginTop: "25px" }}>
                 <ReviewCard
@@ -57,7 +57,7 @@ export default class index extends Component {
                   )}`}
                   imgContainerStyles={{
                     maxWidth: "300px",
-                    marginRight: "30px"
+                    
                   }}
                   title={domain_name}
                   subTitle={
@@ -73,12 +73,12 @@ export default class index extends Component {
                   }}
                 />
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 headerRight">
                 <div className="headerCard">
                   <Card>
                     <div className="companyLink">
                       <a href={`https://www.${domain_name}`} target="_blank">
-                        <i className="fa fa-share-square-o"></i>www.google.com
+                        <i className="fa fa-share-square-o"></i>{domain_name}
                       </a>
                     </div>
                     <div>Visit this website</div>
