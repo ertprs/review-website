@@ -24,8 +24,8 @@ class NewProfilePage extends React.Component {
   }
 
   updateParentState = newState => {
-    console.log(newState, 'newState')
     const { domainData } = this.state;
+
     const headerData = {
       ...this.state.headerData,
       domain_name: _get(newState, "domain_data.name", ""),
@@ -121,7 +121,7 @@ class NewProfilePage extends React.Component {
         ...temp,
         userName: _get(review, 'user.name', ""),
         text: _get(review, 'text', ""),
-        ratings: _get(review, 'avg_rating', 0)
+        ratings: _get(review, 'ratings', 0)
       }
       domainReviews = [...domainReviews, temp]
     })
