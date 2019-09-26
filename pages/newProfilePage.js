@@ -121,7 +121,7 @@ class NewProfilePage extends React.Component {
         ...temp,
         userName: _get(review, 'user.name', ""),
         text: _get(review, 'text', ""),
-        ratings: _get(review, 'ratings', 0)
+        ratings: _get(review, 'avg_rating', 0)
       }
       domainReviews = [...domainReviews, temp]
     })
