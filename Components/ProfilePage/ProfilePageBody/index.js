@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ProfilePageBodyRight from "../ProfilePageBodyRight/ProfilePageBodyRight";
 import ProfilePageBodyLeft from "./ProfilePageBodyLeft";
+import { Element } from "react-scroll";
 export default class ProfilePageBody extends Component {
   render() {
     return (
@@ -28,15 +29,19 @@ export default class ProfilePageBody extends Component {
         <div className="container">
           <div className="row">
             <div className="col-md-8 profilePageBodyLeftContainer">
-              <ProfilePageBodyLeft {...this.props} />
+              <Element name="reviews" className="reviews">
+                <ProfilePageBodyLeft {...this.props} />
+              </Element>
             </div>
             <div className="col-md-4 profilePageBodyRightContainer">
-              <ProfilePageBodyRight
-                analyzeReports={this.props.analyzeReports}
-                trafficReports={this.props.trafficReports}
-                socialMediaStats={this.props.socialMediaStats}
-                isMounted={this.props.isMounted}
-              />
+              <Element name="analyzeReports" className="analyzeReports">
+                <ProfilePageBodyRight
+                  analyzeReports={this.props.analyzeReports}
+                  trafficReports={this.props.trafficReports}
+                  socialMediaStats={this.props.socialMediaStats}
+                  isMounted={this.props.isMounted}
+                />
+              </Element>
             </div>
           </div>
         </div>

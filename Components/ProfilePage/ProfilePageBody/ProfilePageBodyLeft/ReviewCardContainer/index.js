@@ -5,6 +5,7 @@ import _get from 'lodash/get';
 import Paper from '../../../../MaterialComponents/Paper';
 import ContentLoader from 'react-content-loader'
 import { connect } from 'react-redux';
+import uuid from 'uuid/v1';
 
 const MyLoader = () => (
     <ContentLoader
@@ -32,13 +33,13 @@ class ReviewCardContainer extends Component {
                 <WriteReviewCard />
                 {isLoading ? <MyLoader /> : domainReviews && domainReviews.length < 1 ?
                     <Paper>
-                        <div style={{ padding: "50px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <div style={{ padding: "50px", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "25px" }}>
                             <h1 style={{ fontSize: "22px" }}>No Reviews Found</h1>
                         </div>
                     </Paper> :
                     domainReviews && domainReviews.map(review => {
                         return (
-                            <div style={{ marginBottom: "25px" }}>
+                            <div style={{ marginBottom: "25px" }} key={uuid()}>
                                 <ReviewCard review={review || {}} />
                             </div>
                         )
