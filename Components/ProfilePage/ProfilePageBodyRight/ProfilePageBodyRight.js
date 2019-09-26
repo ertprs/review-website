@@ -43,7 +43,7 @@ export default class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{ textAlign: "left", marginLeft: "15px" }}>
+            <h5 style={{ textAlign: "left", marginLeft: "15px" }} className="analyzeCardHeading">
               <i className="fa fa-bar-chart analyzeCardHeaderIcon" />
               Analyze Reports
             </h5>
@@ -143,7 +143,7 @@ export default class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{ textAlign: "left", marginLeft: "15px" }}>
+            <h5 style={{ textAlign: "left", marginLeft: "15px" }} className="analyzeCardHeading">
               <i className="fa fa-line-chart analyzeCardHeaderIcon" />
               Traffic Reports
             </h5>
@@ -201,7 +201,7 @@ export default class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{ textAlign: "left", marginLeft: "15px" }}>
+            <h5 style={{ textAlign: "left", marginLeft: "15px" }} className="analyzeCardHeading">
               <i className="fa fa-area-chart" style={{ marginRight: "7px" }} />
               Social Media Stats
             </h5>
@@ -238,13 +238,13 @@ export default class ProfilePageBodyRight extends Component {
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
-          {Object.keys(analyzeReports).length > 0 ? this.renderAnalyzeReports() : null}
+          {socialMediaStats.length > 0 ? this.renderSocialMediaReports() : null}
         </div>
         <div style={{ marginBottom: "25px" }}>
           {Object.keys(trafficReports).length > 0 ? this.renderTrafficAnalysisReports() : null}
         </div>
         <div style={{ marginBottom: "25px" }}>
-          {socialMediaStats.length > 0 ? this.renderSocialMediaReports() : null}
+          {Object.keys(analyzeReports).length > 0 ? this.renderAnalyzeReports() : null}
         </div>
       </div>
     );

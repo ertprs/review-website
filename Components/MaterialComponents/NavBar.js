@@ -26,6 +26,9 @@ const useStyles = makeStyles(theme => ({
   menuButton: {
     marginRight: theme.spacing(2)
   },
+  logoContainer:{
+    marginRight:"12px"
+  },
   title: {
     display: "none",
     [theme.breakpoints.up("sm")]: {
@@ -231,7 +234,7 @@ export default function PrimarySearchAppBar() {
             <MenuIcon />
             
           </IconButton> */}
-          <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap>
+          <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap style={{margin:"0 5px 0 0"}}>
             Trust Search
           </Typography>
           <div className={classes.search}>

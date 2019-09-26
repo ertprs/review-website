@@ -1,22 +1,21 @@
 import React, { Component } from "react";
-import {newAnalysisCardStyles} from './newAnalysisCardStyles';
+import { newAnalysisCardStyles } from "./newAnalysisCardStyles";
 
 export default class NewAnalysisCard extends Component {
   render() {
     const { analysisTitle, analysisInfo, analysisIcon } = this.props;
     return (
       <div
-        style={{
-          display: "flex",
-          textAlign: "left",
-          padding: "15px",
-          borderBottom: "1px solid #f1f1f1",
-          textTransform:"capitalize"
-        }}
+        className="cardContainer"
       >
-          {<style jsx>{newAnalysisCardStyles}</style>}
-        <div style={{ flex: "1", textAlign:"left", fontWeight:"bold" }}><span style={{marginRight:"5px"}}><i className={`fa fa-${analysisIcon}`}></i></span>{analysisTitle} </div>
-        <div style={{ flex: "1", textAlign:"right" }}>{analysisInfo}</div>
+        <style jsx>{newAnalysisCardStyles}</style>
+        <div className="cardLeftItem">
+          {analysisIcon!==undefined ? <span style={{ marginRight: "5px" }}>
+            <i className={`fa fa-${analysisIcon}`}></i>
+          </span>: null}
+          {analysisTitle}{" "}
+        </div>
+        <div className="cardItemRight">{analysisInfo}</div>
       </div>
     );
   }

@@ -11,7 +11,7 @@ const renderFooterTopSection = () => {
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
           <AmpImgWrapper
-            src="/static/images/logo_white.png"
+            src="/static/images/logo_footer.png"
             alt="trustsearchlogo"
             classes="footerTopLogo"
             width="176.04"
