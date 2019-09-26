@@ -200,7 +200,11 @@ class NewProfilePage extends React.Component {
     // console.log(e, "handleTabChange");
   };
 
-  handleSetActive = to => {};
+  handleSetActive = to => {
+    if(this.state.isMounted && this.state.selectedTab!==to){
+      this.setState({selectedTab:to})
+    }
+  };
 
   renderSimpleTabs = () => {
     return (
@@ -218,9 +222,9 @@ class NewProfilePage extends React.Component {
             duration={500}
             offset={-200}
             onSetActive={this.handleSetActive}
-            onClick={e => {
-              this.setState({ selectedTab: "overview" });
-            }}
+            // onClick={e => {
+            //   this.setState({ selectedTab: "overview" });
+            // }}
           >
             Overview
           </Link>
@@ -233,9 +237,9 @@ class NewProfilePage extends React.Component {
             duration={500}
             offset={-50}
             onSetActive={this.handleSetActive}
-            onClick={e => {
-              this.setState({ selectedTab: "reviews" });
-            }}
+            // onClick={e => {
+            //   this.setState({ selectedTab: "reviews" });
+            // }}
           >
             Reviews
           </Link>
@@ -248,9 +252,9 @@ class NewProfilePage extends React.Component {
             duration={500}
             offset={-50}
             onSetActive={this.handleSetActive}
-            onClick={e => {
-              this.setState({ selectedTab: "analyzeReports" });
-            }}
+            // onClick={e => {
+            //   this.setState({ selectedTab: "analyzeReports" });
+            // }}
           >
             Reports
           </Link>
