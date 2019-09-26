@@ -2,6 +2,11 @@ import css from 'styled-jsx/css';
 
 export const profilePageHeaderStyles = css`
 
+    .customContainer{
+        max-width:90%;
+        margin:0 auto;
+    }
+
     .profilePageHeaderContainer{
         padding:15px 0 0 0;
     }
@@ -43,5 +48,11 @@ export const profilePageHeaderStyles = css`
         border-bottom-width:0.6px;
         font-weight: bold;
         font-size:1.05rem;
+    }
+
+    @media screen and (max-width:767px){
+        .headerRight{
+            margin-top:35px;
+        }
     }
 `;

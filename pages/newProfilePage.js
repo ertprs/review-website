@@ -1,12 +1,26 @@
 import React from "react";
+import {
+  Link,
+  DirectLink,
+  Element,
+  Events,
+  animateScroll as scroll,
+  scrollSpy,
+  scroller
+} from "react-scroll";
 import Navbar from "../Components/MaterialComponents/NavBar";
 import ProfilePageHeader from "../Components/ProfilePage/ProfilePageHeader";
 import ProfilePageBody from "../Components/ProfilePage/ProfilePageBody";
 import Footer from "../Components/Footer/Footer";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
+import SimpleTabs from "../Components/MaterialComponents/SimpleTabs";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../utility/constants/socialMediaConstants";
+import { setDomainDataInRedux, setLoading } from '../store/actions/domainProfileActions';
+import { connect } from 'react-redux';
+import { CircularProgress } from '@material-ui/core';
+
 
 class NewProfilePage extends React.Component {
   state = {
@@ -16,14 +30,64 @@ class NewProfilePage extends React.Component {
     trafficReports: {},
     socialMediaStats: [],
     domainReviews: [],
+    selectedTab: "overview",
+    isLoading: true,
     isMounted: false
   };
 
   componentDidMount() {
-    this.setState({ isMounted: true })
+    this.setState({ isMounted: true });
+    Events.scrollEvent.register("begin", function () {
+      // console.log("begin", arguments);
+    });
+
+    Events.scrollEvent.register("end", function () {
+      // console.log("end", arguments);
+    });
+  }
+
+  scrollToTop() {
+    scroll.scrollToTop();
+  }
+  scrollTo() {
+    scroller.scrollTo("scroll-to-element", {
+      duration: 800,
+      delay: 0,
+      smooth: "easeInOutQuart"
+    });
+  }
+  scrollToWithContainer() {
+    let goToContainer = new Promise((resolve, reject) => {
+      Events.scrollEvent.register("end", () => {
+        resolve();
+        Events.scrollEvent.remove("end");
+      });
+
+      scroller.scrollTo("scroll-container", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart"
+      });
+    });
+
+    goToContainer.then(() =>
+      scroller.scrollTo("scroll-container-second-element", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart",
+        containerId: "scroll-container"
+      })
+    );
+  }
+
+  componentWillUnmount() {
+    Events.scrollEvent.remove("begin");
+    Events.scrollEvent.remove("end");
   }
 
   updateParentState = newState => {
+    console.log(newState, 'newState')
+    this.props.setDomainDataInRedux(newState)
     const { domainData } = this.state;
 
     const headerData = {
@@ -116,17 +180,17 @@ class NewProfilePage extends React.Component {
       }
     }
 
-    _get(newState, 'reviews.domain.reviews', []).map(review => {
+    _get(newState, "reviews.domain.reviews", []).map(review => {
       let temp = {
         ...temp,
-        userName: _get(review, 'user.name', ""),
-        text: _get(review, 'text', ""),
-        ratings: _get(review, 'avg_rating', 0)
-      }
-      domainReviews = [...domainReviews, temp]
-    })
+        userName: _get(review, "user.name", ""),
+        text: _get(review, "text", ""),
+        ratings: _get(review, "avg_rating", 0)
+      };
+      domainReviews = [...domainReviews, temp];
+    });
 
-    console.log(domainReviews, 'domainReviews')
+    // console.log(domainReviews, "domainReviews");
 
     this.setState({
       domainData: { ...newState },
@@ -138,6 +202,74 @@ class NewProfilePage extends React.Component {
     });
   };
 
+  handleTabChange = e => {
+    // console.log(e, "handleTabChange");
+  };
+
+  handleSetActive = to => {
+    if (this.state.isMounted && this.state.selectedTab !== to && window.innerWidth <= 767) {
+      console.log("yes")
+      this.setState({ selectedTab: to })
+    }
+  };
+
+  renderSimpleTabs = () => {
+    return (
+      <>
+        <SimpleTabs
+          handleTabChange={this.handleTabChange}
+          selectedTab={this.state.selectedTab}
+        >
+          <Link
+            activeClass="active"
+            className="overview"
+            to="overview"
+            spy={true}
+            smooth={true}
+            duration={500}
+            offset={-200}
+            onSetActive={this.handleSetActive}
+          // onClick={e => {
+          //   this.setState({ selectedTab: "overview" });
+          // }}
+          >
+            Overview
+          </Link>
+          <Link
+            activeClass="active"
+            className="reviews"
+            to="reviews"
+            spy={true}
+            smooth={true}
+            duration={500}
+            offset={-50}
+            onSetActive={this.handleSetActive}
+          // onClick={e => {
+          //   this.setState({ selectedTab: "reviews" });
+          // }}
+          >
+            Reviews
+          </Link>
+          <Link
+            activeClass="active"
+            className="analyzeReports"
+            to="analyzeReports"
+            spy={true}
+            smooth={true}
+            duration={500}
+            offset={-50}
+            onSetActive={this.handleSetActive}
+          // onClick={e => {
+          //   this.setState({ selectedTab: "analyzeReports" });
+          // }}
+          >
+            Reports
+          </Link>
+        </SimpleTabs>
+      </>
+    );
+  };
+
   render() {
     const { domain } = this.props;
     const {
@@ -147,7 +279,20 @@ class NewProfilePage extends React.Component {
       socialMediaStats,
       domainReviews
     } = this.state;
-    console.log("mounted new profile")
+    if (!_isEmpty(_get(this.state, 'domainData', {}))) {
+      if (!_isEmpty(_get(this.state, 'domainData.domain_data', {}))) {
+        if (this.state.isLoading) {
+          this.setState({ isLoading: false })
+        }
+      }
+    }
+
+    if (this.state.isLoading) {
+      this.props.setLoading(true)
+    } else {
+      this.props.setLoading(false)
+    }
+
     return (
       <>
         <PusherDataComponent
@@ -155,7 +300,13 @@ class NewProfilePage extends React.Component {
           onChildStateChange={this.updateParentState}
         />
         <Navbar />
-        <ProfilePageHeader headerData={headerData} isMounted={this.state.isMounted} />
+        {this.renderSimpleTabs()}
+        <Element name="overview" className="overview">
+          <ProfilePageHeader
+            headerData={headerData}
+            isMounted={this.state.isMounted}
+          />
+        </Element>
         <ProfilePageBody
           analyzeReports={analyzeReports}
           trafficReports={trafficReports}
@@ -184,4 +335,4 @@ NewProfilePage.getInitialProps = async ({ query }) => {
   return { domain: domain };
 };
 
-export default NewProfilePage;
+export default connect(null, { setDomainDataInRedux, setLoading })(NewProfilePage);

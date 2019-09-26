@@ -217,9 +217,9 @@ const renderReviewCard = (
       return (
         <div className="productCardContainer">
           <style jsx>{reviewCardStyles}</style>
-          <div className="productProfilePic">
+          <div className="productProfilePic ">
             <div
-              className="productCardPicContainer"
+              className="productCardPicContainer profileHeaderPicContainer"
               style={{ ...imgContainerStyles }}
             >
               <Img
@@ -250,10 +250,10 @@ const renderReviewCard = (
             <div className="productCardTitle">
               <h4>{title}</h4>
             </div>
-            <div className="productSubTitle">
+            <div className="productSubTitle  profileHeaderText">
               <div style={{ ...subTitleStyles }}>{subTitle}</div>
             </div>
-            <div className="productCardText">
+            <div className="productCardText profileHeaderStar">
               <div>{body}</div>
             </div>
             <div className="productCardText" style={{ marginTop: "15px" }}>

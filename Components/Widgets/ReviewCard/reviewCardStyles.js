@@ -45,6 +45,10 @@ export const reviewCardStyles = css`
   .reviewText p {
     word-break: break-word;
   }
+  .profileHeaderStar{
+    margin-left:-5px;
+  }
+
 
   /*---- Business varinat styling -------*/
   .businessProfilePic,
@@ -143,6 +147,13 @@ export const reviewCardStyles = css`
     .productCardTitle{
       text-align:center;
       margin:3% 0 5% 0;
+    }
+    .profileHeaderText{
+        text-align:center;
+        margin:12px 0 13px 0;
+    }
+    .profileHeaderPicContainer {
+      justify-content:center;
     }
   }
 
