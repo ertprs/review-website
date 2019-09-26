@@ -4,19 +4,39 @@ import NewAnalysisCard from "../../Widgets/NewAnalysisCard/NewAnalysisCard";
 import { profilePageBodyRightStyles } from "./profilePageBodyRightStyles";
 import { trafficIcons } from "../../../utility/constants/trafficReportsConstants";
 import uuid from 'uuid/v1';
+import { connect } from 'react-redux';
+import { _isEmpty } from 'lodash/isEmpty';
+import ContentLoader from 'react-content-loader'
 
-export default class ProfilePageBodyRight extends Component {
+const MyLoader = () => (
+  <ContentLoader
+    height={475}
+    width={400}
+    speed={2}
+    primaryColor="#f3f3f3"
+    secondaryColor="#ecebeb"
+  >
+    <rect x="0" y="70" rx="5" ry="5" width="100%" height="100%" />
+  </ContentLoader>
+)
+
+
+class ProfilePageBodyRight extends Component {
+
   renderAnalysisCards = () => {
     let output = [];
-    const analyzeReports = this.props.analyzeReports;
-    if (Object.keys(analyzeReports).length > 0) {
-      for (let item in analyzeReports) {
-        if (analyzeReports[item] !== "") {
+    const { domainProfileData } = this.props
+    const analysisReports = ((domainProfileData || {}).analysisReports || {}).data || {}
+    // const analysisReports = this.props.analysisReports;
+    // isLoading ? <MyLoader /> :
+    if (Object.keys(analysisReports).length > 0) {
+      for (let item in analysisReports) {
+        if (analysisReports[item] !== "") {
           output = [
             ...output,
             <NewAnalysisCard key={uuid()}
               analysisTitle={item.split("_").join(" ")}
-              analysisInfo={analyzeReports[item]}
+              analysisInfo={analysisReports[item]}
             />
           ];
         }
@@ -73,8 +93,10 @@ export default class ProfilePageBodyRight extends Component {
   };
 
   renderTrafficAnalysisCards = () => {
-    const { trafficReports } = this.props;
-    console.log(trafficReports);
+    const { domainProfileData, isLoading } = this.props
+    const trafficReports = ((domainProfileData || {}).trafficReports || {}).data || {}
+    // const { trafficReports } = this.props;
+    console.log(trafficReports, 'trafficReports');
     let output = [];
     if (Object.keys(trafficReports).length > 0) {
       for (let item in trafficReports) {
@@ -94,8 +116,10 @@ export default class ProfilePageBodyRight extends Component {
   };
 
   renderSocialMediaCards = () => {
-    const { socialMediaStats } = this.props;
-    console.log(socialMediaStats);
+    const { domainProfileData, isLoading } = this.props
+    const socialMediaStats = ((domainProfileData || {}).socialMediaStats || {}).data || []
+    // const { socialMediaStats } = this.props;
+    console.log(socialMediaStats, 'socialMediaStats');
     return socialMediaStats.map(item => {
       return <NewAnalysisCard key={uuid()}
         analysisTitle={item.name}
@@ -235,8 +259,9 @@ export default class ProfilePageBodyRight extends Component {
     const socialMediaStats = this.props.socialMediaStats || [];
     const trafficReports = this.props.trafficReports || {};
     const analyzeReports = this.props.analyzeReports || {}
+    const { isLoading } = this.props
     return (
-      <div>
+      isLoading ? <MyLoader /> : <div>
         <div style={{ marginBottom: "25px" }}>
           {socialMediaStats.length > 0 ? this.renderSocialMediaReports() : null}
         </div>
@@ -250,3 +275,11 @@ export default class ProfilePageBodyRight extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { profileData } = state
+  const { domainProfileData, isLoading } = profileData
+  return { domainProfileData, isLoading }
+}
+
+export default connect(mapStateToProps)(ProfilePageBodyRight);

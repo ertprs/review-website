@@ -22,10 +22,12 @@ const createHeaderData = (data) => {
         domain_name: _get(data, "domain_data.name", ""),
         is_verified: _get(data, "domain_data.is_verified", false),
         review_length: _get(data, "reviews.domain.total", 0),
-        rating: _get(data, "general_analysis.payload.ratings.watchdog", 0),
+        rating: _get(data, "general_analysis.payload.ratings.watchdog", 0)
+    }
+    return {
+        data: parsedData,
         willCome
     }
-    return parsedData;
 };
 
 const createAnalysisData = (data) => {
@@ -70,7 +72,7 @@ const createAnalysisData = (data) => {
     }
 
     let parsedData = {
-        ...analysisData,
+        data: analysisData,
         willCome
     }
     return parsedData
@@ -100,7 +102,6 @@ const createTrafficReports = (data) => {
                 pages_per_visit: _get(timeline[0], "visits.pages_per_visit", 0),
                 bounce_rate: _get(timeline[0], "visits.bounce_rate", 0),
                 alexa_pageviews: _get(timeline[0], "visits.alexa_pageviews", 0),
-                willCome
             }
         }
     }
@@ -181,11 +182,10 @@ const createDomainReviews = (data) => {
     }
 }
 
-export const setDomainDataInRedux = (profileData, isLoading) => {
-    console.log(profileData, 'profileData')
+export const setDomainDataInRedux = (profileData) => {
     const domainProfileData = {
         headerData: createHeaderData(profileData),
-        analyzeReports: createAnalysisData(profileData),
+        analysisReports: createAnalysisData(profileData),
         trafficReports: createTrafficReports(profileData),
         socialMediaStats: createSocialMediaStats(profileData),
         domainReviews: createDomainReviews(profileData)

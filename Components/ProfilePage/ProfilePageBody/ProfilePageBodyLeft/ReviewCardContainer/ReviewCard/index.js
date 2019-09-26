@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../../../../../MaterialComponents/Card";
 import styles from "../../ProfilePageBodyLeftStyles";
 import RatingIndicators from "../../../../../Widgets/RatingIndicators/RatingIndicators";
@@ -10,26 +10,26 @@ import _get from "lodash/get";
 
 const ReviewCard = ({ review }) => {
 
-    const [starSize, setStarSize] = useState(0);
-    let windowSize = 0;
+  const [starSize, setStarSize] = useState(0);
+  let windowSize = 0;
 
-    useEffect(() => {
-        windowSize = window.matchMedia("(max-width: 419px)")
-        changeStarSize(windowSize)
-        windowSize.addEventListener('change',changeStarSize);
-        return () => {
-            windowSize.removeEventListener('change',changeStarSize);
-        };
-    }, [])
+  useEffect(() => {
+    windowSize = window.matchMedia("(max-width: 419px)")
+    changeStarSize(windowSize)
+    windowSize.addEventListener('change', changeStarSize);
+    return () => {
+      windowSize.removeEventListener('change', changeStarSize);
+    };
+  }, [])
 
-    const changeStarSize = (windowSize) => {
-        if (windowSize.matches) { // If media query matches
-          setStarSize(20)
-        }
-        else{
-            setStarSize(28)
-        }
-      }
+  const changeStarSize = (windowSize) => {
+    if (windowSize.matches) { // If media query matches
+      setStarSize(20)
+    }
+    else {
+      setStarSize(28)
+    }
+  }
 
   const ratings = (review || {}).ratings || 0;
   return (
@@ -52,13 +52,13 @@ const ReviewCard = ({ review }) => {
         </div>
         <div className="userReviewRating">
           <div className="userReviewRatingLg">
-          <RatingIndicators
-            rating={Number(ratings)}
-            typeOfWidget="star"
-            widgetRatedColors="#21bc61"
-            widgetDimensions={starSize}
-            widgetSpacings="1px"
-          />
+            <RatingIndicators
+              rating={Number(ratings)}
+              typeOfWidget="star"
+              widgetRatedColors="#21bc61"
+              widgetDimensions={starSize}
+              widgetSpacings="1px"
+            />
           </div>
           {/* <div className="userReviewRatingSm">
           <RatingIndicators

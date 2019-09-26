@@ -9,6 +9,7 @@ import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../utility/constants/socialMediaConstants";
 import { setDomainDataInRedux, setLoading } from '../store/actions/domainProfileActions';
 import { connect } from 'react-redux';
+import { CircularProgress } from '@material-ui/core';
 
 class NewProfilePage extends React.Component {
   state = {
@@ -18,7 +19,8 @@ class NewProfilePage extends React.Component {
     trafficReports: {},
     socialMediaStats: [],
     domainReviews: [],
-    isMounted: false
+    isMounted: false,
+    isLoading: true
   };
 
   componentDidMount() {
@@ -141,10 +143,6 @@ class NewProfilePage extends React.Component {
     });
   };
 
-  componentDidMount() {
-    // debugger
-  }
-
   render() {
     const { domain } = this.props;
     const {
@@ -154,7 +152,20 @@ class NewProfilePage extends React.Component {
       socialMediaStats,
       domainReviews
     } = this.state;
-    console.log("mounted new profile")
+    if (!_isEmpty(_get(this.state, 'domainData', {}))) {
+      if (!_isEmpty(_get(this.state, 'domainData.domain_data', {}))) {
+        if (this.state.isLoading) {
+          this.setState({ isLoading: false })
+        }
+      }
+    }
+
+    if (this.state.isLoading) {
+      this.props.setLoading(true)
+    } else {
+      this.props.setLoading(false)
+    }
+
     return (
       <>
         <PusherDataComponent

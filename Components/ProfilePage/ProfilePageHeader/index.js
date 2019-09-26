@@ -5,34 +5,38 @@ import ReviewCard from "../../Widgets/ReviewCard/ReviewCard";
 import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
 import _get from "lodash";
+import { connect } from 'react-redux';
+import ContentLoader, { Facebook } from 'react-content-loader'
 
-export default class index extends Component {
+class ProfilePageHeader extends Component {
   state = {
     headerData: {}
   };
 
   componentDidMount() {
-    this.setState({ headerData: { ...this.props.headerData } });
+    // this.setState({ headerData: { ...this.props.headerData } });
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (
-      this.props.headerData.domain_name === nextProps.headerData.domain_name &&
-      this.props.headerData.is_verified === nextProps.headerData.is_verified &&
-      this.props.headerData.rating === nextProps.headerData.rating &&
-      this.props.headerData.review_length === nextProps.headerData.review_length
-    ) {
-      return false;
-    }
-    return true;
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (
+  //     this.props.headerData.domain_name === nextProps.headerData.domain_name &&
+  //     this.props.headerData.is_verified === nextProps.headerData.is_verified &&
+  //     this.props.headerData.rating === nextProps.headerData.rating &&
+  //     this.props.headerData.review_length === nextProps.headerData.review_length
+  //   ) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 
   render() {
-    const { headerData } = this.props;
+    const { domainProfileData, isLoading } = this.props
+    const headerData = ((domainProfileData || {}).headerData || {}).data || {}
     const ratings = (headerData || {}).rating || 0;
     const domain_name = (headerData || {}).domain_name || "";
     const is_verified = (headerData || {}).is_verified || false;
     const review_length = (headerData || {}).review_length || 0;
+    const willCome = (headerData || {}).willCome || false;
 
     const reviewCardBody = (
       <RatingIndicators
@@ -44,7 +48,7 @@ export default class index extends Component {
       />
     );
     return (
-      <Paper paperStyles={{ padding: "5px 0 5px 0" }}>
+      isLoading ? <Facebook /> : (<Paper paperStyles={{ padding: "5px 0 5px 0" }}>
         <div className="profilePageHeaderContainer">
           <style jsx>{profilePageHeaderStyles}</style>
           <div className="container ">
@@ -57,7 +61,7 @@ export default class index extends Component {
                   )}`}
                   imgContainerStyles={{
                     maxWidth: "300px",
-                    
+
                   }}
                   title={domain_name}
                   subTitle={
@@ -93,11 +97,11 @@ export default class index extends Component {
                           style={{ color: "green" }}
                         ></i>
                       ) : (
-                        <i
-                          className="fa fa-warning"
-                          style={{ color: "#fcaf16" }}
-                        ></i>
-                      )}
+                          <i
+                            className="fa fa-warning"
+                            style={{ color: "#fcaf16" }}
+                          ></i>
+                        )}
                       <span className="claimed">
                         {is_verified ? "Verified" : "Unverified"}
                       </span>
@@ -113,7 +117,15 @@ export default class index extends Component {
             </div>
           </div>
         </div>
-      </Paper>
+      </Paper>)
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { profileData } = state
+  const { domainProfileData, isLoading } = profileData
+  return { domainProfileData, isLoading }
+}
+
+export default connect(mapStateToProps)(ProfilePageHeader)
