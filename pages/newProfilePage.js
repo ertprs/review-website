@@ -7,6 +7,8 @@ import PusherDataComponent from "../Components/PusherDataComponent/PusherDataCom
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../utility/constants/socialMediaConstants";
+import { setDomainDataInRedux, setLoading } from '../store/actions/domainProfileActions';
+import { connect } from 'react-redux';
 
 class NewProfilePage extends React.Component {
   state = {
@@ -24,6 +26,8 @@ class NewProfilePage extends React.Component {
   }
 
   updateParentState = newState => {
+    console.log(newState, 'newState')
+    this.props.setDomainDataInRedux(newState)
     const { domainData } = this.state;
 
     const headerData = {
@@ -126,7 +130,6 @@ class NewProfilePage extends React.Component {
       domainReviews = [...domainReviews, temp]
     })
 
-    console.log(domainReviews, 'domainReviews')
 
     this.setState({
       domainData: { ...newState },
@@ -137,6 +140,10 @@ class NewProfilePage extends React.Component {
       domainReviews: [...domainReviews]
     });
   };
+
+  componentDidMount() {
+    // debugger
+  }
 
   render() {
     const { domain } = this.props;
@@ -184,4 +191,4 @@ NewProfilePage.getInitialProps = async ({ query }) => {
   return { domain: domain };
 };
 
-export default NewProfilePage;
+export default connect(null, { setDomainDataInRedux, setLoading })(NewProfilePage);
