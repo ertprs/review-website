@@ -74,7 +74,6 @@ export default class ProfilePageBodyRight extends Component {
 
   renderTrafficAnalysisCards = () => {
     const { trafficReports } = this.props;
-    console.log(trafficReports);
     let output = [];
     if (Object.keys(trafficReports).length > 0) {
       for (let item in trafficReports) {
@@ -95,7 +94,6 @@ export default class ProfilePageBodyRight extends Component {
 
   renderSocialMediaCards = () => {
     const { socialMediaStats } = this.props;
-    console.log(socialMediaStats);
     return socialMediaStats.map(item => {
       return <NewAnalysisCard key={uuid()}
         analysisTitle={item.name}

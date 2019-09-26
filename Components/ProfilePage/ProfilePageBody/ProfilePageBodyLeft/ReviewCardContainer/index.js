@@ -3,6 +3,7 @@ import ReviewCard from './ReviewCard'
 import WriteReviewCard from '../WriteReviewCard';
 import _get from 'lodash/get';
 import Paper from '../../../../MaterialComponents/Paper';
+import uuid from 'uuid/v1';
 
 export default class index extends Component {
     render() {
@@ -18,7 +19,7 @@ export default class index extends Component {
                     </Paper> :
                     _get(this.props, 'domainReviews', []).map(review => {
                         return (
-                            <div style={{ marginBottom: "25px" }}>
+                            <div style={{ marginBottom: "25px" }} key={uuid()}>
                                 <ReviewCard review={review || {}} />
                             </div>
                         )
