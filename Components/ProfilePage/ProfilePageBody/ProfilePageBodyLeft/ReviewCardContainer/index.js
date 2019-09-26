@@ -13,7 +13,7 @@ export default class index extends Component {
                 <WriteReviewCard />
                 {_get(this.props, 'domainReviews', []).length < 1 ?
                     <Paper>
-                        <div style={{ padding: "50px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <div style={{ padding: "50px", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "25px" }}>
                             <h1 style={{ fontSize: "22px" }}>No Reviews Found</h1>
                         </div>
                     </Paper> :

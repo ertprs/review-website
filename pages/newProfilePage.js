@@ -201,7 +201,8 @@ class NewProfilePage extends React.Component {
   };
 
   handleSetActive = to => {
-    if(this.state.isMounted && this.state.selectedTab!==to){
+    if(this.state.isMounted && this.state.selectedTab!==to && window.innerWidth<=767){
+      console.log("yes")
       this.setState({selectedTab:to})
     }
   };
