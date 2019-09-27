@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import _get from 'lodash/get';
 import _isEmpty from 'lodash/isEmpty';
 import { SocialMediaPlaceholder, TrafficReportsPlaceholder, AnalysisReportsPlaceholder } from './Placeholders';
+import ClaimYourWebsite from '../ClaimYourWebsite/ClaimYourWebsite';
 
 class ProfilePageBodyRight extends Component {
 
@@ -237,6 +238,7 @@ class ProfilePageBodyRight extends Component {
     const trafficReportsData = (((domainProfileData || {}).trafficReports || {}).data || {})
     const socialMediaStatsData = (((domainProfileData || {}).socialMediaStats || {}).data || {})
 
+    const domainReviewsWillCome = (((domainProfileData || {}).domainReviews || {}).willCome || false)
     const analysisReportsWillCome = (((domainProfileData || {}).analysisReports || {}).willCome || false)
     const trafficReportsWillCome = (((domainProfileData || {}).trafficReports || {}).willCome || false)
     const socialMediaStatsWillCome = (((domainProfileData || {}).socialMediaStats || {}).willCome || false)
@@ -261,6 +263,9 @@ class ProfilePageBodyRight extends Component {
             </Card>
           </div>
         </div> : <div>
+            {!domainReviewsWillCome ? <div className="mb-25">
+              <ClaimYourWebsite variant="small" />
+            </div> : null}
             <div className="mb-25">
               {socialMediaStatsWillCome ?
                 <div className="mb-25">

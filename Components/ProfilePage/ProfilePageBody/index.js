@@ -40,6 +40,7 @@ export default class ProfilePageBody extends Component {
                   trafficReports={this.props.trafficReports}
                   socialMediaStats={this.props.socialMediaStats}
                   isMounted={this.props.isMounted}
+                  domainReviews={this.props.domainReviews}
                 />
               </Element>
             </div>
