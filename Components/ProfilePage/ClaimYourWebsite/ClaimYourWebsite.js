@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Paper from "../../MaterialComponents/Paper";
 import { claimYourWebsiteStyles } from "./claimYourWebsiteStyles";
+import {connect} from 'react-redux';
 
-export default class ClaimYourWebsite extends Component {
+ class ClaimYourWebsite extends Component {
   renderClaimButton = () => {
     return (
       <>
@@ -16,7 +17,7 @@ export default class ClaimYourWebsite extends Component {
   };
 
   renderAppropriateBox = () => {
-    const { variant } = this.props;
+    const { variant, domain_name } = this.props;
     switch (variant) {
       case "big":
         return (
@@ -24,6 +25,7 @@ export default class ClaimYourWebsite extends Component {
             <style jsx>{claimYourWebsiteStyles}</style>
             <Paper>
               <div className="claimYourWebsiteBoxBig">
+              <h5 style={{textAlign:"center"}}>Claim ownership of {domain_name} profile !</h5>
                 <p className="claimYourWebsiteText">
                   Trust search can help you to motivate your clients to leave
                   textual and video reviews and build positive online
@@ -43,9 +45,9 @@ export default class ClaimYourWebsite extends Component {
             <style jsx>{claimYourWebsiteStyles}</style>
             <Paper>
               <div className="claimYourWebsiteBoxSmall">
-                <h6>Claim ownership of hardcodedDomain profile</h6>
-                <p className="claimYourWebsiteText">
-                  Claim ownership of hardcodedDomain.com if this is your website and start to build your online reputation!
+                <h5>Claim ownership of {domain_name} profile</h5>
+                <p className="claimYourWebsiteTextSmall">
+                  Claim ownership of {domain_name} if this is your website and start to build your online reputation!
                 </p>
                 <div className="claimYourWebsiteFooter">
                   {this.renderClaimButton()}
@@ -63,3 +65,9 @@ export default class ClaimYourWebsite extends Component {
     return <>{this.renderAppropriateBox()}</>;
   }
 }
+
+const mapStateToProps = (state)=>{
+  return {domain_name: state.profileData.domainProfileData.headerData.data.domain_name}
+}
+
+export default connect(mapStateToProps)(ClaimYourWebsite);

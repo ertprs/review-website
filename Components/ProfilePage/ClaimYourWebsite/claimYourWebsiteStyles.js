@@ -5,6 +5,7 @@ export const claimYourWebsiteStyles = css`
         font-size:1.01rem;
         text-align:center;
         line-height:1.5;
+        margin-top:10px;
     }
 
     .claimYourWebsiteBoxBigContainer{
@@ -13,6 +14,7 @@ export const claimYourWebsiteStyles = css`
 
     .claimYourWebsiteBoxBig{
         display: flex;
+        flex-direction:column;
         justify-content: flex;
         align-items: flex;
         margin-top: 5px;
@@ -25,22 +27,23 @@ export const claimYourWebsiteStyles = css`
 
     .claimBtn{
         padding:8px 10px;
-        background:#1c9f52;
+        background:#21bc61;
         color:#fff;
-        border:1px solid #1c9f52;
-        font-size:1.05rem;
+        border:1px solid #21bc61;
+        font-size:1rem;
         transition: all 0.4s;
+        border-radius:2px;
     }
 
     .claimBtn:hover{
-        background:#21bc61;
-        border:1px solid #21bc61;
+        background:#1c9f52;
+        border:1px solid #1c9f52;
         cursor:pointer;
         outline:none;
     }
 
     .claimBtnHeroText{
-        text-transform:uppercase;
+        text-transform:capitalize;
     }
 
     /*----------- Small box variant --------*/
@@ -48,9 +51,22 @@ export const claimYourWebsiteStyles = css`
         margin-bottom:10px;
         text-align:justify;
     }
-
-    .claimYourWebsiteBoxSmall .claimYourWebsiteText{
+    .claimYourWebsiteTextSmall{
+        font-size:1rem;
         text-align:justify;
+    }
+
+    @media screen and (max-width:991px) {
+        .claimYourWebsiteBoxSmall h5{
+            font-size:1.2rem;
+            line-height:1.4;
+        }
+        .claimYourWebsiteTextSmall{
+            font-size:0.9rem;
+        }
+        .claimBtn{
+            font-size:0.8rem;
+        }
     }
 
     @media only screen and (max-width:767px){
