@@ -5,38 +5,23 @@ import { profilePageBodyRightStyles } from "./profilePageBodyRightStyles";
 import { trafficIcons } from "../../../utility/constants/trafficReportsConstants";
 import uuid from 'uuid/v1';
 import { connect } from 'react-redux';
-import { _isEmpty } from 'lodash/isEmpty';
-import ContentLoader from 'react-content-loader'
-
-const MyLoader = () => (
-  <ContentLoader
-    height={475}
-    width={400}
-    speed={2}
-    primaryColor="#f3f3f3"
-    secondaryColor="#ecebeb"
-  >
-    <rect x="0" y="70" rx="5" ry="5" width="100%" height="100%" />
-  </ContentLoader>
-)
-
+import _get from 'lodash/get';
+import _isEmpty from 'lodash/isEmpty';
+import { SocialMediaPlaceholder, TrafficReportsPlaceholder, AnalysisReportsPlaceholder } from './Placeholders';
+import ClaimYourWebsite from '../ClaimYourWebsite/ClaimYourWebsite';
 
 class ProfilePageBodyRight extends Component {
 
-  renderAnalysisCards = () => {
+  renderAnalysisCards = (data) => {
     let output = [];
-    const { domainProfileData } = this.props
-    const analysisReports = ((domainProfileData || {}).analysisReports || {}).data || {}
-    // const analysisReports = this.props.analysisReports;
-    // isLoading ? <MyLoader /> :
-    if (Object.keys(analysisReports).length > 0) {
-      for (let item in analysisReports) {
-        if (analysisReports[item] !== "") {
+    if (Object.keys(data).length > 0) {
+      for (let item in data) {
+        if (data[item] !== "") {
           output = [
             ...output,
             <NewAnalysisCard key={uuid()}
               analysisTitle={item.split("_").join(" ")}
-              analysisInfo={analysisReports[item]}
+              analysisInfo={data[item]}
             />
           ];
         }
@@ -45,7 +30,7 @@ class ProfilePageBodyRight extends Component {
     return output;
   };
 
-  renderAnalyzeReports = () => {
+  renderAnalyzeReports = (data) => {
     const analyzeReports = this.props.analyzeReports;
     // const analysisData = [
     //   { analysisTitle: "Registration Date", analysisInfo: "1.11.1994" },
@@ -83,7 +68,7 @@ class ProfilePageBodyRight extends Component {
                     />
                   );
                 })} */}
-                {this.renderAnalysisCards()}
+                {this.renderAnalysisCards(data)}
               </div>
             </div>
           </div>
@@ -92,20 +77,16 @@ class ProfilePageBodyRight extends Component {
     );
   };
 
-  renderTrafficAnalysisCards = () => {
-    const { domainProfileData, isLoading } = this.props
-    const trafficReports = ((domainProfileData || {}).trafficReports || {}).data || {}
-    // const { trafficReports } = this.props;
-    console.log(trafficReports, 'trafficReports');
+  renderTrafficAnalysisCards = (data) => {
     let output = [];
-    if (Object.keys(trafficReports).length > 0) {
-      for (let item in trafficReports) {
-        if (trafficReports[item] !== "") {
+    if (Object.keys(data).length > 0) {
+      for (let item in data) {
+        if (data[item] !== "") {
           output = [
             ...output,
             <NewAnalysisCard key={uuid()}
               analysisTitle={item.split("_").join(" ")}
-              analysisInfo={trafficReports[item]}
+              analysisInfo={data[item]}
               analysisIcon={trafficIcons[item].name}
             />
           ];
@@ -115,12 +96,8 @@ class ProfilePageBodyRight extends Component {
     return output;
   };
 
-  renderSocialMediaCards = () => {
-    const { domainProfileData, isLoading } = this.props
-    const socialMediaStats = ((domainProfileData || {}).socialMediaStats || {}).data || []
-    // const { socialMediaStats } = this.props;
-    console.log(socialMediaStats, 'socialMediaStats');
-    return socialMediaStats.map(item => {
+  renderSocialMediaCards = (data) => {
+    return data.map(item => {
       return <NewAnalysisCard key={uuid()}
         analysisTitle={item.name}
         analysisInfo={item.followers}
@@ -129,7 +106,7 @@ class ProfilePageBodyRight extends Component {
     });
   };
 
-  renderTrafficAnalysisReports = () => {
+  renderTrafficAnalysisReports = (data) => {
     const analysisData = [
       {
         analysisTitle: "Daily Unique Visitors",
@@ -188,7 +165,7 @@ class ProfilePageBodyRight extends Component {
                     />
                   );
                 })} */}
-                {this.renderTrafficAnalysisCards()}
+                {this.renderTrafficAnalysisCards(data)}
               </div>
             </div>
           </div>
@@ -197,7 +174,7 @@ class ProfilePageBodyRight extends Component {
     );
   };
 
-  renderSocialMediaReports = () => {
+  renderSocialMediaReports = (data) => {
     const analysisData = [
       {
         analysisTitle: "Facebook",
@@ -246,7 +223,7 @@ class ProfilePageBodyRight extends Component {
                     />
                   );
                 })} */}
-                {this.renderSocialMediaCards()}
+                {this.renderSocialMediaCards(data)}
               </div>
             </div>
           </div>
@@ -256,22 +233,84 @@ class ProfilePageBodyRight extends Component {
   };
 
   render() {
-    const socialMediaStats = this.props.socialMediaStats || [];
-    const trafficReports = this.props.trafficReports || {};
-    const analyzeReports = this.props.analyzeReports || {}
-    const { isLoading } = this.props
+    const { domainProfileData, isLoading } = this.props
+    const analysisReportsData = (((domainProfileData || {}).analysisReports || {}).data || {})
+    const trafficReportsData = (((domainProfileData || {}).trafficReports || {}).data || {})
+    const socialMediaStatsData = (((domainProfileData || {}).socialMediaStats || {}).data || {})
+
+    const domainReviewsWillCome = (((domainProfileData || {}).domainReviews || {}).willCome || false)
+    const analysisReportsWillCome = (((domainProfileData || {}).analysisReports || {}).willCome || false)
+    const trafficReportsWillCome = (((domainProfileData || {}).trafficReports || {}).willCome || false)
+    const socialMediaStatsWillCome = (((domainProfileData || {}).socialMediaStats || {}).willCome || false)
+
     return (
-      isLoading ? <MyLoader /> : <div>
-        <div style={{ marginBottom: "25px" }}>
-          {socialMediaStats.length > 0 ? this.renderSocialMediaReports() : null}
-        </div>
-        <div style={{ marginBottom: "25px" }}>
-          {Object.keys(trafficReports).length > 0 ? this.renderTrafficAnalysisReports() : null}
-        </div>
-        <div style={{ marginBottom: "25px" }}>
-          {Object.keys(analyzeReports).length > 0 ? this.renderAnalyzeReports() : null}
-        </div>
+      <div>
+        <style jsx>{profilePageBodyRightStyles}</style>
+        {isLoading ? <div>
+          <div className="mb-25">
+            <Card>
+              <SocialMediaPlaceholder />
+            </Card>
+          </div>
+          <div className="mb-25" >
+            <Card>
+              <TrafficReportsPlaceholder />
+            </Card>
+          </div>
+          <div className="mb-25" >
+            <Card>
+              <AnalysisReportsPlaceholder />
+            </Card>
+          </div>
+        </div> : <div>
+            {!domainReviewsWillCome ? <div className="mb-25">
+              <ClaimYourWebsite variant="small" />
+            </div> : null}
+            <div className="mb-25">
+              {socialMediaStatsWillCome ?
+                <div className="mb-25">
+                  {this.renderSocialMediaReports(socialMediaStatsData)}
+                </div> : null}
+            </div>
+            <div className="mb-25">
+              {trafficReportsWillCome ?
+                <div className="mb-25">
+                  {this.renderTrafficAnalysisReports(trafficReportsData)}
+                </div> : null}
+            </div>
+            <div className="mb-25">
+              {analysisReportsWillCome ?
+                <div className="mb-25">
+                  {this.renderAnalyzeReports(analysisReportsData)}
+                </div> : null}
+            </div>
+          </div>}
       </div>
+      // <div>
+      //   <style jsx>{profilePageBodyRightStyles}</style>
+      //   {isLoading ? <div className="mb-25" style={{ marginTop: "-14px" }}>
+      //     <SocialMediaPlaceholder />
+      //   </div> : socialMediaStatsWillCome ?
+      //       <div className="mb-25">
+      //         {this.renderSocialMediaReports(socialMediaStatsData)}
+      //       </div> : null
+      //   }
+      //   {isLoading ? <div className="mb-25" style={{ marginTop: "-50px" }} >
+      //     <TrafficReportsPlaceholder />
+      //   </div> : trafficReportsWillCome ?
+      //       <div className="mb-25">
+      //         {this.renderTrafficAnalysisReports(trafficReportsData)}
+      //       </div> : null
+      //   }
+      //   {
+      //     isLoading ? <div className="mb-25" style={{ marginTop: "-150px" }}>
+      //       <AnalysisReportsPlaceholder />
+      //     </div> : analysisReportsWillCome ?
+      //         <div className="mb-25">
+      //           {this.renderAnalyzeReports(analysisReportsData)}
+      //         </div> : null
+      //   }
+      // </div>
     );
   }
 }

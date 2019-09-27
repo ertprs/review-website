@@ -17,10 +17,12 @@ import SimpleTabs from "../Components/MaterialComponents/SimpleTabs";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../utility/constants/socialMediaConstants";
-import { setDomainDataInRedux, setLoading } from '../store/actions/domainProfileActions';
-import { connect } from 'react-redux';
-import { CircularProgress } from '@material-ui/core';
-
+import {
+  setDomainDataInRedux,
+  setLoading
+} from "../store/actions/domainProfileActions";
+import { connect } from "react-redux";
+import Router from "next/router";
 
 class NewProfilePage extends React.Component {
   state = {
@@ -32,16 +34,19 @@ class NewProfilePage extends React.Component {
     domainReviews: [],
     selectedTab: "overview",
     isLoading: true,
-    isMounted: false
+    isMounted: false,
+    searchBoxVal: ""
   };
 
   componentDidMount() {
     this.setState({ isMounted: true });
-    Events.scrollEvent.register("begin", function () {
+    Router.events.on('routeChangeStart', this.handleRouteChange)
+
+    Events.scrollEvent.register("begin", function() {
       // console.log("begin", arguments);
     });
 
-    Events.scrollEvent.register("end", function () {
+    Events.scrollEvent.register("end", function() {
       // console.log("end", arguments);
     });
   }
@@ -86,8 +91,8 @@ class NewProfilePage extends React.Component {
   }
 
   updateParentState = newState => {
-    console.log(newState, 'newState')
-    this.props.setDomainDataInRedux(newState)
+    console.log(newState, "newState");
+    this.props.setDomainDataInRedux(newState);
     const { domainData } = this.state;
 
     const headerData = {
@@ -207,9 +212,13 @@ class NewProfilePage extends React.Component {
   };
 
   handleSetActive = to => {
-    if (this.state.isMounted && this.state.selectedTab !== to && window.innerWidth <= 767) {
-      console.log("yes")
-      this.setState({ selectedTab: to })
+    if (
+      this.state.isMounted &&
+      this.state.selectedTab !== to &&
+      window.innerWidth <= 767
+    ) {
+      console.log("yes");
+      this.setState({ selectedTab: to });
     }
   };
 
@@ -229,9 +238,9 @@ class NewProfilePage extends React.Component {
             duration={500}
             offset={-200}
             onSetActive={this.handleSetActive}
-          // onClick={e => {
-          //   this.setState({ selectedTab: "overview" });
-          // }}
+            // onClick={e => {
+            //   this.setState({ selectedTab: "overview" });
+            // }}
           >
             Overview
           </Link>
@@ -244,9 +253,9 @@ class NewProfilePage extends React.Component {
             duration={500}
             offset={-50}
             onSetActive={this.handleSetActive}
-          // onClick={e => {
-          //   this.setState({ selectedTab: "reviews" });
-          // }}
+            // onClick={e => {
+            //   this.setState({ selectedTab: "reviews" });
+            // }}
           >
             Reviews
           </Link>
@@ -259,9 +268,9 @@ class NewProfilePage extends React.Component {
             duration={500}
             offset={-50}
             onSetActive={this.handleSetActive}
-          // onClick={e => {
-          //   this.setState({ selectedTab: "analyzeReports" });
-          // }}
+            // onClick={e => {
+            //   this.setState({ selectedTab: "analyzeReports" });
+            // }}
           >
             Reports
           </Link>
@@ -269,6 +278,26 @@ class NewProfilePage extends React.Component {
       </>
     );
   };
+
+  handleSearchBoxKeyPress = e => {
+    const {searchBoxVal} = this.state;
+    if (
+      e.keyCode === 13 &&
+      this.state.searchBoxVal.trim() !== "" &&
+      /^[^www.][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
+        searchBoxVal
+      )
+    ) {
+      let domainName = searchBoxVal.toLowerCase().trim();
+      window.location.assign(`${domainName}`)
+    }
+  };
+
+  handleRouteChange = url => {
+    console.log('App is changing to: ', url)
+    
+  }
+  
 
   render() {
     const { domain } = this.props;
@@ -279,18 +308,18 @@ class NewProfilePage extends React.Component {
       socialMediaStats,
       domainReviews
     } = this.state;
-    if (!_isEmpty(_get(this.state, 'domainData', {}))) {
-      if (!_isEmpty(_get(this.state, 'domainData.domain_data', {}))) {
+    if (!_isEmpty(_get(this.state, "domainData", {}))) {
+      if (!_isEmpty(_get(this.state, "domainData.domain_data", {}))) {
         if (this.state.isLoading) {
-          this.setState({ isLoading: false })
+          this.setState({ isLoading: false });
         }
       }
     }
 
     if (this.state.isLoading) {
-      this.props.setLoading(true)
+      this.props.setLoading(true);
     } else {
-      this.props.setLoading(false)
+      this.props.setLoading(false);
     }
 
     return (
@@ -299,7 +328,13 @@ class NewProfilePage extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
-        <Navbar />
+        <Navbar
+          handleSearchBoxChange={e =>
+            this.setState({ searchBoxVal: e.target.value })
+          }
+          handleSearchBoxKeyPress={this.handleSearchBoxKeyPress}
+          value={this.state.searchBoxVal}
+        />
         {this.renderSimpleTabs()}
         <Element name="overview" className="overview">
           <ProfilePageHeader
@@ -335,4 +370,7 @@ NewProfilePage.getInitialProps = async ({ query }) => {
   return { domain: domain };
 };
 
-export default connect(null, { setDomainDataInRedux, setLoading })(NewProfilePage);
+export default connect(
+  null,
+  { setDomainDataInRedux, setLoading }
+)(NewProfilePage);
