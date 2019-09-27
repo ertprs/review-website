@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -30,10 +30,10 @@ const useStyles = makeStyles(theme => ({
     marginRight:"12px"
   },
   title: {
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block"
-    },
+    // display: "none",
+    // [theme.breakpoints.up("sm")]: {
+    //   display: "block"
+    // },
     "&:hover": {
       cursor: "pointer"
     }
@@ -118,10 +118,21 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function PrimarySearchAppBar(props) {
+
+  useEffect(() => {
+    const pathName = window.location.pathname;
+    if(pathName.includes("newProfilePage")){
+      setShowInputBase(true)
+    }
+    else{
+      setShowInputBase(false)
+    }
+  }, [])
+
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const [showInputBase, setShowInputBase] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -234,10 +245,10 @@ export default function PrimarySearchAppBar(props) {
             <MenuIcon />
             
           </IconButton> */}
-          <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap style={{margin:"0 5px 0 0"}}>
+          {!showInputBase ? <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap style={{margin:"0 5px 0 0"}}>
             Trust Search
-          </Typography>
-          <div className={classes.search}>
+          </Typography> : null}
+          {showInputBase ? <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -252,7 +263,7 @@ export default function PrimarySearchAppBar(props) {
               onKeyDown={props.handleSearchBoxKeyPress}
               value={props.value}
             />
-          </div>
+          </div> : null}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <Link href="/about">

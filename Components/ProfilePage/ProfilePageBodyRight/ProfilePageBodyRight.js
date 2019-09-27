@@ -32,17 +32,6 @@ class ProfilePageBodyRight extends Component {
 
   renderAnalyzeReports = (data) => {
     const analyzeReports = this.props.analyzeReports;
-    // const analysisData = [
-    //   { analysisTitle: "Registration Date", analysisInfo: "1.11.1994" },
-    //   { analysisTitle: "Expiration Date", analysisInfo: "31.10.2024" },
-    //   { analysisTitle: "Connection Safety", analysisInfo: "Secure" },
-    //   { analysisTitle: "Organization Check", analysisInfo: "Not Validated" },
-    //   { analysisTitle: "Etherscam DB", analysisInfo: "Nothing found" },
-    //   { analysisTitle: "Phishtank Status", analysisInfo: "Nothing Found" },
-    //   { analysisTitle: "Trustworthiness", analysisInfo: "4.7" },
-    //   { analysisTitle: "Index Page Analysis", analysisInfo: "Exists" },
-    //   { analysisTitle: "Redirect Count", analysisInfo: "0" }
-    // ];
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
@@ -56,18 +45,6 @@ class ProfilePageBodyRight extends Component {
           <div className="analyzeCardBody">
             <div className="row">
               <div className="col-md-12">
-                {/* <AnalysisCard
-                  analysisTitle={reportItem.split("_").join(" ")}
-                  analysisInfo={analysisReport[reportItem]}
-                /> */}
-                {/* {analysisData.map(item => {
-                  return (
-                    <NewAnalysisCard
-                      analysisInfo={item.analysisInfo}
-                      analysisTitle={item.analysisTitle}
-                    />
-                  );
-                })} */}
                 {this.renderAnalysisCards(data)}
               </div>
             </div>
@@ -152,19 +129,6 @@ class ProfilePageBodyRight extends Component {
           <div className="analyzeCardBody">
             <div className="row">
               <div className="col-md-12">
-                {/* <AnalysisCard
-                      analysisTitle={reportItem.split("_").join(" ")}
-                      analysisInfo={analysisReport[reportItem]}
-                    /> */}
-                {/* {analysisData.map(item => {
-                  return (
-                    <NewAnalysisCard
-                      analysisInfo={item.analysisInfo}
-                      analysisTitle={item.analysisTitle}
-                      analysisIcon={item.analysisIcon || ""}
-                    />
-                  );
-                })} */}
                 {this.renderTrafficAnalysisCards(data)}
               </div>
             </div>
@@ -210,19 +174,6 @@ class ProfilePageBodyRight extends Component {
           <div className="analyzeCardBody">
             <div className="row">
               <div className="col-md-12">
-                {/* <AnalysisCard
-                      analysisTitle={reportItem.split("_").join(" ")}
-                      analysisInfo={analysisReport[reportItem]}
-                    /> */}
-                {/* {analysisData.map(item => {
-                  return (
-                    <NewAnalysisCard
-                      analysisInfo={item.analysisInfo}
-                      analysisTitle={item.analysisTitle}
-                      analysisIcon={item.analysisIcon || ""}
-                    />
-                  );
-                })} */}
                 {this.renderSocialMediaCards(data)}
               </div>
             </div>
@@ -246,6 +197,15 @@ class ProfilePageBodyRight extends Component {
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
+        <style jsx>
+          {`
+            @media only screen and (max-width:767px){
+              .claim{
+                margin-top:25px;
+              }
+            }
+          `}
+        </style>
         {isLoading ? <div>
           <div className="mb-25">
             <Card>
@@ -263,7 +223,7 @@ class ProfilePageBodyRight extends Component {
             </Card>
           </div>
         </div> : <div>
-            {!domainReviewsWillCome ? <div className="mb-25">
+            {!domainReviewsWillCome ? <div className="mb-25 claim">
               <ClaimYourWebsite variant="small" />
             </div> : null}
             <div className="mb-25">
@@ -286,31 +246,6 @@ class ProfilePageBodyRight extends Component {
             </div>
           </div>}
       </div>
-      // <div>
-      //   <style jsx>{profilePageBodyRightStyles}</style>
-      //   {isLoading ? <div className="mb-25" style={{ marginTop: "-14px" }}>
-      //     <SocialMediaPlaceholder />
-      //   </div> : socialMediaStatsWillCome ?
-      //       <div className="mb-25">
-      //         {this.renderSocialMediaReports(socialMediaStatsData)}
-      //       </div> : null
-      //   }
-      //   {isLoading ? <div className="mb-25" style={{ marginTop: "-50px" }} >
-      //     <TrafficReportsPlaceholder />
-      //   </div> : trafficReportsWillCome ?
-      //       <div className="mb-25">
-      //         {this.renderTrafficAnalysisReports(trafficReportsData)}
-      //       </div> : null
-      //   }
-      //   {
-      //     isLoading ? <div className="mb-25" style={{ marginTop: "-150px" }}>
-      //       <AnalysisReportsPlaceholder />
-      //     </div> : analysisReportsWillCome ?
-      //         <div className="mb-25">
-      //           {this.renderAnalyzeReports(analysisReportsData)}
-      //         </div> : null
-      //   }
-      // </div>
     );
   }
 }
