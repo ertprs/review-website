@@ -2,7 +2,7 @@ import css from "styled-jsx/css";
 
 export const authenticationPageStyles = css.global`
   .mainContainer {
-    margin: 100px 0 30px 0;
+    margin: 45px 0 50px 0;
   }
 
   .card {

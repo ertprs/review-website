@@ -197,6 +197,15 @@ class ProfilePageBodyRight extends Component {
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
+        <style jsx>
+          {`
+            @media only screen and (max-width:767px){
+              .claim{
+                margin-top:25px;
+              }
+            }
+          `}
+        </style>
         {isLoading ? <div>
           <div className="mb-25">
             <Card>
@@ -214,7 +223,7 @@ class ProfilePageBodyRight extends Component {
             </Card>
           </div>
         </div> : <div>
-            {!domainReviewsWillCome ? <div className="mb-25">
+            {!domainReviewsWillCome ? <div className="mb-25 claim">
               <ClaimYourWebsite variant="small" />
             </div> : null}
             <div className="mb-25">

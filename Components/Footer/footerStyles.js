@@ -2,7 +2,7 @@ import css from 'styled-jsx/css';
 
 export default css`
   .footer {
-    background: #303030;
+    background: #111;
     color: #c0c0c0;
   }
 
