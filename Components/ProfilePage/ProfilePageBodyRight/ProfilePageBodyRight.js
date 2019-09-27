@@ -6,7 +6,8 @@ import { trafficIcons } from "../../../utility/constants/trafficReportsConstants
 import uuid from 'uuid/v1';
 import { connect } from 'react-redux';
 import { _isEmpty } from 'lodash/isEmpty';
-import ContentLoader from 'react-content-loader'
+import ContentLoader from 'react-content-loader';
+import ClaimYourWebsite from '../ClaimYourWebsite/ClaimYourWebsite';
 
 const MyLoader = () => (
   <ContentLoader
@@ -259,9 +260,13 @@ class ProfilePageBodyRight extends Component {
     const socialMediaStats = this.props.socialMediaStats || [];
     const trafficReports = this.props.trafficReports || {};
     const analyzeReports = this.props.analyzeReports || {}
+    const {domainReviews} = this.props;
     const { isLoading } = this.props
     return (
       isLoading ? <MyLoader /> : <div>
+        <div style={{ marginBottom: "25px" }}>
+          {domainReviews.length === 0 ? <ClaimYourWebsite variant="small" /> : null}
+        </div>
         <div style={{ marginBottom: "25px" }}>
           {socialMediaStats.length > 0 ? this.renderSocialMediaReports() : null}
         </div>
