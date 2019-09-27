@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -15,9 +15,10 @@ import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Button from "@material-ui/core/Button";
-import Router from 'next/router';
+import Router from "next/router";
 // import Link from "../../src/Link";
 import Link from "next/link";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -26,8 +27,8 @@ const useStyles = makeStyles(theme => ({
   menuButton: {
     marginRight: theme.spacing(2)
   },
-  logoContainer:{
-    marginRight:"12px"
+  logoContainer: {
+    marginRight: "12px"
   },
   title: {
     // display: "none",
@@ -37,7 +38,6 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       cursor: "pointer"
     }
-
   },
   logoImg: {
     height: "50px",
@@ -117,17 +117,30 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PrimarySearchAppBar(props) {
+function PrimarySearchAppBar(props) {
+  const {auth} = props;
+  const { authorized } = auth.logIn || false;
+  const { userProfile } = auth.logIn || {};
+  let userName = "";
+  if (userProfile) {
+    if (userProfile.hasOwnProperty("name")) {
+      if (userProfile.name.length > 0) {
+        let nameAfterSplit = userProfile.name.split(" ");
+        if (nameAfterSplit.length > 0) {
+          userName = nameAfterSplit[0];
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     const pathName = window.location.pathname;
-    if(pathName.includes("newProfilePage")){
-      setShowInputBase(true)
+    if (pathName.includes("newProfilePage")) {
+      setShowInputBase(true);
+    } else {
+      setShowInputBase(false);
     }
-    else{
-      setShowInputBase(false)
-    }
-  }, [])
+  }, []);
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -180,7 +193,6 @@ export default function PrimarySearchAppBar(props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-
       {/* <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
             <MailIcon />
@@ -230,7 +242,10 @@ export default function PrimarySearchAppBar(props) {
     <div className={classes.grow}>
       <AppBar style={{ background: "#303030" }} position="static">
         <Toolbar>
-          <div onClick={() => Router.push('/')} className={classes.logoContainer}>
+          <div
+            onClick={() => Router.push("/")}
+            className={classes.logoContainer}
+          >
             <img
               src="/static/images/logo_footer.png"
               className={classes.logoImg}
@@ -245,36 +260,59 @@ export default function PrimarySearchAppBar(props) {
             <MenuIcon />
             
           </IconButton> */}
-          {!showInputBase ? <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap style={{margin:"0 5px 0 0"}}>
-            Trust Search
-          </Typography> : null}
-          {showInputBase ? <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+          {!showInputBase ? (
+            <Typography
+              onClick={() => Router.push("/")}
+              className={classes.title}
+              variant="h6"
+              noWrap
+              style={{ margin: "0 5px 0 0" }}
+            >
+              Trust Search
+            </Typography>
+          ) : null}
+          {showInputBase ? (
+            <div className={classes.search}>
+              <div className={classes.searchIcon}>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder="Search…"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput
+                }}
+                inputProps={{ "aria-label": "search" }}
+                onChange={props.handleSearchBoxChange}
+                onKeyDown={props.handleSearchBoxKeyPress}
+                value={props.value}
+              />
             </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ "aria-label": "search" }}
-              onChange={props.handleSearchBoxChange}
-              onKeyDown={props.handleSearchBoxKeyPress}
-              value={props.value}
-            />
-          </div> : null}
+          ) : null}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <Link href="/about">
               <a className={classes.navLink}>About Us</a>
             </Link>
-            <Link href="/login">
-              <a className={classes.navLink}>Login</a>
-            </Link>
-            <Link href="/registration">
-              <a className={classes.navLink}>Sign up</a>
-            </Link>
+            {!authorized ? (
+              <>
+                <Link href="/login">
+                  <a className={classes.navLink}>Login</a>
+                </Link>
+                <Link href="/registration">
+                  <a className={classes.navLink}>Sign up</a>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="">
+                  <span className={classes.navLink}>Hello, <span style={{ marginRight: "10px" }}>{userName}</span></span>
+                </Link>
+                <Link href="/logout">
+                  <a className={classes.navLink}>Logout</a>
+                </Link>
+              </>
+            )}
           </div>
           {/* <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 4 new mails" color="inherit">
@@ -316,3 +354,9 @@ export default function PrimarySearchAppBar(props) {
     </div>
   );
 }
+const mapStateToProps = state => {
+  const { auth } = state;
+  return { auth };
+};
+
+export default connect(mapStateToProps)(PrimarySearchAppBar);

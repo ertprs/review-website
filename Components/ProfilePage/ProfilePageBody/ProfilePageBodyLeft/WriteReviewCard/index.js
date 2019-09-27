@@ -4,12 +4,12 @@ import styles from "../ProfilePageBodyLeftStyles";
 import RatingIndicators from "../../../../Widgets/RatingIndicators/RatingIndicators";
 import FormField from "../../../../Widgets/FormField/FormField";
 import validate from "../../../../../utility/validate";
-import _get from 'lodash/get';
-import { connect } from 'react-redux';
-import { sendTrustVote } from '../../../../../store/actions/trustAction';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import OAuthButtons from '../../../../Widgets/oAuthBtns';
-import Snackbar from '../../../../../Components/Widgets/Snackbar';
+import _get from "lodash/get";
+import { connect } from "react-redux";
+import { sendTrustVote } from "../../../../../store/actions/trustAction";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import OAuthButtons from "../../../../Widgets/oAuthBtns";
+import Snackbar from "../../../../../Components/Widgets/Snackbar";
 
 class WriteReview extends Component {
   constructor(props) {
@@ -82,37 +82,56 @@ class WriteReview extends Component {
   };
 
   handlePostReview = () => {
-    this.setState({ isLoading: true })
-    const { value } = this.state.formData.review
-    const { rating } = this.state
-    const { sendTrustVote, auth, profileData } = this.props
-    const authorized = _get(auth, 'logIn.authorized', false)
-    const domain = _get(profileData, 'domainProfileData.headerData.data.domain_name', "")
+    this.setState({ isLoading: true });
+    const { value } = this.state.formData.review;
+    const { rating } = this.state;
+    const { sendTrustVote, auth, profileData } = this.props;
+    const authorized = _get(auth, "logIn.authorized", false);
+    const domain = _get(
+      profileData,
+      "domainProfileData.headerData.data.domain_name",
+      ""
+    );
     if (authorized) {
-      console.log(authorized, 'authorized')
+      console.log(authorized, "authorized");
       const reqBody = {
         rating,
         text: value,
         domain
-      }
-      sendTrustVote(reqBody)
+      };
+      sendTrustVote(reqBody);
     }
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
-    const isSuccess = _get(this.props, 'trustVote.payload.success', false)
-    if (this.props.trustData !== prevProps.trustData) {
+    const isSuccess = _get(this.props, "trustVote.payload.success", false);
+    const type = _get(this.props, "trustVote.type", "");
+    if (this.props.trustVote !== prevProps.trustVote) {
       if (isSuccess) {
-        this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "success", snackbarMsg: "Review Posted Successfully!" })
+        this.setState({
+          rating: 0,
+          isLoading: false,
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Review Posted Successfully!"
+        });
       } else {
-        this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+        if (type !== "TRUST_VOTE_INIT") {
+          this.setState({
+            rating: 0,
+            isLoading: false,
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Some Error Occured!"
+          });
+        }
       }
     }
   }
 
   render() {
-    const { formData, rating, starSize, isLoading, auth } = this.state
-    const authorized = _get(this.props, 'auth.logIn.authorized', false)
+    const { formData, rating, starSize, isLoading, auth } = this.state;
+    const authorized = _get(this.props, "auth.logIn.authorized", false);
     return (
       <div className="writeReviewContainer">
         <style jsx>
@@ -132,7 +151,7 @@ class WriteReview extends Component {
               background: #21bc61;
               border: 1px solid #21bc61;
               transition: all 0.4s;
-              outline:none;
+              outline: none;
               border-radius: 2px;
             }
 
@@ -143,7 +162,7 @@ class WriteReview extends Component {
 
             .postReviewButton:hover {
               cursor: pointer;
-              outline:none;
+              outline: none;
             }
           `}
         </style>
@@ -182,15 +201,20 @@ class WriteReview extends Component {
                   col="5"
                 />
               </div>
-              {
-                isLoading ? <div style={{ textAlign: "center" }}>
+              {isLoading ? (
+                <div style={{ textAlign: "center" }}>
                   <CircularProgress size={30} color="secondary" />
-                </div> :
-                  <button disabled={!_get(formData, 'review.valid', false)} className="postReviewButton" onClick={this.handlePostReview}>Post Review</button>
-              }
-              {!authorized ?
-                <OAuthButtons /> : null
-              }
+                </div>
+              ) : (
+                <button
+                  disabled={!_get(formData, "review.valid", false) || !authorized}
+                  className="postReviewButton"
+                  onClick={this.handlePostReview}
+                >
+                  Post Review
+                </button>
+              )}
+              {!authorized ? <OAuthButtons /> : null}
               <br />
               <div className="pt-10">
                 <span
@@ -202,8 +226,8 @@ class WriteReview extends Component {
               </div>
             </>
           ) : (
-              ""
-            )}
+            ""
+          )}
         </Paper>
         <Snackbar
           open={this.state.showSnackbar}
@@ -217,8 +241,11 @@ class WriteReview extends Component {
 }
 
 const mapStateToProps = state => {
-  const { auth, profileData, trustVote } = state
-  return { auth, profileData, trustVote }
-}
+  const { auth, profileData, trustVote } = state;
+  return { auth, profileData, trustVote };
+};
 
-export default connect(mapStateToProps, { sendTrustVote })(WriteReview); 
+export default connect(
+  mapStateToProps,
+  { sendTrustVote }
+)(WriteReview);
