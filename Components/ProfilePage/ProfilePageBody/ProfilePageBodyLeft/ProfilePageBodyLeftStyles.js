@@ -149,6 +149,10 @@ export default css`
         background: #baf0d0;
       }
 
+      .mb-25 {
+          margin-bottom: 25px;
+      }
+
       /*------- Media queries ----------*/
       @media screen and (max-width:475px){
         .writeReviewBox{

@@ -9,7 +9,6 @@ import _get from 'lodash/get';
 import _isEmpty from 'lodash/isEmpty';
 import { SocialMediaPlaceholder, TrafficReportsPlaceholder, AnalysisReportsPlaceholder } from './Placeholders';
 
-
 class ProfilePageBodyRight extends Component {
 
   renderAnalysisCards = (data) => {
@@ -246,14 +245,20 @@ class ProfilePageBodyRight extends Component {
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
         {isLoading ? <div>
-          <div className="mb-25" style={{ marginTop: "-14px" }}>
-            <SocialMediaPlaceholder />
+          <div className="mb-25">
+            <Card>
+              <SocialMediaPlaceholder />
+            </Card>
           </div>
-          <div className="mb-25" style={{ marginTop: "-50px" }} >
-            <TrafficReportsPlaceholder />
+          <div className="mb-25" >
+            <Card>
+              <TrafficReportsPlaceholder />
+            </Card>
           </div>
-          <div className="mb-25" style={{ marginTop: "-150px" }} >
-            <AnalysisReportsPlaceholder style={{ marginTop: "-150px" }} />
+          <div className="mb-25" >
+            <Card>
+              <AnalysisReportsPlaceholder />
+            </Card>
           </div>
         </div> : <div>
             <div className="mb-25">
