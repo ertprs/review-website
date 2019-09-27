@@ -102,6 +102,7 @@ const Home = () => {
                     handleSearchSubmit();
                   }
                 }}
+                onsubmit={handleSearchSubmit}
               />
             </>
           ) : (

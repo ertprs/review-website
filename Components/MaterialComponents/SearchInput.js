@@ -38,7 +38,7 @@ export default function CustomizedInputBase(props) {
         onKeyDown={props.onkeyDown}
         inputProps={{ "aria-label": "search google maps" }}
       />
-      <IconButton className={classes.iconButton} aria-label="search">
+      <IconButton className={classes.iconButton} aria-label="search" onClick={props.onsubmit}>
         <SearchIcon />
       </IconButton>
     </Paper>
