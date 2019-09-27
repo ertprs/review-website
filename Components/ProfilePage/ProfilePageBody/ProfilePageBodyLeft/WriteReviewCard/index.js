@@ -3,14 +3,41 @@ import Paper from "../../../../MaterialComponents/Paper";
 import styles from "../ProfilePageBodyLeftStyles";
 import RatingIndicators from "../../../../Widgets/RatingIndicators/RatingIndicators";
 import FormField from "../../../../Widgets/FormField/FormField";
+import validate from "../../../../../utility/validate";
+import _get from 'lodash/get';
+import { connect } from 'react-redux';
+import { sendTrustVote } from '../../../../../store/actions/trustAction';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import OAuthButtons from '../../../../Widgets/oAuthBtns';
+import Snackbar from '../../../../../Components/Widgets/Snackbar';
 
-export default class index extends Component {
+class WriteReview extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      formData: {
+        review: {
+          element: "textarea",
+          value: "",
+          placeholder: "Please write few words about your experience .....",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            minLength: 140,
+            maxLength: 280
+          },
+          name: "review"
+        }
+      },
       rating: 0,
       review: "",
-      starSize: 0
+      starSize: 0,
+      isLoading: false,
+      showSnackbar: false,
+      variant: "success",
+      snackbarMsg: ""
     };
     this.windowSize = 0;
   }
@@ -38,12 +65,54 @@ export default class index extends Component {
     this.setState({ rating: data });
   };
 
-  handleChange = e => {
+  handleChange = (e, id) => {
     const { value } = e.target;
-    this.setState({ review: value });
+    const { formData } = this.state;
+    this.setState({
+      formData: {
+        ...formData,
+        [id]: {
+          ...formData[id],
+          value: value,
+          valid: validate(value, formData[id].validationRules),
+          touched: true
+        }
+      }
+    });
   };
 
+  handlePostReview = () => {
+    this.setState({ isLoading: true })
+    const { value } = this.state.formData.review
+    const { rating } = this.state
+    const { sendTrustVote, auth, profileData } = this.props
+    const authorized = _get(auth, 'logIn.authorized', false)
+    const domain = _get(profileData, 'domainProfileData.headerData.data.domain_name', "")
+    if (authorized) {
+      console.log(authorized, 'authorized')
+      const reqBody = {
+        rating,
+        text: value,
+        domain
+      }
+      sendTrustVote(reqBody)
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const isSuccess = _get(this.props, 'trustVote.payload.success', false)
+    if (this.props.trustData !== prevProps.trustData) {
+      if (isSuccess) {
+        this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "success", snackbarMsg: "Review Posted Successfully!" })
+      } else {
+        this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+      }
+    }
+  }
+
   render() {
+    const { formData, rating, starSize, isLoading, auth } = this.state
+    const authorized = _get(this.props, 'auth.logIn.authorized', false)
     return (
       <div className="writeReviewContainer">
         <style jsx>
@@ -57,17 +126,23 @@ export default class index extends Component {
               color: #21bc61;
             }
             .postReviewButton {
+              width: 100%;
               padding: 8px 12px;
               color: #fff;
               background: #21bc61;
               border: 1px solid #21bc61;
               transition: all 0.4s;
               outline:none;
+              border-radius: 2px;
             }
+
+            .postReviewButton:disabled {
+              border: 1px solid #baf0d0;
+              background: #baf0d0;
+            }
+
             .postReviewButton:hover {
-              background: #19914b;
-              border: 1px solid #19914b;
-              cursor:pointer;
+              cursor: pointer;
               outline:none;
             }
           `}
@@ -85,34 +160,39 @@ export default class index extends Component {
             </div>
             <div className="reviewIndicator">
               <RatingIndicators
-                rating={this.state.rating}
+                rating={rating}
                 typeOfWidget="star"
                 widgetRatedColors="#21bc61"
                 widgetHoverColors="#21bc61"
-                widgetDimensions={this.state.starSize.toString()}
+                widgetDimensions={starSize.toString()}
                 widgetSpacings="1px"
                 changeRating={this.changeRating}
               />
             </div>
           </div>
-          {this.state.rating > 0 ? (
+          {rating > 0 ? (
             <>
-              <div style={{ marginTop: "20px" }}>
+              <div className="mt-20">
                 <FormField
-                  placeholder="Please write few words about your experience ....."
-                  // {...formData.password}
-                  element="textarea"
+                  {...formData.review}
                   handleChange={this.handleChange}
-                  type="text"
-                  value={this.state.review}
-                  // id="review"
+                  type="textarea"
+                  id="review"
                   rows="5"
                   col="5"
                 />
               </div>
-              <button className="postReviewButton">Post Review</button>
+              {
+                isLoading ? <div style={{ textAlign: "center" }}>
+                  <CircularProgress size={30} color="secondary" />
+                </div> :
+                  <button disabled={!_get(formData, 'review.valid', false)} className="postReviewButton" onClick={this.handlePostReview}>Post Review</button>
+              }
+              {!authorized ?
+                <OAuthButtons /> : null
+              }
               <br />
-              <div style={{ paddingTop: "10px" }}>
+              <div className="pt-10">
                 <span
                   className="cancelReviewBtn"
                   onClick={() => this.setState({ rating: 0 })}
@@ -122,10 +202,23 @@ export default class index extends Component {
               </div>
             </>
           ) : (
-            ""
-          )}
+              ""
+            )}
         </Paper>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { auth, profileData, trustVote } = state
+  return { auth, profileData, trustVote }
+}
+
+export default connect(mapStateToProps, { sendTrustVote })(WriteReview); 

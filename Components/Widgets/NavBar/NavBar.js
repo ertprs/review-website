@@ -7,8 +7,8 @@ import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import { useAmp } from "next/amp";
 import _get from "lodash";
 import _isEmpty from "lodash/isEmpty";
-// import { GoogleLogout } from 'react-google-login';
-// import { googleClientId } from '../../../utility/config';
+import { GoogleLogout } from 'react-google-login';
+import { googleClientId } from '../../../utility/config';
 import { connect } from "react-redux";
 
 const onLogout = () => {
@@ -118,12 +118,12 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
                 </div>
               </React.Fragment>
             )}
-          {/* <GoogleLogout
+          <GoogleLogout
             clientId={googleClientId}
             buttonText="Logout"
             onLogoutSuccess={onLogout}
           >
-          </GoogleLogout> */}
+          </GoogleLogout>
           {/* <button onClick={logoutFb}>Logout Fb</button> */}
 
         </div>

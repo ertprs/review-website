@@ -151,7 +151,7 @@ class ResetPassword extends Component {
                 ) :
                     <React.Fragment>
                       <div className="cardHeading">
-                        <h2 style={{ color: "red" }}>Something went wrong!</h2>
+                        <h2 className="errorMsg">Something went wrong!</h2>
                       </div>
                       <button className="registerBtn" onClick={this.onLoginClick}>
                         Go to Login

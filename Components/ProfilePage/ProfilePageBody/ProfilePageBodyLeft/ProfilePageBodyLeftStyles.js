@@ -1,6 +1,19 @@
 import css from 'styled-jsx/css';
 
 export default css`
+
+    .errroMsg {
+        color: red;
+    }
+
+    .pt-10 {
+        padding-top: 10px;
+    }
+
+    .mt-20 { 
+        margin-top: 20px;
+    }
+
     .displayFlex {
         display: flex;
     }

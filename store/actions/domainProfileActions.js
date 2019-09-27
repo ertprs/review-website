@@ -117,9 +117,10 @@ const createSocialMediaStats = (data) => {
     if (Array.isArray(data.sch)) {
         isScheduled = data.sch.includes("social")
     }
+    let doesKeyExist
     if (isScheduled || data.hasOwnProperty('social')) {
         if (_get(data, 'social.success', false) === true) {
-            willCome = true
+            doesKeyExist = true
         }
     }
     let socialMediaStats = [];
@@ -144,6 +145,13 @@ const createSocialMediaStats = (data) => {
                 }
             }
         }
+    }
+    if (doesKeyExist) {
+        socialMediaStats || [].forEach(data => {
+            if (data.followers) {
+                willCome = true
+            }
+        })
     }
     return {
         data: socialMediaStats,
