@@ -46,6 +46,11 @@ export const claimYourWebsiteStyles = css`
     /*----------- Small box variant --------*/
     .claimYourWebsiteBoxSmall .claimYourWebsiteFooter{
         margin-bottom:10px;
+        text-align:justify;
+    }
+
+    .claimYourWebsiteBoxSmall .claimYourWebsiteText{
+        text-align:justify;
     }
 
     @media only screen and (max-width:767px){
