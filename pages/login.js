@@ -52,7 +52,6 @@ class Login extends Component {
     isLoading: false,
     isUnauthorized: false,
     showSnackbar: false,
-    showSnackbar: false,
     variant: "success",
     snackbarMsg: ""
   };

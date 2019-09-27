@@ -1,53 +1,7 @@
-import css from "styled-jsx/css";
+import { css } from 'styled-jsx/css';
 
-export const authenticationPageStyles = css.global`
-  .mainContainer {
-    margin: 45px 0 50px 0;
-  }
-
-  .card {
-    border: 1px solid #fff;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-    padding: 12%;
-    background-color: #fff;
-  }
-
-  .cardHeading {
-    margin-bottom: 20px;
-  }
-
-  .registerBtn {
-    width: 100%;
-    padding: 10px 30px;
-    border: 1px solid #28b661;
-    background: #28b661;
-    color: #fff;
-    font-weight: 400;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    -ms-border-radius: 3px;
-    -o-border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.4s;
-  }
-
-  .registerBtn:hover {
-    background: #30ab4a;
-  }
-
-  .registerBtn:disabled {
-    border: 1px solid #baf0d0;
-    background: #baf0d0;
-  }
-
-  .errorMsg {
-    color: red;
-    font-size: 14px;
-    margin: 10px 0;
-  }
-
-  .loginBtn {
+export default css.global`
+ .loginBtn {
     margin-top: 10px;
     box-sizing: border-box;
     position: relative;
@@ -119,14 +73,4 @@ export const authenticationPageStyles = css.global`
   .loginBtn--google:focus {
     background: #e74b37;
   }
-
-  .forgotPasswordLink {
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  .contactLink {
-    margin-left: 5px;
-    font-size: 16.5px;
-  }
-`;
+ `
