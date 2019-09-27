@@ -11,8 +11,8 @@ import ClaimYourWebsite from "../../../ClaimYourWebsite/ClaimYourWebsite";
 class ReviewCardContainer extends Component {
   render() {
     const { domainProfileData, isLoading } = this.props
-    const domainReviewsData = (((domainProfileData || {}).domainReviewsWillCome || {}).data || [])
-    const domainReviewsWillCome = (((domainProfileData || {}).domainReviewsWillCome || {}).willCome || false)
+    const domainReviewsData = (((domainProfileData || {}).domainReviews || {}).data || [])
+    const domainReviewsWillCome = (((domainProfileData || {}).domainReviews || {}).willCome || false)
     return (
       <div>
         <WriteReviewCard />
