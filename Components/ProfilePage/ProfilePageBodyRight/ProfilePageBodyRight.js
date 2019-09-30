@@ -226,19 +226,19 @@ class ProfilePageBodyRight extends Component {
             {!domainReviewsWillCome ? <div className="mb-25 claim">
               <ClaimYourWebsite variant="small" />
             </div> : null}
-            <div className="mb-25">
+            <div>
               {socialMediaStatsWillCome ?
                 <div className="mb-25">
                   {this.renderSocialMediaReports(socialMediaStatsData)}
                 </div> : null}
             </div>
-            <div className="mb-25">
+            <div>
               {trafficReportsWillCome ?
                 <div className="mb-25">
                   {this.renderTrafficAnalysisReports(trafficReportsData)}
                 </div> : null}
             </div>
-            <div className="mb-25">
+            <div>
               {analysisReportsWillCome ?
                 <div className="mb-25">
                   {this.renderAnalyzeReports(analysisReportsData)}
