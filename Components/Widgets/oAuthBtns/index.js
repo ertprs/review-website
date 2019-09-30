@@ -9,6 +9,7 @@ import {
 import styles from './oAuthStyles';
 import { signUp } from '../../../store/actions/authActions';
 import { connect } from 'react-redux';
+import _get from 'lodash/get';
 
 class OAuthButtons extends Component {
 
@@ -40,11 +41,13 @@ class OAuthButtons extends Component {
     }
 
     render() {
+        const { disabled } = this.props
         return (
             <div>
                 <style jsx>{styles}</style>
                 <GoogleLogin
                     clientId={googleClientId}
+                    disabled={disabled}
                     render={renderProps => (
                         <button
                             className="loginBtn loginBtn--google"
@@ -68,6 +71,7 @@ class OAuthButtons extends Component {
                         <button
                             className="loginBtn loginBtn--facebook"
                             onClick={renderProps.onClick}
+                            disabled={disabled}
                         >
                             Login with Facebook
                     </button>

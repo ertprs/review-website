@@ -6,10 +6,11 @@ import FormField from "../../../../Widgets/FormField/FormField";
 import validate from "../../../../../utility/validate";
 import _get from 'lodash/get';
 import { connect } from 'react-redux';
-import { sendTrustVote } from '../../../../../store/actions/trustAction';
+import { sendTrustVote, sendTrustDataLater } from '../../../../../store/actions/trustAction';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import OAuthButtons from '../../../../Widgets/oAuthBtns';
 import Snackbar from '../../../../../Components/Widgets/Snackbar';
+import Router from 'next/router';
 
 class WriteReview extends Component {
   constructor(props) {
@@ -85,17 +86,19 @@ class WriteReview extends Component {
     this.setState({ isLoading: true })
     const { value } = this.state.formData.review
     const { rating } = this.state
-    const { sendTrustVote, auth, profileData } = this.props
+    const { sendTrustVote, auth, profileData, sendTrustDataLater } = this.props
     const authorized = _get(auth, 'logIn.authorized', false)
     const domain = _get(profileData, 'domainProfileData.headerData.data.domain_name', "")
+    const reqBody = {
+      rating,
+      text: value,
+      domain
+    }
     if (authorized) {
-      console.log(authorized, 'authorized')
-      const reqBody = {
-        rating,
-        text: value,
-        domain
-      }
       sendTrustVote(reqBody)
+    } else {
+      sendTrustDataLater(reqBody)
+      Router.push('/login')
     }
   }
 
@@ -134,6 +137,7 @@ class WriteReview extends Component {
               transition: all 0.4s;
               outline:none;
               border-radius: 2px;
+              margin: 10px 0px;
             }
 
             .postReviewButton:disabled {
@@ -182,14 +186,14 @@ class WriteReview extends Component {
                   col="5"
                 />
               </div>
+              {!authorized ?
+                <OAuthButtons disabled={!_get(formData, 'review.valid', false)} /> : null
+              }
               {
                 isLoading ? <div style={{ textAlign: "center" }}>
                   <CircularProgress size={30} color="secondary" />
                 </div> :
-                  <button disabled={!_get(formData, 'review.valid', false)} className="postReviewButton" onClick={this.handlePostReview}>Post Review</button>
-              }
-              {!authorized ?
-                <OAuthButtons /> : null
+                  <button disabled={!_get(formData, 'review.valid', false)} className="postReviewButton" onClick={this.handlePostReview}>{authorized ? 'Post Review' : "Login and Post Review"}</button>
               }
               <br />
               <div className="pt-10">
@@ -221,4 +225,4 @@ const mapStateToProps = state => {
   return { auth, profileData, trustVote }
 }
 
-export default connect(mapStateToProps, { sendTrustVote })(WriteReview); 
+export default connect(mapStateToProps, { sendTrustVote, sendTrustDataLater })(WriteReview); 

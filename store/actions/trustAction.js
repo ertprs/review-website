@@ -25,7 +25,6 @@ export const sendTrustVote = trustData => {
       });
       let success = _get(res, "data.success", false);
       dispatch({ type: TRUST_VOTE_SUCCESS, payload: { success, shouldSend: false } })
-      // Router.push("/afterTrustVoteSubmit")
 
     } catch (error) {
       let success = _get(error, "response.data.success", false);
@@ -36,5 +35,11 @@ export const sendTrustVote = trustData => {
 
 
 export const sendTrustDataLater = trustData => {
-  return { type: SEND_TRUST_DATA_LATER, payload: { data: { ...trustData }, shouldSend: true } }
+  return {
+    type: SEND_TRUST_DATA_LATER,
+    payload: {
+      data: { ...trustData },
+      shouldSend: true
+    }
+  }
 };
