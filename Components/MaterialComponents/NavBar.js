@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -18,6 +18,8 @@ import Button from "@material-ui/core/Button";
 import Router from 'next/router';
 // import Link from "../../src/Link";
 import Link from "next/link";
+import { GoogleLogout } from 'react-google-login';
+import { googleClientId } from '../../utility/config';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -26,8 +28,8 @@ const useStyles = makeStyles(theme => ({
   menuButton: {
     marginRight: theme.spacing(2)
   },
-  logoContainer:{
-    marginRight:"12px"
+  logoContainer: {
+    marginRight: "12px"
   },
   title: {
     // display: "none",
@@ -121,10 +123,10 @@ export default function PrimarySearchAppBar(props) {
 
   useEffect(() => {
     const pathName = window.location.pathname;
-    if(pathName.includes("newProfilePage")){
+    if (pathName.includes("newProfilePage")) {
       setShowInputBase(true)
     }
-    else{
+    else {
       setShowInputBase(false)
     }
   }, [])
@@ -245,7 +247,7 @@ export default function PrimarySearchAppBar(props) {
             <MenuIcon />
             
           </IconButton> */}
-          {!showInputBase ? <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap style={{margin:"0 5px 0 0"}}>
+          {!showInputBase ? <Typography onClick={() => Router.push('/')} className={classes.title} variant="h6" noWrap style={{ margin: "0 5px 0 0" }}>
             Trust Search
           </Typography> : null}
           {showInputBase ? <div className={classes.search}>
@@ -275,6 +277,12 @@ export default function PrimarySearchAppBar(props) {
             <Link href="/registration">
               <a className={classes.navLink}>Sign up</a>
             </Link>
+            <GoogleLogout
+              clientId={googleClientId}
+              buttonText="Logout"
+            // onLogoutSuccess={onLogout}
+            >
+            </GoogleLogout>
           </div>
           {/* <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 4 new mails" color="inherit">

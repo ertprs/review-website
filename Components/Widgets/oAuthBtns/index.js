@@ -4,18 +4,18 @@ import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props
 import {
     googleClientId,
     facebookAppId,
-    loginApiOAuth
+    registerApiOAuth
 } from "../../../utility/config";
-import { authenticationPageStyles } from '../../Styles/authenticationPageStyles';
-import { logIn } from '../../../store/actions/authActions';
+import styles from './oAuthStyles';
+import { signUp } from '../../../store/actions/authActions';
 import { connect } from 'react-redux';
 
 class OAuthButtons extends Component {
-    OAuthSignIn = (response, name) => {
+
+    OAuthSignIn = (response, name, signupType) => {
         console.log(response, "res");
-        const { logIn } = this.props
+        const { signUp } = this.props
         let reqBody = {}
-        let loginType = 0
         if (name === 'google') {
             reqBody = {
                 provider: name,
@@ -23,7 +23,7 @@ class OAuthButtons extends Component {
                     id_token: _get(response, "Zi.id_token", "")
                 }
             }
-            logIn(reqBody, loginApiOAuth, 3)
+            signUp(reqBody, registerApiOAuth, signupType)
         } else if (name === 'facebook') {
             reqBody = {
                 provider: name,
@@ -31,7 +31,7 @@ class OAuthButtons extends Component {
                     accessToken: response.accessToken
                 }
             }
-            logIn(reqBody, loginApiOAuth, 2)
+            signUp(reqBody, registerApiOAuth, signupType)
         }
     };
 
@@ -42,7 +42,7 @@ class OAuthButtons extends Component {
     render() {
         return (
             <div>
-                <style jsx>{authenticationPageStyles}</style>
+                <style jsx>{styles}</style>
                 <GoogleLogin
                     clientId={googleClientId}
                     render={renderProps => (
@@ -54,8 +54,8 @@ class OAuthButtons extends Component {
                             Login with Google
                     </button>
                     )}
-                    onSuccess={response => this.OAuthSignIn(response, "google")}
-                    onFailure={response => this.OAuthSignIn(response, "google")}
+                    onSuccess={response => this.OAuthSignIn(response, "google", 3)}
+                    onFailure={response => this.OAuthSignIn(response, "google", 3)}
                     cookiePolicy={"single_host_origin"}
                 />
                 <FacebookLogin
@@ -63,7 +63,7 @@ class OAuthButtons extends Component {
                     // autoLoad={true}
                     fields="name,email,picture"
                     onClick={this.componentClicked}
-                    callback={response => this.OAuthSignIn(response, "facebook")}
+                    callback={response => this.OAuthSignIn(response, "facebook", 2)}
                     render={renderProps => (
                         <button
                             className="loginBtn loginBtn--facebook"
@@ -78,4 +78,4 @@ class OAuthButtons extends Component {
     }
 }
 
-export default connect(null, { logIn })(OAuthButtons);
+export default connect(null, { signUp })(OAuthButtons);
