@@ -304,12 +304,12 @@ function PrimarySearchAppBar(props) {
                 <Link href="/registration">
                   <a className={classes.navLink}>Sign up</a>
                 </Link>
-                <GoogleLogout
+                {/* <GoogleLogout
                     clientId={googleClientId}
                     buttonText="Logout"
                   // onLogoutSuccess={logout}
                   >
-                  </GoogleLogout>
+                  </GoogleLogout> */}
               </>
             ) : (
                 <>
@@ -319,12 +319,12 @@ function PrimarySearchAppBar(props) {
                   <Link href="/logout">
                     <a className={classes.navLink}>Logout</a>
                   </Link>
-                  <GoogleLogout
+                  {/* <GoogleLogout
                     clientId={googleClientId}
                     buttonText="Logout"
                   // onLogoutSuccess={logout}
                   >
-                  </GoogleLogout>
+                  </GoogleLogout> */}
                 </>
               )}
           </div>
