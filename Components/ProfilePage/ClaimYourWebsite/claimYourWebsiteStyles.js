@@ -53,7 +53,7 @@ export const claimYourWebsiteStyles = css`
     }
     .claimYourWebsiteTextSmall{
         font-size:1rem;
-        text-align:justify;
+        // text-align: center;
     }
 
     @media screen and (max-width:991px) {

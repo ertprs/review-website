@@ -53,7 +53,7 @@ export const signUp = (signupData, registerApi, signUpType) => {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
       if (signUpType == 2 || signUpType == 3) {
-        if (status === 409) {
+        if (status === 409 || status === 500) {
           dispatch(logIn(signupData, loginApiOAuth, signUpType))
         }
       }
