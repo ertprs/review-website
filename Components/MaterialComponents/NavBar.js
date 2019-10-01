@@ -227,6 +227,12 @@ function PrimarySearchAppBar(props) {
         </MenuItem>
       </Link>
 
+      <Link href="/business">
+        <MenuItem>
+          <a className={classes.navLinkMobile}>Business</a>
+        </MenuItem>
+      </Link>
+
       <Link href="/login">
         <MenuItem>
           <a className={classes.navLinkMobile}>Login</a>
@@ -315,6 +321,9 @@ function PrimarySearchAppBar(props) {
           <div className={classes.sectionDesktop}>
             <Link href="/about">
               <a className={classes.navLink}>About Us</a>
+            </Link>
+            <Link href="/business">
+              <a className={classes.navLink}>Business</a>
             </Link>
             {!authorized ? (
               <>
