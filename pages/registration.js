@@ -275,23 +275,25 @@ class Registration extends Component {
                     <CircularProgress size={30} color="secondary" />
                   </div>
                 ) : (
-                    <button
-                      disabled={
-                        !(
-                          formData.name.valid &&
-                          formData.email.valid &&
-                          formData.password.valid &&
-                          formData.password_confirmation.valid &&
-                          formData.country.valid
-                        )
-                      }
-                      className="registerBtn"
-                      onClick={this.handleRegisterClick}
-                    >
-                      Register
+                    <>
+                      <button
+                        disabled={
+                          !(
+                            formData.name.valid &&
+                            formData.email.valid &&
+                            formData.password.valid &&
+                            formData.password_confirmation.valid &&
+                            formData.country.valid
+                          )
+                        }
+                        className="registerBtn"
+                        onClick={this.handleRegisterClick}
+                      >
+                        Register
                   </button>
+                      <OAuthButtons />
+                    </>
                   )}
-                <OAuthButtons />
               </div>
             </div>
           </div>
