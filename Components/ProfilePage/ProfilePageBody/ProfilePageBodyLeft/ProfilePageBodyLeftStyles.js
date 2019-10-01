@@ -166,6 +166,38 @@ export default css`
           margin-bottom: 25px;
       }
 
+      .cancelReviewBtn {
+        color: #111;
+        cursor: pointer;
+        transition: all 0.4s;
+      }
+      
+      .cancelReviewBtn:hover {
+        color: #21bc61;
+      }
+
+      .postReviewButton {
+        width: 100%;
+        padding: 8px 12px;
+        color: #fff;
+        background: #21bc61;
+        border: 1px solid #21bc61;
+        transition: all 0.4s;
+        outline:none;
+        border-radius: 2px;
+        margin: 10px 0px;
+      }
+
+      .postReviewButton:disabled {
+        border: 1px solid #baf0d0;
+        background: #baf0d0;
+      }
+
+      .postReviewButton:hover {
+        cursor: pointer;
+        outline:none;
+      }
+
       /*------- Media queries ----------*/
       @media screen and (max-width:475px){
         .writeReviewBox{

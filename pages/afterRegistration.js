@@ -19,7 +19,7 @@ const AfterRegistration = () => {
             <style jsx> {authenticationPageStyles} </style>{" "}
             <div className="card">
               <div className="cardHeading">
-                <h2> We just sent you an email </h2>{" "}
+                <h3> We just sent you an email </h3>{" "}
               </div>
               <p>
                 Thanks for signing up. <br />
@@ -29,9 +29,13 @@ const AfterRegistration = () => {
                 Give it a few minutes, and don't forget to check your spam
                 folder.
               </p>
-              <p>Didn't receive the email?
-                <a className="contactLink" href="#">support@thetrustsearch.com</a>
-              </p>
+              <div style={{ display: 'flex' }}>
+                <p>Didn't receive the email?
+                <a href="#">support@thetrustsearch.com</a>
+                </p>
+
+              </div>
+
               {loading ? (
                 <div style={{ textAlign: "center" }}>
                   <CircularProgress size={30} color="secondary" />

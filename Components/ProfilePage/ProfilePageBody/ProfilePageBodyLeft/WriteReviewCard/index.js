@@ -4,12 +4,13 @@ import styles from "../ProfilePageBodyLeftStyles";
 import RatingIndicators from "../../../../Widgets/RatingIndicators/RatingIndicators";
 import FormField from "../../../../Widgets/FormField/FormField";
 import validate from "../../../../../utility/validate";
-import _get from "lodash/get";
-import { connect } from "react-redux";
-import { sendTrustVote } from "../../../../../store/actions/trustAction";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import OAuthButtons from "../../../../Widgets/oAuthBtns";
-import Snackbar from "../../../../../Components/Widgets/Snackbar";
+import _get from 'lodash/get';
+import { connect } from 'react-redux';
+import { sendTrustVote, sendTrustDataLater } from '../../../../../store/actions/trustAction';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import OAuthButtons from '../../../../Widgets/oAuthBtns';
+import Snackbar from '../../../../../Components/Widgets/Snackbar';
+import Router from 'next/router';
 
 class WriteReview extends Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class WriteReview extends Component {
   }
 
   componentDidMount() {
-    this.windowSize = window.matchMedia("(max-width: 991px)");
+    this.windowSize = window.matchMedia("screen and (max-width: 991px)");
     this.changeStarSize(this.windowSize);
     this.windowSize.addEventListener("change", this.changeStarSize);
   }
@@ -82,90 +83,101 @@ class WriteReview extends Component {
   };
 
   handlePostReview = () => {
-    this.setState({ isLoading: true });
-    const { value } = this.state.formData.review;
-    const { rating } = this.state;
-    const { sendTrustVote, auth, profileData } = this.props;
-    const authorized = _get(auth, "logIn.authorized", false);
-    const domain = _get(
-      profileData,
-      "domainProfileData.headerData.data.domain_name",
-      ""
-    );
-    if (authorized) {
-      console.log(authorized, "authorized");
-      const reqBody = {
-        rating,
-        text: value,
-        domain
-      };
-      sendTrustVote(reqBody);
+    this.setState({ isLoading: true })
+    const { value } = this.state.formData.review
+    const { rating } = this.state
+    const { sendTrustVote, auth, profileData, sendTrustDataLater } = this.props
+    const authorized = _get(auth, 'logIn.authorized', false)
+    const domain = _get(profileData, 'domainProfileData.headerData.data.domain_name', "")
+    const reqBody = {
+      rating,
+      text: value,
+      domain
     }
-  };
+    if (authorized) {
+      sendTrustVote(reqBody)
+    } else {
+      sendTrustDataLater(reqBody)
+      Router.push('/login')
+    }
+  }
+
+  renderAuthButtons = (formData, isLoading, authButtonLoading, authorized) => {
+    if (!authorized) {
+      return (
+        <>
+          {authButtonLoading ? <div style={{ textAlign: "center" }}><CircularProgress /></div> : !isLoading ?
+            <><OAuthButtons disabled={!_get(formData, 'review.valid', false)} />
+              <style jsx>{styles}</style>
+              <button disabled={!_get(formData, 'review.valid', false)} className="postReviewButton" onClick={this.handlePostReview}>Login and Post Review</button></> : <div style={{ textAlign: "center", margin: "10px 0px" }}>
+              <CircularProgress size={30} color="secondary" />
+            </div>
+          }
+        </>
+      )
+    } else if (authorized) {
+      return (
+        <>
+          {
+            isLoading ? <div style={{ textAlign: "center", margin: "10px 0px" }
+            } >
+              <CircularProgress size={30} color="secondary" />
+            </div > :
+              <>
+                <style jsx>{styles}</style>
+                <button disabled={!_get(formData, 'review.valid', false)} className="postReviewButton" onClick={this.handlePostReview}>Post Review</button></>
+          }
+        </>
+      )
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
-    const isSuccess = _get(this.props, "trustVote.payload.success", false);
-    const type = _get(this.props, "trustVote.type", "");
+    const { trustVote, auth } = this.props
+    const isSuccess = _get(trustVote, 'payload.success', false)
+    const actionType = _get(trustVote, 'type', '')
+    const status = _get(trustVote, 'payload.status', 0)
     if (this.props.trustVote !== prevProps.trustVote) {
-      if (isSuccess) {
-        this.setState({
-          rating: 0,
-          isLoading: false,
-          showSnackbar: true,
-          variant: "success",
-          snackbarMsg: "Review Posted Successfully!"
-        });
-      } else {
-        if (type !== "TRUST_VOTE_INIT") {
-          this.setState({
-            rating: 0,
-            isLoading: false,
-            showSnackbar: true,
-            variant: "error",
-            snackbarMsg: "Some Error Occured!"
-          });
+      if (actionType === 'TRUST_VOTE_SUCCESS') {
+        if (isSuccess && status === 200) {
+          console.log(isSuccess, 'isSuccess')
+          this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "success", snackbarMsg: "Review Posted Successfully!" })
         }
+      } else if (actionType === 'TRUST_VOTE_SUCCESS') {
+        if (!isSuccess) {
+          console.log(isSuccess, 'isSuccess else')
+          this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+        }
+      }
+    }
+
+    if (this.props.auth !== prevProps.auth) {
+      const isLoginFailed = _get(auth, 'logInTemp.isLoginFailed', false)
+      const isWrongCredentials = _get(auth, 'logInTemp.isWrongCredentials', false)
+      const actionType = _get(auth, 'type', '')
+      const authorized = _get(auth, 'logIn.authorized', false)
+      if (isLoginFailed) {
+        if (isWrongCredentials) {
+          this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Incorrect credentials!" })
+        } else {
+          this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+        }
+      } else if (authorized) {
+        this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Logged in successfully!" })
+      }
+      if (actionType === 'LOGIN_INIT') {
+        this.setState({ authButtonLoading: true })
+      } else if (actionType === 'LOGIN_SUCCESS' || actionType === 'LOGIN_FAILURE') {
+        this.setState({ authButtonLoading: false })
       }
     }
   }
 
   render() {
-    const { formData, rating, starSize, isLoading, auth } = this.state;
-    const authorized = _get(this.props, "auth.logIn.authorized", false);
+    const { formData, rating, starSize, isLoading, authButtonLoading } = this.state
+    const authorized = _get(this.props, 'auth.logIn.authorized', false)
     return (
       <div className="writeReviewContainer">
-        <style jsx>
-          {`
-            .cancelReviewBtn {
-              color: #111;
-              cursor: pointer;
-              transition: all 0.4s;
-            }
-            .cancelReviewBtn:hover {
-              color: #21bc61;
-            }
-            .postReviewButton {
-              width: 100%;
-              padding: 8px 12px;
-              color: #fff;
-              background: #21bc61;
-              border: 1px solid #21bc61;
-              transition: all 0.4s;
-              outline: none;
-              border-radius: 2px;
-            }
-
-            .postReviewButton:disabled {
-              border: 1px solid #baf0d0;
-              background: #baf0d0;
-            }
-
-            .postReviewButton:hover {
-              cursor: pointer;
-              outline: none;
-            }
-          `}
-        </style>
         <style jsx>{styles}</style>
         <Paper>
           <div className="writeReviewBox">
@@ -201,20 +213,7 @@ class WriteReview extends Component {
                   col="5"
                 />
               </div>
-              {isLoading ? (
-                <div style={{ textAlign: "center" }}>
-                  <CircularProgress size={30} color="secondary" />
-                </div>
-              ) : (
-                <button
-                  disabled={!_get(formData, "review.valid", false) || !authorized}
-                  className="postReviewButton"
-                  onClick={this.handlePostReview}
-                >
-                  Post Review
-                </button>
-              )}
-              {!authorized ? <OAuthButtons /> : null}
+              {this.renderAuthButtons(formData, isLoading, authButtonLoading, authorized)}
               <br />
               <div className="pt-10">
                 <span
@@ -226,8 +225,8 @@ class WriteReview extends Component {
               </div>
             </>
           ) : (
-            ""
-          )}
+              ""
+            )}
         </Paper>
         <Snackbar
           open={this.state.showSnackbar}
@@ -241,11 +240,8 @@ class WriteReview extends Component {
 }
 
 const mapStateToProps = state => {
-  const { auth, profileData, trustVote } = state;
-  return { auth, profileData, trustVote };
-};
+  const { auth, profileData, trustVote } = state
+  return { auth, profileData, trustVote }
+}
 
-export default connect(
-  mapStateToProps,
-  { sendTrustVote }
-)(WriteReview);
+export default connect(mapStateToProps, { sendTrustVote, sendTrustDataLater })(WriteReview); 

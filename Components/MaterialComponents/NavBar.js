@@ -18,7 +18,13 @@ import Button from "@material-ui/core/Button";
 import Router from "next/router";
 // import Link from "../../src/Link";
 import Link from "next/link";
+import { GoogleLogout } from 'react-google-login';
+import { googleClientId } from '../../utility/config';
 import { connect } from "react-redux";
+import { logOut } from '../../store/actions/authActions';
+import Snackbar from '../Widgets/Snackbar';
+import Logout from '../../pages/logout';
+import _get from 'lodash/get';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -118,9 +124,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function PrimarySearchAppBar(props) {
-  const {auth} = props;
+  const [showSnackbar, setShowSnackbar] = React.useState(false)
+  const { auth } = props;
   const { authorized } = auth.logIn || false;
   const { userProfile } = auth.logIn || {};
+  const loginType = _get(auth, 'logIn.loginType', 0)
   let userName = "";
   if (userProfile) {
     if (userProfile.hasOwnProperty("name")) {
@@ -140,7 +148,21 @@ function PrimarySearchAppBar(props) {
     } else {
       setShowInputBase(false);
     }
-  }, []);
+  }, [])
+
+  const handleLogout = () => {
+    if (loginType === 2) {
+      if (window) {
+        if (window.hasOwnProperty('FB')) {
+          window.FB.logout()
+        }
+      }
+    }
+    setShowSnackbar(true)
+    props.logOut()
+    Router.push("/")
+  }
+
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -304,15 +326,26 @@ function PrimarySearchAppBar(props) {
                 </Link>
               </>
             ) : (
-              <>
-                <Link href="">
-                  <span className={classes.navLink}>Hello, <span style={{ marginRight: "10px" }}>{userName}</span></span>
-                </Link>
-                <Link href="/logout">
-                  <a className={classes.navLink}>Logout</a>
-                </Link>
-              </>
-            )}
+                <>
+                  <Link href="">
+                    <span className={classes.navLink}>Hello, <span style={{ marginRight: "10px" }}>{userName}</span></span>
+                  </Link>
+                  {loginType === 1 || loginType === 2 ? <Link href="">
+                    <a onClick={() => handleLogout()} className={classes.navLink}>Logout</a>
+                  </Link> : ""}
+                  {loginType === 3 ? <GoogleLogout
+                    clientId={googleClientId}
+                    buttonText="Logout"
+                    render={renderProps => (
+                      <Link href="">
+                        <a onClick={() => handleLogout()} className={classes.navLink}>Logout</a>
+                      </Link>
+                    )}
+                  // onLogoutSuccess={logout}
+                  >
+                  </GoogleLogout> : ""}
+                </>
+              )}
           </div>
           {/* <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 4 new mails" color="inherit">
@@ -351,6 +384,12 @@ function PrimarySearchAppBar(props) {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      <Snackbar
+        open={showSnackbar}
+        variant="success"
+        handleClose={() => setShowSnackbar(false)}
+        message="Logout Successfully!"
+      />
     </div>
   );
 }
@@ -359,4 +398,4 @@ const mapStateToProps = state => {
   return { auth };
 };
 
-export default connect(mapStateToProps)(PrimarySearchAppBar);
+export default connect(mapStateToProps, { logOut })(PrimarySearchAppBar);

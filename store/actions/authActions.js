@@ -18,7 +18,7 @@ import {
 import axios from "axios";
 import { sendTrustVote } from './trustAction';
 
-export const signUp = (userData, registerApi, signUpType) => {
+export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
     dispatch({
       type: SIGNUP_INIT,
@@ -31,9 +31,14 @@ export const signUp = (userData, registerApi, signUpType) => {
       }
     });
     try {
-      const res = await axios.post(`${baseURL}${registerApi}`, userData);
+      const res = await axios.post(`${baseURL}${registerApi}`, signupData);
       let success = _get(res, "data.success", false);
       let status = _get(res, "status", 0);
+      if (signUpType == 2 || signUpType == 3) {
+        if (status === 200 && success) {
+          dispatch(logIn(signupData, loginApiOAuth, signUpType))
+        }
+      }
       dispatch({
         type: SIGNUP_SUCCESS,
         signUp: {},
@@ -47,12 +52,11 @@ export const signUp = (userData, registerApi, signUpType) => {
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
-      // ? this will let the oauth user login after already registered message
-      //  if (signUpType == 2 || signUpType == 3) {
-      //  if (status === 409) {
-      //    dispatch(logIn(userData, loginApiOAuth, signUpType))
-      //  }
-      // }
+      if (signUpType == 2 || signUpType == 3) {
+        if (status === 409 || status === 500) {
+          dispatch(logIn(signupData, loginApiOAuth, signUpType))
+        }
+      }
       dispatch({
         type: SIGNUP_FAILURE,
         signUp: {},
@@ -67,7 +71,7 @@ export const signUp = (userData, registerApi, signUpType) => {
   };
 };
 
-export const logIn = (userData, loginApi, loginType) => {
+export const logIn = (loginData, loginApi, loginType) => {
   return async (dispatch, getState) => {
     const { trustVote } = getState();
     const { payload } = trustVote;
@@ -89,7 +93,7 @@ export const logIn = (userData, loginApi, loginType) => {
       }
     });
     try {
-      const res = await axios.post(`${baseURL}${loginApi}`, userData);
+      const res = await axios.post(`${baseURL}${loginApi}`, loginData);
       let success = _get(res, "data.success", false);
       let userProfile = _get(res, "data.user", {})
       let status = _get(res, "status", 0);
@@ -115,7 +119,7 @@ export const logIn = (userData, loginApi, loginType) => {
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
-      let message = _get(error, "response.data.message", "") === "Unauthorized";
+      let message = _get(error, "response.data.message", "") === "Unauthenticated";
       dispatch({
         type: LOGIN_FAILURE,
         logIn: {

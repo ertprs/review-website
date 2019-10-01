@@ -6,7 +6,7 @@ import uuid from "uuid/v1";
 import { reviewCardStyles } from "./reviewCardStyles";
 import Img from "react-image";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import ImagePlaceholder from './imagePlaceholder';
 
 const getColorImg = image => {
   const imagePath = image.substring(0, image.lastIndexOf("/"));
@@ -148,12 +148,12 @@ const renderReviewCard = (
             <div className="individualSpecialization">
               {specialistIn.length > 0
                 ? specialistIn.map(item => {
-                    return (
-                      <div className="specializationItem" key={uuid()}>
-                        {item}
-                      </div>
-                    );
-                  })
+                  return (
+                    <div className="specializationItem" key={uuid()}>
+                      {item}
+                    </div>
+                  );
+                })
                 : null}
             </div>
             {/* specialistIn */}
@@ -225,14 +225,14 @@ const renderReviewCard = (
               <Img
                 src={[
                   image,
-                  ""
+                  "/static/images/noimageavailable.jpg"
                 ]}
                 loader={
                   <div
                     style={{
-                      textAlign: "center",
                       height: "156px",
-                      width: "250"
+                      width: "250",
+                      margin: "20px 100px"
                     }}
                   >
                     <CircularProgress />

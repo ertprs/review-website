@@ -44,13 +44,18 @@ export default css.global`
     text-shadow: 0 -1px 0 #354c8c;
   }
 
+  .loginBtn--facebook:disabled {
+    background: #7087c9;
+    cursor: not-allowed;
+  }
+
   .loginBtn--facebook:before {
     border-right: #364e92 1px solid;
     background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_facebook.png")
       6px 6px no-repeat;
   }
 
-  .loginBtn--facebook:hover,
+  .loginBtn--facebook:hover:enabled,
   .loginBtn--facebook:focus {
     background-color: #5b7bd5;
     background-image: linear-gradient(#5b7bd5, #4864b1);
@@ -62,6 +67,11 @@ export default css.global`
     background: #dd4b39;
   }
 
+  .loginBtn--google:disabled {
+    background-color: #e78073;
+    cursor: not-allowed;
+  }
+
   .loginBtn--google:before {
     border-right: #bb3f30 1px solid;
     padding-right: 35px;
@@ -69,7 +79,7 @@ export default css.global`
       6px 6px no-repeat;
   }
 
-  .loginBtn--google:hover,
+  .loginBtn--google:hover:enabled,
   .loginBtn--google:focus {
     background: #e74b37;
   }
