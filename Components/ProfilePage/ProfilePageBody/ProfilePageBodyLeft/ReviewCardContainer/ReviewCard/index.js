@@ -14,7 +14,7 @@ const ReviewCard = ({ review, isLoading }) => {
   let windowSize = 0;
 
   useEffect(() => {
-    windowSize = window.matchMedia("(max-width: 419px)")
+    windowSize = window.matchMedia("screen and (max-width: 419px)")
     changeStarSize(windowSize)
     windowSize.addEventListener('change', changeStarSize);
     return () => {

@@ -11,7 +11,6 @@ import axios from "axios";
 import Router from "next/router";
 
 export const sendTrustVote = trustData => {
-  console.log(trustData, 'trustData')
   return async (dispatch, getState) => {
     dispatch({ type: TRUST_VOTE_INIT, payload: { shouldSend: false } });
     try {
@@ -24,11 +23,13 @@ export const sendTrustVote = trustData => {
         url: `${baseURL}/api/applications/domain-review`
       });
       let success = _get(res, "data.success", false);
-      dispatch({ type: TRUST_VOTE_SUCCESS, payload: { success, shouldSend: false } })
+      let status = _get(res, 'status', 0)
+      dispatch({ type: TRUST_VOTE_SUCCESS, payload: { success, shouldSend: false, status } })
 
     } catch (error) {
       let success = _get(error, "response.data.success", false);
-      dispatch({ type: TRUST_VOTE_FAILURE, payload: { success, shouldSend: false } })
+      let status = _get(error, 'status', 0)
+      dispatch({ type: TRUST_VOTE_FAILURE, payload: { success, shouldSend: false, status } })
     }
   };
 };

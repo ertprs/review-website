@@ -4,14 +4,9 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import GoogleLogin from "react-google-login";
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Layout from "../hoc/layout/layout";
 import {
-  baseURL,
   loginApi,
-  googleClientId,
-  facebookAppId,
   loginApiOAuth
 } from "../utility/config";
 import Router from "next/router";
@@ -19,6 +14,8 @@ import { connect } from 'react-redux';
 import { logIn } from '../store/actions/authActions';
 import Snackbar from '../Components/Widgets/Snackbar';
 import { CircularProgress } from '@material-ui/core';
+import OAuthButtons from '../Components/Widgets/oAuthBtns';
+import Link from "next/link";
 
 class Login extends Component {
   state = {
@@ -57,6 +54,7 @@ class Login extends Component {
   };
 
   componentDidMount() {
+    window.scrollTo(0, 0)
     // ? This will redirect the user to login page with email prefilled in case of already registered.
     // const { auth } = this.props
     // const { formData } = this.state
@@ -116,30 +114,6 @@ class Login extends Component {
     logIn(reqBody, loginApi, 1)
   };
 
-  OAuthSignIn = (response, name) => {
-    console.log(response, "res");
-    const { logIn } = this.props
-    let reqBody = {}
-    let loginType = 0
-    if (name === 'google') {
-      reqBody = {
-        provider: name,
-        data: {
-          id_token: _get(response, "Zi.id_token", "")
-        }
-      }
-      logIn(reqBody, loginApiOAuth, 3)
-    } else if (name === 'facebook') {
-      reqBody = {
-        provider: name,
-        data: {
-          accessToken: response.accessToken
-        }
-      }
-      logIn(reqBody, loginApiOAuth, 2)
-    }
-  };
-
   componentDidUpdate(prevProps, prevState) {
     const { logIn, logInTemp } = this.props.auth
     const { formData } = this.state
@@ -156,9 +130,11 @@ class Login extends Component {
       const isLoginFailed = _get(logInTemp, 'isLoginFailed', false)
       const authorized = _get(logIn, 'authorized', false)
       if (isLoginFailed) {
-        this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
-      } else if (isWrongCredentials) {
-        this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Please enter correct credentials!" })
+        if (isWrongCredentials) {
+          this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Please enter correct credentials!" })
+        } else {
+          this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+        }
       } else if (authorized) {
         this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Logged in successfully!" })
         setTimeout(() => {
@@ -182,7 +158,7 @@ class Login extends Component {
               <style jsx> {authenticationPageStyles} </style>{" "}
               <div className="card">
                 <div className="cardHeading">
-                  <h4> Login to read and write reviews </h4>{" "}
+                  <h5> Login to read and write reviews </h5>{" "}
                 </div>{" "}
                 <FormField
                   {...formData.email}
@@ -207,46 +183,24 @@ class Login extends Component {
                     <CircularProgress size={30} color="secondary" />
                   </div>
                 ) : (
-                    <button
-                      disabled={
-                        !(formData.email.valid && formData.password.valid)
-                      }
-                      className="registerBtn"
-                      onClick={this.handleLoginClick}
-                    >
-                      Login
+                    <>
+                      <button
+                        disabled={
+                          !(formData.email.valid && formData.password.valid)
+                        }
+                        className="registerBtn"
+                        onClick={this.handleLoginClick}
+                      >
+                        Login
                   </button>
+                      <OAuthButtons />
+                      <div style={{ display: "flex", justifyContent: "center", alignContent: "center", marginTop: "10px" }}>
+                        <Link href="/registration">
+                          <a>Don't have account? Sign Up</a>
+                        </Link>
+                      </div>
+                    </>
                   )}
-                <GoogleLogin
-                  clientId={googleClientId}
-                  render={renderProps => (
-                    <button
-                      className="loginBtn loginBtn--google"
-                      onClick={renderProps.onClick}
-                      disabled={renderProps.disabled}
-                    >
-                      Login with Google
-                    </button>
-                  )}
-                  onSuccess={response => this.OAuthSignIn(response, "google")}
-                  onFailure={response => this.OAuthSignIn(response, "google")}
-                  cookiePolicy={"single_host_origin"}
-                />
-                <FacebookLogin
-                  appId={facebookAppId}
-                  // autoLoad={true}
-                  fields="name,email,picture"
-                  onClick={this.componentClicked}
-                  callback={response => this.OAuthSignIn(response, "facebook")}
-                  render={renderProps => (
-                    <button
-                      className="loginBtn loginBtn--facebook"
-                      onClick={renderProps.onClick}
-                    >
-                      Login with Facebook
-                    </button>
-                  )}
-                />
               </div>
             </div>
           </div>

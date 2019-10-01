@@ -17,22 +17,24 @@ class OAuthButtons extends Component {
         console.log(response, "res");
         const { signUp } = this.props
         let reqBody = {}
-        if (name === 'google') {
-            reqBody = {
-                provider: name,
-                data: {
-                    id_token: _get(response, "Zi.id_token", "")
+        if (response.hasOwnProperty('accessToken')) {
+            if (name === 'google') {
+                reqBody = {
+                    provider: name,
+                    data: {
+                        id_token: _get(response, "Zi.id_token", "")
+                    }
                 }
-            }
-            signUp(reqBody, registerApiOAuth, signupType)
-        } else if (name === 'facebook') {
-            reqBody = {
-                provider: name,
-                data: {
-                    accessToken: response.accessToken
+                signUp(reqBody, registerApiOAuth, signupType)
+            } else if (name === 'facebook') {
+                reqBody = {
+                    provider: name,
+                    data: {
+                        accessToken: response.accessToken
+                    }
                 }
+                signUp(reqBody, registerApiOAuth, signupType)
             }
-            signUp(reqBody, registerApiOAuth, signupType)
         }
     };
 
@@ -54,7 +56,7 @@ class OAuthButtons extends Component {
                             onClick={renderProps.onClick}
                             disabled={renderProps.disabled}
                         >
-                            Login with Google
+                            Continue with Google
                     </button>
                     )}
                     onSuccess={response => this.OAuthSignIn(response, "google", 3)}
@@ -73,7 +75,7 @@ class OAuthButtons extends Component {
                             onClick={renderProps.onClick}
                             disabled={disabled}
                         >
-                            Login with Facebook
+                            Continue with Facebook
                     </button>
                     )}
                 />

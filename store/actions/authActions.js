@@ -119,7 +119,7 @@ export const logIn = (loginData, loginApi, loginType) => {
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
-      let message = _get(error, "response.data.message", "") === "Unauthorized";
+      let message = _get(error, "response.data.message", "") === "Unauthenticated";
       dispatch({
         type: LOGIN_FAILURE,
         logIn: {

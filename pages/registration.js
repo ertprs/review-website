@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 import { signUp, redirectToLoginWithEmail } from '../store/actions/authActions';
 import Snackbar from '../Components/Widgets/Snackbar';
 import { CircularProgress } from '@material-ui/core';
+import OAuthButtons from '../Components/Widgets/oAuthBtns';
 
 class Registration extends Component {
   state = {
@@ -177,29 +178,6 @@ class Registration extends Component {
     signUp(reqBody, registerApi, 1)
   };
 
-  OAuthSignup = (response, name) => {
-    console.log(response, "res");
-    const { signUp } = this.props
-    let reqBody = {}
-    if (name === 'google') {
-      reqBody = {
-        provider: name,
-        data: {
-          id_token: _get(response, "Zi.id_token", "")
-        }
-      }
-      signUp(reqBody, registerApiOAuth, 3)
-    } else if (name === 'facebook') {
-      reqBody = {
-        provider: name,
-        data: {
-          accessToken: response.accessToken
-        }
-      }
-      signUp(reqBody, registerApiOAuth, 2)
-    }
-  };
-
   componentDidUpdate(prevProps, prevState) {
     if (this.props.auth !== prevProps.auth) {
       const { signUpTemp } = this.props.auth
@@ -313,38 +291,7 @@ class Registration extends Component {
                       Register
                   </button>
                   )}
-                <GoogleLogin
-                  clientId={googleClientId}
-                  render={renderProps => (
-                    <button
-                      className="loginBtn loginBtn--google"
-                      onClick={renderProps.onClick}
-                      disabled={renderProps.disabled}
-                    >
-                      Signup with Google
-                    </button>
-                  )}
-                  buttonText="Login with Google"
-                  onSuccess={response => this.OAuthSignup(response, "google")}
-                  onFailure={response => this.OAuthSignup(response, "google")}
-                  cookiePolicy={"single_host_origin"}
-                />
-                <FacebookLogin
-                  appId={facebookAppId}
-                  // autoLoad={true}
-                  fields="name,email,picture"
-                  // scope="public_profile,user_friends,user_actions.books"
-                  // onClick={componentClicked}
-                  callback={response => this.OAuthSignup(response, "facebook")}
-                  render={renderProps => (
-                    <button
-                      className="loginBtn loginBtn--facebook"
-                      onClick={renderProps.onClick}
-                    >
-                      Signup with Facebook
-                    </button>
-                  )}
-                />
+                <OAuthButtons />
               </div>
             </div>
           </div>
