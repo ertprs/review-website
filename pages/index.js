@@ -1,95 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useAmp } from "next/amp";
 import { indexPageStyles } from "../Components/Styles/indexPageStyles";
 import SearchBox from "../Components/Widgets/SearchBox/SearchBox";
 import WebStats from "../Components/Widgets/WebStats/WebStats";
 import Head from "next/head";
 import Router from "next/router";
 import uuid from "uuid/v1";
-import BigLoader from "../Components/Widgets/BigLoader/BigLoader";
+import { CircularProgress } from '@material-ui/core';
 import Layout from "../hoc/layout/layout";
-
-export const config = { amp: "hybrid" };
-
-const handleSearchSubmit = (setLoading, searchBoxVal) => {
-  if (searchBoxVal.trim() !== "") {
-    if (
-      /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/.test(searchBoxVal)
-    ) {
-      let domainName = searchBoxVal.toLowerCase().trim();
-      setLoading(true);
-      Router.push(
-        `/reviews?domain=${domainName}`,
-        `/reviews/${domainName}`
-      );
-    }
-    else{
-      alert("Please enter domain name in the format: (ex- thetrustsearch.com)")
-    }
-  }
-};
-
-const handleSearchBoxChange = (e, setSearchBoxVal) => {
-  setSearchBoxVal(e.target.value);
-};
-
-const renderHeroContent = (
-  searchBoxVal,
-  setSearchBoxVal,
-  loading,
-  setLoading
-) => {
-  return (
-    <div className="homeContainerInner">
-      <style jsx>{indexPageStyles}</style>
-      <div>
-        <h3 className="heroHeading">
-          TrustSearch - the search engine for trust!{" "}
-        </h3>
-        <h4 className="heroSubHeading">
-          We help you to check
-          <span className="heroSubHeadingMainText">trustworthiness</span> to
-          <br /> websites, people and businesses.
-        </h4>
-      </div>
-
-      <div
-        className="analyseBtn"
-        style={{ marginTop: "1rem", marginBottom: "1rem" }}
-      >
-        Analyse any website
-      </div>
-
-      <div className="homeSearchBoxContainer">
-        {!loading ? (
-          <SearchBox
-            onchange={handleSearchBoxChange}
-            value={searchBoxVal}
-            stateMethod={setSearchBoxVal}
-            variant="thetrustsearchIndex"
-            handleSearchSubmit={searchBoxVal => {
-              handleSearchSubmit(setLoading, searchBoxVal);
-            }}
-          />
-        ) : (
-          <BigLoader
-            styles={{
-              borderColor: "#21bc61",
-              top: "50%",
-              left: "50%",
-              position: "relative"
-            }}
-          />
-        )}
-      </div>
-      <div className="row">
-        <div className="col-md-12">
-          <div className="homeWebStatsContainer">{renderWebStats()}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import SearchInput from "../Components/MaterialComponents/SearchInput";
+import { connect } from 'react-redux';
+import Snackbar from '../Components/Widgets/Snackbar';
+import _get from 'lodash/get';
 
 const renderWebStats = () => {
   let statsData = [
@@ -108,28 +29,135 @@ const renderWebStats = () => {
   });
 };
 
-const Home = () => {
-
+const Home = (props) => {
+  const [showSnackbar, setShowSnacbar] = useState(false)
   useEffect(() => {
     // code to run on component mount
-    window.scrollTo(0,0);
-  }, [])
+    if (props.showSnackbar) {
+      setShowSnacbar(true)
+    }
+    window.scrollTo(0, 0);
+  }, []);
   const [searchBoxVal, setSearchBoxVal] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleSearchBoxChange = e => {
+    setSearchBoxVal(e.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchBoxVal.trim() !== "") {
+      if (
+        /^[^www.][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
+          searchBoxVal
+        )
+      ) {
+        let domainName = searchBoxVal.toLowerCase().trim();
+        setLoading(true);
+        Router.push(
+          `/newProfilePage?domain=${domainName}`,
+          `/newProfilePage/${domainName}`
+        );
+      } else {
+        alert(
+          "Please enter domain name in the format: (ex- thetrustsearch.com)"
+        );
+      }
+    }
+  };
+
+  const renderHeroContent = () => {
+    return (
+      <div className="homeContainerInner">
+        <style jsx>{indexPageStyles}</style>
+        <div>
+          <h3 className="heroHeading">
+            TrustSearch - the search engine for trust!{" "}
+          </h3>
+          <h4 className="heroSubHeading">
+            We help you to check
+            <span className="heroSubHeadingMainText">trustworthiness</span> to
+            <br /> websites, people and businesses.
+          </h4>
+        </div>
+
+        <div
+          className="analyseBtn"
+          style={{ marginTop: "1rem", marginBottom: "1rem" }}
+        >
+          Analyse any website
+        </div>
+
+        <div className="homeSearchBoxContainer">
+          {!loading ? (
+            <>
+              {/* <SearchBox
+              onchange={handleSearchBoxChange}
+              value={searchBoxVal}
+              stateMethod={setSearchBoxVal}
+              variant="thetrustsearchIndex"
+              handleSearchSubmit={searchBoxVal => {
+                handleSearchSubmit(setLoading, searchBoxVal);
+              }}
+            /> */}
+              <SearchInput
+                onchange={handleSearchBoxChange}
+                value={searchBoxVal}
+                onkeyDown={e => {
+                  if (e.keyCode == 13) {
+                    console.log('value', e.target.value);
+                    handleSearchSubmit();
+                  }
+                }}
+                onsubmit={handleSearchSubmit}
+              />
+            </>
+          ) : (
+              <div style={{ textAlign: "center" }}><CircularProgress /></div>
+            )}
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="homeWebStatsContainer">{renderWebStats()}</div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Layout>
-      <Head>
-        {!useAmp() ? (
-          <link rel="amphtml" href="https://thetrustsearch.com?amp=1" />
-        ) : // <link rel="canonical" href="http://localhost:3000" />
-        null}
-      </Head>
       <style jsx>{indexPageStyles}</style>
       <div className="homeContainer">
         {renderHeroContent(searchBoxVal, setSearchBoxVal, loading, setLoading)}
       </div>
+      <Snackbar
+        open={showSnackbar}
+        variant={_get(props, 'variant', '')}
+        handleClose={() => setShowSnacbar(false)}
+        message={_get(props, 'message', '')}
+      />
     </Layout>
   );
 };
 
-export default Home;
+const mapStateToProps = state => {
+  const { auth, trustVote } = state
+  const authorized = _get(auth, 'logIn.authorized', false)
+  let showSnackbar = false
+  let variant = ""
+  let message = ""
+  if (authorized && (_get(trustVote, 'type', "") === "TRUST_VOTE_SUCCESS" || _get(trustVote, 'type', "") === "TRUST_VOTE_FAILURE")) {
+    showSnackbar = true
+  }
+  if (_get(trustVote, 'payload.success', false)) {
+    variant = "success"
+    message = "Review Posted Successfully!"
+  } else {
+    variant = "error"
+    message = "Some Error Occured!"
+  }
+  return { showSnackbar, variant, message }
+}
+
+export default connect(mapStateToProps)(Home);

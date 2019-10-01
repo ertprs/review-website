@@ -1,25 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { useAmp } from "next/amp"; // query.amp==="1"
-import {baseURL, screenshotURL, faviconURL, flagsURL, shareURL} from "../utility/config";
+import Head from "next/head";
+import {
+  baseURL,
+  screenshotURL,
+  faviconURL,
+  flagsURL,
+  shareURL
+} from "../utility/config";
 import axios from "axios";
 import Layout from "../hoc/layout/layout";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
 import SocialMediaGrid from "../Components/Widgets/SocialMediaGrid/SocialMediaGrid";
+import TrustDontTrustSlider from "../Components/Widgets/TrustDontTrustSlider/TrustDontTrustSlider";
 import TrafficGrid from "../Components/Widgets/TrafficGrid/TrafficGrid";
 import AmpImgWrapper from "../Components/AmpWrappers/AmpImgWrapper";
 import { reviewPageStyles } from "../Components/Styles/reviewsPageStyles";
 import VerifiedBtn from "../Components/Widgets/VerifiedBtn/VerifiedBtn";
 import RatingsBadge from "../Components/Widgets/RatingsBadge/RatingsBadge";
 import SocialMediaPieChart from "../Components/Widgets/SocialMediaPieChart/SocialMediaPieChart";
+import TrustDontTrust from "../Components/TrustDontTrust/TrustDontTrust";
 import RatingIndicators from "../Components/Widgets/RatingIndicators/RatingIndicators";
 import AnalysisCard from "../Components/Widgets/AnalysisCard/AnalysisCard";
 import ShareBtn from "../Components/Widgets/ShareBtn/ShareBtn";
-import ReviewCard from "..//Components/Widgets/ReviewCard/ReviewCard";
+import ReviewCard from "../Components/Widgets/ReviewCard/ReviewCard";
 import uuid from "uuid/v1";
 import TrafficStatsChart from "../Components/Widgets/TrafficStatsChart/TrafficStatsChart";
 export const config = { amp: "hybrid" };
 
-const renderReviewHeader = (data, domain) => {
+const renderReviewHeader = (
+  data,
+  domain,
+  showTrustModal,
+  handleTrustModalVisibility
+) => {
+  console.log(showTrustModal);
   const ratings = (
     (((data || {}).general_analysis || {}).payload || {}).ratings || {}
   ).watchdog
@@ -53,7 +68,7 @@ const renderReviewHeader = (data, domain) => {
       : "loading";
 
   const headerBgColor =
-    ratings !== "loading" ? (Number(ratings) >= 3.5 ? "green" : "red") : null;
+    ratings !== "loading" ? (Number(ratings) >= 3.5 ? "green" : "green") : null;
   return (
     <div
       className="reviewHeaderContainer"
@@ -195,6 +210,17 @@ const renderReviewHeader = (data, domain) => {
               </div>
             )}
           </div>
+          {/* <div className="col-lg-3">
+            <TrustDontTrust
+              showModal={showTrustModal}
+              handleModalClose={handleTrustModalVisibility}
+              modalCustomStyles={{
+                background: "#f9f9f9",
+                border: "1px solid #fff"
+              }}
+              domain={domain}
+            />
+          </div> */}
         </div>
       </div>
     </div>
@@ -298,11 +324,13 @@ const renderTrafficReports = parentState => {
         <div className="row reviewStatsFlex">
           {Object.keys(trafficData.payload).length > 0 ? (
             <>
-              {!useAmp() ? <div className="col-md-8">
-                <div style={{ height: "250px", width: "auto" }}>
-                  <TrafficStatsChart data={uniqueVisitorsTimeLine} />
+              {!useAmp() ? (
+                <div className="col-md-8">
+                  <div style={{ height: "250px", width: "auto" }}>
+                    <TrafficStatsChart data={uniqueVisitorsTimeLine} />
+                  </div>
                 </div>
-              </div> : null}
+              ) : null}
               <div className="col-md-4" style={{ marginBottom: "5%" }}>
                 <TrafficGrid trafficData={trafficData.payload} />
               </div>
@@ -311,9 +339,11 @@ const renderTrafficReports = parentState => {
             <div className="col-md-12">
               <div style={{ textAlign: "center" }}>
                 {trafficData.success ? (
-                  !useAmp() ? <div>
-                  <img src="/static/images/traffic_data.gif" />
-                </div> : null
+                  !useAmp() ? (
+                    <div>
+                      <img src="/static/images/traffic_data.gif" />
+                    </div>
+                  ) : null
                 ) : (
                   <div>No traffic records found :(</div>
                 )}
@@ -341,11 +371,15 @@ const renderSocialReports = parentState => {
         <div className="row reviewStatsFlex">
           {Object.keys(socialData.payload || {}).length > 0 ? (
             <>
-              {!useAmp() ? <div className="col-md-8">
-                <div style={{ height: "250px", width: "auto" }}>
-                  <SocialMediaPieChart socialData={{ ...socialData.payload }} />
+              {!useAmp() ? (
+                <div className="col-md-8">
+                  <div style={{ height: "250px", width: "auto" }}>
+                    <SocialMediaPieChart
+                      socialData={{ ...socialData.payload }}
+                    />
+                  </div>
                 </div>
-              </div> : null}
+              ) : null}
               <div className="col-md-4" style={{ marginBottom: "5%" }}>
                 <SocialMediaGrid socialData={{ ...socialData.payload }} />
               </div>
@@ -354,9 +388,11 @@ const renderSocialReports = parentState => {
             <div className="col-md-12">
               <div style={{ textAlign: "center" }}>
                 {socialData.success ? (
-                  !useAmp() ? <div>
-                  <img src="/static/images/social_data.gif" />
-                </div> : null
+                  !useAmp() ? (
+                    <div>
+                      <img src="/static/images/social_data.gif" />
+                    </div>
+                  ) : null
                 ) : (
                   <div>No social media records found :(</div>
                 )}
@@ -427,18 +463,21 @@ const renderTextualReviews = comments => {
           </h5>
         </div>
         <div className="row">
-          {commentsToRender.length > 0 && commentsToRender[0] !== "loading" &&  commentsToRender[0] !== "not found" ? (
+          {commentsToRender.length > 0 &&
+          commentsToRender[0] !== "loading" &&
+          commentsToRender[0] !== "not found" ? (
             renderReviewCard(commentsToRender)
           ) : (
             <div className="col-md-12">
               <div style={{ textAlign: "center", marginLeft: "15px" }}>
-                {commentsToRender[0] === "not found" || commentsToRender.length===0 ? (
+                {commentsToRender[0] === "not found" ||
+                commentsToRender.length === 0 ? (
                   <div>No text reviews found :(</div>
-                ) : (
-                  !useAmp() ? <div>
-                  <img src="/static/images/253.gif" />
-                </div> : null
-                )}
+                ) : !useAmp() ? (
+                  <div>
+                    <img src="/static/images/253.gif" />
+                  </div>
+                ) : null}
               </div>
             </div>
           )}
@@ -450,10 +489,10 @@ const renderTextualReviews = comments => {
 
 const getAnalysisReportObject = data => {
   let addon = {};
-  const additional_info = ((data || {}).domain_data ||{}).additional_info;
-  if(additional_info !==undefined){
-    for(let item in additional_info){
-      addon = {...addon, [item]: additional_info[item]}
+  const additional_info = ((data || {}).domain_data || {}).additional_info;
+  if (additional_info !== undefined) {
+    for (let item in additional_info) {
+      addon = { ...addon, [item]: additional_info[item] };
     }
   }
 
@@ -561,21 +600,19 @@ const getUniqueVisitorsTimeline = data => {
   const isTimeLinePresent = timeline.length > 0;
   let uniqueVisitorsTimeline = [];
   if (isTimeLinePresent) {
-    uniqueVisitorsTimeline = timeline
-      .reverse()
-      .map(item => {
-        if(item.visits.length > 0 || Object.keys(item.visits).length > 0) {
-          return {
-            name:
-              new Date(item["updated_at"]).getDate() +
-              "/" +
-              (new Date(item["updated_at"]).getMonth() + 1),
-            daily_unique_visitors: Number(
-              item.visits["daily_unique_visitors"].split(",").join("")
-            )
-          };
-        }
-      });
+    uniqueVisitorsTimeline = timeline.reverse().map(item => {
+      if (item.visits.length > 0 || Object.keys(item.visits).length > 0) {
+        return {
+          name:
+            new Date(item["updated_at"]).getDate() +
+            "/" +
+            (new Date(item["updated_at"]).getMonth() + 1),
+          daily_unique_visitors: Number(
+            item.visits["daily_unique_visitors"].split(",").join("")
+          )
+        };
+      }
+    });
   }
 
   return uniqueVisitorsTimeline;
@@ -584,31 +621,57 @@ const getUniqueVisitorsTimeline = data => {
 const getSocialReportObject = data => {
   if (((data || {}).social || {}).payload) {
     let payload = {};
-    let initPayload = {...data.social.payload};
-    for(let item in initPayload){
-      if(initPayload[item].verified){
-        payload = {...payload, [item]:initPayload[item]}
+    let initPayload = { ...data.social.payload };
+    for (let item in initPayload) {
+      if (initPayload[item].verified) {
+        payload = { ...payload, [item]: initPayload[item] };
       }
     }
 
     const success = ((data || {}).social || {}).success
       ? ((data || {}).social || {}).success
       : false;
-    
-    return Object.keys(payload).length > 0 ?  { payload: payload, success: success } : 
-    { payload: payload, success: false }
-    
+
+    return Object.keys(payload).length > 0
+      ? { payload: payload, success: success }
+      : { payload: payload, success: false };
   } else if (((data || {}).social || {}).success === false) {
     return { payload: {}, success: false };
   }
   return { payload: {}, success: true };
 };
 
-const renderMajorData = (parentState, domain, share_url, comments) => {
+const renderMajorData = (
+  parentState,
+  domain,
+  share_url,
+  comments,
+  showTrustModal,
+  handleTrustModalVisibility
+) => {
   return (
     <>
       <style jsx>{reviewPageStyles}</style>
-      {renderReviewHeader(parentState, domain)}
+      {renderReviewHeader(
+        parentState,
+        domain,
+        showTrustModal,
+        handleTrustModalVisibility
+      )}
+
+      {/* Add trust dont trust slider */}
+      {/* <div className="container">
+        <div className="sliderHeader">
+          <h4>
+            People who trust this company with their name (192). People who
+            don't trust this company (15)
+          </h4>
+        </div>
+        <div className="sliderContainer">
+          <TrustDontTrustSlider />
+        </div>
+      </div> */}
+
       <div>{renderAnalysisReport(parentState)}</div>
       <div className="reviewShareBtnContainer">
         {renderShareBtn(
@@ -633,8 +696,7 @@ const getCommentsObject = parentState => {
     ((data || {}).wot || {}).needs_pull === undefined
   ) {
     return ["loading"];
-  }
-  else if (((data || {}).wot || {}).needs_pull) {
+  } else if (((data || {}).wot || {}).needs_pull) {
     return ["not found"];
   }
   return ((((data || {}).wot || {}).payload || {}).comments || []).length > 0
@@ -648,13 +710,31 @@ const Reviews = props => {
     initState = { ...props.analysisData.response };
   }
   const [parentState, setParentState] = useState(initState);
+  const [showTrustModal, setTrustModalVisibility] = useState(false);
   const domain = props.domain;
   const comments = getCommentsObject({ ...parentState });
 
   const share_url = shareURL;
 
+  const handleTrustModalVisibility = () => {
+    setTrustModalVisibility(showTrustModal => !showTrustModal);
+  };
+
   return (
     <Layout>
+      <Head>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          charset="UTF-8"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+        />
+      </Head>
       {!useAmp() ? (
         <PusherDataComponent
           domain={props.domain}
@@ -663,7 +743,14 @@ const Reviews = props => {
           }}
         />
       ) : null}
-      {renderMajorData(parentState, domain, share_url, comments)}
+      {renderMajorData(
+        parentState,
+        domain,
+        share_url,
+        comments,
+        showTrustModal,
+        handleTrustModalVisibility
+      )}
     </Layout>
   );
 };
@@ -674,12 +761,12 @@ Reviews.getInitialProps = async ({ query }) => {
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
-  if (query.amp === "1") {
-    const response = await axios.get(
-      `${baseURL}/api/verify?domain=${searchURL}`
-    );
-    return { analysisData: { ...response.data }, domain };
-  }
+  // if (query.amp === "1") {
+  //   const response = await axios.get(
+  //     `${baseURL}/api/verify?domain=${searchURL}`
+  //   );
+  //   return { analysisData: { ...response.data }, domain };
+  // }
   return { domain: domain };
 };
 

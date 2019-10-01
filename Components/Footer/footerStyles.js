@@ -2,7 +2,7 @@ import css from 'styled-jsx/css';
 
 export default css`
   .footer {
-    background: #303030;
+    background: #111;
     color: #c0c0c0;
   }
 
@@ -161,9 +161,16 @@ export default css`
 
   /*------- Media queries for responsive design ---*/
 
+  @media only screen and (max-width:1199px){
+    .footerContainerInner {
+      max-width:94.5%;
+    }
+  }
+
   @media only screen and (max-width: 1027px) {
     .footerContainerInner {
       flex-direction: column;
+      max-width:85%;
     }
     .footerTopSocialLinksContainer > div {
       flex: 0;

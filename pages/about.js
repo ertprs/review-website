@@ -573,8 +573,7 @@ class About extends React.Component {
           <div className="row">
             <div className="col-md-12">
               <div className="registrationInfo">
-                <div>Liguma registracijas numurus: IZ-L2019 / 55</div>
-                <div>datums: 03.06.2019 16:14:07</div>
+                <div>TrustSearch Ltd. 25.07.2019. signed the agreement No.IZ-L-2019/55 with the LIAA on support for participation in exhibitions and conferences, as well as providing direct visits to a potential investor or cooperation partner abroad in the European Regional Development Fund project "Technology Transfer Program".</div>
               </div>
             </div>
           </div>

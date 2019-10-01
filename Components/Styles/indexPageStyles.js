@@ -2,7 +2,6 @@ import css from 'styled-jsx/css';
 
 export const indexPageStyles = css.global`
   .homeContainer {
-    margin-top: 75.51px;
     height:100%;
     background: linear-gradient(
         to right,

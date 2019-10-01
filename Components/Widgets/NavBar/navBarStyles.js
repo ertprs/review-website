@@ -9,7 +9,7 @@ export default css`
   }
 
   .logoContainer :global(img), .logoContainer :global(amp-img){
-    height: 42px;
+    max-height: 42px;
     width: auto;
   }
 

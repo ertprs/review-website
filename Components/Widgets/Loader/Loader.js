@@ -1,17 +1,19 @@
 import React from "react";
 
-const Loader = (props) => {
+const Loader = props => {
   return (
     <>
       <style jsx>
         {`
-          .loader{
-            text-align:center;
+          .loader {
+            text-align: center;
           }
-          .l1,.l2,.l3 {
-              animation-name:fade;
-              animation-itertion-count:infinite;
-              animation-duration: 0.4s;
+          .l1,
+          .l2,
+          .l3 {
+            animation-name: fade;
+            animation-itertion-count: infinite;
+            animation-duration: 0.4s;
           }
 
           @keyframes fade {
@@ -22,11 +24,11 @@ const Loader = (props) => {
               opacity: 1;
             }
           }
-
         `}
       </style>
-      <div className="loader" style={{...props.styles}}>
-        <span className="l1">.</span> <span className="l2">.</span> <span className="l2">.</span>
+      <div className="loader" style={{ ...props.styles }}>
+        <span className="l1">.</span> <span className="l2">.</span>{" "}
+        <span className="l2">.</span>
       </div>
     </>
   );

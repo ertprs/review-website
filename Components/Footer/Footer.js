@@ -11,7 +11,7 @@ const renderFooterTopSection = () => {
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
           <AmpImgWrapper
-            src="/static/images/logo_white.png"
+            src="/static/images/logo_footer.png"
             alt="trustsearchlogo"
             classes="footerTopLogo"
             width="176.04"
@@ -200,13 +200,13 @@ const renderFooterBottomSection = () => {
   );
 };
 
-const Footer = () => {
+const Footer = (props) => {
   return (
     <>
     <style jsx>
       {footerStyles}
     </style>
-    <footer className="footer">
+    <footer className="footer" style={{...props.footerStyles}}>
       {renderFooterTopSection()}
       {renderFooterMiddleSection()}
       {renderFooterBottomSection()}

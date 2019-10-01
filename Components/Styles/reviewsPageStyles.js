@@ -104,12 +104,25 @@ export const reviewPageStyles = css`
     font-weight: 400;
   }
 
+  /*----------- slider header ----------------*/
+  .sliderHeader{
+    margin: 50px 0 50px 0;
+  }
+  
+  .sliderContainer{
+    box-shadow:0px 4px 8px #d5d5d5;
+    padding:50px;
+  }
+
   @media only screen and (max-width: 1199px) {
     .ratingsBadgeCont {
       flex-basis: 8%;
     }
     .ratingsIndCont {
       flex-basis: 33%;
+    }
+    .reviewVerifiedBtn {
+      flex-basis: 29%;
     }
   }
 
@@ -128,10 +141,6 @@ export const reviewPageStyles = css`
     }
     .reviewFlag {
       flex-basis: 24%;
-    }
-
-    .reviewVerifiedBtn {
-      flex-basis: 25%;
     }
 
     .bigRatingCaption {
@@ -160,6 +169,10 @@ export const reviewPageStyles = css`
       margin-left: auto;
       margin-right: auto;
     }
+    .sliderContainer{
+    box-shadow: none;
+    padding:0px;
+  }
   }
   @media only screen and (max-width: 768px) {
     .bigRatingInd {
@@ -167,6 +180,10 @@ export const reviewPageStyles = css`
     }
     .reviewShareBtnContainer {
       margin-bottom: 12%;
+    }
+    .sliderHeader h4{
+      font-size:1.1rem;
+      line-height:2rem;
     }
   }
   @media only screen and (max-width: 767px) {
