@@ -18,13 +18,13 @@ import Button from "@material-ui/core/Button";
 import Router from "next/router";
 // import Link from "../../src/Link";
 import Link from "next/link";
-import { GoogleLogout } from 'react-google-login';
-import { googleClientId } from '../../utility/config';
+import { GoogleLogout } from "react-google-login";
+import { googleClientId } from "../../utility/config";
 import { connect } from "react-redux";
-import { logOut } from '../../store/actions/authActions';
-import Snackbar from '../Widgets/Snackbar';
-import Logout from '../../pages/logout';
-import _get from 'lodash/get';
+import { logOut } from "../../store/actions/authActions";
+import Snackbar from "../Widgets/Snackbar";
+import Logout from "../../pages/logout";
+import _get from "lodash/get";
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -124,11 +124,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function PrimarySearchAppBar(props) {
-  const [showSnackbar, setShowSnackbar] = React.useState(false)
+  const [showSnackbar, setShowSnackbar] = React.useState(false);
   const { auth } = props;
   const { authorized } = auth.logIn || false;
   const { userProfile } = auth.logIn || {};
-  const loginType = _get(auth, 'logIn.loginType', 0)
+  const loginType = _get(auth, "logIn.loginType", 0);
   let userName = "";
   if (userProfile) {
     if (userProfile.hasOwnProperty("name")) {
@@ -148,21 +148,20 @@ function PrimarySearchAppBar(props) {
     } else {
       setShowInputBase(false);
     }
-  }, [])
+  }, []);
 
   const handleLogout = () => {
     if (loginType === 2) {
       if (window) {
-        if (window.hasOwnProperty('FB')) {
-          window.FB.logout()
+        if (window.hasOwnProperty("FB")) {
+          window.FB.logout();
         }
       }
     }
-    setShowSnackbar(true)
-    props.logOut()
-    Router.push("/")
-  }
-
+    setShowSnackbar(true);
+    props.logOut();
+    Router.push("/");
+  };
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -232,37 +231,49 @@ function PrimarySearchAppBar(props) {
           <a className={classes.navLinkMobile}>Business</a>
         </MenuItem>
       </Link>
-
-      <Link href="/login">
-        <MenuItem>
-          <a className={classes.navLinkMobile}>Login</a>
-        </MenuItem>
-      </Link>
-
-      <Link href="/registration">
-        <MenuItem>
-          <a className={classes.navLinkMobile}>Sign up</a>
-        </MenuItem>
-      </Link>
-      {/* <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem> */}
+      {!authorized ? (
+        <>
+          <Link href="/login">
+            <a className={classes.navLink}>Login</a>
+          </Link>
+          <Link href="/registration">
+            <a className={classes.navLink}>Sign up</a>
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link href="">
+            <span className={classes.navLink}>
+              Hello, <span style={{ marginRight: "10px" }}>{userName}</span>
+            </span>
+          </Link>
+          {loginType === 1 || loginType === 2 ? (
+            <Link href="">
+              <a onClick={() => handleLogout()} className={classes.navLink}>
+                Logout
+              </a>
+            </Link>
+          ) : (
+            ""
+          )}
+          {loginType === 3 ? (
+            <GoogleLogout
+              clientId={googleClientId}
+              buttonText="Logout"
+              render={renderProps => (
+                <Link href="">
+                  <a onClick={() => handleLogout()} className={classes.navLink}>
+                    Logout
+                  </a>
+                </Link>
+              )}
+              // onLogoutSuccess={logout}
+            ></GoogleLogout>
+          ) : (
+            ""
+          )}
+        </>
+      )}
     </Menu>
   );
 
@@ -335,49 +346,47 @@ function PrimarySearchAppBar(props) {
                 </Link>
               </>
             ) : (
-                <>
+              <>
+                <Link href="">
+                  <span className={classes.navLink}>
+                    Hello,{" "}
+                    <span style={{ marginRight: "10px" }}>{userName}</span>
+                  </span>
+                </Link>
+                {loginType === 1 || loginType === 2 ? (
                   <Link href="">
-                    <span className={classes.navLink}>Hello, <span style={{ marginRight: "10px" }}>{userName}</span></span>
+                    <a
+                      onClick={() => handleLogout()}
+                      className={classes.navLink}
+                    >
+                      Logout
+                    </a>
                   </Link>
-                  {loginType === 1 || loginType === 2 ? <Link href="">
-                    <a onClick={() => handleLogout()} className={classes.navLink}>Logout</a>
-                  </Link> : ""}
-                  {loginType === 3 ? <GoogleLogout
+                ) : (
+                  ""
+                )}
+                {loginType === 3 ? (
+                  <GoogleLogout
                     clientId={googleClientId}
                     buttonText="Logout"
                     render={renderProps => (
                       <Link href="">
-                        <a onClick={() => handleLogout()} className={classes.navLink}>Logout</a>
+                        <a
+                          onClick={() => handleLogout()}
+                          className={classes.navLink}
+                        >
+                          Logout
+                        </a>
                       </Link>
                     )}
-                  // onLogoutSuccess={logout}
-                  >
-                  </GoogleLogout> : ""}
-                </>
-              )}
+                    // onLogoutSuccess={logout}
+                  ></GoogleLogout>
+                ) : (
+                  ""
+                )}
+              </>
+            )}
           </div>
-          {/* <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </div> */}
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"
@@ -407,4 +416,7 @@ const mapStateToProps = state => {
   return { auth };
 };
 
-export default connect(mapStateToProps, { logOut })(PrimarySearchAppBar);
+export default connect(
+  mapStateToProps,
+  { logOut }
+)(PrimarySearchAppBar);
