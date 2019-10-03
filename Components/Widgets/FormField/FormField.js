@@ -18,7 +18,8 @@ const FormField = ({
   styles,
   options,
   type,
-  labelText
+  labelText,
+  onkeyDown
 }) => {
   switch (element) {
     case "textarea":
@@ -38,7 +39,9 @@ const FormField = ({
             cols={cols}
             style={{ ...styles }}
           ></textarea>
-          <div className="errorMsg">{!valid && touched ? errorMessage : ""}</div>
+          <div className="errorMsg">
+            {!valid && touched ? errorMessage : ""}
+          </div>
         </div>
       );
 
@@ -51,13 +54,16 @@ const FormField = ({
             placeholder={placeholder}
             value={value}
             onChange={e => handleChange(e, id)}
+            onKeyDown={onkeyDown}
             name={name}
             className={
               !valid && touched ? "formField invalidField" : "formField"
             }
             style={{ ...styles }}
           />
-          <div className="errorMsg">{!valid && touched ? errorMessage : ""}</div>
+          <div className="errorMsg">
+            {!valid && touched ? errorMessage : ""}
+          </div>
         </div>
       );
 

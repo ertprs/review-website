@@ -9,8 +9,8 @@ import { baseURL, resetPasswordApi } from "../utility/config";
 import Loader from "../Components/Widgets/Loader/Loader";
 import Router from "next/router";
 import Layout from "../hoc/layout/layout";
-import Snackbar from '../Components/Widgets/Snackbar';
-import { CircularProgress } from '@material-ui/core';
+import Snackbar from "../Components/Widgets/Snackbar";
+import { CircularProgress } from "@material-ui/core";
 
 class ResetPassword extends Component {
   state = {
@@ -31,7 +31,7 @@ class ResetPassword extends Component {
     },
     isLoading: true,
     isTokenValid: false,
-    token: '',
+    token: "",
     success: false,
     isLoadingButton: false,
     showError: false,
@@ -49,16 +49,16 @@ class ResetPassword extends Component {
         token = splitUrlArray[splitUrlArray.length - 1];
       }
       if (token) {
-        this.setState({ token })
+        this.setState({ token });
         let reqBody = {
           token: token
-        }
+        };
         axios
           .post(`${baseURL}${resetPasswordApi}`, reqBody)
           .then(result => {
             let success = _get(result, "data.success", false);
             if (success) {
-              this.setState({ isTokenValid: true })
+              this.setState({ isTokenValid: true });
             }
             this.setState({ success, isLoading: false });
           })
@@ -99,8 +99,8 @@ class ResetPassword extends Component {
         this.setState({ isLoadingButton: false });
         let success = _get(result, "data.success", false);
         if (success) {
-          this.setState({ showError: false })
-          window.location.assign("/login");
+          this.setState({ showError: false });
+          Router.push("/login");
         }
       })
       .catch(error => {
@@ -109,11 +109,17 @@ class ResetPassword extends Component {
   };
 
   onLoginClick = () => {
-    window.location.assign('/login')
-  }
+    Router.push("/login");
+  };
 
   render() {
-    const { formData, isLoading, isTokenValid, showError, isLoadingButton } = this.state;
+    const {
+      formData,
+      isLoading,
+      isTokenValid,
+      showError,
+      isLoadingButton
+    } = this.state;
     return (
       <Layout>
         <div className="mainContainer">
@@ -138,25 +144,33 @@ class ResetPassword extends Component {
                       rows="5"
                       col="5"
                     />
-                    {isLoadingButton ? <Loader /> : <button
-                      disabled={!formData.password.valid}
-                      className="registerBtn"
-                      onClick={this.handleResetPasswordClick}
-                    >
-                      Reset Password
-                  </button>}
-                    {showError ? <p className="errorMsg">Something went wrong!</p> : ""}
-                  </React.Fragment>
-                ) :
-                    <React.Fragment>
-                      <div className="cardHeading">
-                        <h2 className="errorMsg">Something went wrong!</h2>
-                      </div>
-                      <button className="registerBtn" onClick={this.onLoginClick}>
-                        Go to Login
+                    {isLoadingButton ? (
+                      <Loader />
+                    ) : (
+                      <button
+                        disabled={!formData.password.valid}
+                        className="registerBtn"
+                        onClick={this.handleResetPasswordClick}
+                      >
+                        Reset Password
                       </button>
-                    </React.Fragment>
-                }
+                    )}
+                    {showError ? (
+                      <p className="errorMsg">Something went wrong!</p>
+                    ) : (
+                      ""
+                    )}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <div className="cardHeading">
+                      <h2 className="errorMsg">Something went wrong!</h2>
+                    </div>
+                    <button className="registerBtn" onClick={this.onLoginClick}>
+                      Go to Login
+                    </button>
+                  </React.Fragment>
+                )}
               </div>
             </div>
           </div>

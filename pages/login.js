@@ -164,6 +164,12 @@ class Login extends Component {
     }
   }
 
+  handleKeyDown = e => {
+    if (e.keyCode == 13) {
+      this.handleLoginClick();
+    }
+  };
+
   render() {
     const { formData } = this.state;
     const { logIn, logInTemp } = this.props.auth;
@@ -187,6 +193,7 @@ class Login extends Component {
                 <FormField
                   {...formData.password}
                   handleChange={this.handleChange}
+                  onkeyDown={this.handleKeyDown}
                   type="password"
                   id="password"
                   rows="5"
