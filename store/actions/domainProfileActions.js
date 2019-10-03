@@ -221,7 +221,6 @@ export const setDomainDataInRedux = profileData => {
     socialMediaStats: createSocialMediaStats(profileData),
     domainReviews: createDomainReviews(profileData)
   };
-  console.log(domainProfileData, "domainProfileData");
   return {
     type: SET_DOMAIN_DATA_IN_REDUX,
     domainProfileData

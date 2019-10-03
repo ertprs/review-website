@@ -140,12 +140,10 @@ class WriteReview extends Component {
     if (this.props.trustVote !== prevProps.trustVote) {
       if (actionType === 'TRUST_VOTE_SUCCESS') {
         if (isSuccess && status === 200) {
-          console.log(isSuccess, 'isSuccess')
           this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "success", snackbarMsg: "Review Posted Successfully!" })
         }
       } else if (actionType === 'TRUST_VOTE_SUCCESS') {
         if (!isSuccess) {
-          console.log(isSuccess, 'isSuccess else')
           this.setState({ rating: 0, isLoading: false, showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
         }
       }

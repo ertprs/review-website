@@ -104,7 +104,6 @@ class ResetPassword extends Component {
         }
       })
       .catch(error => {
-        console.log(error, "resetpassword error");
         this.setState({ isLoading: false, showError: true });
       });
   };

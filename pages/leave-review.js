@@ -56,7 +56,6 @@ const handleFormSubmit = (
         }, 6000)
       })
       .catch(err => {
-        console.log(err);
         setLoading(false);
         setSubmitted("error");
         setTimeout(()=>{

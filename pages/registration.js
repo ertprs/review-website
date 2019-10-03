@@ -167,7 +167,6 @@ class Registration extends Component {
         });
       }
     }
-    console.log(reqBody, "reqBody");
     return reqBody;
   };
 

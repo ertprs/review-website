@@ -73,7 +73,6 @@ class Login extends Component {
   }
 
   componentClicked = (res) => {
-    console.log(res, 'res')
   }
 
   handleChange = (e, id) => {

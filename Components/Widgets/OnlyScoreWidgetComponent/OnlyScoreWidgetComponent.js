@@ -4,7 +4,6 @@ import { onlyScoreWidgetComponentStyles } from "./onlyScoreWidgetComponentStyles
 import StarRatings from "react-star-ratings";
 
 const renderStandAloneWidget = requiredData => {
-  console.log(requiredData.ratings);
   return (
     <div className="widgetBox">
       <style jsx>{layoutStyles}</style>

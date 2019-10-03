@@ -32,7 +32,6 @@ const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick, authorized, us
 
 const logoutFb = () => {
   window.FB.logout(res => {
-    console.log(res, 'yfyfyh')
   })
   return
 }

@@ -14,7 +14,6 @@ import _get from 'lodash/get';
 class OAuthButtons extends Component {
 
     OAuthSignIn = (response, name, signupType) => {
-        console.log(response, "res");
         const { signUp } = this.props
         let reqBody = {}
         if (response.hasOwnProperty('accessToken')) {
@@ -39,7 +38,6 @@ class OAuthButtons extends Component {
     };
 
     componentClicked = (res) => {
-        console.log(res, 'res')
     }
 
     render() {

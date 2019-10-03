@@ -72,7 +72,6 @@ class ForgotPassword extends Component {
         }
       })
       .catch(error => {
-        console.log(error, "registration error");
         this.setState({ isLoading: false, showSnackbar: true, variant: "error", snackbarMsg: "Something went wrong!" })
       });
   };

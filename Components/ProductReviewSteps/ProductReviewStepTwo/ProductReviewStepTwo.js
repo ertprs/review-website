@@ -487,7 +487,6 @@ class ProductReviewStepTwo extends React.Component {
       step
     } = this.props;
     //Add you have already tagged this product, please click on next to continue
-    // console.log(
     //   reviewSent === "no" &&
     //     videoDataSent === "no" &&
     //     videoUploaded === "no" &&

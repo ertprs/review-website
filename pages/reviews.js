@@ -34,7 +34,6 @@ const renderReviewHeader = (
   showTrustModal,
   handleTrustModalVisibility
 ) => {
-  console.log(showTrustModal);
   const ratings = (
     (((data || {}).general_analysis || {}).payload || {}).ratings || {}
   ).watchdog
