@@ -41,38 +41,58 @@ export const signUp = (signupData, registerApi, signUpType) => {
       let success = _get(res, "data.success", false);
       let status = _get(res, "status", 0);
       if (signUpType == 2 || signUpType == 3) {
+        dispatch({
+          type: SIGNUP_SUCCESS,
+          signUp: {},
+          signUpTemp: {
+            status,
+            oAuthSignUpSuccess: success,
+            isSigningUp: false
+          }
+        });
         if (status === 200 && success) {
           dispatch(logIn(signupData, loginApiOAuth, signUpType));
         }
+      } else {
+        dispatch({
+          type: SIGNUP_SUCCESS,
+          signUp: {},
+          signUpTemp: {
+            status,
+            signUpSuccess: success,
+            isSigningUp: false,
+            isSignupFailed: false
+          }
+        });
       }
-      dispatch({
-        type: SIGNUP_SUCCESS,
-        signUp: {},
-        signUpTemp: {
-          status,
-          signUpSuccess: success,
-          isSigningUp: false,
-          isSignupFailed: false
-        }
-      });
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
       if (signUpType == 2 || signUpType == 3) {
-        if (status === 409 || status === 500) {
+        dispatch({
+          type: SIGNUP_FAILURE,
+          signUp: {},
+          signUpTemp: {
+            status,
+            oAuthSignUpSuccess: success,
+            isSigningUp: false
+          }
+        });
+        if (status === 409) {
           dispatch(logIn(signupData, loginApiOAuth, signUpType));
         }
+      } else {
+        dispatch({
+          type: SIGNUP_FAILURE,
+          signUp: {},
+          signUpTemp: {
+            status,
+            signUpSuccess: success,
+            isSigningUp: false,
+            isSignupFailed: true
+          }
+        });
       }
-      dispatch({
-        type: SIGNUP_FAILURE,
-        signUp: {},
-        signUpTemp: {
-          status,
-          signUpSuccess: success,
-          isSigningUp: false,
-          isSignupFailed: true
-        }
-      });
     }
   };
 };

@@ -175,6 +175,11 @@ class Registration extends Component {
       const { signUpTemp } = this.props.auth;
       const isSignUpFailed = _get(signUpTemp, "isSignupFailed", false);
       const isSignupSuccess = _get(signUpTemp, "signUpSuccess", false);
+      const oAuthSignUpSuccess = _get(
+        signUpTemp,
+        "oAuthSignUpSuccess",
+        "undefined"
+      );
       if (isSignUpFailed) {
         let snackbarMsg =
           _get(signUpTemp, "status", 0) === 409
@@ -203,6 +208,14 @@ class Registration extends Component {
             Router.push("/afterRegistration");
           }, 1000);
         }, 2000);
+      }
+
+      if (oAuthSignUpSuccess === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: "Some error occured while Sign Up."
+        });
       }
     }
   }
