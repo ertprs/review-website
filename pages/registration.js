@@ -273,6 +273,7 @@ class Registration extends Component {
                   id="country"
                   rows="5"
                   col="5"
+                  styles={{ height: "38px" }}
                 />
                 {_get(signUpTemp, "isSigningUp", false) ? (
                   <div style={{ textAlign: "center" }}>
