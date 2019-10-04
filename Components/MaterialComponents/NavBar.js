@@ -234,24 +234,35 @@ function PrimarySearchAppBar(props) {
       {!authorized ? (
         <>
           <Link href="/login">
-            <a className={classes.navLink}>Login</a>
+            <MenuItem>
+              <a className={classes.navLinkMobile}>Login</a>
+            </MenuItem>
           </Link>
           <Link href="/registration">
-            <a className={classes.navLink}>Sign up</a>
+            <MenuItem>
+              <a className={classes.navLinkMobile}>Sign up</a>
+            </MenuItem>
           </Link>
         </>
       ) : (
         <>
           <Link href="">
-            <span className={classes.navLink}>
-              Hello, <span style={{ marginRight: "10px" }}>{userName}</span>
-            </span>
+            <MenuItem>
+              <span className={classes.navLinkMobile}>
+                Hello, <span style={{ marginRight: "10px" }}>{userName}</span>
+              </span>
+            </MenuItem>
           </Link>
           {loginType === 1 || loginType === 2 ? (
             <Link href="">
-              <a onClick={() => handleLogout()} className={classes.navLink}>
-                Logout
-              </a>
+              <MenuItem>
+                <a
+                  onClick={() => handleLogout()}
+                  className={classes.navLinkMobile}
+                >
+                  Logout
+                </a>
+              </MenuItem>
             </Link>
           ) : (
             ""
@@ -262,9 +273,14 @@ function PrimarySearchAppBar(props) {
               buttonText="Logout"
               render={renderProps => (
                 <Link href="">
-                  <a onClick={() => handleLogout()} className={classes.navLink}>
-                    Logout
-                  </a>
+                  <MenuItem>
+                    <a
+                      onClick={() => handleLogout()}
+                      className={classes.navLink}
+                    >
+                      Logout
+                    </a>
+                  </MenuItem>
                 </Link>
               )}
               // onLogoutSuccess={logout}
