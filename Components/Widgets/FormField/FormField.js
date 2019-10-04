@@ -31,6 +31,7 @@ const FormField = ({
             placeholder={placeholder}
             value={value}
             onChange={e => handleChange(e, id)}
+            onKeyDown={onkeyDown}
             name={name}
             className={
               !valid && touched ? "formField invalidField" : "formField"

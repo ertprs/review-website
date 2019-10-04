@@ -13,7 +13,10 @@ import {
   ACTIVATE_USER_FAILURE,
   VERIFY_RESET_PASSWORD_TOKEN_INIT,
   VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
-  VERIFY_RESET_PASSWORD_TOKEN_FAILURE
+  VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
+  RESET_PASSWORD_INIT,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -206,7 +209,8 @@ export const verifyToken = (url, verifyTokenApi) => {
     dispatch({
       type: VERIFY_RESET_PASSWORD_TOKEN_INIT,
       verifyTokenTemp: {
-        success: false
+        success: false,
+        verifyingToken: true
       }
     });
     if (url) {
@@ -225,7 +229,8 @@ export const verifyToken = (url, verifyTokenApi) => {
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
             verifyTokenTemp: {
-              success
+              success,
+              verifyingToken: false
             }
           });
         } catch (error) {
@@ -233,7 +238,56 @@ export const verifyToken = (url, verifyTokenApi) => {
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
             verifyTokenTemp: {
-              success
+              success,
+              verifyingToken: false
+            }
+          });
+        }
+      }
+    }
+  };
+};
+
+export const resetPassword = (password, url, resetPasswordApi) => {
+  return async dispatch => {
+    dispatch({
+      type: RESET_PASSWORD_INIT,
+      resetPasswordTemp: {
+        success: false,
+        resetingPassword: true
+      }
+    });
+    if (url) {
+      let splitUrlArray = url.split("/");
+      let token = "";
+      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
+        token = splitUrlArray[splitUrlArray.length - 1];
+      }
+      if (token) {
+        const reqBody = {
+          password: password || "",
+          token
+        };
+        try {
+          const res = await axios.post(
+            `${baseURL}${resetPasswordApi}`,
+            reqBody
+          );
+          let success = _get(res, "data.success", false);
+          dispatch({
+            type: RESET_PASSWORD_SUCCESS,
+            resetPasswordTemp: {
+              success,
+              resetingPassword: false
+            }
+          });
+        } catch (error) {
+          let success = _get(error, "response.data.success", false);
+          dispatch({
+            type: RESET_PASSWORD_FAILURE,
+            resetPasswordTemp: {
+              success,
+              resetingPassword: false
             }
           });
         }
