@@ -15,7 +15,7 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ActivateUser extends Component {
-  componentDidMount(prevProps, prevState) {
+  componentDidMount() {
     const { type, success } = this.props;
     const { activateUser } = this.props;
     const url = window.location.href;
@@ -36,49 +36,52 @@ class ActivateUser extends Component {
 
     if (type === ACTIVATE_USER_INIT) {
       data = (
-        <div className="card">
-          <style jsx> {authenticationPageStyles} </style>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <CircularProgress size={30} color="secondary" />
-          </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <CircularProgress size={30} color="secondary" />
         </div>
       );
     }
 
-    if (!success) {
+    if (
+      !success &&
+      (type === ACTIVATE_USER_SUCCESS || type === ACTIVATE_USER_FAILURE)
+    ) {
       data = (
-        <div className="card">
-          <style jsx> {authenticationPageStyles} </style>
+        <>
           <div className="cardHeading">
-            <h2 style={{ color: "red" }}>Something went wrong!</h2>
+            <style jsx> {authenticationPageStyles} </style>
+
+            <h2 style={{ color: "#f9821b" }}>
+              Your account is already activated!
+            </h2>
           </div>
           <button className="registerBtn" onClick={this.onLoginClick}>
             Go to Login
           </button>
-        </div>
+        </>
       );
     }
 
     if (type === ACTIVATE_USER_SUCCESS && success) {
       data = (
-        <div className="card">
-          <style jsx> {authenticationPageStyles} </style>
+        <>
           <div className="cardHeading">
+            <style jsx> {authenticationPageStyles} </style>
             <h2 style={{ color: "green" }}>
               {" "}
-              Account activated successfully!{" "}
+              Your account has been activated successfully!{" "}
             </h2>{" "}
           </div>
           <button className="registerBtn" onClick={this.onLoginClick}>
             Go to Login
           </button>
-        </div>
+        </>
       );
     }
     return data;
@@ -91,7 +94,7 @@ class ActivateUser extends Component {
           <div className="container">
             <div className="col-md-6 offset-md-3">
               <style jsx> {authenticationPageStyles} </style>
-              {this.showData()}
+              <div className="card">{this.showData()}</div>
             </div>
           </div>
         </div>

@@ -10,7 +10,10 @@ import {
   REDIRECT_TO_LOGIN_WITH_EMAIL,
   ACTIVATE_USER_INIT,
   ACTIVATE_USER_SUCCESS,
-  ACTIVATE_USER_FAILURE
+  ACTIVATE_USER_FAILURE,
+  VERIFY_RESET_PASSWORD_TOKEN_INIT,
+  VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
+  VERIFY_RESET_PASSWORD_TOKEN_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -189,6 +192,47 @@ export const activateUser = (url, activateUserApi) => {
           dispatch({
             type: ACTIVATE_USER_FAILURE,
             activateUserTemp: {
+              success
+            }
+          });
+        }
+      }
+    }
+  };
+};
+
+export const verifyToken = (url, verifyTokenApi) => {
+  return async dispatch => {
+    dispatch({
+      type: VERIFY_RESET_PASSWORD_TOKEN_INIT,
+      verifyTokenTemp: {
+        success: false
+      }
+    });
+    if (url) {
+      let splitUrlArray = url.split("/");
+      let token = "";
+      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
+        token = splitUrlArray[splitUrlArray.length - 1];
+      }
+      if (token) {
+        let reqBody = {
+          token: token
+        };
+        try {
+          const res = await axios.post(`${baseURL}${verifyTokenApi}`, reqBody);
+          let success = _get(res, "data.success", false);
+          dispatch({
+            type: VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
+            verifyTokenTemp: {
+              success
+            }
+          });
+        } catch (error) {
+          let success = _get(error, "response.data.success", false);
+          dispatch({
+            type: VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
+            verifyTokenTemp: {
               success
             }
           });
