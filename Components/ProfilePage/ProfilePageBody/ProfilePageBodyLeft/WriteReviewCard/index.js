@@ -42,7 +42,8 @@ class WriteReview extends Component {
       showSnackbar: false,
       variant: "success",
       snackbarMsg: "",
-      reviewCharsLeft: 0
+      reviewCharsLeft: 0,
+      reviewCharsMore: 0
     };
     this.windowSize = 0;
   }
@@ -73,11 +74,25 @@ class WriteReview extends Component {
   handleChange = (e, id) => {
     const { value } = e.target;
     const { formData } = this.state;
-    let reviewCharsLeft = formData[id].validationRules.minLength - value.length;
-    console.log(reviewCharsLeft, "reviewCharsLeft");
-    if (reviewCharsLeft < 0) {
-      reviewCharsLeft = 0;
+    let reviewCharsLeft = 0;
+    let reviewCharsMore = 0;
+
+    if (value.length < _get(formData[id], "validationRules.minLength", 0)) {
+      if (reviewCharsLeft < 0) {
+        reviewCharsLeft = 0;
+      }
+      reviewCharsLeft =
+        _get(formData[id], "validationRules.minLength", 0) - value.length;
+    } else if (
+      value.length > _get(formData[id], "validationRules.maxLength", 0)
+    ) {
+      if (reviewCharsMore < 0) {
+        reviewCharsMore = 0;
+      }
+      reviewCharsMore =
+        value.length - _get(formData[id], "validationRules.maxLength", 0);
     }
+
     this.setState({
       formData: {
         ...formData,
@@ -88,7 +103,8 @@ class WriteReview extends Component {
           touched: true
         }
       },
-      reviewCharsLeft
+      reviewCharsLeft,
+      reviewCharsMore
     });
   };
 
@@ -244,7 +260,8 @@ class WriteReview extends Component {
       starSize,
       isLoading,
       authButtonLoading,
-      reviewCharsLeft
+      reviewCharsLeft,
+      reviewCharsMore
     } = this.state;
     const authorized = _get(this.props, "auth.logIn.authorized", false);
     return (
@@ -283,9 +300,20 @@ class WriteReview extends Component {
                   rows="5"
                   col="5"
                 />
-                {reviewCharsLeft !== 0 ? (
+                {/* {reviewCharsLeft !== 0 ? (
                   <span style={{ color: "red" }}>
                     {reviewCharsLeft} characters left!
+                  </span>
+                ) : (
+                  ""
+                )} */}
+                {reviewCharsLeft > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsLeft} characters left!
+                  </span>
+                ) : reviewCharsMore > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsMore} characters exceeding!
                   </span>
                 ) : (
                   ""
