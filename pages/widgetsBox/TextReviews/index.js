@@ -1,39 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PusherDataComponent from "../../../Components/PusherDataComponent/PusherDataComponent";
+import axios from 'axios';
+import {baseURL} from '../../../utility/config';
 import ReviewBox from "../../../Components/Widgets/ReviewBox/ReviewBox";
 import OnlyScoreWidget from "../OnlyScoreWidget/index";
 import Slider from "react-slick";
 import uuid from "uuid/v1";
 import { layoutStyles } from "../../../style";
 import Head from "next/head";
+import _get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
-const retrieveRequiredData = parentState => {
-  const response = { ...parentState };
-  const ratings = (
-    (((response || {}).general_analysis || {}).payload || {}).ratings || {}
-  ).watchdog
-    ? ((((response || {}).general_analysis || {}).payload || {}).ratings || {})
-        .watchdog
-    : "";
+const retrieveRequiredData = reviewData => {
+  const ratings = Number(_get(reviewData,'rating',0));
 
-  const totalReviews = (((response || {}).wot || {}).payload || {}).comments
-    ? (((response || {}).wot || {}).payload || {}).comments.length
-    : 0;
+  const totalReviews = _get(reviewData,'total',0);
 
-  let topFifteenReviews = [];
-  if (totalReviews > 0) {
-    const comments = response.wot.payload.comments;
-    topFifteenReviews = [
-      ...topFifteenReviews,
-      ...comments.slice(0, comments.length > 15 ? 15 : comments.length)
-    ];
-  }
+  const reviews = _get(reviewData,'reviews',[]);
 
-  return { ratings, totalReviews, topFifteenReviews };
+  return { ratings, totalReviews, reviews };
 };
 
-const renderTextReviewsWidget = (parentState, settings, props) => {
-  const requiredData = retrieveRequiredData(parentState);
+const renderTextReviewsWidget = (reviewData, settings, props) => {
+  const requiredData = retrieveRequiredData(reviewData);
   return (
     <div className="flexContainer">
       <style jsx>{layoutStyles}</style>
@@ -44,13 +33,13 @@ const renderTextReviewsWidget = (parentState, settings, props) => {
           flex-wrap: nowrap;
         }
         .flexContainer > div {
-          width: ${requiredData.topFifteenReviews.length > 2 ? "80%" : "40%"};
+          width: ${requiredData.total > 2 ? "80%" : "40%"};
           order: 0;
           flex: 0 1 auto;
         }
 
         .flexContainer > div:last-child {
-          width: ${requiredData.topFifteenReviews.length <= 2 ? "100%" : "80%"};
+          width: ${requiredData.total <= 2 ? "100%" : "80%"};
         }
 
         .textReviewsContainer {
@@ -121,7 +110,7 @@ const renderTextReviewsWidget = (parentState, settings, props) => {
         </Head>
         <div className="reviewBoxSlider">
           <Slider {...settings}>
-            {requiredData.topFifteenReviews.map(item => {
+            {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()}>
                   <ReviewBox review={item} styles={{height:"200px"}} reviewRatingStyles={{margin:"8px 0 8px 0"}} reviewHeaderStyles={{marginTop:"5px"}} />
@@ -180,6 +169,21 @@ function SamplePrevArrow(props) {
 
 const TextReviews = props => {
   let initState = {};
+
+  const [reviewData, setReviewData] = useState({})
+
+  useEffect(() => {
+    axios.get(`${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`)
+    .then(res=>{
+      console.log("response form widget ",res.data)
+      if(!isEmpty(res.data))
+      setReviewData({...res.data})
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  }, [])
+
   const [parentState, setParentState] = useState(initState);
   var settings = {
     infinite: false,
@@ -225,13 +229,7 @@ const TextReviews = props => {
   };
   return (
     <>
-      <PusherDataComponent
-        domain={props.domain}
-        onChildStateChange={newState => {
-          setParentState({ ...parentState, ...newState });
-        }}
-      />
-      {renderTextReviewsWidget(parentState, settings, props)}
+      {renderTextReviewsWidget(reviewData, settings, props)}
     </>
   );
 };
