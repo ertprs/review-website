@@ -7,7 +7,6 @@ const validate = (value, rules) => {
         break;
       case "isEmail":
         isValid = isValid && isEmail(value);
-        console.log(isValid)
         break;
       case "isPhoneNumber":
         isValid = isValid && isPhoneNumber(value);
@@ -16,17 +15,17 @@ const validate = (value, rules) => {
         isValid = isValid && isDomain(value);
         break;
       case "minLength":
-        isValid = isValid && isMinLength(value, rules[rule])
+        isValid = isValid && isMinLength(value, rules[rule]);
         break;
       case "maxLength":
-        isValid = isValid && isMaxLength(value, rules[rule])
+        isValid = isValid && isMaxLength(value, rules[rule]);
         break;
       default:
         isValid = true;
     }
   }
   return isValid;
-}
+};
 
 const isEmpty = value => {
   return value.trim().length > 0;

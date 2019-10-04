@@ -3,25 +3,26 @@ import { reviewBoxStyles } from "./reviewBoxStyles.js";
 import stringHelpers from "../../../utility/stringHelpers";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import StarRatings from "react-star-ratings";
-
-const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles) => {
+import {googleMapsURL} from "../../../utility/config";
+const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles, domain) => {
   return (
     <div>
       <style jsx>{reviewBoxStyles}</style>
       <div className="reviewHeader" style={{...reviewHeaderStyles}}>
         <div className="reviewHeaderTitle">
-          {review.name.length > 7
+          {/* {review.name.length > 7
             ? review.name.substring(0, 7) + ".."
-            : review.name}
+            : review.name} */}
+            {review.name}
         </div>
         <div className="reviewHeaderDate">
-          {stringHelpers("shortenMonths", review.date)}
+          {/* {stringHelpers("shortenMonths", review.date)} */}
         </div>
       </div>
       <div className="reviewRatings" style={{...reviewRatingStyles}}>
         <div>
           <StarRatings
-            rating={review.score / 20}
+            rating={review.rating}
             starRatedColor="#21bc61"
             numberOfStars={5}
             name="rating"
@@ -32,9 +33,11 @@ const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles) 
       </div>
       <div className="reviewText">
         <p>
+          <a href={`${googleMapsURL}/${domain}`} target="_blank" style={{textDecoration:"none", color:"#000"}}>
           {review.text.length <= 100
             ? review.text
-            : review.text.substring(0, 97) + "..."}
+            : review.text.substring(0, 120) + "..."}
+          </a>
         </p>
       </div>
     </div>
@@ -66,9 +69,9 @@ const renderTrustDontTrustReviewBox = review => {
             }`} style={{fontSize:"1.2rem"}}
           ></i>
         </div>
-        <div className="reviewHeaderDate">
+        {/* <div className="reviewHeaderDate">
           {stringHelpers("shortenMonths", review.date)}
-        </div>
+        </div> */}
       </div>
       <div className="reviewRatings">
         <div className="trustDontTrustIconContainer">
@@ -145,7 +148,7 @@ const ReviewBox = props => {
   ) : (
     <div className="reviewBox" style={{...props.styles}}>
       <style jsx>{reviewBoxStyles}</style>
-      {renderTextualReviewBox(props.review, props.reviewRatingStyles, props.reviewHeaderStyles)}
+      {renderTextualReviewBox(props.review, props.reviewRatingStyles, props.reviewHeaderStyles, props.domain)}
     </div>
   );
 };

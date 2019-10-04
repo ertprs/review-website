@@ -9,8 +9,15 @@ import { baseURL, resetPasswordApi } from "../utility/config";
 import Loader from "../Components/Widgets/Loader/Loader";
 import Router from "next/router";
 import Layout from "../hoc/layout/layout";
-import Snackbar from '../Components/Widgets/Snackbar';
-import { CircularProgress } from '@material-ui/core';
+import Snackbar from "../Components/Widgets/Snackbar";
+import { CircularProgress } from "@material-ui/core";
+import { verifyToken } from "../store/actions/authActions";
+import { connect } from "react-redux";
+import {
+  VERIFY_RESET_PASSWORD_TOKEN_INIT,
+  VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
+  VERIFY_RESET_PASSWORD_TOKEN_FAILURE
+} from "../store/actions/actionTypes";
 
 class ResetPassword extends Component {
   state = {
@@ -31,7 +38,7 @@ class ResetPassword extends Component {
     },
     isLoading: true,
     isTokenValid: false,
-    token: '',
+    token: "",
     success: false,
     isLoadingButton: false,
     showError: false,
@@ -41,32 +48,16 @@ class ResetPassword extends Component {
   };
 
   componentDidMount() {
+    const { type } = this.props;
+    const { verifyToken } = this.props;
     const url = window.location.href;
-    if (url) {
-      let splitUrlArray = url.split("/");
-      let token = "";
-      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
-        token = splitUrlArray[splitUrlArray.length - 1];
-      }
-      if (token) {
-        this.setState({ token })
-        let reqBody = {
-          token: token
-        }
-        axios
-          .post(`${baseURL}${resetPasswordApi}`, reqBody)
-          .then(result => {
-            let success = _get(result, "data.success", false);
-            if (success) {
-              this.setState({ isTokenValid: true })
-            }
-            this.setState({ success, isLoading: false });
-          })
-          .catch(error => {
-            let success = _get(error, "response.data.success", false);
-            this.setState({ success, isLoading: false, isTokenValid: false });
-          });
-      }
+    if (
+      type === VERIFY_RESET_PASSWORD_TOKEN_SUCCESS ||
+      type === VERIFY_RESET_PASSWORD_TOKEN_FAILURE
+    ) {
+      return;
+    } else {
+      verifyToken(url, resetPasswordApi);
     }
   }
 
@@ -99,66 +90,101 @@ class ResetPassword extends Component {
         this.setState({ isLoadingButton: false });
         let success = _get(result, "data.success", false);
         if (success) {
-          this.setState({ showError: false })
-          window.location.assign("/login");
+          this.setState({
+            showError: false,
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Password reset successfully!"
+          });
+          Router.push("/login");
         }
       })
       .catch(error => {
-        console.log(error, "resetpassword error");
-        this.setState({ isLoading: false, showError: true });
+        this.setState({
+          showError: false,
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: "Something went wrong!",
+          isLoading: false,
+          showError: true
+        });
       });
   };
 
   onLoginClick = () => {
-    window.location.assign('/login')
-  }
+    Router.push("/login");
+  };
+
+  showData = () => {
+    const { type, success } = this.props;
+    const { formData, showError, isLoadingButton } = this.state;
+    let data;
+    if (type === VERIFY_RESET_PASSWORD_TOKEN_INIT) {
+      data = (
+        <div style={{ textAlign: "center" }}>
+          <CircularProgress size={30} color="secondary" />
+        </div>
+      );
+    }
+    if (
+      !success &&
+      (type === VERIFY_RESET_PASSWORD_TOKEN_SUCCESS ||
+        type === VERIFY_RESET_PASSWORD_TOKEN_FAILURE)
+    ) {
+      data = (
+        <React.Fragment>
+          <div className="cardHeading">
+            <style jsx> {authenticationPageStyles} </style>
+            <h3 style={{ color: "red" }}>Your token has expired!</h3>
+          </div>
+          <button className="registerBtn" onClick={this.onLoginClick}>
+            Go to Login
+          </button>
+        </React.Fragment>
+      );
+    }
+
+    if (type === VERIFY_RESET_PASSWORD_TOKEN_SUCCESS && success) {
+      data = (
+        <React.Fragment>
+          <div className="cardHeading">
+            <style jsx> {authenticationPageStyles} </style>
+            <h3> Create new password </h3>
+          </div>
+          <FormField
+            {...formData.password}
+            handleChange={this.handleChange}
+            type="password"
+            id="password"
+            rows="5"
+            col="5"
+          />
+          {isLoadingButton ? (
+            <Loader />
+          ) : (
+            <button
+              disabled={!formData.password.valid}
+              className="registerBtn"
+              onClick={this.handleResetPasswordClick}
+            >
+              Reset Password
+            </button>
+          )}
+          {showError ? <p className="errorMsg">Something went wrong!</p> : ""}
+        </React.Fragment>
+      );
+    }
+    return data;
+  };
 
   render() {
-    const { formData, isLoading, isTokenValid, showError, isLoadingButton } = this.state;
     return (
       <Layout>
         <div className="mainContainer">
           <div className="container">
             <div className="col-md-6 offset-md-3">
-              <style jsx> {authenticationPageStyles} </style>{" "}
-              <div className="card">
-                {isLoading ? (
-                  <div style={{ textAlign: "center" }}>
-                    <CircularProgress size={30} color="secondary" />
-                  </div>
-                ) : isTokenValid ? (
-                  <React.Fragment>
-                    <div className="cardHeading">
-                      <h3> Create new password </h3>
-                    </div>
-                    <FormField
-                      {...formData.password}
-                      handleChange={this.handleChange}
-                      type="password"
-                      id="password"
-                      rows="5"
-                      col="5"
-                    />
-                    {isLoadingButton ? <Loader /> : <button
-                      disabled={!formData.password.valid}
-                      className="registerBtn"
-                      onClick={this.handleResetPasswordClick}
-                    >
-                      Reset Password
-                  </button>}
-                    {showError ? <p className="errorMsg">Something went wrong!</p> : ""}
-                  </React.Fragment>
-                ) :
-                    <React.Fragment>
-                      <div className="cardHeading">
-                        <h2 className="errorMsg">Something went wrong!</h2>
-                      </div>
-                      <button className="registerBtn" onClick={this.onLoginClick}>
-                        Go to Login
-                      </button>
-                    </React.Fragment>
-                }
-              </div>
+              <style jsx> {authenticationPageStyles} </style>
+              <div className="card">{this.showData()}</div>
             </div>
           </div>
         </div>
@@ -173,4 +199,15 @@ class ResetPassword extends Component {
   }
 }
 
-export default ResetPassword;
+const mapStateToProps = state => {
+  const { auth } = state;
+  const { verifyTokenTemp } = auth;
+  const type = _get(auth, "type", "");
+  const success = _get(verifyTokenTemp, "success", false);
+  return { type, success };
+};
+
+export default connect(
+  mapStateToProps,
+  { verifyToken }
+)(ResetPassword);

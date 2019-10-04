@@ -5,16 +5,13 @@ import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import Layout from "../hoc/layout/layout";
-import {
-  loginApi,
-  loginApiOAuth
-} from "../utility/config";
+import { loginApi, loginApiOAuth } from "../utility/config";
 import Router from "next/router";
-import { connect } from 'react-redux';
-import { logIn } from '../store/actions/authActions';
-import Snackbar from '../Components/Widgets/Snackbar';
-import { CircularProgress } from '@material-ui/core';
-import OAuthButtons from '../Components/Widgets/oAuthBtns';
+import { connect } from "react-redux";
+import { logIn } from "../store/actions/authActions";
+import Snackbar from "../Components/Widgets/Snackbar";
+import { CircularProgress } from "@material-ui/core";
+import OAuthButtons from "../Components/Widgets/oAuthBtns";
 import Link from "next/link";
 
 class Login extends Component {
@@ -47,14 +44,13 @@ class Login extends Component {
       }
     },
     isLoading: false,
-    isUnauthorized: false,
     showSnackbar: false,
     variant: "success",
     snackbarMsg: ""
   };
 
   componentDidMount() {
-    window.scrollTo(0, 0)
+    window.scrollTo(0, 0);
     // ? This will redirect the user to login page with email prefilled in case of already registered.
     // const { auth } = this.props
     // const { formData } = this.state
@@ -72,9 +68,7 @@ class Login extends Component {
     // }
   }
 
-  componentClicked = (res) => {
-    console.log(res, 'res')
-  }
+  componentClicked = res => {};
 
   handleChange = (e, id) => {
     const { value } = e.target;
@@ -109,47 +103,76 @@ class Login extends Component {
 
   handleLoginClick = () => {
     const { formData } = this.state;
-    const { logIn } = this.props
+    const { logIn } = this.props;
     let reqBody = this.createReqBody(formData);
-    logIn(reqBody, loginApi, 1)
+    logIn(reqBody, loginApi, 1);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { logIn, logInTemp } = this.props.auth
-    const { formData } = this.state
+    const { logIn, logInTemp } = this.props.auth;
+    const { formData } = this.state;
     if (this.props !== prevProps) {
-      let isWrongCredentials = _get(this.props, 'auth.logInTemp.isWrongCredentials', false)
+      let isWrongCredentials = _get(
+        this.props,
+        "auth.logInTemp.isWrongCredentials",
+        false
+      );
       if (isWrongCredentials) {
         this.setState({
-          formData: { ...formData, password: { ...formData.password, value: "" } }
-        })
+          formData: {
+            ...formData,
+            password: { ...formData.password, value: "" }
+          }
+        });
       }
     }
     if (this.props.auth !== prevProps.auth) {
-      const isWrongCredentials = _get(logInTemp, 'isWrongCredentials', false)
-      const isLoginFailed = _get(logInTemp, 'isLoginFailed', false)
-      const authorized = _get(logIn, 'authorized', false)
+      const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
+      const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
+      const authorized = _get(logIn, "authorized", false);
       if (isLoginFailed) {
         if (isWrongCredentials) {
-          this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Please enter correct credentials!" })
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Please enter correct credentials!"
+          });
         } else {
-          this.setState({ showSnackbar: true, variant: "error", snackbarMsg: "Some Error Occured!" })
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Some Error Occured!"
+          });
         }
       } else if (authorized) {
-        this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Logged in successfully!" })
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Logged in successfully!"
+        });
         setTimeout(() => {
-          this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Redirecting..." })
+          this.setState({
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Redirecting..."
+          });
           setTimeout(() => {
-            Router.push('/')
-          }, 1000)
-        }, 1000)
+            Router.push("/");
+          }, 1000);
+        }, 1000);
       }
     }
   }
 
+  handleKeyDown = e => {
+    if (e.keyCode == 13) {
+      this.handleLoginClick();
+    }
+  };
+
   render() {
     const { formData } = this.state;
-    const { logIn, logInTemp } = this.props.auth
+    const { logIn, logInTemp } = this.props.auth;
     return (
       <Layout>
         <div className="mainContainer">
@@ -170,6 +193,7 @@ class Login extends Component {
                 <FormField
                   {...formData.password}
                   handleChange={this.handleChange}
+                  onkeyDown={this.handleKeyDown}
                   type="password"
                   id="password"
                   rows="5"
@@ -178,29 +202,36 @@ class Login extends Component {
                 <a className="forgotPasswordLink" href="/forgot-password">
                   Forgot password?
                 </a>
-                {_get(logInTemp, 'isLoggingIn', false) ? (
+                {_get(logInTemp, "isLoggingIn", false) ? (
                   <div style={{ textAlign: "center" }}>
                     <CircularProgress size={30} color="secondary" />
                   </div>
                 ) : (
-                    <>
-                      <button
-                        disabled={
-                          !(formData.email.valid && formData.password.valid)
-                        }
-                        className="registerBtn"
-                        onClick={this.handleLoginClick}
-                      >
-                        Login
-                  </button>
-                      <OAuthButtons />
-                      <div style={{ display: "flex", justifyContent: "center", alignContent: "center", marginTop: "10px" }}>
-                        <Link href="/registration">
-                          <a>Don't have account? Sign Up</a>
-                        </Link>
-                      </div>
-                    </>
-                  )}
+                  <>
+                    <button
+                      disabled={
+                        !(formData.email.valid && formData.password.valid)
+                      }
+                      className="registerBtn"
+                      onClick={this.handleLoginClick}
+                    >
+                      Login
+                    </button>
+                    <OAuthButtons />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        marginTop: "10px"
+                      }}
+                    >
+                      <Link href="/registration">
+                        <a>Don't have account? Sign Up</a>
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -217,8 +248,11 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-  const { auth } = state
-  return { auth }
-}
+  const { auth } = state;
+  return { auth };
+};
 
-export default connect(mapStateToProps, { logIn })(Login);
+export default connect(
+  mapStateToProps,
+  { logIn }
+)(Login);

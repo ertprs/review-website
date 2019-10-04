@@ -1,102 +1,117 @@
 import React, { Component } from "react";
 import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
-import FormField from "../Components/Widgets/FormField/FormField";
-import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import axios from "axios";
-import { baseURL, activateUserApi } from "../utility/config";
-import Loader from "../Components/Widgets/Loader/Loader";
+import { activateUserApi } from "../utility/config";
 import Router from "next/router";
 import Layout from "../hoc/layout/layout";
+import { activateUser } from "../store/actions/authActions";
+import { connect } from "react-redux";
+import {
+  ACTIVATE_USER_INIT,
+  ACTIVATE_USER_SUCCESS,
+  ACTIVATE_USER_FAILURE
+} from "../store/actions/actionTypes";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ActivateUser extends Component {
-    state = {
-        isLoading: true,
-        success: false
-    };
+  componentDidMount() {
+    const { type, success } = this.props;
+    const { activateUser } = this.props;
+    const url = window.location.href;
+    if (type === ACTIVATE_USER_SUCCESS || type === ACTIVATE_USER_FAILURE) {
+      return;
+    } else {
+      activateUser(url, activateUserApi);
+    }
+  }
 
-    componentDidMount() {
-        const url = window.location.href;
-        if (url) {
-            let splitUrlArray = url.split("/");
-            let token = "";
-            if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
-                token = splitUrlArray[splitUrlArray.length - 1];
-            }
-            if (token) {
-                axios
-                    .get(`${baseURL}${activateUserApi}/${token}`)
-                    .then(result => {
-                        let success = _get(result, "data.success", false);
-                        this.setState({ success, isLoading: false });
-                    })
-                    .catch(error => {
-                        let success = _get(error, "response.data.success", false);
-                        this.setState({ success, isLoading: false });
-                    });
-            }
-        }
+  onLoginClick = () => {
+    Router.push("/login");
+  };
+
+  showData = () => {
+    const { type, success } = this.props;
+    let data;
+
+    if (type === ACTIVATE_USER_INIT) {
+      data = (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <CircularProgress size={30} color="secondary" />
+        </div>
+      );
     }
 
-    onLoginClick = () => {
-        window.location.assign('/login')
+    if (
+      !success &&
+      (type === ACTIVATE_USER_SUCCESS || type === ACTIVATE_USER_FAILURE)
+    ) {
+      data = (
+        <>
+          <div className="cardHeading">
+            <style jsx> {authenticationPageStyles} </style>
+
+            <h2 style={{ color: "#f9821b" }}>
+              Your account is already activated!
+            </h2>
+          </div>
+          <button className="registerBtn" onClick={this.onLoginClick}>
+            Go to Login
+          </button>
+        </>
+      );
     }
 
-    showData = () => {
-        const { isLoading, success } = this.state
-        let data
-        if (isLoading) {
-            data = (
-                <div className="card">
-                    <style jsx> {authenticationPageStyles} </style>
-                    <Loader />
-                </div>
-            )
-        } else {
-            if (success) {
-                data = (
-                    <div className="card">
-                        <style jsx> {authenticationPageStyles} </style>
-                        <div className="cardHeading">
-                            <h2 style={{ color: 'green' }}> Account activated successfully! </h2>{" "}
-                        </div>
-                        <button className="registerBtn" onClick={this.onLoginClick}>
-                            Go to Login
-                        </button>
-                    </div>
-                )
-            } else {
-                data = (
-                    <div className="card">
-                        <style jsx> {authenticationPageStyles} </style>
-                        <div className="cardHeading">
-                            <h2 style={{ color: "red" }}>Something went wrong!</h2>
-                        </div>
-                        <button className="registerBtn" onClick={this.onLoginClick}>
-                            Go to Login
-                        </button>
-                    </div>
-                )
-            }
-        }
-        return data
+    if (type === ACTIVATE_USER_SUCCESS && success) {
+      data = (
+        <>
+          <div className="cardHeading">
+            <style jsx> {authenticationPageStyles} </style>
+            <h2 style={{ color: "green" }}>
+              {" "}
+              Your account has been activated successfully!{" "}
+            </h2>{" "}
+          </div>
+          <button className="registerBtn" onClick={this.onLoginClick}>
+            Go to Login
+          </button>
+        </>
+      );
     }
+    return data;
+  };
 
-    render() {
-        return (
-            <Layout>
-                <div className="mainContainer">
-                    <div className="container">
-                        <div className="col-md-6 offset-md-3">
-                            <style jsx> {authenticationPageStyles} </style>
-                            {this.showData()}
-                        </div>
-                    </div>
-                </div>
-            </Layout>
-        );
-    }
+  render() {
+    return (
+      <Layout>
+        <div className="mainContainer">
+          <div className="container">
+            <div className="col-md-6 offset-md-3">
+              <style jsx> {authenticationPageStyles} </style>
+              <div className="card">{this.showData()}</div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 }
 
-export default ActivateUser;
+const mapStateToProps = state => {
+  const { auth } = state;
+  const { activateUserTemp } = auth;
+  const type = _get(auth, "type", "");
+  const success = _get(activateUserTemp, "success", false);
+  return { type, success };
+};
+
+export default connect(
+  mapStateToProps,
+  { activateUser }
+)(ActivateUser);

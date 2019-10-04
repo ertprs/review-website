@@ -212,11 +212,9 @@ class BusinessIndexPage extends React.Component {
           };
           //mimic data post
           this.setState({ subscriptionEmailSent: "in-progress" }, () => {
-            console.log(dataToSubmit);
             axios
               .post(`${baseURL}/api/leads`, {...dataToSubmit})
               .then(res => {
-                console.log(res);
                 this.setState({ subscriptionEmailSent: "success" });
               })
               .then(()=>{
@@ -225,7 +223,6 @@ class BusinessIndexPage extends React.Component {
                 }, 2000)
               })
               .catch(err => {
-                console.log(err);
                 this.setState({ subscriptionEmailSent: "error" });
                 setTimeout(()=>{
                   Router.push("/");
@@ -253,11 +250,9 @@ class BusinessIndexPage extends React.Component {
     }
     if (valid) {
       this.setState({ meetingScheduled: "in-progress" }, () => {
-        console.log({...dataToSubmit, type:"schedule_meeting"});
         axios
           .post(`${baseURL}/api/leads`, { ...dataToSubmit, type:"schedule_meeting" })
           .then(res => {
-            console.log(res);
             this.setState({ meetingScheduled: "success" });
           })
           .then(()=>{
@@ -266,7 +261,6 @@ class BusinessIndexPage extends React.Component {
             }, 2000)
           })
           .catch(err => {
-            console.log(err);
             this.setState({ meetingScheduled: "error" });
             setTimeout(()=>{
               Router.push("/");

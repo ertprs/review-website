@@ -105,7 +105,6 @@ const Home = (props) => {
                 value={searchBoxVal}
                 onkeyDown={e => {
                   if (e.keyCode == 13) {
-                    console.log('value', e.target.value);
                     handleSearchSubmit();
                   }
                 }}

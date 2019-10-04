@@ -3,23 +3,16 @@ import { authenticationPageStyles } from "../Components/Styles/authenticationPag
 import FormField from "../Components/Widgets/FormField/FormField";
 import countrieslist from "../utility/countryList";
 import validate from "../utility/validate";
-import GoogleLogin from "react-google-login";
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import Layout from "../hoc/layout/layout";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import {
-  registerApi,
-  registerApiOAuth,
-  googleClientId,
-  facebookAppId
-} from "../utility/config";
+import { registerApi } from "../utility/config";
 import Router from "next/router";
-import { connect } from 'react-redux';
-import { signUp, redirectToLoginWithEmail } from '../store/actions/authActions';
-import Snackbar from '../Components/Widgets/Snackbar';
-import { CircularProgress } from '@material-ui/core';
-import OAuthButtons from '../Components/Widgets/oAuthBtns';
+import { connect } from "react-redux";
+import { signUp, redirectToLoginWithEmail } from "../store/actions/authActions";
+import Snackbar from "../Components/Widgets/Snackbar";
+import { CircularProgress } from "@material-ui/core";
+import OAuthButtons from "../Components/Widgets/oAuthBtns";
 
 class Registration extends Component {
   state = {
@@ -167,53 +160,63 @@ class Registration extends Component {
         });
       }
     }
-    console.log(reqBody, "reqBody");
     return reqBody;
   };
 
   handleRegisterClick = () => {
-    const { signUp } = this.props
+    const { signUp } = this.props;
     const { formData } = this.state;
     let reqBody = this.createReqBody(formData, registerApi);
-    signUp(reqBody, registerApi, 1)
+    signUp(reqBody, registerApi, 1);
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.auth !== prevProps.auth) {
-      const { signUpTemp } = this.props.auth
-      const isSignUpFailed = _get(signUpTemp, 'isSignupFailed', false)
-      const isSignupSuccess = _get(signUpTemp, 'signUpSuccess', false)
+      const { signUpTemp } = this.props.auth;
+      const isSignUpFailed = _get(signUpTemp, "isSignupFailed", false);
+      const isSignupSuccess = _get(signUpTemp, "signUpSuccess", false);
       if (isSignUpFailed) {
-        let snackbarMsg = _get(signUpTemp, 'status', 0) === 409 ? "Email already registered" :
-          "Something went wrong!"
-        this.setState({ showSnackbar: true, variant: "error", snackbarMsg })
+        let snackbarMsg =
+          _get(signUpTemp, "status", 0) === 409
+            ? "Email already registered"
+            : "Something went wrong!";
+        this.setState({ showSnackbar: true, variant: "error", snackbarMsg });
         setTimeout(() => {
-          this.setState({ snackbarMsg: "Redirecting to login page", variant: "success" })
+          this.setState({
+            snackbarMsg: "Redirecting to login page",
+            variant: "success"
+          });
           setTimeout(() => {
-            Router.push('/login')
-          }, 1000)
-        }, 2000)
+            Router.push("/login");
+          }, 1000);
+        }, 2000);
       } else {
-        this.setState({ showSnackbar: false })
+        this.setState({ showSnackbar: false });
       }
 
       if (isSignupSuccess) {
-        let snackbarMsg = "Registration Successfull!"
-        this.setState({ showSnackbar: true, variant: "success", snackbarMsg })
+        let snackbarMsg = "Registration Successfull!";
+        this.setState({ showSnackbar: true, variant: "success", snackbarMsg });
         setTimeout(() => {
-          this.setState({ snackbarMsg: "Redirecting....", variant: "success" })
+          this.setState({ snackbarMsg: "Redirecting....", variant: "success" });
           setTimeout(() => {
-            Router.push('/afterRegistration')
-          }, 1000)
-        }, 2000)
+            Router.push("/afterRegistration");
+          }, 1000);
+        }, 2000);
       }
     }
   }
 
+  handleKeyDown = e => {
+    if (e.keyCode == 13) {
+      this.handleRegisterClick();
+    }
+  };
+
   render() {
     const { formData, errorMsg } = this.state;
-    const { signUpTemp } = this.props.auth
-    if (_get(signUpTemp, 'status', 0) === 409) {
+    const { signUpTemp } = this.props.auth;
+    if (_get(signUpTemp, "status", 0) === 409) {
       // ? This will redirect the user to login page with email prefilled in case of already registered.
       // const { redirectToLoginWithEmail } = this.props
       // let email = _get(this.state, 'formData.email.value', '')
@@ -254,6 +257,7 @@ class Registration extends Component {
                 <FormField
                   {...formData.password_confirmation}
                   handleChange={this.handleChange}
+                  onkeyDown={this.handleKeyDown}
                   type="password"
                   id="password_confirmation"
                   rows="5"
@@ -269,31 +273,32 @@ class Registration extends Component {
                   id="country"
                   rows="5"
                   col="5"
+                  styles={{ height: "38px" }}
                 />
-                {_get(signUpTemp, 'isSigningUp', false) ? (
+                {_get(signUpTemp, "isSigningUp", false) ? (
                   <div style={{ textAlign: "center" }}>
                     <CircularProgress size={30} color="secondary" />
                   </div>
                 ) : (
-                    <>
-                      <button
-                        disabled={
-                          !(
-                            formData.name.valid &&
-                            formData.email.valid &&
-                            formData.password.valid &&
-                            formData.password_confirmation.valid &&
-                            formData.country.valid
-                          )
-                        }
-                        className="registerBtn"
-                        onClick={this.handleRegisterClick}
-                      >
-                        Register
-                  </button>
-                      <OAuthButtons />
-                    </>
-                  )}
+                  <>
+                    <button
+                      disabled={
+                        !(
+                          formData.name.valid &&
+                          formData.email.valid &&
+                          formData.password.valid &&
+                          formData.password_confirmation.valid &&
+                          formData.country.valid
+                        )
+                      }
+                      className="registerBtn"
+                      onClick={this.handleRegisterClick}
+                    >
+                      Register
+                    </button>
+                    <OAuthButtons />
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -310,8 +315,11 @@ class Registration extends Component {
 }
 
 const mapStateToProps = state => {
-  const { auth } = state
-  return { auth }
-}
+  const { auth } = state;
+  return { auth };
+};
 
-export default connect(mapStateToProps, { signUp, redirectToLoginWithEmail })(Registration);
+export default connect(
+  mapStateToProps,
+  { signUp, redirectToLoginWithEmail }
+)(Registration);

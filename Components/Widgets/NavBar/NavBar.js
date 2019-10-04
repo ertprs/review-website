@@ -7,15 +7,20 @@ import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import { useAmp } from "next/amp";
 import _get from "lodash";
 import _isEmpty from "lodash/isEmpty";
-import { GoogleLogout } from 'react-google-login';
-import { googleClientId } from '../../../utility/config';
+import { GoogleLogout } from "react-google-login";
+import { googleClientId } from "../../../utility/config";
 import { connect } from "react-redux";
 
 const onLogout = () => {
   // do nothing for now
-}
+};
 
-const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick, authorized, userName) => {
+const renderResponsiveSideNav = (
+  showSideNav,
+  handleMenuBtnClick,
+  authorized,
+  userName
+) => {
   if (useAmp()) {
     return (
       <AmpHelpers.Bind hidden="showSideNav.show">
@@ -27,26 +32,25 @@ const renderResponsiveSideNav = (showSideNav, handleMenuBtnClick, authorized, us
       </AmpHelpers.Bind>
     );
   } else
-    return showSideNav ? <ResponsiveSideNav showSideNav={showSideNav} authorized={authorized} userName={userName} /> : null;
+    return showSideNav ? (
+      <ResponsiveSideNav
+        showSideNav={showSideNav}
+        authorized={authorized}
+        userName={userName}
+      />
+    ) : null;
 };
-
-const logoutFb = () => {
-  window.FB.logout(res => {
-    console.log(res, 'yfyfyh')
-  })
-  return
-}
 
 const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
   const { authorized } = auth.logIn || false;
-  const { userProfile } = auth.logIn || {}
-  let userName = ""
+  const { userProfile } = auth.logIn || {};
+  let userName = "";
   if (userProfile) {
-    if (userProfile.hasOwnProperty('name')) {
+    if (userProfile.hasOwnProperty("name")) {
       if (userProfile.name.length > 0) {
-        let nameAfterSplit = userProfile.name.split(' ')
+        let nameAfterSplit = userProfile.name.split(" ");
         if (nameAfterSplit.length > 0) {
-          userName = nameAfterSplit[0]
+          userName = nameAfterSplit[0];
         }
       }
     }
@@ -81,9 +85,7 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
               Business
             </AmpLinkWrapper>
           </div>
-          <div>
-            {/* <div id="google_translate_element"></div> */}
-          </div>
+          <div>{/* <div id="google_translate_element"></div> */}</div>
         </div>
         <div className="secondaryLinksContainer">
           {!authorized ? (
@@ -106,26 +108,24 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
               </div>
             </React.Fragment>
           ) : (
-              <React.Fragment>
-                <div>
-                  Hello, <span style={{ marginRight: "10px" }}>{userName}</span>
-                </div>
-                <div>
-                  <i className="fa fa-sign-out" style={{ marginRight: "5px" }} />
-                  <AmpLinkWrapper href="/logout" alt="nav-link">
-                    Logout
+            <React.Fragment>
+              <div>
+                Hello, <span style={{ marginRight: "10px" }}>{userName}</span>
+              </div>
+              <div>
+                <i className="fa fa-sign-out" style={{ marginRight: "5px" }} />
+                <AmpLinkWrapper href="/logout" alt="nav-link">
+                  Logout
                 </AmpLinkWrapper>
-                </div>
-              </React.Fragment>
-            )}
+              </div>
+            </React.Fragment>
+          )}
           <GoogleLogout
             clientId={googleClientId}
             buttonText="Logout"
             onLogoutSuccess={onLogout}
-          >
-          </GoogleLogout>
+          ></GoogleLogout>
           {/* <button onClick={logoutFb}>Logout Fb</button> */}
-
         </div>
         <div className="menuIconContainer">
           {
@@ -149,7 +149,12 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
           }
         </div>
       </nav>
-      {renderResponsiveSideNav(showSideNav, handleMenuBtnClick, authorized, userName)}
+      {renderResponsiveSideNav(
+        showSideNav,
+        handleMenuBtnClick,
+        authorized,
+        userName
+      )}
     </>
   );
 };

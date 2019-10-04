@@ -180,11 +180,9 @@ class ProductReview extends React.Component {
       .get(`${baseURL}/api/get-order-data`)
       .then(res => {
         const products = res.data.products;
-        console.log(res);
         this.setState({ products: [...products] });
       })
       .catch(err => {
-        console.log(err);
       });
   }
 
@@ -294,7 +292,6 @@ class ProductReview extends React.Component {
         ...ratings,
         review: formData.review.value
       };
-      console.log(dataToSubmit);
       //clear form data on clicking next
       this.setState(
         { reviewBtnClicked: true, reviewSent: "in-progress" },
@@ -377,7 +374,6 @@ class ProductReview extends React.Component {
           reviewFormSubmissionErrors: { ...errorObj }
         },
         () => {
-          console.log({ ...dataToSubmit, productsTagged, ratings });
           axios
             .post("https://jsonplaceholder.typicode.com/posts", {
               name: dataToSubmit.videoTitle,
@@ -386,7 +382,6 @@ class ProductReview extends React.Component {
               productsTagged: productsTagged
             })
             .then(res => {
-              console.log(res);
               const {
                 selectedProducts,
                 selectedProductKeys,
@@ -425,7 +420,6 @@ class ProductReview extends React.Component {
                     metadata: {},
                     onError: error => {
                       this.setState({ videoUploaded: "error" });
-                      console.log("Failed because: " + error);
                     },
                     onProgress: (bytesUploaded, bytesTotal) => {
                       var percentage = (
@@ -433,12 +427,8 @@ class ProductReview extends React.Component {
                         100
                       ).toFixed(2);
                       // setState for videoProgress
-                      console.log(bytesUploaded, bytesTotal, percentage + "%");
                     },
                     onSuccess: () => {
-                      console.log(
-                        "Video might take some time to process on Vimeo."
-                      );
                       this.setState({ videoUploaded: "success" });
                     }
                   });

@@ -58,11 +58,9 @@ class TrustDontTrust extends React.Component {
         })
         .then(res => {
           this.setState({ reviewSent: "success" });
-          console.log(res);
         })
         .catch(err => {
           this.setState({ reviewSent: "error" });
-          console.log(err);
         });
     });
   };

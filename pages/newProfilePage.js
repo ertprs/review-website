@@ -43,11 +43,9 @@ class NewProfilePage extends React.Component {
     Router.events.on('routeChangeStart', this.handleRouteChange)
 
     Events.scrollEvent.register("begin", function() {
-      // console.log("begin", arguments);
     });
 
     Events.scrollEvent.register("end", function() {
-      // console.log("end", arguments);
     });
   }
 
@@ -91,7 +89,6 @@ class NewProfilePage extends React.Component {
   }
 
   updateParentState = newState => {
-    console.log(newState, "newState");
     this.props.setDomainDataInRedux(newState);
     const { domainData } = this.state;
 
@@ -195,8 +192,6 @@ class NewProfilePage extends React.Component {
       domainReviews = [...domainReviews, temp];
     });
 
-    // console.log(domainReviews, "domainReviews");
-
     this.setState({
       domainData: { ...newState },
       headerData: { ...headerData },
@@ -208,7 +203,6 @@ class NewProfilePage extends React.Component {
   };
 
   handleTabChange = e => {
-    // console.log(e, "handleTabChange");
   };
 
   handleSetActive = to => {
@@ -217,7 +211,6 @@ class NewProfilePage extends React.Component {
       this.state.selectedTab !== to &&
       window.innerWidth <= 767
     ) {
-      console.log("yes");
       this.setState({ selectedTab: to });
     }
   };
@@ -294,7 +287,6 @@ class NewProfilePage extends React.Component {
   };
 
   handleRouteChange = url => {
-    console.log('App is changing to: ', url)
     
   }
   

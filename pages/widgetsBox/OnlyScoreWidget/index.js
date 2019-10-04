@@ -1,30 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PusherDataComponent from "../../../Components/PusherDataComponent/PusherDataComponent";
 import OnlyScoreWidgetComponent from "../../../Components/Widgets/OnlyScoreWidgetComponent/OnlyScoreWidgetComponent";
+import _get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import axios from 'axios';
+import {baseURL} from '../../../utility/config';
 
-const retrieveRequiredData = parentState => {
-  const response = { ...parentState };
-  const ratings = (
-    (((response || {}).general_analysis || {}).payload || {}).ratings || {}
-  ).watchdog
-    ? ((((response || {}).general_analysis || {}).payload || {}).ratings || {})
-        .watchdog
-    : "";
 
-  const totalReviews = (((response || {}).wot || {}).payload || {}).comments
-    ? (((response || {}).wot || {}).payload || {}).comments.length
-    : 0;
+const retrieveRequiredData = reviewData => {
+  const ratings = Number(_get(reviewData,'rating',0));
+
+  const totalReviews =  _get(reviewData,'total',0);
 
   return { ratings, totalReviews };
 };
 
-const renderOnlyScoreWidgetComponent = (parentState, props) => {
+const renderOnlyScoreWidgetComponent = (reviewData, props) => {
   if (props.variant !== "carousel") {
-    const requiredData = retrieveRequiredData(parentState);
+    const requiredData = retrieveRequiredData(reviewData);
     return (
       <OnlyScoreWidgetComponent
         requiredData={requiredData}
         variant={props.variant}
+        domain={props.domain}
       />
     );
   }
@@ -34,6 +32,7 @@ const renderOnlyScoreWidgetComponent = (parentState, props) => {
         requiredData={props.requiredData}
         variant={props.variant}
         textReviews={props.textReviews}
+        domain={props.domain}
       />
     );
   }
@@ -42,19 +41,27 @@ const renderOnlyScoreWidgetComponent = (parentState, props) => {
 const OnlyScoreWidget = props => {
   let initState = {};
   const [parentState, setParentState] = useState(initState);
+  const [reviewData, setReviewData] = useState({})
+
+  useEffect(() => {
+    axios.get(`${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`)
+    .then(res=>{
+      console.log("response form widget ",res.data)
+      if(!isEmpty(res.data))
+      setReviewData({...res.data})
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  }, [])
   return (
     <>
       {props.variant !== "carousel" ? (
-        <PusherDataComponent
-          domain={props.domain}
-          onChildStateChange={newState => {
-            setParentState({ ...parentState, ...newState });
-          }}
-        />
+        <></>
       ) : (
         <></>
       )}
-      {renderOnlyScoreWidgetComponent(parentState, props)}
+      {renderOnlyScoreWidgetComponent(reviewData, props)}
     </>
   );
 };

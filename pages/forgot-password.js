@@ -6,9 +6,9 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
 import { baseURL, forgotPasswordApi } from "../utility/config";
-import Router from 'next/router';
-import Snackbar from '../Components/Widgets/Snackbar';
-import { CircularProgress } from '@material-ui/core';
+import Router from "next/router";
+import Snackbar from "../Components/Widgets/Snackbar";
+import { CircularProgress } from "@material-ui/core";
 import Layout from "../hoc/layout/layout";
 
 class ForgotPassword extends Component {
@@ -62,18 +62,29 @@ class ForgotPassword extends Component {
         this.setState({ isLoading: false });
         let success = _get(result, "data.success", false);
         if (success) {
-          this.setState({ showSnackbar: true, variant: "success", snackbarMsg: "Email sent successfully!" })
+          this.setState({
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Email sent successfully!"
+          });
           setTimeout(() => {
-            this.setState({ snackbarMsg: "Redirecting...", variant: "success" })
+            this.setState({
+              snackbarMsg: "Redirecting...",
+              variant: "success"
+            });
             setTimeout(() => {
-              Router.push('/afterRegistration')
-            }, 1000)
-          }, 2000)
+              Router.push("/email-sent-forgot-password");
+            }, 1000);
+          }, 2000);
         }
       })
       .catch(error => {
-        console.log(error, "registration error");
-        this.setState({ isLoading: false, showSnackbar: true, variant: "error", snackbarMsg: "Something went wrong!" })
+        this.setState({
+          isLoading: false,
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: "Something went wrong!"
+        });
       });
   };
 
@@ -101,14 +112,14 @@ class ForgotPassword extends Component {
                     <CircularProgress size={30} color="secondary" />
                   </div>
                 ) : (
-                    <button
-                      disabled={!formData.email.valid}
-                      className="registerBtn"
-                      onClick={this.handleForgotPasswordClick}
-                    >
-                      Forgot Password
+                  <button
+                    disabled={!formData.email.valid}
+                    className="registerBtn"
+                    onClick={this.handleForgotPasswordClick}
+                  >
+                    Forgot Password
                   </button>
-                  )}
+                )}
               </div>
             </div>
           </div>
