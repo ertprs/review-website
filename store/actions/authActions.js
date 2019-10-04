@@ -7,9 +7,13 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
   LOGOUT,
-  REDIRECT_TO_LOGIN_WITH_EMAIL
+  REDIRECT_TO_LOGIN_WITH_EMAIL,
+  ACTIVATE_USER_INIT,
+  ACTIVATE_USER_SUCCESS,
+  ACTIVATE_USER_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
 import { baseURL, loginApiOAuth, registerApiOAuth } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
@@ -152,6 +156,44 @@ export const redirectToLoginWithEmail = email => {
     tempEmail: {
       emailPrefill: true,
       email
+    }
+  };
+};
+
+export const activateUser = (url, activateUserApi) => {
+  return async dispatch => {
+    dispatch({
+      type: ACTIVATE_USER_INIT,
+      activateUserTemp: {
+        success: false
+      }
+    });
+    if (url) {
+      let splitUrlArray = url.split("/");
+      let token = "";
+      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
+        token = splitUrlArray[splitUrlArray.length - 1];
+      }
+      if (token) {
+        try {
+          const res = await axios.get(`${baseURL}${activateUserApi}/${token}`);
+          let success = _get(res, "data.success", false);
+          dispatch({
+            type: ACTIVATE_USER_SUCCESS,
+            activateUserTemp: {
+              success
+            }
+          });
+        } catch (error) {
+          let success = _get(error, "response.data.success", false);
+          dispatch({
+            type: ACTIVATE_USER_FAILURE,
+            activateUserTemp: {
+              success
+            }
+          });
+        }
+      }
     }
   };
 };
