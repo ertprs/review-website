@@ -15,13 +15,14 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ActivateUser extends Component {
-  componentDidMount(prevProps, prevState) {
+  componentDidMount() {
     const { type, success } = this.props;
     const { activateUser } = this.props;
     const url = window.location.href;
     if (type === ACTIVATE_USER_SUCCESS || type === ACTIVATE_USER_FAILURE) {
       return;
     } else {
+      console.log("inside else");
       activateUser(url, activateUserApi);
     }
   }
@@ -51,12 +52,17 @@ class ActivateUser extends Component {
       );
     }
 
-    if (!success) {
+    if (
+      !success &&
+      (type === ACTIVATE_USER_SUCCESS || type === ACTIVATE_USER_FAILURE)
+    ) {
       data = (
         <div className="card">
           <style jsx> {authenticationPageStyles} </style>
           <div className="cardHeading">
-            <h2 style={{ color: "red" }}>Something went wrong!</h2>
+            <h2 style={{ color: "#f9821b" }}>
+              Your account is already activated!
+            </h2>
           </div>
           <button className="registerBtn" onClick={this.onLoginClick}>
             Go to Login
@@ -72,7 +78,7 @@ class ActivateUser extends Component {
           <div className="cardHeading">
             <h2 style={{ color: "green" }}>
               {" "}
-              Account activated successfully!{" "}
+              Your account has been activated successfully!{" "}
             </h2>{" "}
           </div>
           <button className="registerBtn" onClick={this.onLoginClick}>
