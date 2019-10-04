@@ -5,7 +5,7 @@ import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import Layout from "../hoc/layout/layout";
-import { loginApi, loginApiOAuth } from "../utility/config";
+import { loginApi } from "../utility/config";
 import Router from "next/router";
 import { connect } from "react-redux";
 import { logIn } from "../store/actions/authActions";
@@ -109,7 +109,7 @@ class Login extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { logIn, logInTemp } = this.props.auth;
+    const { logIn, logInTemp, signUpTemp } = this.props.auth;
     const { formData } = this.state;
     if (this.props !== prevProps) {
       let isWrongCredentials = _get(
@@ -129,7 +129,22 @@ class Login extends Component {
     if (this.props.auth !== prevProps.auth) {
       const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
       const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
+      const signUpSuccess = _get(signUpTemp, "signUpSuccess", "undefined");
       const authorized = _get(logIn, "authorized", false);
+      const oAuthSignUpSuccess = _get(
+        signUpTemp,
+        "oAuthSignUpSuccess",
+        "undefined"
+      );
+
+      if (oAuthSignUpSuccess === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: "Some error occured while Sign Up."
+        });
+      }
+
       if (isLoginFailed) {
         if (isWrongCredentials) {
           this.setState({
