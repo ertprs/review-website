@@ -66,6 +66,7 @@ const renderStandAloneWidget = requiredData => {
 
       <div>
         <div className="widgetImgContainer">
+        <a href="https://thetrustsearch.com" target="_blank">
           <img
             src="/static/business/index/images/gradientLogo.png"
             alt="logo"
@@ -75,13 +76,14 @@ const renderStandAloneWidget = requiredData => {
               margin: "0 auto"
             }}
           />
+          </a>
         </div>
       </div>
     </div>
   );
 };
 
-const renderCarouselVariant = (requiredData, textReviews) => {
+const renderCarouselVariant = (requiredData, textReviews, domain) => {
   return (
     <div className="carouselWidgetBox">
       <style jsx>{layoutStyles}</style>
@@ -144,6 +146,7 @@ const renderCarouselVariant = (requiredData, textReviews) => {
 
       <div>
         <div className={`${!textReviews ? "carouselWidgetImgContainer" : "carouselWidgetImgContainerV"}`}>
+          <a href="https://thetrustsearch.com" target="_blank">
           <img
             src="/static/business/index/images/gradientLogo.png"
             alt="logo"
@@ -152,18 +155,19 @@ const renderCarouselVariant = (requiredData, textReviews) => {
               height: "100%"
             }}
           />
+          </a>
         </div>
       </div>
     </div>
   );
 };
 
-const OnlyScoreWidgetComponent = ({ requiredData, variant, textReviews }) => {
+const OnlyScoreWidgetComponent = ({ requiredData, variant, textReviews, domain }) => {
   return (
     <>
       {variant === "carousel"
-        ? renderCarouselVariant(requiredData, textReviews)
-        : renderStandAloneWidget(requiredData)}
+        ? renderCarouselVariant(requiredData, textReviews, domain)
+        : renderStandAloneWidget(requiredData, domain)}
     </>
   );
 };

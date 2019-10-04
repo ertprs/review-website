@@ -3,8 +3,8 @@ import { reviewBoxStyles } from "./reviewBoxStyles.js";
 import stringHelpers from "../../../utility/stringHelpers";
 import ReviewCard from "../ReviewCard/ReviewCard";
 import StarRatings from "react-star-ratings";
-
-const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles) => {
+import {googleMapsURL} from "../../../utility/config";
+const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles, domain) => {
   return (
     <div>
       <style jsx>{reviewBoxStyles}</style>
@@ -33,9 +33,11 @@ const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles) 
       </div>
       <div className="reviewText">
         <p>
+          <a href={`${googleMapsURL}/${domain}`} target="_blank" style={{textDecoration:"none", color:"#000"}}>
           {review.text.length <= 100
             ? review.text
             : review.text.substring(0, 120) + "..."}
+          </a>
         </p>
       </div>
     </div>
@@ -146,7 +148,7 @@ const ReviewBox = props => {
   ) : (
     <div className="reviewBox" style={{...props.styles}}>
       <style jsx>{reviewBoxStyles}</style>
-      {renderTextualReviewBox(props.review, props.reviewRatingStyles, props.reviewHeaderStyles)}
+      {renderTextualReviewBox(props.review, props.reviewRatingStyles, props.reviewHeaderStyles, props.domain)}
     </div>
   );
 };

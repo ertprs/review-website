@@ -22,6 +22,7 @@ const renderOnlyScoreWidgetComponent = (reviewData, props) => {
       <OnlyScoreWidgetComponent
         requiredData={requiredData}
         variant={props.variant}
+        domain={props.domain}
       />
     );
   }
@@ -31,6 +32,7 @@ const renderOnlyScoreWidgetComponent = (reviewData, props) => {
         requiredData={props.requiredData}
         variant={props.variant}
         textReviews={props.textReviews}
+        domain={props.domain}
       />
     );
   }
