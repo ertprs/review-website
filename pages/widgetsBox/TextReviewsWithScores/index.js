@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StarRatings from "react-star-ratings";
 import Slider from "react-slick";
 import ReviewBox from "../../../Components/Widgets/ReviewBox/ReviewBox";
@@ -6,34 +6,24 @@ import PusherDataComponent from "../../../Components/PusherDataComponent/PusherD
 import Head from "next/head";
 import uuid from "uuid/v1";
 import { layoutStyles } from "../../../style";
+import axios from 'axios';
+import {baseURL} from '../../../utility/config';
+import _get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
-const retrieveRequiredData = parentState => {
-  const response = { ...parentState };
-  const ratings = (
-    (((response || {}).general_analysis || {}).payload || {}).ratings || {}
-  ).watchdog
-    ? ((((response || {}).general_analysis || {}).payload || {}).ratings || {})
-        .watchdog
-    : "";
+const retrieveRequiredData = reviewData => {
+  
+  const ratings = Number(_get(reviewData,'rating',0));
 
-  const totalReviews = (((response || {}).wot || {}).payload || {}).comments
-    ? (((response || {}).wot || {}).payload || {}).comments.length
-    : 0;
+  const totalReviews =_get(reviewData,'total',0);
 
-  let topThreeReviews = [];
-  if (totalReviews > 0) {
-    const comments = response.wot.payload.comments;
-    topThreeReviews = [
-      ...topThreeReviews,
-      ...comments.slice(0, comments.length > 3 ? 3 : comments.length)
-    ];
-  }
+  const reviews = _get(reviewData,'reviews',[]);
 
-  return { ratings, totalReviews, topThreeReviews };
+  return { ratings, totalReviews, reviews };
 };
 
-const renderWidget = (parentState, settings) => {
-  let requiredData = retrieveRequiredData(parentState);
+const renderWidget = (reviewData, settings) => {
+  let requiredData = retrieveRequiredData(reviewData);
   return (
     <div className="widgetBox">
       <Head>
@@ -160,9 +150,9 @@ const renderWidget = (parentState, settings) => {
         </div>
       </div>
       <div className="reviewBoxSlider">
-        {requiredData.topThreeReviews.length > 0 ? (
+        {requiredData.reviews.length > 0 ? (
           <Slider {...settings}>
-            {requiredData.topThreeReviews.map(item => {
+            {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()} style={{ height: "100%" }}>
                   <ReviewBox review={item} />
@@ -186,6 +176,20 @@ const renderWidget = (parentState, settings) => {
 const TextReviewsWithScores = props => {
   let initState = {};
   const [parentState, setParentState] = useState(initState);
+  const [reviewData, setReviewData] = useState({})
+
+  useEffect(() => {
+    axios.get(`${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`)
+    .then(res=>{
+      console.log("response form widget ",res.data)
+      if(!isEmpty(res.data))
+      setReviewData({...res.data})
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+  }, [])
+
   const settings = {
     infinite: true,
     dots: false,
@@ -199,13 +203,7 @@ const TextReviewsWithScores = props => {
 
   return (
     <>
-      <PusherDataComponent
-        domain={props.domain}
-        onChildStateChange={newState => {
-          setParentState({ ...parentState, ...newState });
-        }}
-      />
-      {renderWidget(parentState, settings)}
+      {renderWidget(reviewData, settings)}
     </>
   );
 };
