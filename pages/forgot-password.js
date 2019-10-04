@@ -88,6 +88,12 @@ class ForgotPassword extends Component {
       });
   };
 
+  handleKeyDown = e => {
+    if (e.keyCode == 13) {
+      this.handleForgotPasswordClick();
+    }
+  };
+
   render() {
     const { formData, isLoading } = this.state;
     return (
@@ -103,6 +109,7 @@ class ForgotPassword extends Component {
                 <FormField
                   {...formData.email}
                   handleChange={this.handleChange}
+                  onkeyDown={this.handleKeyDown}
                   id="email"
                   rows="5"
                   col="5"

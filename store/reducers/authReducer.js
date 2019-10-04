@@ -12,7 +12,10 @@ import {
   ACTIVATE_USER_FAILURE,
   VERIFY_RESET_PASSWORD_TOKEN_INIT,
   VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
-  VERIFY_RESET_PASSWORD_TOKEN_FAILURE
+  VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
+  RESET_PASSWORD_INIT,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILURE
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -24,7 +27,8 @@ const authReducer = (state = {}, action) => {
     logInTemp,
     tempEmail,
     activateUserTemp,
-    verifyTokenTemp
+    verifyTokenTemp,
+    resetPasswordTemp
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -89,6 +93,24 @@ const authReducer = (state = {}, action) => {
         ...state,
         type,
         verifyTokenTemp: { ...verifyTokenTemp }
+      };
+    case RESET_PASSWORD_INIT:
+      return {
+        ...state,
+        type,
+        resetPasswordTemp: { ...resetPasswordTemp }
+      };
+    case RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        type,
+        resetPasswordTemp: { ...resetPasswordTemp }
+      };
+    case RESET_PASSWORD_FAILURE:
+      return {
+        ...state,
+        type,
+        resetPasswordTemp: { ...resetPasswordTemp }
       };
     case LOGOUT:
       state = undefined;
