@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
 import Layout from "../hoc/layout/layout";
-import { CircularProgress } from '@material-ui/core';
-import Router from 'next/router';
+import { CircularProgress } from "@material-ui/core";
+import Router from "next/router";
 
-const redirectToLogin = (setLoading) => {
-  setLoading(true)
-  Router.push('/login')
-}
+const redirectToLogin = setLoading => {
+  setLoading(true);
+  Router.push("/login");
+};
 
 const AfterRegistration = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   return (
     <Layout>
       <div className="mainContainer">
@@ -29,11 +29,11 @@ const AfterRegistration = () => {
                 Give it a few minutes, and don't forget to check your spam
                 folder.
               </p>
-              <div style={{ display: 'flex' }}>
-                <p>Didn't receive the email?
-                <a href="#">support@thetrustsearch.com</a>
+              <div style={{ display: "flex" }}>
+                <p>
+                  Didn't receive the email?&nbsp;
+                  <a href="#">support@thetrustsearch.com</a>
                 </p>
-
               </div>
 
               {loading ? (
@@ -41,18 +41,18 @@ const AfterRegistration = () => {
                   <CircularProgress size={30} color="secondary" />
                 </div>
               ) : (
-                  <button
-                    className="registerBtn"
-                    onClick={() => redirectToLogin(setLoading)}
-                  >
-                    Go to Login
-                  </button>
-                )}
+                <button
+                  className="registerBtn"
+                  onClick={() => redirectToLogin(setLoading)}
+                >
+                  Go to Login
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </Layout >
+    </Layout>
   );
 };
 
