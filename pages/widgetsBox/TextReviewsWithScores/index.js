@@ -6,23 +6,23 @@ import PusherDataComponent from "../../../Components/PusherDataComponent/PusherD
 import Head from "next/head";
 import uuid from "uuid/v1";
 import { layoutStyles } from "../../../style";
-import axios from 'axios';
-import {baseURL} from '../../../utility/config';
-import _get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
+import axios from "axios";
+import { baseURL } from "../../../utility/config";
+import _get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
+import { googleMapsURL } from "../../../utility/config";
 
 const retrieveRequiredData = reviewData => {
-  
-  const ratings = Number(_get(reviewData,'rating',0));
+  const ratings = Number(_get(reviewData, "rating", 0));
 
-  const totalReviews =_get(reviewData,'total',0);
+  const totalReviews = _get(reviewData, "total", 0);
 
-  const reviews = _get(reviewData,'reviews',[]);
+  const reviews = _get(reviewData, "reviews", []);
 
   return { ratings, totalReviews, reviews };
 };
 
-const renderWidget = (reviewData, settings) => {
+const renderWidget = (reviewData, settings, domain) => {
   let requiredData = retrieveRequiredData(reviewData);
   return (
     <div className="widgetBox">
@@ -109,16 +109,18 @@ const renderWidget = (reviewData, settings) => {
       </style>
       {/* <div className="widgetBox"> */}
       <div className="widgetImgContainer">
-        <img
-          src="/static/business/index/images/gradientLogo.png"
-          alt="logo"
-          style={{
-            maxWidth: "100%",
-            height: "57%",
-            margin: "0 auto",
-            display: "block"
-          }}
-        />
+        <a href="https://thetrustsearch.com" target="_blank">
+          <img
+            src="/static/business/index/images/gradientLogo.png"
+            alt="logo"
+            style={{
+              maxWidth: "100%",
+              height: "57%",
+              margin: "0 auto",
+              display: "block"
+            }}
+          />
+        </a>
       </div>
       <div className="reviewHeader">
         <div className="reviewsCountContainer">
@@ -155,7 +157,7 @@ const renderWidget = (reviewData, settings) => {
             {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()} style={{ height: "100%" }}>
-                  <ReviewBox review={item} />
+                  <ReviewBox review={item} domain={domain}/>
                 </div>
               );
             })}
@@ -176,19 +178,21 @@ const renderWidget = (reviewData, settings) => {
 const TextReviewsWithScores = props => {
   let initState = {};
   const [parentState, setParentState] = useState(initState);
-  const [reviewData, setReviewData] = useState({})
+  const [reviewData, setReviewData] = useState({});
 
   useEffect(() => {
-    axios.get(`${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`)
-    .then(res=>{
-      console.log("response form widget ",res.data)
-      if(!isEmpty(res.data))
-      setReviewData({...res.data})
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }, [])
+    axios
+      .get(
+        `${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
+      )
+      .then(res => {
+        console.log("response form widget ", res.data);
+        if (!isEmpty(res.data)) setReviewData({ ...res.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   const settings = {
     infinite: true,
@@ -201,11 +205,7 @@ const TextReviewsWithScores = props => {
     // adaptiveHeight:true
   };
 
-  return (
-    <>
-      {renderWidget(reviewData, settings)}
-    </>
-  );
+  return <>{renderWidget(reviewData, settings, props.domain)}</>;
 };
 
 TextReviewsWithScores.getInitialProps = async ({ query }) => {

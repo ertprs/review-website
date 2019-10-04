@@ -8,6 +8,8 @@ export const flagsURL = "https://www.countryflags.io";
 export const shareURL =
   "https://chrome.google.com/webstore/detail/watchdog2-beta/nolhjjgkcpolemkdekaneneefghjahfp";
 
+export const googleMapsURL = "https://google.com/maps/search";
+
 // export const googleClientId =
 //   "98966487885-jfc24f86o9ht4cmk38gl3g91q2vtgmd0.apps.googleusercontent.com";
 export const googleClientId = "757926713122-b99qpe0npfm18ko5vek0ch1tgtruei87.apps.googleusercontent.com";

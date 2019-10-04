@@ -113,7 +113,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
             {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()}>
-                  <ReviewBox review={item} styles={{height:"200px"}} reviewRatingStyles={{margin:"8px 0 8px 0"}} reviewHeaderStyles={{marginTop:"5px"}} />
+                  <ReviewBox review={item} styles={{height:"200px"}} reviewRatingStyles={{margin:"8px 0 8px 0"}} reviewHeaderStyles={{marginTop:"5px"}} domain={props.domain}/>
                 </div>
               );
             })}
@@ -175,7 +175,7 @@ const TextReviews = props => {
   useEffect(() => {
     axios.get(`${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`)
     .then(res=>{
-      console.log("response form widget ",res.data)
+      // console.log("response form widget ",res.data)
       if(!isEmpty(res.data))
       setReviewData({...res.data})
     })
