@@ -41,7 +41,8 @@ class WriteReview extends Component {
       isLoading: false,
       showSnackbar: false,
       variant: "success",
-      snackbarMsg: ""
+      snackbarMsg: "",
+      reviewCharsLeft: 0
     };
     this.windowSize = 0;
   }
@@ -72,6 +73,11 @@ class WriteReview extends Component {
   handleChange = (e, id) => {
     const { value } = e.target;
     const { formData } = this.state;
+    let reviewCharsLeft = formData[id].validationRules.minLength - value.length;
+    console.log(reviewCharsLeft, "reviewCharsLeft");
+    if (reviewCharsLeft < 0) {
+      reviewCharsLeft = 0;
+    }
     this.setState({
       formData: {
         ...formData,
@@ -81,7 +87,8 @@ class WriteReview extends Component {
           valid: validate(value, formData[id].validationRules),
           touched: true
         }
-      }
+      },
+      reviewCharsLeft
     });
   };
 
@@ -236,7 +243,8 @@ class WriteReview extends Component {
       rating,
       starSize,
       isLoading,
-      authButtonLoading
+      authButtonLoading,
+      reviewCharsLeft
     } = this.state;
     const authorized = _get(this.props, "auth.logIn.authorized", false);
     return (
@@ -275,6 +283,13 @@ class WriteReview extends Component {
                   rows="5"
                   col="5"
                 />
+                {reviewCharsLeft !== 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsLeft} characters left!
+                  </span>
+                ) : (
+                  ""
+                )}
               </div>
               {this.renderAuthButtons(
                 formData,
