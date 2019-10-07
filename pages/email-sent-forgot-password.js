@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
 import Layout from "../hoc/layout/layout";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Router from "next/router";
 
 const redirectToLogin = setLoading => {
   setLoading(true);

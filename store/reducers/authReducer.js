@@ -15,7 +15,9 @@ import {
   VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
   RESET_PASSWORD_INIT,
   RESET_PASSWORD_SUCCESS,
-  RESET_PASSWORD_FAILURE
+  RESET_PASSWORD_FAILURE,
+  OAUTH_SIGNIN_INIT,
+  OAUTH_SIGNIN_END
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -111,6 +113,16 @@ const authReducer = (state = {}, action) => {
         ...state,
         type,
         resetPasswordTemp: { ...resetPasswordTemp }
+      };
+    case OAUTH_SIGNIN_INIT:
+      return {
+        ...state,
+        type
+      };
+    case OAUTH_SIGNIN_END:
+      return {
+        ...state,
+        type
       };
     case LOGOUT:
       state = undefined;

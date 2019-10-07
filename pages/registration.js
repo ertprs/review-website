@@ -13,6 +13,10 @@ import { signUp, redirectToLoginWithEmail } from "../store/actions/authActions";
 import Snackbar from "../Components/Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import OAuthButtons from "../Components/Widgets/oAuthBtns";
+import {
+  OAUTH_SIGNIN_INIT,
+  OAUTH_SIGNIN_END
+} from "../store/actions/actionTypes";
 
 class Registration extends Component {
   state = {
@@ -90,7 +94,8 @@ class Registration extends Component {
     success: false,
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    oAuthLoading: false
   };
 
   handleChange = (e, id) => {
@@ -172,14 +177,42 @@ class Registration extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.auth !== prevProps.auth) {
-      const { signUpTemp } = this.props.auth;
+      const { signUpTemp, type, logIn } = this.props.auth;
       const isSignUpFailed = _get(signUpTemp, "isSignupFailed", false);
       const isSignupSuccess = _get(signUpTemp, "signUpSuccess", false);
+      const authorized = _get(logIn, "authorized", false);
       const oAuthSignUpSuccess = _get(
         signUpTemp,
         "oAuthSignUpSuccess",
         "undefined"
       );
+
+      if (type === OAUTH_SIGNIN_INIT) {
+        this.setState({ oAuthLoading: true });
+      }
+
+      if (type === OAUTH_SIGNIN_END) {
+        this.setState({ oAuthLoading: false });
+      }
+
+      if (authorized) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Logged in successfully!"
+        });
+        setTimeout(() => {
+          this.setState({
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Redirecting..."
+          });
+          setTimeout(() => {
+            Router.push("/");
+          }, 1000);
+        }, 1000);
+      }
+
       if (isSignUpFailed) {
         let snackbarMsg =
           _get(signUpTemp, "status", 0) === 409
@@ -227,7 +260,7 @@ class Registration extends Component {
   };
 
   render() {
-    const { formData, errorMsg } = this.state;
+    const { formData, errorMsg, oAuthLoading } = this.state;
     const { signUpTemp } = this.props.auth;
     if (_get(signUpTemp, "status", 0) === 409) {
       // ? This will redirect the user to login page with email prefilled in case of already registered.
@@ -309,8 +342,14 @@ class Registration extends Component {
                     >
                       Register
                     </button>
-                    <OAuthButtons />
                   </>
+                )}
+                {oAuthLoading ? (
+                  <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    <CircularProgress size={30} color="secondary" />
+                  </div>
+                ) : (
+                  <OAuthButtons />
                 )}
               </div>
             </div>
