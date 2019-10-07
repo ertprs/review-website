@@ -17,7 +17,9 @@ class ProfilePageHeader extends Component {
   componentDidMount() {
     // this.setState({ headerData: { ...this.props.headerData } });
     axios
-      .get("http://localhost:8080/screenshot?domain=https://www.sbilife.co.in/")
+      .get(
+        "https://screenshot-api-server.herokuapp.com/screenshot?domain=https://www.google.com/"
+      )
       .then(result => {
         console.log("result", "result");
         this.setState({ imageSrc: result.data });
