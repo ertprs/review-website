@@ -143,7 +143,7 @@ function PrimarySearchAppBar(props) {
 
   useEffect(() => {
     const pathName = window.location.pathname;
-    if (pathName.includes("newProfilePage")) {
+    if (pathName.includes("profile")) {
       setShowInputBase(true);
     } else {
       setShowInputBase(false);
