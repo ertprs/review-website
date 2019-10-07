@@ -5,12 +5,12 @@ import WebStats from "../Components/Widgets/WebStats/WebStats";
 import Head from "next/head";
 import Router from "next/router";
 import uuid from "uuid/v1";
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from "@material-ui/core";
 import Layout from "../hoc/layout/layout";
 import SearchInput from "../Components/MaterialComponents/SearchInput";
-import { connect } from 'react-redux';
-import Snackbar from '../Components/Widgets/Snackbar';
-import _get from 'lodash/get';
+import { connect } from "react-redux";
+import Snackbar from "../Components/Widgets/Snackbar";
+import _get from "lodash/get";
 
 const renderWebStats = () => {
   let statsData = [
@@ -29,12 +29,12 @@ const renderWebStats = () => {
   });
 };
 
-const Home = (props) => {
-  const [showSnackbar, setShowSnacbar] = useState(false)
+const Home = props => {
+  const [showSnackbar, setShowSnacbar] = useState(false);
   useEffect(() => {
     // code to run on component mount
     if (props.showSnackbar) {
-      setShowSnacbar(true)
+      setShowSnacbar(true);
     }
     window.scrollTo(0, 0);
   }, []);
@@ -54,10 +54,7 @@ const Home = (props) => {
       ) {
         let domainName = searchBoxVal.toLowerCase().trim();
         setLoading(true);
-        Router.push(
-          `/newProfilePage?domain=${domainName}`,
-          `/newProfilePage/${domainName}`
-        );
+        Router.push(`/profile?domain=${domainName}`, `/profile/${domainName}`);
       } else {
         alert(
           "Please enter domain name in the format: (ex- thetrustsearch.com)"
@@ -112,8 +109,10 @@ const Home = (props) => {
               />
             </>
           ) : (
-              <div style={{ textAlign: "center" }}><CircularProgress /></div>
-            )}
+            <div style={{ textAlign: "center" }}>
+              <CircularProgress />
+            </div>
+          )}
         </div>
         <div className="row">
           <div className="col-md-12">
@@ -132,31 +131,35 @@ const Home = (props) => {
       </div>
       <Snackbar
         open={showSnackbar}
-        variant={_get(props, 'variant', '')}
+        variant={_get(props, "variant", "")}
         handleClose={() => setShowSnacbar(false)}
-        message={_get(props, 'message', '')}
+        message={_get(props, "message", "")}
       />
     </Layout>
   );
 };
 
 const mapStateToProps = state => {
-  const { auth, trustVote } = state
-  const authorized = _get(auth, 'logIn.authorized', false)
-  let showSnackbar = false
-  let variant = ""
-  let message = ""
-  if (authorized && (_get(trustVote, 'type', "") === "TRUST_VOTE_SUCCESS" || _get(trustVote, 'type', "") === "TRUST_VOTE_FAILURE")) {
-    showSnackbar = true
+  const { auth, trustVote } = state;
+  const authorized = _get(auth, "logIn.authorized", false);
+  let showSnackbar = false;
+  let variant = "";
+  let message = "";
+  if (
+    authorized &&
+    (_get(trustVote, "type", "") === "TRUST_VOTE_SUCCESS" ||
+      _get(trustVote, "type", "") === "TRUST_VOTE_FAILURE")
+  ) {
+    showSnackbar = true;
   }
-  if (_get(trustVote, 'payload.success', false)) {
-    variant = "success"
-    message = "Review Posted Successfully!"
+  if (_get(trustVote, "payload.success", false)) {
+    variant = "success";
+    message = "Review Posted Successfully!";
   } else {
-    variant = "error"
-    message = "Some Error Occured!"
+    variant = "error";
+    message = "Some Error Occured!";
   }
-  return { showSnackbar, variant, message }
-}
+  return { showSnackbar, variant, message };
+};
 
 export default connect(mapStateToProps)(Home);

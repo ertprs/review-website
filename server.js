@@ -11,8 +11,8 @@ app.prepare().then(() => {
     return app.render(req, res, "/reviews", { domain: req.params.domain });
   });
 
-  server.get("/newProfilePage/:domain", (req, res) => {
-    return app.render(req, res, "/newProfilePage", {
+  server.get("/profile/:domain", (req, res) => {
+    return app.render(req, res, "/profile", {
       domain: req.params.domain
     });
   });
