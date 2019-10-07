@@ -16,7 +16,9 @@ import {
   VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
   RESET_PASSWORD_INIT,
   RESET_PASSWORD_SUCCESS,
-  RESET_PASSWORD_FAILURE
+  RESET_PASSWORD_FAILURE,
+  OAUTH_SIGNIN_INIT,
+  OAUTH_SIGNIN_END
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -56,8 +58,10 @@ export const signUp = (signupData, registerApi, signUpType) => {
             isSigningUp: false
           }
         });
-        if (status === 200 && success) {
+        if (status === 200 && oAuthSignUpSuccess === true) {
           dispatch(logIn(signupData, loginApiOAuth, signUpType));
+        } else {
+          dispatch(oAuthSigninginEnd());
         }
       } else {
         dispatch({
@@ -92,6 +96,8 @@ export const signUp = (signupData, registerApi, signUpType) => {
         });
         if (status === 409) {
           dispatch(logIn(signupData, loginApiOAuth, signUpType));
+        } else {
+          dispatch(oAuthSigninginEnd());
         }
       } else {
         dispatch({
@@ -151,6 +157,7 @@ export const logIn = (loginData, loginApi, loginType) => {
           isLoggingIn: false
         }
       });
+      dispatch(oAuthSigninginEnd());
       if (success && shouldSend) {
         dispatch(sendTrustVote(trustVoteData));
       }
@@ -173,6 +180,7 @@ export const logIn = (loginData, loginApi, loginType) => {
           isLoggingIn: false
         }
       });
+      dispatch(oAuthSigninginEnd());
     }
   };
 };
@@ -325,5 +333,17 @@ export const resetPassword = (password, url, resetPasswordApi) => {
         }
       }
     }
+  };
+};
+
+export const oAuthSigninginInit = () => {
+  return {
+    type: OAUTH_SIGNIN_INIT
+  };
+};
+
+export const oAuthSigninginEnd = () => {
+  return {
+    type: OAUTH_SIGNIN_END
   };
 };

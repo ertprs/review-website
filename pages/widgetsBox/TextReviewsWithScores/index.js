@@ -105,6 +105,11 @@ const renderWidget = (reviewData, settings, domain) => {
                   display:none;
                 }
               }
+              @media screen and (max-width:252px){
+                .widgetBox{
+                  display:none;
+                }
+              }
             `}
       </style>
       {/* <div className="widgetBox"> */}
@@ -186,7 +191,6 @@ const TextReviewsWithScores = props => {
         `${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
       )
       .then(res => {
-        console.log("response form widget ", res.data);
         if (!isEmpty(res.data)) setReviewData({ ...res.data });
       })
       .catch(err => {
