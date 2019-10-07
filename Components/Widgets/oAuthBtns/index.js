@@ -15,9 +15,9 @@ import { oAuthSigninginInit } from "../../../store/actions/authActions";
 class OAuthButtons extends Component {
   OAuthSignIn = (response, name, signupType) => {
     const { signUp, oAuthSigninginInit } = this.props;
-    oAuthSigninginInit();
     let reqBody = {};
     if (response.hasOwnProperty("accessToken")) {
+      oAuthSigninginInit();
       if (name === "google") {
         reqBody = {
           provider: name,
