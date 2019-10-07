@@ -158,6 +158,18 @@ function PrimarySearchAppBar(props) {
         }
       }
     }
+    if (loginType === 3) {
+      const auth2 = window.gapi.auth2.getAuthInstance();
+      if (auth2 != null) {
+        auth2
+          .signOut()
+          .then(
+            auth2
+              .disconnect()
+              .then(console.log("Logout Sucessfully from google."))
+          );
+      }
+    }
     setShowSnackbar(true);
     props.logOut();
     Router.push("/");
@@ -257,6 +269,7 @@ function PrimarySearchAppBar(props) {
             <Link href="">
               <MenuItem>
                 <a
+                  target="_top"
                   onClick={() => handleLogout()}
                   className={classes.navLinkMobile}
                 >
@@ -268,23 +281,13 @@ function PrimarySearchAppBar(props) {
             ""
           )}
           {loginType === 3 ? (
-            <GoogleLogout
-              clientId={googleClientId}
-              buttonText="Logout"
-              render={renderProps => (
-                <Link href="">
-                  <MenuItem>
-                    <a
-                      onClick={() => handleLogout()}
-                      className={classes.navLink}
-                    >
-                      Logout
-                    </a>
-                  </MenuItem>
-                </Link>
-              )}
-              // onLogoutSuccess={logout}
-            ></GoogleLogout>
+            <Link href="">
+              <MenuItem>
+                <a onClick={() => handleLogout()} className={classes.navLink}>
+                  Logout
+                </a>
+              </MenuItem>
+            </Link>
           ) : (
             ""
           )}
