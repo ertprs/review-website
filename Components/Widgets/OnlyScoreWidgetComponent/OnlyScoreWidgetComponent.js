@@ -71,8 +71,8 @@ const renderStandAloneWidget = requiredData => {
             src="/static/business/index/images/gradientLogo.png"
             alt="logo"
             style={{
-              maxWidth: "100%",
-              height: "57%",
+              maxWidth: "65%",
+              height: "auto",
               margin: "0 auto"
             }}
           />
