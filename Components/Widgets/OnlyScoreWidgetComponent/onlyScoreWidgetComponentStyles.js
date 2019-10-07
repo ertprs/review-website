@@ -38,10 +38,12 @@ export const onlyScoreWidgetComponentStyles = css`
     color: #21bc61;
     font-size: 1.2rem;
     text-decoration: underline;
+    display:inline-block;
+    margin-top:10px;
   }
 
   .widgetImgContainer {
-    height: 100px;
+    height: 70px;
     width: 100%;
     margin-top: 5px;
     display: flex;
@@ -51,7 +53,7 @@ export const onlyScoreWidgetComponentStyles = css`
   }
 
   .carouselWidgetImgContainer{
-    height: 39px;
+    height: 20px;
     width: 80%;
     margin:0 auto;
   }
@@ -110,6 +112,12 @@ export const onlyScoreWidgetComponentStyles = css`
     }
     .smallRatingIndicator {
       display: none;
+    }
+  }
+
+  @media screen and (max-width: 225px) {
+    .learnMoreLink{
+      font-size:1rem;
     }
   }
 `;

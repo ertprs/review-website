@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import PusherDataComponent from "../../../Components/PusherDataComponent/PusherDataComponent";
-import axios from 'axios';
-import {baseURL} from '../../../utility/config';
+import axios from "axios";
+import { baseURL } from "../../../utility/config";
 import ReviewBox from "../../../Components/Widgets/ReviewBox/ReviewBox";
 import OnlyScoreWidget from "../OnlyScoreWidget/index";
 import Slider from "react-slick";
 import uuid from "uuid/v1";
 import { layoutStyles } from "../../../style";
 import Head from "next/head";
-import _get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
+import _get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
 
 const retrieveRequiredData = reviewData => {
-  const ratings = Number(_get(reviewData,'rating',0));
+  const ratings = Number(_get(reviewData, "rating", 0));
 
-  const totalReviews = _get(reviewData,'total',0);
+  const totalReviews = _get(reviewData, "total", 0);
 
-  const reviews = _get(reviewData,'reviews',[]);
+  const reviews = _get(reviewData, "reviews", []);
 
   return { ratings, totalReviews, reviews };
 };
@@ -51,9 +51,9 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           height: 100%; //affected by the height passed as a prop to the widget
         }
 
-        @media screen and (max-width:991px){
-          .flexContainer > div:last-child{
-            flex-basis:100%;
+        @media screen and (max-width: 991px) {
+          .flexContainer > div:last-child {
+            flex-basis: 100%;
           }
         }
 
@@ -85,6 +85,11 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
               padding: 0 7% 0 7%;
             }
           }
+          @media screen and (max-width: 252px) {
+            .flexContainer{
+              display: none;
+            }
+          }
         }
       `}</style>
       <div className="scoreWidgetContainer">
@@ -113,7 +118,13 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
             {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()}>
-                  <ReviewBox review={item} styles={{height:"200px"}} reviewRatingStyles={{margin:"8px 0 8px 0"}} reviewHeaderStyles={{marginTop:"5px"}} domain={props.domain}/>
+                  <ReviewBox
+                    review={item}
+                    styles={{ height: "200px" }}
+                    reviewRatingStyles={{ margin: "8px 0 8px 0" }}
+                    reviewHeaderStyles={{ marginTop: "5px" }}
+                    domain={props.domain}
+                  />
                 </div>
               );
             })}
@@ -170,19 +181,21 @@ function SamplePrevArrow(props) {
 const TextReviews = props => {
   let initState = {};
 
-  const [reviewData, setReviewData] = useState({})
+  const [reviewData, setReviewData] = useState({});
 
   useEffect(() => {
-    axios.get(`${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`)
-    .then(res=>{
-      // console.log("response form widget ",res.data)
-      if(!isEmpty(res.data))
-      setReviewData({...res.data})
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }, [])
+    axios
+      .get(
+        `${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
+      )
+      .then(res => {
+        // console.log("response form widget ",res.data)
+        if (!isEmpty(res.data)) setReviewData({ ...res.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   const [parentState, setParentState] = useState(initState);
   var settings = {
@@ -227,11 +240,7 @@ const TextReviews = props => {
       }
     ]
   };
-  return (
-    <>
-      {renderTextReviewsWidget(reviewData, settings, props)}
-    </>
-  );
+  return <>{renderTextReviewsWidget(reviewData, settings, props)}</>;
 };
 
 TextReviews.getInitialProps = async ({ query }) => {
