@@ -5,7 +5,7 @@ import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import Layout from "../hoc/layout/layout";
-import { loginApi, loginApiOAuth } from "../utility/config";
+import { loginApi } from "../utility/config";
 import Router from "next/router";
 import { connect } from "react-redux";
 import { logIn } from "../store/actions/authActions";
@@ -13,6 +13,10 @@ import Snackbar from "../Components/Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import OAuthButtons from "../Components/Widgets/oAuthBtns";
 import Link from "next/link";
+import {
+  OAUTH_SIGNIN_INIT,
+  OAUTH_SIGNIN_END
+} from "../store/actions/actionTypes";
 
 class Login extends Component {
   state = {
@@ -46,7 +50,8 @@ class Login extends Component {
     isLoading: false,
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    oAuthLoading: false
   };
 
   componentDidMount() {
@@ -109,7 +114,8 @@ class Login extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { logIn, logInTemp } = this.props.auth;
+    const { logIn, logInTemp, signUpTemp, type } = this.props.auth;
+    console.log(type, "type");
     const { formData } = this.state;
     if (this.props !== prevProps) {
       let isWrongCredentials = _get(
@@ -129,7 +135,30 @@ class Login extends Component {
     if (this.props.auth !== prevProps.auth) {
       const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
       const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
+      const signUpSuccess = _get(signUpTemp, "signUpSuccess", "undefined");
       const authorized = _get(logIn, "authorized", false);
+      const oAuthSignUpSuccess = _get(
+        signUpTemp,
+        "oAuthSignUpSuccess",
+        "undefined"
+      );
+
+      if (type === OAUTH_SIGNIN_INIT) {
+        this.setState({ oAuthLoading: true });
+      }
+
+      if (type === OAUTH_SIGNIN_END) {
+        this.setState({ oAuthLoading: false });
+      }
+
+      if (oAuthSignUpSuccess === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: "Some error occured while Sign Up."
+        });
+      }
+
       if (isLoginFailed) {
         if (isWrongCredentials) {
           this.setState({
@@ -171,7 +200,7 @@ class Login extends Component {
   };
 
   render() {
-    const { formData } = this.state;
+    const { formData, oAuthLoading } = this.state;
     const { logIn, logInTemp } = this.props.auth;
     return (
       <Layout>
@@ -207,16 +236,22 @@ class Login extends Component {
                     <CircularProgress size={30} color="secondary" />
                   </div>
                 ) : (
+                  <button
+                    disabled={
+                      !(formData.email.valid && formData.password.valid)
+                    }
+                    className="registerBtn"
+                    onClick={this.handleLoginClick}
+                  >
+                    Login
+                  </button>
+                )}
+                {oAuthLoading ? (
+                  <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    <CircularProgress size={30} color="secondary" />
+                  </div>
+                ) : (
                   <>
-                    <button
-                      disabled={
-                        !(formData.email.valid && formData.password.valid)
-                      }
-                      className="registerBtn"
-                      onClick={this.handleLoginClick}
-                    >
-                      Login
-                    </button>
                     <OAuthButtons />
                     <div
                       style={{

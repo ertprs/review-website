@@ -10,16 +10,21 @@ export const shareURL =
 
 export const googleMapsURL = "https://google.com/maps/search";
 
-// export const googleClientId =
-//   "98966487885-jfc24f86o9ht4cmk38gl3g91q2vtgmd0.apps.googleusercontent.com";
-export const googleClientId = "757926713122-b99qpe0npfm18ko5vek0ch1tgtruei87.apps.googleusercontent.com";
-export const googleAppSecret = "0SJLIjC1HPyygOrPSACsl7Wa"
+export const googleClientId =
+  process.env.NODE_ENV === "production"
+    ? "757926713122-kfb1hf0ltkpm2ldvitfce2bcsumdue9v.apps.googleusercontent.com"
+    : "757926713122-ud5rp4ncj9qnhnsurpclti2j91dphi2a.apps.googleusercontent.com";
+export const googleAppSecret =
+  process.env.NODE_ENV === "production"
+    ? "7u1YFI3vsIiF0mFXsMzOBXUe"
+    : "0SJLIjC1HPyygOrPSACsl7Wa";
 
-// export const facebookAppId = "389995578342806";
-// export const facebookAppSecret = "f21720e26f3357e4ecbf1c5aa4897587"
-
-export const facebookAppId = "547546105995376";
-export const facebookAppSecret = "a55d321330767af27c4211bd94749809"
+export const facebookAppId =
+  process.env.NODE_ENV === "production" ? "389995578342806" : "547546105995376";
+export const facebookAppSecret =
+  process.env.NODE_ENV === "production"
+    ? "46a81ff982daebb3027d4c9e419af7ef"
+    : "a55d321330767af27c4211bd94749809";
 
 //Api
 

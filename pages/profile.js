@@ -24,7 +24,7 @@ import {
 import { connect } from "react-redux";
 import Router from "next/router";
 
-class NewProfilePage extends React.Component {
+class Profile extends React.Component {
   state = {
     domainData: {},
     headerData: {},
@@ -40,13 +40,11 @@ class NewProfilePage extends React.Component {
 
   componentDidMount() {
     this.setState({ isMounted: true });
-    Router.events.on('routeChangeStart', this.handleRouteChange)
+    Router.events.on("routeChangeStart", this.handleRouteChange);
 
-    Events.scrollEvent.register("begin", function() {
-    });
+    Events.scrollEvent.register("begin", function() {});
 
-    Events.scrollEvent.register("end", function() {
-    });
+    Events.scrollEvent.register("end", function() {});
   }
 
   scrollToTop() {
@@ -202,8 +200,7 @@ class NewProfilePage extends React.Component {
     });
   };
 
-  handleTabChange = e => {
-  };
+  handleTabChange = e => {};
 
   handleSetActive = to => {
     if (
@@ -273,7 +270,7 @@ class NewProfilePage extends React.Component {
   };
 
   handleSearchBoxKeyPress = e => {
-    const {searchBoxVal} = this.state;
+    const { searchBoxVal } = this.state;
     if (
       e.keyCode === 13 &&
       this.state.searchBoxVal.trim() !== "" &&
@@ -282,14 +279,11 @@ class NewProfilePage extends React.Component {
       )
     ) {
       let domainName = searchBoxVal.toLowerCase().trim();
-      window.location.assign(`${domainName}`)
+      window.location.assign(`${domainName}`);
     }
   };
 
-  handleRouteChange = url => {
-    
-  }
-  
+  handleRouteChange = url => {};
 
   render() {
     const { domain } = this.props;
@@ -347,7 +341,7 @@ class NewProfilePage extends React.Component {
   }
 }
 
-NewProfilePage.getInitialProps = async ({ query }) => {
+Profile.getInitialProps = async ({ query }) => {
   // const oldURL = "https://watchdog-api-v1.cryptopolice.com/api/verify";
   const searchURL = query.domain
     ? `https://${query.domain}`
@@ -365,4 +359,4 @@ NewProfilePage.getInitialProps = async ({ query }) => {
 export default connect(
   null,
   { setDomainDataInRedux, setLoading }
-)(NewProfilePage);
+)(Profile);

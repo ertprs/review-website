@@ -13,7 +13,12 @@ import {
   ACTIVATE_USER_FAILURE,
   VERIFY_RESET_PASSWORD_TOKEN_INIT,
   VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
-  VERIFY_RESET_PASSWORD_TOKEN_FAILURE
+  VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
+  RESET_PASSWORD_INIT,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILURE,
+  OAUTH_SIGNIN_INIT,
+  OAUTH_SIGNIN_END
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -38,38 +43,74 @@ export const signUp = (signupData, registerApi, signUpType) => {
       let success = _get(res, "data.success", false);
       let status = _get(res, "status", 0);
       if (signUpType == 2 || signUpType == 3) {
-        if (status === 200 && success) {
+        let oAuthSignUpSuccess = "undefined";
+        if (status === 409 || success) {
+          oAuthSignUpSuccess = true;
+        } else {
+          oAuthSignUpSuccess = false;
+        }
+        dispatch({
+          type: SIGNUP_SUCCESS,
+          signUp: {},
+          signUpTemp: {
+            status,
+            oAuthSignUpSuccess,
+            isSigningUp: false
+          }
+        });
+        if (status === 200 && oAuthSignUpSuccess === true) {
           dispatch(logIn(signupData, loginApiOAuth, signUpType));
+        } else {
+          dispatch(oAuthSigninginEnd());
         }
+      } else {
+        dispatch({
+          type: SIGNUP_SUCCESS,
+          signUp: {},
+          signUpTemp: {
+            status,
+            signUpSuccess: success,
+            isSigningUp: false,
+            isSignupFailed: false
+          }
+        });
       }
-      dispatch({
-        type: SIGNUP_SUCCESS,
-        signUp: {},
-        signUpTemp: {
-          status,
-          signUpSuccess: success,
-          isSigningUp: false,
-          isSignupFailed: false
-        }
-      });
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
       if (signUpType == 2 || signUpType == 3) {
-        if (status === 409 || status === 500) {
+        let oAuthSignUpSuccess = "undefined";
+        if (status === 409) {
+          oAuthSignUpSuccess = true;
+        } else {
+          oAuthSignUpSuccess = false;
+        }
+        dispatch({
+          type: SIGNUP_FAILURE,
+          signUp: {},
+          signUpTemp: {
+            status,
+            oAuthSignUpSuccess,
+            isSigningUp: false
+          }
+        });
+        if (status === 409) {
           dispatch(logIn(signupData, loginApiOAuth, signUpType));
+        } else {
+          dispatch(oAuthSigninginEnd());
         }
+      } else {
+        dispatch({
+          type: SIGNUP_FAILURE,
+          signUp: {},
+          signUpTemp: {
+            status,
+            signUpSuccess: success,
+            isSigningUp: false,
+            isSignupFailed: true
+          }
+        });
       }
-      dispatch({
-        type: SIGNUP_FAILURE,
-        signUp: {},
-        signUpTemp: {
-          status,
-          signUpSuccess: success,
-          isSigningUp: false,
-          isSignupFailed: true
-        }
-      });
     }
   };
 };
@@ -116,6 +157,7 @@ export const logIn = (loginData, loginApi, loginType) => {
           isLoggingIn: false
         }
       });
+      dispatch(oAuthSigninginEnd());
       if (success && shouldSend) {
         dispatch(sendTrustVote(trustVoteData));
       }
@@ -138,6 +180,7 @@ export const logIn = (loginData, loginApi, loginType) => {
           isLoggingIn: false
         }
       });
+      dispatch(oAuthSigninginEnd());
     }
   };
 };
@@ -206,7 +249,8 @@ export const verifyToken = (url, verifyTokenApi) => {
     dispatch({
       type: VERIFY_RESET_PASSWORD_TOKEN_INIT,
       verifyTokenTemp: {
-        success: false
+        success: false,
+        verifyingToken: true
       }
     });
     if (url) {
@@ -225,7 +269,8 @@ export const verifyToken = (url, verifyTokenApi) => {
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
             verifyTokenTemp: {
-              success
+              success,
+              verifyingToken: false
             }
           });
         } catch (error) {
@@ -233,11 +278,72 @@ export const verifyToken = (url, verifyTokenApi) => {
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
             verifyTokenTemp: {
-              success
+              success,
+              verifyingToken: false
             }
           });
         }
       }
     }
+  };
+};
+
+export const resetPassword = (password, url, resetPasswordApi) => {
+  return async dispatch => {
+    dispatch({
+      type: RESET_PASSWORD_INIT,
+      resetPasswordTemp: {
+        success: false,
+        resetingPassword: true
+      }
+    });
+    if (url) {
+      let splitUrlArray = url.split("/");
+      let token = "";
+      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
+        token = splitUrlArray[splitUrlArray.length - 1];
+      }
+      if (token) {
+        const reqBody = {
+          password: password || "",
+          token
+        };
+        try {
+          const res = await axios.post(
+            `${baseURL}${resetPasswordApi}`,
+            reqBody
+          );
+          let success = _get(res, "data.success", false);
+          dispatch({
+            type: RESET_PASSWORD_SUCCESS,
+            resetPasswordTemp: {
+              success,
+              resetingPassword: false
+            }
+          });
+        } catch (error) {
+          let success = _get(error, "response.data.success", false);
+          dispatch({
+            type: RESET_PASSWORD_FAILURE,
+            resetPasswordTemp: {
+              success,
+              resetingPassword: false
+            }
+          });
+        }
+      }
+    }
+  };
+};
+
+export const oAuthSigninginInit = () => {
+  return {
+    type: OAUTH_SIGNIN_INIT
+  };
+};
+
+export const oAuthSigninginEnd = () => {
+  return {
+    type: OAUTH_SIGNIN_END
   };
 };

@@ -4,19 +4,20 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import validate from "../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import axios from "axios";
-import { baseURL, resetPasswordApi } from "../utility/config";
-import Loader from "../Components/Widgets/Loader/Loader";
+import { resetPasswordApi } from "../utility/config";
 import Router from "next/router";
 import Layout from "../hoc/layout/layout";
 import Snackbar from "../Components/Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
-import { verifyToken } from "../store/actions/authActions";
+import { verifyToken, resetPassword } from "../store/actions/authActions";
 import { connect } from "react-redux";
 import {
   VERIFY_RESET_PASSWORD_TOKEN_INIT,
   VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
-  VERIFY_RESET_PASSWORD_TOKEN_FAILURE
+  VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
+  RESET_PASSWORD_INIT,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAILURE
 } from "../store/actions/actionTypes";
 
 class ResetPassword extends Component {
@@ -36,18 +37,14 @@ class ResetPassword extends Component {
         name: "password"
       }
     },
-    isLoading: true,
-    isTokenValid: false,
-    token: "",
-    success: false,
-    isLoadingButton: false,
-    showError: false,
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    loading: false
   };
 
   componentDidMount() {
+    this.setState({ loading: true });
     const { type } = this.props;
     const { verifyToken } = this.props;
     const url = window.location.href;
@@ -78,59 +75,34 @@ class ResetPassword extends Component {
   };
 
   handleResetPasswordClick = () => {
-    this.setState({ isLoadingButton: true });
-    const { formData, token } = this.state;
-    const reqBody = {
-      password: _get(formData, "password.value", ""),
-      token
-    };
-    axios
-      .post(`${baseURL}${resetPasswordApi}`, reqBody)
-      .then(result => {
-        this.setState({ isLoadingButton: false });
-        let success = _get(result, "data.success", false);
-        if (success) {
-          this.setState({
-            showError: false,
-            showSnackbar: true,
-            variant: "success",
-            snackbarMsg: "Password reset successfully!"
-          });
-          Router.push("/login");
-        }
-      })
-      .catch(error => {
-        this.setState({
-          showError: false,
-          showSnackbar: true,
-          variant: "error",
-          snackbarMsg: "Something went wrong!",
-          isLoading: false,
-          showError: true
-        });
-      });
+    const { resetPassword } = this.props;
+    const url = window.location.href;
+    let password = _get(this.state, "formData.password.value", "");
+    resetPassword(password, url, resetPasswordApi);
   };
 
   onLoginClick = () => {
     Router.push("/login");
   };
 
+  handleKeyDown = e => {
+    if (e.keyCode == 13) {
+      this.handleResetPasswordClick();
+    }
+  };
+
   showData = () => {
-    const { type, success } = this.props;
-    const { formData, showError, isLoadingButton } = this.state;
+    const { type, success, verifyingToken, resetingPassword } = this.props;
+    const { formData } = this.state;
     let data;
-    if (type === VERIFY_RESET_PASSWORD_TOKEN_INIT) {
+    if (verifyingToken) {
       data = (
         <div style={{ textAlign: "center" }}>
           <CircularProgress size={30} color="secondary" />
         </div>
       );
     }
-    if (
-      !success &&
-      (type === VERIFY_RESET_PASSWORD_TOKEN_SUCCESS ||
-        type === VERIFY_RESET_PASSWORD_TOKEN_FAILURE)
-    ) {
+    if (!success && !verifyingToken) {
       data = (
         <React.Fragment>
           <div className="cardHeading">
@@ -144,7 +116,7 @@ class ResetPassword extends Component {
       );
     }
 
-    if (type === VERIFY_RESET_PASSWORD_TOKEN_SUCCESS && success) {
+    if (success) {
       data = (
         <React.Fragment>
           <div className="cardHeading">
@@ -154,13 +126,16 @@ class ResetPassword extends Component {
           <FormField
             {...formData.password}
             handleChange={this.handleChange}
+            onkeyDown={this.handleKeyDown}
             type="password"
             id="password"
             rows="5"
             col="5"
           />
-          {isLoadingButton ? (
-            <Loader />
+          {resetingPassword === true ? (
+            <div style={{ textAlign: "center " }}>
+              <CircularProgress />
+            </div>
           ) : (
             <button
               disabled={!formData.password.valid}
@@ -170,12 +145,43 @@ class ResetPassword extends Component {
               Reset Password
             </button>
           )}
-          {showError ? <p className="errorMsg">Something went wrong!</p> : ""}
         </React.Fragment>
       );
     }
     return data;
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.auth !== prevProps.auth) {
+      const { type, resetPasswordSuccess } = this.props;
+      if (resetPasswordSuccess && type === RESET_PASSWORD_SUCCESS) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Password reset successully!"
+        });
+        setTimeout(() => {
+          this.setState({
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Redirecting to login..."
+          });
+          setTimeout(() => {
+            Router.push("/login");
+          }, 1000);
+        }, 2000);
+      } else if (
+        (type === RESET_PASSWORD_SUCCESS || type === RESET_PASSWORD_FAILURE) &&
+        !resetPasswordSuccess
+      ) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: "Your token has expired. Please try again!"
+        });
+      }
+    }
+  }
 
   render() {
     return (
@@ -201,13 +207,27 @@ class ResetPassword extends Component {
 
 const mapStateToProps = state => {
   const { auth } = state;
-  const { verifyTokenTemp } = auth;
+  const { verifyTokenTemp, resetPasswordTemp } = auth;
   const type = _get(auth, "type", "");
   const success = _get(verifyTokenTemp, "success", false);
-  return { type, success };
+  const resetPasswordSuccess = _get(resetPasswordTemp, "success", false);
+  const verifyingToken = _get(verifyTokenTemp, "verifyingToken", "undefined");
+  const resetingPassword = _get(
+    resetPasswordTemp,
+    "resetingPassword",
+    "undefined"
+  );
+  return {
+    auth,
+    type,
+    success,
+    resetPasswordSuccess,
+    verifyingToken,
+    resetingPassword
+  };
 };
 
 export default connect(
   mapStateToProps,
-  { verifyToken }
+  { verifyToken, resetPassword }
 )(ResetPassword);
