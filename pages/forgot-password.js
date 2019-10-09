@@ -57,7 +57,7 @@ class ForgotPassword extends Component {
       email: _get(formData, "email.value", "")
     };
     axios
-      .post(`${baseURL}${forgotPasswordApi}`, reqBody)
+      .post(`${process.env.BASE_URL}${forgotPasswordApi}`, reqBody)
       .then(result => {
         this.setState({ isLoading: false });
         let success = _get(result, "data.success", false);

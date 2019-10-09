@@ -19,7 +19,6 @@ import Router from "next/router";
 // import Link from "../../src/Link";
 import Link from "next/link";
 import { GoogleLogout } from "react-google-login";
-import { googleClientId } from "../../utility/config";
 import { connect } from "react-redux";
 import { logOut } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
@@ -386,7 +385,7 @@ function PrimarySearchAppBar(props) {
                 )}
                 {loginType === 3 ? (
                   <GoogleLogout
-                    clientId={googleClientId}
+                    clientId={process.env.GOOGLE_CLIENT_ID}
                     buttonText="Logout"
                     render={renderProps => (
                       <Link href="">

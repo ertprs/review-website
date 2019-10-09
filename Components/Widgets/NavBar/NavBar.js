@@ -8,7 +8,6 @@ import { useAmp } from "next/amp";
 import _get from "lodash";
 import _isEmpty from "lodash/isEmpty";
 import { GoogleLogout } from "react-google-login";
-import { googleClientId } from "../../../utility/config";
 import { connect } from "react-redux";
 
 const onLogout = () => {
@@ -121,7 +120,7 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
             </React.Fragment>
           )}
           <GoogleLogout
-            clientId={googleClientId}
+            clientId={process.env.GOOGLE_CLIENT_ID}
             buttonText="Logout"
             onLogoutSuccess={onLogout}
           ></GoogleLogout>

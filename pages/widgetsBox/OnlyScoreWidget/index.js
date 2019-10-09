@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
-import PusherDataComponent from "../../../Components/PusherDataComponent/PusherDataComponent";
 import OnlyScoreWidgetComponent from "../../../Components/Widgets/OnlyScoreWidgetComponent/OnlyScoreWidgetComponent";
-import _get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
-import axios from 'axios';
-import {baseURL} from '../../../utility/config';
-
+import _get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
+import axios from "axios";
 
 const retrieveRequiredData = reviewData => {
-  const ratings = Number(_get(reviewData,'rating',0));
+  const ratings = Number(_get(reviewData, "rating", 0));
 
-  const totalReviews =  _get(reviewData,'total',0);
+  const totalReviews = _get(reviewData, "total", 0);
 
   return { ratings, totalReviews };
 };
@@ -25,8 +22,7 @@ const renderOnlyScoreWidgetComponent = (reviewData, props) => {
         domain={props.domain}
       />
     );
-  }
-  else{
+  } else {
     return (
       <OnlyScoreWidgetComponent
         requiredData={props.requiredData}
@@ -41,26 +37,24 @@ const renderOnlyScoreWidgetComponent = (reviewData, props) => {
 const OnlyScoreWidget = props => {
   let initState = {};
   const [parentState, setParentState] = useState(initState);
-  const [reviewData, setReviewData] = useState({})
+  const [reviewData, setReviewData] = useState({});
 
   useEffect(() => {
-    axios.get(`${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`)
-    .then(res=>{
-      console.log("response form widget ",res.data)
-      if(!isEmpty(res.data))
-      setReviewData({...res.data})
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }, [])
+    axios
+      .get(
+        `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
+      )
+      .then(res => {
+        console.log("response form widget ", res.data);
+        if (!isEmpty(res.data)) setReviewData({ ...res.data });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
   return (
     <>
-      {props.variant !== "carousel" ? (
-        <></>
-      ) : (
-        <></>
-      )}
+      {props.variant !== "carousel" ? <></> : <></>}
       {renderOnlyScoreWidgetComponent(reviewData, props)}
     </>
   );

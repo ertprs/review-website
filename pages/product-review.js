@@ -3,7 +3,6 @@ import { productReviewStyles } from "../Components/Styles/productReviewStyles";
 import ProductReviewStepOne from "../Components/ProductReviewSteps/ProductReviewStepOne/ProductReviewStepOne";
 import ProductReviewStepTwo from "../Components/ProductReviewSteps/ProductReviewStepTwo/ProductReviewStepTwo";
 import ThankYou from "../Components/ThankYou/ThankYou";
-import { baseURL } from "../utility/config";
 import Footer from "../Components/Footer/Footer";
 import validate from "../utility/validate";
 import axios from "axios";
@@ -177,13 +176,12 @@ class ProductReview extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`${baseURL}/api/get-order-data`)
+      .get(`${basprocess.env.BASE_URLeURL}/api/get-order-data`)
       .then(res => {
         const products = res.data.products;
         this.setState({ products: [...products] });
       })
-      .catch(err => {
-      });
+      .catch(err => {});
   }
 
   handleProductSelection = (item, operation) => {
@@ -316,10 +314,10 @@ class ProductReview extends React.Component {
 
   getNewSelectedProducts = () => {
     const { selectedProducts, productsAlreadyTagged } = this.state;
-    const newSelectedProducts = {...selectedProducts};
+    const newSelectedProducts = { ...selectedProducts };
     for (let product of productsAlreadyTagged) {
-      if(product.id === selectedProducts[product.id].id){
-        delete newSelectedProducts[product.id]
+      if (product.id === selectedProducts[product.id].id) {
+        delete newSelectedProducts[product.id];
       }
     }
     return newSelectedProducts;
@@ -410,7 +408,7 @@ class ProductReview extends React.Component {
                   // let res = res.data;
                   // const newSelectedProducts = this.getNewSelectedProducts();
                   // const newSelectedProductKeys = Object.keys(newSelectedProducts);
-                  
+
                   // this.setState({selectedProducts:{...newSelectedProducts}, selectedProductKeys:{...newSelectedProductKeys}})
                   //res.url below replace
 

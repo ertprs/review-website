@@ -15,7 +15,6 @@ import tus from "tus-js-client";
 import axios from "axios";
 import Link from "next/link";
 import Img from "react-image";
-import { baseURL } from "../utility/config";
 
 class LeaveReview extends React.Component {
   constructor(props) {
@@ -95,7 +94,7 @@ class LeaveReview extends React.Component {
     const { campaignProcessingId, domain_name, token } = this.props;
     console.log(campaignProcessingId, token);
     axios
-      .post(`${baseURL}/api/get-order-data`, {
+      .post(`${process.env.BASE_URL}/api/get-order-data`, {
         campaign_processing_id: campaignProcessingId,
         token: token
       })
@@ -223,7 +222,7 @@ class LeaveReview extends React.Component {
         () => {
           //axios post dataToSubmit
           axios
-            .post(`${baseURL}/api/save-order-data-application`, {
+            .post(`${process.env.BASE_URL}/api/save-order-data-application`, {
               report_category_id: 8,
               token: token,
               campaign_processing_id: campaignProcessingId,

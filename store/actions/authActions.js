@@ -39,7 +39,10 @@ export const signUp = (signupData, registerApi, signUpType) => {
       }
     });
     try {
-      const res = await axios.post(`${baseURL}${registerApi}`, signupData);
+      const res = await axios.post(
+        `${process.env.BASE_URL}${registerApi}`,
+        signupData
+      );
       let success = _get(res, "data.success", false);
       let status = _get(res, "status", 0);
       if (signUpType == 2 || signUpType == 3) {
@@ -137,7 +140,10 @@ export const logIn = (loginData, loginApi, loginType) => {
       }
     });
     try {
-      const res = await axios.post(`${baseURL}${loginApi}`, loginData);
+      const res = await axios.post(
+        `${process.env.BASE_URL}${loginApi}`,
+        loginData
+      );
       let success = _get(res, "data.success", false);
       let userProfile = _get(res, "data.user", {});
       let status = _get(res, "status", 0);
@@ -222,7 +228,9 @@ export const activateUser = (url, activateUserApi) => {
       }
       if (token) {
         try {
-          const res = await axios.get(`${baseURL}${activateUserApi}/${token}`);
+          const res = await axios.get(
+            `${process.env.BASE_URL}${activateUserApi}/${token}`
+          );
           let success = _get(res, "data.success", false);
           dispatch({
             type: ACTIVATE_USER_SUCCESS,
@@ -264,7 +272,10 @@ export const verifyToken = (url, verifyTokenApi) => {
           token: token
         };
         try {
-          const res = await axios.post(`${baseURL}${verifyTokenApi}`, reqBody);
+          const res = await axios.post(
+            `${process.env.BASE_URL}${verifyTokenApi}`,
+            reqBody
+          );
           let success = _get(res, "data.success", false);
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
@@ -310,7 +321,7 @@ export const resetPassword = (password, url, resetPasswordApi) => {
         };
         try {
           const res = await axios.post(
-            `${baseURL}${resetPasswordApi}`,
+            `${process.env.BASE_URL}${resetPasswordApi}`,
             reqBody
           );
           let success = _get(res, "data.success", false);

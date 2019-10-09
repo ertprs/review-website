@@ -14,33 +14,6 @@ class ProfilePageHeader extends Component {
     imageSrc: ""
   };
 
-  componentDidMount() {
-    // this.setState({ headerData: { ...this.props.headerData } });
-    axios
-      .get(
-        "https://screenshot-api-server.herokuapp.com/screenshot?domain=https://www.google.com/"
-      )
-      .then(result => {
-        console.log("result", "result");
-        this.setState({ imageSrc: result.data });
-      })
-      .catch(error => {
-        console.log("error", error);
-      });
-  }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (
-  //     this.props.headerData.domain_name === nextProps.headerData.domain_name &&
-  //     this.props.headerData.is_verified === nextProps.headerData.is_verified &&
-  //     this.props.headerData.rating === nextProps.headerData.rating &&
-  //     this.props.headerData.review_length === nextProps.headerData.review_length
-  //   ) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
   render() {
     const { domainProfileData, isLoading } = this.props;
     const headerData = ((domainProfileData || {}).headerData || {}).data || {};
@@ -133,7 +106,6 @@ class ProfilePageHeader extends Component {
                   </Card>
                 </div>
               </div>
-              <img src={this.state.imageSrc} />
             </div>
           </div>
         </div>
