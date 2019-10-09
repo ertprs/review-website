@@ -1,11 +1,7 @@
 import React, { Component } from "react";
 import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
-import {
-  googleClientId,
-  facebookAppId,
-  registerApiOAuth
-} from "../../../utility/config";
+import { registerApiOAuth } from "../../../utility/config";
 import styles from "./oAuthStyles";
 import { signUp } from "../../../store/actions/authActions";
 import { connect } from "react-redux";
@@ -46,7 +42,7 @@ class OAuthButtons extends Component {
       <div>
         <style jsx>{styles}</style>
         <GoogleLogin
-          clientId={googleClientId}
+          clientId={process.env.GOOGLE_CLIENT_ID}
           disabled={disabled}
           render={renderProps => (
             <button
@@ -62,7 +58,7 @@ class OAuthButtons extends Component {
           cookiePolicy={"single_host_origin"}
         />
         <FacebookLogin
-          appId={facebookAppId}
+          appId={process.env.FACEBOOK_APP_ID}
           // autoLoad={true}
           fields="name,email,picture"
           onClick={this.componentClicked}

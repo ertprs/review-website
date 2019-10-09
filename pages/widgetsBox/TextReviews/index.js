@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PusherDataComponent from "../../../Components/PusherDataComponent/PusherDataComponent";
 import axios from "axios";
-import { baseURL } from "../../../utility/config";
+
 import ReviewBox from "../../../Components/Widgets/ReviewBox/ReviewBox";
 import OnlyScoreWidget from "../OnlyScoreWidget/index";
 import Slider from "react-slick";
@@ -86,7 +86,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
             }
           }
           @media screen and (max-width: 252px) {
-            .flexContainer{
+            .flexContainer {
               display: none;
             }
           }
@@ -186,7 +186,7 @@ const TextReviews = props => {
   useEffect(() => {
     axios
       .get(
-        `${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
+        `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
       )
       .then(res => {
         // console.log("response form widget ",res.data)

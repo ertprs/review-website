@@ -349,7 +349,7 @@ Profile.getInitialProps = async ({ query }) => {
   const domain = query.domain ? query.domain : "google.com";
   if (query.amp === "1") {
     const response = await axios.get(
-      `${baseURL}/api/verify?domain=${searchURL}`
+      `${process.env.BASE_URL}/api/verify?domain=${searchURL}`
     );
     return { analysisData: { ...response.data }, domain };
   }
