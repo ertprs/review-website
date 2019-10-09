@@ -176,7 +176,7 @@ class ProductReview extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`${basprocess.env.BASE_URLeURL}/api/get-order-data`)
+      .get(`${process.env.BASE_URL}/api/get-order-data`)
       .then(res => {
         const products = res.data.products;
         this.setState({ products: [...products] });
