@@ -17,6 +17,7 @@ import {
   OAUTH_SIGNIN_INIT,
   OAUTH_SIGNIN_END
 } from "../store/actions/actionTypes";
+import Link from "next/link";
 
 class Registration extends Component {
   state = {
@@ -349,7 +350,21 @@ class Registration extends Component {
                     <CircularProgress size={30} color="secondary" />
                   </div>
                 ) : (
-                  <OAuthButtons />
+                  <>
+                    <OAuthButtons />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        marginTop: "10px"
+                      }}
+                    >
+                      <Link href="/login">
+                        <a>Already have account? Login</a>
+                      </Link>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
