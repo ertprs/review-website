@@ -3,11 +3,12 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
 import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
+import stringHelpers from '../../../utility/stringHelpers';
 
 export default class GetStarted extends Component {
   
   state={
-      alreadySelected:true
+      alreadySelected:false
   }
 
   renderGetStartedHeader = () => {
@@ -21,7 +22,7 @@ export default class GetStarted extends Component {
                 margin-bottom:25px;
             }
         `}</style>
-        <h3 className="getStartedHeader">Good morning Arturs,</h3>
+        <h3 className="getStartedHeader"><span style={{textTransform:"capitalize"}}>{stringHelpers("getTimeGreeting")}</span> Arturs,</h3>
         <h6 className="getStartedSubHeader">
           This is your personal setup guide. Let’s get you up and running so you
           can get more reviews and build trust.
@@ -99,7 +100,7 @@ export default class GetStarted extends Component {
         </style>
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
-            <h4>Please locate your Business</h4>
+            <h4>{this.state.alreadySelected ? "Your business details": "Please locate your Business"}</h4>
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxImgContainer">
