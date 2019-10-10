@@ -19,7 +19,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, secondaryListItems } from '../../Components/MaterialComponents/listItems';
 import Home from '../../Components/DashboardComponents/Home/Home';
-
+import PlacesAutoComplete from '../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete';
+import GetStarted from '../../Components/DashboardComponents/GetStarted/GetStarted';
 
 const drawerWidth = 240;
 
@@ -157,7 +158,10 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Home />
+          {/* <Home />
+          <br/><br/>
+          <PlacesAutoComplete /> */}
+          <GetStarted />
           {/* <Grid container spacing={3}> */}
             {/* Chart */}
             {/* <Grid item xs={12} md={8} lg={9}>
