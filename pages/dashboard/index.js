@@ -21,7 +21,7 @@ import { mainListItems, secondaryListItems } from '../../Components/MaterialComp
 import Home from '../../Components/DashboardComponents/Home/Home';
 import PlacesAutoComplete from '../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete';
 import GetStarted from '../../Components/DashboardComponents/GetStarted/GetStarted';
-
+import GetReviews from '../../Components/DashboardComponents/GetReviews/GetReviews';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -158,30 +158,9 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          {/* <Home />
-          <br/><br/>
-          <PlacesAutoComplete /> */}
-          <GetStarted />
-          {/* <Grid container spacing={3}> */}
-            {/* Chart */}
-            {/* <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <Chart />
-              </Paper>
-            </Grid> */}
-            {/* Recent Deposits */}
-            {/* <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
-            </Grid> */}
-            {/* Recent Orders */}
-            {/* <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid> */}
-          {/* </Grid> */}
+          {/* <Home /> */}
+          {/* <GetStarted /> */}
+          <GetReviews />
         </Container>
       </main>
     </div>
