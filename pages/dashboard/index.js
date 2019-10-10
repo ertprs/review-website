@@ -25,6 +25,7 @@ import Home from "../../Components/DashboardComponents/Home/Home";
 import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
 import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
 import Reviews from "../my-reviews-business";
+import SetupForm from "../../Components/DashboardComponents/GetReviewsForm/SetupForm";
 
 const drawerWidth = 240;
 
@@ -177,7 +178,7 @@ export default function Dashboard() {
           {/* <Home />
           <br/><br/>
           <PlacesAutoComplete /> */}
-          <Reviews />
+          <SetupForm />
           {/* <Grid container spacing={3}> */}
           {/* Chart */}
           {/* <Grid item xs={12} md={8} lg={9}>
