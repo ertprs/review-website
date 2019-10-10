@@ -1,20 +1,22 @@
 import React, { Component } from "react";
-import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
+import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
-import countrieslist from "../utility/countryList";
+import countrieslist from "../../utility/countryList";
 import validate from "../../utility/validate";
-import Layout from "../hoc/layout/layout";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { registerApi } from "../utility/config";
+import { registerApi } from "../../utility/config";
 import Router from "next/router";
 import { connect } from "react-redux";
-import { signUp, redirectToLoginWithEmail } from "../store/actions/authActions";
-import Snackbar from "../Components/Widgets/Snackbar";
+import {
+  signUp,
+  redirectToLoginWithEmail
+} from "../../store/actions/authActions";
+import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import Link from "next/link";
 
-class BusinessRegistration extends Component {
+class BusinessUserRegistration extends Component {
   state = {
     formData: {
       website: {
@@ -103,8 +105,7 @@ class BusinessRegistration extends Component {
         valid: false,
         touched: false,
         validationRules: {
-          required: true,
-          isPhoneNumber
+          required: true
         },
         name: "phoneNumber"
       },
@@ -297,121 +298,115 @@ class BusinessRegistration extends Component {
     const { formData, errorMsg, oAuthLoading } = this.state;
     const { signUpTemp } = this.props.auth;
     return (
-      <Layout>
-        <div className="mainContainer">
-          <div className="container">
-            <div className="col-md-6 offset-md-3">
-              <style jsx> {authenticationPageStyles} </style>{" "}
-              <div className="card">
-                <div className="cardHeading">
-                  <h3> Create a free business account </h3>{" "}
-                </div>{" "}
-                <FormField
-                  {...formData.website}
-                  handleChange={this.handleChange}
-                  id="website"
-                  rows="5"
-                  col="5"
-                />
-                <FormField
-                  {...formData.companyName}
-                  handleChange={this.handleChange}
-                  id="companyName"
-                  rows="5"
-                  col="5"
-                />
-                <FormField
-                  {...formData.fullName}
-                  handleChange={this.handleChange}
-                  id="fullName"
-                  rows="5"
-                  col="5"
-                />
-                <FormField
-                  {...formData.workEmail}
-                  handleChange={this.handleChange}
-                  id="workEmail"
-                  rows="5"
-                  col="5"
-                />
-                <FormField
-                  {...formData.password}
-                  handleChange={this.handleChange}
-                  type="password"
-                  id="password"
-                  rows="5"
-                  col="5"
-                />
-                <FormField
-                  {...formData.password_confirmation}
-                  handleChange={this.handleChange}
-                  onkeyDown={this.handleKeyDown}
-                  type="password"
-                  id="password_confirmation"
-                  rows="5"
-                  col="5"
-                />
-                <span className="errorMsg">
-                  {" "}
-                  {_get(errorMsg, "password_confirmation", "")}{" "}
-                </span>{" "}
-                <FormField
-                  {...formData.phoneNumber}
-                  handleChange={this.handleChange}
-                  onkeyDown={this.handleKeyDown}
-                  type="password"
-                  id="phoneNumber"
-                  rows="5"
-                  col="5"
-                />
-                <FormField
-                  {...formData.country}
-                  handleChange={this.handleChange}
-                  id="country"
-                  rows="5"
-                  col="5"
-                  styles={{ height: "38px" }}
-                />
-                {_get(signUpTemp, "isSigningUp", false) ? (
-                  <div style={{ textAlign: "center" }}>
-                    <CircularProgress size={30} color="secondary" />
-                  </div>
-                ) : (
-                  <>
-                    <button
-                      disabled={
-                        !(
-                          formData.website.valid &&
-                          formData.companyName.valid &&
-                          formData.fullName.valid &&
-                          formData.workEmail.valid &&
-                          formData.password.valid &&
-                          formData.password_confirmation.valid &&
-                          formData.phoneNumber.valid &&
-                          formData.country.valid
-                        )
-                      }
-                      className="registerBtn"
-                      onClick={this.handleRegisterClick}
-                    >
-                      Register your business
-                    </button>
-                  </>
-                )}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    marginTop: "10px"
-                  }}
-                >
-                  <Link href="/login">
-                    <a>Already have account? Login</a>
-                  </Link>
-                </div>
-              </div>
+      <>
+        <style jsx> {authenticationPageStyles} </style>{" "}
+        <div className="card">
+          <div className="cardHeading">
+            <h3> Create a free business account </h3>{" "}
+          </div>{" "}
+          <FormField
+            {...formData.website}
+            handleChange={this.handleChange}
+            id="website"
+            rows="5"
+            col="5"
+          />
+          <FormField
+            {...formData.companyName}
+            handleChange={this.handleChange}
+            id="companyName"
+            rows="5"
+            col="5"
+          />
+          <FormField
+            {...formData.fullName}
+            handleChange={this.handleChange}
+            id="fullName"
+            rows="5"
+            col="5"
+          />
+          <FormField
+            {...formData.workEmail}
+            handleChange={this.handleChange}
+            id="workEmail"
+            rows="5"
+            col="5"
+          />
+          <FormField
+            {...formData.password}
+            handleChange={this.handleChange}
+            type="password"
+            id="password"
+            rows="5"
+            col="5"
+          />
+          <FormField
+            {...formData.password_confirmation}
+            handleChange={this.handleChange}
+            onkeyDown={this.handleKeyDown}
+            type="password"
+            id="password_confirmation"
+            rows="5"
+            col="5"
+          />
+          <span className="errorMsg">
+            {" "}
+            {_get(errorMsg, "password_confirmation", "")}{" "}
+          </span>{" "}
+          <FormField
+            {...formData.phoneNumber}
+            handleChange={this.handleChange}
+            onkeyDown={this.handleKeyDown}
+            type="password"
+            id="phoneNumber"
+            rows="5"
+            col="5"
+          />
+          <FormField
+            {...formData.country}
+            handleChange={this.handleChange}
+            id="country"
+            rows="5"
+            col="5"
+            styles={{ height: "38px" }}
+          />
+          {_get(signUpTemp, "isSigningUp", false) ? (
+            <div style={{ textAlign: "center" }}>
+              <CircularProgress size={30} color="secondary" />
             </div>
+          ) : (
+            <>
+              <button
+                disabled={
+                  !(
+                    formData.website.valid &&
+                    formData.companyName.valid &&
+                    formData.fullName.valid &&
+                    formData.workEmail.valid &&
+                    formData.password.valid &&
+                    formData.password_confirmation.valid &&
+                    formData.phoneNumber.valid &&
+                    formData.country.valid
+                  )
+                }
+                className="registerBtn"
+                onClick={this.handleRegisterClick}
+              >
+                Register your business
+              </button>
+            </>
+          )}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              marginTop: "10px"
+            }}
+          >
+            <Link href="/login">
+              <a>Already have account? Login</a>
+            </Link>
           </div>
         </div>
         <Snackbar
@@ -420,7 +415,7 @@ class BusinessRegistration extends Component {
           handleClose={() => this.setState({ showSnackbar: false })}
           message={this.state.snackbarMsg}
         />
-      </Layout>
+      </>
     );
   }
 }
@@ -433,4 +428,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { signUp, redirectToLoginWithEmail }
-)(BusinessRegistration);
+)(BusinessUserRegistration);

@@ -252,7 +252,7 @@ class Login extends Component {
                   </div>
                 ) : (
                   <>
-                    <OAuthButtons />
+                    {/* <OAuthButtons /> */}
                     <div
                       style={{
                         display: "flex",
