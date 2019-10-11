@@ -214,14 +214,14 @@ export default class GetReviews extends Component {
             <CustomSteppers activeStep={activeStep}/>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
-            {this.renderInvitesInfo()}
-            <AddInvitesForm
+            {/* {this.renderInvitesInfo()} */}
+            {/* <AddInvitesForm
               formData={this.state.formData}
               handleChange={this.handleChange}
               onAddClick={this.onRowAdd}
               onContinueClick={this.handleContinueClick}
-            />
-            {/* <SendInvitations /> */}
+            /> */}
+            <SendInvitations />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             {this.state.tableData.length > 0 ? this.renderInvitesTable() : null}
