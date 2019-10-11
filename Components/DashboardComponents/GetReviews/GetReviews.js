@@ -6,7 +6,13 @@ import CustomSteppers from "../../MaterialComponents/CustomSteppers";
 import EditableTable from "../../MaterialComponents/EditableTable";
 import AddInvitesForm from "../../DashboardComponents/GetReviewsForms/AddInvitesForm";
 import validate from "../../../utility/validate";
-import SendInvitations from '../GetReviewsForms/SendInvitations';
+import SendInvitations from "../GetReviewsForms/SendInvitations";
+import SelectTemplateForm from "../GetReviewsForms/SelectTemplateForm";
+import SetupForm from "../GetReviewsForms/SetupForm/SetupForm";
+import Done from "../GetReviewsForms/Done";
+import { Button } from "@material-ui/core";
+import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 const columns = [
   { title: "Email", field: "email" },
@@ -18,7 +24,7 @@ export default class GetReviews extends Component {
   state = {
     activeStep: 0,
     tableData: [],
-    formData: {
+    addInvitesData: {
       email: {
         element: "input",
         type: "email",
@@ -56,7 +62,94 @@ export default class GetReviews extends Component {
           required: true
         }
       }
+    },
+    selectTemplateData: {
+      clientName: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: false,
+        touched: false,
+        errorMessage: "Enter valid name",
+        placeholder: "Enter client name",
+        validationRules: {
+          required: true
+        }
+      },
+      entity: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: false,
+        touched: false,
+        errorMessage: "Enter valid entity",
+        placeholder: "Enter entity domain",
+        validationRules: {
+          required: true
+        }
+      }
+    },
+    setUpFormData: {
+      senderMail: "",
+      senderName: {
+        element: "input",
+        value: "",
+        placeholder: "Enter sender's name",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          minLength: 3
+        },
+        name: "senderName"
+      },
+      replyToEmail: {
+        element: "select",
+        value: "",
+        placeholder: "email@gmail.com",
+        errorMessage: "",
+        options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          isEmail: true
+        },
+        name: "replyToEmail"
+      }
     }
+  };
+
+  steps = {
+    1: (
+      <div>
+        {/* {this.renderInvitesInfo()} */}
+        <AddInvitesForm
+          formData={this.state.addInvitesData}
+          handleChange={this.handleChange}
+          onAddClick={this.onRowAdd}
+          onContinueClick={this.handleContinueClick}
+        />
+      </div>
+    ),
+    2: (
+      <SetupForm
+        formData={this.state.setUpFormData}
+        handleChange={this.handleChange}
+        handleRadioChange={this.handleRadioChange}
+      />
+    ),
+
+    3: (
+      <SelectTemplateForm
+        formData={this.state.selectTemplateData}
+        handleChange={this.handleChange}
+      />
+    ),
+
+    4: <SendInvitations />,
+    5: <Done />
   };
 
   handleNext = () => {
@@ -77,12 +170,20 @@ export default class GetReviews extends Component {
     }
   };
 
-  handleChange = (e, id) => {
+  handleRadioChange = event => {
+    const { value } = event.target;
+    this.setState({
+      ...this.state,
+      setUpFormData: { ...this.state.setUpFormData, senderMail: value }
+    });
+  };
+
+  handleChange = (e, id, dataType) => {
     const { value } = e.target;
-    const { formData, errorMsg } = this.state;
+    const formData = this.state[dataType];
 
     this.setState({
-      formData: {
+      [dataType]: {
         ...formData,
         [id]: {
           ...formData[id],
@@ -96,45 +197,47 @@ export default class GetReviews extends Component {
 
   emptyFormFields = () => {
     const initFormState = {
-      email: {
-        element: "input",
-        type: "email",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid email address",
-        placeholder: "Enter customer email",
-        validationRules: {
-          required: true,
-          isEmail: true
-        }
-      },
-      name: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid name",
-        placeholder: "Enter customer name",
-        validationRules: {
-          required: true
-        }
-      },
-      referenceNumber: {
-        element: "input",
-        type: "number",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid number",
-        placeholder: "Enter reference number",
-        validationRules: {
-          required: true
+      addInvitesData: {
+        email: {
+          element: "input",
+          type: "email",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid email address",
+          placeholder: "Enter customer email",
+          validationRules: {
+            required: true,
+            isEmail: true
+          }
+        },
+        name: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid name",
+          placeholder: "Enter customer name",
+          validationRules: {
+            required: true
+          }
+        },
+        referenceNumber: {
+          element: "input",
+          type: "number",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid number",
+          placeholder: "Enter reference number",
+          validationRules: {
+            required: true
+          }
         }
       }
     };
-    this.setState({ ...this.state, formData: { ...initFormState } });
+    this.setState({ ...this.state, ...initFormState });
   };
 
   renderInvitesTable = () => {
@@ -198,33 +301,77 @@ export default class GetReviews extends Component {
     );
   };
 
-  handleContinueClick = ()=>{
-    const {tableData} = this.state;
-    if(tableData.length > 0){
-      this.handleNext()
+  handleContinueClick = () => {
+    const { tableData } = this.state;
+    if (tableData.length > 0) {
+      this.handleNext();
     }
-  }
+  };
+
+  renderAppropriateStep = () => {
+    const { activeStep } = this.state;
+    if (activeStep === 0) {
+      return (
+        <div>
+          {this.renderInvitesInfo()}
+          <AddInvitesForm
+            formData={this.state.addInvitesData}
+            handleChange={this.handleChange}
+            onAddClick={this.onRowAdd}
+            onContinueClick={this.handleContinueClick}
+          />
+        </div>
+      );
+    }
+    if (activeStep === 1) {
+      return (
+        <SetupForm
+          formData={this.state.setUpFormData}
+          handleChange={this.handleChange}
+          handleRadioChange={this.handleRadioChange}
+          handleNext={this.handleNext}
+          handleBack={this.handleBack}
+        />
+      );
+    }
+    if (activeStep === 2) {
+      return (
+        <SelectTemplateForm
+          formData={this.state.selectTemplateData}
+          handleChange={this.handleChange}
+          handleNext={this.handleNext}
+          handleBack={this.handleBack}
+        />
+      );
+    }
+    if (activeStep === 3) {
+      return (
+        <SendInvitations
+          handleNext={this.handleNext}
+          handleBack={this.handleBack}
+        />
+      );
+    }
+    if (activeStep === 4) {
+      return <Done />;
+    }
+  };
 
   render() {
-    const {activeStep} = this.state
+    const { activeStep } = this.state;
     return (
       <Container style={{ background: "#fff" }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
-            <CustomSteppers activeStep={activeStep}/>
+            <CustomSteppers activeStep={activeStep} />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
-            {/* {this.renderInvitesInfo()} */}
-            {/* <AddInvitesForm
-              formData={this.state.formData}
-              handleChange={this.handleChange}
-              onAddClick={this.onRowAdd}
-              onContinueClick={this.handleContinueClick}
-            /> */}
-            <SendInvitations />
+            {this.renderAppropriateStep()}
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
-            {this.state.tableData.length > 0 ? this.renderInvitesTable() : null}
+            {this.state.tableData.length > 0 && this.state.activeStep === 0
+              ? this.renderInvitesTable()
+              : null}
           </Grid>
         </Grid>
       </Container>

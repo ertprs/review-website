@@ -27,7 +27,7 @@ export default class AddInvitesForm extends Component {
           <FormField
             {...formData[item]}
             id={item}
-            handleChange={this.props.handleChange}
+            handleChange={(e)=>{this.props.handleChange(e,item,"addInvitesData")}}
           />
         </div>
       ];

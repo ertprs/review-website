@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import uuid from "uuid/v1";
+import { Button } from "@material-ui/core";
+import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 export default class SendInvitations extends Component {
   renderSendInvitationsHeader = () => {
@@ -73,14 +76,14 @@ export default class SendInvitations extends Component {
   renderSendInvitationsFooter = () => {
     return (
       <div className="container">
-          <style jsx>
-              {`
-                .footerContainer{
-                    margin-top:35px;
-                    font-size:1rem;
-                }
-              `}
-          </style>
+        <style jsx>
+          {`
+            .footerContainer {
+              margin-top: 35px;
+              font-size: 1rem;
+            }
+          `}
+        </style>
         <div className="row">
           <div className="col-md-12">
             <div className="footerContainer">
@@ -98,6 +101,28 @@ export default class SendInvitations extends Component {
         {this.renderSendInvitationsHeader()}
         {this.renderSendInvitationsBody()}
         {this.renderSendInvitationsFooter()}
+        <div className="row" style={{ marginTop: "20px" }}>
+          <div className="col-md-2">
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ArrowLeft />}
+              onClick={this.props.handleBack}
+            >
+              Back
+            </Button>
+          </div>
+          <div className="col-md-2">
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<ArrowRight />}
+              onClick={this.props.handleNext}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
       </>
     );
   }

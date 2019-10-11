@@ -22,6 +22,7 @@ import Home from '../../Components/DashboardComponents/Home/Home';
 import PlacesAutoComplete from '../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete';
 import GetStarted from '../../Components/DashboardComponents/GetStarted/GetStarted';
 import GetReviews from '../../Components/DashboardComponents/GetReviews/GetReviews';
+import Reviews from "../../Components/DashboardComponents/Reviews";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -160,7 +161,8 @@ export default function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           {/* <Home /> */}
           {/* <GetStarted /> */}
-          <GetReviews />
+          {/* <GetReviews /> */}
+          <Reviews />
         </Container>
       </main>
     </div>
