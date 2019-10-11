@@ -10,9 +10,15 @@ import SendInvitations from "../GetReviewsForms/SendInvitations";
 import SelectTemplateForm from "../GetReviewsForms/SelectTemplateForm";
 import SetupForm from "../GetReviewsForms/SetupForm/SetupForm";
 import Done from "../GetReviewsForms/Done";
-import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import { connect } from "react-redux";
+import {
+  setGetReviewsData,
+  sendGetReviews
+} from "../../../store/actions/dashboardActions";
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
 
 const columns = [
   { title: "Email", field: "email" },
@@ -20,7 +26,13 @@ const columns = [
   { title: "Reference number", field: "referenceNumber", type: "numeric" }
 ];
 
-export default class GetReviews extends Component {
+const styles = theme => ({
+  button: {
+    marginLeft: "15px"
+  }
+});
+
+class GetReviews extends Component {
   state = {
     activeStep: 0,
     tableData: [],
@@ -159,6 +171,8 @@ export default class GetReviews extends Component {
         return { activeStep: prevState.activeStep + 1 };
       });
     }
+    const { setGetReviewsData } = this.props;
+    setGetReviewsData(this.state);
   };
 
   handleBack = () => {
@@ -373,8 +387,30 @@ export default class GetReviews extends Component {
               ? this.renderInvitesTable()
               : null}
           </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+            >
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={this.handleNextClick}
+            >
+              Continue
+            </Button>
+          </Grid>
         </Grid>
       </Container>
     );
   }
 }
+
+export default connect(
+  null,
+  { setGetReviewsData, sendGetReviews }
+)(withStyles(styles)(GetReviews));
