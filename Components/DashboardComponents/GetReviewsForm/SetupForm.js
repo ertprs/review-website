@@ -146,7 +146,7 @@ class SetupForm extends Component {
                 <FormControlLabel
                   value="non-technical"
                   control={<Radio />}
-                  label="Send from noreply.invitations@trustpilotmail.com (no further setup required)"
+                  label="Send from noreply.invitations@trustsearchmail.com (no further setup required)"
                 />
                 <FormControlLabel
                   value="technical"
