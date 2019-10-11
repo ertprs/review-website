@@ -5,6 +5,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Modal from "../../Widgets/CustomModal/CustomModal";
+import VerifyEmailModal from "./VerifyEmailModal";
 
 class SetupForm extends Component {
   state = {
@@ -159,12 +160,12 @@ class SetupForm extends Component {
         <Modal
           showModal={this.state.showModal}
           handleModalClose={this.handleModalClose}
-          // modalCustomStyles={{
-          //   background: "#f9f9f9",
-          //   border: "1px solid #fff"
-          // }}
+          modalCustomStyles={{
+            background: "#f9f9f9",
+            border: "1px solid #fff"
+          }}
         >
-          <h1>Hello</h1>
+          <VerifyEmailModal />
         </Modal>
       </>
     );
