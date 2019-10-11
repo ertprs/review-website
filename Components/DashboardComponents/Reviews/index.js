@@ -1,7 +1,13 @@
 import React, { Component } from "react";
-import ReviewCard from "../Components/Widgets/MyReviewsBusiness/ReviewCard";
+import ReviewCard from "../../Widgets/MyReviewsBusiness/ReviewCard";
+import { connect } from "react-redux";
+import { fetchReviews } from "../../../store/actions/dashboardActions";
 
 class MyReviewsBusiness extends Component {
+  componentDidMount() {
+    fetchReviews();
+  }
+
   render() {
     return (
       <div className="container">
@@ -22,4 +28,12 @@ class MyReviewsBusiness extends Component {
   }
 }
 
-export default MyReviewsBusiness;
+const mapStateToProps = state => {
+  const { dashboardData } = state;
+  return { dashboardData };
+};
+
+export default connect(
+  mapStateToProps,
+  { fetchReviews }
+)(MyReviewsBusiness);
