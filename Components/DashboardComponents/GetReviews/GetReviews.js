@@ -6,8 +6,16 @@ import CustomSteppers from "../../MaterialComponents/CustomSteppers";
 import EditableTable from "../../MaterialComponents/EditableTable";
 import AddInvitesForm from "../../DashboardComponents/GetReviewsForms/AddInvitesForm";
 import validate from "../../../utility/validate";
+
+const columns = [
+  { title: "Email", field: "email" },
+  { title: "Name", field: "name" },
+  { title: "Reference number", field: "referenceNumber", type: "numeric" }
+];
+
 export default class GetReviews extends Component {
   state = {
+    activeStep: 0,
     tableData: [],
     formData: {
       email: {
@@ -47,6 +55,24 @@ export default class GetReviews extends Component {
           required: true
         }
       }
+    }
+  };
+
+  handleNext = () => {
+    const { activeStep } = this.state;
+    if (activeStep <= columns.length) {
+      this.setState(prevState => {
+        return { activeStep: prevState.activeStep + 1 };
+      });
+    }
+  };
+
+  handleBack = () => {
+    const { activeStep } = this.state;
+    if (activeStep > 0) {
+      this.setState(prevState => {
+        return { activeStep: prevState.activeStep - 1 };
+      });
     }
   };
 
@@ -111,12 +137,6 @@ export default class GetReviews extends Component {
   };
 
   renderInvitesTable = () => {
-    const columns = [
-      { title: "Email", field: "email" },
-      { title: "Name", field: "name" },
-      { title: "Reference number", field: "referenceNumber", type: "numeric" }
-    ];
-
     return (
       <EditableTable
         title="Added invites"
@@ -152,14 +172,15 @@ export default class GetReviews extends Component {
   renderInvitesInfo = () => {
     return (
       <div className="container">
-        <style jsx>{`
-          .invitesInfoBody{
-            margin-top:15px;
-            margin-left:3.5px;
-            line-height:1.8;
-            margin-bottom:25px;
-          }
-        `}
+        <style jsx>
+          {`
+            .invitesInfoBody {
+              margin-top: 15px;
+              margin-left: 3.5px;
+              line-height: 1.8;
+              margin-bottom: 25px;
+            }
+          `}
         </style>
         <div className="row">
           <div className="col-md-12">
@@ -176,12 +197,20 @@ export default class GetReviews extends Component {
     );
   };
 
+  handleContinueClick = ()=>{
+    const {tableData} = this.state;
+    if(tableData.length > 0){
+      this.handleNext()
+    }
+  }
+
   render() {
+    const {activeStep} = this.state
     return (
       <Container style={{ background: "#fff" }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
-            <CustomSteppers />
+            <CustomSteppers activeStep={activeStep}/>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             {this.renderInvitesInfo()}
@@ -189,6 +218,7 @@ export default class GetReviews extends Component {
               formData={this.state.formData}
               handleChange={this.handleChange}
               onAddClick={this.onRowAdd}
+              onContinueClick={this.handleContinueClick}
             />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>

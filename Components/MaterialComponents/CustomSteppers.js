@@ -196,18 +196,10 @@ function getStepContent(step) {
   }
 }
 
-export default function CustomSteppers() {
+export default function CustomSteppers(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
-
-  const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
-  };
 
   const handleReset = () => {
     setActiveStep(0);
@@ -217,7 +209,7 @@ export default function CustomSteppers() {
     <div className={classes.root}>
       <Stepper
         alternativeLabel
-        activeStep={activeStep}
+        activeStep={props.activeStep}
         connector={<ColorlibConnector />}
         
       >

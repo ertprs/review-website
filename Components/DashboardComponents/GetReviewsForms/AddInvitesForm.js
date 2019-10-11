@@ -51,6 +51,7 @@ export default class AddInvitesForm extends Component {
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
+              onClick={this.props.onContinueClick}
             >
               Continue
             </Button>
