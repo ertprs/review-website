@@ -387,23 +387,6 @@ class GetReviews extends Component {
               ? this.renderInvitesTable()
               : null}
           </Grid>
-          <Grid item xs={12} md={12} lg={12}>
-            <Button
-              variant="contained"
-              color="secondary"
-              className={classes.button}
-            >
-              Back
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={this.handleNextClick}
-            >
-              Continue
-            </Button>
-          </Grid>
         </Grid>
       </Container>
     );
