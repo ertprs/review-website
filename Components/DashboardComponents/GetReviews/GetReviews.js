@@ -6,6 +6,7 @@ import CustomSteppers from "../../MaterialComponents/CustomSteppers";
 import EditableTable from "../../MaterialComponents/EditableTable";
 import AddInvitesForm from "../../DashboardComponents/GetReviewsForms/AddInvitesForm";
 import validate from "../../../utility/validate";
+import SendInvitations from '../GetReviewsForms/SendInvitations';
 
 const columns = [
   { title: "Email", field: "email" },
@@ -220,6 +221,7 @@ export default class GetReviews extends Component {
               onAddClick={this.onRowAdd}
               onContinueClick={this.handleContinueClick}
             />
+            {/* <SendInvitations /> */}
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             {this.state.tableData.length > 0 ? this.renderInvitesTable() : null}
