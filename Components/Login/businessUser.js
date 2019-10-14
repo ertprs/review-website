@@ -93,14 +93,10 @@ class BusinessUserLogin extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { businessLogIn, businessLogInTemp } = this.props.auth;
+    const { logIn, logInTemp } = this.props.auth;
     const { formData } = this.state;
     if (this.props.auth !== prevProps.auth) {
-      const isWrongCredentials = _get(
-        businessLogInTemp,
-        "isWrongCredentials",
-        false
-      );
+      const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
       if (isWrongCredentials) {
         this.setState({
           formData: {
@@ -109,9 +105,9 @@ class BusinessUserLogin extends Component {
           }
         });
       }
-      const isLoginFailed = _get(businessLogInTemp, "isLoginFailed", false);
-      const authorized = _get(businessLogIn, "authorized", false);
-      const isLoggingIn = _get(businessLogInTemp, "isLoggingIn", false);
+      const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
+      const authorized = _get(logIn, "authorized", false);
+      const isLoggingIn = _get(logInTemp, "isLoggingIn", false);
       this.setState({ isLoading: isLoggingIn });
       if (isLoginFailed) {
         let snackbarMsg = "";
