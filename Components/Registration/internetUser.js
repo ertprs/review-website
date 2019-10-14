@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
-import countrieslist from "../../utility/countryList";
+import countrieslist from "../../utility/newCountryList.json";
 import validate from "../../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";

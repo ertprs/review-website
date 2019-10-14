@@ -18,11 +18,17 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAILURE,
   OAUTH_SIGNIN_INIT,
-  OAUTH_SIGNIN_END
+  OAUTH_SIGNIN_END,
+  BUSINESS_SIGNUP_INIT,
+  BUSINESS_SIGNUP_SUCCESS,
+  BUSINESS_SIGNUP_FAILURE,
+  BUSINESS_LOGIN_INIT,
+  BUSINESS_LOGIN_SUCCESS,
+  BUSINESS_LOGIN_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { baseURL, loginApiOAuth, registerApiOAuth } from "../../utility/config";
+import { loginApiOAuth } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
 
@@ -356,5 +362,123 @@ export const oAuthSigninginInit = () => {
 export const oAuthSigninginEnd = () => {
   return {
     type: OAUTH_SIGNIN_END
+  };
+};
+
+export const businessSignUp = (signupData, api) => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: BUSINESS_SIGNUP_INIT,
+      businessSignUp: {},
+      businessSignUpTemp: {
+        status: -1,
+        signUpSuccess: false,
+        isSigningUp: true,
+        isSignupFailed: false,
+        errorMsg: ""
+      }
+    });
+    try {
+      const res = await axios.post(`${process.env.BASE_URL}${api}`, signupData);
+      let success = _get(res, "data.success", false);
+      let status = _get(res, "status", 0);
+      dispatch({
+        type: BUSINESS_SIGNUP_SUCCESS,
+        businessSignUp: {},
+        businessSignUpTemp: {
+          status,
+          signUpSuccess: success,
+          isSigningUp: false,
+          isSignupFailed: false,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      let success = _get(error, "response.data.success", false);
+      let status = _get(error, "response.status", 0);
+      let errorMsg = _get(error, "response.data.error", "");
+      dispatch({
+        type: BUSINESS_SIGNUP_FAILURE,
+        businessSignUp: {},
+        businessSignUpTemp: {
+          status,
+          signUpSuccess: success,
+          isSigningUp: false,
+          isSignupFailed: true,
+          errorMsg
+        }
+      });
+    }
+  };
+};
+
+export const businessLogIn = (loginData, api) => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: BUSINESS_LOGIN_INIT,
+      logIn: {
+        authorized: false,
+        loginType: 0,
+        token: "",
+        userProfile: {}
+      },
+      logInTemp: {
+        status: -1,
+        isWrongCredentials: false,
+        isLoginFailed: false,
+        isLoggingIn: true
+      }
+    });
+    try {
+      const res = await axios.post(`${process.env.BASE_URL}${api}`, loginData);
+      let success = _get(res, "data.success", false);
+      let userProfile = _get(res, "data.user", {});
+      let status = _get(res, "status", 0);
+      let token = _get(res, "data.token", "");
+      let loginType = 0;
+      if (userProfile.hasOwnProperty("subscription")) {
+        if (
+          userProfile.subscription.plan_type_id === 1 ||
+          userProfile.subscription.plan_type_id === 2 ||
+          userProfile.subscription.plan_type_id === 3
+        ) {
+          loginType = 4;
+        }
+      }
+      dispatch({
+        type: BUSINESS_LOGIN_SUCCESS,
+        logIn: {
+          authorized: success,
+          loginType,
+          token,
+          userProfile
+        },
+        logInTemp: {
+          status: status,
+          isWrongCredentials: false,
+          isLoginFailed: !success,
+          isLoggingIn: false
+        }
+      });
+    } catch (error) {
+      let success = _get(error, "response.data.success", false);
+      let status = _get(error, "response.status", 0);
+      let message = _get(error, "response.data.message", "") === "Unauthorized";
+      dispatch({
+        type: BUSINESS_LOGIN_FAILURE,
+        logIn: {
+          authorized: false,
+          loginType: 0,
+          token: "",
+          userProfile: {}
+        },
+        logInTemp: {
+          status: status,
+          isWrongCredentials: message,
+          isLoginFailed: !success,
+          isLoggingIn: false
+        }
+      });
+    }
   };
 };

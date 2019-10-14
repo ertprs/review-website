@@ -7,11 +7,18 @@ import {
   geocodeByPlaceId,
   getLatLng
 } from "react-places-autocomplete";
+import { connect } from "react-redux";
+import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
+import { locatePlaceApi } from "../../../utility/config";
+import _isEmpty from "lodash/isEmpty";
+import _get from "lodash/get";
 
-export default class PlacesAutoComplete extends Component {
+class PlacesAutoComplete extends Component {
   constructor(props) {
     super(props);
-    this.state = { address: "" };
+    this.state = {
+      address: ""
+    };
   }
 
   handleChange = address => {
@@ -19,13 +26,27 @@ export default class PlacesAutoComplete extends Component {
   };
 
   handleSelect = address => {
+    const { locatePlaceByPlaceId, token } = this.props;
     geocodeByAddress(address)
-      .then(results => console.log(results))
-      //   .then(latLng => console.log("Success", latLng))
+      .then(results => {
+        console.log(results, "results");
+        if (Array.isArray(results) && !_isEmpty(results)) {
+          let reqBody = {
+            placeId: results[0].place_id,
+            name: "latkredit.lv"
+          };
+          locatePlaceByPlaceId(
+            reqBody,
+            token,
+            `${process.env.BASE_URL}${locatePlaceApi}`
+          );
+        }
+      })
       .catch(error => console.error("Error", error));
   };
 
   render() {
+    const { value } = this.state;
     return (
       <PlacesAutocomplete
         value={this.state.address}
@@ -48,7 +69,7 @@ export default class PlacesAutoComplete extends Component {
                 placeholder: "Business name",
                 className: "location-search-input"
               })}
-              style={{width:"100%"}}
+              style={{ width: "100%" }}
             />
             <div className="autocomplete-dropdown-container">
               <Paper>
@@ -81,3 +102,14 @@ export default class PlacesAutoComplete extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { auth } = state;
+  const token = _get(auth, "logIn.token", "");
+  return { token };
+};
+
+export default connect(
+  mapStateToProps,
+  { locatePlaceByPlaceId }
+)(PlacesAutoComplete);
