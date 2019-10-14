@@ -26,6 +26,7 @@ import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/Plac
 import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
 import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
 import Reviews from "../../Components/DashboardComponents/Reviews";
+import WidgetsShowCase from '../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -136,6 +137,9 @@ export default function Dashboard() {
     }
     else if(stepToRender===3){
       return <GetStarted />
+    }
+    else if(stepToRender===4){
+      return <WidgetsShowCase />
     }
   }
 
