@@ -5,11 +5,14 @@ import {
   FETCH_REVIEWS_DATA_FAILURE,
   SEND_GET_REVIEWS_INIT,
   SEND_GET_REVIEWS_SUCCESS,
-  SEND_GET_REVIEWS_FAILURE
+  SEND_GET_REVIEWS_FAILURE,
+  LOCATE_PLACE_INIT,
+  LOCATE_PLACE_SUCCESS,
+  LOCATE_PLACE_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
-  const { type, getReviewsData, reviewsData, result } = action;
+  const { type, getReviewsData, reviewsData, result, locatePlace } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
       return {
@@ -52,6 +55,24 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         result: { ...result }
+      };
+    case LOCATE_PLACE_INIT:
+      return {
+        ...state,
+        type,
+        locatePlace
+      };
+    case LOCATE_PLACE_SUCCESS:
+      return {
+        ...state,
+        type,
+        locatePlace
+      };
+    case LOCATE_PLACE_FAILURE:
+      return {
+        ...state,
+        type,
+        locatePlace
       };
     default:
       return state;

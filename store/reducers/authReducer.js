@@ -17,7 +17,13 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAILURE,
   OAUTH_SIGNIN_INIT,
-  OAUTH_SIGNIN_END
+  OAUTH_SIGNIN_END,
+  BUSINESS_SIGNUP_INIT,
+  BUSINESS_SIGNUP_SUCCESS,
+  BUSINESS_SIGNUP_FAILURE,
+  BUSINESS_LOGIN_INIT,
+  BUSINESS_LOGIN_SUCCESS,
+  BUSINESS_LOGIN_FAILURE
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -30,7 +36,9 @@ const authReducer = (state = {}, action) => {
     tempEmail,
     activateUserTemp,
     verifyTokenTemp,
-    resetPasswordTemp
+    resetPasswordTemp,
+    businessSignUp,
+    businessSignUpTemp
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -123,6 +131,48 @@ const authReducer = (state = {}, action) => {
       return {
         ...state,
         type
+      };
+    case BUSINESS_SIGNUP_INIT:
+      return {
+        ...state,
+        type,
+        businessSignUp: { ...businessSignUp },
+        businessSignUpTemp: { ...businessSignUpTemp }
+      };
+    case BUSINESS_SIGNUP_SUCCESS:
+      return {
+        ...state,
+        type,
+        businessSignUp: { ...businessSignUp },
+        businessSignUpTemp: { ...businessSignUpTemp }
+      };
+    case BUSINESS_SIGNUP_FAILURE:
+      return {
+        ...state,
+        type,
+        businessSignUp: { ...businessSignUp },
+        businessSignUpTemp: { ...businessSignUpTemp }
+      };
+    case BUSINESS_LOGIN_INIT:
+      return {
+        ...state,
+        type,
+        logIn: { ...logIn },
+        logInTemp: { ...logInTemp }
+      };
+    case BUSINESS_LOGIN_SUCCESS:
+      return {
+        ...state,
+        type,
+        logIn: { ...logIn },
+        logInTemp: { ...logInTemp }
+      };
+    case BUSINESS_LOGIN_FAILURE:
+      return {
+        ...state,
+        type,
+        logIn: { ...logIn },
+        logInTemp: { ...logInTemp }
       };
     case LOGOUT:
       state = undefined;
