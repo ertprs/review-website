@@ -11,13 +11,14 @@ import ListItemText from "@material-ui/core/ListItemText";
 import CheckBox from "@material-ui/icons/CheckBox";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowForward";
+import uuid from 'uuid/v1';
 
 const widgetsObj = [
   {
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/onlyScoreWidget.png",
-    minHeight:140,
+    minHeight: 140,
     listItems: ["Show off your total number of reviews"],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
@@ -30,38 +31,41 @@ const widgetsObj = [
       "Responsive (max. 100% x 24)",
       "Mobile, tablet and desktop ready"
     ],
-    dataTempID:"OnlyScoreWidget"
+    dataTempID: "OnlyScoreWidget"
   },
   {
     title: "Trust card with reviews",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/textReviewsWithScores.png",
-    minHeight:400,
+    minHeight: 400,
     listItems: ["Show off your total number of reviews"],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: ["Header or footer"],
     support: ["Responsive (max. 100% x 24)"],
-    dataTempID:"TextReviewsWithScores"
+    dataTempID: "TextReviewsWithScores"
   },
   {
     title: "Trust carousel",
     tagLine: "Boost customer confidence with an honest TrustBox",
-    minHeight:320,
-    imgURL: "/static/images/onlyScoreWidget.png",
-    listItems: ["Show off your total number of reviews"],
+    minHeight: 320,
+    imgURL: "/static/images/textReviews.png",
+    listItems: [
+      "Show off your 15 latest reviews",
+      "Focuses on overall trust score"
+    ],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: ["Header or footer"],
     support: ["Responsive (max. 100% x 24)"],
-    dataTempID:"TextReviews"
+    dataTempID: "TextReviews"
   }
 ];
 
 export default class WidgetsShowCase extends Component {
   state = {
     getWidget: false,
-    selectedWidgetIndex:0
+    selectedWidgetIndex: 0
   };
   renderWidgetBox = (item, index) => {
     return (
@@ -83,21 +87,27 @@ export default class WidgetsShowCase extends Component {
           `}
         </style>
         <div>
-          <Paper style={{ padding: "15px", height:"425px"}}>
+          <Paper style={{ padding: "15px", height: "425px" }}>
             <Title>{item.title}</Title>
             <p>{item.tagLine}</p>
             <div className="widgetImgContainer">
               <img src={item.imgURL} />
             </div>
             <List>
-              <ListItem>
-                <ListItemIcon>
-                  <CheckBox />
-                </ListItemIcon>
-                <ListItemText>
-                  <div style={{ fontSize: "0.9rem" }}>{item.listItems[0]}</div>
-                </ListItemText>
-              </ListItem>
+              {item.listItems.map(item => {
+                return (
+                  <ListItem key={uuid()}>
+                    <ListItemIcon>
+                      <CheckBox />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <div style={{ fontSize: "0.9rem" }}>
+                        {item}
+                      </div>
+                    </ListItemText>
+                  </ListItem>
+                );
+              })}
             </List>
             <div>
               <Button
@@ -106,7 +116,10 @@ export default class WidgetsShowCase extends Component {
                 endIcon={<ArrowRight />}
                 size="small"
                 onClick={() => {
-                  this.setState({ getWidget: true, selectedWidgetIndex:index });
+                  this.setState({
+                    getWidget: true,
+                    selectedWidgetIndex: index
+                  });
                 }}
               >
                 Learn more
