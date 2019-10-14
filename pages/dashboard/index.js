@@ -18,8 +18,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import {
-  mainListItems,
-  secondaryListItems
+  MainListItems,
+  SecondaryListItems
 } from "../../Components/MaterialComponents/listItems";
 import Home from "../../Components/DashboardComponents/Home/Home";
 import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
@@ -110,6 +110,12 @@ const useStyles = makeStyles(theme => ({
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [stepToRender, setStepToRender] = React.useState(0);
+
+  const handleMenuItemClicked = (index) =>{
+    setStepToRender(index)
+  }
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -117,6 +123,21 @@ export default function Dashboard() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const renderAppropriateComponent = ()=>{
+    if(stepToRender===0){
+      return <Home />
+    }
+    else if(stepToRender===1){
+      return <Reviews />
+    }
+    else if(stepToRender===2){
+      return <GetReviews />
+    }
+    else if(stepToRender===3){
+      return <GetStarted />
+    }
+  }
 
   return (
     <div className={classes.root}>
@@ -167,17 +188,14 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <List><MainListItems handleMainListItemClick={handleMenuItemClicked} stepToRender={stepToRender}/></List>
         <Divider />
-        <List>{secondaryListItems}</List>
+        <List><SecondaryListItems /></List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          {/* <Home /> */}
-          {/* <GetStarted /> */}
-          {/* <GetReviews /> */}
-          <Reviews />
+          {renderAppropriateComponent()}
         </Container>
       </main>
     </div>
