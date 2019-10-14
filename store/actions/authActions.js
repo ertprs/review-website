@@ -31,6 +31,7 @@ import _isEmpty from "lodash/isEmpty";
 import { loginApiOAuth } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
+import {fetchReviews} from './dashboardActions';
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -436,6 +437,9 @@ export const businessLogIn = (loginData, api) => {
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
       let loginType = 0;
+      if(success){
+        dispatch(fetchReviews(token))
+      }
       if (userProfile.hasOwnProperty("subscription")) {
         if (
           userProfile.subscription.plan_type_id === 1 ||

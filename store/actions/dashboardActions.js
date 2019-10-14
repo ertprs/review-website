@@ -20,15 +20,19 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
-export const fetchReviews = api => {
+export const fetchReviews = token => {
   return async (dispatch, getState) => {
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
       reviewsData: []
     });
     try {
-      const result = await axios.get(api);
-      dispatch({ type: FETCH_REVIEWS_DATA_SUCCESS, reviewsData: [] });
+      const result = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=2&perPage=10`
+      });;
+      dispatch({ type: FETCH_REVIEWS_DATA_SUCCESS, reviewsData: {...result.data} });
     } catch (error) {
       dispatch({
         type: FETCH_REVIEWS_DATA_FAILURE,
