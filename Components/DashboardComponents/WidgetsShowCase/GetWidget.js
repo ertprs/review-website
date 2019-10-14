@@ -119,7 +119,7 @@ export default class GetWidget extends Component {
                 <code className="blue">{`
                     <div class="trustsearch-widget" 
                     data-locale="en-US"
-                    data-template-id=OnlyScoreWidget 
+                    data-template-id="${this.props.widget.dataTempID}" 
                     data-businessunit-id="google.com"
                     data-style-height="${this.state.widgetHeight}"
                     data-style-width="100%"

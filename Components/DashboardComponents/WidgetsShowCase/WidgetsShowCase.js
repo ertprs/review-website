@@ -29,7 +29,8 @@ const widgetsObj = [
     support: [
       "Responsive (max. 100% x 24)",
       "Mobile, tablet and desktop ready"
-    ]
+    ],
+    dataTempID:"OnlyScoreWidget"
   },
   {
     title: "Trust card with reviews",
@@ -40,7 +41,8 @@ const widgetsObj = [
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: ["Header or footer"],
-    support: ["Responsive (max. 100% x 24)"]
+    support: ["Responsive (max. 100% x 24)"],
+    dataTempID:"TextReviewsWithScores"
   },
   {
     title: "Trust carousel",
@@ -51,7 +53,8 @@ const widgetsObj = [
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: ["Header or footer"],
-    support: ["Responsive (max. 100% x 24)"]
+    support: ["Responsive (max. 100% x 24)"],
+    dataTempID:"TextReviews"
   }
 ];
 
@@ -70,7 +73,7 @@ export default class WidgetsShowCase extends Component {
             }
             .widgetImgContainer {
               width: 60%;
-              height: 100%;
+              height: auto;
               margin: 0 auto;
             }
             .widgetImgContainer img {
@@ -80,7 +83,7 @@ export default class WidgetsShowCase extends Component {
           `}
         </style>
         <div>
-          <Paper style={{ padding: "15px" }}>
+          <Paper style={{ padding: "15px", height:"425px"}}>
             <Title>{item.title}</Title>
             <p>{item.tagLine}</p>
             <div className="widgetImgContainer">
