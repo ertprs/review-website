@@ -4,19 +4,13 @@ import FormField from "../Widgets/FormField/FormField";
 import validate from "../../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import Layout from "../../hoc/layout/layout";
 import { loginApi } from "../../utility/config";
 import Router from "next/router";
 import { connect } from "react-redux";
-import { logIn } from "../../store/actions/authActions";
+import { businessLogIn } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
-import OAuthButtons from "../Widgets/oAuthBtns";
 import Link from "next/link";
-import {
-  OAUTH_SIGNIN_INIT,
-  OAUTH_SIGNIN_END
-} from "../../store/actions/actionTypes";
 
 class BusinessUserLogin extends Component {
   state = {
@@ -56,21 +50,6 @@ class BusinessUserLogin extends Component {
 
   componentDidMount() {
     window.scrollTo(0, 0);
-    // ? This will redirect the user to login page with email prefilled in case of already registered.
-    // const { auth } = this.props
-    // const { formData } = this.state
-    // if (auth.type == "REDIRECT_TO_LOGIN_WITH_EMAIL") {
-    //   const emailPrefill = _get(auth, 'tempEmail.emailPrefill', false)
-    //   const email = _get(auth, 'tempEmail.email', '')
-    //   if (emailPrefill) {
-    //     this.setState({
-    //       formData: {
-    //         ...formData,
-    //         email: { ...formData.email, value: email }
-    //       }
-    //     })
-    //   }
-    // }
   }
 
   componentClicked = res => {};
@@ -108,19 +87,18 @@ class BusinessUserLogin extends Component {
 
   handleLoginClick = () => {
     const { formData } = this.state;
-    const { logIn } = this.props;
+    const { businessLogIn } = this.props;
     let reqBody = this.createReqBody(formData);
-    logIn(reqBody, loginApi, 1);
+    businessLogIn(reqBody, loginApi);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { logIn, logInTemp, signUpTemp, type } = this.props.auth;
-    console.log(type, "type");
+    const { businessLogIn, businessLogInTemp } = this.props.auth;
     const { formData } = this.state;
-    if (this.props !== prevProps) {
-      let isWrongCredentials = _get(
-        this.props,
-        "auth.logInTemp.isWrongCredentials",
+    if (this.props.auth !== prevProps.auth) {
+      const isWrongCredentials = _get(
+        businessLogInTemp,
+        "isWrongCredentials",
         false
       );
       if (isWrongCredentials) {
@@ -131,48 +109,22 @@ class BusinessUserLogin extends Component {
           }
         });
       }
-    }
-    if (this.props.auth !== prevProps.auth) {
-      const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
-      const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
-      const signUpSuccess = _get(signUpTemp, "signUpSuccess", "undefined");
-      const authorized = _get(logIn, "authorized", false);
-      const oAuthSignUpSuccess = _get(
-        signUpTemp,
-        "oAuthSignUpSuccess",
-        "undefined"
-      );
-
-      if (type === OAUTH_SIGNIN_INIT) {
-        this.setState({ oAuthLoading: true });
-      }
-
-      if (type === OAUTH_SIGNIN_END) {
-        this.setState({ oAuthLoading: false });
-      }
-
-      if (oAuthSignUpSuccess === false) {
+      const isLoginFailed = _get(businessLogInTemp, "isLoginFailed", false);
+      const authorized = _get(businessLogIn, "authorized", false);
+      const isLoggingIn = _get(businessLogInTemp, "isLoggingIn", false);
+      this.setState({ isLoading: isLoggingIn });
+      if (isLoginFailed) {
+        let snackbarMsg = "";
+        if (isWrongCredentials) {
+          snackbarMsg = "Please enter correct credentials!";
+        } else {
+          snackbarMsg = "Some Error Occured!";
+        }
         this.setState({
           showSnackbar: true,
           variant: "error",
-          snackbarMsg: "Some error occured while Sign Up."
+          snackbarMsg
         });
-      }
-
-      if (isLoginFailed) {
-        if (isWrongCredentials) {
-          this.setState({
-            showSnackbar: true,
-            variant: "error",
-            snackbarMsg: "Please enter correct credentials!"
-          });
-        } else {
-          this.setState({
-            showSnackbar: true,
-            variant: "error",
-            snackbarMsg: "Some Error Occured!"
-          });
-        }
       } else if (authorized) {
         this.setState({
           showSnackbar: true,
@@ -200,8 +152,7 @@ class BusinessUserLogin extends Component {
   };
 
   render() {
-    const { formData, oAuthLoading } = this.state;
-    const { logIn, logInTemp } = this.props.auth;
+    const { formData, isLoading } = this.state;
     return (
       <>
         <style jsx> {authenticationPageStyles} </style>{" "}
@@ -228,26 +179,19 @@ class BusinessUserLogin extends Component {
           <a className="forgotPasswordLink" href="/forgot-password">
             Forgot password?
           </a>
-          {_get(logInTemp, "isLoggingIn", false) ? (
+          {isLoading ? (
             <div style={{ textAlign: "center" }}>
               <CircularProgress size={30} color="secondary" />
             </div>
           ) : (
-            <button
-              disabled={!(formData.email.valid && formData.password.valid)}
-              className="registerBtn"
-              onClick={this.handleLoginClick}
-            >
-              Login
-            </button>
-          )}
-          {oAuthLoading ? (
-            <div style={{ textAlign: "center", marginTop: "10px" }}>
-              <CircularProgress size={30} color="secondary" />
-            </div>
-          ) : (
             <>
-              {/* <OAuthButtons /> */}
+              <button
+                disabled={!(formData.email.valid && formData.password.valid)}
+                className="registerBtn"
+                onClick={this.handleLoginClick}
+              >
+                Login
+              </button>
               <div
                 style={{
                   display: "flex",
@@ -281,5 +225,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { logIn }
+  { businessLogIn }
 )(BusinessUserLogin);

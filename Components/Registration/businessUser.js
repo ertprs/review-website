@@ -1,17 +1,14 @@
 import React, { Component } from "react";
 import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
-import countrieslist from "../../utility/countryList";
+import countrieslist from "../../utility/newCountryList.json";
 import validate from "../../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { registerApi } from "../../utility/config";
+import { businessRegisterApi } from "../../utility/config";
 import Router from "next/router";
 import { connect } from "react-redux";
-import {
-  signUp,
-  redirectToLoginWithEmail
-} from "../../store/actions/authActions";
+import { businessSignUp } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import Link from "next/link";
@@ -22,17 +19,17 @@ class BusinessUserRegistration extends Component {
       website: {
         element: "input",
         value: "",
-        placeholder: "Enter your website name",
+        placeholder: "https://www.yourdomain.com",
         errorMessage: "",
         valid: false,
         touched: false,
         validationRules: {
           required: true,
-          minLength: 3
+          isDomain: true
         },
         name: "website name"
       },
-      companyName: {
+      company: {
         element: "input",
         value: "",
         placeholder: "Enter your company name",
@@ -43,9 +40,9 @@ class BusinessUserRegistration extends Component {
           required: true,
           minLength: 3
         },
-        name: "companyName"
+        name: "company"
       },
-      fullName: {
+      name: {
         element: "input",
         value: "",
         placeholder: "Enter your full name",
@@ -56,9 +53,9 @@ class BusinessUserRegistration extends Component {
           required: true,
           minLength: 5
         },
-        name: "fullName"
+        name: "name"
       },
-      workEmail: {
+      email: {
         element: "input",
         value: "",
         placeholder: "email@yourdomain.com",
@@ -69,7 +66,7 @@ class BusinessUserRegistration extends Component {
           required: true,
           isEmail: true
         },
-        name: "workEmail"
+        name: "email"
       },
       password: {
         element: "input",
@@ -97,7 +94,7 @@ class BusinessUserRegistration extends Component {
         },
         name: "password_confirmation"
       },
-      phoneNumber: {
+      phone: {
         element: "input",
         value: "",
         placeholder: "+91-7985757646",
@@ -107,7 +104,7 @@ class BusinessUserRegistration extends Component {
         validationRules: {
           required: true
         },
-        name: "phoneNumber"
+        name: "phone"
       },
       country: {
         element: "select",
@@ -204,86 +201,47 @@ class BusinessUserRegistration extends Component {
   };
 
   handleRegisterClick = () => {
-    const { signUp } = this.props;
+    const { businessSignUp } = this.props;
     const { formData } = this.state;
-    let reqBody = this.createReqBody(formData, registerApi);
-    signUp(reqBody, registerApi, 1);
+    let reqBody = this.createReqBody(formData);
+    console.log(reqBody, "reqBody");
+    businessSignUp(reqBody, businessRegisterApi);
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.auth !== prevProps.auth) {
-      const { signUpTemp, type, logIn } = this.props.auth;
-      const isSignUpFailed = _get(signUpTemp, "isSignupFailed", false);
-      const isSignupSuccess = _get(signUpTemp, "signUpSuccess", false);
-      const authorized = _get(logIn, "authorized", false);
-      const oAuthSignUpSuccess = _get(
-        signUpTemp,
-        "oAuthSignUpSuccess",
-        "undefined"
-      );
-
-      if (type === OAUTH_SIGNIN_INIT) {
-        this.setState({ oAuthLoading: true });
-      }
-
-      if (type === OAUTH_SIGNIN_END) {
-        this.setState({ oAuthLoading: false });
-      }
-
-      if (authorized) {
-        this.setState({
-          showSnackbar: true,
-          variant: "success",
-          snackbarMsg: "Logged in successfully!"
-        });
-        setTimeout(() => {
-          this.setState({
-            showSnackbar: true,
-            variant: "success",
-            snackbarMsg: "Redirecting..."
-          });
-          setTimeout(() => {
-            Router.push("/");
-          }, 1000);
-        }, 1000);
-      }
+      const {
+        isSignUpFailed,
+        isSignupSuccess,
+        status,
+        errorMsg,
+        isSigningUp
+      } = this.props;
+      this.setState({ isLoading: isSigningUp });
 
       if (isSignUpFailed) {
-        let snackbarMsg =
-          _get(signUpTemp, "status", 0) === 409
-            ? "Email already registered"
-            : "Something went wrong!";
+        let snackbarMsg;
+        if (status === 409) {
+          snackbarMsg = "User already registered!";
+        } else if (errorMsg === "subscription_exists") {
+          snackbarMsg = "Company is already subscribed!";
+        } else if (errorMsg === "activation_required") {
+          snackbarMsg = "User not activated";
+        } else if (errorMsg === "already_claimed") {
+          snackbarMsg = "This domain is already claimed!";
+        }
         this.setState({ showSnackbar: true, variant: "error", snackbarMsg });
-        setTimeout(() => {
-          this.setState({
-            snackbarMsg: "Redirecting to login page",
-            variant: "success"
-          });
-          setTimeout(() => {
-            Router.push("/login");
-          }, 1000);
-        }, 2000);
-      } else {
-        this.setState({ showSnackbar: false });
       }
 
       if (isSignupSuccess) {
-        let snackbarMsg = "Business Successfull!";
+        let snackbarMsg = "Registration Successfull!";
         this.setState({ showSnackbar: true, variant: "success", snackbarMsg });
         setTimeout(() => {
           this.setState({ snackbarMsg: "Redirecting....", variant: "success" });
           setTimeout(() => {
-            Router.push("/afterRegistration");
+            Router.push("/login");
           }, 1000);
         }, 2000);
-      }
-
-      if (oAuthSignUpSuccess === false) {
-        this.setState({
-          showSnackbar: true,
-          variant: "error",
-          snackbarMsg: "Some error occured while Sign Up."
-        });
       }
     }
   }
@@ -295,8 +253,7 @@ class BusinessUserRegistration extends Component {
   };
 
   render() {
-    const { formData, errorMsg, oAuthLoading } = this.state;
-    const { signUpTemp } = this.props.auth;
+    const { formData, isLoading } = this.state;
     return (
       <>
         <style jsx> {authenticationPageStyles} </style>{" "}
@@ -312,23 +269,23 @@ class BusinessUserRegistration extends Component {
             col="5"
           />
           <FormField
-            {...formData.companyName}
+            {...formData.company}
             handleChange={this.handleChange}
-            id="companyName"
+            id="company"
             rows="5"
             col="5"
           />
           <FormField
-            {...formData.fullName}
+            {...formData.name}
             handleChange={this.handleChange}
-            id="fullName"
+            id="name"
             rows="5"
             col="5"
           />
           <FormField
-            {...formData.workEmail}
+            {...formData.email}
             handleChange={this.handleChange}
-            id="workEmail"
+            id="email"
             rows="5"
             col="5"
           />
@@ -349,16 +306,12 @@ class BusinessUserRegistration extends Component {
             rows="5"
             col="5"
           />
-          <span className="errorMsg">
-            {" "}
-            {_get(errorMsg, "password_confirmation", "")}{" "}
-          </span>{" "}
           <FormField
-            {...formData.phoneNumber}
+            {...formData.phone}
             handleChange={this.handleChange}
             onkeyDown={this.handleKeyDown}
             type="password"
-            id="phoneNumber"
+            id="phone"
             rows="5"
             col="5"
           />
@@ -370,7 +323,7 @@ class BusinessUserRegistration extends Component {
             col="5"
             styles={{ height: "38px" }}
           />
-          {_get(signUpTemp, "isSigningUp", false) ? (
+          {isLoading ? (
             <div style={{ textAlign: "center" }}>
               <CircularProgress size={30} color="secondary" />
             </div>
@@ -380,12 +333,12 @@ class BusinessUserRegistration extends Component {
                 disabled={
                   !(
                     formData.website.valid &&
-                    formData.companyName.valid &&
-                    formData.fullName.valid &&
-                    formData.workEmail.valid &&
+                    formData.company.valid &&
+                    formData.name.valid &&
+                    formData.email.valid &&
                     formData.password.valid &&
                     formData.password_confirmation.valid &&
-                    formData.phoneNumber.valid &&
+                    formData.phone.valid &&
                     formData.country.valid
                   )
                 }
@@ -422,10 +375,23 @@ class BusinessUserRegistration extends Component {
 
 const mapStateToProps = state => {
   const { auth } = state;
-  return { auth };
+  const { businessSignUpTemp } = auth;
+  const isSignUpFailed = _get(businessSignUpTemp, "isSignupFailed", false);
+  const isSignupSuccess = _get(businessSignUpTemp, "signUpSuccess", false);
+  const status = _get(businessSignUpTemp, "status", -1);
+  const errorMsg = _get(businessSignUpTemp, "errorMsg", "");
+  const isSigningUp = _get(businessSignUpTemp, "isSigningUp", false);
+  return {
+    auth,
+    isSignUpFailed,
+    isSignupSuccess,
+    status,
+    errorMsg,
+    isSigningUp
+  };
 };
 
 export default connect(
   mapStateToProps,
-  { signUp, redirectToLoginWithEmail }
+  { businessSignUp }
 )(BusinessUserRegistration);

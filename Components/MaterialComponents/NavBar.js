@@ -290,6 +290,17 @@ function PrimarySearchAppBar(props) {
           ) : (
             ""
           )}
+          {loginType === 4 ? (
+            <Link href="">
+              <MenuItem>
+                <a onClick={() => handleLogout()} className={classes.navLink}>
+                  Logout
+                </a>
+              </MenuItem>
+            </Link>
+          ) : (
+            ""
+          )}
         </>
       )}
     </Menu>
@@ -399,6 +410,18 @@ function PrimarySearchAppBar(props) {
                     )}
                     // onLogoutSuccess={logout}
                   ></GoogleLogout>
+                ) : (
+                  ""
+                )}
+                {loginType === 4 ? (
+                  <Link href="">
+                    <a
+                      onClick={() => handleLogout()}
+                      className={classes.navLink}
+                    >
+                      Logout
+                    </a>
+                  </Link>
                 ) : (
                   ""
                 )}
