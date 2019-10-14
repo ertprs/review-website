@@ -154,13 +154,19 @@ export default class Home extends Component {
             </Title>
           </div>
           <div className="body">
-            <div style={{marginBottom:"21px", borderBottom:"1px solid #999"}}>
-                <p style={{fontWeight:"bold", fontSize:"1rem"}}>Invitations sent : </p>
-                <h1 style={{textAlign:"right"}}>56</h1>
+            <div
+              style={{ marginBottom: "21px", borderBottom: "1px solid #999" }}
+            >
+              <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
+                Invitations sent :{" "}
+              </p>
+              <h1 style={{ textAlign: "right" }}>56</h1>
             </div>
-            <div style={{borderBottom:"1px solid #999"}}>
-                <p style={{fontWeight:"bold", fontSize:"1rem"}}>Invitations Left : </p>
-                <h1 style={{textAlign:"right"}}>44</h1>
+            <div style={{ borderBottom: "1px solid #999" }}>
+              <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
+                Invitations Left :{" "}
+              </p>
+              <h1 style={{ textAlign: "right" }}>44</h1>
             </div>
           </div>
         </SimpleCard>
