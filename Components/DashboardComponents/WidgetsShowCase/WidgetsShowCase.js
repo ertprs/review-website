@@ -17,29 +17,52 @@ const widgetsObj = [
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/onlyScoreWidget.png",
-    listItems: ["Show off your total number of reviews"]
+    minHeight:140,
+    listItems: ["Show off your total number of reviews"],
+    description:
+      "In short, the TrustBoxes are great starters that communicate You can trust us.",
+    suggestedPlacement: [
+      "Header or footer",
+      "Small enough to place almost anywhere",
+      "Complement larger TrustBoxes on your website"
+    ],
+    support: [
+      "Responsive (max. 100% x 24)",
+      "Mobile, tablet and desktop ready"
+    ]
   },
   {
     title: "Trust card with reviews",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/textReviewsWithScores.png",
-    listItems: ["Show off your total number of reviews"]
+    minHeight:400,
+    listItems: ["Show off your total number of reviews"],
+    description:
+      "In short, the TrustBoxes are great starters that communicate You can trust us.",
+    suggestedPlacement: ["Header or footer"],
+    support: ["Responsive (max. 100% x 24)"]
   },
   {
     title: "Trust carousel",
     tagLine: "Boost customer confidence with an honest TrustBox",
+    minHeight:320,
     imgURL: "/static/images/onlyScoreWidget.png",
-    listItems: ["Show off your total number of reviews"]
+    listItems: ["Show off your total number of reviews"],
+    description:
+      "In short, the TrustBoxes are great starters that communicate You can trust us.",
+    suggestedPlacement: ["Header or footer"],
+    support: ["Responsive (max. 100% x 24)"]
   }
 ];
 
 export default class WidgetsShowCase extends Component {
-  state={
-      getWidget:false
-  }
-  renderWidgetBox = (item) => {
+  state = {
+    getWidget: false,
+    selectedWidgetIndex:0
+  };
+  renderWidgetBox = (item, index) => {
     return (
-      <div className="col-md-4" style={{alignSelf:"stretch"}}>
+      <div className="col-md-4" style={{ alignSelf: "stretch" }}>
         <style jsx>
           {`
             .widgetBox {
@@ -57,7 +80,7 @@ export default class WidgetsShowCase extends Component {
           `}
         </style>
         <div>
-          <Paper style={{ padding: "15px"}}>
+          <Paper style={{ padding: "15px" }}>
             <Title>{item.title}</Title>
             <p>{item.tagLine}</p>
             <div className="widgetImgContainer">
@@ -69,7 +92,7 @@ export default class WidgetsShowCase extends Component {
                   <CheckBox />
                 </ListItemIcon>
                 <ListItemText>
-                    <div style={{fontSize:"0.9rem"}}>{item.listItems[0]}</div>
+                  <div style={{ fontSize: "0.9rem" }}>{item.listItems[0]}</div>
                 </ListItemText>
               </ListItem>
             </List>
@@ -79,8 +102,8 @@ export default class WidgetsShowCase extends Component {
                 color="primary"
                 endIcon={<ArrowRight />}
                 size="small"
-                onClick={()=>{
-                    this.setState({getWidget:true})
+                onClick={() => {
+                  this.setState({ getWidget: true, selectedWidgetIndex:index });
                 }}
               >
                 Learn more
@@ -93,14 +116,23 @@ export default class WidgetsShowCase extends Component {
   };
 
   render() {
-      const {getWidget} = this.state;
+    const { getWidget, selectedWidgetIndex } = this.state;
     return (
       <div className="container">
-        {!getWidget ? <div className="row" style={{alignItems:"stretch"}}>
-          {widgetsObj.map(item => {
-            return this.renderWidgetBox(item);
-          })}
-        </div> : <GetWidget widget={widgetsObj[0]}/>}
+        {!getWidget ? (
+          <div className="row" style={{ alignItems: "stretch" }}>
+            {widgetsObj.map((item, index) => {
+              return this.renderWidgetBox(item, index);
+            })}
+          </div>
+        ) : (
+          <GetWidget
+            widget={widgetsObj[selectedWidgetIndex]}
+            getMoreWidgets={() => {
+              this.setState({ getWidget: false });
+            }}
+          />
+        )}
       </div>
     );
   }
