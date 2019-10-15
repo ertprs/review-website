@@ -188,10 +188,8 @@ function Dashboard(props) {
           >
             Welcome Arturs !
           </Typography>
-          <IconButton color="inherit">
-            {/* <Badge badgeContent={4} color="secondary"> */}
-            <LogoutIcon onClick={handleLogout} />
-            {/* </Badge> */}
+          <IconButton color="inherit" onClick={handleLogout}>
+            <LogoutIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
