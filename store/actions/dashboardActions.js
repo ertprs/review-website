@@ -20,23 +20,31 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
-export const fetchReviews = token => {
+export const fetchReviews = (token, page, perPage) => {
+  const pageNo = page || 1;
+  const perPageLimit = perPage || 10;
   return async (dispatch, getState) => {
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
-      reviewsData: []
+      reviewsData: {},
+      fetchingReviews: true
     });
     try {
       const result = await axios({
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=2&perPage=10`
-      });;
-      dispatch({ type: FETCH_REVIEWS_DATA_SUCCESS, reviewsData: {...result.data} });
+        url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=${pageNo}&perPage=${perPageLimit}`
+      });
+      dispatch({
+        type: FETCH_REVIEWS_DATA_SUCCESS,
+        reviewsData: { ...result.data },
+        fetchingReviews: false
+      });
     } catch (error) {
       dispatch({
         type: FETCH_REVIEWS_DATA_FAILURE,
-        reviewsData: []
+        reviewsData: {},
+        fetchingReviews: false
       });
     }
   };
@@ -61,7 +69,7 @@ export const sendGetReviews = api => {
 };
 
 export const locatePlaceByPlaceId = (data, token, url) => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch({
       type: LOCATE_PLACE_INIT,
       locatePlace: {
@@ -75,12 +83,16 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         data,
         url
       });
+      const success = await _get(result, "data.success", false);
       dispatch({
         type: LOCATE_PLACE_SUCCESS,
         locatePlace: {
           success: _get(result, "data.success", false)
         }
       });
+      if (success) {
+        dispatch(fetchReviews(token));
+      }
     } catch (error) {
       dispatch({
         type: LOCATE_PLACE_FAILURE,

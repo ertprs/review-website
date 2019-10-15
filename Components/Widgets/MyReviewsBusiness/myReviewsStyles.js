@@ -15,14 +15,9 @@ export const reviewListStyles = css`
     margin: 0;
   }
 
-  .cardLink {
-    font-size: 18px;
-    cursor: pointer;
-    font-weight: 550;
-  }
-
-  .cardLink:hover {
-    color: #4084bd;
+  .reviewText {
+    font-size: 16px;
+    font-weight: 500;
   }
 
   .userName {
