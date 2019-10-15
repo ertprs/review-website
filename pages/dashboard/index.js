@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -31,6 +31,7 @@ import { logOut } from "../../store/actions/authActions";
 import { connect } from "react-redux";
 import Router from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
+import _get from "lodash/get";
 
 const drawerWidth = 240;
 
@@ -118,6 +119,13 @@ function Dashboard(props) {
   const [open, setOpen] = React.useState(true);
   const [stepToRender, setStepToRender] = React.useState(0);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
+
+  useEffect(() => {
+    const loginType = _get(props, "loginType", 0);
+    if (loginType !== 4) {
+      Router.push("/");
+    }
+  }, []);
 
   const handleMenuItemClicked = index => {
     setStepToRender(index);
@@ -227,7 +235,14 @@ function Dashboard(props) {
   );
 }
 
+const mapStateToProps = state => {
+  const { auth } = state;
+  const authorized = _get(auth, "logIn.authorized", false);
+  const loginType = _get(auth, "logIn.loginType", 0);
+  return { authorized, loginType };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   { logOut }
 )(Dashboard);

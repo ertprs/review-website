@@ -216,9 +216,11 @@ function PrimarySearchAppBar(props) {
       open={isProfileMenuOpen}
       onClose={handleProfileMenuClose}
     >
-      <Link href="/dashboard">
-        <MenuItem onClick={handleMenuClose}>Dashboard</MenuItem>
-      </Link>
+      {authorized && loginType === 4 ? (
+        <Link href="/dashboard">
+          <MenuItem onClick={handleMenuClose}>Dashboard</MenuItem>
+        </Link>
+      ) : null}
       {loginType === 1 || loginType === 2 ? (
         <Link href="">
           <MenuItem>
