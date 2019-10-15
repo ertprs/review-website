@@ -5,18 +5,54 @@ import Container from "@material-ui/core/Container";
 import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
+import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
+import { locatePlaceApi } from "../../../utility/config";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import Button from "@material-ui/core/Button/Button";
+import ArrowRight from "@material-ui/icons/ArrowRight";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {planType} from "../../../utility/constants/businessPlanConstants";
 
 class GetStarted extends Component {
   state = {
-    alreadySelected: false,
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    address: "",
+    selectedAddress: {}
+  };
+
+  handleContinueClick = () => {
+    const { selectedAddress } = this.state;
+    if (Object.keys(selectedAddress).length > 0) {
+      this.props.locatePlaceByPlaceId(
+        this.state.selectedAddress,
+        this.props.token,
+        `${process.env.BASE_URL}${locatePlaceApi}`
+      );
+    }
+  };
+
+  handleAddressSelect = (reqBody, address) => {
+    this.setState({ selectedAddress: { ...reqBody }, address: address });
+  };
+
+  renderSelectedAddress = () => {
+    const { selectedAddress } = this.state;
+    return Object.keys(selectedAddress).length > 0 ? (
+      <div style={{ marginTop: "50px" }}>
+        <p>
+          <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
+          {this.state.address}
+        </p>
+      </div>
+    ) : null;
   };
 
   renderGetStartedHeader = () => {
+    const {userProfile} = this.props;
+    const name = _get(userProfile, "name", "")
     return (
       <div>
         <style jsx>{`
@@ -31,7 +67,7 @@ class GetStarted extends Component {
           <span style={{ textTransform: "capitalize" }}>
             {stringHelpers("getTimeGreeting")}
           </span>{" "}
-          Arturs,
+          {name}
         </h3>
         <h6 className="getStartedSubHeader">
           This is your personal setup guide. Let’s get you up and running so you
@@ -42,6 +78,10 @@ class GetStarted extends Component {
   };
 
   renderBusinessDetails = () => {
+    const domain = _get(this.props.businessProfile,"domain","");
+    const companyName = _get(this.props.userProfile,"company.name","")
+    const subscriptionPlan = _get(this.props.userProfile, "subscription.plan_type_id","")
+    const expiresAt = _get(this.props.userProfile, "subscription.expires_at","")
     return (
       <div className="businessDetailsContainer">
         <style jsx>
@@ -64,19 +104,44 @@ class GetStarted extends Component {
         <div className="businessDetailsFlexItem">
           <div className="bold">Domain :</div>
           <div>
-            <a href="https://www.swiss-qube.com">https://www.swiss-qube.com</a>
+            <a href={`https://www.${domain}`} target="_blank">{domain}</a>
           </div>
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Company Name :</div>
-          <div>Swiss Qube</div>
+          <div>{companyName}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          <div className="bold">Address :</div>
-          <div>Baarermattstrasse 6, 6300 Zug, Switzerland</div>
+          <div className="bold">Subscription plan :</div>
+          <div>{planType[subscriptionPlan]}</div>
+        </div>
+        <div className="businessDetailsFlexItem">
+          <div className="bold">Expires At :</div>
+          <div>{expiresAt}</div>
         </div>
       </div>
     );
+  };
+
+  renderContinueBtn = () => {
+    const { selectedAddress } = this.state;
+    const { type } = this.props;
+    return Object.keys(selectedAddress).length > 0 ? (
+      <div style={{ marginTop: "50px", textAlign: "right" }}>
+        {type === "LOCATE_PLACE_INIT" ? (
+          <CircularProgress size={25}/>
+        ) : (
+          <Button
+            endIcon={<ArrowRight />}
+            onClick={this.handleContinueClick}
+            variant="contained"
+            color="primary"
+          >
+            Claim &amp; continue
+          </Button>
+        )}
+      </div>
+    ) : null;
   };
 
   renderGetStartedBox = () => {
@@ -113,24 +178,30 @@ class GetStarted extends Component {
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
             <h4>
-              {this.state.alreadySelected
+              {this.props.placeId!=="" || this.props.success
                 ? "Your business details"
-                : "Please locate your Business"}
+                : "Please claim your Business"}
             </h4>
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxImgContainer">
               <img
                 src={`/static/images/${
-                  this.state.alreadySelected
+                  this.props.placeId!=="" || this.props.success
                     ? "googleMyBusiness.jpg"
                     : "locate.png"
                 }`}
               />
             </div>
             <div className="getStartedBoxAutoComplete">
-              {!this.state.alreadySelected ? (
-                <PlacesAutoComplete />
+              {this.props.placeId==="" && !this.props.success? (
+                <>
+                  <PlacesAutoComplete
+                    handleAddressSelect={this.handleAddressSelect}
+                  />
+                  {this.renderSelectedAddress()}
+                  {this.renderContinueBtn()}
+                </>
               ) : (
                 this.renderBusinessDetails()
               )}
@@ -178,9 +249,17 @@ class GetStarted extends Component {
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { dashboardData, auth } = state;
+  const token = _get(auth, "logIn.token", "");
+  const userProfile = _get(auth, "logIn.userProfile", {})
+  const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const success = _get(dashboardData, "locatePlace.success", false);
-  return { success };
+  const type = _get(dashboardData, "type", "");
+  const placeId = _get(businessProfile, "google_places.placeId", "");
+  return { success, businessProfile, token, type, placeId, userProfile };
 };
 
-export default connect(mapStateToProps)(GetStarted);
+export default connect(
+  mapStateToProps,
+  { locatePlaceByPlaceId }
+)(GetStarted);

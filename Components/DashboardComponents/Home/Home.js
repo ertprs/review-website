@@ -3,8 +3,13 @@ import Grid from "@material-ui/core/Grid";
 import SimpleCard from "../../MaterialComponents/Card";
 import StarRatings from "react-star-ratings";
 import Title from "../../MaterialComponents/Title";
-export default class Home extends Component {
+import { connect } from "react-redux";
+import _get from "lodash/get";
+class Home extends Component {
   renderOverviewCard = () => {
+    const { reviewsData } = this.props;
+    const rating = _get(reviewsData, "rating", 0);
+    const total = _get(reviewsData, "total", 0);
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
@@ -44,7 +49,7 @@ export default class Home extends Component {
             </div>
             <div className="ratingsContainer">
               <StarRatings
-                rating={4.3}
+                rating={Number(rating)}
                 starRatedColor="#21bc61"
                 starDimension="30px"
                 starSpacing="0.5px"
@@ -53,13 +58,13 @@ export default class Home extends Component {
               />
             </div>
             <div className="bodyFooter">
-              <div>Based on 17 reviews</div>
+              <div>Based on {total} reviews</div>
             </div>
           </div>
           <div className="footer">
             <div>Trustsearch score</div>
             <div className="trustScore">
-              <span style={{ fontWeight: "400" }}>4.3</span> out of 5
+              <span style={{ fontWeight: "400" }}>{rating}</span> out of 5
             </div>
           </div>
         </SimpleCard>
@@ -67,44 +72,50 @@ export default class Home extends Component {
     );
   };
 
-  renderReviewSnippet = () => {
-    return (
-      <div className="reviewSnippetContainer">
-        <style jsx>
-          {`
-            .reviewSnippetContainer {
-              margin-bottom: 25px;
-            }
-            .reviewBody {
-              display: flex;
-              justify-content: space-between;
-            }
-            .reviewBodyText {
-              margin-top: 1.5px;
-              color: #999;
-              font-size: 0.8rem;
-            }
-          `}
-        </style>
-        <div className="reviewText">"Great service ever used by...</div>
-        <div className="reviewBody">
-          <div>
-            <StarRatings
-              rating={4}
-              starRatedColor="#21bc61"
-              starDimension="17px"
-              starSpacing="0.5px"
-              numberOfStars={5}
-              name="rating"
-            />
+  renderReviewSnippets = (topThreeReviews) => {
+    return topThreeReviews.map(item=>{
+      return (
+        <div className="reviewSnippetContainer">
+          <style jsx>
+            {`
+              .reviewSnippetContainer {
+                margin-bottom: 25px;
+              }
+              .reviewBody {
+                display: flex;
+                justify-content: space-between;
+              }
+              .reviewBodyText {
+                margin-top: 1.5px;
+                color: #999;
+                font-size: 0.8rem;
+              }
+            `}
+          </style>
+          <div className="reviewText">"{item.text.length > 26 ? item.text.substring(0, 26)+"..." : item.text}</div>
+          <div className="reviewBody">
+            <div>
+              <StarRatings
+                rating={item.rating}
+                starRatedColor="#21bc61"
+                starDimension="17px"
+                starSpacing="0.5px"
+                numberOfStars={5}
+                name="rating"
+              />
+            </div>
+            <div className="reviewBodyText">{item.name}</div>
           </div>
-          <div className="reviewBodyText">By Patrick Weiss</div>
         </div>
-      </div>
-    );
+      );
+    })
   };
 
   renderRecentReviewsCard = () => {
+    const { reviewsData } = this.props;
+    const reviews = _get(reviewsData, "reviews", []);
+    const topThreeReviews =
+      reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
@@ -126,9 +137,7 @@ export default class Home extends Component {
             <div className="fadedHeader">(Top 3 )</div>
           </div>
           <div className="body">
-            <div>{this.renderReviewSnippet()}</div>
-            <div>{this.renderReviewSnippet()}</div>
-            <div>{this.renderReviewSnippet()}</div>
+            <div>{topThreeReviews.length > 0 ? this.renderReviewSnippets(topThreeReviews) : "No reviews found !"}</div>
           </div>
         </SimpleCard>
       </Grid>
@@ -136,6 +145,9 @@ export default class Home extends Component {
   };
 
   renderInvitationsCard = () => {
+    const {quotaDetails} = this.props;
+    const total = _get(quotaDetails, "invitations.total", 0);
+    const remaining = _get(quotaDetails, "invitations.remaining", 0);
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
@@ -160,13 +172,13 @@ export default class Home extends Component {
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Invitations sent :{" "}
               </p>
-              <h1 style={{ textAlign: "right" }}>56</h1>
+              <h1 style={{ textAlign: "right" }}>{total}</h1>
             </div>
             <div style={{ borderBottom: "1px solid #999" }}>
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Invitations Left :{" "}
               </p>
-              <h1 style={{ textAlign: "right" }}>44</h1>
+              <h1 style={{ textAlign: "right" }}>{remaining}</h1>
             </div>
           </div>
         </SimpleCard>
@@ -184,3 +196,15 @@ export default class Home extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { dashboardData, auth } = state;
+  const reviewsData = _get(dashboardData, "reviewsData", {});
+  const quotaDetails = _get(
+    auth,
+    "logIn.userProfile.subscription.quota_details"
+  );
+  return { reviewsData, quotaDetails };
+};
+
+export default connect(mapStateToProps)(Home);
