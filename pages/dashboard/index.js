@@ -16,7 +16,7 @@ import Paper from "@material-ui/core/Paper";
 import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
+import LogoutIcon from "@material-ui/icons/ExitToApp";
 import {
   MainListItems,
   SecondaryListItems
@@ -26,7 +26,10 @@ import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/Plac
 import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
 import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
 import Reviews from "../../Components/DashboardComponents/Reviews";
-import WidgetsShowCase from '../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase';
+import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
+import { logOut } from "../../store/actions/authActions";
+import { connect } from "react-redux";
+import Router from "next/router";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -108,14 +111,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Dashboard() {
+function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const [stepToRender, setStepToRender] = React.useState(0);
 
-  const handleMenuItemClicked = (index) =>{
-    setStepToRender(index)
-  }
+  const handleMenuItemClicked = index => {
+    setStepToRender(index);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -125,23 +128,24 @@ export default function Dashboard() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const renderAppropriateComponent = ()=>{
-    if(stepToRender===0){
-      return <Home />
+  const renderAppropriateComponent = () => {
+    if (stepToRender === 0) {
+      return <Home />;
+    } else if (stepToRender === 1) {
+      return <Reviews />;
+    } else if (stepToRender === 2) {
+      return <GetReviews />;
+    } else if (stepToRender === 3) {
+      return <GetStarted />;
+    } else if (stepToRender === 4) {
+      return <WidgetsShowCase />;
     }
-    else if(stepToRender===1){
-      return <Reviews />
-    }
-    else if(stepToRender===2){
-      return <GetReviews />
-    }
-    else if(stepToRender===3){
-      return <GetStarted />
-    }
-    else if(stepToRender===4){
-      return <WidgetsShowCase />
-    }
-  }
+  };
+
+  const handleLogout = () => {
+    props.logOut();
+    Router.push("/");
+  };
 
   return (
     <div className={classes.root}>
@@ -173,9 +177,9 @@ export default function Dashboard() {
             Welcome Arturs !
           </Typography>
           <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
+            {/* <Badge badgeContent={4} color="secondary"> */}
+            <LogoutIcon onClick={handleLogout} />
+            {/* </Badge> */}
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -192,9 +196,16 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List><MainListItems handleMainListItemClick={handleMenuItemClicked} stepToRender={stepToRender}/></List>
+        <List>
+          <MainListItems
+            handleMainListItemClick={handleMenuItemClicked}
+            stepToRender={stepToRender}
+          />
+        </List>
         <Divider />
-        <List><SecondaryListItems /></List>
+        <List>
+          <SecondaryListItems />
+        </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -205,3 +216,8 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default connect(
+  null,
+  { logOut }
+)(Dashboard);
