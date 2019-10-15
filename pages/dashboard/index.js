@@ -120,12 +120,12 @@ function Dashboard(props) {
   const [stepToRender, setStepToRender] = React.useState(0);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
 
-  useEffect(() => {
-    const loginType = _get(props, "loginType", 0);
-    if (loginType !== 4) {
-      Router.push("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const loginType = _get(props, "loginType", 0);
+  //   if (!props.authorized) {
+  //     Router.push("/");
+  //   }
+  // }, []);
 
   const handleMenuItemClicked = index => {
     setStepToRender(index);
@@ -188,10 +188,8 @@ function Dashboard(props) {
           >
             Welcome Arturs !
           </Typography>
-          <IconButton color="inherit">
-            {/* <Badge badgeContent={4} color="secondary"> */}
-            <LogoutIcon onClick={handleLogout} />
-            {/* </Badge> */}
+          <IconButton color="inherit" onClick={handleLogout}>
+            <LogoutIcon />
           </IconButton>
         </Toolbar>
       </AppBar>

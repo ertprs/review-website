@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { reviewListStyles } from "./myReviewsStyles";
 import RatingIndicators from "../RatingIndicators/RatingIndicators";
+import _get from "lodash/get";
 import ReplyBox from "./ReplyBox";
 
-const ReviewCardBusiness = props => {
+const ReviewCardBusiness = ({ review }) => {
   const [showReply, setShowReply] = useState(false);
+  const { name, text, rating } = review;
   return (
     <div className="reviewCard">
       <style jsx> {reviewListStyles}</style>
@@ -12,21 +14,21 @@ const ReviewCardBusiness = props => {
         <div className="col-md-3">
           <div>
             <RatingIndicators
-              rating={props.rating}
+              rating={Number(rating) || 0}
               typeOfWidget="star"
               widgetRatedColors="#21bc61"
               widgetDimensions="30px"
               widgetSpacings="2px"
             />
-            <p className="userName">Aiga Titokiva</p>
+            <p className="userName">{name || ""}</p>
           </div>
         </div>
         <div className="col-md-6">
           <div>
             <div>
-              <span className="cardLink">This will be any link!!</span>
-              <br />
-              <span>Any sub text</span>
+              {/* <span className="cardLink">This will be any link!!</span>
+              <br /> */}
+              <span className="reviewText">{text || ""}</span>
             </div>
             <p className="source">
               Source: <span>Organic</span>
