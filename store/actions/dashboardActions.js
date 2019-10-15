@@ -26,7 +26,8 @@ export const fetchReviews = (token, page, perPage) => {
   return async (dispatch, getState) => {
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
-      reviewsData: {}
+      reviewsData: {},
+      fetchingReviews: true
     });
     try {
       const result = await axios({
@@ -36,12 +37,14 @@ export const fetchReviews = (token, page, perPage) => {
       });
       dispatch({
         type: FETCH_REVIEWS_DATA_SUCCESS,
-        reviewsData: { ...result.data }
+        reviewsData: { ...result.data },
+        fetchingReviews: false
       });
     } catch (error) {
       dispatch({
         type: FETCH_REVIEWS_DATA_FAILURE,
-        reviewsData: {}
+        reviewsData: {},
+        fetchingReviews: false
       });
     }
   };
@@ -80,15 +83,15 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         data,
         url
       });
-      const success= await _get(result, "data.success", false);
+      const success = await _get(result, "data.success", false);
       dispatch({
         type: LOCATE_PLACE_SUCCESS,
         locatePlace: {
           success: _get(result, "data.success", false)
         }
       });
-      if(success){
-        dispatch(fetchReviews(token))
+      if (success) {
+        dispatch(fetchReviews(token));
       }
     } catch (error) {
       dispatch({

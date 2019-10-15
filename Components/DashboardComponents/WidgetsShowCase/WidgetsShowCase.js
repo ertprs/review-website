@@ -11,14 +11,16 @@ import ListItemText from "@material-ui/core/ListItemText";
 import CheckBox from "@material-ui/icons/CheckBox";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowForward";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
+import { connect } from "react-redux";
+import _get from "lodash/get";
 
 const widgetsObj = [
   {
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/onlyScoreWidget.png",
-    minHeight: 140,
+    minHeight: 400,
     listItems: ["Show off your total number of reviews"],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
@@ -48,7 +50,7 @@ const widgetsObj = [
   {
     title: "Trust carousel",
     tagLine: "Boost customer confidence with an honest TrustBox",
-    minHeight: 320,
+    minHeight: 400,
     imgURL: "/static/images/textReviews.png",
     listItems: [
       "Show off your 15 latest reviews",
@@ -62,7 +64,7 @@ const widgetsObj = [
   }
 ];
 
-export default class WidgetsShowCase extends Component {
+class WidgetsShowCase extends Component {
   state = {
     getWidget: false,
     selectedWidgetIndex: 0
@@ -101,9 +103,7 @@ export default class WidgetsShowCase extends Component {
                       <CheckBox />
                     </ListItemIcon>
                     <ListItemText>
-                      <div style={{ fontSize: "0.9rem" }}>
-                        {item}
-                      </div>
+                      <div style={{ fontSize: "0.9rem" }}>{item}</div>
                     </ListItemText>
                   </ListItem>
                 );
@@ -143,6 +143,7 @@ export default class WidgetsShowCase extends Component {
           </div>
         ) : (
           <GetWidget
+            domainName={_get(this.props, "domainName", "")}
             widget={widgetsObj[selectedWidgetIndex]}
             getMoreWidgets={() => {
               this.setState({ getWidget: false });
@@ -153,3 +154,15 @@ export default class WidgetsShowCase extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { auth } = state;
+  const domainName = _get(
+    auth,
+    "logIn.userProfile.business_profile.domain",
+    ""
+  );
+  return { domainName };
+};
+
+export default connect(mapStateToProps)(WidgetsShowCase);

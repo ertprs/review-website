@@ -134,7 +134,7 @@ class BusinessUserLogin extends Component {
             snackbarMsg: "Redirecting..."
           });
           setTimeout(() => {
-            Router.push("/");
+            Router.push("/dashboard");
           }, 1000);
         }, 1000);
       }
