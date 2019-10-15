@@ -12,6 +12,8 @@ import CheckBox from "@material-ui/icons/CheckBox";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowForward";
 import uuid from "uuid/v1";
+import { connect } from "react-redux";
+import _get from "lodash/get";
 
 const widgetsObj = [
   {
@@ -62,7 +64,7 @@ const widgetsObj = [
   }
 ];
 
-export default class WidgetsShowCase extends Component {
+class WidgetsShowCase extends Component {
   state = {
     getWidget: false,
     selectedWidgetIndex: 0
@@ -141,6 +143,7 @@ export default class WidgetsShowCase extends Component {
           </div>
         ) : (
           <GetWidget
+            domainName={_get(this.props, "domainName", "")}
             widget={widgetsObj[selectedWidgetIndex]}
             getMoreWidgets={() => {
               this.setState({ getWidget: false });
@@ -151,3 +154,15 @@ export default class WidgetsShowCase extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { auth } = state;
+  const domainName = _get(
+    auth,
+    "logIn.userProfile.business_profile.domain",
+    ""
+  );
+  return { domainName };
+};
+
+export default connect(mapStateToProps)(WidgetsShowCase);

@@ -97,7 +97,7 @@ class BusinessUserRegistration extends Component {
       phone: {
         element: "input",
         value: "",
-        placeholder: "+91-7985757646",
+        placeholder: "Enter your phone no.",
         errorMessage: "",
         valid: false,
         touched: false,
@@ -310,7 +310,6 @@ class BusinessUserRegistration extends Component {
             {...formData.phone}
             handleChange={this.handleChange}
             onkeyDown={this.handleKeyDown}
-            type="password"
             id="phone"
             rows="5"
             col="5"
