@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import Title from "../../MaterialComponents/Title";
 import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input/Input";
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 
 export default class GetWidget extends Component {
   constructor(props) {
@@ -45,17 +45,23 @@ export default class GetWidget extends Component {
     );
   };
 
-  renderInput = ()=>{
-      const {widgetHeight} = this.state;
-      return(
-        <>
-        <div style={{fontWeight:"bold", marginBottom:"10px"}}>1.1-) Enter widget height: </div>
-        <Input value={widgetHeight} onChange={(e)=>{
-            this.setState({widgetHeight:e.target.value})
-        }} />(in px)
-        </>
-      )
-  }
+  renderInput = () => {
+    const { widgetHeight } = this.state;
+    return (
+      <>
+        <div style={{ fontWeight: "bold", marginBottom: "10px" }}>
+          1.1-) Enter widget height:{" "}
+        </div>
+        <Input
+          value={widgetHeight}
+          onChange={e => {
+            this.setState({ widgetHeight: e.target.value });
+          }}
+        />
+        (in px)
+      </>
+    );
+  };
 
   getYourWidgetBox = () => {
     return (
@@ -80,8 +86,8 @@ export default class GetWidget extends Component {
             .codeBlock {
               font-size: 1rem;
             }
-            .inputContainer{
-                margin: 25px 0 25px 0;
+            .inputContainer {
+              margin: 25px 0 25px 0;
             }
           `}
         </style>
@@ -92,12 +98,11 @@ export default class GetWidget extends Component {
             </div>
             <div className="body">
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
-              <div className="inputContainer">
-                {this.renderInput()}
-              </div>
+              <div className="inputContainer">{this.renderInput()}</div>
               <p className="subHeading">
-                1.2-) Copy-paste this code inside the {`<head></head>`} section of your
-                website’s HTML or as close to the top of the page as possible.
+                1.2-) Copy-paste this code inside the {`<head></head>`} section
+                of your website’s HTML or as close to the top of the page as
+                possible.
               </p>
               <div className="codeBlock">
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
@@ -120,7 +125,8 @@ export default class GetWidget extends Component {
                     <div class="trustsearch-widget" 
                     data-locale="en-US"
                     data-template-id="${this.props.widget.dataTempID}" 
-                    data-businessunit-id="google.com"
+                    data-businessunit-id="${this.props.domainName ||
+                      "google.com"}"
                     data-style-height="${this.state.widgetHeight}"
                     data-style-width="100%"
                     data-theme="light"
