@@ -9,7 +9,6 @@ import {
 } from "react-places-autocomplete";
 import { connect } from "react-redux";
 import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
-import { locatePlaceApi } from "../../../utility/config";
 import _isEmpty from "lodash/isEmpty";
 import _get from "lodash/get";
 
@@ -26,27 +25,21 @@ class PlacesAutoComplete extends Component {
   };
 
   handleSelect = address => {
-    const { locatePlaceByPlaceId, token } = this.props;
+    // const { locatePlaceByPlaceId, token } = this.props;
     geocodeByAddress(address)
       .then(results => {
-        console.log(results, "results");
         if (Array.isArray(results) && !_isEmpty(results)) {
           let reqBody = {
             placeId: results[0].place_id,
-            name: "latkredit.lv"
+            name: this.props.domain //domain from redux store
           };
-          locatePlaceByPlaceId(
-            reqBody,
-            token,
-            `${process.env.BASE_URL}${locatePlaceApi}`
-          );
+          this.props.handleAddressSelect(reqBody, results[0].formatted_address);
         }
       })
       .catch(error => console.error("Error", error));
   };
 
   render() {
-    const { value } = this.state;
     return (
       <PlacesAutocomplete
         value={this.state.address}
@@ -105,8 +98,10 @@ class PlacesAutoComplete extends Component {
 
 const mapStateToProps = state => {
   const { auth } = state;
+  const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const domain = _get(businessProfile, "domain", "")
   const token = _get(auth, "logIn.token", "");
-  return { token };
+  return { token, domain, businessProfile };
 };
 
 export default connect(
