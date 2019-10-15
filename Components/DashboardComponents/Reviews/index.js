@@ -5,7 +5,7 @@ import { fetchReviews } from "../../../store/actions/dashboardActions";
 
 class MyReviewsBusiness extends Component {
   componentDidMount() {
-    fetchReviews();
+    // fetchReviews();
   }
 
   render() {
