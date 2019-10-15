@@ -30,6 +30,8 @@ import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCas
 import { logOut } from "../../store/actions/authActions";
 import { connect } from "react-redux";
 import Router from "next/router";
+import Snackbar from "../../Components/Widgets/Snackbar";
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -115,6 +117,7 @@ function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const [stepToRender, setStepToRender] = React.useState(0);
+  const [showSnackbar, setShowSnackbar] = React.useState(false);
 
   const handleMenuItemClicked = index => {
     setStepToRender(index);
@@ -143,6 +146,7 @@ function Dashboard(props) {
   };
 
   const handleLogout = () => {
+    setShowSnackbar(true);
     props.logOut();
     Router.push("/");
   };
@@ -213,6 +217,12 @@ function Dashboard(props) {
           {renderAppropriateComponent()}
         </Container>
       </main>
+      <Snackbar
+        open={showSnackbar}
+        variant="success"
+        handleClose={() => setShowSnackbar(false)}
+        message="Logout Successfully!"
+      />
     </div>
   );
 }
