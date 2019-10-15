@@ -12,6 +12,7 @@ import _get from "lodash/get";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {planType} from "../../../utility/constants/businessPlanConstants";
 
 class GetStarted extends Component {
   state = {
@@ -50,6 +51,8 @@ class GetStarted extends Component {
   };
 
   renderGetStartedHeader = () => {
+    const {userProfile} = this.props;
+    const name = _get(userProfile, "name", "")
     return (
       <div>
         <style jsx>{`
@@ -64,7 +67,7 @@ class GetStarted extends Component {
           <span style={{ textTransform: "capitalize" }}>
             {stringHelpers("getTimeGreeting")}
           </span>{" "}
-          Arturs,
+          {name}
         </h3>
         <h6 className="getStartedSubHeader">
           This is your personal setup guide. Let’s get you up and running so you
@@ -110,7 +113,7 @@ class GetStarted extends Component {
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Subscription plan :</div>
-          <div>{subscriptionPlan} (Free)</div>
+          <div>{planType[subscriptionPlan]}</div>
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
@@ -175,23 +178,23 @@ class GetStarted extends Component {
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
             <h4>
-              {this.props.placeId!==""
+              {this.props.placeId!=="" || this.props.success
                 ? "Your business details"
-                : "Please locate your Business"}
+                : "Please claim your Business"}
             </h4>
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxImgContainer">
               <img
                 src={`/static/images/${
-                  this.props.placeId!==""
+                  this.props.placeId!=="" || this.props.success
                     ? "googleMyBusiness.jpg"
                     : "locate.png"
                 }`}
               />
             </div>
             <div className="getStartedBoxAutoComplete">
-              {!this.props.placeId==="" ? (
+              {this.props.placeId==="" && !this.props.success? (
                 <>
                   <PlacesAutoComplete
                     handleAddressSelect={this.handleAddressSelect}
