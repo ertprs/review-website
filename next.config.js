@@ -1,7 +1,9 @@
-const withCSS = require("@zeit/next-css");
+// next.config.js
+const withCSS = require('@zeit/next-css')
 module.exports = withCSS({
-  cssModules: true
-});
+  /* config options here */
+})
+
 const webpack = require("webpack");
 require("dotenv").config();
 

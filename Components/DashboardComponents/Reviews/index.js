@@ -6,7 +6,7 @@ import _map from "lodash/map";
 import { fetchReviews } from "../../../store/actions/dashboardActions";
 import ReactPaginate from "react-paginate";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import Head from "next/head";
 class MyReviewsBusiness extends Component {
   state = {
     perPage: 10
@@ -22,6 +22,9 @@ class MyReviewsBusiness extends Component {
     const { perPage } = this.state;
     return (
       <>
+      <Head>
+      <link rel="stylesheet" href="/static/reviews.css" />
+      </Head>
         <div className="container">
           <style jsx>{`
             .reviewsContainer {
@@ -41,6 +44,9 @@ class MyReviewsBusiness extends Component {
               justify-content: center;
               align-items: center;
             }
+            .listItem{
+              display:none;
+            }
           `}</style>
           <div className="reviewsContainer">
             {isFetching === true ? (
@@ -59,6 +65,7 @@ class MyReviewsBusiness extends Component {
           </div>
         </div>
 
+        <div style={{display:"flex", flex:"1", justifyContent:"center", marginTop:"35px"}}>
         <ReactPaginate
           pageCount={total / perPage}
           pageRangeDisplayed={2}
@@ -68,7 +75,14 @@ class MyReviewsBusiness extends Component {
           containerClassName={"pagination"}
           subContainerClassName={"pages pagination"}
           activeClassName={"active"}
+          pageClassName={'listItem'}
+          nextClassName={'listItem'}
+          previousClassName={'listItem'}
+          pageLinkClassName={'listLink'}
+          nextLinkClassName={'listLink'}
+          previousLinkClassName={'listLink'}
         />
+        </div>
       </>
     );
   }
