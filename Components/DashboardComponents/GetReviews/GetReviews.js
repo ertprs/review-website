@@ -66,12 +66,12 @@ class GetReviews extends Component {
         element: "input",
         type: "number",
         value: "",
-        valid: false,
+        valid: true,
         touched: false,
         errorMessage: "Enter valid number",
         placeholder: "Enter reference number",
         validationRules: {
-          required: true
+          required: false
         }
       }
     },
@@ -241,12 +241,12 @@ class GetReviews extends Component {
           element: "input",
           type: "number",
           value: "",
-          valid: false,
+          valid: true,
           touched: false,
           errorMessage: "Enter valid number",
           placeholder: "Enter reference number",
           validationRules: {
-            required: true
+            required: false
           }
         }
       }

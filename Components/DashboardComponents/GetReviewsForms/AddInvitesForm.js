@@ -27,7 +27,9 @@ export default class AddInvitesForm extends Component {
           <FormField
             {...formData[item]}
             id={item}
-            handleChange={(e)=>{this.props.handleChange(e,item,"addInvitesData")}}
+            handleChange={e => {
+              this.props.handleChange(e, item, "addInvitesData");
+            }}
           />
         </div>
       ];
@@ -35,7 +37,7 @@ export default class AddInvitesForm extends Component {
     return [
       ...output,
       <div className="col-md-3">
-        <div style={{display:"flex", justifyContent:"space-between"}}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <Button
               variant="contained"
@@ -64,16 +66,26 @@ export default class AddInvitesForm extends Component {
     return (
       <div className="container">
         <style jsx>
-            {`
-                .red{
-                    color:red;
-                }
-            `}
+          {`
+            .red {
+              color: red;
+            }
+          `}
         </style>
         <div className="row">
-            <div className="col-md-3"><h6>Email <sup className="red">*</sup></h6></div>
-            <div className="col-md-3"><h6>Name <sup className="red">*</sup></h6></div>
-            <div className="col-md-3"><h6>Reference number <sup className="red">*</sup></h6></div>
+          <div className="col-md-3">
+            <h6>
+              Email <sup className="red">*</sup>
+            </h6>
+          </div>
+          <div className="col-md-3">
+            <h6>
+              Name <sup className="red">*</sup>
+            </h6>
+          </div>
+          <div className="col-md-3">
+            <h6>Reference number</h6>
+          </div>
         </div>
         <div className="row">{this.renderFormFields()}</div>
       </div>

@@ -16,7 +16,7 @@ export const reviewListStyles = css`
   }
 
   .reviewText {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
   }
 
