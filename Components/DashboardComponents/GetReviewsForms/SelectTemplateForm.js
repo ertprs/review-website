@@ -19,6 +19,14 @@ export default class SelectTemplateForm extends Component {
               margin-top: 22px;
               margin-bottom: 50px;
             }
+            @media screen and (max-width:400px){
+              .header{
+                font-size:1.3rem;
+              }
+              .subHeader{
+                font-size:0.9rem;
+              }
+            }
           `}
         </style>
         <div className="row">
@@ -72,6 +80,11 @@ export default class SelectTemplateForm extends Component {
               border: 1px solid #d8d8d8;
               padding: 15px;
             }
+            @media screen and (max-width:335px){
+              .templateContainer{
+                font-size:0.8rem;
+              }
+            }
           `}
         </style>
         <div className="templateContainer">
@@ -101,7 +114,7 @@ export default class SelectTemplateForm extends Component {
             <StarRatings
               rating={0}
               starRatedColor="#21bc61"
-              starDimension="30px"
+              starDimension="24px"
               starSpacing="0.5px"
               numberOfStars={5}
               name="rating"
@@ -154,14 +167,27 @@ export default class SelectTemplateForm extends Component {
         {this.renderBody()}
         <div className="row" style={{ marginTop: "20px" }}>
           <div className="col-md-2">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ArrowLeft />}
-              onClick={this.props.handleBack}
-            >
-              Back
-            </Button>
+            <style jsx>
+              {`
+                @media only screen and (max-width: 767px) {
+                  .backBtn {
+                    margin-left: 5px;
+                    margin-bottom: 15px;
+                  }
+                }
+              `}
+            </style>
+            <div className="backBtn">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<ArrowLeft />}
+                onClick={this.props.handleBack}
+                size="small"
+              >
+                Back
+              </Button>
+            </div>
           </div>
           <div className="col-md-2">
             <Button
@@ -169,6 +195,7 @@ export default class SelectTemplateForm extends Component {
               color="primary"
               endIcon={<ArrowRight />}
               onClick={this.props.handleNext}
+              size="small"
             >
               Continue
             </Button>

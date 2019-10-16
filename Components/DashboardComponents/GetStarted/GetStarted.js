@@ -99,6 +99,12 @@ class GetStarted extends Component {
             .businessDetailsFlexItem div {
               flex-basis: 40%;
             }
+            @media screen and (max-width:720px){
+              .businessDetailsFlexItem{
+                flex-direction:column;
+                flex-basis:100%;
+              }
+            }
           `}
         </style>
         <div className="businessDetailsFlexItem">
@@ -173,6 +179,17 @@ class GetStarted extends Component {
               max-width: 100%;
               height: auto;
             }
+
+            @media screen and (max-width:720px){
+              .getStartedBoxImgContainer{
+                display:none;
+              }
+              .getStartedBoxHeader h4{
+                font-size:1.1rem;
+                margin-bottom: 35px;
+              }
+            }
+
           `}
         </style>
         <div className="getStartedBox">

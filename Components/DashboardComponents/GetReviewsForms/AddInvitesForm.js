@@ -4,6 +4,86 @@ import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 export default class AddInvitesForm extends Component {
+  renderButtons = () => {
+    return (
+      <div className="col-md-12">
+        <style jsx>
+          {`
+            .btnContainer{
+              display:flex;
+              justify-content:flex-end;
+            }
+            .addBtn{
+              flex-basis:10%;
+            }
+            @media screen and (max-width:1140px){
+              .addBtn{
+                flex-basis:15%;
+              }
+            }
+            @media screen and (max-width:790px){
+              .addBtn{
+                flex-basis:20%;
+              }
+            }
+            @media screen and (max-width:675px){
+              .addBtn{
+                flex-basis:25%;
+              }
+            }
+            @media screen and (max-width:525px){
+              .addBtn{
+                flex-basis:30%;
+              }
+            }
+            @media screen and (max-width:470px){
+              .addBtn{
+                flex-basis:35%;
+              }
+            }
+            @media screen and (max-width:415px){
+              .addBtn{
+                flex-basis:50%;
+              }
+            }
+            @media screen and (max-width:369px){
+              .btnContainer{
+                flex-direction:column;
+              }
+              .addBtn{
+                margin-bottom:15px;
+              }
+            }
+          `}
+        </style>
+        <div className="btnContainer">
+          <div className="addBtn">
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<AddIcon />}
+              onClick={this.handleAddBtnClick}
+            >
+              Add
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              endIcon={<ArrowRight />}
+              onClick={this.props.onContinueClick}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   handleAddBtnClick = () => {
     let dataToSubmit = {};
     const { formData } = this.props;
@@ -23,59 +103,34 @@ export default class AddInvitesForm extends Component {
     for (let item in formData) {
       output = [
         ...output,
-        <div className="col-md-3">
+        <div className="col-md-4">
+          <h6>
+            {formData[item].label} <sup style={{ color: "red" }}>*</sup>
+          </h6>
           <FormField
             {...formData[item]}
             id={item}
-            handleChange={(e)=>{this.props.handleChange(e,item,"addInvitesData")}}
+            handleChange={e => {
+              this.props.handleChange(e, item, "addInvitesData");
+            }}
           />
         </div>
       ];
     }
-    return [
-      ...output,
-      <div className="col-md-3">
-        <div style={{display:"flex", justifyContent:"space-between"}}>
-          <div>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={this.handleAddBtnClick}
-            >
-              Add
-            </Button>
-          </div>
-          <div>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<ArrowRight />}
-              onClick={this.props.onContinueClick}
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
-      </div>
-    ];
+    return [...output];
   };
   render() {
     return (
       <div className="container">
         <style jsx>
-            {`
-                .red{
-                    color:red;
-                }
-            `}
+          {`
+            .red {
+              color: red;
+            }
+          `}
         </style>
-        <div className="row">
-            <div className="col-md-3"><h6>Email <sup className="red">*</sup></h6></div>
-            <div className="col-md-3"><h6>Name <sup className="red">*</sup></h6></div>
-            <div className="col-md-3"><h6>Reference number <sup className="red">*</sup></h6></div>
-        </div>
         <div className="row">{this.renderFormFields()}</div>
+        <div className="row">{this.renderButtons()}</div>
       </div>
     );
   }
