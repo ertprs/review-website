@@ -79,7 +79,7 @@ class SenderInfoForm extends Component {
                 rows="5"
                 col="5"
               />
-              <p className="formText">
+              {/* <p className="formText">
                 <b>Reply-to Email:</b>
               </p>
               <FormField
@@ -91,7 +91,7 @@ class SenderInfoForm extends Component {
                 rows="5"
                 col="5"
                 styles={{ height: "38px" }}
-              />
+              /> */}
               {/* For premium users when they can add their own email domains */}
               {/* <a href="#" onClick={() => this.setState({ showModal: true })}>
                 Add another Reply-to Email
