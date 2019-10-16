@@ -174,6 +174,7 @@ function Dashboard(props) {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
+        style={{ background: "#303030" }}
         position="absolute"
         className={clsx(classes.appBar, open && classes.appBarShift)}
       >

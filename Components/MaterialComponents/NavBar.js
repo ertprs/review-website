@@ -359,15 +359,6 @@ function PrimarySearchAppBar(props) {
               className={classes.logoImg}
             />
           </div>
-          {/* <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-            
-          </IconButton> */}
           {!showInputBase ? (
             <Typography
               onClick={() => Router.push("/")}

@@ -105,7 +105,7 @@ export const SecondaryListItems = () => {
       <ListItem />
       <ListItem />
       <ListItem />
-      <ListItem button style={{ background: "#3F51B5", color: "#fff" }}>
+      <ListItem button style={{ background: "#303030", color: "#fff" }}>
         <ListItemIcon style={{ color: "#fff" }}>
           <VerticalAlignTopIcon />
         </ListItemIcon>
