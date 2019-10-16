@@ -21,6 +21,10 @@ class SenderInfoForm extends Component {
 
   render() {
     const { formData } = this.props;
+    let valid = true;
+    for (let item in formData) {
+      valid = valid && formData[item].valid;
+    }
     const senderMail = formData.senderMail;
     return (
       <>
@@ -142,6 +146,7 @@ class SenderInfoForm extends Component {
               color="primary"
               endIcon={<ArrowRight />}
               onClick={this.props.handleNext}
+              disabled={!valid}
             >
               Continue
             </Button>

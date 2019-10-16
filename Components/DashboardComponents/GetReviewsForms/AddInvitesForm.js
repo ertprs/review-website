@@ -3,6 +3,8 @@ import FormField from "../../Widgets/FormField/FormField";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import _isEmpty from "lodash/isEmpty";
+
 export default class AddInvitesForm extends Component {
   handleAddBtnClick = () => {
     let dataToSubmit = {};
@@ -17,8 +19,8 @@ export default class AddInvitesForm extends Component {
     }
   };
 
-  renderFormFields = () => {
-    const { formData } = this.props;
+  renderFormFields = valid => {
+    const { formData, tableData } = this.props;
     let output = [];
     for (let item in formData) {
       output = [
@@ -44,6 +46,7 @@ export default class AddInvitesForm extends Component {
               color="primary"
               startIcon={<AddIcon />}
               onClick={this.handleAddBtnClick}
+              disabled={!valid}
             >
               Add
             </Button>
@@ -54,6 +57,7 @@ export default class AddInvitesForm extends Component {
               color="primary"
               endIcon={<ArrowRight />}
               onClick={this.props.onContinueClick}
+              disabled={_isEmpty(tableData)}
             >
               Continue
             </Button>
@@ -63,6 +67,11 @@ export default class AddInvitesForm extends Component {
     ];
   };
   render() {
+    const { formData } = this.props;
+    let valid = true;
+    for (let item in formData) {
+      valid = valid && formData[item].valid;
+    }
     return (
       <div className="container">
         <style jsx>
@@ -87,7 +96,7 @@ export default class AddInvitesForm extends Component {
             <h6>Reference number</h6>
           </div>
         </div>
-        <div className="row">{this.renderFormFields()}</div>
+        <div className="row">{this.renderFormFields(valid)}</div>
       </div>
     );
   }
