@@ -26,6 +26,7 @@ import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/Plac
 import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
 import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
 import Reviews from "../../Components/DashboardComponents/Reviews";
+import InvitationHistory from "../../Components/DashboardComponents/InvitationHistory";
 import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
 import { logOut } from "../../store/actions/authActions";
 import { connect } from "react-redux";
@@ -147,8 +148,10 @@ function Dashboard(props) {
     } else if (stepToRender === 2) {
       return <GetReviews />;
     } else if (stepToRender === 3) {
-      return <GetStarted />;
+      return <InvitationHistory />;
     } else if (stepToRender === 4) {
+      return <GetStarted />;
+    } else if (stepToRender === 5) {
       return <WidgetsShowCase />;
     }
   };

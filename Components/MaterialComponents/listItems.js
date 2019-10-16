@@ -11,7 +11,7 @@ import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 
-export const MainListItems = (props) => {
+export const MainListItems = props => {
   const stepToRender = props.stepToRender;
   return (
     <div>
@@ -22,41 +22,73 @@ export const MainListItems = (props) => {
           }
         `}
       </style>
-      <ListItem button onClick={()=>{
-        props.handleMainListItemClick(0)
-      }} className={stepToRender===0 ? "grayBg" : ""}>
+      <ListItem
+        button
+        onClick={() => {
+          props.handleMainListItemClick(0);
+        }}
+        className={stepToRender === 0 ? "grayBg" : ""}
+      >
         <ListItemIcon>
           <Home />
         </ListItemIcon>
         <ListItemText primary="Home" />
       </ListItem>
-      <ListItem button onClick={()=>{
-        props.handleMainListItemClick(1)
-      }} className={stepToRender===1 ? "grayBg" : ""}>
+      <ListItem
+        button
+        onClick={() => {
+          props.handleMainListItemClick(1);
+        }}
+        className={stepToRender === 1 ? "grayBg" : ""}
+      >
         <ListItemIcon>
           <AllInbox />
         </ListItemIcon>
         <ListItemText primary="Reviews" />
       </ListItem>
-      <ListItem button onClick={()=>{
-        props.handleMainListItemClick(2)
-      }} className={stepToRender===2 ? "grayBg" : ""}>
+      <ListItem
+        button
+        onClick={() => {
+          props.handleMainListItemClick(2);
+        }}
+        className={stepToRender === 2 ? "grayBg" : ""}
+      >
         <ListItemIcon>
           <FormatQuote />
         </ListItemIcon>
         <ListItemText primary="Get Reviews" />
       </ListItem>
-      <ListItem button onClick={()=>{
-        props.handleMainListItemClick(3)
-      }} className={stepToRender===3 ? "grayBg" : ""}>
+      <ListItem
+        button
+        onClick={() => {
+          props.handleMainListItemClick(3);
+        }}
+        className={stepToRender === 3 ? "grayBg" : ""}
+      >
+        <ListItemIcon>
+          <FormatQuote />
+        </ListItemIcon>
+        <ListItemText primary="Invitation History" />
+      </ListItem>
+      <ListItem
+        button
+        onClick={() => {
+          props.handleMainListItemClick(4);
+        }}
+        className={stepToRender === 3 ? "grayBg" : ""}
+      >
         <ListItemIcon>
           <FormatListBulletedIcon />
         </ListItemIcon>
         <ListItemText primary="Get started" />
       </ListItem>
-      <ListItem button onClick={()=>{
-        props.handleMainListItemClick(4)
-      }} className={stepToRender===4 ? "grayBg" : ""}>
+      <ListItem
+        button
+        onClick={() => {
+          props.handleMainListItemClick(5);
+        }}
+        className={stepToRender === 4 ? "grayBg" : ""}
+      >
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>
