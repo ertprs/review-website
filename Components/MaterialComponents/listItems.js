@@ -10,6 +10,7 @@ import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
+import HistoryIcon from '@material-ui/icons/History';
 
 export const MainListItems = props => {
   const stepToRender = props.stepToRender;
@@ -66,7 +67,7 @@ export const MainListItems = props => {
         className={stepToRender === 3 ? "grayBg" : ""}
       >
         <ListItemIcon>
-          <FormatQuote />
+          <HistoryIcon />
         </ListItemIcon>
         <ListItemText primary="Invitation History" />
       </ListItem>
@@ -75,7 +76,7 @@ export const MainListItems = props => {
         onClick={() => {
           props.handleMainListItemClick(4);
         }}
-        className={stepToRender === 3 ? "grayBg" : ""}
+        className={stepToRender === 4 ? "grayBg" : ""}
       >
         <ListItemIcon>
           <FormatListBulletedIcon />
@@ -87,7 +88,7 @@ export const MainListItems = props => {
         onClick={() => {
           props.handleMainListItemClick(5);
         }}
-        className={stepToRender === 4 ? "grayBg" : ""}
+        className={stepToRender === 5 ? "grayBg" : ""}
       >
         <ListItemIcon>
           <LayersIcon />
