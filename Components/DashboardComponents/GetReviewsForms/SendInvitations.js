@@ -19,6 +19,9 @@ class SendInvitations extends Component {
                     margin-top:20px;
                     margin-bottom:20px;
                 }
+                @media screen and (max-width:405px){
+                  font-size:0.9rem;
+                }
               `}
         </style>
         <div className="row">
@@ -38,12 +41,17 @@ class SendInvitations extends Component {
   renderInfoCards = data => {
     return data.map(item => {
       return (
-        <div className="renderInfoContainer">
+        <div className="renderInfoContainer" key={uuid()}>
           <style jsx>
             {`
               .renderInfoContainer {
                 margin-bottom: 15px;
                 font-size: 1.05rem;
+              }
+              @media screen and (max-width:405px){
+                .renderInfoContainer {
+                  font-size: 0.9rem;
+                }
               }
             `}
           </style>
@@ -85,6 +93,11 @@ class SendInvitations extends Component {
               margin-top: 35px;
               font-size: 1rem;
             }
+            @media screen and (max-width:405px){
+              .footerContainer {
+                font-size: 0.9rem;
+              }
+            }
           `}
         </style>
         <div className="row">
@@ -107,14 +120,27 @@ class SendInvitations extends Component {
         {this.renderSendInvitationsFooter()}
         <div className="row" style={{ marginTop: "20px" }}>
           <div className="col-md-2">
+            <style jsx>
+              {`
+                @media only screen and (max-width: 767px) {
+                  .backBtn {
+                    margin-left: 5px;
+                    margin-bottom: 15px;
+                  }
+                }
+              `}
+            </style>
+            <div className="backBtn">
             <Button
               variant="contained"
               color="primary"
               startIcon={<ArrowLeft />}
               onClick={this.props.handleBack}
+              size="small"
             >
               Back
             </Button>
+            </div>
           </div>
           <div className="col-md-2">
             <Button
@@ -122,6 +148,7 @@ class SendInvitations extends Component {
               color="primary"
               endIcon={<ArrowRight />}
               onClick={this.props.handleNext}
+              size="small"
             >
               Continue
             </Button>

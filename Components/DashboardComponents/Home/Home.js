@@ -37,7 +37,7 @@ class Home extends Component {
             font-weight: lighter;
           }
         `}</style>
-        <SimpleCard>
+        <SimpleCard style={{height:"298px"}}>
           <div className="header">
             <Title>
               <h5>Overall performance</h5>
@@ -138,7 +138,7 @@ class Home extends Component {
             color: #555;
           }
         `}</style>
-        <SimpleCard>
+        <SimpleCard style={{height:"298px"}}>
           <div className="header">
             <Title>
               <h5>Latest reviews</h5>
@@ -172,7 +172,7 @@ class Home extends Component {
             color: #555;
           }
         `}</style>
-        <SimpleCard>
+        <SimpleCard style={{height:"298px"}}>
           <div className="header">
             <Title>
               <h5>Invitations Summary</h5>

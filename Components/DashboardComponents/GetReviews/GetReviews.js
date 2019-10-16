@@ -48,7 +48,8 @@ class GetReviews extends Component {
         validationRules: {
           required: true,
           isEmail: true
-        }
+        },
+        label:"Email"
       },
       name: {
         element: "input",
@@ -60,7 +61,8 @@ class GetReviews extends Component {
         placeholder: "Enter customer name",
         validationRules: {
           required: true
-        }
+        },
+        label:"Customer name"
       },
       referenceNumber: {
         element: "input",
@@ -72,7 +74,8 @@ class GetReviews extends Component {
         placeholder: "Enter reference number",
         validationRules: {
           required: false
-        }
+        },
+        label:"Reference number"
       }
     },
     selectTemplateData: {
@@ -223,7 +226,8 @@ class GetReviews extends Component {
           validationRules: {
             required: true,
             isEmail: true
-          }
+          },
+          label:"Email"
         },
         name: {
           element: "input",
@@ -235,7 +239,8 @@ class GetReviews extends Component {
           placeholder: "Enter customer name",
           validationRules: {
             required: true
-          }
+          },
+          label:"Customer name"
         },
         referenceNumber: {
           element: "input",
@@ -246,8 +251,9 @@ class GetReviews extends Component {
           errorMessage: "Enter valid number",
           placeholder: "Enter reference number",
           validationRules: {
-            required: false
-          }
+          required: false
+          },
+          label:"Reference number"
         }
       }
     };
@@ -298,11 +304,16 @@ class GetReviews extends Component {
               line-height: 1.8;
               margin-bottom: 25px;
             }
+            @media only screen and (max-width:424px){
+              .inviteHeader{
+                font-size:1.3rem;
+              }
+            }
           `}
         </style>
         <div className="row">
           <div className="col-md-12">
-            <h3>Type in your customer information</h3>
+            <h3 className="inviteHeader">Type in your customer information</h3>
             <p className="invitesInfoBody">
               Add your customers one by one. Simply type in the relevant
               information: names, email addresses and reference numbers, and
@@ -375,10 +386,20 @@ class GetReviews extends Component {
   render() {
     const { activeStep } = this.state;
     return (
+      <>
+      <style jsx>
+        {`
+          .customStepper{
+            display:none;
+          }
+        `}
+      </style>
       <Container style={{ background: "#fff" }}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
+            <div className="customStepper">
             <CustomSteppers activeStep={activeStep} />
+            </div>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             {this.renderAppropriateStep()}
@@ -390,6 +411,7 @@ class GetReviews extends Component {
           </Grid>
         </Grid>
       </Container>
+      </>
     );
   }
 }

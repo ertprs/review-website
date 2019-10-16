@@ -29,7 +29,7 @@ class ClaimYourWebsite extends Component {
                   Claim ownership of {domain_name} profile !
                 </h5>
                 <p className="claimYourWebsiteText">
-                  Trust search can help you to motivate your clients to leave
+                  Trustsearch can help you to motivate your clients to leave
                   textual and video reviews and build positive online
                   reputation, adding provable facts that verifies your trust
                   leading to better conversion rate and more sales !

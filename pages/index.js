@@ -171,4 +171,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { startLoading }
-)(withLoader(Home));
+)(Home);

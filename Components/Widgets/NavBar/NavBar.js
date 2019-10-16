@@ -64,7 +64,7 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
             <AmpLinkWrapper href="/" alt="home">
               <AmpImgWrapper
                 src="/static/images/logo.png"
-                alt="Trust search logo"
+                alt="Trustsearch logo"
                 height="42"
                 width="157.85"
                 layout="responsive"

@@ -100,8 +100,8 @@ class ProfilePageHeader extends Component {
                     </div>
                     <div>
                       {is_verified
-                        ? "This company has a Trust Search account but we have no records of them asking their customers for reviews."
-                        : "This company does not have a Trust Search account"}
+                        ? "This company has a Trustsearch account but we have no records of them asking their customers for reviews."
+                        : "This company does not have a Trustsearch account"}
                     </div>
                   </Card>
                 </div>

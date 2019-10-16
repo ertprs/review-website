@@ -10,7 +10,7 @@ export default props => {
       <>
         <style jsx>{layoutStyles}</style>
         <Head>
-          <title>The trust search engine</title>
+          <title>The trustsearch engine</title>
           <link
             href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
             rel="stylesheet"

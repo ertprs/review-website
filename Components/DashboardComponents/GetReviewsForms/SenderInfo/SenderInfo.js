@@ -56,6 +56,28 @@ class SenderInfoForm extends Component {
                 color: grey;
                 font-size: 16px;
               }
+              @media only screen and (max-width: 454px) {
+                .mainContent {
+                  font-size: 15px;
+                }
+                .formText {
+                  font-size: 15px;
+                }
+                .textnote {
+                  font-size: 15px;
+                }
+              }
+              @media only screen and (max-width: 400px) {
+                .mainContent {
+                  font-size: 12px;
+                }
+                .formText {
+                  font-size: 12px;
+                }
+                .textnote {
+                  font-size: 12px;
+                }
+              }
             `}
           </style>
           <div className="row">
@@ -130,20 +152,34 @@ class SenderInfoForm extends Component {
           </div>
         </div>
         <div className="row" style={{ marginTop: "20px" }}>
+          <style jsx>
+            {`
+              @media only screen and (max-width: 767px) {
+                .backBtn {
+                  margin-left: 5px;
+                  margin-bottom: 15px;
+                }
+              }
+            `}
+          </style>
           <div className="col-md-2">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ArrowLeft />}
-              onClick={this.props.handleBack}
-            >
-              Back
-            </Button>
+            <div className="backBtn">
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<ArrowLeft />}
+                onClick={this.props.handleBack}
+              >
+                Back
+              </Button>
+            </div>
           </div>
           <div className="col-md-2">
             <Button
               variant="contained"
               color="primary"
+              size="small"
               endIcon={<ArrowRight />}
               onClick={this.props.handleNext}
               disabled={!valid}

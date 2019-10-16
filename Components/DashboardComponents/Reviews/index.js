@@ -56,11 +56,24 @@ class MyReviewsBusiness extends Component {
             margin-top: 35px;
           }
 
-          .hiddenPagination {
-            display: none;
-          }
-        `}</style>
-        <div className="container">
+            .loaderContainer {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .listItem {
+              display: none;
+            }
+            .hiddenPagination {
+              display: none;
+            }
+            @media only screen and (max-width:420px){
+              .reviewsContainer{
+                margin:0;
+                font-size:0.8rem;
+              }
+            }
+          `}</style>
           <div className="reviewsContainer">
             {isFetching === true ? (
               <div className="loaderContainer">
@@ -76,7 +89,6 @@ class MyReviewsBusiness extends Component {
               )
             ) : null}
           </div>
-        </div>
         <div
           className={`${
             isFetching ? "hiddenPagination" : "paginationContainer"
