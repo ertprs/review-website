@@ -10,7 +10,7 @@ import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
-class SetupForm extends Component {
+class SenderInfoForm extends Component {
   state = {
     showModal: false
   };
@@ -47,6 +47,11 @@ class SetupForm extends Component {
                 color: red;
                 margin-left: 10px;
               }
+
+              .textnote {
+                color: grey;
+                font-size: 16px;
+              }
             `}
           </style>
           <div className="row">
@@ -68,7 +73,7 @@ class SetupForm extends Component {
               <FormField
                 {...formData.senderName}
                 handleChange={e => {
-                  this.props.handleChange(e, "senderName", "setUpFormData");
+                  this.props.handleChange(e, "senderName", "senderInfoData");
                 }}
                 id="senderName"
                 rows="5"
@@ -80,20 +85,27 @@ class SetupForm extends Component {
               <FormField
                 {...formData.replyToEmail}
                 handleChange={e => {
-                  this.props.handleChange(e, "replyToEmail", "setUpFormData");
+                  this.props.handleChange(e, "replyToEmail", "senderInfoData");
                 }}
                 id="replyToEmail"
                 rows="5"
                 col="5"
                 styles={{ height: "38px" }}
               />
-              <a href="#" onClick={() => this.setState({ showModal: true })}>
+              {/* For premium users when they can add their own email domains */}
+              {/* <a href="#" onClick={() => this.setState({ showModal: true })}>
                 Add another Reply-to Email
-              </a>
+              </a> */}
               <p className="formText">
-                <b>Sender Email:</b>
+                <b>Sender Email: </b>
+                <span>noreply.invitations@trustsearchmail.com</span>
               </p>
-              <RadioGroup
+              <p className="textnote">
+                * Upgrade to premium to send inviatations using your own email
+                domain.
+              </p>
+              {/* For premium users when they can add their own email domains */}
+              {/* <RadioGroup
                 aria-label="gender"
                 name="senderEmail"
                 value={senderMail}
@@ -109,11 +121,11 @@ class SetupForm extends Component {
                   control={<Radio />}
                   label="Send email using your own email domain for the Sender Address (requires technical knowledge to set up)"
                 />
-              </RadioGroup>
+              </RadioGroup> */}
             </div>
           </div>
         </div>
-        <div className="row" style={{marginTop:"20px"}}>
+        <div className="row" style={{ marginTop: "20px" }}>
           <div className="col-md-2">
             <Button
               variant="contained"
@@ -150,4 +162,4 @@ class SetupForm extends Component {
   }
 }
 
-export default SetupForm;
+export default SenderInfoForm;
