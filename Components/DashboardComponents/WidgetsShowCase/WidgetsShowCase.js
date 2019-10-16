@@ -17,6 +17,23 @@ import _get from "lodash/get";
 
 const widgetsObj = [
   {
+    id: 1,
+    title: "Trust carousel",
+    tagLine: "Boost customer confidence with an honest TrustBox",
+    minHeight: 400,
+    imgURL: "/static/images/textReviews.png",
+    listItems: [
+      "Show off your 15 latest reviews",
+      "Focuses on overall trust score"
+    ],
+    description:
+      "In short, the TrustBoxes are great starters that communicate You can trust us.",
+    suggestedPlacement: ["Header or footer"],
+    support: ["Responsive (max. 100% x 24)"],
+    dataTempID: "TextReviews"
+  },
+  {
+    id: 2,
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/onlyScoreWidget.png",
@@ -36,6 +53,7 @@ const widgetsObj = [
     dataTempID: "OnlyScoreWidget"
   },
   {
+    id: 3,
     title: "Trust card with reviews",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/textReviewsWithScores.png",
@@ -46,21 +64,6 @@ const widgetsObj = [
     suggestedPlacement: ["Header or footer"],
     support: ["Responsive (max. 100% x 24)"],
     dataTempID: "TextReviewsWithScores"
-  },
-  {
-    title: "Trust carousel",
-    tagLine: "Boost customer confidence with an honest TrustBox",
-    minHeight: 400,
-    imgURL: "/static/images/textReviews.png",
-    listItems: [
-      "Show off your 15 latest reviews",
-      "Focuses on overall trust score"
-    ],
-    description:
-      "In short, the TrustBoxes are great starters that communicate You can trust us.",
-    suggestedPlacement: ["Header or footer"],
-    support: ["Responsive (max. 100% x 24)"],
-    dataTempID: "TextReviews"
   }
 ];
 
@@ -71,28 +74,44 @@ class WidgetsShowCase extends Component {
   };
   renderWidgetBox = (item, index) => {
     return (
-      <div className="col-md-4" style={{ alignSelf: "stretch" }}>
+      <div
+        className={item.id === 1 ? "col-md-12" : "col-md-6"}
+        style={{ alignSelf: "stretch" }}
+      >
         <style jsx>
           {`
             .widgetBox {
               padding: 15px;
             }
             .widgetImgContainer {
-              width: 60%;
+              width: 80%;
               height: auto;
               margin: 0 auto;
             }
-            .widgetImgContainer img {
+            .widgetImgContainerSm {
+              width: 40%;
+              height: auto;
+              margin: 0 auto;
+            }
+            .widgetImgContainer img,
+            .widgetImgContainerSm img {
               max-width: 100%;
               height: auto;
+            }
+            .mt {
+              margin-top: 20.5px;
             }
           `}
         </style>
         <div>
-          <Paper style={{ padding: "15px", height: "425px" }}>
+          <Paper style={{ padding: "15px", marginBottom: "50px" }}>
             <Title>{item.title}</Title>
             <p>{item.tagLine}</p>
-            <div className="widgetImgContainer">
+            <div
+              className={`${
+                item.id === 1 ? "widgetImgContainer" : "widgetImgContainerSm"
+              }`}
+            >
               <img src={item.imgURL} />
             </div>
             <List>
@@ -109,7 +128,7 @@ class WidgetsShowCase extends Component {
                 );
               })}
             </List>
-            <div>
+            <div className={item.id === 2 ? "mt" : ""}>
               <Button
                 variant="contained"
                 color="primary"

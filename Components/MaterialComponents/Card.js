@@ -28,7 +28,7 @@ export default function SimpleCard(props) {
   const bull = <span className={classes.bullet}>•</span>;
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} style={{...props.style}}>
       <CardContent>
         {props.children}
       </CardContent>
