@@ -3,7 +3,7 @@ import css from "styled-jsx/css";
 export const reviewListStyles = css`
   .reviewCard {
     border: 1px solid #d8d8d8;
-    // box-shadow: 0 1px 2px #d8d8d8;
+    box-shadow: 0 1px 2px #d8d8d8;
     margin: 20px 0px;
     background-color: #fff;
     border-radius: 5px;
@@ -47,30 +47,33 @@ export const reviewListStyles = css`
   .bottomBoxInner {
     display: flex;
   }
+  .bottomBoxResponsive{
+      display:none;
+    }
 
   .footerLinks {
     padding: 0px 20px;
     cursor: pointer;
   }
 
-  // .footerLinks::after {
+  /* // .footerLinks::after {
   //     content: '';
   //     width: 20%;
   //     position: absolute;
   //     top: 100%;
   //     left: 0;
   //     display: none;
-  // }
+  // } */
 
   .footerLinks:hover {
     color: #4084bd;
     border-bottom: 5px solid #4084bd;
   }
 
-  // .footerLinks:hover.footerLinks::after {
+  /* // .footerLinks:hover.footerLinks::after {
   //     display: block;
 
-  // }
+  // } */
 
   .icons {
     margin-right: 8px;
@@ -119,5 +122,37 @@ export const reviewListStyles = css`
   .postReplyIcon {
     padding: 0px 8px;
     font-size: 15px;
+  }
+
+  /*--------- Media queries -----------*/
+  @media screen and (min-width:767px) and (max-width:992px){
+    .ratingBox{
+      max-width:35%;
+      flex-basis:35%;
+    }
+  }
+
+  @media screen and (max-width:767px){
+    .dateContainer{
+      margin-top:10px;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .bottomBox {
+      padding: 0;
+    }
+  }
+
+  @media screen and (max-width: 520px) {
+    .bottomBoxInner{
+      display:none;
+    }
+    .bottomBoxResponsive{
+      display:block;
+    }
+    .reviewText{
+      font-size:0.9rem;
+    }
   }
 `;

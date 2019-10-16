@@ -36,7 +36,7 @@
     var trustFrame = document.createElement("iframe");
     trustFrame.frameBorder = "0";
     trustFrame.scrolling = "no";
-    trustFrame.title = "Cutomer reviews powered by The Trust Search";
+    trustFrame.title = "Cutomer reviews powered by The Trustsearch";
     trustFrame.src = `https://thetrustsearch-dev.cryptopolice.com/widgetsBox/${
       widgetProps.dataTemplateId
     }?businessunitId=${widgetProps.dataBusinessUnitId}&locale=${

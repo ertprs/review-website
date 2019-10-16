@@ -376,7 +376,7 @@ function PrimarySearchAppBar(props) {
               noWrap
               style={{ margin: "0 5px 0 0" }}
             >
-              Trust Search
+              TrustSearch
             </Typography>
           ) : null}
           {showInputBase ? (

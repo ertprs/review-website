@@ -49,6 +49,12 @@ class MyReviewsBusiness extends Component {
             .listItem {
               display: none;
             }
+            @media only screen and (max-width:420px){
+              .reviewsContainer{
+                margin:0;
+                font-size:0.8rem;
+              }
+            }
           `}</style>
           <div className="reviewsContainer">
             {isFetching === true ? (
