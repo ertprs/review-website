@@ -416,10 +416,13 @@ function PrimarySearchAppBar(props) {
               </>
             ) : (
               <>
-                <Link href="">
+                <Link>
                   <span
                     className={classes.navLink}
-                    onClick={handleProfileMenuOpen}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleProfileMenuOpen(e);
+                    }}
                   >
                     <span>{userName}</span>
                   </span>
