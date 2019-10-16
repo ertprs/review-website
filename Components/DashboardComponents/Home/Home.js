@@ -72,8 +72,19 @@ class Home extends Component {
     );
   };
 
-  renderReviewSnippets = (topThreeReviews) => {
-    return topThreeReviews.map(item=>{
+  renderReviewSnippets = topThreeReviews => {
+    return topThreeReviews.map(item => {
+      console.log(item, "item");
+      let reviewText = "";
+      if (item.hasOwnProperty("text")) {
+        if (item.text) {
+          if (item.text.length > 26) {
+            reviewText = _get(item, "text", "").substring(0, 26) + "...";
+          } else {
+            reviewText = _get(item, "text", "");
+          }
+        }
+      }
       return (
         <div className="reviewSnippetContainer">
           <style jsx>
@@ -92,7 +103,10 @@ class Home extends Component {
               }
             `}
           </style>
-          <div className="reviewText">"{item.text.length > 26 ? item.text.substring(0, 26)+"..." : item.text}</div>
+          {/* {item.text.length > 26
+            ? item.text.substring(0, 26) + "..."
+            : item.text} */}
+          <div className="reviewText">{reviewText}</div>
           <div className="reviewBody">
             <div>
               <StarRatings
@@ -108,14 +122,13 @@ class Home extends Component {
           </div>
         </div>
       );
-    })
+    });
   };
 
   renderRecentReviewsCard = () => {
     const { reviewsData } = this.props;
     const reviews = _get(reviewsData, "reviews", []);
-    const topThreeReviews =
-      reviews.length > 3 ? reviews.slice(0, 3) : reviews;
+    const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
@@ -137,7 +150,11 @@ class Home extends Component {
             <div className="fadedHeader">(Top 3 )</div>
           </div>
           <div className="body">
-            <div>{topThreeReviews.length > 0 ? this.renderReviewSnippets(topThreeReviews) : "No reviews found !"}</div>
+            <div>
+              {topThreeReviews.length > 0
+                ? this.renderReviewSnippets(topThreeReviews)
+                : "No reviews found !"}
+            </div>
           </div>
         </SimpleCard>
       </Grid>
@@ -145,7 +162,7 @@ class Home extends Component {
   };
 
   renderInvitationsCard = () => {
-    const {quotaDetails} = this.props;
+    const { quotaDetails } = this.props;
     const total = _get(quotaDetails, "invitations.total", 0);
     const remaining = _get(quotaDetails, "invitations.remaining", 0);
     return (
