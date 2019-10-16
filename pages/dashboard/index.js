@@ -159,6 +159,14 @@ function Dashboard(props) {
     Router.push("/");
   };
 
+  let userName = "";
+  if (_get(props, "userName", "").length > 0) {
+    let nameAfterSplit = _get(props, "userName", "").split(" ");
+    if (nameAfterSplit.length > 0) {
+      userName = nameAfterSplit[0];
+    }
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -186,7 +194,7 @@ function Dashboard(props) {
             noWrap
             className={classes.title}
           >
-            Welcome Arturs !
+            Welcome {userName || ""} !
           </Typography>
           <IconButton color="inherit" onClick={handleLogout}>
             <LogoutIcon />
@@ -237,7 +245,8 @@ const mapStateToProps = state => {
   const { auth } = state;
   const authorized = _get(auth, "logIn.authorized", false);
   const loginType = _get(auth, "logIn.loginType", 0);
-  return { authorized, loginType };
+  const userName = _get(auth, "logIn.userProfile.name", "");
+  return { authorized, loginType, userName };
 };
 
 export default connect(
