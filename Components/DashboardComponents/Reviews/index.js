@@ -27,29 +27,40 @@ class MyReviewsBusiness extends Component {
         <Head>
           <link rel="stylesheet" href="/static/reviews.css" />
         </Head>
-        <div className="container">
-          <style jsx>{`
-            .reviewsContainer {
-              margin: 20px 40px;
-            }
-            .pagination {
-              list-style-type: none;
-              display: inline-block;
-              background-color: red;
-            }
-            .active {
-              color: red;
-            }
+        <style jsx>{`
+          .reviewsContainer {
+            margin: 20px 40px;
+          }
+          .pagination {
+            list-style-type: none;
+            display: inline-block;
+            background-color: red;
+          }
+          .active {
+            color: red;
+          }
 
-            .loaderContainer {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            }
-            .listItem {
-              display: none;
-            }
-          `}</style>
+          .loaderContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .listItem {
+            display: none;
+          }
+
+          .paginationContainer {
+            display: flex;
+            flex: 1;
+            justify-content: center;
+            margin-top: 35px;
+          }
+
+          .hiddenPagination {
+            display: none;
+          }
+        `}</style>
+        <div className="container">
           <div className="reviewsContainer">
             {isFetching === true ? (
               <div className="loaderContainer">
@@ -66,37 +77,31 @@ class MyReviewsBusiness extends Component {
             ) : null}
           </div>
         </div>
-
         <div
-          style={{
-            display: "flex",
-            flex: "1",
-            justifyContent: "center",
-            marginTop: "35px"
-          }}
+          className={`${
+            isFetching ? "hiddenPagination" : "paginationContainer"
+          }`}
         >
-          {!isFetching ? (
-            <ReactPaginate
-              pageCount={total / perPage}
-              pageRangeDisplayed={2}
-              marginPagesDisplayed={2}
-              initialPage={0}
-              onPageChange={this.handlePageChange}
-              containerClassName={"pagination"}
-              subContainerClassName={"pages pagination"}
-              activeClassName={"active"}
-              pageClassName={"listItem"}
-              nextClassName={"listItem"}
-              previousClassName={"listItem"}
-              pageLinkClassName={"listLink"}
-              nextLinkClassName={"listLink"}
-              previousLinkClassName={"listLink"}
-              disableInitialCallback={true}
-              activeClassName={"selectedPage"}
-              activeLinkClassName={"selectedPage"}
-              // disabledClassName={"disabledButtons"}
-            />
-          ) : null}
+          <ReactPaginate
+            pageCount={total / perPage}
+            pageRangeDisplayed={1}
+            marginPagesDisplayed={2}
+            initialPage={0}
+            onPageChange={this.handlePageChange}
+            containerClassName={"pagination"}
+            subContainerClassName={"pages pagination"}
+            activeClassName={"active"}
+            pageClassName={"listItem"}
+            nextClassName={"listItem"}
+            previousClassName={"listItem"}
+            pageLinkClassName={"listLink"}
+            nextLinkClassName={"listLink"}
+            previousLinkClassName={"listLink"}
+            activeClassName={"selectedPage"}
+            activeLinkClassName={"selectedPage"}
+            disabledClassName={"disabledButtons"}
+            disableInitialCallback={true}
+          />
         </div>
       </>
     );
