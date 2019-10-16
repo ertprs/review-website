@@ -359,15 +359,6 @@ function PrimarySearchAppBar(props) {
               className={classes.logoImg}
             />
           </div>
-          {/* <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-            
-          </IconButton> */}
           {!showInputBase ? (
             <Typography
               onClick={() => Router.push("/")}
@@ -416,10 +407,13 @@ function PrimarySearchAppBar(props) {
               </>
             ) : (
               <>
-                <Link href="">
+                <Link>
                   <span
                     className={classes.navLink}
-                    onClick={handleProfileMenuOpen}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleProfileMenuOpen(e);
+                    }}
                   >
                     <span>{userName}</span>
                   </span>

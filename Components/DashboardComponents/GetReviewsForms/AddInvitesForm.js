@@ -3,8 +3,10 @@ import FormField from "../../Widgets/FormField/FormField";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import _isEmpty from "lodash/isEmpty";
+
 export default class AddInvitesForm extends Component {
-  renderButtons = () => {
+  renderButtons = (valid) => {
     return (
       <div className="col-md-12">
         <style jsx>
@@ -64,6 +66,7 @@ export default class AddInvitesForm extends Component {
               size="small"
               startIcon={<AddIcon />}
               onClick={this.handleAddBtnClick}
+              disabled={!valid}
             >
               Add
             </Button>
@@ -75,6 +78,7 @@ export default class AddInvitesForm extends Component {
               size="small"
               endIcon={<ArrowRight />}
               onClick={this.props.onContinueClick}
+              disabled={_isEmpty(this.props.tableData)}
             >
               Continue
             </Button>
@@ -97,8 +101,8 @@ export default class AddInvitesForm extends Component {
     }
   };
 
-  renderFormFields = () => {
-    const { formData } = this.props;
+  renderFormFields = valid => {
+    const { formData, tableData } = this.props;
     let output = [];
     for (let item in formData) {
       output = [
@@ -120,6 +124,11 @@ export default class AddInvitesForm extends Component {
     return [...output];
   };
   render() {
+    const { formData } = this.props;
+    let valid = true;
+    for (let item in formData) {
+      valid = valid && formData[item].valid;
+    }
     return (
       <div className="container">
         <style jsx>
@@ -129,8 +138,8 @@ export default class AddInvitesForm extends Component {
             }
           `}
         </style>
-        <div className="row">{this.renderFormFields()}</div>
-        <div className="row">{this.renderButtons()}</div>
+        <div className="row">{this.renderFormFields(valid)}</div>
+        <div className="row">{this.renderButtons(valid)}</div>
       </div>
     );
   }

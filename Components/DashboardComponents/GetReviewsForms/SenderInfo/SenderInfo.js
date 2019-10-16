@@ -21,6 +21,10 @@ class SenderInfoForm extends Component {
 
   render() {
     const { formData } = this.props;
+    let valid = true;
+    for (let item in formData) {
+      valid = valid && formData[item].valid;
+    }
     const senderMail = formData.senderMail;
     return (
       <>
@@ -101,7 +105,7 @@ class SenderInfoForm extends Component {
                 rows="5"
                 col="5"
               />
-              <p className="formText">
+              {/* <p className="formText">
                 <b>Reply-to Email:</b>
               </p>
               <FormField
@@ -113,7 +117,7 @@ class SenderInfoForm extends Component {
                 rows="5"
                 col="5"
                 styles={{ height: "38px" }}
-              />
+              /> */}
               {/* For premium users when they can add their own email domains */}
               {/* <a href="#" onClick={() => this.setState({ showModal: true })}>
                 Add another Reply-to Email
@@ -178,6 +182,7 @@ class SenderInfoForm extends Component {
               size="small"
               endIcon={<ArrowRight />}
               onClick={this.props.handleNext}
+              disabled={!valid}
             >
               Continue
             </Button>

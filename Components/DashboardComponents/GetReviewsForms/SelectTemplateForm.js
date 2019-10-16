@@ -161,6 +161,11 @@ export default class SelectTemplateForm extends Component {
   };
 
   render() {
+    const { formData } = this.props;
+    let valid = true;
+    for (let item in formData) {
+      valid = valid && formData[item].valid;
+    }
     return (
       <>
         {this.renderHeader()}
@@ -196,6 +201,7 @@ export default class SelectTemplateForm extends Component {
               endIcon={<ArrowRight />}
               onClick={this.props.handleNext}
               size="small"
+              disabled={!valid}
             >
               Continue
             </Button>
