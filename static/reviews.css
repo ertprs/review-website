@@ -1,24 +1,32 @@
-.listItem{
-    display: inline-block;
-    list-style-type: none;
-    padding:12px;
-    border:1px solid #d8d8d8;
+.listItem {
+  display: inline-block;
+  list-style-type: none;
+  padding: 12px;
+  border: 1px solid #d8d8d8;
 }
 
-.listLink{
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: bold;
-    color:#000;
-    transition: all 0.4s;
-    -webkit-transition: all 0.4s;
-    -moz-transition: all 0.4s;
-    -ms-transition: all 0.4s;
-    -o-transition: all 0.4s;
+.listLink {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #000;
+  transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  -ms-transition: all 0.4s;
+  -o-transition: all 0.4s;
 }
-.listLink:hover{
-    color:#21bc61;
-    cursor: pointer;
-    text-decoration: none;
-    outline:none;
+.listLink:hover {
+  color: #21bc61;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+.selectedPage {
+  color: #21bc61;
+}
+
+.disabledButtons {
+  color: "yellow";
 }

@@ -74,7 +74,6 @@ class Home extends Component {
 
   renderReviewSnippets = topThreeReviews => {
     return topThreeReviews.map(item => {
-      console.log(item, "item");
       let reviewText = "";
       if (item.hasOwnProperty("text")) {
         if (item.text) {
@@ -103,9 +102,6 @@ class Home extends Component {
               }
             `}
           </style>
-          {/* {item.text.length > 26
-            ? item.text.substring(0, 26) + "..."
-            : item.text} */}
           <div className="reviewText">{reviewText}</div>
           <div className="reviewBody">
             <div>
