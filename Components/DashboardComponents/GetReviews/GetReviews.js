@@ -8,7 +8,7 @@ import AddInvitesForm from "../../DashboardComponents/GetReviewsForms/AddInvites
 import validate from "../../../utility/validate";
 import SendInvitations from "../GetReviewsForms/SendInvitations";
 import SelectTemplateForm from "../GetReviewsForms/SelectTemplateForm";
-import SetupForm from "../GetReviewsForms/SetupForm/SetupForm";
+import SenderInfo from "../GetReviewsForms/SenderInfo/SenderInfo";
 import Done from "../GetReviewsForms/Done";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
@@ -101,7 +101,7 @@ class GetReviews extends Component {
         }
       }
     },
-    setUpFormData: {
+    senderInfoData: {
       senderMail: "",
       senderName: {
         element: "input",
@@ -146,8 +146,8 @@ class GetReviews extends Component {
       </div>
     ),
     2: (
-      <SetupForm
-        formData={this.state.setUpFormData}
+      <SenderInfo
+        formData={this.state.senderInfoData}
         handleChange={this.handleChange}
         handleRadioChange={this.handleRadioChange}
       />
@@ -188,7 +188,7 @@ class GetReviews extends Component {
     const { value } = event.target;
     this.setState({
       ...this.state,
-      setUpFormData: { ...this.state.setUpFormData, senderMail: value }
+      senderInfoData: { ...this.state.senderInfoData, senderMail: value }
     });
   };
 
@@ -339,8 +339,8 @@ class GetReviews extends Component {
     }
     if (activeStep === 1) {
       return (
-        <SetupForm
-          formData={this.state.setUpFormData}
+        <SenderInfo
+          formData={this.state.senderInfoData}
           handleChange={this.handleChange}
           handleRadioChange={this.handleRadioChange}
           handleNext={this.handleNext}
