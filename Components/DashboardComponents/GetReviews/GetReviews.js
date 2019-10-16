@@ -19,7 +19,7 @@ import {
 } from "../../../store/actions/dashboardActions";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
-
+import _get from "lodash/get";
 const columns = [
   { title: "Email", field: "email" },
   { title: "Name", field: "name" },
@@ -66,12 +66,12 @@ class GetReviews extends Component {
         element: "input",
         type: "number",
         value: "",
-        valid: false,
+        valid: true,
         touched: false,
         errorMessage: "Enter valid number",
         placeholder: "Enter reference number",
         validationRules: {
-          required: true
+          required: false
         }
       }
     },
@@ -102,7 +102,7 @@ class GetReviews extends Component {
       }
     },
     senderInfoData: {
-      senderMail: "",
+      // senderMail: "",
       senderName: {
         element: "input",
         value: "",
@@ -122,11 +122,11 @@ class GetReviews extends Component {
         placeholder: "email@gmail.com",
         errorMessage: "",
         options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
-        valid: false,
+        valid: true,
         touched: false,
         validationRules: {
-          required: true,
-          isEmail: true
+          required: false
+          // isEmail: true
         },
         name: "replyToEmail"
       }
@@ -241,12 +241,12 @@ class GetReviews extends Component {
           element: "input",
           type: "number",
           value: "",
-          valid: false,
+          valid: true,
           touched: false,
           errorMessage: "Enter valid number",
           placeholder: "Enter reference number",
           validationRules: {
-            required: true
+            required: false
           }
         }
       }
@@ -333,6 +333,7 @@ class GetReviews extends Component {
             handleChange={this.handleChange}
             onAddClick={this.onRowAdd}
             onContinueClick={this.handleContinueClick}
+            tableData={_get(this.state, "tableData", [])}
           />
         </div>
       );

@@ -9,27 +9,26 @@ import ShareIcon from "@material-ui/icons/ShareOutlined";
 import _get from "lodash/get";
 
 const ReviewCard = ({ review, isLoading }) => {
-
-  const [starSize, setStarSize] = useState(0);
+  const [starSize, setStarSize] = useState(24);
   let windowSize = 0;
 
   useEffect(() => {
-    windowSize = window.matchMedia("screen and (max-width: 419px)")
-    changeStarSize(windowSize)
-    windowSize.addEventListener('change', changeStarSize);
-    return () => {
-      windowSize.removeEventListener('change', changeStarSize);
-    };
-  }, [])
+    // windowSize = window.matchMedia("screen and (max-width: 419px)");
+    // changeStarSize(windowSize);
+    // windowSize.addEventListener("change", changeStarSize);
+    // return () => {
+    //   windowSize.removeEventListener("change", changeStarSize);
+    // };
+  }, []);
 
-  const changeStarSize = (windowSize) => {
-    if (windowSize.matches) { // If media query matches
-      setStarSize(20)
+  const changeStarSize = windowSize => {
+    if (windowSize.matches) {
+      // If media query matches
+      setStarSize(20);
+    } else {
+      setStarSize(28);
     }
-    else {
-      setStarSize(28)
-    }
-  }
+  };
 
   const ratings = (review || {}).ratings || 0;
   return (

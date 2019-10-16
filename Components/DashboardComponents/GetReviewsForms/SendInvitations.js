@@ -3,8 +3,10 @@ import uuid from "uuid/v1";
 import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import { connect } from "react-redux";
+import _get from "lodash/get";
 
-export default class SendInvitations extends Component {
+class SendInvitations extends Component {
   renderSendInvitationsHeader = () => {
     return (
       <div className="container">
@@ -54,12 +56,13 @@ export default class SendInvitations extends Component {
     });
   };
 
-  renderSendInvitationsBody = () => {
+  renderSendInvitationsBody = (senderName, clientName, entity) => {
     const data = [
-      { key: "Sender Name", value: "Cunami" },
+      { key: "Sender Name", value: senderName },
       { key: "Sender Email", value: "noreply.invitations@trustpilotmail.com" },
-      { key: "Reply-to Email", value: "art@cunami.lv" },
-      { key: "Template", value: "For purchase experiences (Best in test)" },
+      // { key: "Reply-to Email", value: "art@cunami.lv" },
+      { key: "Client Name", value: clientName },
+      { key: "Entity", value: entity },
       {
         key: "Send your customers to this website to write their review",
         value: "https://www.trustpilot.com"
@@ -96,10 +99,11 @@ export default class SendInvitations extends Component {
   };
 
   render() {
+    const { senderName, clientName, entity } = this.props;
     return (
       <>
         {this.renderSendInvitationsHeader()}
-        {this.renderSendInvitationsBody()}
+        {this.renderSendInvitationsBody(senderName, clientName, entity)}
         {this.renderSendInvitationsFooter()}
         <div className="row" style={{ marginTop: "20px" }}>
           <div className="col-md-2">
@@ -127,3 +131,21 @@ export default class SendInvitations extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { getReviewsData } = state.dashboardData;
+  const senderName = _get(
+    getReviewsData,
+    "senderInfoData.senderName.value",
+    ""
+  );
+  const clientName = _get(
+    getReviewsData,
+    "selectTemplateData.clientName.value",
+    ""
+  );
+  const entity = _get(getReviewsData, "selectTemplateData.entity.value", "");
+  return { senderName, clientName, entity };
+};
+
+export default connect(mapStateToProps)(SendInvitations);
