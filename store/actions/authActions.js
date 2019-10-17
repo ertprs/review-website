@@ -427,7 +427,8 @@ export const businessLogIn = (loginData, api) => {
         status: -1,
         isWrongCredentials: false,
         isLoginFailed: false,
-        isLoggingIn: true
+        isLoggingIn: true,
+        error: ""
       }
     });
     try {
@@ -461,13 +462,16 @@ export const businessLogIn = (loginData, api) => {
           status: status,
           isWrongCredentials: false,
           isLoginFailed: !success,
-          isLoggingIn: false
+          isLoggingIn: false,
+          error: ""
         }
       });
-    } catch (error) {
-      let success = _get(error, "response.data.success", false);
-      let status = _get(error, "response.status", 0);
-      let message = _get(error, "response.data.message", "") === "Unauthorized";
+    } catch (err) {
+      let success = _get(err, "response.data.success", false);
+      let status = _get(err, "response.status", 0);
+      let error = _get(err, "response.data.error", "Some Error Occured.");
+      let isWrongCredentials =
+        _get(err, "response.data.message", "") === "Unauthorized";
       dispatch({
         type: BUSINESS_LOGIN_FAILURE,
         logIn: {
@@ -478,9 +482,10 @@ export const businessLogIn = (loginData, api) => {
         },
         logInTemp: {
           status: status,
-          isWrongCredentials: message,
+          isWrongCredentials,
           isLoginFailed: !success,
-          isLoggingIn: false
+          isLoggingIn: false,
+          error
         }
       });
     }
