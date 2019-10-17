@@ -33,6 +33,7 @@ import { connect } from "react-redux";
 import Router from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
+import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
 
 const drawerWidth = 240;
 
@@ -170,6 +171,15 @@ function Dashboard(props) {
     }
   }
 
+  let menuItemsDisabled = false;
+  if (_get(props, "activation_required", false)) {
+    if (_get(props, "userActivated", false)) {
+      menuItemsDisabled = false;
+    } else if (_get(props, "userActivated", false) === false) {
+      menuItemsDisabled = true;
+    }
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -220,13 +230,18 @@ function Dashboard(props) {
         <Divider />
         <List>
           <MainListItems
+            disabled={menuItemsDisabled}
             handleMainListItemClick={handleMenuItemClicked}
             stepToRender={stepToRender}
           />
         </List>
         <Divider />
         <List>
-          <SecondaryListItems />
+          <SecondaryListItems
+            subsriptionPlan={getSubscriptionPlan(
+              _get(props, "subsriptionPlan", 0)
+            )}
+          />
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -250,7 +265,25 @@ const mapStateToProps = state => {
   const authorized = _get(auth, "logIn.authorized", false);
   const loginType = _get(auth, "logIn.loginType", 0);
   const userName = _get(auth, "logIn.userProfile.name", "");
-  return { authorized, loginType, userName };
+  const activation_required = _get(
+    auth,
+    "logIn.userProfile.activation_required",
+    false
+  );
+  const subsriptionPlan = _get(
+    auth,
+    "logIn.userProfile.subscription.plan_type_id",
+    0
+  );
+  const userActivated = _get(auth, "userActivated", false);
+  return {
+    authorized,
+    loginType,
+    userName,
+    activation_required,
+    subsriptionPlan,
+    userActivated
+  };
 };
 
 export default connect(

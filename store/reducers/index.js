@@ -10,7 +10,7 @@ import loaderReducer from "./loaderReducer";
 const authPersistConfig = {
   key: "auth",
   storage: storage,
-  blacklist: ["logInTemp", "signUpTemp", "tempEmail"]
+  blacklist: ["logInTemp", "signUpTemp", "tempEmail", "resendActivation"]
 };
 
 export default combineReducers({
