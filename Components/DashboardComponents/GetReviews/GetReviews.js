@@ -154,7 +154,8 @@ class GetReviews extends Component {
         rows: 10,
         cols: 10,
         name: "textbox"
-      }
+      },
+      parseErrors: []
     }
   };
 
@@ -191,12 +192,66 @@ class GetReviews extends Component {
 
   handleParseBtnClick = () => {
     const { copyPasteFormData } = this.state;
-    const parsedData = Papa.parse(copyPasteFormData.textbox.value);
-    //check if data is not empty
-    const newTableData = parsedData.data.map(item => {
-      return { email: item[0], name: item[1], referenceNumber: item[2] };
+    const parsedData = Papa.parse(copyPasteFormData.textbox.value, {
+      skipEmptyLines: true
     });
-    this.setState({ tableData: [...newTableData] });
+    let valid = true;
+    let errorObj = [];
+    let tempObj = [];
+    //check if data is not empty
+    console.log(parsedData);
+    const newTableData = parsedData.data.map((item, index) => {
+      if (item.length >= 2) {
+        const email = item[0] || "";
+        const name = item[1] || "";
+        const referenceNumber = item[2] || "";
+        if (
+          email.trim() === "" ||
+          name.trim() === "" ||
+          !validate(email.trim(), { isEmail: true })
+        ) {
+          valid = false;
+          errorObj = [
+            ...errorObj,
+            {
+              index: index,
+              email: email,
+              name: name,
+              referenceNumber: referenceNumber
+            }
+          ];
+        }
+        return { email: email, name: name, referenceNumber: referenceNumber };
+      } else {
+        valid = false;
+        const email = item[0] || "";
+        const name = item[1] || "";
+        const referenceNumber = item[2] || "";
+        tempObj = [
+          ...tempObj,
+          {
+            index: index,
+            email: email || "",
+            name: name || "",
+            referenceNumber: referenceNumber || ""
+          }
+        ];
+        return {};
+      }
+    });
+    if (newTableData.length > 0 && valid) {
+      this.setState({
+        tableData: [...newTableData],
+        getReviewsActiveSubStep: 2
+      });
+    } else {
+      this.setState({
+        copyPasteFormData: {
+          ...this.state.copyPasteFormData,
+          parseErrors: [...tempObj, ...errorObj]
+        }
+      });
+    }
   };
 
   handleNext = () => {
@@ -366,25 +421,28 @@ class GetReviews extends Component {
   };
 
   //for moving forward getReviewsActiveSubStep
-  handleListItemClick = (index)=>{
-    this.setState({getReviewsActiveSubStep:index})
-  }
-  
+  handleListItemClick = index => {
+    this.setState({ getReviewsActiveSubStep: index });
+  };
+
   //for moving backward getReviewsActiveSubStep to getHomeReviews
-  handleListItemBackClick = ()=>{
-    this.setState({getReviewsActiveSubStep:-1})
-  }
+  handleListItemBackClick = () => {
+    this.setState({ getReviewsActiveSubStep: -1 });
+  };
 
   renderAppropriateStep = () => {
     const { activeStep, getReviewsActiveSubStep } = this.state;
     if (activeStep === 0) {
-      if(getReviewsActiveSubStep === -1){
-        return(
-          <GetReviewsHome handleListItemClick={this.handleListItemClick}/>
-        )
-      }
-      else if (getReviewsActiveSubStep === 0) {
-        return <UploadCSVForm handleListItemBackClick={this.handleListItemBackClick} />;
+      if (getReviewsActiveSubStep === -1) {
+        return (
+          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+        );
+      } else if (getReviewsActiveSubStep === 0) {
+        return (
+          <UploadCSVForm
+            handleListItemBackClick={this.handleListItemBackClick}
+          />
+        );
       } else if (getReviewsActiveSubStep === 1) {
         return (
           <CopyPasteForm
@@ -484,7 +542,9 @@ class GetReviews extends Component {
               {this.renderAppropriateStep()}
             </Grid>
             <Grid item xs={12} md={12} lg={12}>
-              {this.state.tableData.length > 0 && this.state.activeStep === 0
+              {this.state.tableData.length > 0 &&
+              this.state.activeStep === 0 &&
+              this.state.getReviewsActiveSubStep === 2
                 ? this.renderInvitesTable()
                 : null}
             </Grid>

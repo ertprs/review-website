@@ -4,56 +4,57 @@ import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import _isEmpty from "lodash/isEmpty";
+import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 export default class AddInvitesForm extends Component {
-  renderButtons = (valid) => {
+  renderButtons = valid => {
     return (
       <div className="col-md-12">
         <style jsx>
           {`
-            .btnContainer{
-              display:flex;
-              justify-content:flex-end;
+            .btnContainer {
+              display: flex;
+              justify-content: flex-end;
             }
-            .addBtn{
-              flex-basis:10%;
+            .addBtn {
+              flex-basis: 10%;
             }
-            @media screen and (max-width:1140px){
-              .addBtn{
-                flex-basis:15%;
+            @media screen and (max-width: 1140px) {
+              .addBtn {
+                flex-basis: 15%;
               }
             }
-            @media screen and (max-width:790px){
-              .addBtn{
-                flex-basis:20%;
+            @media screen and (max-width: 790px) {
+              .addBtn {
+                flex-basis: 20%;
               }
             }
-            @media screen and (max-width:675px){
-              .addBtn{
-                flex-basis:25%;
+            @media screen and (max-width: 675px) {
+              .addBtn {
+                flex-basis: 25%;
               }
             }
-            @media screen and (max-width:525px){
-              .addBtn{
-                flex-basis:30%;
+            @media screen and (max-width: 525px) {
+              .addBtn {
+                flex-basis: 30%;
               }
             }
-            @media screen and (max-width:470px){
-              .addBtn{
-                flex-basis:35%;
+            @media screen and (max-width: 470px) {
+              .addBtn {
+                flex-basis: 35%;
               }
             }
-            @media screen and (max-width:415px){
-              .addBtn{
-                flex-basis:50%;
+            @media screen and (max-width: 415px) {
+              .addBtn {
+                flex-basis: 50%;
               }
             }
-            @media screen and (max-width:369px){
-              .btnContainer{
-                flex-direction:column;
+            @media screen and (max-width: 369px) {
+              .btnContainer {
+                flex-direction: column;
               }
-              .addBtn{
-                margin-bottom:15px;
+              .addBtn {
+                margin-bottom: 15px;
               }
             }
           `}
@@ -109,7 +110,12 @@ export default class AddInvitesForm extends Component {
         ...output,
         <div className="col-md-4">
           <h6>
-            {formData[item].label} <sup style={{ color: "red" }}>*</sup>
+            {formData[item].label}{" "}
+            {formData[item].label.trim() !== "Reference number" ? (
+              <sup style={{ color: "red" }}>*</sup>
+            ) : (
+              ""
+            )}
           </h6>
           <FormField
             {...formData[item]}
@@ -140,6 +146,15 @@ export default class AddInvitesForm extends Component {
         </style>
         <div className="row">{this.renderFormFields(valid)}</div>
         <div className="row">{this.renderButtons(valid)}</div>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<ArrowLeft />}
+          onClick={this.props.handleListItemBackClick}
+        >
+          Back
+        </Button>
       </div>
     );
   }
