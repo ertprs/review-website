@@ -8,10 +8,14 @@ import ReactPaginate from "react-paginate";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Head from "next/head";
 import NoReviewsFound from "./noReviewsFound";
+import Snackbar from "../../Widgets/Snackbar";
 
-class MyReviewsBusiness extends Component {
+class Reviews extends Component {
   state = {
-    perPage: 10
+    perPage: 10,
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
   };
 
   handlePageChange = ({ selected }) => {
@@ -19,8 +23,21 @@ class MyReviewsBusiness extends Component {
     fetchReviews(token, selected + 1);
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props !== prevProps) {
+      const { error, success } = this.props;
+      if (error && !success) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: error
+        });
+      }
+    }
+  }
+
   render() {
-    const { reviews, total, isFetching } = this.props;
+    const { reviews, total, isFetching, success } = this.props;
     const { perPage } = this.state;
     return (
       <>
@@ -56,42 +73,44 @@ class MyReviewsBusiness extends Component {
             margin-top: 35px;
           }
 
-            .loaderContainer {
-              display: flex;
-              justify-content: center;
-              align-items: center;
+          .loaderContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          .listItem {
+            display: none;
+          }
+          .hiddenPagination {
+            display: none;
+          }
+          @media only screen and (max-width: 420px) {
+            .reviewsContainer {
+              margin: 0;
+              font-size: 0.8rem;
             }
-            .listItem {
-              display: none;
-            }
-            .hiddenPagination {
-              display: none;
-            }
-            @media only screen and (max-width:420px){
-              .reviewsContainer{
-                margin:0;
-                font-size:0.8rem;
-              }
-            }
-          `}</style>
-          <div className="reviewsContainer">
-            {isFetching === true ? (
-              <div className="loaderContainer">
-                <CircularProgress color="secondary" />
-              </div>
-            ) : isFetching === false ? (
-              reviews.length < 1 ? (
-                <NoReviewsFound />
-              ) : (
-                _map(reviews, review => {
-                  return <ReviewCard review={review} />;
-                })
-              )
-            ) : null}
-          </div>
+          }
+        `}</style>
+        <div className="reviewsContainer">
+          {isFetching === true ? (
+            <div className="loaderContainer">
+              <CircularProgress color="secondary" />
+            </div>
+          ) : isFetching === false ? (
+            !success ? (
+              <NoReviewsFound />
+            ) : (
+              _map(reviews, review => {
+                return <ReviewCard review={review} />;
+              })
+            )
+          ) : null}
+        </div>
         <div
           className={`${
-            isFetching ? "hiddenPagination" : "paginationContainer"
+            isFetching || success == false
+              ? "hiddenPagination"
+              : "paginationContainer"
           }`}
         >
           <ReactPaginate
@@ -115,6 +134,12 @@ class MyReviewsBusiness extends Component {
             disableInitialCallback={true}
           />
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </>
     );
   }
@@ -123,12 +148,14 @@ class MyReviewsBusiness extends Component {
 const mapStateToProps = state => {
   const { dashboardData, auth } = state;
   const token = _get(auth, "logIn.token", "");
-  const ratings = _get(dashboardData, "reviewsData.rating", 0);
-  const reviews = _get(dashboardData, "reviewsData.reviews", []);
-  const total = _get(dashboardData, "reviewsData.total", 0);
-  const nextReviews = _get(dashboardData, "reviewsData.next", "");
-  const prevReviews = _get(dashboardData, "reviewsData.prev", "");
-  const isFetching = _get(dashboardData, "fetchingReviews", "undefined");
+  const ratings = _get(dashboardData, "reviews.data.rating", 0);
+  const reviews = _get(dashboardData, "reviews.data.reviews", []);
+  const total = _get(dashboardData, "reviews.data.total", 0);
+  const nextReviews = _get(dashboardData, "reviews.data.next", "");
+  const prevReviews = _get(dashboardData, "reviews.data.prev", "");
+  const isFetching = _get(dashboardData, "reviews.isFetching", "undefined");
+  const success = _get(dashboardData, "reviews.success", false);
+  const error = _get(dashboardData, "reviews.error", "");
   const type = _get(dashboardData, "type", "");
   return {
     token,
@@ -138,11 +165,13 @@ const mapStateToProps = state => {
     nextReviews,
     prevReviews,
     type,
-    isFetching
+    isFetching,
+    error,
+    success
   };
 };
 
 export default connect(
   mapStateToProps,
   { fetchReviews }
-)(MyReviewsBusiness);
+)(Reviews);

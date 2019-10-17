@@ -108,13 +108,14 @@ class BusinessUserLogin extends Component {
       const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
       const authorized = _get(logIn, "authorized", false);
       const isLoggingIn = _get(logInTemp, "isLoggingIn", false);
+      const error = _get(logInTemp, "error", "Some Error Occured.");
       this.setState({ isLoading: isLoggingIn });
       if (isLoginFailed) {
         let snackbarMsg = "";
         if (isWrongCredentials) {
           snackbarMsg = "Please enter correct credentials!";
         } else {
-          snackbarMsg = "Some Error Occured!";
+          snackbarMsg = error;
         }
         this.setState({
           showSnackbar: true,

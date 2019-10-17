@@ -214,22 +214,23 @@ class BusinessUserRegistration extends Component {
         isSignUpFailed,
         isSignupSuccess,
         status,
-        errorMsg,
+        error,
         isSigningUp
       } = this.props;
       this.setState({ isLoading: isSigningUp });
 
       if (isSignUpFailed) {
         let snackbarMsg;
-        if (status === 409) {
-          snackbarMsg = "User already registered!";
-        } else if (errorMsg === "subscription_exists") {
-          snackbarMsg = "Company is already subscribed!";
-        } else if (errorMsg === "activation_required") {
-          snackbarMsg = "User not activated";
-        } else if (errorMsg === "already_claimed") {
-          snackbarMsg = "This domain is already claimed!";
-        }
+        snackbarMsg = error;
+        // if (status === 409) {
+        //   snackbarMsg = "User already registered!";
+        // } else if (errorMsg === "subscription_exists") {
+        //   snackbarMsg = "Company is already subscribed!";
+        // } else if (errorMsg === "activation_required") {
+        //   snackbarMsg = "User not activated";
+        // } else if (errorMsg === "already_claimed") {
+        //   snackbarMsg = "This domain is already claimed!";
+        // }
         this.setState({ showSnackbar: true, variant: "error", snackbarMsg });
       }
 
@@ -378,14 +379,14 @@ const mapStateToProps = state => {
   const isSignUpFailed = _get(businessSignUpTemp, "isSignupFailed", false);
   const isSignupSuccess = _get(businessSignUpTemp, "signUpSuccess", false);
   const status = _get(businessSignUpTemp, "status", -1);
-  const errorMsg = _get(businessSignUpTemp, "errorMsg", "");
+  const error = _get(businessSignUpTemp, "error", "");
   const isSigningUp = _get(businessSignUpTemp, "isSigningUp", false);
   return {
     auth,
     isSignUpFailed,
     isSignupSuccess,
     status,
-    errorMsg,
+    error,
     isSigningUp
   };
 };

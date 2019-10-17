@@ -37,3 +37,4 @@ export const resetPasswordApi = "/api/reset-password";
 export const activateUserApi = "/register/activate";
 export const businessRegisterApi = "/api/register-business";
 export const locatePlaceApi = "/api/my-business/profile/google-place";
+export const resendActivationLinkApi = "/api/me/resend-activation";

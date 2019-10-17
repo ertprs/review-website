@@ -12,6 +12,7 @@ import {
 } from "./actionTypes";
 import axios from "axios";
 import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -26,8 +27,11 @@ export const fetchReviews = (token, page, perPage) => {
   return async (dispatch, getState) => {
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
-      reviewsData: {},
-      fetchingReviews: true
+      reviews: {
+        isFetching: true,
+        error: "",
+        success: "undefined"
+      }
     });
     try {
       const result = await axios({
@@ -35,16 +39,31 @@ export const fetchReviews = (token, page, perPage) => {
         headers: { Authorization: `Bearer ${token}` },
         url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=${pageNo}&perPage=${perPageLimit}`
       });
+      let success = false;
+      let reviews = _get(result, "data.reviews", []);
+      if (!_isEmpty(reviews) && Array.isArray(reviews)) {
+        success = true;
+      }
       dispatch({
         type: FETCH_REVIEWS_DATA_SUCCESS,
-        reviewsData: { ...result.data },
-        fetchingReviews: false
+        reviews: {
+          data: { ...result.data },
+          isFetching: false,
+          error: "",
+          success
+        }
       });
-    } catch (error) {
+    } catch (err) {
+      const success = _get(err, "response.data.success", false);
+      const error = _get(err, "response.data.error", "Some Error Occured.");
       dispatch({
         type: FETCH_REVIEWS_DATA_FAILURE,
-        reviewsData: {},
-        fetchingReviews: false
+        reviews: {
+          data: {},
+          isFetching: false,
+          error,
+          success
+        }
       });
     }
   };

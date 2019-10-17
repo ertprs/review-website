@@ -24,14 +24,17 @@ import {
   BUSINESS_SIGNUP_FAILURE,
   BUSINESS_LOGIN_INIT,
   BUSINESS_LOGIN_SUCCESS,
-  BUSINESS_LOGIN_FAILURE
+  BUSINESS_LOGIN_FAILURE,
+  RESEND_ACTIVATION_LINK_INIT,
+  RESEND_ACTIVATION_LINK_SUCCESS,
+  RESEND_ACTIVATION_LINK_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { loginApiOAuth } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
-import {fetchReviews} from './dashboardActions';
+import { fetchReviews } from "./dashboardActions";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -224,8 +227,10 @@ export const activateUser = (url, activateUserApi) => {
     dispatch({
       type: ACTIVATE_USER_INIT,
       activateUserTemp: {
-        success: false
-      }
+        success: false,
+        isLoading: true
+      },
+      userActivated: false
     });
     if (url) {
       let splitUrlArray = url.split("/");
@@ -242,16 +247,20 @@ export const activateUser = (url, activateUserApi) => {
           dispatch({
             type: ACTIVATE_USER_SUCCESS,
             activateUserTemp: {
-              success
-            }
+              success,
+              isLoading: false
+            },
+            userActivated: success
           });
         } catch (error) {
           let success = _get(error, "response.data.success", false);
           dispatch({
             type: ACTIVATE_USER_FAILURE,
             activateUserTemp: {
-              success
-            }
+              success,
+              isLoading: false
+            },
+            userActivated: success
           });
         }
       }
@@ -376,7 +385,7 @@ export const businessSignUp = (signupData, api) => {
         signUpSuccess: false,
         isSigningUp: true,
         isSignupFailed: false,
-        errorMsg: ""
+        error: ""
       }
     });
     try {
@@ -391,13 +400,13 @@ export const businessSignUp = (signupData, api) => {
           signUpSuccess: success,
           isSigningUp: false,
           isSignupFailed: false,
-          errorMsg: ""
+          error: ""
         }
       });
-    } catch (error) {
-      let success = _get(error, "response.data.success", false);
-      let status = _get(error, "response.status", 0);
-      let errorMsg = _get(error, "response.data.error", "");
+    } catch (err) {
+      let success = _get(err, "response.data.success", false);
+      let status = _get(err, "response.status", 0);
+      let error = _get(err, "response.data.error", "");
       dispatch({
         type: BUSINESS_SIGNUP_FAILURE,
         businessSignUp: {},
@@ -406,7 +415,7 @@ export const businessSignUp = (signupData, api) => {
           signUpSuccess: success,
           isSigningUp: false,
           isSignupFailed: true,
-          errorMsg
+          error
         }
       });
     }
@@ -427,7 +436,8 @@ export const businessLogIn = (loginData, api) => {
         status: -1,
         isWrongCredentials: false,
         isLoginFailed: false,
-        isLoggingIn: true
+        isLoggingIn: true,
+        error: ""
       }
     });
     try {
@@ -437,8 +447,8 @@ export const businessLogIn = (loginData, api) => {
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
       let loginType = 0;
-      if(success){
-        dispatch(fetchReviews(token))
+      if (success) {
+        dispatch(fetchReviews(token));
       }
       if (userProfile.hasOwnProperty("subscription")) {
         if (
@@ -461,13 +471,16 @@ export const businessLogIn = (loginData, api) => {
           status: status,
           isWrongCredentials: false,
           isLoginFailed: !success,
-          isLoggingIn: false
+          isLoggingIn: false,
+          error: ""
         }
       });
-    } catch (error) {
-      let success = _get(error, "response.data.success", false);
-      let status = _get(error, "response.status", 0);
-      let message = _get(error, "response.data.message", "") === "Unauthorized";
+    } catch (err) {
+      let success = _get(err, "response.data.success", false);
+      let status = _get(err, "response.status", 0);
+      let error = _get(err, "response.data.error", "Some Error Occured.");
+      let isWrongCredentials =
+        _get(err, "response.data.error") === "Unauthorized";
       dispatch({
         type: BUSINESS_LOGIN_FAILURE,
         logIn: {
@@ -478,9 +491,45 @@ export const businessLogIn = (loginData, api) => {
         },
         logInTemp: {
           status: status,
-          isWrongCredentials: message,
+          isWrongCredentials,
           isLoginFailed: !success,
-          isLoggingIn: false
+          isLoggingIn: false,
+          error
+        }
+      });
+    }
+  };
+};
+
+export const resendActivationLink = (token, api) => {
+  console.log(token, "token");
+  return async dispatch => {
+    dispatch({
+      type: RESEND_ACTIVATION_LINK_INIT,
+      resendActivation: {
+        success: "undefined",
+        isLoading: true
+      }
+    });
+    try {
+      const result = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${api}`
+      });
+      dispatch({
+        type: RESEND_ACTIVATION_LINK_SUCCESS,
+        resendActivation: {
+          success: _get(result, "data.success", false),
+          isLoading: false
+        }
+      });
+    } catch (err) {
+      dispatch({
+        type: RESEND_ACTIVATION_LINK_FAILURE,
+        resendActivation: {
+          success: _get(err, "response.data.success", false),
+          isLoading: false
         }
       });
     }
