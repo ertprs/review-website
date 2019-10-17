@@ -5,7 +5,7 @@ export default class UploadCSVForm extends Component {
   render() {
     return (
       <div>
-        Upload CSV File
+        
         <Button
           variant="contained"
           color="primary"
