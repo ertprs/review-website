@@ -12,7 +12,7 @@ import {
   ACTIVATE_USER_SUCCESS,
   ACTIVATE_USER_FAILURE
 } from "../store/actions/actionTypes";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import PageLoader from "../Components/Widgets/PageLoader";
 
 class ActivateUser extends Component {
   componentDidMount() {
@@ -88,17 +88,24 @@ class ActivateUser extends Component {
   };
 
   render() {
+    const { isLoading } = this.props;
     return (
-      <Layout>
-        <div className="mainContainer">
-          <div className="container">
-            <div className="col-md-6 offset-md-3">
-              <style jsx> {authenticationPageStyles} </style>
-              <div className="card">{this.showData()}</div>
+      <>
+        {isLoading ? (
+          <PageLoader />
+        ) : (
+          <Layout>
+            <div className="mainContainer">
+              <div className="container">
+                <div className="col-md-6 offset-md-3">
+                  <style jsx> {authenticationPageStyles} </style>
+                  <div className="card">{this.showData()}</div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </Layout>
+          </Layout>
+        )}
+      </>
     );
   }
 }
@@ -108,7 +115,8 @@ const mapStateToProps = state => {
   const { activateUserTemp } = auth;
   const type = _get(auth, "type", "");
   const success = _get(activateUserTemp, "success", false);
-  return { type, success };
+  const isLoading = _get(activateUserTemp, "isLoading", "undefined");
+  return { type, success, isLoading };
 };
 
 export default connect(

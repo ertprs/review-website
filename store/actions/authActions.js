@@ -227,8 +227,10 @@ export const activateUser = (url, activateUserApi) => {
     dispatch({
       type: ACTIVATE_USER_INIT,
       activateUserTemp: {
-        success: false
-      }
+        success: false,
+        isLoading: true
+      },
+      userActivated: false
     });
     if (url) {
       let splitUrlArray = url.split("/");
@@ -245,16 +247,20 @@ export const activateUser = (url, activateUserApi) => {
           dispatch({
             type: ACTIVATE_USER_SUCCESS,
             activateUserTemp: {
-              success
-            }
+              success,
+              isLoading: false
+            },
+            userActivated: success
           });
         } catch (error) {
           let success = _get(error, "response.data.success", false);
           dispatch({
             type: ACTIVATE_USER_FAILURE,
             activateUserTemp: {
-              success
-            }
+              success,
+              isLoading: false
+            },
+            userActivated: success
           });
         }
       }

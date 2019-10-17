@@ -42,7 +42,8 @@ const authReducer = (state = {}, action) => {
     resetPasswordTemp,
     businessSignUp,
     businessSignUpTemp,
-    resendActivation
+    resendActivation,
+    userActivated
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -77,19 +78,22 @@ const authReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        activateUserTemp: { ...activateUserTemp }
+        activateUserTemp: { ...activateUserTemp },
+        userActivated
       };
     case ACTIVATE_USER_SUCCESS:
       return {
         ...state,
         type,
-        activateUserTemp: { ...activateUserTemp }
+        activateUserTemp: { ...activateUserTemp },
+        userActivated
       };
     case ACTIVATE_USER_FAILURE:
       return {
         ...state,
         type,
-        activateUserTemp: { ...activateUserTemp }
+        activateUserTemp: { ...activateUserTemp },
+        userActivated
       };
     case VERIFY_RESET_PASSWORD_TOKEN_INIT:
       return {
