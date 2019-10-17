@@ -72,18 +72,6 @@ export default class AddInvitesForm extends Component {
               Add
             </Button>
           </div>
-          <div>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              endIcon={<ArrowRight />}
-              onClick={this.props.onContinueClick}
-              disabled={_isEmpty(this.props.tableData)}
-            >
-              Continue
-            </Button>
-          </div>
         </div>
       </div>
     );
@@ -144,6 +132,18 @@ export default class AddInvitesForm extends Component {
             }
           `}
         </style>
+        <div style={{textAlign:"right", marginBottom:"35px"}}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              endIcon={<ArrowRight />}
+              onClick={this.props.onContinueClick}
+              disabled={_isEmpty(this.props.tableData)}
+            >
+              Continue
+            </Button>
+          </div>
         <div className="row">{this.renderFormFields(valid)}</div>
         <div className="row">{this.renderButtons(valid)}</div>
         <Button
