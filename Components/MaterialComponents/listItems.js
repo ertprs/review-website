@@ -10,10 +10,13 @@ import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
-import HistoryIcon from '@material-ui/icons/History';
+import HistoryIcon from "@material-ui/icons/History";
 
-export const MainListItems = props => {
-  const stepToRender = props.stepToRender;
+export const MainListItems = ({
+  stepToRender,
+  disabled,
+  handleMainListItemClick
+}) => {
   return (
     <div>
       <style>
@@ -26,7 +29,7 @@ export const MainListItems = props => {
       <ListItem
         button
         onClick={() => {
-          props.handleMainListItemClick(0);
+          handleMainListItemClick(0);
         }}
         className={stepToRender === 0 ? "grayBg" : ""}
       >
@@ -38,9 +41,10 @@ export const MainListItems = props => {
       <ListItem
         button
         onClick={() => {
-          props.handleMainListItemClick(1);
+          handleMainListItemClick(1);
         }}
         className={stepToRender === 1 ? "grayBg" : ""}
+        disabled={disabled}
       >
         <ListItemIcon>
           <AllInbox />
@@ -50,9 +54,10 @@ export const MainListItems = props => {
       <ListItem
         button
         onClick={() => {
-          props.handleMainListItemClick(2);
+          handleMainListItemClick(2);
         }}
         className={stepToRender === 2 ? "grayBg" : ""}
+        disabled={disabled}
       >
         <ListItemIcon>
           <FormatQuote />
@@ -62,9 +67,10 @@ export const MainListItems = props => {
       <ListItem
         button
         onClick={() => {
-          props.handleMainListItemClick(3);
+          handleMainListItemClick(3);
         }}
         className={stepToRender === 3 ? "grayBg" : ""}
+        disabled={disabled}
       >
         <ListItemIcon>
           <HistoryIcon />
@@ -74,7 +80,7 @@ export const MainListItems = props => {
       <ListItem
         button
         onClick={() => {
-          props.handleMainListItemClick(4);
+          handleMainListItemClick(4);
         }}
         className={stepToRender === 4 ? "grayBg" : ""}
       >
@@ -86,8 +92,9 @@ export const MainListItems = props => {
       <ListItem
         button
         onClick={() => {
-          props.handleMainListItemClick(5);
+          handleMainListItemClick(5);
         }}
+        disabled={disabled}
         className={stepToRender === 5 ? "grayBg" : ""}
       >
         <ListItemIcon>
@@ -99,10 +106,10 @@ export const MainListItems = props => {
   );
 };
 
-export const SecondaryListItems = () => {
+export const SecondaryListItems = ({ subsriptionPlan }) => {
   return (
     <div>
-      <ListSubheader inset>Your plan: Free</ListSubheader>
+      <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader>
       <ListItem />
       <ListItem />
       <ListItem />

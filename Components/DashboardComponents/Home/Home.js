@@ -54,14 +54,18 @@ class Home extends Component {
   };
 
   renderActivationInfo = classes => {
-    const { activated, isLoading, success } = this.props;
+    const { activated, isLoading, activation_required } = this.props;
     console.log(isLoading, "isLoading");
     if (activated == false) {
       return (
         <Grid item xs={12} md={12} lg={12}>
           <SimpleCard>
             <Typography>
-              Your account is not activated.&nbsp;&nbsp;
+              Your account is not activated.&nbsp;
+              {activation_required
+                ? "Please activate your account to use our features."
+                : null}
+              &nbsp;&nbsp;
               {isLoading ? (
                 <Button
                   className={classes.button}
