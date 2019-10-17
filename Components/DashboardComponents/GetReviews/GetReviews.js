@@ -9,7 +9,9 @@ import validate from "../../../utility/validate";
 import SendInvitations from "../GetReviewsForms/SendInvitations";
 import SelectTemplateForm from "../GetReviewsForms/SelectTemplateForm";
 import SenderInfo from "../GetReviewsForms/SenderInfo/SenderInfo";
+import GetReviewsHome from "../GetReviewsForms/GetReviewsHome";
 import Done from "../GetReviewsForms/Done";
+import Papa from "papaparse";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import { connect } from "react-redux";
@@ -20,10 +22,12 @@ import {
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
+import CopyPasteForm from "../GetReviewsForms/CopyPasteForm";
+import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
 const columns = [
   { title: "Email", field: "email" },
   { title: "Name", field: "name" },
-  { title: "Reference number", field: "referenceNumber", type: "numeric" }
+  { title: "Reference number", field: "referenceNumber", type: "text" }
 ];
 
 const styles = theme => ({
@@ -36,6 +40,7 @@ class GetReviews extends Component {
   state = {
     activeStep: 0,
     tableData: [],
+    getReviewsActiveSubStep: -1,
     addInvitesData: {
       email: {
         element: "input",
@@ -49,7 +54,7 @@ class GetReviews extends Component {
           required: true,
           isEmail: true
         },
-        label:"Email"
+        label: "Email"
       },
       name: {
         element: "input",
@@ -62,20 +67,20 @@ class GetReviews extends Component {
         validationRules: {
           required: true
         },
-        label:"Customer name"
+        label: "Customer name"
       },
       referenceNumber: {
         element: "input",
-        type: "number",
+        type: "text",
         value: "",
         valid: true,
         touched: false,
-        errorMessage: "Enter valid number",
+        errorMessage: "Enter valid data",
         placeholder: "Enter reference number",
         validationRules: {
           required: false
         },
-        label:"Reference number"
+        label: "Reference number"
       }
     },
     selectTemplateData: {
@@ -99,6 +104,18 @@ class GetReviews extends Component {
         touched: false,
         errorMessage: "Enter valid entity",
         placeholder: "Enter entity domain",
+        validationRules: {
+          required: true
+        }
+      },
+      subject: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: false,
+        touched: false,
+        errorMessage: "Enter valid subject",
+        placeholder: "Email Subject: Leave a review on Entity",
         validationRules: {
           required: true
         }
@@ -133,6 +150,24 @@ class GetReviews extends Component {
         },
         name: "replyToEmail"
       }
+    },
+    copyPasteFormData: {
+      textbox: {
+        element: "textarea",
+        readOnly: false,
+        value: "",
+        valid: false,
+        touched: false,
+        errorMessage: "Enter valid records",
+        placeholder: "example@gmail.com, Peter Jones, 1234567890",
+        validationRules: {
+          required: true
+        },
+        rows: 10,
+        cols: 10,
+        name: "textbox"
+      },
+      parseErrors: []
     }
   };
 
@@ -165,6 +200,70 @@ class GetReviews extends Component {
 
     4: <SendInvitations />,
     5: <Done />
+  };
+
+  handleParseBtnClick = () => {
+    const { copyPasteFormData } = this.state;
+    const parsedData = Papa.parse(copyPasteFormData.textbox.value, {
+      skipEmptyLines: true
+    });
+    let valid = true;
+    let errorObj = [];
+    let tempObj = [];
+    //check if data is not empty
+    console.log(parsedData);
+    const newTableData = parsedData.data.map((item, index) => {
+      if (item.length >= 2) {
+        const email = item[0] || "";
+        const name = item[1] || "";
+        const referenceNumber = item[2] || "";
+        if (
+          email.trim() === "" ||
+          name.trim() === "" ||
+          !validate(email.trim(), { isEmail: true })
+        ) {
+          valid = false;
+          errorObj = [
+            ...errorObj,
+            {
+              index: index,
+              email: email,
+              name: name,
+              referenceNumber: referenceNumber
+            }
+          ];
+        }
+        return { email: email, name: name, referenceNumber: referenceNumber };
+      } else {
+        valid = false;
+        const email = item[0] || "";
+        const name = item[1] || "";
+        const referenceNumber = item[2] || "";
+        tempObj = [
+          ...tempObj,
+          {
+            index: index,
+            email: email || "",
+            name: name || "",
+            referenceNumber: referenceNumber || ""
+          }
+        ];
+        return {};
+      }
+    });
+    if (newTableData.length > 0 && valid) {
+      this.setState({
+        tableData: [...newTableData],
+        getReviewsActiveSubStep: 2
+      });
+    } else {
+      this.setState({
+        copyPasteFormData: {
+          ...this.state.copyPasteFormData,
+          parseErrors: [...tempObj, ...errorObj]
+        }
+      });
+    }
   };
 
   handleNext = () => {
@@ -205,7 +304,7 @@ class GetReviews extends Component {
         [id]: {
           ...formData[id],
           value: value,
-          valid: validate(value, formData[id].validationRules),
+          valid: id!=="referenceNumber" ? validate(value, formData[id].validationRules) : true,
           touched: true
         }
       }
@@ -227,7 +326,7 @@ class GetReviews extends Component {
             required: true,
             isEmail: true
           },
-          label:"Email"
+          label: "Email"
         },
         name: {
           element: "input",
@@ -240,20 +339,20 @@ class GetReviews extends Component {
           validationRules: {
             required: true
           },
-          label:"Customer name"
+          label: "Customer name"
         },
         referenceNumber: {
           element: "input",
-          type: "number",
+          type: "text",
           value: "",
           valid: true,
           touched: false,
-          errorMessage: "Enter valid number",
+          errorMessage: "Enter valid data",
           placeholder: "Enter reference number",
           validationRules: {
-          required: false
+            required: false
           },
-          label:"Reference number"
+          label: "Reference number"
         }
       }
     };
@@ -304,9 +403,9 @@ class GetReviews extends Component {
               line-height: 1.8;
               margin-bottom: 25px;
             }
-            @media only screen and (max-width:424px){
-              .inviteHeader{
-                font-size:1.3rem;
+            @media only screen and (max-width: 424px) {
+              .inviteHeader {
+                font-size: 1.3rem;
               }
             }
           `}
@@ -333,21 +432,71 @@ class GetReviews extends Component {
     }
   };
 
+  //for moving forward getReviewsActiveSubStep
+  handleListItemClick = index => {
+    this.setState({ getReviewsActiveSubStep: index });
+  };
+
+  //for moving backward getReviewsActiveSubStep to getHomeReviews
+  handleListItemBackClick = () => {
+    this.setState({ getReviewsActiveSubStep: -1 });
+  };
+
   renderAppropriateStep = () => {
-    const { activeStep } = this.state;
+    const { activeStep, getReviewsActiveSubStep } = this.state;
     if (activeStep === 0) {
-      return (
-        <div>
-          {this.renderInvitesInfo()}
-          <AddInvitesForm
-            formData={this.state.addInvitesData}
-            handleChange={this.handleChange}
-            onAddClick={this.onRowAdd}
-            onContinueClick={this.handleContinueClick}
-            tableData={_get(this.state, "tableData", [])}
+      if (getReviewsActiveSubStep === -1) {
+        return (
+          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+        );
+      } else if (getReviewsActiveSubStep === 0) {
+        return (
+          <UploadCSVForm
+            handleListItemBackClick={this.handleListItemBackClick}
           />
-        </div>
-      );
+        );
+      } else if (getReviewsActiveSubStep === 1) {
+        return (
+          <CopyPasteForm
+            formData={this.state.copyPasteFormData}
+            handleChange={this.handleChange}
+            handleParseBtnClick={this.handleParseBtnClick}
+            handleListItemBackClick={this.handleListItemBackClick}
+          />
+        );
+      } else if (getReviewsActiveSubStep === 2) {
+        return (
+          <>
+            {this.renderInvitesInfo()}
+            <AddInvitesForm
+              formData={this.state.addInvitesData}
+              handleChange={this.handleChange}
+              onAddClick={this.onRowAdd}
+              onContinueClick={this.handleContinueClick}
+              tableData={_get(this.state, "tableData", [])}
+              handleListItemBackClick={this.handleListItemBackClick}
+            />
+          </>
+        );
+      }
+      // return (
+      //   <div>
+      //     {/* {this.renderInvitesInfo()}
+      //     <AddInvitesForm
+      //       formData={this.state.addInvitesData}
+      //       handleChange={this.handleChange}
+      //       onAddClick={this.onRowAdd}
+      //       onContinueClick={this.handleContinueClick}
+      //       tableData={_get(this.state, "tableData", [])}
+      //     /> */}
+      //     {/* <CopyPasteForm
+      //       formData={this.state.copyPasteFormData}
+      //       handleChange={this.handleChange}
+      //       handleParseBtnClick={this.handleParseBtnClick}
+      //     /> */}
+      //     <GetReviewsHome />
+      //   </div>
+      // );
     }
     if (activeStep === 1) {
       return (
@@ -387,30 +536,32 @@ class GetReviews extends Component {
     const { activeStep } = this.state;
     return (
       <>
-      <style jsx>
-        {`
-          .customStepper{
-            display:none;
-          }
-        `}
-      </style>
-      <Container style={{ background: "#fff" }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={12} lg={12}>
-            <div className="customStepper">
-            <CustomSteppers activeStep={activeStep} />
-            </div>
+        <style jsx>
+          {`
+            .customStepper {
+              display: none;
+            }
+          `}
+        </style>
+        <Container style={{ background: "#fff" }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={12}>
+              <div className="customStepper">
+                <CustomSteppers activeStep={activeStep} />
+              </div>
+            </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              {this.renderAppropriateStep()}
+            </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              {this.state.tableData.length > 0 &&
+              this.state.activeStep === 0 &&
+              this.state.getReviewsActiveSubStep === 2
+                ? this.renderInvitesTable()
+                : null}
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={12} lg={12}>
-            {this.renderAppropriateStep()}
-          </Grid>
-          <Grid item xs={12} md={12} lg={12}>
-            {this.state.tableData.length > 0 && this.state.activeStep === 0
-              ? this.renderInvitesTable()
-              : null}
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
       </>
     );
   }

@@ -8,7 +8,6 @@ import {
   getLatLng
 } from "react-places-autocomplete";
 import { connect } from "react-redux";
-import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
 import _isEmpty from "lodash/isEmpty";
 import _get from "lodash/get";
 
@@ -25,7 +24,6 @@ class PlacesAutoComplete extends Component {
   };
 
   handleSelect = address => {
-    // const { locatePlaceByPlaceId, token } = this.props;
     geocodeByAddress(address)
       .then(results => {
         if (Array.isArray(results) && !_isEmpty(results)) {
@@ -105,6 +103,5 @@ const mapStateToProps = state => {
 };
 
 export default connect(
-  mapStateToProps,
-  { locatePlaceByPlaceId }
+  mapStateToProps
 )(PlacesAutoComplete);

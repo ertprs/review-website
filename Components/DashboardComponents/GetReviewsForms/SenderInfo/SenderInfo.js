@@ -151,6 +151,7 @@ class SenderInfoForm extends Component {
             </div>
           </div>
         </div>
+        <div className="container">
         <div className="row" style={{ marginTop: "20px" }}>
           <style jsx>
             {`
@@ -187,6 +188,7 @@ class SenderInfoForm extends Component {
               Continue
             </Button>
           </div>
+        </div>
         </div>
         <Modal
           showModal={this.state.showModal}
