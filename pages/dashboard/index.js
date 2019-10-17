@@ -171,6 +171,15 @@ function Dashboard(props) {
     }
   }
 
+  let menuItemsDisabled = false;
+  if (_get(props, "activation_required", false)) {
+    if (_get(props, "userActivated", false)) {
+      menuItemsDisabled = false;
+    } else if (_get(props, "userActivated", false) === false) {
+      menuItemsDisabled = true;
+    }
+  }
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -221,7 +230,7 @@ function Dashboard(props) {
         <Divider />
         <List>
           <MainListItems
-            disabled={_get(props, "activation_required", false)}
+            disabled={menuItemsDisabled}
             handleMainListItemClick={handleMenuItemClicked}
             stepToRender={stepToRender}
           />
@@ -266,12 +275,14 @@ const mapStateToProps = state => {
     "logIn.userProfile.subscription.plan_type_id",
     0
   );
+  const userActivated = _get(auth, "userActivated", false);
   return {
     authorized,
     loginType,
     userName,
     activation_required,
-    subsriptionPlan
+    subsriptionPlan,
+    userActivated
   };
 };
 
