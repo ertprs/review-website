@@ -11,7 +11,6 @@ import SearchInput from "../Components/MaterialComponents/SearchInput";
 import { connect } from "react-redux";
 import Snackbar from "../Components/Widgets/Snackbar";
 import _get from "lodash/get";
-import withLoader from "../hoc/withLoader";
 import { startLoading } from "../store/actions/loaderAction";
 
 const renderWebStats = () => {
