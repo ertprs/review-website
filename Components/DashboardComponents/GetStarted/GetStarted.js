@@ -12,7 +12,9 @@ import _get from "lodash/get";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {planType} from "../../../utility/constants/businessPlanConstants";
+import { planType } from "../../../utility/constants/businessPlanConstants";
+import FormField from "../../Widgets/FormField/FormField";
+import validate from "../../../utility/validate";
 
 class GetStarted extends Component {
   state = {
@@ -20,14 +22,30 @@ class GetStarted extends Component {
     variant: "success",
     snackbarMsg: "",
     address: "",
-    selectedAddress: {}
+    selectedAddress: {},
+    formData: {
+      directReviewUrl: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: false,
+        touched: false,
+        errorMessage: "Enter valid review URL",
+        placeholder: "Enter google review URL",
+        validationRules: {
+          required: true,
+          isDomain: true
+        },
+        label: "Google review URL: "
+      }
+    }
   };
 
   handleContinueClick = () => {
     const { selectedAddress } = this.state;
     if (Object.keys(selectedAddress).length > 0) {
       this.props.locatePlaceByPlaceId(
-        this.state.selectedAddress,
+        {...this.state.selectedAddress, directReviewUrl:this.state.formData["directReviewUrl"].value},
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
@@ -35,7 +53,9 @@ class GetStarted extends Component {
   };
 
   handleAddressSelect = (reqBody, address) => {
-    this.setState({ selectedAddress: { ...reqBody }, address: address });
+    const {userProfile} = this.props;
+    const name = _get(userProfile,'company.name',"")
+    this.setState({ selectedAddress: { ...reqBody, name:name }, address: address });
   };
 
   renderSelectedAddress = () => {
@@ -51,8 +71,8 @@ class GetStarted extends Component {
   };
 
   renderGetStartedHeader = () => {
-    const {userProfile} = this.props;
-    const name = _get(userProfile, "name", "")
+    const { userProfile } = this.props;
+    const name = _get(userProfile, "name", "");
     return (
       <div>
         <style jsx>{`
@@ -78,10 +98,18 @@ class GetStarted extends Component {
   };
 
   renderBusinessDetails = () => {
-    const domain = _get(this.props.businessProfile,"domain","");
-    const companyName = _get(this.props.userProfile,"company.name","")
-    const subscriptionPlan = _get(this.props.userProfile, "subscription.plan_type_id","")
-    const expiresAt = _get(this.props.userProfile, "subscription.expires_at","")
+    const domain = _get(this.props.businessProfile, "domain", "");
+    const companyName = _get(this.props.userProfile, "company.name", "");
+    const subscriptionPlan = _get(
+      this.props.userProfile,
+      "subscription.plan_type_id",
+      ""
+    );
+    const expiresAt = _get(
+      this.props.userProfile,
+      "subscription.expires_at",
+      ""
+    );
     return (
       <div className="businessDetailsContainer">
         <style jsx>
@@ -99,10 +127,10 @@ class GetStarted extends Component {
             .businessDetailsFlexItem div {
               flex-basis: 40%;
             }
-            @media screen and (max-width:720px){
-              .businessDetailsFlexItem{
-                flex-direction:column;
-                flex-basis:100%;
+            @media screen and (max-width: 720px) {
+              .businessDetailsFlexItem {
+                flex-direction: column;
+                flex-basis: 100%;
               }
             }
           `}
@@ -110,7 +138,9 @@ class GetStarted extends Component {
         <div className="businessDetailsFlexItem">
           <div className="bold">Domain :</div>
           <div>
-            <a href={`https://www.${domain}`} target="_blank">{domain}</a>
+            <a href={`https://www.${domain}`} target="_blank">
+              {domain}
+            </a>
           </div>
         </div>
         <div className="businessDetailsFlexItem">
@@ -130,12 +160,12 @@ class GetStarted extends Component {
   };
 
   renderContinueBtn = () => {
-    const { selectedAddress } = this.state;
+    const { selectedAddress, formData } = this.state;
     const { type } = this.props;
-    return Object.keys(selectedAddress).length > 0 ? (
+    return Object.keys(selectedAddress).length > 0 && formData["directReviewUrl"].valid ? (
       <div style={{ marginTop: "50px", textAlign: "right" }}>
         {type === "LOCATE_PLACE_INIT" ? (
-          <CircularProgress size={25}/>
+          <CircularProgress size={25} />
         ) : (
           <Button
             endIcon={<ArrowRight />}
@@ -146,6 +176,41 @@ class GetStarted extends Component {
             Claim &amp; continue
           </Button>
         )}
+      </div>
+    ) : null;
+  };
+
+  handleChange = (e, id) => {
+    this.setState({
+      formData: {
+        ...this.state.formData,
+        [id]: {
+          ...this.state.formData[id],
+          value: e.target.value,
+          valid: validate(
+            e.target.value,
+            this.state.formData[id].validationRules
+          ),
+          touched:true
+        }
+      }
+    });
+  };
+
+  renderDirectReviewUrl = () => {
+    const { formData, selectedAddress } = this.state;
+    return Object.keys(selectedAddress).length > 0 ? (
+      <div>
+        <FormField
+          {...formData.directReviewUrl}
+          id="directReviewUrl"
+          handleChange={this.handleChange}
+          styles={{
+            border: "0",
+            borderBottom: "1px solid #999",
+            borderRadius: "0"
+          }}
+        />
       </div>
     ) : null;
   };
@@ -180,22 +245,21 @@ class GetStarted extends Component {
               height: auto;
             }
 
-            @media screen and (max-width:720px){
-              .getStartedBoxImgContainer{
-                display:none;
+            @media screen and (max-width: 720px) {
+              .getStartedBoxImgContainer {
+                display: none;
               }
-              .getStartedBoxHeader h4{
-                font-size:1.1rem;
+              .getStartedBoxHeader h4 {
+                font-size: 1.1rem;
                 margin-bottom: 35px;
               }
             }
-
           `}
         </style>
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
             <h4>
-              {this.props.placeId!=="" || this.props.success
+              {this.props.placeId !== "" || this.props.success
                 ? "Your business details"
                 : "Please claim your Business"}
             </h4>
@@ -204,19 +268,20 @@ class GetStarted extends Component {
             <div className="getStartedBoxImgContainer">
               <img
                 src={`/static/images/${
-                  this.props.placeId!=="" || this.props.success
+                  this.props.placeId !== "" || this.props.success
                     ? "googleMyBusiness.jpg"
                     : "locate.png"
                 }`}
               />
             </div>
             <div className="getStartedBoxAutoComplete">
-              {this.props.placeId==="" && !this.props.success? (
+              {this.props.placeId === "" && !this.props.success ? (
                 <>
                   <PlacesAutoComplete
                     handleAddressSelect={this.handleAddressSelect}
                   />
                   {this.renderSelectedAddress()}
+                  {this.renderDirectReviewUrl()}
                   {this.renderContinueBtn()}
                 </>
               ) : (
@@ -268,7 +333,7 @@ class GetStarted extends Component {
 const mapStateToProps = state => {
   const { dashboardData, auth } = state;
   const token = _get(auth, "logIn.token", "");
-  const userProfile = _get(auth, "logIn.userProfile", {})
+  const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const success = _get(dashboardData, "locatePlace.success", false);
   const type = _get(dashboardData, "type", "");
