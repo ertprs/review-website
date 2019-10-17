@@ -292,7 +292,7 @@ class GetReviews extends Component {
         [id]: {
           ...formData[id],
           value: value,
-          valid: validate(value, formData[id].validationRules),
+          valid: id!=="referenceNumber" ? validate(value, formData[id].validationRules) : true,
           touched: true
         }
       }
@@ -331,11 +331,11 @@ class GetReviews extends Component {
         },
         referenceNumber: {
           element: "input",
-          type: "number",
+          type: "text",
           value: "",
           valid: true,
           touched: false,
-          errorMessage: "Enter valid number",
+          errorMessage: "Enter valid data",
           placeholder: "Enter reference number",
           validationRules: {
             required: false
