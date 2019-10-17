@@ -89,7 +89,7 @@ export default class SelectTemplateForm extends Component {
         </style>
         <div className="templateContainer">
           <div className="header">
-            <h6>Leave a review on Entity and get a gift!</h6>
+            <h6>{formData.subject.value !== "" ? formData.subject.value : "Leave a review on Entity and get a gift!"}</h6>
           </div>
           <p>
             Dear{" "}

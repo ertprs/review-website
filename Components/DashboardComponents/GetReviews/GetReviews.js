@@ -107,6 +107,18 @@ class GetReviews extends Component {
         validationRules: {
           required: true
         }
+      },
+      subject: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: false,
+        touched: false,
+        errorMessage: "Enter valid subject",
+        placeholder: "Email Subject: Leave a review on Entity",
+        validationRules: {
+          required: true
+        }
       }
     },
     senderInfoData: {
