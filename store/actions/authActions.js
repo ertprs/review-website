@@ -376,7 +376,7 @@ export const businessSignUp = (signupData, api) => {
         signUpSuccess: false,
         isSigningUp: true,
         isSignupFailed: false,
-        errorMsg: ""
+        error: ""
       }
     });
     try {
@@ -391,13 +391,13 @@ export const businessSignUp = (signupData, api) => {
           signUpSuccess: success,
           isSigningUp: false,
           isSignupFailed: false,
-          errorMsg: ""
+          error: ""
         }
       });
-    } catch (error) {
-      let success = _get(error, "response.data.success", false);
-      let status = _get(error, "response.status", 0);
-      let errorMsg = _get(error, "response.data.error", "");
+    } catch (err) {
+      let success = _get(err, "response.data.success", false);
+      let status = _get(err, "response.status", 0);
+      let error = _get(err, "response.data.error", "");
       dispatch({
         type: BUSINESS_SIGNUP_FAILURE,
         businessSignUp: {},
@@ -406,7 +406,7 @@ export const businessSignUp = (signupData, api) => {
           signUpSuccess: success,
           isSigningUp: false,
           isSignupFailed: true,
-          errorMsg
+          error
         }
       });
     }
