@@ -23,7 +23,10 @@ import {
   BUSINESS_SIGNUP_FAILURE,
   BUSINESS_LOGIN_INIT,
   BUSINESS_LOGIN_SUCCESS,
-  BUSINESS_LOGIN_FAILURE
+  BUSINESS_LOGIN_FAILURE,
+  RESEND_ACTIVATION_LINK_INIT,
+  RESEND_ACTIVATION_LINK_SUCCESS,
+  RESEND_ACTIVATION_LINK_FAILURE
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -38,11 +41,13 @@ const authReducer = (state = {}, action) => {
     verifyTokenTemp,
     resetPasswordTemp,
     businessSignUp,
-    businessSignUpTemp
+    businessSignUpTemp,
+    resendActivation
   } = action;
   switch (type) {
     case SIGNUP_INIT:
       return {
+        ...status,
         type: type,
         signUp: { ...signUp },
         signUpTemp: { ...signUpTemp }
@@ -173,6 +178,24 @@ const authReducer = (state = {}, action) => {
         type,
         logIn: { ...logIn },
         logInTemp: { ...logInTemp }
+      };
+    case RESEND_ACTIVATION_LINK_INIT:
+      return {
+        ...state,
+        type,
+        resendActivation: { ...resendActivation }
+      };
+    case RESEND_ACTIVATION_LINK_SUCCESS:
+      return {
+        ...state,
+        type,
+        resendActivation: { ...resendActivation }
+      };
+    case RESEND_ACTIVATION_LINK_FAILURE:
+      return {
+        ...state,
+        type,
+        resendActivation: { ...resendActivation }
       };
     case LOGOUT:
       state = undefined;

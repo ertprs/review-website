@@ -24,7 +24,10 @@ import {
   BUSINESS_SIGNUP_FAILURE,
   BUSINESS_LOGIN_INIT,
   BUSINESS_LOGIN_SUCCESS,
-  BUSINESS_LOGIN_FAILURE
+  BUSINESS_LOGIN_FAILURE,
+  RESEND_ACTIVATION_LINK_INIT,
+  RESEND_ACTIVATION_LINK_SUCCESS,
+  RESEND_ACTIVATION_LINK_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -471,7 +474,7 @@ export const businessLogIn = (loginData, api) => {
       let status = _get(err, "response.status", 0);
       let error = _get(err, "response.data.error", "Some Error Occured.");
       let isWrongCredentials =
-        _get(err, "response.data.message", "") === "Unauthorized";
+        _get(err, "response.data.error") === "Unauthorized";
       dispatch({
         type: BUSINESS_LOGIN_FAILURE,
         logIn: {
@@ -486,6 +489,41 @@ export const businessLogIn = (loginData, api) => {
           isLoginFailed: !success,
           isLoggingIn: false,
           error
+        }
+      });
+    }
+  };
+};
+
+export const resendActivationLink = (token, api) => {
+  console.log(token, "token");
+  return async dispatch => {
+    dispatch({
+      type: RESEND_ACTIVATION_LINK_INIT,
+      resendActivation: {
+        success: "undefined",
+        isLoading: true
+      }
+    });
+    try {
+      const result = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${api}`
+      });
+      dispatch({
+        type: RESEND_ACTIVATION_LINK_SUCCESS,
+        resendActivation: {
+          success: _get(result, "data.success", false),
+          isLoading: false
+        }
+      });
+    } catch (err) {
+      dispatch({
+        type: RESEND_ACTIVATION_LINK_FAILURE,
+        resendActivation: {
+          success: _get(err, "response.data.success", false),
+          isLoading: false
         }
       });
     }

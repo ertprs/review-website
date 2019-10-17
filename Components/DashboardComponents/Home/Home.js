@@ -5,7 +5,88 @@ import StarRatings from "react-star-ratings";
 import Title from "../../MaterialComponents/Title";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import { resendActivationLink } from "../../../store/actions/authActions";
+import { resendActivationLinkApi } from "../../../utility/config";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import withStyles from "@material-ui/styles/withStyles";
+import Snackbar from "../../Widgets/Snackbar";
+
+const styles = theme => ({
+  button: {
+    width: "150px"
+  }
+});
+
 class Home extends Component {
+  state = {
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props !== prevProps) {
+      const { success } = this.props;
+      let snackbarMsg = "";
+      if (success === true) {
+        snackbarMsg = "Mail sent successfully, Please verify your email.";
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg
+        });
+      } else if (success === false) {
+        snackbarMsg = "Some error occured.";
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg
+        });
+      }
+    }
+  }
+
+  sendActivationLink = () => {
+    const { token, resendActivationLink } = this.props;
+    resendActivationLink(token, resendActivationLinkApi);
+  };
+
+  renderActivationInfo = classes => {
+    const { activated, isLoading, success } = this.props;
+    console.log(isLoading, "isLoading");
+    if (activated == false) {
+      return (
+        <Grid item xs={12} md={12} lg={12}>
+          <SimpleCard>
+            <Typography>
+              Your account is not activated.&nbsp;&nbsp;
+              {isLoading ? (
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  color="primary"
+                >
+                  <CircularProgress size={25} color={"fff"} />
+                </Button>
+              ) : (
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  onClick={this.sendActivationLink}
+                  color="primary"
+                >
+                  Activate now
+                </Button>
+              )}
+            </Typography>
+          </SimpleCard>
+        </Grid>
+      );
+    }
+  };
+
   renderOverviewCard = () => {
     const { reviewsData } = this.props;
     const rating = _get(reviewsData, "rating", 0);
@@ -37,7 +118,7 @@ class Home extends Component {
             font-weight: lighter;
           }
         `}</style>
-        <SimpleCard style={{height:"298px"}}>
+        <SimpleCard style={{ height: "298px" }}>
           <div className="header">
             <Title>
               <h5>Overall performance</h5>
@@ -138,7 +219,7 @@ class Home extends Component {
             color: #555;
           }
         `}</style>
-        <SimpleCard style={{height:"298px"}}>
+        <SimpleCard style={{ height: "298px" }}>
           <div className="header">
             <Title>
               <h5>Latest reviews</h5>
@@ -172,7 +253,7 @@ class Home extends Component {
             color: #555;
           }
         `}</style>
-        <SimpleCard style={{height:"298px"}}>
+        <SimpleCard style={{ height: "298px" }}>
           <div className="header">
             <Title>
               <h5>Invitations Summary</h5>
@@ -200,24 +281,54 @@ class Home extends Component {
   };
 
   render() {
+    const { classes } = this.props;
     return (
-      <Grid container spacing={3}>
-        {this.renderOverviewCard()}
-        {this.renderRecentReviewsCard()}
-        {this.renderInvitationsCard()}
-      </Grid>
+      <>
+        <Grid container spacing={3}>
+          {this.renderActivationInfo(classes)}
+          {this.renderOverviewCard()}
+          {this.renderRecentReviewsCard()}
+          {this.renderInvitationsCard()}
+        </Grid>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
+      </>
     );
   }
 }
 
 const mapStateToProps = state => {
   const { dashboardData, auth } = state;
+  const activated = _get(auth, "logIn.userProfile.activated", false);
+  const activation_required = _get(
+    auth,
+    "logIn.userProfile.activation_required",
+    false
+  );
   const reviewsData = _get(dashboardData, "reviewsData", {});
   const quotaDetails = _get(
     auth,
     "logIn.userProfile.subscription.quota_details"
   );
-  return { reviewsData, quotaDetails };
+  const token = _get(auth, "logIn.token", "");
+  const success = _get(auth, "resendActivation.success", "undefiend");
+  const isLoading = _get(auth, "resendActivation.isLoading", false);
+  return {
+    reviewsData,
+    quotaDetails,
+    activated,
+    activation_required,
+    token,
+    success,
+    isLoading
+  };
 };
 
-export default connect(mapStateToProps)(Home);
+export default connect(
+  mapStateToProps,
+  { resendActivationLink }
+)(withStyles(styles)(Home));
