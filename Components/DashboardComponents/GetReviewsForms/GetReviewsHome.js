@@ -15,12 +15,12 @@ import PostAddIcon from "@material-ui/icons/PostAdd";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 const inviteOptions = [
-  // {
-  //   id: 0,
-  //   icon: <PublishIcon />,
-  //   primaryText: "Upload a file",
-  //   secondaryText: "Service reviews"
-  // },
+  {
+    id: 0,
+    icon: <PublishIcon />,
+    primaryText: "Upload a file",
+    secondaryText: "Service reviews"
+  },
   {
     id: 1,
     icon: <DescriptionIcon />,
@@ -61,7 +61,7 @@ export default class GetReviewsHome extends Component {
           </style>
           <div className="renderInviteOptionsListContainer">
             <List key={index} onClick={()=>{
-                this.props.handleListItemClick(index+1)
+                this.props.handleListItemClick(index)
             }}>
               <ListItem>
                 <ListItemAvatar>
