@@ -119,7 +119,7 @@ const useStyles = makeStyles(theme => ({
 function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [stepToRender, setStepToRender] = React.useState(4);
+  const [stepToRender, setStepToRender] = React.useState(0);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
 
   // useEffect(() => {
@@ -143,15 +143,15 @@ function Dashboard(props) {
 
   const renderAppropriateComponent = () => {
     if (stepToRender === 0) {
-      return <Home />;
-    } else if (stepToRender === 1) {
-      return <Reviews />;
-    } else if (stepToRender === 2) {
-      return <GetReviews />;
-    } else if (stepToRender === 3) {
-      return <InvitationHistory />;
-    } else if (stepToRender === 4) {
       return <GetStarted />;
+    } else if (stepToRender === 1) {
+      return <Home />;
+    } else if (stepToRender === 2) {
+      return <Reviews />;
+    } else if (stepToRender === 3) {
+      return <GetReviews />;
+    } else if (stepToRender === 4) {
+      return <InvitationHistory />;
     } else if (stepToRender === 5) {
       return <WidgetsShowCase />;
     }
@@ -198,7 +198,7 @@ function Dashboard(props) {
               classes.menuButton,
               open && classes.menuButtonHidden
             )}
-            style={{color:"#fff"}}
+            style={{ color: "#fff" }}
           >
             <MenuIcon />
           </IconButton>
@@ -208,11 +208,15 @@ function Dashboard(props) {
             color="inherit"
             noWrap
             className={classes.title}
-            style={{color:"#fff"}}
+            style={{ color: "#fff" }}
           >
             Welcome {userName || ""} !
           </Typography>
-          <IconButton color="inherit" onClick={handleLogout} style={{color:"#fff"}}>
+          <IconButton
+            color="inherit"
+            onClick={handleLogout}
+            style={{ color: "#fff" }}
+          >
             <LogoutIcon />
           </IconButton>
         </Toolbar>

@@ -34,9 +34,9 @@ export const MainListItems = ({
         className={stepToRender === 0 ? "grayBg" : ""}
       >
         <ListItemIcon>
-          <Home />
+          <FormatListBulletedIcon />
         </ListItemIcon>
-        <ListItemText primary="Home" />
+        <ListItemText primary="Get started" />
       </ListItem>
       <ListItem
         button
@@ -44,12 +44,11 @@ export const MainListItems = ({
           handleMainListItemClick(1);
         }}
         className={stepToRender === 1 ? "grayBg" : ""}
-        disabled={disabled}
       >
         <ListItemIcon>
-          <AllInbox />
+          <Home />
         </ListItemIcon>
-        <ListItemText primary="Reviews" />
+        <ListItemText primary="Home" />
       </ListItem>
       <ListItem
         button
@@ -60,9 +59,9 @@ export const MainListItems = ({
         disabled={disabled}
       >
         <ListItemIcon>
-          <FormatQuote />
+          <AllInbox />
         </ListItemIcon>
-        <ListItemText primary="Get Reviews" />
+        <ListItemText primary="Reviews" />
       </ListItem>
       <ListItem
         button
@@ -73,9 +72,9 @@ export const MainListItems = ({
         disabled={disabled}
       >
         <ListItemIcon>
-          <HistoryIcon />
+          <FormatQuote />
         </ListItemIcon>
-        <ListItemText primary="Invitation History" />
+        <ListItemText primary="Get Reviews" />
       </ListItem>
       <ListItem
         button
@@ -83,11 +82,12 @@ export const MainListItems = ({
           handleMainListItemClick(4);
         }}
         className={stepToRender === 4 ? "grayBg" : ""}
+        disabled={disabled}
       >
         <ListItemIcon>
-          <FormatListBulletedIcon />
+          <HistoryIcon />
         </ListItemIcon>
-        <ListItemText primary="Get started" />
+        <ListItemText primary="Invitation History" />
       </ListItem>
       <ListItem
         button
