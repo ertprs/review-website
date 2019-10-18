@@ -26,7 +26,7 @@ const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles, 
             starRatedColor="#21bc61"
             numberOfStars={5}
             name="rating"
-            starDimension="20px"
+            starDimension="17px"
             starSpacing="1px"
           />
         </div>
