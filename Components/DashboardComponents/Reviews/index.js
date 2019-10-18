@@ -42,7 +42,7 @@ class Reviews extends Component {
     return (
       <>
         <Head>
-          <link rel="stylesheet" href="/static/reviews.css" />
+          <link rel="stylesheet" href="/static/css/reviews.css" />
         </Head>
         <style jsx>{`
           .reviewsContainer {

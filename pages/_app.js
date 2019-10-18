@@ -7,10 +7,19 @@ import { PersistGate } from "redux-persist/integration/react";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../src/theme";
-
+import Router from "next/router";
+import NProgress from "nprogress";
 import Head from "next/head";
-
 import { layoutStyles } from "../style";
+
+NProgress.configure({ trickle: false, showSpinner: false });
+
+Router.events.on("routeChangeStart", url => {
+  console.log(`Loading: ${url}`);
+  NProgress.start();
+});
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 class MyApp extends App {
   static async getInitialProps({ req, Component, ctx }) {
@@ -43,6 +52,11 @@ class MyApp extends App {
         <style jsx>{layoutStyles}</style>
         <Head>
           <title>The trustsearch engine</title>
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="/static/css/nprogress.css"
+          />
           <link
             href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
             rel="stylesheet"
