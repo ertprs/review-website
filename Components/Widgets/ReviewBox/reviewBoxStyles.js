@@ -2,9 +2,9 @@ import css from "styled-jsx/css";
 
 export const reviewBoxStyles = css`
   .reviewBox {
-    padding: 2% 4% 2% 4%;
+    padding: 2% 8% 2% 8%;
     margin: 2%;
-    box-shadow: 0px 2px 4px #999;
+    box-shadow: 0px 2px 7px #ddd;
     height:159px;
   }
   .reviewVideoBox {
@@ -38,8 +38,7 @@ export const reviewBoxStyles = css`
 
   .reviewText {
     text-align: justify;
-    font-size: 0.9rem;
-    word-break:break-all;
+    font-size: 0.8rem;
   }
 
   /*---------- Trust don't trust icon container -------------*/

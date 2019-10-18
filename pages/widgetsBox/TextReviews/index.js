@@ -44,6 +44,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
 
         .textReviewsContainer {
           padding: 0 3% 0 3%;
+          font-size:0.9rem;
         }
 
         .scoreWidgetContainer {
@@ -112,6 +113,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
             type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
           />
+          <link href="/static/css/slick.css" type="text/css" rel="stylesheet" />
         </Head>
         <div className="reviewBoxSlider">
           <Slider {...settings}>
@@ -120,9 +122,9 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
                 <div key={uuid()}>
                   <ReviewBox
                     review={item}
-                    styles={{ height: "200px" }}
-                    reviewRatingStyles={{ margin: "8px 0 8px 0" }}
-                    reviewHeaderStyles={{ marginTop: "5px" }}
+                    styles={{ height: "199px" }}
+                    reviewRatingStyles={{ margin: "13px 0 13px 0" }}
+                    reviewHeaderStyles={{ marginTop: "10px" }}
                     domain={props.domain}
                   />
                 </div>
@@ -210,8 +212,8 @@ const TextReviews = props => {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: 2,
+          slidesToScroll: 2,
           dots: false
         }
       },
