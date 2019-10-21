@@ -141,9 +141,15 @@ function Dashboard(props) {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const changeStepToRender = step => {
+    console.log(step, "step");
+    debugger;
+    setStepToRender(step);
+  };
+
   const renderAppropriateComponent = () => {
     if (stepToRender === 0) {
-      return <GetStarted />;
+      return <GetStarted changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 1) {
       return <Home />;
     } else if (stepToRender === 2) {
@@ -170,14 +176,30 @@ function Dashboard(props) {
       userName = nameAfterSplit[0];
     }
   }
-
+  let getStartedHide = false;
+  let homeDisabled = false;
   let menuItemsDisabled = false;
+  if (
+    _get(props, "placeId", "") !== "" ||
+    _get(props, "placeLocated", "false")
+  ) {
+    getStartedHide = true;
+  } else {
+    getStartedHide = false;
+  }
   if (_get(props, "activation_required", false)) {
     if (_get(props, "userActivated", false)) {
       menuItemsDisabled = false;
     } else if (_get(props, "userActivated", false) === false) {
       menuItemsDisabled = true;
     }
+  }
+  if (_get(props, "placeId", "") === "" || !placeLocated) {
+    menuItemsDisabled = true;
+    homeDisabled = true;
+  } else {
+    menuItemsDisabled = false;
+    homeDisabled = false;
   }
 
   return (
@@ -236,7 +258,9 @@ function Dashboard(props) {
         <Divider />
         <List>
           <MainListItems
-            disabled={menuItemsDisabled}
+            getStartedHide={false}
+            homeDisabled={false}
+            menuItemDisabled={false}
             handleMainListItemClick={handleMenuItemClicked}
             stepToRender={stepToRender}
           />
@@ -267,7 +291,7 @@ function Dashboard(props) {
 }
 
 const mapStateToProps = state => {
-  const { auth } = state;
+  const { auth, dashboardData } = state;
   const authorized = _get(auth, "logIn.authorized", false);
   const loginType = _get(auth, "logIn.loginType", 0);
   const userName = _get(auth, "logIn.userProfile.name", "");
@@ -282,13 +306,18 @@ const mapStateToProps = state => {
     0
   );
   const userActivated = _get(auth, "userActivated", false);
+  const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const placeId = _get(businessProfile, "google_places.placeId", "");
+  const placeLocated = _get(dashboardData, "locatePlace.success", false);
   return {
     authorized,
     loginType,
     userName,
     activation_required,
     subsriptionPlan,
-    userActivated
+    userActivated,
+    placeId,
+    placeLocated
   };
 };
 

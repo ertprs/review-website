@@ -24,6 +24,7 @@ import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
 import CopyPasteForm from "../GetReviewsForms/CopyPasteForm";
 import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
+import CreateCampaign from "../GetReviewsForms/CreateCampaign";
 const columns = [
   { title: "Email", field: "email" },
   { title: "Name", field: "name" },
@@ -121,8 +122,38 @@ class GetReviews extends Component {
         }
       }
     },
-    senderInfoData: {
+    createCampaign: {
       // senderMail: "",
+      campaignName: {
+        element: "input",
+        value: "",
+        placeholder: "Enter campaign name",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          minLength: 3
+        },
+        name: "campaignName"
+      },
+      campaignLanguage: {
+        element: "select",
+        value: "",
+        options: [
+          { name: "English", value: "en" },
+          { name: "Latvian", value: "lv" },
+          { name: "German", value: "de" }
+        ],
+        placeholder: "Select your campaign language",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "campaignLanguage"
+      },
       senderName: {
         element: "input",
         value: "",
@@ -135,6 +166,19 @@ class GetReviews extends Component {
           minLength: 3
         },
         name: "senderName"
+      },
+      senderEmail: {
+        element: "input",
+        value: "",
+        placeholder: "Enter sender's email",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          isEmail
+        },
+        name: "senderEmail"
       },
       replyToEmail: {
         element: "select",
@@ -304,7 +348,10 @@ class GetReviews extends Component {
         [id]: {
           ...formData[id],
           value: value,
-          valid: id!=="referenceNumber" ? validate(value, formData[id].validationRules) : true,
+          valid:
+            id !== "referenceNumber"
+              ? validate(value, formData[id].validationRules)
+              : true,
           touched: true
         }
       }

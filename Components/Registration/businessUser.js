@@ -238,20 +238,28 @@ class BusinessUserRegistration extends Component {
           variant: "success",
           snackbarMsg
         });
-        if (authorized) {
-          this.setState({
-            showSnackbar: true,
-            variant: "success",
-            snackbarMsg: "Logged in successfully!"
-          });
-          Router.push("/dashboard");
-        } else {
-          this.setState({
-            showSnackbar: true,
-            variant: "error",
-            snackbarMsg: "Some error occured while loggin in!"
-          });
-          Router.push("/login");
+        if (authorized === true) {
+          this.setState(
+            {
+              showSnackbar: true,
+              variant: "success",
+              snackbarMsg: "Logged in successfully!"
+            },
+            () => {
+              Router.push("/dashboard");
+            }
+          );
+        } else if (authorized === false) {
+          this.setState(
+            {
+              showSnackbar: true,
+              variant: "error",
+              snackbarMsg: "Some error occured while loggin in!"
+            },
+            () => {
+              Router.push("/login");
+            }
+          );
         }
       }
     }
@@ -391,7 +399,7 @@ const mapStateToProps = state => {
   const status = _get(businessSignUpTemp, "status", -1);
   const error = _get(businessSignUpTemp, "error", "");
   const isSigningUp = _get(businessSignUpTemp, "isSigningUp", false);
-  const authorized = _get(auth, "logIn.authorized", false);
+  const authorized = _get(auth, "logIn.authorized", "undefiend");
   return {
     auth,
     isSignUpFailed,

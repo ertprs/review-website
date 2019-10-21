@@ -10,6 +10,7 @@ import {
 import { connect } from "react-redux";
 import _isEmpty from "lodash/isEmpty";
 import _get from "lodash/get";
+import Tooltip from "@material-ui/core/Tooltip";
 
 class PlacesAutoComplete extends Component {
   constructor(props) {
@@ -40,6 +41,7 @@ class PlacesAutoComplete extends Component {
   render() {
     return (
       <PlacesAutocomplete
+        title="Hello"
         value={this.state.address}
         onChange={this.handleChange}
         onSelect={this.handleSelect}
@@ -52,16 +54,17 @@ class PlacesAutoComplete extends Component {
                 className: "location-search-input"
               })}
             /> */}
-
-            <TextField
-              label="Search Places..."
-              margin="dense"
-              {...getInputProps({
-                placeholder: "Business name",
-                className: "location-search-input"
-              })}
-              style={{ width: "100%" }}
-            />
+            <Tooltip title="Please locate your business." placement="top-start">
+              <TextField
+                label="Search Places..."
+                margin="dense"
+                {...getInputProps({
+                  placeholder: "Business name",
+                  className: "location-search-input"
+                })}
+                style={{ width: "100%" }}
+              />
+            </Tooltip>
             <div className="autocomplete-dropdown-container">
               <Paper>
                 {loading && <div>Loading...</div>}
@@ -97,11 +100,9 @@ class PlacesAutoComplete extends Component {
 const mapStateToProps = state => {
   const { auth } = state;
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
-  const domain = _get(businessProfile, "domain", "")
+  const domain = _get(businessProfile, "domain", "");
   const token = _get(auth, "logIn.token", "");
   return { token, domain, businessProfile };
 };
 
-export default connect(
-  mapStateToProps
-)(PlacesAutoComplete);
+export default connect(mapStateToProps)(PlacesAutoComplete);

@@ -438,7 +438,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
     dispatch({
       type: BUSINESS_LOGIN_INIT,
       logIn: {
-        authorized: false,
+        authorized: "undefined",
         loginType: 0,
         token: "",
         userProfile: {}
