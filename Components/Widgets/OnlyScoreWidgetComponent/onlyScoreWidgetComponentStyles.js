@@ -15,6 +15,12 @@ export const onlyScoreWidgetComponentStyles = css`
     -o-border-radius: 10px;
   }
 
+  .widgetRating{
+    margin-bottom:0;
+    font-weight:bolder;
+    font-size:1.3rem;
+  }
+
   .carouselWidgetBox{
       box-shadow:none;
       padding:1% 0 0 0;
@@ -59,9 +65,9 @@ export const onlyScoreWidgetComponentStyles = css`
   }
 
   .carouselWidgetImgContainerV{
-    height:30px;
+    height:25px;
     width:80%;
-    margin:0 auto;
+    margin:5px auto 0 auto;
   }
 
   /*----------- utility classes -----------*/

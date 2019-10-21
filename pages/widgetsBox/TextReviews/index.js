@@ -21,6 +21,44 @@ const retrieveRequiredData = reviewData => {
   return { ratings, totalReviews, reviews };
 };
 
+const renderReviewBoxFooter = requiredData => {
+  return (
+    <div className="footer">
+      <style jsx>
+        {`
+          .footer {
+            text-align: center;
+            font-size: 12.5px;
+          }
+          .flexContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .flexImgContainer {
+            margin-left: 3px;
+          }
+        `}
+      </style>
+      <div className="flexContainer">
+        <div className="text">
+          Based on{" "}
+          <span style={{ fontWeight: "bold" }}>
+            {_get(requiredData, "totalReviews", 0)}
+          </span>{" "}
+          reviews at{" "}
+          <a href="https://thetrustsearch.com" target="_blank">
+            <img src="/static/images/small_logo.png" alt="logoImg"/>
+          </a>
+        </div>
+        {/* <div className="flexImgContainer">
+          
+        </div> */}
+      </div>
+    </div>
+  );
+};
+
 const renderTextReviewsWidget = (reviewData, settings, props) => {
   const requiredData = retrieveRequiredData(reviewData);
   return (
@@ -33,7 +71,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           flex-wrap: nowrap;
         }
         .flexContainer > div {
-          width: ${requiredData.total > 2 ? "80%" : "40%"};
+          width: ${requiredData.total > 2 ? "80%" : "39%"};
           order: 0;
           flex: 0 1 auto;
         }
@@ -51,46 +89,47 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           width: 20%;
           height: 100%; //affected by the height passed as a prop to the widget
         }
+        .reviewBoxFooter{
+          display:none;
+        }
 
-        @media screen and (max-width: 991px) {
+        @media screen and (max-width:1100px){
+          .flexContainer > div:first-child {
+            width: 25%;
+          }
+
           .flexContainer > div:last-child {
-            flex-basis: 100%;
+            width: 75%;
           }
         }
 
-        @media screen and (max-width: 989px) {
-          .textReviewsContainer {
-            padding: 0 4% 0 4%;
+         @media screen and (max-width: 990px) {
+           .flexContainer{
+             justify-content:space-around;
+           }
+          .flexContainer > div:first-child {
+            width: 40%;
           }
 
-          @media screen and (max-width: 767px) {
-            .textReviewsContainer {
-              padding: 0 5.3% 0 5%;
-            }
-            .scoreWidgetContainer {
-              display: none;
-            }
-            .flexContainer > div {
-              width: 100%;
-            }
+          .flexContainer > div:last-child {
+            width: 50%;
           }
+         }
 
-          @media screen and (max-width: 525px) {
-            .textReviewsContainer {
-              padding: 0 5.5% 0 5.5%;
-            }
-          }
-
-          @media screen and (max-width: 468px) {
-            .textReviewsContainer {
-              padding: 0 7% 0 7%;
-            }
-          }
-          @media screen and (max-width: 252px) {
-            .flexContainer {
-              display: none;
-            }
-          }
+         @media screen and (max-width: 599px){
+           .flexContainer > div:first-child{
+             display:none;
+             width:0;
+           }
+           .flexContainer > div:last-child{
+             width:81.5%;
+             margin:0 auto;
+           }
+           .reviewBoxFooter{
+             display:block;
+             margin-top:8px;
+           }
+         }
         }
       `}</style>
       <div className="scoreWidgetContainer">
@@ -122,9 +161,9 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
                 <div key={uuid()}>
                   <ReviewBox
                     review={item}
-                    styles={{ height: "199px" }}
-                    reviewRatingStyles={{ margin: "13px 0 13px 0" }}
-                    reviewHeaderStyles={{ marginTop: "10px" }}
+                    styles={{ height: "170px" }}
+                    reviewRatingStyles={{ margin: "8px 0 8px 0" }}
+                    reviewHeaderStyles={{ marginTop: "0px" }}
                     domain={props.domain}
                   />
                 </div>
@@ -132,6 +171,9 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
             })}
           </Slider>
           <div></div>
+        </div>
+        <div className="reviewBoxFooter">
+          {renderReviewBoxFooter(requiredData)}
         </div>
       </div>
     </div>
@@ -166,8 +208,9 @@ function SamplePrevArrow(props) {
       <style jsx>
         {`
           .samplePrevArrow::before {
-            content: "\\00AB";
+            content: "";
             color: #000;
+            background-image: url("/static/images/logo.png");
           }
         `}
       </style>
@@ -206,11 +249,11 @@ const TextReviews = props => {
     slidesToShow: 3,
     slidesToScroll: 3,
     initialSlide: 0,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
+    // nextArrow: <SampleNextArrow />,
+    // prevArrow: <SamplePrevArrow />,
     responsive: [
       {
-        breakpoint: 1024,
+        breakpoint: 1110,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
@@ -218,26 +261,11 @@ const TextReviews = props => {
         }
       },
       {
-        breakpoint: 813,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          dots: false
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 1
-        }
-      },
-      {
-        breakpoint: 570,
+        breakpoint: 1000,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
+          slidesToScroll: 1,
+          dots: false
         }
       }
     ]
