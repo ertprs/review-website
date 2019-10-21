@@ -26,7 +26,8 @@ import {
   BUSINESS_LOGIN_FAILURE,
   RESEND_ACTIVATION_LINK_INIT,
   RESEND_ACTIVATION_LINK_SUCCESS,
-  RESEND_ACTIVATION_LINK_FAILURE
+  RESEND_ACTIVATION_LINK_FAILURE,
+  SET_USER_ACTIVATED
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -200,6 +201,12 @@ const authReducer = (state = {}, action) => {
         ...state,
         type,
         resendActivation: { ...resendActivation }
+      };
+    case SET_USER_ACTIVATED:
+      return {
+        ...state,
+        type,
+        userActivated
       };
     case LOGOUT:
       state = undefined;

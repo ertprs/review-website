@@ -20,10 +20,18 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, reducers);
 
+let middleWare = [thunkMiddleware];
+
+if (process.env.NODE_ENV === "production") {
+  middleWare = [...middleWare];
+} else {
+  middleWare = [...middleWare, logger];
+}
+
 export function initializeStore(initialState = {}) {
   return createStore(
     persistedReducer,
     initialState,
-    composeWithDevTools(applyMiddleware(thunkMiddleware))
+    composeWithDevTools(applyMiddleware(...middleWare))
   );
 }

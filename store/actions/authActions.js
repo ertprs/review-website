@@ -27,11 +27,13 @@ import {
   BUSINESS_LOGIN_FAILURE,
   RESEND_ACTIVATION_LINK_INIT,
   RESEND_ACTIVATION_LINK_SUCCESS,
-  RESEND_ACTIVATION_LINK_FAILURE
+  RESEND_ACTIVATION_LINK_FAILURE,
+  SET_USER_ACTIVATED
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { loginApiOAuth } from "../../utility/config";
+import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
 import { fetchReviews } from "./dashboardActions";
@@ -204,6 +206,7 @@ export const logIn = (loginData, loginApi, loginType) => {
 export const logOut = () => {
   localStorage.removeItem("persist:primary");
   localStorage.removeItem("persist:auth");
+  localStorage.removeItem("userActivated");
   return {
     type: LOGOUT,
     payload: {}
@@ -376,6 +379,7 @@ export const oAuthSigninginEnd = () => {
 };
 
 export const businessSignUp = (signupData, api) => {
+  console.log(signupData, "signupData");
   return async (dispatch, getState) => {
     dispatch({
       type: BUSINESS_SIGNUP_INIT,
@@ -392,6 +396,13 @@ export const businessSignUp = (signupData, api) => {
       const res = await axios.post(`${process.env.BASE_URL}${api}`, signupData);
       let success = _get(res, "data.success", false);
       let status = _get(res, "status", 0);
+      if (success) {
+        let loginData = {
+          email: signupData.email,
+          password: signupData.password
+        };
+        dispatch(businessLogIn(loginData, loginApi));
+      }
       dispatch({
         type: BUSINESS_SIGNUP_SUCCESS,
         businessSignUp: {},
@@ -422,12 +433,12 @@ export const businessSignUp = (signupData, api) => {
   };
 };
 
-export const businessLogIn = (loginData, api) => {
+export const businessLogIn = (loginData, api, directLogin) => {
   return async (dispatch, getState) => {
     dispatch({
       type: BUSINESS_LOGIN_INIT,
       logIn: {
-        authorized: false,
+        authorized: "undefined",
         loginType: 0,
         token: "",
         userProfile: {}
@@ -533,5 +544,12 @@ export const resendActivationLink = (token, api) => {
         }
       });
     }
+  };
+};
+
+export const setUserActivated = userActivated => {
+  return {
+    type: SET_USER_ACTIVATED,
+    userActivated
   };
 };

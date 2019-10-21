@@ -12,6 +12,7 @@ import { resendActivationLinkApi } from "../../../utility/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import withStyles from "@material-ui/styles/withStyles";
 import Snackbar from "../../Widgets/Snackbar";
+import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 
 const styles = theme => ({
   button: {
@@ -284,6 +285,66 @@ class Home extends Component {
     );
   };
 
+  renderBusinessDetails = () => {
+    const { businessProfile, userProfile } = this.props;
+    const domain = _get(businessProfile, "domain", "");
+    const companyName = _get(userProfile, "company.name", "");
+    const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
+    const expiresAt = _get(userProfile, "subscription.expires_at", "");
+    return (
+      <Grid item xs={12} md={12} lg={12}>
+        <SimpleCard>
+          <div className="businessDetailsContainer">
+            <style jsx>
+              {`
+                .bold {
+                  font-weight: bold;
+                }
+                .businessDetailsContainer {
+                  margin-left: 25px;
+                }
+                .businessDetailsFlexItem {
+                  display: flex;
+                  margin-bottom: 10px;
+                }
+                .businessDetailsFlexItem div {
+                  flex-basis: 100%;
+                  font-size: 16px;
+                }
+                @media screen and (max-width: 720px) {
+                  .businessDetailsFlexItem {
+                    flex-direction: column;
+                    flex-basis: 100%;
+                  }
+                }
+              `}
+            </style>
+            <div className="businessDetailsFlexItem">
+              <div className="bold">Domain :</div>
+              <div>
+                <a href={`https://www.${domain}`} target="_blank">
+                  {domain}
+                </a>
+              </div>
+            </div>
+            <div className="businessDetailsFlexItem">
+              <div className="bold">Company Name :</div>
+              <div>{companyName}</div>
+            </div>
+            <div className="businessDetailsFlexItem">
+              <div className="bold">Subscription plan :</div>
+              <div>{getSubscriptionPlan(subscriptionPlan)}</div>
+            </div>
+            <div className="businessDetailsFlexItem">
+              <div className="bold">Expires At :</div>
+              <div>{expiresAt}</div>
+            </div>
+          </div>
+        </SimpleCard>
+      </Grid>
+    );
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -293,6 +354,7 @@ class Home extends Component {
           {this.renderOverviewCard()}
           {this.renderRecentReviewsCard()}
           {this.renderInvitationsCard()}
+          {this.renderBusinessDetails()}
         </Grid>
         <Snackbar
           open={this.state.showSnackbar}
@@ -313,7 +375,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.activation_required",
     false
   );
-  const reviewsData = _get(dashboardData, "reviewsData", {});
+  const reviewsData = _get(dashboardData, "reviews.data", {});
   const quotaDetails = _get(
     auth,
     "logIn.userProfile.subscription.quota_details"
@@ -321,6 +383,8 @@ const mapStateToProps = state => {
   const token = _get(auth, "logIn.token", "");
   const success = _get(auth, "resendActivation.success", "undefiend");
   const isLoading = _get(auth, "resendActivation.isLoading", false);
+  const userProfile = _get(auth, "logIn.userProfile", {});
+  const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   return {
     reviewsData,
     quotaDetails,
@@ -328,7 +392,9 @@ const mapStateToProps = state => {
     activation_required,
     token,
     success,
-    isLoading
+    isLoading,
+    userProfile,
+    businessProfile
   };
 };
 
