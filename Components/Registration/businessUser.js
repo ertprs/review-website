@@ -12,6 +12,7 @@ import { businessSignUp } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import Link from "next/link";
+import PageLoader from "../../Components/Widgets/PageLoader";
 
 class BusinessUserRegistration extends Component {
   state = {
@@ -213,36 +214,45 @@ class BusinessUserRegistration extends Component {
       const {
         isSignUpFailed,
         isSignupSuccess,
-        status,
         error,
-        isSigningUp
+        isSigningUp,
+        authorized
       } = this.props;
       this.setState({ isLoading: isSigningUp });
 
       if (isSignUpFailed) {
         let snackbarMsg;
         snackbarMsg = error;
-        // if (status === 409) {
-        //   snackbarMsg = "User already registered!";
-        // } else if (errorMsg === "subscription_exists") {
-        //   snackbarMsg = "Company is already subscribed!";
-        // } else if (errorMsg === "activation_required") {
-        //   snackbarMsg = "User not activated";
-        // } else if (errorMsg === "already_claimed") {
-        //   snackbarMsg = "This domain is already claimed!";
-        // }
-        this.setState({ showSnackbar: true, variant: "error", snackbarMsg });
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg,
+          isLoading: false
+        });
       }
 
       if (isSignupSuccess) {
         let snackbarMsg = "Registration Successfull!";
-        this.setState({ showSnackbar: true, variant: "success", snackbarMsg });
-        setTimeout(() => {
-          this.setState({ snackbarMsg: "Redirecting....", variant: "success" });
-          setTimeout(() => {
-            Router.push("/login");
-          }, 1000);
-        }, 2000);
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg
+        });
+        if (authorized) {
+          this.setState({
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Logged in successfully!"
+          });
+          Router.push("/dashboard");
+        } else {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Some error occured while loggin in!"
+          });
+          Router.push("/login");
+        }
       }
     }
   }
@@ -254,7 +264,7 @@ class BusinessUserRegistration extends Component {
   };
 
   render() {
-    const { formData, isLoading } = this.state;
+    const { formData, isLoading, showPageLoading } = this.state;
     return (
       <>
         <style jsx> {authenticationPageStyles} </style>{" "}
@@ -381,13 +391,15 @@ const mapStateToProps = state => {
   const status = _get(businessSignUpTemp, "status", -1);
   const error = _get(businessSignUpTemp, "error", "");
   const isSigningUp = _get(businessSignUpTemp, "isSigningUp", false);
+  const authorized = _get(auth, "logIn.authorized", false);
   return {
     auth,
     isSignUpFailed,
     isSignupSuccess,
     status,
     error,
-    isSigningUp
+    isSigningUp,
+    authorized
   };
 };
 
