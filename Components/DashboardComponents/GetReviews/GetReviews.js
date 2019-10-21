@@ -169,14 +169,14 @@ class GetReviews extends Component {
       },
       senderEmail: {
         element: "input",
-        value: "",
+        value: "noreply.invitations@trustsearchmail.com",
         placeholder: "Enter sender's email",
         errorMessage: "",
-        valid: false,
-        touched: false,
+        valid: true,
+        touched: true,
         validationRules: {
           required: true,
-          isEmail
+          isEmail: true
         },
         name: "senderEmail"
       },
@@ -494,15 +494,26 @@ class GetReviews extends Component {
     if (activeStep === 0) {
       if (getReviewsActiveSubStep === -1) {
         return (
-          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+          <CreateCampaign
+            handleListItemClick={this.handleListItemClick}
+            formData={this.state.createCampaign}
+            handleChange={this.handleChange}
+            onContinueClick={() => {
+              this.setState({ getReviewsActiveSubStep: 0 });
+            }}
+          />
         );
       } else if (getReviewsActiveSubStep === 0) {
+        return (
+          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+        );
+      } else if (getReviewsActiveSubStep === 1) {
         return (
           <UploadCSVForm
             handleListItemBackClick={this.handleListItemBackClick}
           />
         );
-      } else if (getReviewsActiveSubStep === 1) {
+      } else if (getReviewsActiveSubStep === 2) {
         return (
           <CopyPasteForm
             formData={this.state.copyPasteFormData}
@@ -511,7 +522,7 @@ class GetReviews extends Component {
             handleListItemBackClick={this.handleListItemBackClick}
           />
         );
-      } else if (getReviewsActiveSubStep === 2) {
+      } else if (getReviewsActiveSubStep === 3) {
         return (
           <>
             {this.renderInvitesInfo()}
