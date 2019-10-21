@@ -16,19 +16,19 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 const inviteOptions = [
   {
-    id: 0,
+    id: 1,
     icon: <PublishIcon />,
     primaryText: "Upload a file",
     secondaryText: "Service reviews"
   },
   {
-    id: 1,
+    id: 2,
     icon: <DescriptionIcon />,
     primaryText: "Copy-paste customer data",
     secondaryText: "Service reviews"
   },
   {
-    id: 2,
+    id: 3,
     icon: <PostAddIcon />,
     primaryText: "Enter data manually",
     secondaryText: "Service reviews"
@@ -43,14 +43,14 @@ export default class GetReviewsHome extends Component {
           <style jsx>
             {`
               .renderInviteOptionsListContainer {
-                -webkit-transition: all 0.4s; /* For Safari 3.1 to 6.0 */
-                transition: all 0.4s;
-                -webkit-touch-callout: none; /* iOS Safari */
-                -webkit-user-select: none; /* Safari */
-                -khtml-user-select: none; /* Konqueror HTML */
-                -moz-user-select: none; /* Old versions of Firefox */
-                -ms-user-select: none; /* Internet Explorer/Edge */
-                user-select: none; /* Non-prefixed version, currently
+                -webkit-transition: all 0.4s;
+                /forsafari3.1to6.0/transition: all 0.4s;
+                -webkit-touch-callout: none;
+                /iossafari/-webkit-user-select: none;
+                /safari/-khtml-user-select: none;
+                /konquerorhtml/-moz-user-select: none;
+                /oldversionsoffirefox/-ms-user-select: none;
+                /internetexplorer/edge/user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
               }
               .renderInviteOptionsListContainer:hover {
@@ -60,9 +60,12 @@ export default class GetReviewsHome extends Component {
             `}
           </style>
           <div className="renderInviteOptionsListContainer">
-            <List key={index} onClick={()=>{
-                this.props.handleListItemClick(index)
-            }}>
+            <List
+              key={index}
+              onClick={() => {
+                this.props.handleListItemClick(index + 1);
+              }}
+            >
               <ListItem>
                 <ListItemAvatar>
                   <Avatar>{item.icon}</Avatar>

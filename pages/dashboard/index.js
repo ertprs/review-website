@@ -119,7 +119,7 @@ const useStyles = makeStyles(theme => ({
 function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [stepToRender, setStepToRender] = React.useState(4);
+  const [stepToRender, setStepToRender] = React.useState(0);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
 
   // useEffect(() => {
@@ -141,17 +141,23 @@ function Dashboard(props) {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const changeStepToRender = step => {
+    console.log(step, "step");
+    debugger;
+    setStepToRender(step);
+  };
+
   const renderAppropriateComponent = () => {
     if (stepToRender === 0) {
-      return <Home />;
+      return <GetStarted changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 1) {
-      return <Reviews />;
+      return <Home />;
     } else if (stepToRender === 2) {
-      return <GetReviews />;
+      return <Reviews />;
     } else if (stepToRender === 3) {
-      return <InvitationHistory />;
+      return <GetReviews />;
     } else if (stepToRender === 4) {
-      return <GetStarted />;
+      return <InvitationHistory />;
     } else if (stepToRender === 5) {
       return <WidgetsShowCase />;
     }
@@ -170,14 +176,30 @@ function Dashboard(props) {
       userName = nameAfterSplit[0];
     }
   }
-
+  let getStartedHide = false;
+  let homeDisabled = false;
   let menuItemsDisabled = false;
+  if (
+    _get(props, "placeId", "") !== "" ||
+    _get(props, "placeLocated", "false")
+  ) {
+    getStartedHide = true;
+  } else {
+    getStartedHide = false;
+  }
   if (_get(props, "activation_required", false)) {
     if (_get(props, "userActivated", false)) {
       menuItemsDisabled = false;
     } else if (_get(props, "userActivated", false) === false) {
       menuItemsDisabled = true;
     }
+  }
+  if (_get(props, "placeId", "") === "" || !placeLocated) {
+    menuItemsDisabled = true;
+    homeDisabled = true;
+  } else {
+    menuItemsDisabled = false;
+    homeDisabled = false;
   }
 
   return (
@@ -198,7 +220,7 @@ function Dashboard(props) {
               classes.menuButton,
               open && classes.menuButtonHidden
             )}
-            style={{color:"#fff"}}
+            style={{ color: "#fff" }}
           >
             <MenuIcon />
           </IconButton>
@@ -208,11 +230,15 @@ function Dashboard(props) {
             color="inherit"
             noWrap
             className={classes.title}
-            style={{color:"#fff"}}
+            style={{ color: "#fff" }}
           >
             Welcome {userName || ""} !
           </Typography>
-          <IconButton color="inherit" onClick={handleLogout} style={{color:"#fff"}}>
+          <IconButton
+            color="inherit"
+            onClick={handleLogout}
+            style={{ color: "#fff" }}
+          >
             <LogoutIcon />
           </IconButton>
         </Toolbar>
@@ -232,7 +258,9 @@ function Dashboard(props) {
         <Divider />
         <List>
           <MainListItems
-            disabled={menuItemsDisabled}
+            getStartedHide={false}
+            homeDisabled={false}
+            menuItemDisabled={false}
             handleMainListItemClick={handleMenuItemClicked}
             stepToRender={stepToRender}
           />
@@ -263,7 +291,7 @@ function Dashboard(props) {
 }
 
 const mapStateToProps = state => {
-  const { auth } = state;
+  const { auth, dashboardData } = state;
   const authorized = _get(auth, "logIn.authorized", false);
   const loginType = _get(auth, "logIn.loginType", 0);
   const userName = _get(auth, "logIn.userProfile.name", "");
@@ -278,13 +306,18 @@ const mapStateToProps = state => {
     0
   );
   const userActivated = _get(auth, "userActivated", false);
+  const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const placeId = _get(businessProfile, "google_places.placeId", "");
+  const placeLocated = _get(dashboardData, "locatePlace.success", false);
   return {
     authorized,
     loginType,
     userName,
     activation_required,
     subsriptionPlan,
-    userActivated
+    userActivated,
+    placeId,
+    placeLocated
   };
 };
 

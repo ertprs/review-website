@@ -4,6 +4,7 @@ import StarRatings from "react-star-ratings";
 import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import _get from "lodash/get";
 
 export default class SelectTemplateForm extends Component {
   renderHeader = () => {
@@ -87,10 +88,24 @@ export default class SelectTemplateForm extends Component {
             }
           `}
         </style>
-        <div className="templateContainer">
+        <div className="subject">
           <div className="header">
-            <h6>{formData.subject.value !== "" ? formData.subject.value : "Leave a review on Entity and get a gift!"}</h6>
+            <h6>
+              Email Subject:{" "}
+              {formData.subject.value !== ""
+                ? formData.subject.value
+                : "Leave a review on Entity and get a gift!"}
+            </h6>
           </div>
+        </div>
+        <div className="templateContainer">
+          {/* <div className="header">
+            <h6>
+              {formData.subject.value !== ""
+                ? formData.subject.value
+                : "Leave a review on Entity and get a gift!"}
+            </h6>
+          </div> */}
           <p>
             Dear{" "}
             <span className="bold">
@@ -107,7 +122,12 @@ export default class SelectTemplateForm extends Component {
                 : "entity domain"}
             </span>
             , we would like to ask you to leave an honest review of our{" "}
-            <span className="bold">service/product/services</span>.
+            <span className="bold">
+              {formData.services.value !== ""
+                ? formData.services.value
+                : "Service/product/services"}
+            </span>
+            .
           </p>
           <p>Please leave a review HERE:</p>
           <p className="ratings">

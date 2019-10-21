@@ -12,7 +12,7 @@ import NProgress from "nprogress";
 import Head from "next/head";
 import { layoutStyles } from "../style";
 
-NProgress.configure({ trickle: false, showSpinner: false });
+NProgress.configure({ showSpinner: false });
 
 Router.events.on("routeChangeStart", url => {
   console.log(`Loading: ${url}`);

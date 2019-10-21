@@ -6,13 +6,12 @@ import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/P
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
 import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
-import { locatePlaceApi } from "../../../utility/config";
+import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { planType } from "../../../utility/constants/businessPlanConstants";
 import FormField from "../../Widgets/FormField/FormField";
 import validate from "../../../utility/validate";
 
@@ -45,7 +44,10 @@ class GetStarted extends Component {
     const { selectedAddress } = this.state;
     if (Object.keys(selectedAddress).length > 0) {
       this.props.locatePlaceByPlaceId(
-        {...this.state.selectedAddress, directReviewUrl:this.state.formData["directReviewUrl"].value},
+        {
+          ...this.state.selectedAddress,
+          directReviewUrl: this.state.formData["directReviewUrl"].value
+        },
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
@@ -53,9 +55,12 @@ class GetStarted extends Component {
   };
 
   handleAddressSelect = (reqBody, address) => {
-    const {userProfile} = this.props;
-    const name = _get(userProfile,'company.name',"")
-    this.setState({ selectedAddress: { ...reqBody, name:name }, address: address });
+    const { userProfile } = this.props;
+    const name = _get(userProfile, "company.name", "");
+    this.setState({
+      selectedAddress: { ...reqBody, name: name },
+      address: address
+    });
   };
 
   renderSelectedAddress = () => {
@@ -97,72 +102,11 @@ class GetStarted extends Component {
     );
   };
 
-  renderBusinessDetails = () => {
-    const domain = _get(this.props.businessProfile, "domain", "");
-    const companyName = _get(this.props.userProfile, "company.name", "");
-    const subscriptionPlan = _get(
-      this.props.userProfile,
-      "subscription.plan_type_id",
-      ""
-    );
-    const expiresAt = _get(
-      this.props.userProfile,
-      "subscription.expires_at",
-      ""
-    );
-    return (
-      <div className="businessDetailsContainer">
-        <style jsx>
-          {`
-            .bold {
-              font-weight: bold;
-            }
-            .businessDetailsContainer {
-              margin-left: 25px;
-            }
-            .businessDetailsFlexItem {
-              display: flex;
-              margin-bottom: 10px;
-            }
-            .businessDetailsFlexItem div {
-              flex-basis: 40%;
-            }
-            @media screen and (max-width: 720px) {
-              .businessDetailsFlexItem {
-                flex-direction: column;
-                flex-basis: 100%;
-              }
-            }
-          `}
-        </style>
-        <div className="businessDetailsFlexItem">
-          <div className="bold">Domain :</div>
-          <div>
-            <a href={`https://www.${domain}`} target="_blank">
-              {domain}
-            </a>
-          </div>
-        </div>
-        <div className="businessDetailsFlexItem">
-          <div className="bold">Company Name :</div>
-          <div>{companyName}</div>
-        </div>
-        <div className="businessDetailsFlexItem">
-          <div className="bold">Subscription plan :</div>
-          <div>{planType[subscriptionPlan]}</div>
-        </div>
-        <div className="businessDetailsFlexItem">
-          <div className="bold">Expires At :</div>
-          <div>{expiresAt}</div>
-        </div>
-      </div>
-    );
-  };
-
   renderContinueBtn = () => {
     const { selectedAddress, formData } = this.state;
     const { type } = this.props;
-    return Object.keys(selectedAddress).length > 0 && formData["directReviewUrl"].valid ? (
+    return Object.keys(selectedAddress).length > 0 &&
+      formData["directReviewUrl"].valid ? (
       <div style={{ marginTop: "50px", textAlign: "right" }}>
         {type === "LOCATE_PLACE_INIT" ? (
           <CircularProgress size={25} />
@@ -191,7 +135,7 @@ class GetStarted extends Component {
             e.target.value,
             this.state.formData[id].validationRules
           ),
-          touched:true
+          touched: true
         }
       }
     });
@@ -211,6 +155,9 @@ class GetStarted extends Component {
             borderRadius: "0"
           }}
         />
+        <a href={getStartedVideoUrl} target="_blank">
+          How to get your google review url?
+        </a>
       </div>
     ) : null;
   };
@@ -259,34 +206,35 @@ class GetStarted extends Component {
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
             <h4>
-              {this.props.placeId !== "" || this.props.success
-                ? "Your business details"
-                : "Please claim your Business"}
+              {/* {this.props.placeId !== "" || this.props.success */}
+              {/* ? "Your business details" */}
+              Please claim your Business
             </h4>
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxImgContainer">
-              <img
+              {/* <img
                 src={`/static/images/${
                   this.props.placeId !== "" || this.props.success
                     ? "googleMyBusiness.jpg"
                     : "locate.png"
                 }`}
-              />
+              /> */}
+              <img src="/static/images/locate.png" />
             </div>
             <div className="getStartedBoxAutoComplete">
-              {this.props.placeId === "" && !this.props.success ? (
-                <>
-                  <PlacesAutoComplete
-                    handleAddressSelect={this.handleAddressSelect}
-                  />
-                  {this.renderSelectedAddress()}
-                  {this.renderDirectReviewUrl()}
-                  {this.renderContinueBtn()}
-                </>
-              ) : (
+              {/* {this.props.placeId === "" && !this.props.success ? ( */}
+              <>
+                <PlacesAutoComplete
+                  handleAddressSelect={this.handleAddressSelect}
+                />
+                {this.renderSelectedAddress()}
+                {this.renderDirectReviewUrl()}
+                {this.renderContinueBtn()}
+              </>
+              {/* ) : (
                 this.renderBusinessDetails()
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -295,12 +243,26 @@ class GetStarted extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    const { success, type, changeStepToRender } = this.props;
     if (this.props !== prevProps) {
-      this.setState({
-        showSnackbar: true,
-        variant: "success",
-        snackbarMsg: "Data located successfully!"
-      });
+      if (type === "LOCATE_PLACE_SUCCESS" && success) {
+        this.setState(
+          {
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Data located successfully!"
+          },
+          () => {
+            changeStepToRender(1);
+          }
+        );
+      } else if (type === "LOCATE_PLACE_FAILURE" && !success) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: "Some error occured!"
+        });
+      }
     }
   }
 

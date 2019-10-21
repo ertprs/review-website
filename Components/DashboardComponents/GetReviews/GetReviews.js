@@ -24,6 +24,7 @@ import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
 import CopyPasteForm from "../GetReviewsForms/CopyPasteForm";
 import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
+import CreateCampaign from "../GetReviewsForms/CreateCampaign";
 const columns = [
   { title: "Email", field: "email" },
   { title: "Name", field: "name" },
@@ -87,6 +88,18 @@ class GetReviews extends Component {
         }
       },
       selectTemplateData: {
+        subject: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid subject",
+          placeholder: "Email Subject: Leave a review on Entity",
+          validationRules: {
+            required: true
+          }
+        },
         clientName: {
           element: "input",
           type: "text",
@@ -111,49 +124,49 @@ class GetReviews extends Component {
             required: true
           }
         },
-        subject: {
+        services: {
           element: "input",
           type: "text",
           value: "",
           valid: false,
           touched: false,
-          errorMessage: "Enter valid subject",
-          placeholder: "Email Subject: Leave a review on Entity",
+          errorMessage: "Enter valid service",
+          placeholder: "Service/product/services",
           validationRules: {
             required: true
           }
         }
       },
-      senderInfoData: {
-        // senderMail: "",
-        senderName: {
-          element: "input",
-          value: "",
-          placeholder: "Enter sender's name",
-          errorMessage: "",
-          valid: false,
-          touched: false,
-          validationRules: {
-            required: true,
-            minLength: 3
-          },
-          name: "senderName"
-        },
-        replyToEmail: {
-          element: "select",
-          value: "",
-          placeholder: "email@gmail.com",
-          errorMessage: "",
-          options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
-          valid: true,
-          touched: false,
-          validationRules: {
-            required: false
-            // isEmail: true
-          },
-          name: "replyToEmail"
-        }
-      },
+      // senderInfoData: {
+      //   // senderMail: "",
+      //   senderName: {
+      //     element: "input",
+      //     value: "",
+      //     placeholder: "Enter sender's name",
+      //     errorMessage: "",
+      //     valid: false,
+      //     touched: false,
+      //     validationRules: {
+      //       required: true,
+      //       minLength: 3
+      //     },
+      //     name: "senderName"
+      //   },
+      //   replyToEmail: {
+      //     element: "select",
+      //     value: "",
+      //     placeholder: "email@gmail.com",
+      //     errorMessage: "",
+      //     options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
+      //     valid: true,
+      //     touched: false,
+      //     validationRules: {
+      //       required: false
+      //       // isEmail: true
+      //     },
+      //     name: "replyToEmail"
+      //   }
+      // },
       copyPasteFormData: {
         textbox: {
           element: "textarea",
@@ -178,9 +191,80 @@ class GetReviews extends Component {
           size: 0,
           uploadProgress: 0
         },
-        parseErrors:[]
+        parseErrors: []
+      },
+      createCampaign: {
+        campaignName: {
+          element: "input",
+          value: "",
+          placeholder: "Enter campaign name",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            minLength: 3
+          },
+          name: "campaignName"
+        },
+        campaignLanguage: {
+          element: "select",
+          value: "",
+          options: [
+            { name: "English", value: "en" },
+            { name: "Latvian", value: "lv" },
+            { name: "German", value: "de" }
+          ],
+          placeholder: "Select your campaign language",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true
+          },
+          name: "campaignLanguage"
+        },
+        senderName: {
+          element: "input",
+          value: "",
+          placeholder: "Enter sender's name",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            minLength: 3
+          }
+        },
+        senderEmail: {
+          element: "input",
+          value: "noreply.invitations@trustsearchmail.com",
+          placeholder: "Enter sender's email",
+          errorMessage: "",
+          valid: true,
+          touched: true,
+          validationRules: {
+            required: true,
+            isEmail: true
+          },
+          name: "senderEmail"
+        }
+        // replyToEmail: {
+        //   element: "select",
+        //   value: "",
+        //   placeholder: "email@gmail.com",
+        //   errorMessage: "",
+        //   options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
+        //   valid: true,
+        //   touched: false,
+        //   validationRules: {
+        //     required: false
+        //     // isEmail: true
+        //   }
+        // }
       }
     };
+
     this.steps = {
       1: (
         <div>
@@ -221,7 +305,7 @@ class GetReviews extends Component {
     let tempObj = [];
     Papa.parse(file, {
       skipEmptyLines: true,
-      complete: (parsedData)=> {
+      complete: parsedData => {
         const newTableData = parsedData.data.map((item, index) => {
           if (item.length >= 2) {
             const email = item[0] || "";
@@ -268,7 +352,7 @@ class GetReviews extends Component {
         if (newTableData.length > 0 && valid) {
           this.setState({
             tableData: [...newTableData],
-            getReviewsActiveSubStep: 2
+            getReviewsActiveSubStep: 3
           });
         } else {
           this.setState({
@@ -333,7 +417,7 @@ class GetReviews extends Component {
     if (newTableData.length > 0 && valid) {
       this.setState({
         tableData: [...newTableData],
-        getReviewsActiveSubStep: 2
+        getReviewsActiveSubStep: 3
       });
     } else {
       this.setState({
@@ -547,7 +631,7 @@ class GetReviews extends Component {
 
   //for moving backward getReviewsActiveSubStep to getHomeReviews
   handleListItemBackClick = () => {
-    this.setState({ getReviewsActiveSubStep: -1 });
+    this.setState({ getReviewsActiveSubStep: 0 });
   };
 
   renderAppropriateStep = () => {
@@ -555,9 +639,20 @@ class GetReviews extends Component {
     if (activeStep === 0) {
       if (getReviewsActiveSubStep === -1) {
         return (
-          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+          <CreateCampaign
+            handleListItemClick={this.handleListItemClick}
+            formData={this.state.createCampaign}
+            handleChange={this.handleChange}
+            onContinueClick={() => {
+              this.setState({ getReviewsActiveSubStep: 0 });
+            }}
+          />
         );
       } else if (getReviewsActiveSubStep === 0) {
+        return (
+          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+        );
+      } else if (getReviewsActiveSubStep === 1) {
         return (
           <UploadCSVForm
             handleListItemBackClick={this.handleListItemBackClick}
@@ -566,7 +661,7 @@ class GetReviews extends Component {
             formData={this.state.uploadCSVFormData}
           />
         );
-      } else if (getReviewsActiveSubStep === 1) {
+      } else if (getReviewsActiveSubStep === 2) {
         return (
           <CopyPasteForm
             formData={this.state.copyPasteFormData}
@@ -575,7 +670,7 @@ class GetReviews extends Component {
             handleListItemBackClick={this.handleListItemBackClick}
           />
         );
-      } else if (getReviewsActiveSubStep === 2) {
+      } else if (getReviewsActiveSubStep === 3) {
         return (
           <>
             {this.renderInvitesInfo()}
@@ -609,18 +704,18 @@ class GetReviews extends Component {
       //   </div>
       // );
     }
+    // if (activeStep === 1) {
+    //   return (
+    //     <SenderInfo
+    //       formData={this.state.senderInfoData}
+    //       handleChange={this.handleChange}
+    //       handleRadioChange={this.handleRadioChange}
+    //       handleNext={this.handleNext}
+    //       handleBack={this.handleBack}
+    //     />
+    //   );
+    // }
     if (activeStep === 1) {
-      return (
-        <SenderInfo
-          formData={this.state.senderInfoData}
-          handleChange={this.handleChange}
-          handleRadioChange={this.handleRadioChange}
-          handleNext={this.handleNext}
-          handleBack={this.handleBack}
-        />
-      );
-    }
-    if (activeStep === 2) {
       return (
         <SelectTemplateForm
           formData={this.state.selectTemplateData}
@@ -630,7 +725,7 @@ class GetReviews extends Component {
         />
       );
     }
-    if (activeStep === 3) {
+    if (activeStep === 2) {
       return (
         <SendInvitations
           handleNext={this.handleNext}
@@ -638,7 +733,7 @@ class GetReviews extends Component {
         />
       );
     }
-    if (activeStep === 4) {
+    if (activeStep === 3) {
       return <Done />;
     }
   };
@@ -667,7 +762,7 @@ class GetReviews extends Component {
             <Grid item xs={12} md={12} lg={12}>
               {this.state.tableData.length > 0 &&
               this.state.activeStep === 0 &&
-              this.state.getReviewsActiveSubStep === 2
+              this.state.getReviewsActiveSubStep === 3
                 ? this.renderInvitesTable()
                 : null}
             </Grid>

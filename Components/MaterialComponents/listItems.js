@@ -14,7 +14,9 @@ import HistoryIcon from "@material-ui/icons/History";
 
 export const MainListItems = ({
   stepToRender,
-  disabled,
+  menuItemDisabled,
+  getStartedHide,
+  homeDisabled,
   handleMainListItemClick
 }) => {
   return (
@@ -26,12 +28,27 @@ export const MainListItems = ({
           }
         `}
       </style>
+      {getStartedHide ? null : (
+        <ListItem
+          button
+          onClick={() => {
+            handleMainListItemClick(0);
+          }}
+          className={stepToRender === 0 ? "grayBg" : ""}
+        >
+          <ListItemIcon>
+            <FormatListBulletedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Get started" />
+        </ListItem>
+      )}
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(0);
+          handleMainListItemClick(1);
         }}
-        className={stepToRender === 0 ? "grayBg" : ""}
+        className={stepToRender === 1 ? "grayBg" : ""}
+        disabled={homeDisabled}
       >
         <ListItemIcon>
           <Home />
@@ -41,10 +58,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(1);
+          handleMainListItemClick(2);
         }}
-        className={stepToRender === 1 ? "grayBg" : ""}
-        disabled={disabled}
+        className={stepToRender === 2 ? "grayBg" : ""}
+        disabled={menuItemDisabled}
       >
         <ListItemIcon>
           <AllInbox />
@@ -54,10 +71,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(2);
+          handleMainListItemClick(3);
         }}
-        className={stepToRender === 2 ? "grayBg" : ""}
-        disabled={disabled}
+        className={stepToRender === 3 ? "grayBg" : ""}
+        disabled={menuItemDisabled}
       >
         <ListItemIcon>
           <FormatQuote />
@@ -67,10 +84,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(3);
+          handleMainListItemClick(4);
         }}
-        className={stepToRender === 3 ? "grayBg" : ""}
-        disabled={disabled}
+        className={stepToRender === 4 ? "grayBg" : ""}
+        disabled={menuItemDisabled}
       >
         <ListItemIcon>
           <HistoryIcon />
@@ -80,21 +97,9 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(4);
-        }}
-        className={stepToRender === 4 ? "grayBg" : ""}
-      >
-        <ListItemIcon>
-          <FormatListBulletedIcon />
-        </ListItemIcon>
-        <ListItemText primary="Get started" />
-      </ListItem>
-      <ListItem
-        button
-        onClick={() => {
           handleMainListItemClick(5);
         }}
-        disabled={disabled}
+        disabled={menuItemDisabled}
         className={stepToRender === 5 ? "grayBg" : ""}
       >
         <ListItemIcon>
