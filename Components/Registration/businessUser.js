@@ -273,11 +273,7 @@ class BusinessUserRegistration extends Component {
   };
 
   render() {
-<<<<<<< HEAD
     const { formData, isLoading, agreement } = this.state;
-=======
-    const { formData, isLoading, showPageLoading } = this.state;
->>>>>>> 90df15b134c1d3f870fda5e15303dcb588404eff
     return (
       <>
         <style jsx> {authenticationPageStyles} </style>{" "}
