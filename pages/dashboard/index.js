@@ -176,31 +176,34 @@ function Dashboard(props) {
       userName = nameAfterSplit[0];
     }
   }
-  let getStartedHide = false;
-  let homeDisabled = false;
-  let menuItemsDisabled = false;
-  if (
-    _get(props, "placeId", "") !== "" ||
-    _get(props, "placeLocated", "false")
-  ) {
-    getStartedHide = true;
-  } else {
-    getStartedHide = false;
-  }
-  if (_get(props, "activation_required", false)) {
-    if (_get(props, "userActivated", false)) {
-      menuItemsDisabled = false;
-    } else if (_get(props, "userActivated", false) === false) {
-      menuItemsDisabled = true;
-    }
-  }
-  if (_get(props, "placeId", "") === "" || !placeLocated) {
-    menuItemsDisabled = true;
-    homeDisabled = true;
-  } else {
-    menuItemsDisabled = false;
-    homeDisabled = false;
-  }
+  // let getStartedHide = false;
+  // let homeDisabled = false;
+  // let menuItemsDisabled = false;
+  // if (
+  //   _get(props, "placeId", "") !== "" ||
+  //   _get(props, "placeLocated", "false")
+  // ) {
+  //   getStartedHide = true;
+  // } else {
+  //   getStartedHide = false;
+  // }
+  // if (_get(props, "activation_required", false)) {
+  //   if (_get(props, "userActivated", false)) {
+  //     menuItemsDisabled = false;
+  //   } else if (_get(props, "userActivated", false) === false) {
+  //     menuItemsDisabled = true;
+  //   }
+  // }
+  // if (
+  //   _get(props, "placeId", "") === "" ||
+  //   !_get(props, "placeLocated", false)
+  // ) {
+  //   menuItemsDisabled = true;
+  //   homeDisabled = true;
+  // } else {
+  //   menuItemsDisabled = false;
+  //   homeDisabled = false;
+  // }
 
   return (
     <div className={classes.root}>
