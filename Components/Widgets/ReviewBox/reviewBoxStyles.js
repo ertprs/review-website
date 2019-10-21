@@ -2,7 +2,7 @@ import css from "styled-jsx/css";
 
 export const reviewBoxStyles = css`
   .reviewBox {
-    padding: 2% 8% 2% 8%;
+    padding: 20px;
     margin: 2%;
     box-shadow: 0px 2px 7px #ddd;
     height:159px;
@@ -17,7 +17,7 @@ export const reviewBoxStyles = css`
   }
 
   .reviewHeader > div {
-    flex-basis: 50%;
+    flex-basis: 1;
   }
   .reviewHeader .reviewHeaderDate {
     text-align: right;
@@ -25,7 +25,11 @@ export const reviewBoxStyles = css`
   }
 
   .reviewHeaderTitle {
-    font-weight: 500;
+    font-weight: bold;
+    text-transform:capitalize;
+    font-family: 'Open Sans', sans-serif;
+    font-size:14px;
+    color:#333333;
   }
 
   .reviewRatings {
@@ -38,7 +42,19 @@ export const reviewBoxStyles = css`
 
   .reviewText {
     text-align: justify;
-    font-size: 0.8rem;
+    font-size: 12.5px;
+    line-height:1.6;
+    color:#666666;
+  }
+
+  /*----------- Media queries -----------*/
+  @media screen and (max-width:765px){
+    .reviewText {
+      font-size:12px;
+    }
+    .reviewHeaderTitle {
+      font-size:13px;
+    }
   }
 
   /*---------- Trust don't trust icon container -------------*/
