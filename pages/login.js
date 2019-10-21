@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Registration = () => {
+const Login = () => {
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
 
@@ -41,7 +41,7 @@ const Registration = () => {
               indicatorColor="primary"
               textColor="primary"
               variant="fullWidth"
-              aria-label="Registration tabs"
+              aria-label="Login tabs"
             >
               <Tab label="User Login" {...a11yProps(0)} />
               <Tab label="Business Login" {...a11yProps(1)} />
@@ -54,4 +54,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default Login;
