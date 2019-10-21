@@ -15,6 +15,7 @@ import Link from "next/link";
 
 class BusinessUserRegistration extends Component {
   state = {
+    agreement: "no",
     formData: {
       website: {
         element: "input",
@@ -254,7 +255,7 @@ class BusinessUserRegistration extends Component {
   };
 
   render() {
-    const { formData, isLoading } = this.state;
+    const { formData, isLoading, agreement } = this.state;
     return (
       <>
         <style jsx> {authenticationPageStyles} </style>{" "}
@@ -323,6 +324,26 @@ class BusinessUserRegistration extends Component {
             col="5"
             styles={{ height: "38px" }}
           />
+          <div style={{ margin: "20px 0 20px 0" }}>
+            <label style={{cursor:"pointer"}}>
+              <input
+                type="checkbox"
+                onChange={e =>
+                  this.setState({
+                    agreement: e.target.value === "yes" ? "no" : "yes"
+                  })
+                }
+                value={this.state.agreement}
+                checked={this.state.agreement === "yes" ? true : false}
+              />{" "}
+              Accept our terms and conditions
+            </label>
+            <p style={{fontSize:"12px", marginLeft:"5px", marginTop:"5px"}}>
+              <Link href="/termsAndConditions">
+                <a>(Read our terms and conditions)</a>
+              </Link>
+            </p>
+          </div>
           {isLoading ? (
             <div style={{ textAlign: "center" }}>
               <CircularProgress size={30} color="secondary" />
@@ -339,7 +360,8 @@ class BusinessUserRegistration extends Component {
                     formData.password.valid &&
                     formData.password_confirmation.valid &&
                     formData.phone.valid &&
-                    formData.country.valid
+                    formData.country.valid &&
+                    agreement === "yes"
                   )
                 }
                 className="registerBtn"

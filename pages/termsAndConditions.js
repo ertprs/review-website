@@ -285,7 +285,7 @@ export default class termsAndConditions extends Component {
             any termination of the User Terms.
           </p>
           <div>7 Applicable law and venue</div>
-          <p>
+          <p style={{marginBottom:"75px"}}>
             7.1 The User Terms are subject to Latvian law, and, unless otherwise
             stated, the general rules of Latvian law apply in all relations
             between us and the Users and the users of the Website. Any disputes
