@@ -21,7 +21,7 @@ const widgetsObj = [
     title: "Trust carousel",
     tagLine: "Boost customer confidence with an honest TrustBox",
     minHeight: 400,
-    imgURL: "/static/images/textReviews.png",
+    imgURL: "/static/images/carouselWidget.png",
     listItems: [
       "Show off your 15 latest reviews",
       "Focuses on overall trust score"

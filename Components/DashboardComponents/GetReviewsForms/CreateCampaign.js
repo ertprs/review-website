@@ -19,7 +19,11 @@ class CreateCampaign extends Component {
               color: grey;
               font-size: 16px;
             }
+            .heading {
+              margin-bottom: 20px;
+            }
           `}</style>
+          <h3 className="heading">Create Campaign Wizard</h3>
           <div className="row">
             <div className="col-md-7">
               <FormField

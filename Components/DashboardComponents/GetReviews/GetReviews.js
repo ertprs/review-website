@@ -38,215 +38,335 @@ const styles = theme => ({
 });
 
 class GetReviews extends Component {
-  state = {
-    activeStep: 0,
-    tableData: [],
-    getReviewsActiveSubStep: -1,
-    addInvitesData: {
-      email: {
-        element: "input",
-        type: "email",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid email address",
-        placeholder: "Enter customer email",
-        validationRules: {
-          required: true,
-          isEmail: true
+  constructor(props) {
+    super(props);
+    this.fileInput = React.createRef();
+    this.state = {
+      activeStep: 0,
+      tableData: [],
+      getReviewsActiveSubStep: -1,
+      addInvitesData: {
+        email: {
+          element: "input",
+          type: "email",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid email address",
+          placeholder: "Enter customer email",
+          validationRules: {
+            required: true,
+            isEmail: true
+          },
+          label: "Email"
         },
-        label: "Email"
-      },
-      name: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid name",
-        placeholder: "Enter customer name",
-        validationRules: {
-          required: true
+        name: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid name",
+          placeholder: "Enter customer name",
+          validationRules: {
+            required: true
+          },
+          label: "Customer name"
         },
-        label: "Customer name"
-      },
-      referenceNumber: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: true,
-        touched: false,
-        errorMessage: "Enter valid data",
-        placeholder: "Enter reference number",
-        validationRules: {
-          required: false
-        },
-        label: "Reference number"
-      }
-    },
-    selectTemplateData: {
-      clientName: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid name",
-        placeholder: "Enter client name",
-        validationRules: {
-          required: true
+        referenceNumber: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: true,
+          touched: false,
+          errorMessage: "Enter valid data",
+          placeholder: "Enter reference number",
+          validationRules: {
+            required: false
+          },
+          label: "Reference number"
         }
       },
-      entity: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid entity",
-        placeholder: "Enter entity domain",
-        validationRules: {
-          required: true
+      selectTemplateData: {
+        subject: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid subject",
+          placeholder: "Email Subject: Leave a review on Entity",
+          validationRules: {
+            required: true
+          }
+        },
+        clientName: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid name",
+          placeholder: "Enter client name",
+          validationRules: {
+            required: true
+          }
+        },
+        entity: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid entity",
+          placeholder: "Enter entity domain",
+          validationRules: {
+            required: true
+          }
+        },
+        services: {
+          element: "input",
+          type: "text",
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid service",
+          placeholder: "Service/product/services",
+          validationRules: {
+            required: true
+          }
         }
       },
-      subject: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid subject",
-        placeholder: "Email Subject: Leave a review on Entity",
-        validationRules: {
-          required: true
+      // senderInfoData: {
+      //   // senderMail: "",
+      //   senderName: {
+      //     element: "input",
+      //     value: "",
+      //     placeholder: "Enter sender's name",
+      //     errorMessage: "",
+      //     valid: false,
+      //     touched: false,
+      //     validationRules: {
+      //       required: true,
+      //       minLength: 3
+      //     },
+      //     name: "senderName"
+      //   },
+      //   replyToEmail: {
+      //     element: "select",
+      //     value: "",
+      //     placeholder: "email@gmail.com",
+      //     errorMessage: "",
+      //     options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
+      //     valid: true,
+      //     touched: false,
+      //     validationRules: {
+      //       required: false
+      //       // isEmail: true
+      //     },
+      //     name: "replyToEmail"
+      //   }
+      // },
+      copyPasteFormData: {
+        textbox: {
+          element: "textarea",
+          readOnly: false,
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid records",
+          placeholder: "example@gmail.com, Peter Jones, 1234567890",
+          validationRules: {
+            required: true
+          },
+          rows: 10,
+          cols: 10,
+          name: "textbox"
+        },
+        parseErrors: []
+      },
+      uploadCSVFormData: {
+        csvFile: {
+          filename: "",
+          size: 0,
+          uploadProgress: 0
+        },
+        parseErrors: []
+      },
+      createCampaign: {
+        campaignName: {
+          element: "input",
+          value: "",
+          placeholder: "Enter campaign name",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            minLength: 3
+          },
+          name: "campaignName"
+        },
+        campaignLanguage: {
+          element: "select",
+          value: "",
+          options: [
+            { name: "English", value: "en" },
+            { name: "Latvian", value: "lv" },
+            { name: "German", value: "de" }
+          ],
+          placeholder: "Select your campaign language",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true
+          },
+          name: "campaignLanguage"
+        },
+        senderName: {
+          element: "input",
+          value: "",
+          placeholder: "Enter sender's name",
+          errorMessage: "",
+          valid: false,
+          touched: false,
+          validationRules: {
+            required: true,
+            minLength: 3
+          }
+        },
+        senderEmail: {
+          element: "input",
+          value: "noreply.invitations@trustsearchmail.com",
+          placeholder: "Enter sender's email",
+          errorMessage: "",
+          valid: true,
+          touched: true,
+          validationRules: {
+            required: true,
+            isEmail: true
+          },
+          name: "senderEmail"
         }
+        // replyToEmail: {
+        //   element: "select",
+        //   value: "",
+        //   placeholder: "email@gmail.com",
+        //   errorMessage: "",
+        //   options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
+        //   valid: true,
+        //   touched: false,
+        //   validationRules: {
+        //     required: false
+        //     // isEmail: true
+        //   }
+        // }
       }
-    },
-    createCampaign: {
-      // senderMail: "",
-      campaignName: {
-        element: "input",
-        value: "",
-        placeholder: "Enter campaign name",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true,
-          minLength: 3
-        },
-        name: "campaignName"
-      },
-      campaignLanguage: {
-        element: "select",
-        value: "",
-        options: [
-          { name: "English", value: "en" },
-          { name: "Latvian", value: "lv" },
-          { name: "German", value: "de" }
-        ],
-        placeholder: "Select your campaign language",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true
-        },
-        name: "campaignLanguage"
-      },
-      senderName: {
-        element: "input",
-        value: "",
-        placeholder: "Enter sender's name",
-        errorMessage: "",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true,
-          minLength: 3
-        },
-        name: "senderName"
-      },
-      senderEmail: {
-        element: "input",
-        value: "noreply.invitations@trustsearchmail.com",
-        placeholder: "Enter sender's email",
-        errorMessage: "",
-        valid: true,
-        touched: true,
-        validationRules: {
-          required: true,
-          isEmail: true
-        },
-        name: "senderEmail"
-      },
-      replyToEmail: {
-        element: "select",
-        value: "",
-        placeholder: "email@gmail.com",
-        errorMessage: "",
-        options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
-        valid: true,
-        touched: false,
-        validationRules: {
-          required: false
-          // isEmail: true
-        },
-        name: "replyToEmail"
-      }
-    },
-    copyPasteFormData: {
-      textbox: {
-        element: "textarea",
-        readOnly: false,
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid records",
-        placeholder: "example@gmail.com, Peter Jones, 1234567890",
-        validationRules: {
-          required: true
-        },
-        rows: 10,
-        cols: 10,
-        name: "textbox"
-      },
-      parseErrors: []
-    }
-  };
+    };
 
-  steps = {
-    1: (
-      <div>
-        {/* {this.renderInvitesInfo()} */}
-        <AddInvitesForm
-          formData={this.state.addInvitesData}
+    this.steps = {
+      1: (
+        <div>
+          {/* {this.renderInvitesInfo()} */}
+          <AddInvitesForm
+            formData={this.state.addInvitesData}
+            handleChange={this.handleChange}
+            onAddClick={this.onRowAdd}
+            onContinueClick={this.handleContinueClick}
+          />
+        </div>
+      ),
+      2: (
+        <SenderInfo
+          formData={this.state.senderInfoData}
           handleChange={this.handleChange}
-          onAddClick={this.onRowAdd}
-          onContinueClick={this.handleContinueClick}
+          handleRadioChange={this.handleRadioChange}
         />
-      </div>
-    ),
-    2: (
-      <SenderInfo
-        formData={this.state.senderInfoData}
-        handleChange={this.handleChange}
-        handleRadioChange={this.handleRadioChange}
-      />
-    ),
+      ),
 
-    3: (
-      <SelectTemplateForm
-        formData={this.state.selectTemplateData}
-        handleChange={this.handleChange}
-      />
-    ),
+      3: (
+        <SelectTemplateForm
+          formData={this.state.selectTemplateData}
+          handleChange={this.handleChange}
+        />
+      ),
 
-    4: <SendInvitations />,
-    5: <Done />
+      4: <SendInvitations />,
+      5: <Done />
+    };
+  }
+
+  parseFileData = async () => {
+    const { uploadCSVFormData } = this.state;
+    const file = _get(uploadCSVFormData, "csvFile.file", "");
+    let valid = true;
+    let errorObj = [];
+    let tempObj = [];
+    Papa.parse(file, {
+      skipEmptyLines: true,
+      complete: parsedData => {
+        const newTableData = parsedData.data.map((item, index) => {
+          if (item.length >= 2) {
+            const email = item[0] || "";
+            const name = item[1] || "";
+            const referenceNumber = item[2] || "";
+            if (
+              email.trim() === "" ||
+              name.trim() === "" ||
+              !validate(email.trim(), { isEmail: true })
+            ) {
+              valid = false;
+              errorObj = [
+                ...errorObj,
+                {
+                  index: index,
+                  email: email,
+                  name: name,
+                  referenceNumber: referenceNumber
+                }
+              ];
+            }
+            return {
+              email: email,
+              name: name,
+              referenceNumber: referenceNumber
+            };
+          } else {
+            valid = false;
+            const email = item[0] || "";
+            const name = item[1] || "";
+            const referenceNumber = item[2] || "";
+            tempObj = [
+              ...tempObj,
+              {
+                index: index,
+                email: email || "",
+                name: name || "",
+                referenceNumber: referenceNumber || ""
+              }
+            ];
+            return {};
+          }
+        });
+        if (newTableData.length > 0 && valid) {
+          this.setState({
+            tableData: [...newTableData],
+            getReviewsActiveSubStep: 3
+          });
+        } else {
+          this.setState({
+            uploadCSVFormData: {
+              ...this.state.uploadCSVFormData,
+              parseErrors: [...tempObj, ...errorObj]
+            }
+          });
+        }
+      }
+    });
   };
 
-  handleParseBtnClick = () => {
+  handleParseBtnClick = async () => {
     const { copyPasteFormData } = this.state;
     const parsedData = Papa.parse(copyPasteFormData.textbox.value, {
       skipEmptyLines: true
@@ -255,7 +375,6 @@ class GetReviews extends Component {
     let errorObj = [];
     let tempObj = [];
     //check if data is not empty
-    console.log(parsedData);
     const newTableData = parsedData.data.map((item, index) => {
       if (item.length >= 2) {
         const email = item[0] || "";
@@ -298,7 +417,7 @@ class GetReviews extends Component {
     if (newTableData.length > 0 && valid) {
       this.setState({
         tableData: [...newTableData],
-        getReviewsActiveSubStep: 2
+        getReviewsActiveSubStep: 3
       });
     } else {
       this.setState({
@@ -341,21 +460,47 @@ class GetReviews extends Component {
   handleChange = (e, id, dataType) => {
     const { value } = e.target;
     const formData = this.state[dataType];
-
-    this.setState({
-      [dataType]: {
-        ...formData,
-        [id]: {
-          ...formData[id],
-          value: value,
-          valid:
-            id !== "referenceNumber"
-              ? validate(value, formData[id].validationRules)
-              : true,
-          touched: true
+    if (id === "csvFile") {
+      if (this.fileInput.current.files.length === 1) {
+        const file = this.fileInput.current.files[0];
+        const ext = file.name.match(/\.([^\.]+)$/)[1];
+        const size = file.size;
+        if (ext === "csv") {
+          this.setState(
+            {
+              [dataType]: {
+                ...formData,
+                [id]: {
+                  ...formData[id],
+                  filename: this.fileInput.current.files[0].name,
+                  size: size,
+                  file: file,
+                  errors: {}
+                }
+              }
+            },
+            () => {
+              this.parseFileData();
+            }
+          );
         }
       }
-    });
+    } else {
+      this.setState({
+        [dataType]: {
+          ...formData,
+          [id]: {
+            ...formData[id],
+            value: value,
+            valid:
+              id !== "referenceNumber"
+                ? validate(value, formData[id].validationRules)
+                : true,
+            touched: true
+          }
+        }
+      });
+    }
   };
 
   emptyFormFields = () => {
@@ -486,7 +631,7 @@ class GetReviews extends Component {
 
   //for moving backward getReviewsActiveSubStep to getHomeReviews
   handleListItemBackClick = () => {
-    this.setState({ getReviewsActiveSubStep: -1 });
+    this.setState({ getReviewsActiveSubStep: 0 });
   };
 
   renderAppropriateStep = () => {
@@ -511,6 +656,9 @@ class GetReviews extends Component {
         return (
           <UploadCSVForm
             handleListItemBackClick={this.handleListItemBackClick}
+            ref={this.fileInput}
+            handleChange={this.handleChange}
+            formData={this.state.uploadCSVFormData}
           />
         );
       } else if (getReviewsActiveSubStep === 2) {
@@ -556,18 +704,18 @@ class GetReviews extends Component {
       //   </div>
       // );
     }
+    // if (activeStep === 1) {
+    //   return (
+    //     <SenderInfo
+    //       formData={this.state.senderInfoData}
+    //       handleChange={this.handleChange}
+    //       handleRadioChange={this.handleRadioChange}
+    //       handleNext={this.handleNext}
+    //       handleBack={this.handleBack}
+    //     />
+    //   );
+    // }
     if (activeStep === 1) {
-      return (
-        <SenderInfo
-          formData={this.state.senderInfoData}
-          handleChange={this.handleChange}
-          handleRadioChange={this.handleRadioChange}
-          handleNext={this.handleNext}
-          handleBack={this.handleBack}
-        />
-      );
-    }
-    if (activeStep === 2) {
       return (
         <SelectTemplateForm
           formData={this.state.selectTemplateData}
@@ -577,7 +725,7 @@ class GetReviews extends Component {
         />
       );
     }
-    if (activeStep === 3) {
+    if (activeStep === 2) {
       return (
         <SendInvitations
           handleNext={this.handleNext}
@@ -585,7 +733,7 @@ class GetReviews extends Component {
         />
       );
     }
-    if (activeStep === 4) {
+    if (activeStep === 3) {
       return <Done />;
     }
   };
@@ -614,7 +762,7 @@ class GetReviews extends Component {
             <Grid item xs={12} md={12} lg={12}>
               {this.state.tableData.length > 0 &&
               this.state.activeStep === 0 &&
-              this.state.getReviewsActiveSubStep === 2
+              this.state.getReviewsActiveSubStep === 3
                 ? this.renderInvitesTable()
                 : null}
             </Grid>

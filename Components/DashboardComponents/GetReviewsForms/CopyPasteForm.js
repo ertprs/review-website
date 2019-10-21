@@ -10,15 +10,20 @@ export default class CopyPasteForm extends Component {
   renderHeader = () => {
     return (
       <div>
-        <h3 style={{marginBottom:"1.5rem"}}>Copy paste from spreadsheet or text editor</h3>
+        <h3 style={{ marginBottom: "1.5rem" }}>
+          Copy paste from spreadsheet or text editor
+        </h3>
         <p>
           Copy the data from your spreadsheet or text editor and paste it into
           the text box below.
         </p>
         <p>The data must be separated by semicolons or commas.</p>
         <p>
-          Please place the columns in the following order: <span style={{fontWeight:"bold"}}>email, name,
-          reference number</span>.
+          Please place the columns in the following order:{" "}
+          <span style={{ fontWeight: "bold" }}>
+            email, name, reference number
+          </span>
+          .
         </p>
       </div>
     );
@@ -181,7 +186,9 @@ export default class CopyPasteForm extends Component {
     return (
       <div>
         {this.renderHeader()}
-        {parseErrors.length > 0 ? <h5 style={{color:"red"}}>Errors in CSV, please fix -</h5>: null}
+        {parseErrors.length > 0 ? (
+          <h5 style={{ color: "red" }}>Errors in CSV, please fix -</h5>
+        ) : null}
         {this.renderErrors()}
         {this.renderFormFields()}
         {this.renderButtons()}
