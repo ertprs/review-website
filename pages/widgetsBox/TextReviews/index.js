@@ -18,7 +18,9 @@ const retrieveRequiredData = reviewData => {
 
   const reviews = _get(reviewData, "reviews", []);
 
-  return { ratings, totalReviews, reviews };
+  const success = _get(reviewData, "success", "")
+
+  return { ratings, totalReviews, reviews, success };
 };
 
 const renderReviewBoxFooter = requiredData => {
@@ -60,6 +62,7 @@ const renderReviewBoxFooter = requiredData => {
 };
 
 const renderTextReviewsWidget = (reviewData, settings, props) => {
+  console.log(reviewData)
   const requiredData = retrieveRequiredData(reviewData);
   return (
     <div className="flexContainer">
@@ -77,7 +80,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
         }
 
         .flexContainer > div:last-child {
-          width: ${requiredData.total <= 2 ? "99%" : "79%"};
+          width: ${requiredData.total <= 2 ? "100%" : "80%"};
         }
 
         .textReviewsContainer {
@@ -86,11 +89,15 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
         }
 
         .scoreWidgetContainer {
-          width: 12%;
+          width: 20%;
           height: 100%; //affected by the height passed as a prop to the widget
         }
         .reviewBoxFooter{
           display:none;
+        }
+
+        .noReviewBox{
+          text-align:center;
         }
 
         @media screen and (max-width:1110px){
@@ -155,7 +162,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           <link href="/static/css/slick.css" type="text/css" rel="stylesheet" />
         </Head>
         <div className="reviewBoxSlider">
-          <Slider {...settings}>
+          {requiredData.success!==false ? <Slider {...settings}>
             {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()}>
@@ -169,7 +176,9 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
                 </div>
               );
             })}
-          </Slider>
+          </Slider> : <div className="noReviewBox">
+            <h4 style={{marginTop:"25px"}}>No reviews Found</h4>
+          </div>}          
           <div></div>
         </div>
         <div className="reviewBoxFooter">
@@ -229,17 +238,29 @@ const TextReviews = props => {
   const [reviewData, setReviewData] = useState({});
 
   useEffect(() => {
+    // const CancelToken = axios.CancelToken;
+    // const source = CancelToken.source();
     axios
       .get(
         `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
       )
       .then(res => {
-        // console.log("response form widget ",res.data)
+        console.log("response form widget ",res.data)
         if (!isEmpty(res.data)) setReviewData({ ...res.data });
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        setReviewData({success: false})
+        // if (axios.isCancel(error)) {
+        //   console.log("cancelled");
+        // } else {
+        //   throw error;
+        // }
+        console.log(error)
       });
+
+      return ()=>{
+        
+      }
   }, []);
 
   const [parentState, setParentState] = useState(initState);
