@@ -8,11 +8,22 @@ import {
   SEND_GET_REVIEWS_FAILURE,
   LOCATE_PLACE_INIT,
   LOCATE_PLACE_SUCCESS,
-  LOCATE_PLACE_FAILURE
+  LOCATE_PLACE_FAILURE,
+  UPGRADE_TO_PREMIUM_INIT,
+  UPGRADE_TO_PREMIUM_SUCCESS,
+  UPGRADE_TO_PREMIUM_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
-  const { type, getReviewsData, reviews, result, locatePlace } = action;
+  const {
+    type,
+    getReviewsData,
+    reviews,
+    result,
+    locatePlace,
+    locatePlaceTemp,
+    upgradePremium
+  } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
       return {
@@ -60,19 +71,40 @@ const dashboardReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        locatePlace
+        locatePlace,
+        locatePlaceTemp
       };
     case LOCATE_PLACE_SUCCESS:
       return {
         ...state,
         type,
-        locatePlace
+        locatePlace,
+        locatePlaceTemp
       };
     case LOCATE_PLACE_FAILURE:
       return {
         ...state,
         type,
-        locatePlace
+        locatePlace,
+        locatePlaceTemp
+      };
+    case UPGRADE_TO_PREMIUM_INIT:
+      return {
+        ...state,
+        type,
+        upgradePremium
+      };
+    case UPGRADE_TO_PREMIUM_SUCCESS:
+      return {
+        ...state,
+        type,
+        upgradePremium
+      };
+    case UPGRADE_TO_PREMIUM_FAILURE:
+      return {
+        ...state,
+        type,
+        upgradePremium
       };
     default:
       return state;

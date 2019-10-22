@@ -8,11 +8,15 @@ import {
   SEND_GET_REVIEWS_FAILURE,
   LOCATE_PLACE_INIT,
   LOCATE_PLACE_SUCCESS,
-  LOCATE_PLACE_FAILURE
+  LOCATE_PLACE_FAILURE,
+  UPGRADE_TO_PREMIUM_INIT,
+  UPGRADE_TO_PREMIUM_SUCCESS,
+  UPGRADE_TO_PREMIUM_FAILURE
 } from "./actionTypes";
 import axios from "axios";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import { upgradePremiumApi } from "../../utility/config";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -93,6 +97,9 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       type: LOCATE_PLACE_INIT,
       locatePlace: {
         success: false
+      },
+      locatePlaceTemp: {
+        isLoading: true
       }
     });
     try {
@@ -107,6 +114,9 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         type: LOCATE_PLACE_SUCCESS,
         locatePlace: {
           success: _get(result, "data.success", false)
+        },
+        locatePlaceTemp: {
+          isLoading: false
         }
       });
       if (success) {
@@ -117,6 +127,49 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         type: LOCATE_PLACE_FAILURE,
         locatePlace: {
           success: _get(error, "response.data.success", false)
+        },
+        locatePlaceTemp: {
+          isLoading: false
+        }
+      });
+    }
+  };
+};
+
+export const upgradeToPremium = data => {
+  console.log(data, "data");
+  return async (dispatch, getState) => {
+    const { auth } = getState() | {};
+    let token = _get(auth, "logIn.token", "");
+    dispatch({
+      type: UPGRADE_TO_PREMIUM_INIT,
+      upgradePremium: {
+        success: "undefined",
+        isLoading: true
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url: `${process.env.BASE_URL}${upgradePremiumApi}`
+      });
+      const success = await _get(result, "data.success", false);
+      dispatch({
+        type: UPGRADE_TO_PREMIUM_SUCCESS,
+        upgradePremium: {
+          success: success,
+          isLoading: false
+        }
+      });
+    } catch (error) {
+      const success = await _get(error, "response.data.success", false);
+      dispatch({
+        type: UPGRADE_TO_PREMIUM_FAILURE,
+        upgradePremium: {
+          success: success,
+          isLoading: false
         }
       });
     }

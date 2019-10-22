@@ -11,6 +11,7 @@ import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import HistoryIcon from "@material-ui/icons/History";
+import { CircularProgress } from "@material-ui/core";
 
 export const MainListItems = ({
   stepToRender,
@@ -111,7 +112,11 @@ export const MainListItems = ({
   );
 };
 
-export const SecondaryListItems = ({ subsriptionPlan }) => {
+export const SecondaryListItems = ({
+  subsriptionPlan,
+  handleClick,
+  isLoading
+}) => {
   return (
     <div>
       <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader>
@@ -119,10 +124,16 @@ export const SecondaryListItems = ({ subsriptionPlan }) => {
       <ListItem />
       <ListItem />
       <ListItem button style={{ background: "#303030", color: "#fff" }}>
-        <ListItemIcon style={{ color: "#fff" }}>
-          <VerticalAlignTopIcon />
-        </ListItemIcon>
-        <ListItemText primary="Click to upgrade" />
+        {isLoading ? (
+          <CircularProgress size={30} color={"#f1f1f1"} />
+        ) : (
+          <>
+            <ListItemIcon onClick={handleClick} style={{ color: "#fff" }}>
+              <VerticalAlignTopIcon />
+            </ListItemIcon>
+            <ListItemText onClick={handleClick} primary="Click to upgrade" />
+          </>
+        )}
       </ListItem>
     </div>
   );

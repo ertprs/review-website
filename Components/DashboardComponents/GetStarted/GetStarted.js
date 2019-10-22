@@ -104,11 +104,11 @@ class GetStarted extends Component {
 
   renderContinueBtn = () => {
     const { selectedAddress, formData } = this.state;
-    const { type } = this.props;
+    const { type, isLoading } = this.props;
     return Object.keys(selectedAddress).length > 0 &&
       formData["directReviewUrl"].valid ? (
       <div style={{ marginTop: "50px", textAlign: "right" }}>
-        {type === "LOCATE_PLACE_INIT" ? (
+        {isLoading === true ? (
           <CircularProgress size={25} />
         ) : (
           <Button
@@ -227,9 +227,9 @@ class GetStarted extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { success, type, changeStepToRender } = this.props;
+    const { success, type, changeStepToRender, isLoading } = this.props;
     if (this.props !== prevProps) {
-      if (type === "LOCATE_PLACE_SUCCESS" && success) {
+      if (isLoading === false && success) {
         this.setState(
           {
             showSnackbar: true,
@@ -240,7 +240,7 @@ class GetStarted extends Component {
             changeStepToRender(1);
           }
         );
-      } else if (type === "LOCATE_PLACE_FAILURE" && !success) {
+      } else if (isLoading === false && !success) {
         this.setState({
           showSnackbar: true,
           variant: "error",
@@ -309,8 +309,21 @@ const mapStateToProps = state => {
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const success = _get(dashboardData, "locatePlace.success", false);
   const type = _get(dashboardData, "type", "");
+  const isLoading = _get(
+    dashboardData,
+    "locatePlaceTemp.isLoading",
+    "undefined"
+  );
   const placeId = _get(businessProfile, "google_places.placeId", "");
-  return { success, businessProfile, token, type, placeId, userProfile };
+  return {
+    success,
+    businessProfile,
+    token,
+    type,
+    placeId,
+    userProfile,
+    isLoading
+  };
 };
 
 export default connect(

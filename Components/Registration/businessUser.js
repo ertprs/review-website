@@ -343,7 +343,7 @@ class BusinessUserRegistration extends Component {
             styles={{ height: "38px" }}
           />
           <div style={{ margin: "20px 0 20px 0" }}>
-            <label style={{cursor:"pointer"}}>
+            <label style={{ cursor: "pointer" }}>
               <input
                 type="checkbox"
                 onChange={e =>
@@ -356,9 +356,11 @@ class BusinessUserRegistration extends Component {
               />{" "}
               Accept our terms and conditions
             </label>
-            <p style={{fontSize:"12px", marginLeft:"5px", marginTop:"5px"}}>
+            <p
+              style={{ fontSize: "12px", marginLeft: "5px", marginTop: "5px" }}
+            >
               <Link href="/termsAndConditions">
-                <a>(Read our terms and conditions)</a>
+                <a target="_blank">Read our terms and conditions</a>
               </Link>
             </p>
           </div>

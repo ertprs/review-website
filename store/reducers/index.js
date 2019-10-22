@@ -13,10 +13,16 @@ const authPersistConfig = {
   blacklist: ["logInTemp", "signUpTemp", "tempEmail", "resendActivation"]
 };
 
+const dashboardPersistConfig = {
+  key: "dashboardData",
+  storage: storage,
+  blacklist: ["locatePlaceTemp", "upgradePremium"]
+};
+
 export default combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   trustVote: trustReducer,
   profileData: domainProfileReducer,
-  dashboardData: dashboardReducer,
+  dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
   loader: loaderReducer
 });
