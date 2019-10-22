@@ -16,7 +16,7 @@ const authPersistConfig = {
 const dashboardPersistConfig = {
   key: "dashboardData",
   storage: storage,
-  blacklist: ["locatePlaceTemp"]
+  blacklist: ["locatePlaceTemp", "upgradePremium"]
 };
 
 export default combineReducers({

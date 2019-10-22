@@ -30,6 +30,7 @@ import Reviews from "../../Components/DashboardComponents/Reviews";
 import InvitationHistory from "../../Components/DashboardComponents/InvitationHistory";
 import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
 import { logOut } from "../../store/actions/authActions";
+import { upgradeToPremium } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
@@ -122,13 +123,21 @@ function Dashboard(props) {
   const [open, setOpen] = React.useState(false);
   const [stepToRender, setStepToRender] = React.useState(0);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
+  const [snackbarVariant, setSnackbarVariant] = React.useState("success");
+  const [snackbarMsg, setSnackbarMsg] = React.useState("");
 
-  // useEffect(() => {
-  //   const loginType = _get(props, "loginType", 0);
-  //   if (!props.authorized) {
-  //     Router.push("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    // const { upgradeToPremiumRes } = props;
+    // if (upgradeToPremiumRes === true) {
+    //   setShowSnackbar(true);
+    //   setSnackbarVariant("success");
+    //   setSnackbarMsg("Request Sent Successfully!");
+    // } else if (upgradeToPremiumRes === false) {
+    //   setShowSnackbar(true);
+    //   setSnackbarVariant("success");
+    //   setSnackbarMsg("Request Sent Successfully!");
+    // }
+  });
 
   const handleMenuItemClicked = index => {
     setStepToRender(index);
@@ -165,6 +174,8 @@ function Dashboard(props) {
 
   const handleLogout = () => {
     setShowSnackbar(true);
+    setSnackbarVariant("success");
+    setSnackbarMsg("Logout Successfully!");
     props.logOut();
     Router.push("/");
   };
@@ -202,6 +213,28 @@ function Dashboard(props) {
       menuItemsDisabled = true;
     }
   }
+
+  const clickToUpgradeHandler = () => {
+    const { upgradeToPremium, userName, userEmail, userPhone } = props;
+    const data = {
+      email: userEmail || "",
+      name: userName || "",
+      type: "some_random_form",
+      objective: "get things done now",
+      phone: userPhone || "123456789",
+      websiteOwner: true
+    };
+    upgradeToPremium(data);
+    setTimeout(() => {
+      setShowSnackbar(true);
+      setSnackbarVariant("success");
+      setSnackbarMsg("Request Sent Successfully!");
+    }, 3000);
+  };
+
+  const handleSnackbarClose = () => {
+    setShowSnackbar(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -272,6 +305,8 @@ function Dashboard(props) {
             subsriptionPlan={getSubscriptionPlan(
               _get(props, "subsriptionPlan", 0)
             )}
+            handleClick={clickToUpgradeHandler}
+            isLoading={props.upgradeToPremiumIsLoading || false}
           />
         </List>
         <Divider />
@@ -287,9 +322,9 @@ function Dashboard(props) {
       </main>
       <Snackbar
         open={showSnackbar}
-        variant="success"
-        handleClose={() => setShowSnackbar(false)}
-        message="Logout Successfully!"
+        variant={snackbarVariant}
+        handleClose={handleSnackbarClose}
+        message={snackbarMsg}
       />
     </div>
   );
@@ -300,6 +335,8 @@ const mapStateToProps = state => {
   const authorized = _get(auth, "logIn.authorized", false);
   const loginType = _get(auth, "logIn.loginType", 0);
   const userName = _get(auth, "logIn.userProfile.name", "");
+  const userEmail = _get(auth, "logIn.userProfile.email", "");
+  const userPhone = _get(auth, "logIn.userProfile.phone", "");
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",
@@ -314,19 +351,33 @@ const mapStateToProps = state => {
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const placeId = _get(businessProfile, "google_places.placeId", "");
   const placeLocated = _get(dashboardData, "locatePlace.success", false);
+  const upgradeToPremiumRes = _get(
+    dashboardData,
+    "upgradePremium.success",
+    "undefined"
+  );
+  const upgradeToPremiumIsLoading = _get(
+    dashboardData,
+    "upgradePremium.isLoading",
+    false
+  );
   return {
     authorized,
     loginType,
     userName,
+    userEmail,
+    userPhone,
     activation_required,
     subsriptionPlan,
     userActivated,
     placeId,
-    placeLocated
+    placeLocated,
+    upgradeToPremiumRes,
+    upgradeToPremiumIsLoading
   };
 };
 
 export default connect(
   mapStateToProps,
-  { logOut }
+  { logOut, upgradeToPremium }
 )(Dashboard);

@@ -38,6 +38,7 @@ export const activateUserApi = "/register/activate";
 export const businessRegisterApi = "/api/register-business";
 export const locatePlaceApi = "/api/my-business/profile/google-place";
 export const resendActivationLinkApi = "/api/me/resend-activation";
+export const upgradePremiumApi = "/api/leads";
 
 //How to create review short link
 export const getStartedVideoUrl =
