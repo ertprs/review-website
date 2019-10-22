@@ -152,12 +152,11 @@ class GetStarted extends Component {
           styles={{
             border: "0",
             borderBottom: "1px solid #999",
-            borderRadius: "0"
+            borderRadius: "0",
+            marginLeft: 0,
+            paddingLeft: 0
           }}
         />
-        <a href={getStartedVideoUrl} target="_blank">
-          How to get your google review url?
-        </a>
       </div>
     ) : null;
   };
@@ -205,25 +204,13 @@ class GetStarted extends Component {
         </style>
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
-            <h4>
-              {/* {this.props.placeId !== "" || this.props.success */}
-              {/* ? "Your business details" */}
-              Please claim your Business
-            </h4>
+            <h4>Please claim your Business</h4>
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxImgContainer">
-              {/* <img
-                src={`/static/images/${
-                  this.props.placeId !== "" || this.props.success
-                    ? "googleMyBusiness.jpg"
-                    : "locate.png"
-                }`}
-              /> */}
               <img src="/static/images/locate.png" />
             </div>
             <div className="getStartedBoxAutoComplete">
-              {/* {this.props.placeId === "" && !this.props.success ? ( */}
               <>
                 <PlacesAutoComplete
                   handleAddressSelect={this.handleAddressSelect}
@@ -232,9 +219,6 @@ class GetStarted extends Component {
                 {this.renderDirectReviewUrl()}
                 {this.renderContinueBtn()}
               </>
-              {/* ) : (
-                this.renderBusinessDetails()
-              )} */}
             </div>
           </div>
         </div>
@@ -278,6 +262,32 @@ class GetStarted extends Component {
           <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={12}>
               {this.renderGetStartedBox()}
+            </Grid>
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={6}>
+              <div
+                style={{
+                  position: "relative",
+                  paddingBottom: "56.25%",
+                  height: "0"
+                }}
+              >
+                <iframe
+                  src="https://www.loom.com/embed/ef51f581d64842a6bcdcd000d2645708"
+                  frameborder="0"
+                  webkitallowfullscreen
+                  mozallowfullscreen
+                  allowfullscreen
+                  style={{
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    width: "100%",
+                    height: "100%"
+                  }}
+                ></iframe>
+              </div>
             </Grid>
           </Grid>
         </Container>
