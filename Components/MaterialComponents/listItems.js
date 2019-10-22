@@ -127,3 +127,25 @@ export const SecondaryListItems = ({ subsriptionPlan }) => {
     </div>
   );
 };
+
+export const DashboardLogo = () => {
+  return (
+    <div className="container">
+      <style jsx>{`
+        .container {
+          display: flex;
+          justify-content: center;
+          align-items: baseline;
+          height: 50px;
+          width: auto;
+          margin-top: 120px;
+        }
+        .imgStyle {
+          max-width: 100%;
+          height: auto;
+        }
+      `}</style>
+      <img src="/static/images/logo_footer.png" className="imgStyle" />
+    </div>
+  );
+};
