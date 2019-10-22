@@ -96,7 +96,7 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
         `}
       </style>
       <div className={`ratingText ${textReviews ? "mt" : ""}`}>
-        <h5 className="widgetRating">{requiredData.ratings}/5</h5>
+        <h5 className="widgetRating">{requiredData.ratings}<span style={{margin:"0px 1px 0 1px"}}>/</span>5</h5>
       </div>
 
       <div className={`carouselRatingIndicator ${textReviews ? "" : ""}`}>
