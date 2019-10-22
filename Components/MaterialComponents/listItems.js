@@ -149,7 +149,7 @@ export const DashboardLogo = () => {
           align-items: baseline;
           height: 50px;
           width: auto;
-          margin-top: 120px;
+          
         }
         .imgStyle {
           max-width: 100%;

@@ -226,6 +226,13 @@ class GetStarted extends Component {
     );
   };
 
+  componentDidMount(){
+    const { placeId, locatePlace} = this.props;
+    if(placeId!=="" || locatePlace){
+      this.props.changeStepToRender(1)
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { success, type, changeStepToRender, isLoading } = this.props;
     if (this.props !== prevProps) {
@@ -315,12 +322,14 @@ const mapStateToProps = state => {
     "undefined"
   );
   const placeId = _get(businessProfile, "google_places.placeId", "");
+  const locatePlace = _get(dashboardData, "locatePlace.success",false)
   return {
     success,
     businessProfile,
     token,
     type,
     placeId,
+    locatePlace,
     userProfile,
     isLoading
   };
