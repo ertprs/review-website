@@ -41,7 +41,7 @@ export const reviewBoxStyles = css`
   }
 
   .reviewText {
-    text-align: justify;
+    text-align: left;
     font-size: 12.5px;
     line-height:1.6;
     color:#666666;
