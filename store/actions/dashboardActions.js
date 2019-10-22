@@ -93,6 +93,9 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       type: LOCATE_PLACE_INIT,
       locatePlace: {
         success: false
+      },
+      locatePlaceTemp: {
+        isLoading: true
       }
     });
     try {
@@ -107,6 +110,9 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         type: LOCATE_PLACE_SUCCESS,
         locatePlace: {
           success: _get(result, "data.success", false)
+        },
+        locatePlaceTemp: {
+          isLoading: false
         }
       });
       if (success) {
@@ -117,6 +123,9 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         type: LOCATE_PLACE_FAILURE,
         locatePlace: {
           success: _get(error, "response.data.success", false)
+        },
+        locatePlaceTemp: {
+          isLoading: false
         }
       });
     }
