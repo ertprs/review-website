@@ -22,7 +22,7 @@ class ProfilePageHeader extends Component {
     const is_verified = (headerData || {}).is_verified || false;
     const review_length = (headerData || {}).review_length || 0;
     const willCome = (headerData || {}).willCome || false;
-
+    const parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
     const reviewCardBody = (
       <RatingIndicators
         rating={Number(ratings)}
@@ -54,7 +54,7 @@ class ProfilePageHeader extends Component {
                   imgContainerStyles={{
                     maxWidth: "300px"
                   }}
-                  title={domain_name}
+                  title={parsed_domain_name}
                   subTitle={
                     <>
                       <span>Reviews {review_length}</span>

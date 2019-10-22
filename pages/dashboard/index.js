@@ -19,7 +19,8 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import {
   MainListItems,
-  SecondaryListItems
+  SecondaryListItems,
+  DashboardLogo
 } from "../../Components/MaterialComponents/listItems";
 import Home from "../../Components/DashboardComponents/Home/Home";
 import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
@@ -275,6 +276,10 @@ function Dashboard(props) {
               _get(props, "subsriptionPlan", 0)
             )}
           />
+        </List>
+        <Divider />
+        <List>
+          <DashboardLogo />
         </List>
       </Drawer>
       <main className={classes.content}>
