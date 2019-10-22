@@ -77,7 +77,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
         }
 
         .flexContainer > div:last-child {
-          width: ${requiredData.total <= 2 ? "100%" : "80%"};
+          width: ${requiredData.total <= 2 ? "99%" : "79%"};
         }
 
         .textReviewsContainer {
@@ -86,16 +86,16 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
         }
 
         .scoreWidgetContainer {
-          width: 20%;
+          width: 12%;
           height: 100%; //affected by the height passed as a prop to the widget
         }
         .reviewBoxFooter{
           display:none;
         }
 
-        @media screen and (max-width:1100px){
+        @media screen and (max-width:1110px){
           .flexContainer > div:first-child {
-            width: 25%;
+            width: 24.3%;
           }
 
           .flexContainer > div:last-child {
