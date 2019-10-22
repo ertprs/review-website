@@ -12,7 +12,14 @@ import {
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
-  const { type, getReviewsData, reviews, result, locatePlace } = action;
+  const {
+    type,
+    getReviewsData,
+    reviews,
+    result,
+    locatePlace,
+    locatePlaceTemp
+  } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
       return {
@@ -60,19 +67,22 @@ const dashboardReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        locatePlace
+        locatePlace,
+        locatePlaceTemp
       };
     case LOCATE_PLACE_SUCCESS:
       return {
         ...state,
         type,
-        locatePlace
+        locatePlace,
+        locatePlaceTemp
       };
     case LOCATE_PLACE_FAILURE:
       return {
         ...state,
         type,
-        locatePlace
+        locatePlace,
+        locatePlaceTemp
       };
     default:
       return state;
