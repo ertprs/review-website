@@ -122,7 +122,7 @@ class BusinessUserLogin extends Component {
           variant: "error",
           snackbarMsg
         });
-      } else if (authorized) {
+      } else if (authorized === true) {
         this.setState(
           {
             showSnackbar: true,
