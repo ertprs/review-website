@@ -238,8 +238,8 @@ const TextReviews = props => {
   const [reviewData, setReviewData] = useState({});
 
   useEffect(() => {
-    const CancelToken = axios.CancelToken;
-    const source = CancelToken.source();
+    // const CancelToken = axios.CancelToken;
+    // const source = CancelToken.source();
     axios
       .get(
         `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
@@ -250,15 +250,16 @@ const TextReviews = props => {
       })
       .catch(error => {
         setReviewData({success: false})
-        if (axios.isCancel(error)) {
-          console.log("cancelled");
-        } else {
-          throw error;
-        }
+        // if (axios.isCancel(error)) {
+        //   console.log("cancelled");
+        // } else {
+        //   throw error;
+        // }
+        console.log(error)
       });
 
       return ()=>{
-        source.cancel();
+        
       }
   }, []);
 
