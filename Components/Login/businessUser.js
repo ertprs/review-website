@@ -95,21 +95,21 @@ class BusinessUserLogin extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { logIn, logInTemp } = this.props.auth;
     const { formData } = this.state;
+    const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
+    const authorized = _get(logIn, "authorized", false);
+    const isLoggingIn = _get(logInTemp, "isLoggingIn", false);
+    const error = _get(logInTemp, "error", "Some Error Occured.");
+    const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
     if (this.props.auth !== prevProps.auth) {
-      const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
+      this.setState({ isLoading: isLoggingIn });
       if (isWrongCredentials) {
         this.setState({
           formData: {
             ...formData,
-            password: { ...formData.password, value: "" }
+            password: { ...formData.password, value: "", valid: false }
           }
         });
       }
-      const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
-      const authorized = _get(logIn, "authorized", false);
-      const isLoggingIn = _get(logInTemp, "isLoggingIn", false);
-      const error = _get(logInTemp, "error", "Some Error Occured.");
-      this.setState({ isLoading: isLoggingIn });
       if (isLoginFailed) {
         let snackbarMsg = "";
         if (isWrongCredentials) {
@@ -123,21 +123,16 @@ class BusinessUserLogin extends Component {
           snackbarMsg
         });
       } else if (authorized) {
-        this.setState({
-          showSnackbar: true,
-          variant: "success",
-          snackbarMsg: "Logged in successfully!"
-        });
-        setTimeout(() => {
-          this.setState({
+        this.setState(
+          {
             showSnackbar: true,
             variant: "success",
-            snackbarMsg: "Redirecting..."
-          });
-          setTimeout(() => {
+            snackbarMsg: "Logged in successfully!"
+          },
+          () => {
             Router.push("/dashboard");
-          }, 1000);
-        }, 1000);
+          }
+        );
       }
     }
   }
