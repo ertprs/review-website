@@ -144,7 +144,6 @@ function Dashboard(props) {
 
   const changeStepToRender = step => {
     console.log(step, "step");
-    debugger;
     setStepToRender(step);
   };
 
