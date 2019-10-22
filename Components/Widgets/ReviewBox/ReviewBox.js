@@ -13,7 +13,7 @@ const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles, 
           {/* {review.name.length > 7
             ? review.name.substring(0, 7) + ".."
             : review.name} */}
-            {review.name.replace(/\s\s+/g, ' ')}
+            {review.name.replace(/\s+/gmi, ' ')}
         </div>
         {/* <div className="reviewHeaderDate">
           {stringHelpers("shortenMonths", review.date)}
@@ -35,9 +35,9 @@ const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles, 
       <div className="reviewText">
         <p>
           <a href={`${googleMapsURL}/${domain}`} target="_blank" style={{textDecoration:"none", color:"#000"}}>
-          {review.text.length <= 95
+          {review.text!==null ? review.text.length <= 95
             ? review.text.replace(/\s\s+/g, ' ')
-            : review.text.substring(0, 93).replace(/\s\s+/g, ' ') + "..."}
+            : review.text.substring(0, 93).replace(/\s\s+/g, ' ') + "..." : "no textual review"}
           </a>
         </p>
       </div>
