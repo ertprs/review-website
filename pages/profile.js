@@ -8,12 +8,6 @@ import {
   scrollSpy,
   scroller
 } from "react-scroll";
-import Navbar from "../Components/MaterialComponents/NavBar";
-import ProfilePageHeader from "../Components/ProfilePage/ProfilePageHeader";
-import ProfilePageBody from "../Components/ProfilePage/ProfilePageBody";
-import Footer from "../Components/Footer/Footer";
-import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
-import SimpleTabs from "../Components/MaterialComponents/SimpleTabs";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../utility/constants/socialMediaConstants";
@@ -23,6 +17,38 @@ import {
 } from "../store/actions/domainProfileActions";
 import { connect } from "react-redux";
 import Router from "next/router";
+import dynamic from "next/dynamic";
+import CircularProgress from "@material-ui/core/CircularProgress";
+const Navbar = dynamic(
+  () => import("../Components/MaterialComponents/NavBar"),
+  { loading: <CircularProgress /> }
+);
+const ProfilePageHeader = dynamic(
+  () => import("../Components/ProfilePage/ProfilePageHeader"),
+  { loading: <CircularProgress /> }
+);
+const ProfilePageBody = dynamic(
+  () => import("../Components/ProfilePage/ProfilePageBody"),
+  { loading: <CircularProgress /> }
+);
+const Footer = dynamic(() => import("../Components/Footer/Footer"), {
+  loading: <CircularProgress />
+});
+const PusherDataComponent = dynamic(
+  () => import("../Components/PusherDataComponent/PusherDataComponent"),
+  { loading: <CircularProgress /> }
+);
+const SimpleTabs = dynamic(
+  () => import("../Components/MaterialComponents/SimpleTabs"),
+  { loading: <CircularProgress /> }
+);
+
+// import Navbar from "../Components/MaterialComponents/NavBar";
+// import ProfilePageHeader from "../Components/ProfilePage/ProfilePageHeader";
+// import ProfilePageBody from "../Components/ProfilePage/ProfilePageBody";
+// import Footer from "../Components/Footer/Footer";
+// import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
+// import SimpleTabs from "../Components/MaterialComponents/SimpleTabs";
 
 class Profile extends React.Component {
   state = {

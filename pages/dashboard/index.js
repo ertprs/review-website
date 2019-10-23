@@ -17,18 +17,12 @@ import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   MainListItems,
   SecondaryListItems,
   DashboardLogo
 } from "../../Components/MaterialComponents/listItems";
-import Home from "../../Components/DashboardComponents/Home/Home";
-import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
-import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
-import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
-import Reviews from "../../Components/DashboardComponents/Reviews";
-import InvitationHistory from "../../Components/DashboardComponents/InvitationHistory";
-import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
 import { logOut } from "../../store/actions/authActions";
 import { upgradeToPremium } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
@@ -36,6 +30,112 @@ import Router from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
+import dynamic from "next/dynamic";
+
+//Dynamic imported components
+const Home = dynamic(() =>
+  import("../../Components/DashboardComponents/Home/Home")
+);
+const GetStarted = dynamic(
+  () => import("../../Components/DashboardComponents/GetStarted/GetStarted"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const GetReviews = dynamic(
+  () => import("../../Components/DashboardComponents/GetReviews/GetReviews"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const Reviews = dynamic(
+  () => import("../../Components/DashboardComponents/Reviews"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const InvitationHistory = dynamic(
+  () => import("../../Components/DashboardComponents/InvitationHistory"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const WidgetsShowCase = dynamic(
+  () =>
+    import(
+      "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase"
+    ),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
+// import Home from "../../Components/DashboardComponents/Home/Home";
+// import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
+// import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
+// import Reviews from "../../Components/DashboardComponents/Reviews";
+// import InvitationHistory from "../../Components/DashboardComponents/InvitationHistory";
+// import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
 
 const drawerWidth = 240;
 
@@ -125,19 +225,18 @@ function Dashboard(props) {
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
-
+  const { upgradeToPremiumRes } = props;
   useEffect(() => {
-    // const { upgradeToPremiumRes } = props;
-    // if (upgradeToPremiumRes === true) {
-    //   setShowSnackbar(true);
-    //   setSnackbarVariant("success");
-    //   setSnackbarMsg("Request Sent Successfully!");
-    // } else if (upgradeToPremiumRes === false) {
-    //   setShowSnackbar(true);
-    //   setSnackbarVariant("success");
-    //   setSnackbarMsg("Request Sent Successfully!");
-    // }
-  });
+    if (upgradeToPremiumRes === true) {
+      setShowSnackbar(true);
+      setSnackbarVariant("success");
+      setSnackbarMsg("Request Sent Successfully!");
+    } else if (upgradeToPremiumRes === false) {
+      setShowSnackbar(true);
+      setSnackbarVariant("success");
+      setSnackbarMsg("Request Sent Successfully!");
+    }
+  }, [upgradeToPremiumRes]);
 
   const handleMenuItemClicked = index => {
     setStepToRender(index);
@@ -225,11 +324,6 @@ function Dashboard(props) {
       websiteOwner: true
     };
     upgradeToPremium(data);
-    setTimeout(() => {
-      setShowSnackbar(true);
-      setSnackbarVariant("success");
-      setSnackbarMsg("Request Sent Successfully!");
-    }, 3000);
   };
 
   const handleSnackbarClose = () => {
