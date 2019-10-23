@@ -115,8 +115,8 @@ class Reviews extends Component {
         >
           <ReactPaginate
             pageCount={total / perPage}
-            pageRangeDisplayed={1}
-            marginPagesDisplayed={2}
+            pageRangeDisplayed={total / perPage}
+            marginPagesDisplayed={0}
             initialPage={0}
             onPageChange={this.handlePageChange}
             containerClassName={"pagination"}
