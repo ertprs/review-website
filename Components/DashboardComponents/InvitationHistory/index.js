@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import MaterialTable from "material-table";
+import { connect } from "react-redux";
+import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
 
 const columns = [
-  { title: "Customer Email", field: "customerEmail" },
+  { title: "Id", field: "id" },
+  { title: "Email", field: "email" },
+  { title: "Campaign Name", field: "campaign_name" },
   { title: "Status", field: "status" },
   { title: "Created", field: "created" },
-  { title: "Sent", field: "sent" },
-  { title: "Type", field: "type" },
-  { title: "Reference Number", field: "referenceNumber" }
+  { title: "Reference", field: "reference" }
 ];
 
 function createData(
@@ -306,10 +309,31 @@ const data = [
 
 class InvitationHistory extends Component {
   render() {
+    const { invitations, errroMsg, isLoading, success } = this.props;
     return (
-      <MaterialTable title="Invitation History" columns={columns} data={data} />
+      <MaterialTable
+        title="Invitation History"
+        columns={columns}
+        data={invitations}
+      />
     );
   }
 }
 
-export default InvitationHistory;
+const mapStateToProps = state => {
+  const { dashboardData } = state;
+  const invitations = _get(dashboardData, "transactionHistory.invitations", []);
+  const errroMsg = _get(dashboardData, "transactionHistory.errorMsg", "");
+  const isLoading = _get(dashboardData, "transactionHistory.isLoading", false);
+  let success = false;
+  if (invitations) {
+    if (Array.isArray(invitations) && !_isEmpty(invitations)) {
+      success = true;
+    } else {
+      success = false;
+    }
+  }
+  return { invitations, errroMsg, isLoading, success };
+};
+
+export default connect(mapStateToProps)(InvitationHistory);

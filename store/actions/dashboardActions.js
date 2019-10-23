@@ -11,12 +11,15 @@ import {
   LOCATE_PLACE_FAILURE,
   UPGRADE_TO_PREMIUM_INIT,
   UPGRADE_TO_PREMIUM_SUCCESS,
-  UPGRADE_TO_PREMIUM_FAILURE
+  UPGRADE_TO_PREMIUM_FAILURE,
+  TRANSACTION_HISTORY_INIT,
+  TRANSACTION_HISTORY_SUCCESS,
+  TRANSACTION_HISTORY_FAILURE
 } from "./actionTypes";
 import axios from "axios";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { upgradePremiumApi } from "../../utility/config";
+import { upgradePremiumApi, transactionHistoryApi } from "../../utility/config";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -170,6 +173,45 @@ export const upgradeToPremium = data => {
         upgradePremium: {
           success: success,
           isLoading: false
+        }
+      });
+    }
+  };
+};
+
+export const fetchTransactionHistory = token => {
+  return async dispatch => {
+    dispatch({
+      type: TRANSACTION_HISTORY_INIT,
+      transactionHistory: {
+        isLoading: true,
+        invitatons: [],
+        errorMsg: ""
+      }
+    });
+    try {
+      const result = await axios({
+        method: "GET",
+        url: `${process.env.BASE_URL}${transactionHistoryApi}`,
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const invitations = _get(result, "data.invitations", []);
+      dispatch({
+        type: TRANSACTION_HISTORY_SUCCESS,
+        transactionHistory: {
+          invitations,
+          isLoading: false,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      const err = _get(error, "response.data.message", "Some Error Occured!");
+      dispatch({
+        type: TRANSACTION_HISTORY_FAILURE,
+        transactionHistory: {
+          invitations: [],
+          isLoading: false,
+          errorMsg: err
         }
       });
     }
