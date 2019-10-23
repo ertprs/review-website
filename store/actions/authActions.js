@@ -461,13 +461,15 @@ export const businessLogIn = (loginData, api, directLogin) => {
       if (success) {
         dispatch(fetchReviews(token));
       }
-      if (userProfile.hasOwnProperty("subscription")) {
-        if (
-          userProfile.subscription.plan_type_id === 1 ||
-          userProfile.subscription.plan_type_id === 2 ||
-          userProfile.subscription.plan_type_id === 3
-        ) {
-          loginType = 4;
+      if (userProfile.subscription) {
+        if (userProfile.hasOwnProperty("subscription")) {
+          if (
+            userProfile.subscription.plan_type_id === 1 ||
+            userProfile.subscription.plan_type_id === 2 ||
+            userProfile.subscription.plan_type_id === 3
+          ) {
+            loginType = 4;
+          }
         }
       }
       dispatch({
