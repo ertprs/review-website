@@ -19,10 +19,28 @@ const dashboardPersistConfig = {
   blacklist: ["locatePlaceTemp", "upgradePremium"]
 };
 
-export default combineReducers({
+// export default combineReducers({
+//   auth: persistReducer(authPersistConfig, authReducer),
+//   trustVote: trustReducer,
+//   profileData: domainProfileReducer,
+//   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
+//   loader: loaderReducer
+// });
+
+const appReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   trustVote: trustReducer,
   profileData: domainProfileReducer,
   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
   loader: loaderReducer
 });
+
+const rootReducer = (state, action) => {
+  console.log(action.type, "action type");
+  if (action.type === "LOGOUT") {
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
+
+export default rootReducer;
