@@ -36,6 +36,7 @@ import _get from "lodash/get";
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
 import dynamic from "next/dynamic";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
+import Tooltip from "@material-ui/core/Tooltip";
 //Dynamic imported components
 const Home = dynamic(() =>
   import("../../Components/DashboardComponents/Home/Home")
@@ -382,13 +383,15 @@ function Dashboard(props) {
           >
             Welcome {userName || ""} !
           </Typography>
-          <IconButton
-            color="inherit"
-            onClick={handleLogout}
-            style={{ color: "#fff" }}
-          >
-            <LogoutIcon />
-          </IconButton>
+          <Tooltip title="Logout">
+            <IconButton
+              color="inherit"
+              onClick={handleLogout}
+              style={{ color: "#fff" }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <Drawer
