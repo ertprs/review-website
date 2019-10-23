@@ -125,19 +125,18 @@ function Dashboard(props) {
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
-
+  const { upgradeToPremiumRes } = props;
   useEffect(() => {
-    // const { upgradeToPremiumRes } = props;
-    // if (upgradeToPremiumRes === true) {
-    //   setShowSnackbar(true);
-    //   setSnackbarVariant("success");
-    //   setSnackbarMsg("Request Sent Successfully!");
-    // } else if (upgradeToPremiumRes === false) {
-    //   setShowSnackbar(true);
-    //   setSnackbarVariant("success");
-    //   setSnackbarMsg("Request Sent Successfully!");
-    // }
-  });
+    if (upgradeToPremiumRes === true) {
+      setShowSnackbar(true);
+      setSnackbarVariant("success");
+      setSnackbarMsg("Request Sent Successfully!");
+    } else if (upgradeToPremiumRes === false) {
+      setShowSnackbar(true);
+      setSnackbarVariant("success");
+      setSnackbarMsg("Request Sent Successfully!");
+    }
+  }, [upgradeToPremiumRes]);
 
   const handleMenuItemClicked = index => {
     setStepToRender(index);
@@ -225,11 +224,6 @@ function Dashboard(props) {
       websiteOwner: true
     };
     upgradeToPremium(data);
-    setTimeout(() => {
-      setShowSnackbar(true);
-      setSnackbarVariant("success");
-      setSnackbarMsg("Request Sent Successfully!");
-    }, 3000);
   };
 
   const handleSnackbarClose = () => {
