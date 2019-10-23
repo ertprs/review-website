@@ -235,7 +235,7 @@ class Home extends Component {
             <div>
               {topThreeReviews.length > 0
                 ? this.renderReviewSnippets(topThreeReviews)
-                : "No reviews found !"}
+                : "Will be displayed in 24 hours !"}
             </div>
           </div>
         </SimpleCard>

@@ -207,6 +207,8 @@ export const logOut = () => {
   localStorage.removeItem("persist:primary");
   localStorage.removeItem("persist:auth");
   localStorage.removeItem("userActivated");
+  localStorage.removeItem("persist:dashboardData");
+  localStorage.clear();
   return {
     type: LOGOUT,
     payload: {}

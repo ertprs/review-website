@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -18,13 +18,14 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import ReviewsPusher from '../../Components/ReviewsPusher/ReviewsPusher';
 import {
   MainListItems,
   SecondaryListItems,
   DashboardLogo
 } from "../../Components/MaterialComponents/listItems";
 import { logOut } from "../../store/actions/authActions";
-import { upgradeToPremium } from "../../store/actions/dashboardActions";
+import { upgradeToPremium, fetchReviews} from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
@@ -225,7 +226,10 @@ function Dashboard(props) {
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
-  const { upgradeToPremiumRes } = props;
+  const { upgradeToPremiumRes, placeLocated, fetchReviews, token } = props;
+  const initState= {};
+  const [parentState, setParentState] = useState(initState);
+
   useEffect(() => {
     if (upgradeToPremiumRes === true) {
       setShowSnackbar(true);
@@ -333,6 +337,17 @@ function Dashboard(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
+      {/* && props.reviews.length===0    */}
+      {placeLocated && props.domain!=="" && props.reviews.length===0  ? <ReviewsPusher
+          domain={props.domain}
+          onChildStateChange={newState => {
+            setParentState({ ...parentState, ...newState });
+            const fetchSuccess = _get(newState, "response.success", false)
+            if(fetchSuccess){
+              fetchReviews(token)
+            }
+          }}
+        /> : null}
       <AppBar
         style={{ background: "#303030" }}
         position="absolute"
@@ -431,6 +446,9 @@ const mapStateToProps = state => {
   const userName = _get(auth, "logIn.userProfile.name", "");
   const userEmail = _get(auth, "logIn.userProfile.email", "");
   const userPhone = _get(auth, "logIn.userProfile.phone", "");
+  const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
+  const reviews = _get(dashboardData,"reviews.data.reviews",[]);
+  const token = _get(auth,"logIn.token","");
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",
@@ -467,11 +485,14 @@ const mapStateToProps = state => {
     placeId,
     placeLocated,
     upgradeToPremiumRes,
-    upgradeToPremiumIsLoading
+    upgradeToPremiumIsLoading,
+    domain,
+    reviews,
+    token
   };
 };
 
 export default connect(
   mapStateToProps,
-  { logOut, upgradeToPremium }
+  { logOut, upgradeToPremium, fetchReviews }
 )(Dashboard);
