@@ -22,13 +22,6 @@ import {
   SecondaryListItems,
   DashboardLogo
 } from "../../Components/MaterialComponents/listItems";
-import Home from "../../Components/DashboardComponents/Home/Home";
-import PlacesAutoComplete from "../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
-import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
-import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
-import Reviews from "../../Components/DashboardComponents/Reviews";
-import InvitationHistory from "../../Components/DashboardComponents/InvitationHistory";
-import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
 import { logOut } from "../../store/actions/authActions";
 import { upgradeToPremium } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
@@ -36,6 +29,43 @@ import Router from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
+import dynamic from "next/dynamic";
+
+//Dynamic imported components
+const Home = dynamic(
+  () => import("../../Components/DashboardComponents/Home/Home"),
+  { loading: <CircularProgress /> }
+);
+const GetStarted = dynamic(
+  () => import("../../Components/DashboardComponents/GetStarted/GetStarted"),
+  { loading: <CircularProgress /> }
+);
+const GetReviews = dynamic(
+  () => import("../../Components/DashboardComponents/GetReviews/GetReviews"),
+  { loading: <CircularProgress /> }
+);
+const Reviews = dynamic(
+  () => import("../../Components/DashboardComponents/Reviews"),
+  { loading: <CircularProgress /> }
+);
+const InvitationHistory = dynamic(
+  () => import("../../Components/DashboardComponents/InvitationHistory"),
+  { loading: <CircularProgress /> }
+);
+const WidgetsShowCase = dynamic(
+  () =>
+    import(
+      "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase"
+    ),
+  { loading: <CircularProgress /> }
+);
+
+// import Home from "../../Components/DashboardComponents/Home/Home";
+// import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
+// import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
+// import Reviews from "../../Components/DashboardComponents/Reviews";
+// import InvitationHistory from "../../Components/DashboardComponents/InvitationHistory";
+// import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
 
 const drawerWidth = 240;
 
