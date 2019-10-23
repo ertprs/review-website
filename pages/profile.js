@@ -18,42 +18,9 @@ import {
 import { connect } from "react-redux";
 import Router from "next/router";
 import dynamic from "next/dynamic";
-import CircularProgress from "@material-ui/core/CircularProgress";
-const Navbar = dynamic(
-  () => import("../Components/MaterialComponents/NavBar"),
-  {
-    loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <p>Loading.....</p>
-      </div>
-    )
-  }
-);
-const ProfilePageHeader = dynamic(
-  () => import("../Components/ProfilePage/ProfilePageHeader"),
-  {
-    loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <p>Loading.....</p>
-      </div>
-    )
-  }
+const Navbar = dynamic(() => import("../Components/MaterialComponents/NavBar"));
+const ProfilePageHeader = dynamic(() =>
+  import("../Components/ProfilePage/ProfilePageHeader")
 );
 const ProfilePageBody = dynamic(
   () => import("../Components/ProfilePage/ProfilePageBody"),
@@ -73,64 +40,11 @@ const ProfilePageBody = dynamic(
     )
   }
 );
-const Footer = dynamic(() => import("../Components/Footer/Footer"), {
-  loading: () => (
-    <div
-      style={{
-        width: "100%",
-        height: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <p>Loading.....</p>
-    </div>
-  )
-});
-const PusherDataComponent = dynamic(
-  () => import("../Components/PusherDataComponent/PusherDataComponent"),
-  {
-    loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <p>Loading.....</p>
-      </div>
-    )
-  }
+const Footer = dynamic(() => import("../Components/Footer/Footer"));
+import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
+const SimpleTabs = dynamic(() =>
+  import("../Components/MaterialComponents/SimpleTabs")
 );
-const SimpleTabs = dynamic(
-  () => import("../Components/MaterialComponents/SimpleTabs"),
-  {
-    loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <p>Loading.....</p>
-      </div>
-    )
-  }
-);
-
-// import Navbar from "../Components/MaterialComponents/NavBar";
-// import ProfilePageHeader from "../Components/ProfilePage/ProfilePageHeader";
-// import ProfilePageBody from "../Components/ProfilePage/ProfilePageBody";
-// import Footer from "../Components/Footer/Footer";
-// import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
-// import SimpleTabs from "../Components/MaterialComponents/SimpleTabs";
 
 class Profile extends React.Component {
   state = {
@@ -149,9 +63,7 @@ class Profile extends React.Component {
   componentDidMount() {
     this.setState({ isMounted: true });
     Router.events.on("routeChangeStart", this.handleRouteChange);
-
     Events.scrollEvent.register("begin", function() {});
-
     Events.scrollEvent.register("end", function() {});
   }
 
