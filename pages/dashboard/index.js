@@ -17,6 +17,7 @@ import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   MainListItems,
   SecondaryListItems,
@@ -32,32 +33,101 @@ import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
 import dynamic from "next/dynamic";
 
 //Dynamic imported components
-const Home = dynamic(
-  () => import("../../Components/DashboardComponents/Home/Home"),
-  { loading: <CircularProgress /> }
+const Home = dynamic(() =>
+  import("../../Components/DashboardComponents/Home/Home")
 );
 const GetStarted = dynamic(
   () => import("../../Components/DashboardComponents/GetStarted/GetStarted"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const GetReviews = dynamic(
   () => import("../../Components/DashboardComponents/GetReviews/GetReviews"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const Reviews = dynamic(
   () => import("../../Components/DashboardComponents/Reviews"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const InvitationHistory = dynamic(
   () => import("../../Components/DashboardComponents/InvitationHistory"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const WidgetsShowCase = dynamic(
   () =>
     import(
       "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase"
     ),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 
 // import Home from "../../Components/DashboardComponents/Home/Home";
