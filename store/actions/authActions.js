@@ -36,7 +36,7 @@ import { loginApiOAuth } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
-import { fetchReviews } from "./dashboardActions";
+import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -462,14 +462,18 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let loginType = 0;
       if (success) {
         dispatch(fetchReviews(token));
+        dispatch(fetchTransactionHistory(token));
       }
-      if (userProfile.hasOwnProperty("subscription")) {
-        if (
-          userProfile.subscription.plan_type_id === 1 ||
-          userProfile.subscription.plan_type_id === 2 ||
-          userProfile.subscription.plan_type_id === 3
-        ) {
-          loginType = 4;
+      localStorage.setItem("token", token);
+      if (userProfile.subscription) {
+        if (userProfile.hasOwnProperty("subscription")) {
+          if (
+            userProfile.subscription.plan_type_id === 1 ||
+            userProfile.subscription.plan_type_id === 2 ||
+            userProfile.subscription.plan_type_id === 3
+          ) {
+            loginType = 4;
+          }
         }
       }
       dispatch({

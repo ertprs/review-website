@@ -11,7 +11,10 @@ import {
   LOCATE_PLACE_FAILURE,
   UPGRADE_TO_PREMIUM_INIT,
   UPGRADE_TO_PREMIUM_SUCCESS,
-  UPGRADE_TO_PREMIUM_FAILURE
+  UPGRADE_TO_PREMIUM_FAILURE,
+  TRANSACTION_HISTORY_INIT,
+  TRANSACTION_HISTORY_SUCCESS,
+  TRANSACTION_HISTORY_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -22,7 +25,8 @@ const dashboardReducer = (state = {}, action) => {
     result,
     locatePlace,
     locatePlaceTemp,
-    upgradePremium
+    upgradePremium,
+    transactionHistory
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -105,6 +109,24 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         upgradePremium
+      };
+    case TRANSACTION_HISTORY_INIT:
+      return {
+        ...state,
+        type,
+        transactionHistory
+      };
+    case TRANSACTION_HISTORY_SUCCESS:
+      return {
+        ...state,
+        type,
+        transactionHistory
+      };
+    case TRANSACTION_HISTORY_FAILURE:
+      return {
+        ...state,
+        type,
+        transactionHistory
       };
     default:
       return state;
