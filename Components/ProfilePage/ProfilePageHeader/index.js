@@ -20,9 +20,11 @@ class ProfilePageHeader extends Component {
     const ratings = (headerData || {}).rating || 0;
     const domain_name = (headerData || {}).domain_name || "";
     const is_verified = (headerData || {}).is_verified || false;
+    const screenshotUrl = (headerData || {}).screenshot || "";
     const review_length = (headerData || {}).review_length || 0;
     const willCome = (headerData || {}).willCome || false;
     const parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
+    console.log(screenshotUrl, "screenshotUrl");
     const reviewCardBody = (
       <RatingIndicators
         rating={Number(ratings)}
@@ -50,6 +52,7 @@ class ProfilePageHeader extends Component {
                   image={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${domain_name}&viewport=1440x900&width=250&random=${Math.floor(
                     Math.random() * 10 + 1
                   )}`}
+                  fallbackImage={screenshotUrl}
                   // image={`http://localhost:3000/upload?domain=https://www.${domain_name}/`}
                   imgContainerStyles={{
                     maxWidth: "300px"

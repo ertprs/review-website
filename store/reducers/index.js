@@ -6,6 +6,7 @@ import trustReducer from "./trustReducer";
 import domainProfileReducer from "./domainProfileReducer";
 import dashboardReducer from "./dashboardReducer";
 import loaderReducer from "./loaderReducer";
+import cookie from "js-cookie";
 
 const authPersistConfig = {
   key: "auth",
@@ -39,6 +40,8 @@ const rootReducer = (state, action) => {
   console.log(action.type, "action type");
   if (action.type === "LOGOUT") {
     state = undefined;
+    cookie.remove("loginType");
+    cookie.remove("token");
   }
   return appReducer(state, action);
 };

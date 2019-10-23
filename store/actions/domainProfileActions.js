@@ -24,6 +24,7 @@ const createHeaderData = data => {
     ...parsedData,
     domain_name: _get(data, "domain_data.name", ""),
     is_verified: _get(data, "domain_data.is_verified", false),
+    screenshot: _get(data, "domain_data.screenshot", ""),
     review_length: _get(data, "reviews.domain.total", 0),
     rating: _get(data, "general_analysis.payload.ratings.watchdog", 0)
   };

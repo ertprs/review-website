@@ -18,21 +18,25 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import ReviewsPusher from '../../Components/ReviewsPusher/ReviewsPusher';
+import ReviewsPusher from "../../Components/ReviewsPusher/ReviewsPusher";
 import {
   MainListItems,
   SecondaryListItems,
   DashboardLogo
 } from "../../Components/MaterialComponents/listItems";
 import { logOut } from "../../store/actions/authActions";
-import { upgradeToPremium, fetchReviews} from "../../store/actions/dashboardActions";
+import {
+  upgradeToPremium,
+  fetchReviews
+} from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
 import dynamic from "next/dynamic";
-
+import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
+import Tooltip from "@material-ui/core/Tooltip";
 //Dynamic imported components
 const Home = dynamic(() =>
   import("../../Components/DashboardComponents/Home/Home")
@@ -227,7 +231,7 @@ function Dashboard(props) {
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
   const { upgradeToPremiumRes, placeLocated, fetchReviews, token } = props;
-  const initState= {};
+  const initState = {};
   const [parentState, setParentState] = useState(initState);
 
   useEffect(() => {
@@ -338,16 +342,18 @@ function Dashboard(props) {
     <div className={classes.root}>
       <CssBaseline />
       {/* && props.reviews.length===0    */}
-      {placeLocated && props.domain!=="" && props.reviews.length===0  ? <ReviewsPusher
+      {placeLocated && props.domain !== "" && props.reviews.length === 0 ? (
+        <ReviewsPusher
           domain={props.domain}
           onChildStateChange={newState => {
             setParentState({ ...parentState, ...newState });
-            const fetchSuccess = _get(newState, "response.success", false)
-            if(fetchSuccess){
-              fetchReviews(token)
+            const fetchSuccess = _get(newState, "response.success", false);
+            if (fetchSuccess) {
+              fetchReviews(token);
             }
           }}
-        /> : null}
+        />
+      ) : null}
       <AppBar
         style={{ background: "#303030" }}
         position="absolute"
@@ -377,13 +383,15 @@ function Dashboard(props) {
           >
             Welcome {userName || ""} !
           </Typography>
-          <IconButton
-            color="inherit"
-            onClick={handleLogout}
-            style={{ color: "#fff" }}
-          >
-            <LogoutIcon />
-          </IconButton>
+          <Tooltip title="Logout">
+            <IconButton
+              color="inherit"
+              onClick={handleLogout}
+              style={{ color: "#fff" }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -439,6 +447,12 @@ function Dashboard(props) {
   );
 }
 
+Dashboard.getInitialProps = async ctx => {
+  // Check user's session
+  isAuthenticatedBusiness(ctx);
+  return {};
+};
+
 const mapStateToProps = state => {
   const { auth, dashboardData } = state;
   const authorized = _get(auth, "logIn.authorized", false);
@@ -447,8 +461,8 @@ const mapStateToProps = state => {
   const userEmail = _get(auth, "logIn.userProfile.email", "");
   const userPhone = _get(auth, "logIn.userProfile.phone", "");
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
-  const reviews = _get(dashboardData,"reviews.data.reviews",[]);
-  const token = _get(auth,"logIn.token","");
+  const reviews = _get(dashboardData, "reviews.data.reviews", []);
+  const token = _get(auth, "logIn.token", "");
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",

@@ -6,7 +6,7 @@ import uuid from "uuid/v1";
 import { reviewCardStyles } from "./reviewCardStyles";
 import Img from "react-image";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import ImagePlaceholder from './imagePlaceholder';
+import ImagePlaceholder from "./imagePlaceholder";
 
 const getColorImg = image => {
   const imagePath = image.substring(0, image.lastIndexOf("/"));
@@ -31,6 +31,7 @@ const renderReviewCard = (
     title,
     body,
     image,
+    fallbackImage,
     designation,
     specialistIn,
     productPicStyles,
@@ -148,12 +149,12 @@ const renderReviewCard = (
             <div className="individualSpecialization">
               {specialistIn.length > 0
                 ? specialistIn.map(item => {
-                  return (
-                    <div className="specializationItem" key={uuid()}>
-                      {item}
-                    </div>
-                  );
-                })
+                    return (
+                      <div className="specializationItem" key={uuid()}>
+                        {item}
+                      </div>
+                    );
+                  })
                 : null}
             </div>
             {/* specialistIn */}
@@ -168,10 +169,7 @@ const renderReviewCard = (
           <div className="productProfilePic">
             <div className="productCardPicContainer">
               <Img
-                src={[
-                  image,
-                  ""
-                ]}
+                src={[image, ""]}
                 loader={
                   <div
                     style={{
@@ -224,6 +222,7 @@ const renderReviewCard = (
             >
               <Img
                 src={[
+                  fallbackImage,
                   image,
                   "/static/images/noimageavailable.jpg"
                 ]}

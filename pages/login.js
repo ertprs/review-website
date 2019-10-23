@@ -6,6 +6,7 @@ import Tab from "@material-ui/core/Tab";
 import BuisnessUserLogin from "../Components/Login/businessUser";
 import InternetUSerLogin from "../Components/Login/internetUser";
 import Layout from "../hoc/layout/layout";
+import isAlreadyLoggedIn from "../utility/isAuthenticated/isAlreadyLoggedIn";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -52,6 +53,11 @@ const Login = () => {
       </div>
     </Layout>
   );
+};
+
+Login.getInitialProps = async ctx => {
+  isAlreadyLoggedIn(ctx);
+  return {};
 };
 
 export default Login;
