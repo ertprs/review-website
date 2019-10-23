@@ -37,6 +37,7 @@ import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
 import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
+import cookie from "js-cookie";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -160,6 +161,10 @@ export const logIn = (loginData, loginApi, loginType) => {
       let userProfile = _get(res, "data.user", {});
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
+      if (success) {
+        cookie.set("loginType", loginType, { expires: 7 });
+        cookie.set("token", token, { expires: 7 });
+      }
       dispatch({
         type: LOGIN_SUCCESS,
         logIn: {
@@ -473,6 +478,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
             userProfile.subscription.plan_type_id === 3
           ) {
             loginType = 4;
+            cookie.set("loginType", loginType, { expires: 7 });
+            cookie.set("token", token, { expires: 7 });
           }
         }
       }
