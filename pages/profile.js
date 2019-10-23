@@ -21,26 +21,108 @@ import dynamic from "next/dynamic";
 import CircularProgress from "@material-ui/core/CircularProgress";
 const Navbar = dynamic(
   () => import("../Components/MaterialComponents/NavBar"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const ProfilePageHeader = dynamic(
   () => import("../Components/ProfilePage/ProfilePageHeader"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const ProfilePageBody = dynamic(
   () => import("../Components/ProfilePage/ProfilePageBody"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const Footer = dynamic(() => import("../Components/Footer/Footer"), {
-  loading: <CircularProgress />
+  loading: () => (
+    <div
+      style={{
+        width: "100%",
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <p>Loading.....</p>
+    </div>
+  )
 });
 const PusherDataComponent = dynamic(
   () => import("../Components/PusherDataComponent/PusherDataComponent"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 const SimpleTabs = dynamic(
   () => import("../Components/MaterialComponents/SimpleTabs"),
-  { loading: <CircularProgress /> }
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
 
 // import Navbar from "../Components/MaterialComponents/NavBar";
