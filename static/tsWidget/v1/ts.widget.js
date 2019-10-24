@@ -37,7 +37,7 @@
     trustFrame.frameBorder = "0";
     trustFrame.scrolling = "no";
     trustFrame.title = "Cutomer reviews powered by The Trustsearch";
-    trustFrame.src = `http://localhost:3000/widgetsBox/${
+    trustFrame.src = `https://thetrustsearch-dev.cryptopolice.com/widgetsBox/${
       widgetProps.dataTemplateId
     }?businessunitId=${widgetProps.dataBusinessUnitId}&locale=${
       widgetProps.dataLocale
