@@ -88,7 +88,14 @@ export default class SelectTemplateForm extends Component {
             }
           `}
         </style>
-        <div className="subject">
+        <div
+          className="subject"
+          style={{
+            border: "1px solid #d8d8d8",
+            padding: "5px",
+            marginBottom: "8px"
+          }}
+        >
           <div className="header">
             <h6>
               Email Subject:{" "}

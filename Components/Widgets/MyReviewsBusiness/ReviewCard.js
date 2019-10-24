@@ -18,16 +18,16 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   root: {
-    padding:0,
-    fontSize:"0.8rem",
-    minWidth:"25px"
+    padding: 0,
+    fontSize: "0.8rem",
+    minWidth: "25px"
   },
   primary: {
     fontSize: "0.8rem"
   },
-  button:{
-    root:{
-      padding:0
+  button: {
+    root: {
+      padding: 0
     }
   }
 });
@@ -54,8 +54,8 @@ const StyledMenu = withStyles({
 
 const StyledMenuItem = withStyles(theme => ({
   root: {
-    paddingTop:0,
-    paddingBottom:0,
+    paddingTop: 0,
+    paddingBottom: 0,
     "&:focus": {
       backgroundColor: theme.palette.primary.main,
       "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
@@ -92,7 +92,7 @@ const ReviewCardBusiness = ({ review }) => {
         >
           <MoreVertIcon />
         </IconButton>
-        <StyledMenu
+        {/* <StyledMenu
           id="customized-menu"
           anchorEl={anchorEl}
           keepMounted
@@ -180,7 +180,7 @@ const ReviewCardBusiness = ({ review }) => {
               }}
             />
           </StyledMenuItem>
-        </StyledMenu>{" "}
+        </StyledMenu> */}
       </div>
     );
   };

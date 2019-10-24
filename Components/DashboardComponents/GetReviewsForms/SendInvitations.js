@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Snackbar from "../../Widgets/Snackbar";
+import sendgridTemaplateIds from "../../../utility/constants/sendgridTemaplateIds";
+import _filter from "lodash/get";
 
 class SendInvitations extends Component {
   state = {
@@ -84,12 +86,18 @@ class SendInvitations extends Component {
       emailSubject,
       services
     } = this.props;
+    let campaignLanguageArr = sendgridTemaplateIds.filter(template => {
+      return template.value === campaignLanguage;
+    });
+    let campLangName = campaignLanguage;
+    if (campaignLanguageArr) {
+      campLangName = campaignLanguageArr[0].displayName;
+    }
     const data = [
       { key: "Campaign Name", value: campaignName },
-      { key: "Campaign Language", value: campaignLanguage },
+      { key: "Campaign Language", value: campLangName },
       { key: "Sender Name", value: senderName },
       { key: "Sender Email", value: senderEmail },
-      { key: "Client Name", value: clientName },
       { key: "Client Name", value: clientName },
       { key: "Entity", value: entity },
       { key: "Email Subject", value: emailSubject },

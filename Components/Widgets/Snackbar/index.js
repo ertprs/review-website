@@ -93,7 +93,7 @@ const SnackbarComponent = props => {
         horizontal: "right"
       }}
       open={props.open}
-      autoHideDuration={props.autoHide || 5000}
+      autoHideDuration={props.autoHide || 3000}
       onClose={props.handleClose}
     >
       <MySnackbarContentWrapper
