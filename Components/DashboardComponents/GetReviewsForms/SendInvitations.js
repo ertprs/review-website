@@ -56,7 +56,9 @@ class SendInvitations extends Component {
             `}
           </style>
           <div className="row">
-            <div className="col-md-6">{item.key}</div>
+            <div style={{ fontWeight: "bold" }} className="col-md-6">
+              {item.key}
+            </div>
             <div className="col-md-6">{item.value}</div>
           </div>
         </div>
@@ -64,16 +66,31 @@ class SendInvitations extends Component {
     });
   };
 
-  renderSendInvitationsBody = (senderName, clientName, entity) => {
+  renderSendInvitationsBody = () => {
+    const {
+      campaignName,
+      campaignLanguage,
+      senderName,
+      senderEmail,
+      clientName,
+      entity,
+      emailSubject,
+      services
+    } = this.props;
     const data = [
+      { key: "Campaign Name", value: campaignName },
+      { key: "Campaign Language", value: campaignLanguage },
       { key: "Sender Name", value: senderName },
-      { key: "Sender Email", value: "noreply.invitations@trustpilotmail.com" },
-      // { key: "Reply-to Email", value: "art@cunami.lv" },
+      { key: "Sender Email", value: senderEmail },
+      { key: "Client Name", value: clientName },
       { key: "Client Name", value: clientName },
       { key: "Entity", value: entity },
+      { key: "Email Subject", value: emailSubject },
+      { key: "Services", value: services },
+      // { key: "Reply-to Email", value: "art@cunami.lv" },
       {
         key: "Send your customers to this website to write their review",
-        value: "https://www.trustpilot.com"
+        value: "https://www.trustsearch.com"
       },
       { key: "Number of valid lines that will be processed", value: "1" }
     ];
@@ -112,11 +129,10 @@ class SendInvitations extends Component {
   };
 
   render() {
-    const { senderName, clientName, entity } = this.props;
     return (
       <>
         {this.renderSendInvitationsHeader()}
-        {this.renderSendInvitationsBody(senderName, clientName, entity)}
+        {this.renderSendInvitationsBody()}
         {this.renderSendInvitationsFooter()}
         <div className="container">
           <div className="row" style={{ marginTop: "20px" }}>
@@ -163,18 +179,25 @@ class SendInvitations extends Component {
 
 const mapStateToProps = state => {
   const { getReviewsData } = state.dashboardData;
-  const senderName = _get(
-    getReviewsData,
-    "senderInfoData.senderName.value",
-    ""
-  );
-  const clientName = _get(
-    getReviewsData,
-    "selectTemplateData.clientName.value",
-    ""
-  );
-  const entity = _get(getReviewsData, "selectTemplateData.entity.value", "");
-  return { senderName, clientName, entity };
+  const { createCampaign, selectTemplateData } = getReviewsData || {};
+  const campaignName = _get(createCampaign, "campaignName.value", "");
+  const campaignLanguage = _get(createCampaign, "campaignLanguage.value", "");
+  const senderName = _get(createCampaign, "senderName.value", "");
+  const senderEmail = _get(createCampaign, "senderEmail.value", "");
+  const clientName = _get(selectTemplateData, "clientName.value", "");
+  const entity = _get(selectTemplateData, "entity.value", "");
+  const emailSubject = _get(selectTemplateData, "subject.value", "");
+  const services = _get(selectTemplateData, "services.value", "");
+  return {
+    campaignName,
+    campaignLanguage,
+    senderName,
+    senderEmail,
+    clientName,
+    entity,
+    emailSubject,
+    services
+  };
 };
 
 export default connect(mapStateToProps)(SendInvitations);
