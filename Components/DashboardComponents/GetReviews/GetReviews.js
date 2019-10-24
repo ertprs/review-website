@@ -293,7 +293,7 @@ class GetReviews extends Component {
       ),
 
       4: <SendInvitations />,
-      5: <Done />
+      5: <Done changeStepToRender={this.props.changeStepToRender} />
     };
   }
 
@@ -734,12 +734,13 @@ class GetReviews extends Component {
       );
     }
     if (activeStep === 3) {
-      return <Done />;
+      return <Done changeStepToRender={this.props.changeStepToRender} />;
     }
   };
 
   render() {
     const { activeStep } = this.state;
+    console.log(this.props.changeStepToRender, "this.props.changeStepToRender");
     return (
       <>
         <style jsx>
