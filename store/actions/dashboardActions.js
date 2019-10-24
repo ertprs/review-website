@@ -14,12 +14,23 @@ import {
   UPGRADE_TO_PREMIUM_FAILURE,
   TRANSACTION_HISTORY_INIT,
   TRANSACTION_HISTORY_SUCCESS,
-  TRANSACTION_HISTORY_FAILURE
+  TRANSACTION_HISTORY_FAILURE,
+  FETCH_CAMPAIGN_LANGUAGE_INIT,
+  FETCH_CAMPAIGN_LANGUAGE_SUCCESS,
+  FETCH_CAMPAIGN_LANGUAGE_FAILURE,
+  SET_QUOTA_DETAILS,
+  CREATE_CAMPAIGN_INIT,
+  CREATE_CAMPAIGN_SUCCESS,
+  CREATE_CAMPAIGN_FAILURE
 } from "./actionTypes";
 import axios from "axios";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { upgradePremiumApi, transactionHistoryApi } from "../../utility/config";
+import {
+  upgradePremiumApi,
+  transactionHistoryApi,
+  createCampaignApi
+} from "../../utility/config";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -102,7 +113,8 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         success: false
       },
       locatePlaceTemp: {
-        isLoading: true
+        isLoading: true,
+        errorMsg: ""
       }
     });
     try {
@@ -119,7 +131,8 @@ export const locatePlaceByPlaceId = (data, token, url) => {
           success: _get(result, "data.success", false)
         },
         locatePlaceTemp: {
-          isLoading: false
+          isLoading: false,
+          errorMsg: ""
         }
       });
       if (success) {
@@ -132,7 +145,8 @@ export const locatePlaceByPlaceId = (data, token, url) => {
           success: _get(error, "response.data.success", false)
         },
         locatePlaceTemp: {
-          isLoading: false
+          isLoading: false,
+          errorMsg: _get(error, "response.data.error", "Some Error Occured!")
         }
       });
     }
@@ -215,5 +229,84 @@ export const fetchTransactionHistory = token => {
         }
       });
     }
+  };
+};
+
+export const createCampaign = data => {
+  console.log(data, "craete campaign data");
+  const token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: CREATE_CAMPAIGN_INIT,
+      createCampaign: {
+        isLoading: true,
+        errorMsg: "",
+        quotaDetails: {},
+        success: "undefined"
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${createCampaignApi}`,
+        data,
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const quotaDetails = _get(result, "data.quota_details", {});
+      dispatch({
+        type: CREATE_CAMPAIGN_SUCCESS,
+        createCampaign: {
+          isLoading: false,
+          errorMsg: "",
+          quotaDetails,
+          success: _get(result, "data.success", false)
+        }
+      });
+      dispatch(setInvitationQuota(quotaDetails));
+    } catch (error) {
+      dispatch({
+        type: CREATE_CAMPAIGN_FAILURE,
+        createCampaign: {
+          isLoading: false,
+          errorMsg: _get(
+            error,
+            "response.data.error",
+            "Some error occured! Please try again later."
+          ),
+          quotaDetails: {},
+          success: false
+        }
+      });
+    }
+  };
+};
+
+export const fetchCampaignLanguage = data => {
+  return async dispatch => {
+    dispatch({
+      type: CREATE_CAMPAIGN_INIT
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${createCampaignApi}`,
+        data,
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      dispatch({
+        type: CREATE_CAMPAIGN_SUCCESS
+      });
+    } catch (error) {
+      dispatch({
+        type: CREATE_CAMPAIGN_FAILURE
+      });
+    }
+  };
+};
+
+export const setInvitationQuota = quotaDetails => {
+  return {
+    type: SET_QUOTA_DETAILS,
+    quotaDetails
   };
 };

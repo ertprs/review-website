@@ -14,7 +14,11 @@ import {
   UPGRADE_TO_PREMIUM_FAILURE,
   TRANSACTION_HISTORY_INIT,
   TRANSACTION_HISTORY_SUCCESS,
-  TRANSACTION_HISTORY_FAILURE
+  TRANSACTION_HISTORY_FAILURE,
+  CREATE_CAMPAIGN_INIT,
+  CREATE_CAMPAIGN_SUCCESS,
+  CREATE_CAMPAIGN_FAILURE,
+  SET_QUOTA_DETAILS
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -26,7 +30,9 @@ const dashboardReducer = (state = {}, action) => {
     locatePlace,
     locatePlaceTemp,
     upgradePremium,
-    transactionHistory
+    transactionHistory,
+    createCampaign,
+    quotaDetails
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -128,6 +134,32 @@ const dashboardReducer = (state = {}, action) => {
         type,
         transactionHistory
       };
+    case CREATE_CAMPAIGN_INIT:
+      return {
+        ...state,
+        type,
+        createCampaign
+      };
+    case CREATE_CAMPAIGN_SUCCESS:
+      return {
+        ...state,
+        type,
+        createCampaign
+      };
+    case CREATE_CAMPAIGN_FAILURE:
+      return {
+        ...state,
+        type,
+        createCampaign
+      };
+
+    case SET_QUOTA_DETAILS: {
+      return {
+        ...state,
+        type,
+        quotaDetails
+      };
+    }
     default:
       return state;
   }
