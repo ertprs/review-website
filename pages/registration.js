@@ -6,6 +6,7 @@ import Tab from "@material-ui/core/Tab";
 import BuisnessUserRegistration from "../Components/Registration/businessUser";
 import InternetUSerRegistration from "../Components/Registration/internetUser";
 import Layout from "../hoc/layout/layout";
+import isAlreadyLoggedIn from "../utility/isAuthenticated/isAlreadyLoggedIn";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,6 +57,11 @@ const Registration = () => {
       </div>
     </Layout>
   );
+};
+
+Registration.getInitialProps = async ctx => {
+  isAlreadyLoggedIn(ctx);
+  return {};
 };
 
 export default Registration;

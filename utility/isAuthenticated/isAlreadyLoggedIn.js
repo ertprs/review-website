@@ -1,4 +1,5 @@
 import nextCookie from "next-cookies";
+import Router from "next/router";
 
 const isAlreadyLoggedIn = ctx => {
   const { token } = nextCookie(ctx);

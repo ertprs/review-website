@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Done = () => {
+const Done = ({ changeStepToRender }) => {
   const classes = useStyles();
   return (
     <>
@@ -27,9 +27,9 @@ const Done = () => {
             margin-bottom: 30px;
           }
           @media screen and (max-width: 647px) {
-            .inviteBtn{
-              margin-top:10px;
-              display:block;
+            .inviteBtn {
+              margin-top: 10px;
+              display: block;
             }
           }
         `}
@@ -46,7 +46,7 @@ const Done = () => {
             <Button
               variant="contained"
               color="primary"
-              // onClick={this.handleAddBtnClick}
+              onClick={() => changeStepToRender(4)}
               className={classes.button}
             >
               Go to Invitation History

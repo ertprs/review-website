@@ -226,15 +226,21 @@ class GetStarted extends Component {
     );
   };
 
-  componentDidMount(){
-    const { placeId, locatePlace} = this.props;
-    if(placeId!=="" || locatePlace){
-      this.props.changeStepToRender(1)
+  componentDidMount() {
+    const { placeId, locatePlace } = this.props;
+    if (placeId !== "" || locatePlace) {
+      this.props.changeStepToRender(1);
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { success, type, changeStepToRender, isLoading } = this.props;
+    const {
+      success,
+      type,
+      changeStepToRender,
+      isLoading,
+      errorMsg
+    } = this.props;
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
         this.setState(
@@ -251,7 +257,7 @@ class GetStarted extends Component {
         this.setState({
           showSnackbar: true,
           variant: "error",
-          snackbarMsg: "Some error occured!"
+          snackbarMsg: errorMsg
         });
       }
     }
@@ -314,15 +320,20 @@ const mapStateToProps = state => {
   const token = _get(auth, "logIn.token", "");
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
-  const success = _get(dashboardData, "locatePlace.success", false);
-  const type = _get(dashboardData, "type", "");
   const isLoading = _get(
     dashboardData,
     "locatePlaceTemp.isLoading",
     "undefined"
   );
   const placeId = _get(businessProfile, "google_places.placeId", "");
-  const locatePlace = _get(dashboardData, "locatePlace.success",false)
+  const type = _get(dashboardData, "type", "");
+  const success = _get(dashboardData, "locatePlace.success", false);
+  const locatePlace = _get(dashboardData, "locatePlace.success", false);
+  const errorMsg = _get(
+    dashboardData,
+    "locatePlaceTemp.errorMsg",
+    "Some Error Occured!"
+  );
   return {
     success,
     businessProfile,
@@ -331,7 +342,8 @@ const mapStateToProps = state => {
     placeId,
     locatePlace,
     userProfile,
-    isLoading
+    isLoading,
+    errorMsg
   };
 };
 

@@ -30,6 +30,7 @@ const columns = [
   { title: "Name", field: "name" },
   { title: "Reference number", field: "referenceNumber", type: "text" }
 ];
+import { createCampaign } from "../../../store/actions/dashboardActions";
 
 const styles = theme => ({
   button: {
@@ -137,36 +138,6 @@ class GetReviews extends Component {
           }
         }
       },
-      // senderInfoData: {
-      //   // senderMail: "",
-      //   senderName: {
-      //     element: "input",
-      //     value: "",
-      //     placeholder: "Enter sender's name",
-      //     errorMessage: "",
-      //     valid: false,
-      //     touched: false,
-      //     validationRules: {
-      //       required: true,
-      //       minLength: 3
-      //     },
-      //     name: "senderName"
-      //   },
-      //   replyToEmail: {
-      //     element: "select",
-      //     value: "",
-      //     placeholder: "email@gmail.com",
-      //     errorMessage: "",
-      //     options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
-      //     valid: true,
-      //     touched: false,
-      //     validationRules: {
-      //       required: false
-      //       // isEmail: true
-      //     },
-      //     name: "replyToEmail"
-      //   }
-      // },
       copyPasteFormData: {
         textbox: {
           element: "textarea",
@@ -293,7 +264,7 @@ class GetReviews extends Component {
       ),
 
       4: <SendInvitations />,
-      5: <Done />
+      5: <Done changeStepToRender={this.props.changeStepToRender} />
     };
   }
 
@@ -431,13 +402,50 @@ class GetReviews extends Component {
 
   handleNext = () => {
     const { activeStep } = this.state;
-    if (activeStep <= columns.length) {
-      this.setState(prevState => {
-        return { activeStep: prevState.activeStep + 1 };
-      });
+    const { success } = this.props;
+    if (activeStep === 2) {
+      this.createCampaign();
+    } else {
+      if (activeStep <= columns.length) {
+        this.setState(prevState => {
+          return { activeStep: prevState.activeStep + 1 };
+        });
+      }
+      const { setGetReviewsData } = this.props;
+      setGetReviewsData(this.state);
     }
-    const { setGetReviewsData } = this.props;
-    setGetReviewsData(this.state);
+  };
+
+  createCampaign = () => {
+    const { createCampaign } = this.props;
+    const { selectTemplateData, tableData } = this.state;
+    const campaign = _get(this.state, "createCampaign", {});
+    const campaignName = _get(campaign, "campaignName.value", "");
+    const senderName = _get(campaign, "senderName.value", "");
+    const senderEmail = _get(campaign, "senderEmail.value", "");
+    const subject = _get(selectTemplateData, "subject.value", "");
+    const clientName = _get(selectTemplateData, "clientName.value", "");
+    const entityDomain = _get(selectTemplateData, "entity.value", "");
+    const service = _get(selectTemplateData, "service.value", "");
+
+    const data = {
+      campaign: {
+        name: campaignName,
+        senderName: senderName,
+        senderEmail: senderEmail
+      },
+      invites: [...tableData],
+      template: {
+        id: "ds-ccsx-dszxs",
+        subject,
+        vars: {
+          clientName,
+          entityDomain,
+          service
+        }
+      }
+    };
+    createCampaign(data);
   };
 
   handleBack = () => {
@@ -734,12 +742,28 @@ class GetReviews extends Component {
       );
     }
     if (activeStep === 3) {
-      return <Done />;
+      return <Done changeStepToRender={this.props.changeStepToRender} />;
     }
   };
+  componentDidUpdate(prevProps, prevState) {
+    const { activeStep } = this.state;
+    const { success } = this.props;
+    if (this.props !== prevProps) {
+      if (activeStep === 2) {
+        if (success === true) {
+          if (activeStep <= columns.length) {
+            this.setState(prevState => {
+              return { activeStep: prevState.activeStep + 1 };
+            });
+          }
+        }
+      }
+    }
+  }
 
   render() {
     const { activeStep } = this.state;
+    console.log(this.props.changeStepToRender, "this.props.changeStepToRender");
     return (
       <>
         <style jsx>
@@ -773,7 +797,14 @@ class GetReviews extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  const { dashboardData } = state;
+  const { createCampaign } = dashboardData;
+  const success = _get(createCampaign, "success", "undefined");
+  return { success };
+};
+
 export default connect(
-  null,
-  { setGetReviewsData, sendGetReviews }
+  mapStateToProps,
+  { setGetReviewsData, sendGetReviews, createCampaign }
 )(withStyles(styles)(GetReviews));

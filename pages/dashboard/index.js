@@ -271,7 +271,7 @@ function Dashboard(props) {
     } else if (stepToRender === 2) {
       return <Reviews />;
     } else if (stepToRender === 3) {
-      return <GetReviews />;
+      return <GetReviews changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 4) {
       return <InvitationHistory />;
     } else if (stepToRender === 5) {

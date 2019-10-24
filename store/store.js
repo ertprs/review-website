@@ -25,7 +25,7 @@ let middleWare = [thunkMiddleware];
 if (process.env.NODE_ENV === "production") {
   middleWare = [...middleWare];
 } else {
-  middleWare = [...middleWare];
+  middleWare = [...middleWare, logger];
 }
 
 export function initializeStore(initialState = {}) {

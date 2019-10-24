@@ -245,6 +245,7 @@ class Home extends Component {
 
   renderInvitationsCard = () => {
     const { quotaDetails } = this.props;
+    console.log(quotaDetails, "quotaDetails");
     const total = _get(quotaDetails, "invitations.total", 0);
     const remaining = _get(quotaDetails, "invitations.remaining", 0);
     return (
@@ -266,12 +267,24 @@ class Home extends Component {
           </div>
           <div className="body">
             <div
-              style={{ marginBottom: "21px", borderBottom: "1px solid #999" }}
+              style={{
+                marginBottom: "21px",
+                borderBottom: "1px solid #999"
+              }}
             >
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Invitations sent :{" "}
+                Total Invitations :{" "}
               </p>
-              <h1 style={{ textAlign: "right" }}>{total}</h1>
+              <h1
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-start",
+                  textAlign: "right"
+                }}
+              >
+                {total}
+              </h1>
             </div>
             <div style={{ borderBottom: "1px solid #999" }}>
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
@@ -376,15 +389,13 @@ const mapStateToProps = state => {
     false
   );
   const reviewsData = _get(dashboardData, "reviews.data", {});
-  const quotaDetails = _get(
-    auth,
-    "logIn.userProfile.subscription.quota_details"
-  );
+  const quotaDetails = _get(dashboardData, "quotaDetails", {});
   const token = _get(auth, "logIn.token", "");
   const success = _get(auth, "resendActivation.success", "undefiend");
   const isLoading = _get(auth, "resendActivation.isLoading", false);
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+
   return {
     reviewsData,
     quotaDetails,

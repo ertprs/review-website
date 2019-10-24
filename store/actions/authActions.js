@@ -38,6 +38,7 @@ import axios from "axios";
 import { sendTrustVote } from "./trustAction";
 import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
 import cookie from "js-cookie";
+import { setInvitationQuota } from "./dashboardActions";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -478,6 +479,11 @@ export const businessLogIn = (loginData, api, directLogin) => {
             userProfile.subscription.plan_type_id === 3
           ) {
             loginType = 4;
+            dispatch(
+              setInvitationQuota(
+                _get(userProfile, "subscription.quota_details", {})
+              )
+            );
             cookie.set("loginType", loginType, { expires: 7 });
             cookie.set("token", token, { expires: 7 });
           }
