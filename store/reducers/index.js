@@ -42,6 +42,8 @@ const rootReducer = (state, action) => {
     state = undefined;
     cookie.remove("loginType");
     cookie.remove("token");
+    cookie.remove("placeId");
+    cookie.remove("placeLocated");
   }
   return appReducer(state, action);
 };
