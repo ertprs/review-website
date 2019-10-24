@@ -27,7 +27,8 @@ import {
   RESEND_ACTIVATION_LINK_INIT,
   RESEND_ACTIVATION_LINK_SUCCESS,
   RESEND_ACTIVATION_LINK_FAILURE,
-  SET_USER_ACTIVATED
+  SET_USER_ACTIVATED,
+  SET_BUSINESS_SUBSCRIPTION
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -44,7 +45,8 @@ const authReducer = (state = {}, action) => {
     businessSignUp,
     businessSignUpTemp,
     resendActivation,
-    userActivated
+    userActivated,
+    isSubscriptionExpired
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -208,6 +210,13 @@ const authReducer = (state = {}, action) => {
         type,
         userActivated
       };
+    case SET_BUSINESS_SUBSCRIPTION: {
+      return {
+        ...state,
+        type,
+        isSubscriptionExpired: isSubscriptionExpired || false
+      };
+    }
     case LOGOUT:
       state = undefined;
       return { type: type, payload: {} };

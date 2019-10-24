@@ -28,7 +28,8 @@ import {
   RESEND_ACTIVATION_LINK_INIT,
   RESEND_ACTIVATION_LINK_SUCCESS,
   RESEND_ACTIVATION_LINK_FAILURE,
-  SET_USER_ACTIVATED
+  SET_USER_ACTIVATED,
+  SET_BUSINESS_SUBSCRIPTION
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -442,7 +443,6 @@ export const businessSignUp = (signupData, api) => {
 };
 
 export const businessLogIn = (loginData, api, directLogin) => {
-  let loginDataWithBusiness = { ...loginData, isBusiness: true };
   return async (dispatch, getState) => {
     dispatch({
       type: BUSINESS_LOGIN_INIT,
@@ -450,8 +450,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
         authorized: "undefined",
         loginType: 0,
         token: "",
-        userProfile: {},
-        subscriptionExpired: false
+        userProfile: {}
       },
       logInTemp: {
         status: -1,
@@ -462,10 +461,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
       }
     });
     try {
-      const res = await axios.post(
-        `${process.env.BASE_URL}${api}`,
-        loginDataWithBusiness
-      );
+      const res = await axios.post(`${process.env.BASE_URL}${api}`, loginData);
       let success = _get(res, "data.success", false);
       let userProfile = _get(res, "data.user", {});
       let status = _get(res, "status", 0);
@@ -493,6 +489,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("token", token, { expires: 7 });
             dispatch(fetchReviews(token));
             dispatch(fetchTransactionHistory(token));
+            dispatch(setSubscription(subscriptionExpired));
             localStorage.setItem("token", token);
             dispatch({
               type: BUSINESS_LOGIN_SUCCESS,
@@ -500,8 +497,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 authorized: success,
                 loginType,
                 token,
-                userProfile,
-                subscriptionExpired
+                userProfile
               },
               logInTemp: {
                 status: status,
@@ -520,8 +516,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             authorized: false,
             loginType: 0,
             token: "",
-            userProfile: {},
-            subscriptionExpired: false
+            userProfile: {}
           },
           logInTemp: {
             status: 0,
@@ -544,8 +539,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
           authorized: false,
           loginType: 0,
           token: "",
-          userProfile: {},
-          subscriptionExpired: false
+          userProfile: {}
         },
         logInTemp: {
           status: status,
@@ -598,5 +592,12 @@ export const setUserActivated = userActivated => {
   return {
     type: SET_USER_ACTIVATED,
     userActivated
+  };
+};
+
+export const setSubscription = isSubscriptionExpired => {
+  return {
+    type: SET_BUSINESS_SUBSCRIPTION,
+    isSubscriptionExpired
   };
 };
