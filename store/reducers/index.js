@@ -37,13 +37,14 @@ const appReducer = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  console.log(action.type, "action type");
   if (action.type === "LOGOUT") {
     state = undefined;
     cookie.remove("loginType");
     cookie.remove("token");
+    return appReducer((state = undefined), action);
+  } else {
+    return appReducer({ ...state }, action);
   }
-  return appReducer(state, action);
 };
 
 export default rootReducer;

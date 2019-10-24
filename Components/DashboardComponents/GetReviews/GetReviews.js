@@ -31,6 +31,7 @@ const columns = [
   { title: "Reference number", field: "referenceNumber", type: "text" }
 ];
 import { createCampaign } from "../../../store/actions/dashboardActions";
+import createCampaignLang from "../../../utility/createCampaignLang";
 
 const styles = theme => ({
   button: {
@@ -181,11 +182,9 @@ class GetReviews extends Component {
         campaignLanguage: {
           element: "select",
           value: "",
-          options: [
-            { name: "English", value: "en" },
-            { name: "Latvian", value: "lv" },
-            { name: "German", value: "de" }
-          ],
+          options: _get(this.props, "campaignLanguage", [
+            { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
+          ]),
           placeholder: "Select your campaign language",
           errorMessage: "",
           valid: false,
@@ -801,7 +800,11 @@ const mapStateToProps = state => {
   const { dashboardData } = state;
   const { createCampaign } = dashboardData;
   const success = _get(createCampaign, "success", "undefined");
-  return { success };
+  const { parsedCampaignLanguage } = state.dashboardData;
+  let campaignLanguage = parsedCampaignLanguage || [
+    { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
+  ];
+  return { success, campaignLanguage };
 };
 
 export default connect(

@@ -39,7 +39,7 @@ import axios from "axios";
 import { sendTrustVote } from "./trustAction";
 import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
 import cookie from "js-cookie";
-import { setInvitationQuota } from "./dashboardActions";
+import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -490,6 +490,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             dispatch(fetchReviews(token));
             dispatch(fetchTransactionHistory(token));
             dispatch(setSubscription(subscriptionExpired));
+            dispatch(fetchCampaignLanguage(token));
             localStorage.setItem("token", token);
             dispatch({
               type: BUSINESS_LOGIN_SUCCESS,

@@ -18,7 +18,11 @@ import {
   CREATE_CAMPAIGN_INIT,
   CREATE_CAMPAIGN_SUCCESS,
   CREATE_CAMPAIGN_FAILURE,
-  SET_QUOTA_DETAILS
+  SET_QUOTA_DETAILS,
+  FETCH_CAMPAIGN_LANGUAGE_INIT,
+  FETCH_CAMPAIGN_LANGUAGE_SUCCESS,
+  FETCH_CAMPAIGN_LANGUAGE_FAILURE,
+  SET_CAMPAIGN_LANGUAGE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -32,7 +36,9 @@ const dashboardReducer = (state = {}, action) => {
     upgradePremium,
     transactionHistory,
     createCampaign,
-    quotaDetails
+    quotaDetails,
+    campaignLanguage,
+    parsedCampaignLanguage
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -152,12 +158,36 @@ const dashboardReducer = (state = {}, action) => {
         type,
         createCampaign
       };
-
+    case FETCH_CAMPAIGN_LANGUAGE_INIT:
+      return {
+        ...state,
+        type,
+        campaignLanguage
+      };
+    case FETCH_CAMPAIGN_LANGUAGE_SUCCESS:
+      return {
+        ...state,
+        type,
+        campaignLanguage
+      };
+    case FETCH_CAMPAIGN_LANGUAGE_FAILURE:
+      return {
+        ...state,
+        type,
+        campaignLanguage
+      };
     case SET_QUOTA_DETAILS: {
       return {
         ...state,
         type,
         quotaDetails
+      };
+    }
+    case SET_CAMPAIGN_LANGUAGE: {
+      return {
+        ...state,
+        type,
+        parsedCampaignLanguage
       };
     }
     default:
