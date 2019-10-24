@@ -5,8 +5,15 @@ import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Snackbar from "../../Widgets/Snackbar";
 
 class SendInvitations extends Component {
+  state = {
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
+  };
   renderSendInvitationsHeader = () => {
     return (
       <div className="container">
@@ -128,7 +135,28 @@ class SendInvitations extends Component {
     );
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    const { isLoading, success, errorMsg } = this.props;
+    if (this.props !== prevProps) {
+      if (success === true && !isLoading) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Invitations Sent Successfully!"
+        });
+      } else if (success === false && !isLoading) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: errorMsg
+        });
+      }
+    }
+  }
+
   render() {
+    const { isLoading } = this.props;
+    console.log(isLoading, "isLoading");
     return (
       <>
         {this.renderSendInvitationsHeader()}
@@ -159,26 +187,39 @@ class SendInvitations extends Component {
                 </Button>
               </div>
             </div>
-            <div className="col-md-2">
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<ArrowRight />}
-                onClick={this.props.handleNext}
-                size="small"
-              >
-                Continue
-              </Button>
+            <div className="col-md-3">
+              {isLoading ? (
+                <Button variant="contained" color="primary" size="large">
+                  <CircularProgress color={"#f1f1f1"} size={20} />
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  endIcon={<ArrowRight />}
+                  onClick={this.props.handleNext}
+                  size="small"
+                >
+                  Send Invitations
+                </Button>
+              )}
             </div>
           </div>
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </>
     );
   }
 }
 
 const mapStateToProps = state => {
-  const { getReviewsData } = state.dashboardData;
+  const { dashboardData } = state;
+  const { getReviewsData } = dashboardData;
   const { createCampaign, selectTemplateData } = getReviewsData || {};
   const campaignName = _get(createCampaign, "campaignName.value", "");
   const campaignLanguage = _get(createCampaign, "campaignLanguage.value", "");
@@ -188,6 +229,12 @@ const mapStateToProps = state => {
   const entity = _get(selectTemplateData, "entity.value", "");
   const emailSubject = _get(selectTemplateData, "subject.value", "");
   const services = _get(selectTemplateData, "services.value", "");
+
+  const createCampaignRes = _get(dashboardData, "createCampaign", {});
+  const isLoading = _get(createCampaignRes, "isLoading", false);
+  const success = _get(createCampaignRes, "success", "undefined");
+  const errorMsg = _get(createCampaignRes, "errorMsg", "");
+
   return {
     campaignName,
     campaignLanguage,
@@ -196,7 +243,10 @@ const mapStateToProps = state => {
     clientName,
     entity,
     emailSubject,
-    services
+    services,
+    isLoading,
+    success,
+    errorMsg
   };
 };
 

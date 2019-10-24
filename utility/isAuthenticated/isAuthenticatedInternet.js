@@ -1,4 +1,5 @@
 import nextCookie from "next-cookies";
+import Router from "next/router";
 
 const isAuthenticatedInternet = ctx => {
   const { token, loginType } = nextCookie(ctx);
