@@ -466,10 +466,12 @@ export const businessLogIn = (loginData, api, directLogin) => {
         `${process.env.BASE_URL}${api}`,
         loginDataWithBusiness
       );
+      console.log("res from business", res)
       let success = _get(res, "data.success", false);
       let userProfile = _get(res, "data.user", {});
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
+      let placeId = _get(res, "data.user.business_profile.google_places.placeId", "");
       let loginType = 0;
       if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
@@ -491,6 +493,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             );
             cookie.set("loginType", loginType, { expires: 7 });
             cookie.set("token", token, { expires: 7 });
+            cookie.set("placeId",placeId,{expires: 7})
             dispatch(fetchReviews(token));
             dispatch(fetchTransactionHistory(token));
             localStorage.setItem("token", token);

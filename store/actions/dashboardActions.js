@@ -24,6 +24,7 @@ import {
   CREATE_CAMPAIGN_FAILURE
 } from "./actionTypes";
 import axios from "axios";
+import cookie from "js-cookie";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import {
@@ -137,6 +138,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       });
       if (success) {
         dispatch(fetchReviews(token));
+        cookie.set("placeLocated", true, { expires: 7 });
       }
     } catch (error) {
       dispatch({

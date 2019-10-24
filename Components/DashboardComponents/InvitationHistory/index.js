@@ -3,6 +3,7 @@ import MaterialTable from "material-table";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import axios from 'axios';
 
 const columns = [
   { title: "Id", field: "id" },
@@ -24,308 +25,44 @@ function createData(
   return { customerEmail, status, created, sent, type, referenceNumber };
 }
 
-const data = [
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  ),
-  createData(
-    "art@gmail.com",
-    "Delivered",
-    "5 mins ago",
-    "2mins ago",
-    "Service Review Reminder",
-    1222
-  )
-];
-
 class InvitationHistory extends Component {
   render() {
-    const { invitations, errroMsg, isLoading, success } = this.props;
+    const { invitations, errroMsg, isLoading, success, token } = this.props;
     return (
       <MaterialTable
         title="Invitation History"
         columns={columns}
-        data={invitations}
+        data={query =>
+          new Promise((resolve, reject) => {
+            let url = `${process.env.BASE_URL}/api/my-business/invitations/history?`;
+            url += "perPage=" + query.pageSize;
+            url += "&page=" + (query.page + 1);
+            axios({
+              method: "GET",
+              url: url,
+              headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(result => {
+                resolve({
+                  data: result.data.invitations,
+                  page: query.page,
+                  totalCount: result.data.total
+                });
+              });
+          })
+        }
       />
     );
   }
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { dashboardData, auth } = state;
   const invitations = _get(dashboardData, "transactionHistory.invitations", []);
   const errroMsg = _get(dashboardData, "transactionHistory.errorMsg", "");
   const isLoading = _get(dashboardData, "transactionHistory.isLoading", false);
   let success = false;
+  const token = _get(auth, "logIn.token", "")
   if (invitations) {
     if (Array.isArray(invitations) && !_isEmpty(invitations)) {
       success = true;
@@ -333,7 +70,7 @@ const mapStateToProps = state => {
       success = false;
     }
   }
-  return { invitations, errroMsg, isLoading, success };
+  return { invitations, errroMsg, isLoading, success, token };
 };
 
 export default connect(mapStateToProps)(InvitationHistory);
