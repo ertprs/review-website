@@ -235,7 +235,7 @@ class Home extends Component {
             <div>
               {topThreeReviews.length > 0
                 ? this.renderReviewSnippets(topThreeReviews)
-                : "Will be displayed in 24 hours !"}
+                : "Nothing found till yet, Will be updated in 24 hours !"}
             </div>
           </div>
         </SimpleCard>
@@ -305,56 +305,52 @@ class Home extends Component {
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
     const expiresAt = _get(userProfile, "subscription.expires_at", "");
     return (
-      <Grid item xs={12} md={12} lg={12}>
-        <SimpleCard>
-          <div className="businessDetailsContainer">
-            <style jsx>
-              {`
-                .bold {
-                  font-weight: bold;
-                }
-                .businessDetailsContainer {
-                  margin-left: 25px;
-                }
-                .businessDetailsFlexItem {
-                  display: flex;
-                  margin-bottom: 10px;
-                }
-                .businessDetailsFlexItem div {
-                  flex-basis: 100%;
-                  font-size: 16px;
-                }
-                @media screen and (max-width: 720px) {
-                  .businessDetailsFlexItem {
-                    flex-direction: column;
-                    flex-basis: 100%;
-                  }
-                }
-              `}
-            </style>
-            <div className="businessDetailsFlexItem">
-              <div className="bold">Domain :</div>
-              <div>
-                <a href={`https://www.${domain}`} target="_blank">
-                  {domain}
-                </a>
-              </div>
-            </div>
-            <div className="businessDetailsFlexItem">
-              <div className="bold">Company Name :</div>
-              <div>{companyName}</div>
-            </div>
-            <div className="businessDetailsFlexItem">
-              <div className="bold">Subscription plan :</div>
-              <div>{getSubscriptionPlan(subscriptionPlan)}</div>
-            </div>
-            <div className="businessDetailsFlexItem">
-              <div className="bold">Expires At :</div>
-              <div>{expiresAt}</div>
-            </div>
+      <div className="businessDetailsContainer">
+        <style jsx>
+          {`
+            .bold {
+              font-weight: bold;
+            }
+            .businessDetailsContainer {
+              margin-left: 25px;
+            }
+            .businessDetailsFlexItem {
+              display: flex;
+              margin-bottom: 10px;
+            }
+            .businessDetailsFlexItem div {
+              flex: 1;
+              font-size: 16px;
+            }
+            @media screen and (max-width: 720px) {
+              .businessDetailsFlexItem {
+                flex-direction: column;
+                flex-basis: 100%;
+              }
+            }
+          `}
+        </style>
+        <div className="businessDetailsFlexItem">
+          <div className="bold">Domain :</div>
+          <div>
+            <a href={`https://www.${domain}`} target="_blank">
+              {domain}
+            </a>
           </div>
-        </SimpleCard>
-      </Grid>
+        </div>
+        <div className="businessDetailsFlexItem">
+          <div className="bold">Company Name :</div>
+          <div>{companyName}</div>
+        </div>
+        <div className="businessDetailsFlexItem">
+          <div className="bold">Subscription plan :</div>
+          <div>{getSubscriptionPlan(subscriptionPlan)}</div>
+        </div>
+        <div className="businessDetailsFlexItem">
+          <div className="bold">Expires At :</div>
+          <div>{expiresAt}</div>
+        </div>
+      </div>
     );
   };
 
@@ -362,12 +358,46 @@ class Home extends Component {
     const { classes } = this.props;
     return (
       <>
+        <style jsx>
+          {`
+            .businessDetailsContainer {
+              display: flex;
+            }
+            .businessDetailsImgContainer {
+              flex-basis: 20%;
+              display:flex;
+              align-items:center;
+            }
+            .businessDetailsTextContainer{
+              flex-basis:80%;
+            }
+            .businessDetailsImgContainer img{
+              max-width:100%;
+              height:auto;
+            }
+
+            @media screen and (max-width:720px){
+              .businessDetailsImgContainer {
+                display:none;
+              }
+            }
+          `}
+        </style>
         <Grid container spacing={3}>
           {this.renderActivationInfo(classes)}
           {this.renderOverviewCard()}
           {this.renderRecentReviewsCard()}
           {this.renderInvitationsCard()}
-          {this.renderBusinessDetails()}
+          <Grid item xs={12} md={12} lg={12}>
+            <SimpleCard>
+              <div className="businessDetailsContainer">
+                <div className="businessDetailsImgContainer">
+                  <img src="/static/images/googleMyBusiness.jpg" />
+                </div>
+                <div className="businessDetailsTextContainer">{this.renderBusinessDetails()}</div>
+              </div>
+            </SimpleCard>
+          </Grid>
         </Grid>
         <Snackbar
           open={this.state.showSnackbar}
