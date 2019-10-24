@@ -425,7 +425,7 @@ class GetReviews extends Component {
     // const subject = _get(selectTemplateData, "subject.value", "");
     const clientName = _get(selectTemplateData, "clientName.value", "");
     const entityDomain = _get(selectTemplateData, "entity.value", "");
-    const service = _get(selectTemplateData, "service.value", "");
+    const service = _get(selectTemplateData, "services.value", "");
 
     const data = {
       campaign: {
