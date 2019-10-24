@@ -442,6 +442,7 @@ export const businessSignUp = (signupData, api) => {
 };
 
 export const businessLogIn = (loginData, api, directLogin) => {
+  let loginDataWithBusiness = { ...loginData, isBusiness: true };
   return async (dispatch, getState) => {
     dispatch({
       type: BUSINESS_LOGIN_INIT,
@@ -449,7 +450,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
         authorized: "undefined",
         loginType: 0,
         token: "",
-        userProfile: {}
+        userProfile: {},
+        subscriptionExpired: false
       },
       logInTemp: {
         status: -1,
@@ -460,18 +462,16 @@ export const businessLogIn = (loginData, api, directLogin) => {
       }
     });
     try {
-      const res = await axios.post(`${process.env.BASE_URL}${api}`, loginData);
+      const res = await axios.post(
+        `${process.env.BASE_URL}${api}`,
+        loginDataWithBusiness
+      );
       let success = _get(res, "data.success", false);
       let userProfile = _get(res, "data.user", {});
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
       let loginType = 0;
-      if (success) {
-        dispatch(fetchReviews(token));
-        dispatch(fetchTransactionHistory(token));
-      }
-      localStorage.setItem("token", token);
-      if (userProfile.subscription) {
+      if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
           if (
             userProfile.subscription.plan_type_id === 1 ||
@@ -484,27 +484,54 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 _get(userProfile, "subscription.quota_details", {})
               )
             );
+            let subscriptionExpired = _get(
+              userProfile,
+              "subscription.expired",
+              false
+            );
             cookie.set("loginType", loginType, { expires: 7 });
             cookie.set("token", token, { expires: 7 });
+            dispatch(fetchReviews(token));
+            dispatch(fetchTransactionHistory(token));
+            localStorage.setItem("token", token);
+            dispatch({
+              type: BUSINESS_LOGIN_SUCCESS,
+              logIn: {
+                authorized: success,
+                loginType,
+                token,
+                userProfile,
+                subscriptionExpired
+              },
+              logInTemp: {
+                status: status,
+                isWrongCredentials: false,
+                isLoginFailed: !success,
+                isLoggingIn: false,
+                error: ""
+              }
+            });
           }
         }
+      } else {
+        dispatch({
+          type: BUSINESS_LOGIN_FAILURE,
+          logIn: {
+            authorized: false,
+            loginType: 0,
+            token: "",
+            userProfile: {},
+            subscriptionExpired: false
+          },
+          logInTemp: {
+            status: 0,
+            isWrongCredentials: false,
+            isLoginFailed: true,
+            isLoggingIn: false,
+            error: "Some Error Occured."
+          }
+        });
       }
-      dispatch({
-        type: BUSINESS_LOGIN_SUCCESS,
-        logIn: {
-          authorized: success,
-          loginType,
-          token,
-          userProfile
-        },
-        logInTemp: {
-          status: status,
-          isWrongCredentials: false,
-          isLoginFailed: !success,
-          isLoggingIn: false,
-          error: ""
-        }
-      });
     } catch (err) {
       let success = _get(err, "response.data.success", false);
       let status = _get(err, "response.status", 0);
@@ -517,7 +544,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
           authorized: false,
           loginType: 0,
           token: "",
-          userProfile: {}
+          userProfile: {},
+          subscriptionExpired: false
         },
         logInTemp: {
           status: status,

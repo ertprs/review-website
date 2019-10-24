@@ -164,18 +164,20 @@ export default class SelectTemplateForm extends Component {
     const { formData } = this.props;
     let output = [];
     for (let item in formData) {
-      output = [
-        ...output,
-        <div className="col-md-12">
-          <FormField
-            {...formData[item]}
-            id={item}
-            handleChange={e => {
-              this.props.handleChange(e, item, "selectTemplateData");
-            }}
-          />
-        </div>
-      ];
+      if (item !== "clientName") {
+        output = [
+          ...output,
+          <div className="col-md-12">
+            <FormField
+              {...formData[item]}
+              id={item}
+              handleChange={e => {
+                this.props.handleChange(e, item, "selectTemplateData");
+              }}
+            />
+          </div>
+        ];
+      }
     }
     return [...output];
   };
