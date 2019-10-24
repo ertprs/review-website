@@ -15,7 +15,9 @@ export default function NoReviewsFound() {
         }
       `}</style>
       <div className="container">
-        <h1 className="text">No Reviews Found</h1>
+        <h1 className="text">
+          No reviews found till yet! Will be updated soon
+        </h1>
       </div>
     </>
   );
