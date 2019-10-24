@@ -125,7 +125,7 @@ export const SecondaryListItems = ({
       <ListItem />
       <ListItem />
       <ListItem />
-      <ListItem button style={{ background: "#303030", color: "#fff" }}>
+      <ListItem button style={{ background: "#303030", color: "#fff", justifyContent:isLoading ? "center" : "" }}>
         {isLoading ? (
           <CircularProgress size={30} color={"#f1f1f1"} />
         ) : (

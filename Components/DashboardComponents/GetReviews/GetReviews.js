@@ -203,7 +203,7 @@ class GetReviews extends Component {
           touched: false,
           validationRules: {
             required: true,
-            minLength: 3
+            minLength: 5
           }
         },
         senderEmail: {

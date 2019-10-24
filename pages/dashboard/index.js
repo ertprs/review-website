@@ -37,6 +37,8 @@ import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
 import dynamic from "next/dynamic";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
 import Tooltip from "@material-ui/core/Tooltip";
+import nextCookie from "next-cookies";
+
 //Dynamic imported components
 const Home = dynamic(() =>
   import("../../Components/DashboardComponents/Home/Home")
@@ -226,7 +228,12 @@ const useStyles = makeStyles(theme => ({
 function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [stepToRender, setStepToRender] = React.useState(0);
+  const [stepToRender, setStepToRender] = React.useState(
+    (props.pLocated === false || props.pLocated === undefined) &&
+      (props.pId === undefined || props.pId === "")
+      ? 0
+      : 1
+  );
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
@@ -263,7 +270,7 @@ function Dashboard(props) {
     setStepToRender(step);
   };
 
-  const renderAppropriateComponent = () => {
+  const renderAppropriateComponent = pId => {
     if (stepToRender === 0) {
       return <GetStarted changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 1) {
@@ -298,8 +305,11 @@ function Dashboard(props) {
   let homeDisabled = false;
   let menuItemsDisabled = false;
   let getStartedDisabled = false;
-
-  if (_get(props, "placeId", "") !== "" || _get(props, "placeLocated", false)) {
+  if (
+    _get(props, "placeId", "") !== "" ||
+    _get(props, "placeLocated", false) ||
+    props.pId !== ""
+  ) {
     getStartedHide = true;
     homeDisabled = false;
     menuItemsDisabled = false;
@@ -440,7 +450,7 @@ function Dashboard(props) {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          {renderAppropriateComponent()}
+          {renderAppropriateComponent(props.pId)}
         </Container>
       </main>
       <Snackbar
@@ -456,7 +466,8 @@ function Dashboard(props) {
 Dashboard.getInitialProps = async ctx => {
   // Check user's session
   isAuthenticatedBusiness(ctx);
-  return {};
+  const { placeId, placeLocated } = nextCookie(ctx);
+  return { pId: placeId, pLocated: placeLocated };
 };
 
 const mapStateToProps = state => {
