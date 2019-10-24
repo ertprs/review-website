@@ -746,11 +746,12 @@ class GetReviews extends Component {
   };
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
-    const { success } = this.props;
+    const { success, setGetReviewsData } = this.props;
     if (this.props !== prevProps) {
       if (activeStep === 2) {
         if (success === true) {
           if (activeStep <= columns.length) {
+            setGetReviewsData({});
             this.setState(prevState => {
               return { activeStep: prevState.activeStep + 1 };
             });
