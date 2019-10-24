@@ -97,7 +97,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
         }
 
         .noReviewBox{
-          text-align:center;
+          text-align:left;
         }
 
         @media screen and (max-width:1110px){
@@ -136,6 +136,9 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
              display:block;
              margin-top:8px;
            }
+           .noReviewBox{
+             text-align:center;
+           }
          }
         }
       `}</style>
@@ -162,7 +165,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           <link href="/static/css/slick.css" type="text/css" rel="stylesheet" />
         </Head>
         <div className="reviewBoxSlider">
-          {requiredData.success!==false ? <Slider {...settings}>
+          {requiredData.success!==false && requiredData.totalReviews > 0 ? <Slider {...settings}>
             {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()}>
@@ -177,7 +180,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
               );
             })}
           </Slider> : <div className="noReviewBox">
-            <h4 style={{marginTop:"25px"}}>No reviews Found</h4>
+            <h4 style={{marginTop:"40px"}}>No reviews Found</h4>
           </div>}          
           <div></div>
         </div>
