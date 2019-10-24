@@ -304,6 +304,7 @@ function Dashboard(props) {
   let getStartedHide = false;
   let homeDisabled = false;
   let menuItemsDisabled = false;
+  let getStartedDisabled = false;
   if (
     _get(props, "placeId", "") !== "" ||
     _get(props, "placeLocated", false) ||
@@ -321,13 +322,19 @@ function Dashboard(props) {
     menuItemsDisabled = true;
   }
 
-  if (_get(props, "activation_required", false)) {
-    if (_get(props, "userActivated", false)) {
-      menuItemsDisabled = false;
-    } else if (_get(props, "userActivated", false) === false) {
-      menuItemsDisabled = true;
-    }
+  if (_get(props, "isSubscriptionExpired", false) === true) {
+    getStartedHide = false;
+    homeDisabled = false;
+    menuItemsDisabled = true;
+    getStartedDisabled = true;
   }
+  // else if (_get(props, "activation_required", false)) {
+  //   if (_get(props, "userActivated", false)) {
+  //     menuItemsDisabled = false;
+  //   } else if (_get(props, "userActivated", false) === false) {
+  //     menuItemsDisabled = true;
+  //   }
+  // }
 
   const clickToUpgradeHandler = () => {
     const { upgradeToPremium, userName, userEmail, userPhone } = props;
@@ -417,6 +424,7 @@ function Dashboard(props) {
         <Divider />
         <List>
           <MainListItems
+            getStartedDisabled={getStartedDisabled}
             getStartedHide={getStartedHide}
             homeDisabled={homeDisabled}
             menuItemDisabled={menuItemsDisabled}
@@ -496,6 +504,7 @@ const mapStateToProps = state => {
     "upgradePremium.isLoading",
     false
   );
+  const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
   return {
     authorized,
     loginType,
@@ -511,7 +520,8 @@ const mapStateToProps = state => {
     upgradeToPremiumIsLoading,
     domain,
     reviews,
-    token
+    token,
+    isSubscriptionExpired
   };
 };
 

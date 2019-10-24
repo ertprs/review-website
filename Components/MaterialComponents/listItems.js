@@ -18,7 +18,8 @@ export const MainListItems = ({
   menuItemDisabled,
   getStartedHide,
   homeDisabled,
-  handleMainListItemClick
+  handleMainListItemClick,
+  getStartedDisabled
 }) => {
   return (
     <div>
@@ -36,6 +37,7 @@ export const MainListItems = ({
             handleMainListItemClick(0);
           }}
           className={stepToRender === 0 ? "grayBg" : ""}
+          getStartedDisabled={getStartedDisabled}
         >
           <ListItemIcon>
             <FormatListBulletedIcon />
@@ -149,7 +151,6 @@ export const DashboardLogo = () => {
           align-items: baseline;
           height: 50px;
           width: auto;
-          
         }
         .imgStyle {
           max-width: 100%;

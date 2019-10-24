@@ -8,6 +8,7 @@ import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { resendActivationLink } from "../../../store/actions/authActions";
+import { upgradeToPremium } from "../../../store/actions/dashboardActions";
 import { resendActivationLinkApi } from "../../../utility/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import withStyles from "@material-ui/styles/withStyles";
@@ -83,6 +84,53 @@ class Home extends Component {
                   color="primary"
                 >
                   Activate now
+                </Button>
+              )}
+            </Typography>
+          </SimpleCard>
+        </Grid>
+      );
+    }
+  };
+
+  clickToUpgradeHandler = () => {
+    const { upgradeToPremium, userName, userEmail, userPhone } = this.props;
+    const data = {
+      email: userEmail || "",
+      name: userName || "",
+      type: "some_random_form",
+      objective: "get things done now",
+      phone: userPhone || "123456789",
+      websiteOwner: true
+    };
+    upgradeToPremium(data);
+  };
+
+  renderSubscriptionInfo = classes => {
+    const { upgradeToPremiumIsLoading } = this.props;
+    if (activated == false) {
+      return (
+        <Grid item xs={12} md={12} lg={12}>
+          <SimpleCard>
+            <Typography>
+              You don't have any active subscription. Please subscribe to use
+              our features. &nbsp;&nbsp;
+              {upgradeToPremiumIsLoading ? (
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  color="primary"
+                >
+                  <CircularProgress size={25} color={"fff"} />
+                </Button>
+              ) : (
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  onClick={this.clickToUpgradeHandler}
+                  color="primary"
+                >
+                  Upgrade Now
                 </Button>
               )}
             </Typography>
@@ -355,7 +403,7 @@ class Home extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, isSubscriptionExpired } = this.props;
     return (
       <>
         <style jsx>
@@ -365,26 +413,28 @@ class Home extends Component {
             }
             .businessDetailsImgContainer {
               flex-basis: 20%;
-              display:flex;
-              align-items:center;
+              display: flex;
+              align-items: center;
             }
-            .businessDetailsTextContainer{
-              flex-basis:80%;
+            .businessDetailsTextContainer {
+              flex-basis: 80%;
             }
-            .businessDetailsImgContainer img{
-              max-width:100%;
-              height:auto;
+            .businessDetailsImgContainer img {
+              max-width: 100%;
+              height: auto;
             }
 
-            @media screen and (max-width:720px){
+            @media screen and (max-width: 720px) {
               .businessDetailsImgContainer {
-                display:none;
+                display: none;
               }
             }
           `}
         </style>
         <Grid container spacing={3}>
-          {this.renderActivationInfo(classes)}
+          {isSubscriptionExpired === true
+            ? this.renderSubscriptionInfo(classes)
+            : this.renderActivationInfo(classes)}
           {this.renderOverviewCard()}
           {this.renderRecentReviewsCard()}
           {this.renderInvitationsCard()}
@@ -394,7 +444,9 @@ class Home extends Component {
                 <div className="businessDetailsImgContainer">
                   <img src="/static/images/googleMyBusiness.jpg" />
                 </div>
-                <div className="businessDetailsTextContainer">{this.renderBusinessDetails()}</div>
+                <div className="businessDetailsTextContainer">
+                  {this.renderBusinessDetails()}
+                </div>
               </div>
             </SimpleCard>
           </Grid>
@@ -425,7 +477,15 @@ const mapStateToProps = state => {
   const isLoading = _get(auth, "resendActivation.isLoading", false);
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
-
+  const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
+  const userName = _get(auth, "logIn.userProfile.name", "");
+  const userEmail = _get(auth, "logIn.userProfile.email", "");
+  const userPhone = _get(auth, "logIn.userProfile.phone", "");
+  const upgradeToPremiumIsLoading = _get(
+    dashboardData,
+    "upgradePremium.isLoading",
+    false
+  );
   return {
     reviewsData,
     quotaDetails,
@@ -435,11 +495,16 @@ const mapStateToProps = state => {
     success,
     isLoading,
     userProfile,
-    businessProfile
+    businessProfile,
+    isSubscriptionExpired,
+    userName,
+    userEmail,
+    userPhone,
+    upgradeToPremiumIsLoading
   };
 };
 
 export default connect(
   mapStateToProps,
-  { resendActivationLink }
+  { resendActivationLink, upgradeToPremium }
 )(withStyles(styles)(Home));

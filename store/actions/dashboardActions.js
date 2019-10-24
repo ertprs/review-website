@@ -21,7 +21,8 @@ import {
   SET_QUOTA_DETAILS,
   CREATE_CAMPAIGN_INIT,
   CREATE_CAMPAIGN_SUCCESS,
-  CREATE_CAMPAIGN_FAILURE
+  CREATE_CAMPAIGN_FAILURE,
+  SET_CAMPAIGN_LANGUAGE
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -30,8 +31,10 @@ import _isEmpty from "lodash/isEmpty";
 import {
   upgradePremiumApi,
   transactionHistoryApi,
-  createCampaignApi
+  createCampaignApi,
+  fetchCampaignLanguageApi
 } from "../../utility/config";
+import createCampaignLanguage from "../../utility/createCampaignLang";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -283,24 +286,52 @@ export const createCampaign = data => {
   };
 };
 
-export const fetchCampaignLanguage = data => {
+export const fetchCampaignLanguage = token => {
   return async dispatch => {
     dispatch({
-      type: CREATE_CAMPAIGN_INIT
+      type: FETCH_CAMPAIGN_LANGUAGE_INIT,
+      campaignLanguage: {
+        isLoading: true,
+        locales: {},
+        success: "undefined",
+        errorMsg: ""
+      }
     });
     try {
       const result = await axios({
-        method: "POST",
-        url: `${process.env.BASE_URL}${createCampaignApi}`,
-        data,
+        method: "GET",
+        url: `${process.env.BASE_URL}${fetchCampaignLanguageApi}`,
         headers: { Authorization: `Bearer ${token}` }
       });
+      let locales = _get(result, "data.locales", {});
+      if (!_isEmpty(locales)) {
+        console.log(locales, "locales");
+        const data = createCampaignLanguage(locales);
+        console.log(data, "data is here");
+        dispatch(setCampaignLanguage(data));
+      }
       dispatch({
-        type: CREATE_CAMPAIGN_SUCCESS
+        type: FETCH_CAMPAIGN_LANGUAGE_SUCCESS,
+        campaignLanguage: {
+          isLoading: false,
+          locales: _get(result, "data.locales", {}),
+          success: _get(result, "data.success", false),
+          errorMsg: ""
+        }
       });
     } catch (error) {
       dispatch({
-        type: CREATE_CAMPAIGN_FAILURE
+        type: FETCH_CAMPAIGN_LANGUAGE_FAILURE,
+        campaignLanguage: {
+          isLoading: false,
+          locales: {},
+          success: false,
+          errorMsg: _get(
+            error,
+            "response.data.error",
+            "Some error occured! Please try again later."
+          )
+        }
       });
     }
   };
@@ -310,5 +341,12 @@ export const setInvitationQuota = quotaDetails => {
   return {
     type: SET_QUOTA_DETAILS,
     quotaDetails
+  };
+};
+
+export const setCampaignLanguage = parsedCampaignLanguage => {
+  return {
+    type: SET_CAMPAIGN_LANGUAGE,
+    parsedCampaignLanguage
   };
 };

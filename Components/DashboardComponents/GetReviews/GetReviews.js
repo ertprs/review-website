@@ -31,6 +31,7 @@ const columns = [
   { title: "Reference number", field: "referenceNumber", type: "text" }
 ];
 import { createCampaign } from "../../../store/actions/dashboardActions";
+import createCampaignLang from "../../../utility/createCampaignLang";
 
 const styles = theme => ({
   button: {
@@ -181,11 +182,9 @@ class GetReviews extends Component {
         campaignLanguage: {
           element: "select",
           value: "",
-          options: [
-            { name: "English", value: "en" },
-            { name: "Latvian", value: "lv" },
-            { name: "German", value: "de" }
-          ],
+          options: _get(this.props, "campaignLanguage", [
+            { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
+          ]),
           placeholder: "Select your campaign language",
           errorMessage: "",
           valid: false,
@@ -204,7 +203,7 @@ class GetReviews extends Component {
           touched: false,
           validationRules: {
             required: true,
-            minLength: 3
+            minLength: 5
           }
         },
         senderEmail: {
@@ -423,7 +422,7 @@ class GetReviews extends Component {
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
     const senderEmail = _get(campaign, "senderEmail.value", "");
-    const subject = _get(selectTemplateData, "subject.value", "");
+    // const subject = _get(selectTemplateData, "subject.value", "");
     const clientName = _get(selectTemplateData, "clientName.value", "");
     const entityDomain = _get(selectTemplateData, "entity.value", "");
     const service = _get(selectTemplateData, "service.value", "");
@@ -437,7 +436,7 @@ class GetReviews extends Component {
       invites: [...tableData],
       template: {
         id: "ds-ccsx-dszxs",
-        subject,
+        // subject,
         vars: {
           clientName,
           entityDomain,
@@ -801,7 +800,11 @@ const mapStateToProps = state => {
   const { dashboardData } = state;
   const { createCampaign } = dashboardData;
   const success = _get(createCampaign, "success", "undefined");
-  return { success };
+  const { parsedCampaignLanguage } = state.dashboardData;
+  let campaignLanguage = parsedCampaignLanguage || [
+    { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
+  ];
+  return { success, campaignLanguage };
 };
 
 export default connect(
