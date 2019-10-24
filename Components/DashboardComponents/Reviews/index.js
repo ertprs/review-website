@@ -9,6 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Head from "next/head";
 import NoReviewsFound from "./noReviewsFound";
 import Snackbar from "../../Widgets/Snackbar";
+import { Paper } from "@material-ui/core";
 
 class Reviews extends Component {
   state = {
@@ -37,7 +38,7 @@ class Reviews extends Component {
   }
 
   render() {
-    const { reviews, total, isFetching, success } = this.props;
+    const { reviews, total, isFetching, success, directReviewUrl } = this.props;
     const { perPage } = this.state;
     return (
       <>
@@ -100,9 +101,16 @@ class Reviews extends Component {
             !success ? (
               <NoReviewsFound />
             ) : (
-              _map(reviews, review => {
-                return <ReviewCard review={review} />;
-              })
+              <>
+                <Paper style={{ padding: "15px 30px" }}>
+                  <a href={directReviewUrl} target="_blank">
+                    Google Review Url: {directReviewUrl}
+                  </a>
+                </Paper>
+                {_map(reviews, review => {
+                  return <ReviewCard review={review} />;
+                })}
+              </>
             )
           ) : null}
         </div>
@@ -157,6 +165,11 @@ const mapStateToProps = state => {
   const success = _get(dashboardData, "reviews.success", false);
   const error = _get(dashboardData, "reviews.error", "");
   const type = _get(dashboardData, "type", "");
+  const directReviewUrl = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.directReviewUrl",
+    ""
+  );
   return {
     token,
     ratings,
@@ -167,7 +180,8 @@ const mapStateToProps = state => {
     type,
     isFetching,
     error,
-    success
+    success,
+    directReviewUrl
   };
 };
 
