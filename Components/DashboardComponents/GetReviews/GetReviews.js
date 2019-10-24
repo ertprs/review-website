@@ -423,7 +423,7 @@ class GetReviews extends Component {
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
     const senderEmail = _get(campaign, "senderEmail.value", "");
-    const subject = _get(selectTemplateData, "subject.value", "");
+    // const subject = _get(selectTemplateData, "subject.value", "");
     const clientName = _get(selectTemplateData, "clientName.value", "");
     const entityDomain = _get(selectTemplateData, "entity.value", "");
     const service = _get(selectTemplateData, "service.value", "");
@@ -437,7 +437,7 @@ class GetReviews extends Component {
       invites: [...tableData],
       template: {
         id: "ds-ccsx-dszxs",
-        subject,
+        // subject,
         vars: {
           clientName,
           entityDomain,
