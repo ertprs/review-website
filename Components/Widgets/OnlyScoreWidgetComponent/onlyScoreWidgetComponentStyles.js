@@ -4,7 +4,7 @@ export const onlyScoreWidgetComponentStyles = css`
   .widgetBox, .carouselWidgetBox {
     box-shadow: 0px 2px 4px #a1a1a1;
     padding: 7% 0 5% 0;
-    height: 100%;
+    max-height: 100%;
     max-width: 99%;
     margin: 0.5px auto;
     text-align: center;
@@ -83,6 +83,30 @@ export const onlyScoreWidgetComponentStyles = css`
     margin-top: 5%;
   }
 
+  @media screen and (min-width:408px){
+    .widgetBox{
+      padding-top:5%;
+      width:50%;
+      height:50%;
+      box-shadow:none;
+    }
+    .widgetImgContainer{
+    height: 50px;
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .widgetImgContainer img{
+    max-width:50% !important;
+    height:auto !important ;
+    margin:0 auto !important;
+  }
+  }
+
   @media screen and (max-width:991px){
       .carouselRatingIndicator{
           display:none;
@@ -115,6 +139,7 @@ export const onlyScoreWidgetComponentStyles = css`
     }
     .widgetRating {
       font-size: 1.1rem;
+      margin-bottom:5px;
     }
     .smallRatingIndicator {
       display: none;
