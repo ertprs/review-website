@@ -211,11 +211,16 @@ export const logIn = (loginData, loginApi, loginType) => {
 };
 
 export const logOut = () => {
+  cookie.remove("loginType");
+  cookie.remove("token");
+  cookie.remove("placeLocated");
+  cookie.remove("placeId");
   localStorage.removeItem("persist:primary");
   localStorage.removeItem("persist:auth");
   localStorage.removeItem("userActivated");
   localStorage.removeItem("persist:dashboardData");
   localStorage.clear();
+  window.location.reload();
   return {
     type: LOGOUT,
     payload: {}

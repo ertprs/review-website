@@ -20,15 +20,7 @@ const dashboardPersistConfig = {
   blacklist: ["locatePlaceTemp", "upgradePremium"]
 };
 
-// export default combineReducers({
-//   auth: persistReducer(authPersistConfig, authReducer),
-//   trustVote: trustReducer,
-//   profileData: domainProfileReducer,
-//   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
-//   loader: loaderReducer
-// });
-
-const appReducer = combineReducers({
+export default combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   trustVote: trustReducer,
   profileData: domainProfileReducer,
@@ -36,15 +28,23 @@ const appReducer = combineReducers({
   loader: loaderReducer
 });
 
-const rootReducer = (state, action) => {
-  if (action.type === "LOGOUT") {
-    state = undefined;
-    cookie.remove("loginType");
-    cookie.remove("token");
-    return appReducer((state = undefined), action);
-  } else {
-    return appReducer({ ...state }, action);
-  }
-};
+// const appReducer = combineReducers({
+//   auth: persistReducer(authPersistConfig, authReducer),
+//   trustVote: trustReducer,
+//   profileData: domainProfileReducer,
+//   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
+//   loader: loaderReducer
+// });
 
-export default rootReducer;
+// const rootReducer = (state, action) => {
+//   if (action.type === "LOGOUT") {
+//     state = undefined;
+//     cookie.remove("loginType");
+//     cookie.remove("token");
+//     return appReducer((state = undefined), action);
+//   } else {
+//     return appReducer({ ...state }, action);
+//   }
+// };
+
+// export default rootReducer;
