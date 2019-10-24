@@ -104,9 +104,9 @@ class GetReviews extends Component {
         clientName: {
           element: "input",
           type: "text",
-          value: "",
-          valid: false,
-          touched: false,
+          value: "customerName",
+          valid: true,
+          touched: true,
           errorMessage: "Enter valid name",
           placeholder: "Enter client name",
           validationRules: {
@@ -174,7 +174,7 @@ class GetReviews extends Component {
           touched: false,
           validationRules: {
             required: true,
-            minLength: 3
+            minLength: 4
           },
           name: "campaignName"
         },
