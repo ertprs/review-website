@@ -213,7 +213,7 @@ const ReviewCardBusiness = ({ review }) => {
           <p className="date">Aug 16, 2019</p>
         </div> */}
       </div>
-      <div className="row bottomBox">
+      {/* <div className="row bottomBox">
         <div className="col-md-2"></div>
         <div className="col-md-9">
           <div className="bottomBoxInner">
@@ -246,7 +246,7 @@ const ReviewCardBusiness = ({ review }) => {
           </div>
         </div>
         <div className="col-md-1"></div>
-      </div>
+      </div> */}
       {/* {showReply ? <ReplyBox /> : ""} */}
     </div>
   );
