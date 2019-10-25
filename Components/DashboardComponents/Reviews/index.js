@@ -10,6 +10,7 @@ import Head from "next/head";
 import NoReviewsFound from "./noReviewsFound";
 import Snackbar from "../../Widgets/Snackbar";
 import { Paper } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
 class Reviews extends Component {
   state = {
@@ -38,8 +39,19 @@ class Reviews extends Component {
   }
 
   render() {
-    const { reviews, total, isFetching, success, directReviewUrl } = this.props;
+    const {
+      reviews,
+      total,
+      isFetching,
+      success,
+      googleDirectReviewUrl,
+      googleDirectReviewUrlFirstTime
+    } = this.props;
     const { perPage } = this.state;
+    let googleReviewUrl =
+      googleDirectReviewUrl === ""
+        ? googleDirectReviewUrlFirstTime
+        : googleDirectReviewUrl;
     return (
       <>
         <Head>
@@ -102,11 +114,13 @@ class Reviews extends Component {
               <NoReviewsFound />
             ) : (
               <>
-                <Paper style={{ padding: "15px 30px" }}>
-                  <a href={directReviewUrl} target="_blank">
-                    Google Review Url: {directReviewUrl}
-                  </a>
-                </Paper>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => window.open(googleReviewUrl)}
+                >
+                  Google Review Url
+                </Button>
                 {_map(reviews, review => {
                   return <ReviewCard review={review} />;
                 })}
@@ -165,9 +179,14 @@ const mapStateToProps = state => {
   const success = _get(dashboardData, "reviews.success", false);
   const error = _get(dashboardData, "reviews.error", "");
   const type = _get(dashboardData, "type", "");
-  const directReviewUrl = _get(
+  const googleDirectReviewUrl = _get(
     auth,
     "logIn.userProfile.business_profile.google_places.directReviewUrl",
+    ""
+  );
+  const googleDirectReviewUrlFirstTime = _get(
+    dashboardData,
+    "googleDirectReviewUrl",
     ""
   );
   return {
@@ -181,7 +200,8 @@ const mapStateToProps = state => {
     isFetching,
     error,
     success,
-    directReviewUrl
+    googleDirectReviewUrl,
+    googleDirectReviewUrlFirstTime
   };
 };
 

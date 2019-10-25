@@ -68,7 +68,16 @@ class SendInvitations extends Component {
             <div style={{ fontWeight: "bold" }} className="col-md-6">
               {item.key}
             </div>
-            <div className="col-md-6">{item.value}</div>
+            <div className="col-md-6">
+              {item.key ===
+              "Send your customers to this website to write their review" ? (
+                <a href={item.value} target="_blank">
+                  Review url
+                </a>
+              ) : (
+                item.value
+              )}
+            </div>
           </div>
         </div>
       );
@@ -84,8 +93,14 @@ class SendInvitations extends Component {
       clientName,
       entity,
       emailSubject,
-      services
+      services,
+      googleDirectReviewUrl,
+      googleDirectReviewUrlFirstTime
     } = this.props;
+    const googleReviewUrl =
+      googleDirectReviewUrl === ""
+        ? googleDirectReviewUrlFirstTime
+        : googleDirectReviewUrl;
     let campaignLanguageArr = sendgridTemaplateIds.filter(template => {
       return template.value === campaignLanguage;
     });
@@ -98,15 +113,15 @@ class SendInvitations extends Component {
       { key: "Campaign Language", value: campLangName },
       { key: "Sender Name", value: senderName },
       { key: "Sender Email", value: senderEmail },
-      { key: "Client Name", value: clientName },
+      // { key: "Client Name", value: clientName },
       { key: "Entity", value: entity },
       { key: "Email Subject", value: emailSubject },
       { key: "Services", value: services },
       // { key: "Reply-to Email", value: "art@cunami.lv" },
       {
         key: "Send your customers to this website to write their review",
-        value: "https://www.trustsearch.com"
-      },
+        value: googleReviewUrl
+      }
       // { key: "Number of valid lines that will be processed", value: "1" }
     ];
     return (
@@ -226,7 +241,7 @@ class SendInvitations extends Component {
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { dashboardData, auth } = state;
   const { getReviewsData } = dashboardData;
   const { createCampaign, selectTemplateData } = getReviewsData || {};
   const campaignName = _get(createCampaign, "campaignName.value", "");
@@ -242,7 +257,16 @@ const mapStateToProps = state => {
   const isLoading = _get(createCampaignRes, "isLoading", false);
   const success = _get(createCampaignRes, "success", "undefined");
   const errorMsg = _get(createCampaignRes, "errorMsg", "");
-
+  const googleDirectReviewUrl = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.directReviewUrl",
+    ""
+  );
+  const googleDirectReviewUrlFirstTime = _get(
+    dashboardData,
+    "googleDirectReviewUrl",
+    ""
+  );
   return {
     campaignName,
     campaignLanguage,
@@ -254,7 +278,9 @@ const mapStateToProps = state => {
     services,
     isLoading,
     success,
-    errorMsg
+    errorMsg,
+    googleDirectReviewUrl,
+    googleDirectReviewUrlFirstTime
   };
 };
 

@@ -25,7 +25,8 @@ import {
   SET_CAMPAIGN_LANGUAGE,
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
-  FETCH_EMAIL_TEMPLATE_FAILURE
+  FETCH_EMAIL_TEMPLATE_FAILURE,
+  SET_GOOGLE_DIRECT_REVIEW_URL
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -400,5 +401,12 @@ export const fetchEmailTemplate = templateId => {
         }
       });
     }
+  };
+};
+
+export const setGoogleDirectReviewUrl = googleDirectReviewUrl => {
+  return {
+    type: SET_GOOGLE_DIRECT_REVIEW_URL,
+    googleDirectReviewUrl
   };
 };

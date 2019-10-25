@@ -347,11 +347,20 @@ class Home extends Component {
   };
 
   renderBusinessDetails = () => {
-    const { businessProfile, userProfile } = this.props;
+    const {
+      businessProfile,
+      userProfile,
+      googleDirectReviewUrl,
+      googleDirectReviewUrlFirstTime
+    } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
     const expiresAt = _get(userProfile, "subscription.expires_at", "");
+    const googleReviewUrl =
+      googleDirectReviewUrl === ""
+        ? googleDirectReviewUrlFirstTime
+        : googleDirectReviewUrl;
     return (
       <div className="businessDetailsContainer">
         <style jsx>
@@ -393,6 +402,14 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           <div className="bold">Subscription plan :</div>
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
+        </div>
+        <div className="businessDetailsFlexItem">
+          <div className="bold">Google direct review url :</div>
+          <div>
+            <a href={googleReviewUrl} target="_blank">
+              Click here
+            </a>
+          </div>
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
@@ -486,6 +503,16 @@ const mapStateToProps = state => {
     "upgradePremium.isLoading",
     false
   );
+  const googleDirectReviewUrl = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.directReviewUrl",
+    ""
+  );
+  const googleDirectReviewUrlFirstTime = _get(
+    dashboardData,
+    "googleDirectReviewUrl",
+    ""
+  );
   return {
     reviewsData,
     quotaDetails,
@@ -500,7 +527,9 @@ const mapStateToProps = state => {
     userName,
     userEmail,
     userPhone,
-    upgradeToPremiumIsLoading
+    upgradeToPremiumIsLoading,
+    googleDirectReviewUrl,
+    googleDirectReviewUrlFirstTime
   };
 };
 

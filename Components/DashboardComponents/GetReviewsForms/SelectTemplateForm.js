@@ -62,9 +62,20 @@ class SelectTemplateForm extends Component {
         <style jsx>
           {`
             .header {
-              margin-bottom: 30px;
+              // margin-bottom: 30px;
               text-decoration: underline;
             }
+            .subject {
+              padding: 10px;
+              border: 1px solid #d8d8d8;
+              margin-bottom: 11px;
+            }
+
+            .header h6 {
+              padding: 0;
+              margin: 0;
+            }
+
             .logoContainer {
               width: 150px;
             }
@@ -89,14 +100,7 @@ class SelectTemplateForm extends Component {
             }
           `}
         </style>
-        <div
-          className="subject"
-          style={{
-            border: "1px solid #d8d8d8",
-            padding: "5px",
-            marginBottom: "8px"
-          }}
-        >
+        <div className="subject">
           <div className="header">
             <h6>
               Email Subject:{" "}
