@@ -108,7 +108,7 @@ class GetReviews extends Component {
         clientName: {
           element: "input",
           type: "text",
-          value: "customerName",
+          value: "Name",
           valid: true,
           touched: true,
           errorMessage: "Enter valid name",
@@ -440,7 +440,11 @@ class GetReviews extends Component {
       },
       invites: [...omittedTableData],
       template: {
-        id: "ds-ccsx-dszxs",
+        id: _get(
+          this.state,
+          "createCampaign.campaignLanguage.value",
+          "d-be60fd9faf074996b23625429aa1dffd"
+        ),
         // subject,
         vars: {
           clientName,
