@@ -107,7 +107,7 @@ class SendInvitations extends Component {
         key: "Send your customers to this website to write their review",
         value: "https://www.trustsearch.com"
       },
-      { key: "Number of valid lines that will be processed", value: "1" }
+      // { key: "Number of valid lines that will be processed", value: "1" }
     ];
     return (
       <div className="container">
