@@ -107,7 +107,7 @@ class Home extends Component {
   };
 
   renderSubscriptionInfo = classes => {
-    const { upgradeToPremiumIsLoading } = this.props;
+    const { upgradeToPremiumIsLoading, activated } = this.props;
     if (activated == false) {
       return (
         <Grid item xs={12} md={12} lg={12}>

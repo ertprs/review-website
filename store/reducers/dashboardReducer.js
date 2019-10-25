@@ -22,7 +22,10 @@ import {
   FETCH_CAMPAIGN_LANGUAGE_INIT,
   FETCH_CAMPAIGN_LANGUAGE_SUCCESS,
   FETCH_CAMPAIGN_LANGUAGE_FAILURE,
-  SET_CAMPAIGN_LANGUAGE
+  SET_CAMPAIGN_LANGUAGE,
+  FETCH_EMAIL_TEMPLATE_INIT,
+  FETCH_EMAIL_TEMPLATE_SUCCESS,
+  FETCH_EMAIL_TEMPLATE_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -38,7 +41,8 @@ const dashboardReducer = (state = {}, action) => {
     createCampaign,
     quotaDetails,
     campaignLanguage,
-    parsedCampaignLanguage
+    parsedCampaignLanguage,
+    emailTemplate
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -188,6 +192,27 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         parsedCampaignLanguage
+      };
+    }
+    case FETCH_EMAIL_TEMPLATE_INIT: {
+      return {
+        ...state,
+        type,
+        emailTemplate
+      };
+    }
+    case FETCH_EMAIL_TEMPLATE_SUCCESS: {
+      return {
+        ...state,
+        type,
+        emailTemplate
+      };
+    }
+    case FETCH_EMAIL_TEMPLATE_FAILURE: {
+      return {
+        ...state,
+        type,
+        emailTemplate
       };
     }
     default:

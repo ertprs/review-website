@@ -43,6 +43,8 @@ export const transactionHistoryApi =
   "/api/my-business/invitations/history?perPage=10&page=1";
 export const createCampaignApi = "/api/my-business/invitations/invite-manual";
 export const fetchCampaignLanguageApi = "/api/my-business/locales";
+export const fetchEmailTemplateApi = "/api/my-business/invitation-template";
+
 //How to create review short link
 export const getStartedVideoUrl =
   "https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708";

@@ -22,7 +22,10 @@ import {
   CREATE_CAMPAIGN_INIT,
   CREATE_CAMPAIGN_SUCCESS,
   CREATE_CAMPAIGN_FAILURE,
-  SET_CAMPAIGN_LANGUAGE
+  SET_CAMPAIGN_LANGUAGE,
+  FETCH_EMAIL_TEMPLATE_INIT,
+  FETCH_EMAIL_TEMPLATE_SUCCESS,
+  FETCH_EMAIL_TEMPLATE_FAILURE
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -32,7 +35,8 @@ import {
   upgradePremiumApi,
   transactionHistoryApi,
   createCampaignApi,
-  fetchCampaignLanguageApi
+  fetchCampaignLanguageApi,
+  fetchEmailTemplateApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 
@@ -348,5 +352,53 @@ export const setCampaignLanguage = parsedCampaignLanguage => {
   return {
     type: SET_CAMPAIGN_LANGUAGE,
     parsedCampaignLanguage
+  };
+};
+
+export const fetchEmailTemplate = templateId => {
+  console.log(templateId, "templateId");
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: FETCH_EMAIL_TEMPLATE_INIT,
+      emailTemplate: {
+        isLoading: true,
+        success: "undefined",
+        template: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "GET",
+        url: `${process.env.BASE_URL}${fetchEmailTemplateApi}/${templateId}`,
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      dispatch({
+        type: FETCH_EMAIL_TEMPLATE_SUCCESS,
+        emailTemplate: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          template: _get(result, "data.template", {}),
+          errorMsg: ""
+        }
+      });
+      console.log(result.data, "result");
+    } catch (error) {
+      console.log(error.response.data, "error");
+      dispatch({
+        type: FETCH_EMAIL_TEMPLATE_FAILURE,
+        emailTemplate: {
+          isLoading: false,
+          success: "false",
+          template: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please try again later."
+          )
+        }
+      });
+    }
   };
 };

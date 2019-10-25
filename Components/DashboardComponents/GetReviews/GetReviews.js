@@ -30,7 +30,10 @@ const columns = [
   { title: "Name", field: "name" },
   { title: "Reference number", field: "referenceNumber", type: "text" }
 ];
-import { createCampaign } from "../../../store/actions/dashboardActions";
+import {
+  createCampaign,
+  fetchEmailTemplate
+} from "../../../store/actions/dashboardActions";
 import _omit from "lodash/omit";
 
 const styles = theme => ({
@@ -468,6 +471,7 @@ class GetReviews extends Component {
 
   handleChange = (e, id, dataType) => {
     const { value } = e.target;
+    const { fetchEmailTemplate } = this.props;
     const formData = this.state[dataType];
     if (id === "csvFile") {
       if (this.fileInput.current.files.length === 1) {
@@ -494,6 +498,22 @@ class GetReviews extends Component {
           );
         }
       }
+    } else if (id === "campaignLanguage") {
+      fetchEmailTemplate(value);
+      this.setState({
+        [dataType]: {
+          ...formData,
+          [id]: {
+            ...formData[id],
+            value: value,
+            valid:
+              id !== "referenceNumber"
+                ? validate(value, formData[id].validationRules)
+                : true,
+            touched: true
+          }
+        }
+      });
     } else {
       this.setState({
         [dataType]: {
@@ -812,5 +832,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setGetReviewsData, sendGetReviews, createCampaign }
+  { setGetReviewsData, sendGetReviews, createCampaign, fetchEmailTemplate }
 )(withStyles(styles)(GetReviews));
