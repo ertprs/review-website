@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -25,6 +25,18 @@ const Registration = () => {
       "aria-controls": `full-width-tabpanel-${index}`
     };
   };
+
+  useEffect(() => {
+    let location = window.location.href;
+    let splittedLocation = location.split("#");
+    let isBusiness = "";
+    if (splittedLocation && splittedLocation.length > 1) {
+      isBusiness = splittedLocation[1];
+    }
+    if (isBusiness === ("business" || "Business")) {
+      setTabValue(1);
+    }
+  }, []);
 
   const handleTabChange = (event, tabValue) => {
     setTabValue(tabValue);
