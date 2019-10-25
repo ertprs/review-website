@@ -14,6 +14,7 @@ import ArrowRight from "@material-ui/icons/ArrowRight";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormField from "../../Widgets/FormField/FormField";
 import validate from "../../../utility/validate";
+import { setGoogleDirectReviewUrl } from "../../../store/actions/dashboardActions";
 
 class GetStarted extends Component {
   state = {
@@ -239,8 +240,11 @@ class GetStarted extends Component {
       type,
       changeStepToRender,
       isLoading,
-      errorMsg
+      errorMsg,
+      setGoogleDirectReviewUrl
     } = this.props;
+    const { formData } = this.state;
+    const directReviewUrl = _get(formData, "directReviewUrl.value", "");
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
         this.setState(
@@ -251,6 +255,7 @@ class GetStarted extends Component {
           },
           () => {
             changeStepToRender(1);
+            setGoogleDirectReviewUrl(directReviewUrl);
           }
         );
       } else if (isLoading === false && !success) {
@@ -349,5 +354,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { locatePlaceByPlaceId }
+  { locatePlaceByPlaceId, setGoogleDirectReviewUrl }
 )(GetStarted);

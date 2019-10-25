@@ -25,7 +25,8 @@ import {
   SET_CAMPAIGN_LANGUAGE,
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
-  FETCH_EMAIL_TEMPLATE_FAILURE
+  FETCH_EMAIL_TEMPLATE_FAILURE,
+  SET_GOOGLE_DIRECT_REVIEW_URL
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -42,7 +43,8 @@ const dashboardReducer = (state = {}, action) => {
     quotaDetails,
     campaignLanguage,
     parsedCampaignLanguage,
-    emailTemplate
+    emailTemplate,
+    googleDirectReviewUrl
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -213,6 +215,13 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         emailTemplate
+      };
+    }
+    case SET_GOOGLE_DIRECT_REVIEW_URL: {
+      return {
+        ...state,
+        type,
+        googleDirectReviewUrl
       };
     }
     default:
