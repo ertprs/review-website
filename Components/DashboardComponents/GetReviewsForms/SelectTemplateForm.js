@@ -5,8 +5,9 @@ import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import _get from "lodash/get";
+// import { connect } from "react-redux";
 
-export default class SelectTemplateForm extends Component {
+class SelectTemplateForm extends Component {
   renderHeader = () => {
     return (
       <div className="container">
@@ -242,3 +243,9 @@ export default class SelectTemplateForm extends Component {
     );
   }
 }
+
+// const mapStateToProps = state => {
+//   const { dashboardData } = state;
+// };
+
+export default SelectTemplateForm;

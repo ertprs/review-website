@@ -37,7 +37,7 @@ export const MainListItems = ({
             handleMainListItemClick(0);
           }}
           className={stepToRender === 0 ? "grayBg" : ""}
-          getStartedDisabled={getStartedDisabled}
+          disabled={getStartedDisabled}
         >
           <ListItemIcon>
             <FormatListBulletedIcon />
@@ -125,7 +125,14 @@ export const SecondaryListItems = ({
       <ListItem />
       <ListItem />
       <ListItem />
-      <ListItem button style={{ background: "#303030", color: "#fff", justifyContent:isLoading ? "center" : "" }}>
+      <ListItem
+        button
+        style={{
+          background: "#303030",
+          color: "#fff",
+          justifyContent: isLoading ? "center" : ""
+        }}
+      >
         {isLoading ? (
           <CircularProgress size={30} color={"#f1f1f1"} />
         ) : (
