@@ -31,7 +31,7 @@ const columns = [
   { title: "Reference number", field: "referenceNumber", type: "text" }
 ];
 import { createCampaign } from "../../../store/actions/dashboardActions";
-import createCampaignLang from "../../../utility/createCampaignLang";
+import _omit from "lodash/omit";
 
 const styles = theme => ({
   button: {
@@ -426,14 +426,16 @@ class GetReviews extends Component {
     const clientName = _get(selectTemplateData, "clientName.value", "");
     const entityDomain = _get(selectTemplateData, "entity.value", "");
     const service = _get(selectTemplateData, "services.value", "");
-
+    let omittedTableData = tableData.map(data => {
+      return _omit(data, ["tableData"]);
+    });
     const data = {
       campaign: {
         name: campaignName,
         senderName: senderName,
         senderEmail: senderEmail
       },
-      invites: [...tableData],
+      invites: [...omittedTableData],
       template: {
         id: "ds-ccsx-dszxs",
         // subject,
