@@ -5,7 +5,8 @@ import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import _get from "lodash/get";
-// import { connect } from "react-redux";
+import { emailTemplates } from "../../../utility/emailTemplates/emailTemplates";
+import { connect } from "react-redux";
 
 class SelectTemplateForm extends Component {
   renderHeader = () => {
@@ -56,7 +57,14 @@ class SelectTemplateForm extends Component {
   };
 
   renderTemplate = () => {
-    const { formData } = this.props;
+    const { formData, templateId } = this.props;
+    const templateObj = emailTemplates[templateId] || {};
+    const templateLang = _get(templateObj, "templateLanguage", "");
+    const salutation = _get(templateObj, "salutation", "");
+    const exampleText = _get(templateObj, "exampleText", []);
+    const leaveReviewText = _get(templateObj, "leaveReviewText", "");
+    const regards = _get(templateObj, "regards", []);
+    const footer = _get(templateObj, "footer", "");
     return (
       <div>
         <style jsx>
@@ -105,7 +113,7 @@ class SelectTemplateForm extends Component {
             <h6>
               Email Subject:{" "}
               {formData.subject.value !== ""
-                ? formData.subject.value
+                ? formData.subject.value + " "
                 : "Leave a review on Entity and get a gift!"}
             </h6>
           </div>
@@ -119,29 +127,37 @@ class SelectTemplateForm extends Component {
             </h6>
           </div> */}
           <p>
-            Dear{" "}
+            {salutation}{" "}
             <span className="bold">
               {formData.clientName.value !== ""
-                ? formData.clientName.value
-                : "Name"}
+                ? formData.clientName.value + " "
+                : "customerName"}
             </span>
           </p>
           <p>
-            Since you recently used{" "}
+            {exampleText[0] !== undefined
+              ? formData.exampleText.value.length > 0
+                ? formData.exampleText.value
+                : exampleText[0] || ""
+              : ""}{" "}
             <span className="bold">
-              {formData.entity.value !== ""
-                ? formData.entity.value
-                : "entity domain"}
+              {formData.exampleText.value.length > 0
+                ? ""
+                : formData.entity.value !== ""
+                ? formData.entity.value + " "
+                : "entity domain "}
             </span>
-            , we would like to ask you to leave an honest review of our{" "}
-            <span className="bold">
-              {formData.services.value !== ""
-                ? formData.services.value
-                : "Service/product/services"}
-            </span>
-            .
+            {exampleText[1] !== undefined
+              ? formData.exampleText.value.length > 0 || ""
+                ? ""
+                : exampleText[1] || ""
+              : ""}
           </p>
-          <p>Please leave a review HERE:</p>
+          <p>
+            {formData.leaveReviewText.value.length > 0
+              ? formData.leaveReviewText.value
+              : leaveReviewText}
+          </p>
           <p className="ratings">
             <StarRatings
               rating={0}
@@ -153,20 +169,20 @@ class SelectTemplateForm extends Component {
             />
           </p>
           <p className="salutation">
-            <div>Best regards,</div>
-            <div>On behalf of Entity</div>
-            <div>The TrustSearch team</div>
+            <div>{regards[0] || ""}</div>
+            <div>
+              {templateLang !== "latvian"
+                ? regards[1] + " " + formData.entity.value || ""
+                : formData.entity.value + " " + regards[1]}
+            </div>
+            <div>{regards[2] || ""}</div>
           </p>
           <p>
             <div className="logoContainer">
               <img src="/static/business/index/images/gradientLogo.png" />
             </div>
           </p>
-          <div>
-            P.S. TrustSearch is a neutral review gathering partner that provides
-            the anonymity and security you need to leave a fair review. By
-            leaving a review, you agree to the Privacy Policy at this link.
-          </div>
+          <div>{footer}</div>
         </div>
       </div>
     );
@@ -248,8 +264,10 @@ class SelectTemplateForm extends Component {
   }
 }
 
-// const mapStateToProps = state => {
-//   const { dashboardData } = state;
-// };
+const mapStateToProps = state => {
+  const { dashboardData } = state;
+  const templateId = _get(dashboardData, "emailTemplate.template.id", "");
+  return { templateId };
+};
 
-export default SelectTemplateForm;
+export default connect(mapStateToProps)(SelectTemplateForm);
