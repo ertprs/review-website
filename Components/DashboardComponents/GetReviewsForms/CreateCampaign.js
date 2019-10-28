@@ -3,8 +3,19 @@ import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import FormField from "../../Widgets/FormField/FormField";
 import Tooltip from "@material-ui/core/Tooltip";
+import { clearCampaignData } from "../../../store/actions/dashboardActions";
+import _get from "lodash/get";
+import {connect} from 'react-redux';
 
 class CreateCampaign extends Component {
+  componentDidMount() {
+    this.props.clearCampaignData({
+      isLoading: false,
+      errorMsg: "",
+      quotaDetails: _get(this.props.createCampaignData, "quotaDetails", {}),
+      success: false
+    });
+  }
   render() {
     const { formData } = this.props;
     let valid = true;
@@ -95,4 +106,13 @@ class CreateCampaign extends Component {
   }
 }
 
-export default CreateCampaign;
+const mapStateToProps = (state, ownProps) => {
+  const { dashboardData } = state;
+  const createCampaign = _get(dashboardData, "createCampaign", {});
+  return { createCampaignData: { ...createCampaign } };
+};
+
+export default connect(
+  mapStateToProps,
+  { clearCampaignData }
+)(CreateCampaign);
