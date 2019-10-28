@@ -20,7 +20,7 @@ const widgetsObj = [
     id: 1,
     title: "Trust carousel",
     tagLine: "Boost customer confidence with an honest TrustBox",
-    minHeight: 400,
+    minHeight: 310,
     imgURL: "/static/images/carouselWidget.png",
     listItems: [
       "Show off your 15 latest reviews",
@@ -37,7 +37,7 @@ const widgetsObj = [
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/onlyScoreWidget.png",
-    minHeight: 400,
+    minHeight: 300,
     listItems: ["Show off your total number of reviews"],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
@@ -141,7 +141,7 @@ class WidgetsShowCase extends Component {
                   });
                 }}
               >
-                Learn more
+                Get widget code
               </Button>
             </div>
           </Paper>
@@ -155,11 +155,14 @@ class WidgetsShowCase extends Component {
     return (
       <div className="container">
         {!getWidget ? (
+          <>
+          <h4 style={{marginBottom:"1.5rem"}}>Choose your widget</h4>
           <div className="row" style={{ alignItems: "stretch" }}>
             {widgetsObj.map((item, index) => {
               return this.renderWidgetBox(item, index);
             })}
           </div>
+          </>
         ) : (
           <GetWidget
             domainName={_get(this.props, "domainName", "")}

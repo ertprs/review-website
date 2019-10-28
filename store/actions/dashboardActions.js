@@ -242,6 +242,15 @@ export const fetchTransactionHistory = token => {
   };
 };
 
+export const clearCampaignData = (data) => {
+  return {
+    type: CREATE_CAMPAIGN_SUCCESS,
+    createCampaign: {
+      ...data
+    }
+  };
+};
+
 export const createCampaign = data => {
   console.log(data, "craete campaign data");
   const token = localStorage.getItem("token");
