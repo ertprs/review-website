@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { resendActivationLink } from "../../../store/actions/authActions";
 import { upgradeToPremium } from "../../../store/actions/dashboardActions";
 import { resendActivationLinkApi } from "../../../utility/config";
@@ -14,7 +15,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import withStyles from "@material-ui/styles/withStyles";
 import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
-
+import GetStarted from "../GetStarted/GetStarted";
+import EditIcon from "@material-ui/icons/Edit";
 const styles = theme => ({
   button: {
     width: "150px"
@@ -25,7 +27,8 @@ class Home extends Component {
   state = {
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    editMode: false
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -361,10 +364,28 @@ class Home extends Component {
         : googleDirectReviewUrl;
     return (
       <div className="businessDetailsContainer">
+        <div className="editBtnContainer">
+          <Button
+            color="primary"
+            variant="contained"
+            size="small"
+            startIcon={<EditIcon />}
+            onClick={() => {
+              this.setState(prevState => {
+                return { editMode: !prevState.editMode };
+              });
+            }}
+          >
+            Edit
+          </Button>
+        </div>
         <style jsx>
           {`
             .bold {
               font-weight: bold;
+            }
+            .editBtnContainer{
+              text-align:right;
             }
             .businessDetailsContainer {
               margin-left: 25px;
@@ -407,6 +428,15 @@ class Home extends Component {
             <a href={googleReviewUrl} target="_blank">
               Click here
             </a>
+            {/* <p
+              onClick={() => {
+                this.setState(prevState => {
+                  return { editMode: !prevState.editMode };
+                });
+              }}
+            >
+              Edit
+            </p> */}
           </div>
         </div>
         <div className="businessDetailsFlexItem">
@@ -418,7 +448,13 @@ class Home extends Component {
   };
 
   render() {
-    const { classes, isSubscriptionExpired, userActivated } = this.props;
+    const {
+      classes,
+      isSubscriptionExpired,
+      userActivated,
+      changeStepToRender
+    } = this.props;
+    const { editMode } = this.state;
     return (
       <>
         <style jsx>
@@ -446,28 +482,57 @@ class Home extends Component {
             }
           `}
         </style>
-        <Grid container spacing={3}>
-          {isSubscriptionExpired === true
-            ? this.renderSubscriptionInfo(classes)
-            : userActivated === false
-            ? this.renderActivationInfo(classes)
-            : ""}
-          {this.renderOverviewCard()}
-          {this.renderRecentReviewsCard()}
-          {this.renderInvitationsCard()}
-          <Grid item xs={12} md={12} lg={12}>
-            <SimpleCard>
-              <div className="businessDetailsContainer">
-                <div className="businessDetailsImgContainer">
-                  <img src="/static/images/googleMyBusiness.jpg" />
+        {!editMode ? (
+          <Grid container spacing={3}>
+            {isSubscriptionExpired === true
+              ? this.renderSubscriptionInfo(classes)
+              : userActivated === false
+              ? this.renderActivationInfo(classes)
+              : ""}
+            {this.renderOverviewCard()}
+            {this.renderRecentReviewsCard()}
+            {this.renderInvitationsCard()}
+            <Grid item xs={12} md={12} lg={12}>
+              <SimpleCard>
+                <div className="businessDetailsContainer">
+                  <div className="businessDetailsImgContainer">
+                    <img src="/static/images/googleMyBusiness.jpg" />
+                  </div>
+                  <div className="businessDetailsTextContainer">
+                    {this.renderBusinessDetails()}
+                  </div>
                 </div>
-                <div className="businessDetailsTextContainer">
-                  {this.renderBusinessDetails()}
-                </div>
-              </div>
-            </SimpleCard>
+              </SimpleCard>
+            </Grid>
           </Grid>
-        </Grid>
+        ) : (
+          <div>
+            <GetStarted
+              changeStepToRender={data => {}}
+              home={true}
+              changeEditMode={() => {
+                this.setState({
+                  editMode: false
+                });
+              }}
+            />
+            <div style={{ marginLeft: "30px" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<ArrowBackIcon />}
+                onClick={() => {
+                  this.setState({
+                    editMode: false
+                  });
+                }}
+              >
+                Back
+              </Button>
+            </div>
+          </div>
+        )}
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}

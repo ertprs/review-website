@@ -96,6 +96,7 @@ class GetReviews extends Component {
       selectTemplateData: {
         subject: {
           element: "input",
+          labelText: "Subject",
           type: "text",
           value: "",
           valid: false,
@@ -109,6 +110,7 @@ class GetReviews extends Component {
         clientName: {
           element: "input",
           type: "text",
+          labelText: "Client Name",
           value: "Name",
           valid: true,
           touched: true,
@@ -121,6 +123,7 @@ class GetReviews extends Component {
         entity: {
           element: "input",
           type: "text",
+          labelText: "Entity",
           value: this.props.companyName + " " || " ",
           valid: true,
           touched: false,
@@ -131,6 +134,7 @@ class GetReviews extends Component {
           }
         },
         exampleText: {
+          labelText: "Example Text",
           element: "textarea",
           value: "",
           valid: true,
@@ -144,6 +148,7 @@ class GetReviews extends Component {
           rows: "5"
         },
         leaveReviewText: {
+          labelText: "Leave review text",
           element: "input",
           type: "text",
           value: "",
@@ -424,7 +429,7 @@ class GetReviews extends Component {
     } else {
       if (activeStep <= columns.length) {
         this.setState(prevState => {
-          console.log(prevState.activeStep, "prevState")
+          console.log(prevState.activeStep, "prevState");
           return { activeStep: prevState.activeStep + 1 };
         });
       }
@@ -549,7 +554,7 @@ class GetReviews extends Component {
               exampleText: {
                 ...this.state.selectTemplateData.exampleText,
                 value: getEmailTemplateData(
-                    this.state.createCampaign.campaignLanguage.value,
+                  this.state.createCampaign.campaignLanguage.value,
                   "exampleText",
                   _get(this.props, "companyName", "")
                 )
@@ -815,13 +820,20 @@ class GetReviews extends Component {
       );
     }
     if (activeStep === 3) {
-      return <Done changeStepToRender={this.props.changeStepToRender} />;
+      return (
+        <Done
+          changeStepToRender={this.props.changeStepToRender}
+          handleInviteMoreClick={() => {
+            this.setState({activeStep:0, getReviewsActiveSubStep:-1})
+          }}
+        />
+      );
     }
   };
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
-    console.log(activeStep, success, "COMPONENT_DID_UPDATE")
+    console.log(activeStep, success, "COMPONENT_DID_UPDATE");
     if (this.props !== prevProps) {
       if (activeStep === 2) {
         if (success === true) {

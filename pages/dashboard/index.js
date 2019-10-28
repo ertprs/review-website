@@ -274,7 +274,7 @@ function Dashboard(props) {
     if (stepToRender === 0) {
       return <GetStarted changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 1) {
-      return <Home />;
+      return <Home changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 2) {
       return <Reviews />;
     } else if (stepToRender === 3) {
