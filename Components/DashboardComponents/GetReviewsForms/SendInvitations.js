@@ -179,7 +179,7 @@ class SendInvitations extends Component {
 
   render() {
     const { isLoading } = this.props;
-    console.log(isLoading, "isLoading");
+    console.log(isLoading, "SEND_INVITAIONS");
     return (
       <>
         {this.renderSendInvitationsHeader()}

@@ -420,10 +420,11 @@ class GetReviews extends Component {
     const { activeStep } = this.state;
     const { success } = this.props;
     if (activeStep === 2) {
-      this.createCampaign();
+      this.createCampaignHandler();
     } else {
       if (activeStep <= columns.length) {
         this.setState(prevState => {
+          console.log(prevState.activeStep, "prevState")
           return { activeStep: prevState.activeStep + 1 };
         });
       }
@@ -432,7 +433,7 @@ class GetReviews extends Component {
     }
   };
 
-  createCampaign = () => {
+  createCampaignHandler = () => {
     const { createCampaign } = this.props;
     const { selectTemplateData, tableData } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
@@ -469,7 +470,8 @@ class GetReviews extends Component {
         vars: {
           clientName,
           entityDomain,
-          service
+          exampleText,
+          leaveReviewText
         }
       }
     };
@@ -819,6 +821,7 @@ class GetReviews extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
+    console.log(activeStep, success, "COMPONENT_DID_UPDATE")
     if (this.props !== prevProps) {
       if (activeStep === 2) {
         if (success === true) {
