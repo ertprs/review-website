@@ -1,0 +1,85 @@
+.slick-list {
+  margin: 0 -5px;
+}
+.slick-slide > div {
+  padding: 0 5px;
+}
+
+.slick-arrow.slick-prev {
+  background: url("/static/images/left.png");
+  background-size: cover;
+  background-position: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  transform: translate(-40%, -50%);
+  -webkit-transform: translate(-40%, -50%);
+  -moz-transform: translate(-40%, -50%);
+  -ms-transform: translate(-40%, -50%);
+  -o-transform: translate(-40%, -50%);
+}
+
+.slick-arrow.slick-next {
+  background: url("/static/images/right.png");
+  background-size: cover;
+  background-position: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  transform: translate(38%, -50%);
+  -webkit-transform: translate(38%, -50%);
+  -moz-transform: translate(38%, -50%);
+  -ms-transform: translate(38%, -50%);
+  -o-transform: translate(38%, -50%);
+}
+
+.slick-next:before,
+.slick-prev:before {
+  content: "";
+}
+
+/*------- Media queries ---------*/
+@media screen and (max-width: 1140px) {
+  .slick-arrow.slick-next {
+    height: 44px;
+    width: 44px;
+    transform: translate(37%, -50%);
+    -webkit-transform: translate(37%, -50%);
+    -moz-transform: translate(37%, -50%);
+    -ms-transform: translate(37%, -50%);
+    -o-transform: translate(37%, -50%);
+  }
+  .slick-arrow.slick-prev {
+    height: 44px;
+    width: 44px;
+    transform: translate(-37%, -50%);
+    -webkit-transform: translate(-37%, -50%);
+    -moz-transform: translate(-37%, -50%);
+    -ms-transform: translate(-37%, -50%);
+    -o-transform: translate(-37%, -50%);
+}
+}
+
+@media screen and (max-width: 599px) {
+  .slick-arrow.slick-prev,
+  .slick-arrow.slick-next {
+    height: 45px;
+    width: 45px;
+  }
+}
+
+@media screen and (max-width: 338px) {
+  .slick-arrow.slick-prev,
+  .slick-arrow.slick-next {
+    height: 38px;
+    width: 38px;
+  }
+}

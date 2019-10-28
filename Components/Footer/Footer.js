@@ -1,6 +1,7 @@
 import React from "react";
 import footerStyles from "./footerStyles";
 import AmpImgWrapper from '../AmpWrappers/AmpImgWrapper';
+import Link from "next/link";
 
 const renderFooterTopSection = () => {
   return (
@@ -120,10 +121,14 @@ const renderFooterMiddleSection = () => {
                   <a href="/">Contact</a>
                 </div>
                 <div>
-                  <a href="/">Privacy policy</a>
+                  <Link href="/termsAndConditions">
+                    <a>Privacy policy</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Terms of use</a>
+                  <Link href="/termsAndConditions">
+                    <a>Terms of use</a>
+                  </Link>
                 </div>
               </div>
             </div>

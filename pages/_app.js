@@ -7,10 +7,19 @@ import { PersistGate } from "redux-persist/integration/react";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../src/theme";
-
+import Router from "next/router";
+import NProgress from "nprogress";
 import Head from "next/head";
-
 import { layoutStyles } from "../style";
+
+NProgress.configure({ showSpinner: false });
+
+Router.events.on("routeChangeStart", url => {
+  console.log(`Loading: ${url}`);
+  NProgress.start();
+});
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 class MyApp extends App {
   static async getInitialProps({ req, Component, ctx }) {
@@ -37,29 +46,29 @@ class MyApp extends App {
   }
 
   render() {
+    console.warn = console.error = () => {};
     const { Component, pageProps, reduxStore } = this.props;
     return (
       <>
         <style jsx>{layoutStyles}</style>
         <Head>
-          {/* <script
-            dangerouslySetInnerHTML={{
-              __html: `function googleTranslateElementInit() {
-                new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-              }`
-            }}
+          <title>The trustsearch engine</title>
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="/static/css/nprogress.css"
           />
-          <script
-            type="text/javascript"
-            src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-          ></script> */}
-
-          <title>The trust search engine</title>
           <link
             href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
             rel="stylesheet"
             type="text/css"
           />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          />
+
+          <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0yD1Nm-2HeTnWMZUSXN8CzvzejmGKEXk&libraries=places"></script>
 
           {process.env.NODE_ENV === "production" ? (
             <script
@@ -72,8 +81,8 @@ class MyApp extends App {
               }}
             />
           ) : (
-              <script></script>
-            )}
+            <script></script>
+          )}
         </Head>
         <Container>
           {process.env.NODE_ENV === "production" ? (
@@ -84,8 +93,8 @@ class MyApp extends App {
               }}
             />
           ) : (
-              <noscript />
-            )}
+            <noscript />
+          )}
           <Provider store={reduxStore}>
             <PersistGate
               loading={<Component {...pageProps} />}

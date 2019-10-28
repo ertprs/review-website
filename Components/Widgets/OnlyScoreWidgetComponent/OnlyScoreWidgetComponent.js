@@ -20,7 +20,7 @@ const renderStandAloneWidget = requiredData => {
           <StarRatings
             rating={Number(requiredData.ratings)}
             starRatedColor="#21bc61"
-            starDimension="40px"
+            starDimension="34px"
             starSpacing="3px"
             numberOfStars={5}
             name="rating"
@@ -66,16 +66,16 @@ const renderStandAloneWidget = requiredData => {
 
       <div>
         <div className="widgetImgContainer">
-        <a href="https://thetrustsearch.com" target="_blank">
-          <img
-            src="/static/business/index/images/gradientLogo.png"
-            alt="logo"
-            style={{
-              maxWidth: "65%",
-              height: "auto",
-              margin: "0 auto"
-            }}
-          />
+          <a href="https://thetrustsearch.com" target="_blank">
+            <img
+              src="/static/business/index/images/gradientLogo.png"
+              alt="logo"
+              style={{
+                maxWidth: "45%",
+                height: "auto",
+                margin: "0 auto"
+              }}
+            />
           </a>
         </div>
       </div>
@@ -88,12 +88,18 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
     <div className="carouselWidgetBox">
       <style jsx>{layoutStyles}</style>
       <style jsx>{onlyScoreWidgetComponentStyles}</style>
-
-      <div className={`ratingText ${textReviews ? "mb mt" : ""}`}>
-        <h5 className="widgetRating">{requiredData.ratings} / 5</h5>
+      <style jsx>
+        {`
+          .carouselWidgetBox {
+            font-family: "Open Sans", sans-serif;
+          }
+        `}
+      </style>
+      <div className={`ratingText ${textReviews ? "mt" : ""}`}>
+        <h5 className="widgetRating">{requiredData.ratings}<span style={{margin:"0px 1px 0 1px"}}>/</span>5</h5>
       </div>
 
-      <div className={`carouselRatingIndicator ${textReviews ? "mbs mt" : ""}`}>
+      <div className={`carouselRatingIndicator ${textReviews ? "" : ""}`}>
         {requiredData.ratings !== "" ? (
           <StarRatings
             rating={Number(requiredData.ratings)}
@@ -110,12 +116,12 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
       <div className="widgetHeader">
         {!textReviews ? <h5 className="widgetHeading">Trusted site!</h5> : null}
       </div>
-      <div className={`carouselSmallRatingIndicator ${textReviews ? "mbs mt" : ""}`}>
+      <div className={`carouselSmallRatingIndicator ${textReviews ? "" : ""}`}>
         {requiredData.ratings !== "" ? (
           <StarRatings
             rating={Number(requiredData.ratings)}
             starRatedColor="#21bc61"
-            starDimension="23px"
+            starDimension="33px"
             starSpacing="1.5px"
             numberOfStars={5}
             name="rating"
@@ -139,22 +145,28 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
             <span style={{ fontWeight: "bold" }}>
               {requiredData.totalReviews}
             </span>{" "}
-            reviews at 
+            reviews at
           </div>
         )}
       </div>
 
       <div>
-        <div className={`${!textReviews ? "carouselWidgetImgContainer" : "carouselWidgetImgContainerV"}`}>
+        <div
+          className={`${
+            !textReviews
+              ? "carouselWidgetImgContainer"
+              : "carouselWidgetImgContainerV"
+          }`}
+        >
           <a href="https://thetrustsearch.com" target="_blank">
-          <img
-            src="/static/business/index/images/gradientLogo.png"
-            alt="logo"
-            style={{
-              maxWidth: "100%",
-              height: "100%"
-            }}
-          />
+            <img
+              src="/static/business/index/images/gradientLogo.png"
+              alt="logo"
+              style={{
+                maxWidth: "100%",
+                height: "100%"
+              }}
+            />
           </a>
         </div>
       </div>
@@ -162,7 +174,12 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
   );
 };
 
-const OnlyScoreWidgetComponent = ({ requiredData, variant, textReviews, domain }) => {
+const OnlyScoreWidgetComponent = ({
+  requiredData,
+  variant,
+  textReviews,
+  domain
+}) => {
   return (
     <>
       {variant === "carousel"

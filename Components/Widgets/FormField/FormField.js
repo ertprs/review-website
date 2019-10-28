@@ -19,7 +19,8 @@ const FormField = ({
   options,
   type,
   labelText,
-  onkeyDown
+  onkeyDown,
+  disabled
 }) => {
   switch (element) {
     case "textarea":
@@ -51,6 +52,7 @@ const FormField = ({
         <div className="formFieldGroup">
           <style jsx>{formFieldStyles}</style>
           <input
+            disabled={disabled || false}
             type={type}
             placeholder={placeholder}
             value={value}

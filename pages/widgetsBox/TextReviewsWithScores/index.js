@@ -7,7 +7,7 @@ import Head from "next/head";
 import uuid from "uuid/v1";
 import { layoutStyles } from "../../../style";
 import axios from "axios";
-import { baseURL } from "../../../utility/config";
+
 import _get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { googleMapsURL } from "../../../utility/config";
@@ -105,10 +105,10 @@ const renderWidget = (reviewData, settings, domain) => {
                   display:none;
                 }
               }
-              @media screen and (max-width:252px){
-                .widgetBox{
-                  display:none;
-                }
+              // @media screen and (max-width:252px){
+              //   .widgetBox{
+              //     display:none;
+              //   }
               }
             `}
       </style>
@@ -162,7 +162,7 @@ const renderWidget = (reviewData, settings, domain) => {
             {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()} style={{ height: "100%" }}>
-                  <ReviewBox review={item} domain={domain}/>
+                  <ReviewBox review={item} domain={domain} />
                 </div>
               );
             })}
@@ -188,7 +188,7 @@ const TextReviewsWithScores = props => {
   useEffect(() => {
     axios
       .get(
-        `${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
+        `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
       )
       .then(res => {
         if (!isEmpty(res.data)) setReviewData({ ...res.data });

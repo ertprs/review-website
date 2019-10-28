@@ -1,6 +1,6 @@
 import React from "react";
 import SearchBox from "../../Components/Widgets/SearchBox/SearchBox";
-import Router from 'next/router';
+import Router from "next/router";
 import Link from "next/link";
 import SubscriptionPlanCard from "../../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
 import SolutionForCompaniesList from "../../Components/Widgets/SolutionForCompaniesList/SolutionForCompaniesList";
@@ -13,7 +13,6 @@ import { businessPageStyles } from "../../Components/Styles/business/businessInd
 import uuid from "uuid/v1";
 import axios from "axios";
 import CustomModal from "../../Components/Widgets/CustomModal/CustomModal";
-import {baseURL} from '../../utility/config';
 
 class BusinessIndexPage extends React.Component {
   state = {
@@ -31,7 +30,7 @@ class BusinessIndexPage extends React.Component {
         isEmail: true
       }
     },
-    domain:{
+    domain: {
       value: "",
       valid: false,
       touched: false,
@@ -139,8 +138,8 @@ class BusinessIndexPage extends React.Component {
 
   handleSearchBoxSubmit = e => {
     e.preventDefault();
-    const {domain} = this.state;
-    if(domain.valid){
+    const { domain } = this.state;
+    if (domain.valid) {
       this.handleModalVisibilityToggle("email");
     }
   };
@@ -150,13 +149,10 @@ class BusinessIndexPage extends React.Component {
       domain: {
         ...this.state.domain,
         value: e.target.value,
-        valid: validate(
-          e.target.value,
-          this.state.domain.validationRules
-        ),
+        valid: validate(e.target.value, this.state.domain.validationRules),
         touched: true
       }
-    });;
+    });
   };
 
   handleArrangeMeetingBtnClick = () => {
@@ -206,27 +202,27 @@ class BusinessIndexPage extends React.Component {
           dataToSubmit = {
             ...dataToSubmit,
             email: this.state.subscriptionEmail.value,
-            domain:this.state.domain.value,
+            domain: this.state.domain.value,
             websiteOwner: this.state.websiteOwner === "yes" ? true : false,
-            type:"check_website"
+            type: "check_website"
           };
           //mimic data post
           this.setState({ subscriptionEmailSent: "in-progress" }, () => {
             axios
-              .post(`${baseURL}/api/leads`, {...dataToSubmit})
+              .post(`${process.env.BASE_URL}/api/leads`, { ...dataToSubmit })
               .then(res => {
                 this.setState({ subscriptionEmailSent: "success" });
               })
-              .then(()=>{
-                setTimeout(()=>{
+              .then(() => {
+                setTimeout(() => {
                   Router.push("/");
-                }, 2000)
+                }, 2000);
               })
               .catch(err => {
                 this.setState({ subscriptionEmailSent: "error" });
-                setTimeout(()=>{
+                setTimeout(() => {
                   Router.push("/");
-                }, 2000)
+                }, 2000);
               });
           });
         }
@@ -251,20 +247,23 @@ class BusinessIndexPage extends React.Component {
     if (valid) {
       this.setState({ meetingScheduled: "in-progress" }, () => {
         axios
-          .post(`${baseURL}/api/leads`, { ...dataToSubmit, type:"schedule_meeting" })
+          .post(`${process.env.BASE_URL}/api/leads`, {
+            ...dataToSubmit,
+            type: "schedule_meeting"
+          })
           .then(res => {
             this.setState({ meetingScheduled: "success" });
           })
-          .then(()=>{
-            setTimeout(()=>{
+          .then(() => {
+            setTimeout(() => {
               Router.push("/");
-            }, 2000)
+            }, 2000);
           })
           .catch(err => {
             this.setState({ meetingScheduled: "error" });
-            setTimeout(()=>{
+            setTimeout(() => {
               Router.push("/");
-            }, 2000)
+            }, 2000);
           });
       });
     } else {
@@ -303,7 +302,18 @@ class BusinessIndexPage extends React.Component {
               handleSearchSubmit={this.handleSearchBoxSubmit}
               onchange={this.handleSearchBoxChange}
             />
-            {!this.state.domain.valid && this.state.domain.touched ? <div style={{fontSize:"0.8rem", color:"red", marginLeft:"2%"}}>please enter valid domain</div> : <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div>}
+            {!this.state.domain.valid && this.state.domain.touched ? (
+              <div
+                style={{ fontSize: "0.8rem", color: "red", marginLeft: "2%" }}
+              >
+                please enter valid domain
+              </div>
+            ) : (
+              <div>
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                &nbsp; &nbsp;{" "}
+              </div>
+            )}
           </div>
         </div>
       </div>

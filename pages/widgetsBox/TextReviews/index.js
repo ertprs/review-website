@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PusherDataComponent from "../../../Components/PusherDataComponent/PusherDataComponent";
 import axios from "axios";
-import { baseURL } from "../../../utility/config";
+
 import ReviewBox from "../../../Components/Widgets/ReviewBox/ReviewBox";
 import OnlyScoreWidget from "../OnlyScoreWidget/index";
 import Slider from "react-slick";
@@ -18,10 +18,51 @@ const retrieveRequiredData = reviewData => {
 
   const reviews = _get(reviewData, "reviews", []);
 
-  return { ratings, totalReviews, reviews };
+  const success = _get(reviewData, "success", "")
+
+  return { ratings, totalReviews, reviews, success };
+};
+
+const renderReviewBoxFooter = requiredData => {
+  return (
+    <div className="footer">
+      <style jsx>
+        {`
+          .footer {
+            text-align: center;
+            font-size: 12.5px;
+          }
+          .flexContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .flexImgContainer {
+            margin-left: 3px;
+          }
+        `}
+      </style>
+      <div className="flexContainer">
+        <div className="text">
+          Based on{" "}
+          <span style={{ fontWeight: "bold" }}>
+            {_get(requiredData, "totalReviews", 0)}
+          </span>{" "}
+          reviews at{" "}
+          <a href="https://thetrustsearch.com" target="_blank">
+            <img src="/static/images/small_logo.png" alt="logoImg"/>
+          </a>
+        </div>
+        {/* <div className="flexImgContainer">
+          
+        </div> */}
+      </div>
+    </div>
+  );
 };
 
 const renderTextReviewsWidget = (reviewData, settings, props) => {
+  console.log(reviewData)
   const requiredData = retrieveRequiredData(reviewData);
   return (
     <div className="flexContainer">
@@ -33,7 +74,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           flex-wrap: nowrap;
         }
         .flexContainer > div {
-          width: ${requiredData.total > 2 ? "80%" : "40%"};
+          width: ${requiredData.total > 2 ? "80%" : "39%"};
           order: 0;
           flex: 0 1 auto;
         }
@@ -44,52 +85,61 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
 
         .textReviewsContainer {
           padding: 0 3% 0 3%;
+          font-size:0.9rem;
         }
 
         .scoreWidgetContainer {
           width: 20%;
           height: 100%; //affected by the height passed as a prop to the widget
         }
+        .reviewBoxFooter{
+          display:none;
+        }
 
-        @media screen and (max-width: 991px) {
+        .noReviewBox{
+          text-align:left;
+        }
+
+        @media screen and (max-width:1110px){
+          .flexContainer > div:first-child {
+            width: 24.3%;
+          }
+
           .flexContainer > div:last-child {
-            flex-basis: 100%;
+            width: 75%;
           }
         }
 
-        @media screen and (max-width: 989px) {
-          .textReviewsContainer {
-            padding: 0 4% 0 4%;
+         @media screen and (max-width: 990px) {
+           .flexContainer{
+             justify-content:space-around;
+           }
+          .flexContainer > div:first-child {
+            width: 40%;
           }
 
-          @media screen and (max-width: 767px) {
-            .textReviewsContainer {
-              padding: 0 5.3% 0 5%;
-            }
-            .scoreWidgetContainer {
-              display: none;
-            }
-            .flexContainer > div {
-              width: 100%;
-            }
+          .flexContainer > div:last-child {
+            width: 50%;
           }
+         }
 
-          @media screen and (max-width: 525px) {
-            .textReviewsContainer {
-              padding: 0 5.5% 0 5.5%;
-            }
-          }
-
-          @media screen and (max-width: 468px) {
-            .textReviewsContainer {
-              padding: 0 7% 0 7%;
-            }
-          }
-          @media screen and (max-width: 252px) {
-            .flexContainer{
-              display: none;
-            }
-          }
+         @media screen and (max-width: 599px){
+           .flexContainer > div:first-child{
+             display:none;
+             width:0;
+           }
+           .flexContainer > div:last-child{
+             width:81.5%;
+             margin:0 auto;
+           }
+           .reviewBoxFooter{
+             display:block;
+             margin-top:8px;
+           }
+           .noReviewBox{
+             text-align:center;
+           }
+         }
         }
       `}</style>
       <div className="scoreWidgetContainer">
@@ -112,24 +162,30 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
             type="text/css"
             href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
           />
+          <link href="/static/css/slick.css" type="text/css" rel="stylesheet" />
         </Head>
         <div className="reviewBoxSlider">
-          <Slider {...settings}>
+          {requiredData.success!==false && requiredData.totalReviews > 0 ? <Slider {...settings}>
             {requiredData.reviews.map(item => {
               return (
                 <div key={uuid()}>
                   <ReviewBox
                     review={item}
-                    styles={{ height: "200px" }}
+                    styles={{ height: "170px" }}
                     reviewRatingStyles={{ margin: "8px 0 8px 0" }}
-                    reviewHeaderStyles={{ marginTop: "5px" }}
+                    reviewHeaderStyles={{ marginTop: "0px" }}
                     domain={props.domain}
                   />
                 </div>
               );
             })}
-          </Slider>
+          </Slider> : <div className="noReviewBox">
+            <h4 style={{marginTop:"40px"}}>No reviews Found</h4>
+          </div>}          
           <div></div>
+        </div>
+        <div className="reviewBoxFooter">
+          {renderReviewBoxFooter(requiredData)}
         </div>
       </div>
     </div>
@@ -164,8 +220,9 @@ function SamplePrevArrow(props) {
       <style jsx>
         {`
           .samplePrevArrow::before {
-            content: "\\00AB";
+            content: "";
             color: #000;
+            background-image: url("/static/images/logo.png");
           }
         `}
       </style>
@@ -184,17 +241,29 @@ const TextReviews = props => {
   const [reviewData, setReviewData] = useState({});
 
   useEffect(() => {
+    // const CancelToken = axios.CancelToken;
+    // const source = CancelToken.source();
     axios
       .get(
-        `${baseURL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
+        `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
       )
       .then(res => {
-        // console.log("response form widget ",res.data)
+        console.log("response form widget ",res.data)
         if (!isEmpty(res.data)) setReviewData({ ...res.data });
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        setReviewData({success: false})
+        // if (axios.isCancel(error)) {
+        //   console.log("cancelled");
+        // } else {
+        //   throw error;
+        // }
+        console.log(error)
       });
+
+      return ()=>{
+        
+      }
   }, []);
 
   const [parentState, setParentState] = useState(initState);
@@ -204,19 +273,11 @@ const TextReviews = props => {
     slidesToShow: 3,
     slidesToScroll: 3,
     initialSlide: 0,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
+    // nextArrow: <SampleNextArrow />,
+    // prevArrow: <SamplePrevArrow />,
     responsive: [
       {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          dots: false
-        }
-      },
-      {
-        breakpoint: 813,
+        breakpoint: 1110,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
@@ -224,18 +285,11 @@ const TextReviews = props => {
         }
       },
       {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 1
-        }
-      },
-      {
-        breakpoint: 570,
+        breakpoint: 1000,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
+          slidesToScroll: 1,
+          dots: false
         }
       }
     ]

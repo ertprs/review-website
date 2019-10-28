@@ -18,13 +18,28 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_FAILURE,
   OAUTH_SIGNIN_INIT,
-  OAUTH_SIGNIN_END
+  OAUTH_SIGNIN_END,
+  BUSINESS_SIGNUP_INIT,
+  BUSINESS_SIGNUP_SUCCESS,
+  BUSINESS_SIGNUP_FAILURE,
+  BUSINESS_LOGIN_INIT,
+  BUSINESS_LOGIN_SUCCESS,
+  BUSINESS_LOGIN_FAILURE,
+  RESEND_ACTIVATION_LINK_INIT,
+  RESEND_ACTIVATION_LINK_SUCCESS,
+  RESEND_ACTIVATION_LINK_FAILURE,
+  SET_USER_ACTIVATED,
+  SET_BUSINESS_SUBSCRIPTION
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { baseURL, loginApiOAuth, registerApiOAuth } from "../../utility/config";
+import { loginApiOAuth } from "../../utility/config";
+import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
+import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
+import cookie from "js-cookie";
+import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -39,7 +54,10 @@ export const signUp = (signupData, registerApi, signUpType) => {
       }
     });
     try {
-      const res = await axios.post(`${baseURL}${registerApi}`, signupData);
+      const res = await axios.post(
+        `${process.env.BASE_URL}${registerApi}`,
+        signupData
+      );
       let success = _get(res, "data.success", false);
       let status = _get(res, "status", 0);
       if (signUpType == 2 || signUpType == 3) {
@@ -137,11 +155,18 @@ export const logIn = (loginData, loginApi, loginType) => {
       }
     });
     try {
-      const res = await axios.post(`${baseURL}${loginApi}`, loginData);
+      const res = await axios.post(
+        `${process.env.BASE_URL}${loginApi}`,
+        loginData
+      );
       let success = _get(res, "data.success", false);
       let userProfile = _get(res, "data.user", {});
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
+      if (success) {
+        cookie.set("loginType", loginType, { expires: 7 });
+        cookie.set("token", token, { expires: 7 });
+      }
       dispatch({
         type: LOGIN_SUCCESS,
         logIn: {
@@ -186,8 +211,16 @@ export const logIn = (loginData, loginApi, loginType) => {
 };
 
 export const logOut = () => {
+  cookie.remove("loginType");
+  cookie.remove("token");
+  cookie.remove("placeLocated");
+  cookie.remove("placeId");
   localStorage.removeItem("persist:primary");
   localStorage.removeItem("persist:auth");
+  localStorage.removeItem("userActivated");
+  localStorage.removeItem("persist:dashboardData");
+  localStorage.clear();
+  window.location.reload();
   return {
     type: LOGOUT,
     payload: {}
@@ -211,8 +244,10 @@ export const activateUser = (url, activateUserApi) => {
     dispatch({
       type: ACTIVATE_USER_INIT,
       activateUserTemp: {
-        success: false
-      }
+        success: false,
+        isLoading: true
+      },
+      userActivated: false
     });
     if (url) {
       let splitUrlArray = url.split("/");
@@ -222,21 +257,27 @@ export const activateUser = (url, activateUserApi) => {
       }
       if (token) {
         try {
-          const res = await axios.get(`${baseURL}${activateUserApi}/${token}`);
+          const res = await axios.get(
+            `${process.env.BASE_URL}${activateUserApi}/${token}`
+          );
           let success = _get(res, "data.success", false);
           dispatch({
             type: ACTIVATE_USER_SUCCESS,
             activateUserTemp: {
-              success
-            }
+              success,
+              isLoading: false
+            },
+            userActivated: success
           });
         } catch (error) {
           let success = _get(error, "response.data.success", false);
           dispatch({
             type: ACTIVATE_USER_FAILURE,
             activateUserTemp: {
-              success
-            }
+              success,
+              isLoading: false
+            },
+            userActivated: success
           });
         }
       }
@@ -264,7 +305,10 @@ export const verifyToken = (url, verifyTokenApi) => {
           token: token
         };
         try {
-          const res = await axios.post(`${baseURL}${verifyTokenApi}`, reqBody);
+          const res = await axios.post(
+            `${process.env.BASE_URL}${verifyTokenApi}`,
+            reqBody
+          );
           let success = _get(res, "data.success", false);
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
@@ -310,7 +354,7 @@ export const resetPassword = (password, url, resetPasswordApi) => {
         };
         try {
           const res = await axios.post(
-            `${baseURL}${resetPasswordApi}`,
+            `${process.env.BASE_URL}${resetPasswordApi}`,
             reqBody
           );
           let success = _get(res, "data.success", false);
@@ -345,5 +389,227 @@ export const oAuthSigninginInit = () => {
 export const oAuthSigninginEnd = () => {
   return {
     type: OAUTH_SIGNIN_END
+  };
+};
+
+export const businessSignUp = (signupData, api) => {
+  console.log(signupData, "signupData");
+  return async (dispatch, getState) => {
+    dispatch({
+      type: BUSINESS_SIGNUP_INIT,
+      businessSignUp: {},
+      businessSignUpTemp: {
+        status: -1,
+        signUpSuccess: false,
+        isSigningUp: true,
+        isSignupFailed: false,
+        error: ""
+      }
+    });
+    try {
+      const res = await axios.post(`${process.env.BASE_URL}${api}`, signupData);
+      let success = _get(res, "data.success", false);
+      let status = _get(res, "status", 0);
+      if (success) {
+        let loginData = {
+          email: signupData.email,
+          password: signupData.password
+        };
+        dispatch(businessLogIn(loginData, loginApi));
+      }
+      dispatch({
+        type: BUSINESS_SIGNUP_SUCCESS,
+        businessSignUp: {},
+        businessSignUpTemp: {
+          status,
+          signUpSuccess: success,
+          isSigningUp: false,
+          isSignupFailed: false,
+          error: ""
+        }
+      });
+    } catch (err) {
+      let success = _get(err, "response.data.success", false);
+      let status = _get(err, "response.status", 0);
+      let error = _get(err, "response.data.error", "");
+      dispatch({
+        type: BUSINESS_SIGNUP_FAILURE,
+        businessSignUp: {},
+        businessSignUpTemp: {
+          status,
+          signUpSuccess: success,
+          isSigningUp: false,
+          isSignupFailed: true,
+          error
+        }
+      });
+    }
+  };
+};
+
+export const businessLogIn = (loginData, api, directLogin) => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: BUSINESS_LOGIN_INIT,
+      logIn: {
+        authorized: "undefined",
+        loginType: 0,
+        token: "",
+        userProfile: {}
+      },
+      logInTemp: {
+        status: -1,
+        isWrongCredentials: false,
+        isLoginFailed: false,
+        isLoggingIn: true,
+        error: ""
+      }
+    });
+    try {
+      const res = await axios.post(`${process.env.BASE_URL}${api}`, loginData);
+      let success = _get(res, "data.success", false);
+      let userProfile = _get(res, "data.user", {});
+      let status = _get(res, "status", 0);
+      let token = _get(res, "data.token", "");
+      let placeId = _get(
+        res,
+        "data.user.business_profile.google_places.placeId",
+        ""
+      );
+      let loginType = 0;
+      if (userProfile.subscription !== null) {
+        if (userProfile.hasOwnProperty("subscription")) {
+          if (
+            userProfile.subscription.plan_type_id === 1 ||
+            userProfile.subscription.plan_type_id === 2 ||
+            userProfile.subscription.plan_type_id === 3
+          ) {
+            loginType = 4;
+            dispatch(
+              setInvitationQuota(
+                _get(userProfile, "subscription.quota_details", {})
+              )
+            );
+            let subscriptionExpired = _get(
+              userProfile,
+              "subscription.expired",
+              false
+            );
+            cookie.set("loginType", loginType, { expires: 7 });
+            cookie.set("token", token, { expires: 7 });
+            cookie.set("placeId", placeId, { expires: 7 });
+            dispatch(fetchReviews(token));
+            dispatch(fetchTransactionHistory(token));
+            dispatch(setSubscription(subscriptionExpired));
+            dispatch(fetchCampaignLanguage(token));
+            localStorage.setItem("token", token);
+            dispatch({
+              type: BUSINESS_LOGIN_SUCCESS,
+              logIn: {
+                authorized: success,
+                loginType,
+                token,
+                userProfile
+              },
+              logInTemp: {
+                status: status,
+                isWrongCredentials: false,
+                isLoginFailed: !success,
+                isLoggingIn: false,
+                error: ""
+              }
+            });
+          }
+        }
+      } else {
+        dispatch({
+          type: BUSINESS_LOGIN_FAILURE,
+          logIn: {
+            authorized: false,
+            loginType: 0,
+            token: "",
+            userProfile: {}
+          },
+          logInTemp: {
+            status: 0,
+            isWrongCredentials: false,
+            isLoginFailed: true,
+            isLoggingIn: false,
+            error: "Some Error Occured."
+          }
+        });
+      }
+    } catch (err) {
+      let success = _get(err, "response.data.success", false);
+      let status = _get(err, "response.status", 0);
+      let error = _get(err, "response.data.error", "Some Error Occured.");
+      let isWrongCredentials =
+        _get(err, "response.data.error") === "Unauthorized";
+      dispatch({
+        type: BUSINESS_LOGIN_FAILURE,
+        logIn: {
+          authorized: false,
+          loginType: 0,
+          token: "",
+          userProfile: {}
+        },
+        logInTemp: {
+          status: status,
+          isWrongCredentials,
+          isLoginFailed: !success,
+          isLoggingIn: false,
+          error
+        }
+      });
+    }
+  };
+};
+
+export const resendActivationLink = (token, api) => {
+  console.log(token, "token");
+  return async dispatch => {
+    dispatch({
+      type: RESEND_ACTIVATION_LINK_INIT,
+      resendActivation: {
+        success: "undefined",
+        isLoading: true
+      }
+    });
+    try {
+      const result = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${api}`
+      });
+      dispatch({
+        type: RESEND_ACTIVATION_LINK_SUCCESS,
+        resendActivation: {
+          success: _get(result, "data.success", false),
+          isLoading: false
+        }
+      });
+    } catch (err) {
+      dispatch({
+        type: RESEND_ACTIVATION_LINK_FAILURE,
+        resendActivation: {
+          success: _get(err, "response.data.success", false),
+          isLoading: false
+        }
+      });
+    }
+  };
+};
+
+export const setUserActivated = userActivated => {
+  return {
+    type: SET_USER_ACTIVATED,
+    userActivated
+  };
+};
+
+export const setSubscription = isSubscriptionExpired => {
+  return {
+    type: SET_BUSINESS_SUBSCRIPTION,
+    isSubscriptionExpired
   };
 };

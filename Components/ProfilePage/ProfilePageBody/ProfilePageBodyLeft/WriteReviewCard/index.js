@@ -37,7 +37,7 @@ class WriteReview extends Component {
       },
       rating: 0,
       review: "",
-      starSize: 0,
+      starSize: 24,
       isLoading: false,
       showSnackbar: false,
       variant: "success",
@@ -48,15 +48,15 @@ class WriteReview extends Component {
     this.windowSize = 0;
   }
 
-  componentDidMount() {
-    this.windowSize = window.matchMedia("screen and (max-width: 991px)");
-    this.changeStarSize(this.windowSize);
-    this.windowSize.addEventListener("change", this.changeStarSize);
-  }
+  // componentDidMount() {
+  //   this.windowSize = window.matchMedia("screen and (max-width: 991px)");
+  //   this.changeStarSize(this.windowSize);
+  //   this.windowSize.addEventListener("change", this.changeStarSize);
+  // }
 
-  componentWillUnmount() {
-    this.windowSize.removeEventListener("change", this.changeStarSize);
-  }
+  // componentWillUnmount() {
+  //   this.windowSize.removeEventListener("change", this.changeStarSize);
+  // }
 
   changeStarSize = windowSize => {
     if (windowSize.matches) {

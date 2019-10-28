@@ -11,6 +11,7 @@ import SearchInput from "../Components/MaterialComponents/SearchInput";
 import { connect } from "react-redux";
 import Snackbar from "../Components/Widgets/Snackbar";
 import _get from "lodash/get";
+import { startLoading } from "../store/actions/loaderAction";
 
 const renderWebStats = () => {
   let statsData = [
@@ -31,6 +32,7 @@ const renderWebStats = () => {
 
 const Home = props => {
   const [showSnackbar, setShowSnacbar] = useState(false);
+  const [isLoading, setPageLoading] = React.useState(false);
   useEffect(() => {
     // code to run on component mount
     if (props.showSnackbar) {
@@ -46,6 +48,8 @@ const Home = props => {
   };
 
   const handleSearchSubmit = () => {
+    props.startLoading();
+    setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
       if (
         /^[^www.][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
@@ -110,7 +114,7 @@ const Home = props => {
             </>
           ) : (
             <div style={{ textAlign: "center" }}>
-              <CircularProgress />
+              <CircularProgress color="secondary" />
             </div>
           )}
         </div>
@@ -129,6 +133,7 @@ const Home = props => {
       <div className="homeContainer">
         {renderHeroContent(searchBoxVal, setSearchBoxVal, loading, setLoading)}
       </div>
+
       <Snackbar
         open={showSnackbar}
         variant={_get(props, "variant", "")}
@@ -162,4 +167,7 @@ const mapStateToProps = state => {
   return { showSnackbar, variant, message };
 };
 
-export default connect(mapStateToProps)(Home);
+export default connect(
+  mapStateToProps,
+  { startLoading }
+)(Home);

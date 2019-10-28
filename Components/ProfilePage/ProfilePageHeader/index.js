@@ -5,39 +5,26 @@ import ReviewCard from "../../Widgets/ReviewCard/ReviewCard";
 import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
 import _get from "lodash";
-import { connect } from 'react-redux';
-import Placeholder from './headerPlaceholder';
-
+import { connect } from "react-redux";
+import Placeholder from "./headerPlaceholder";
+import axios from "axios";
 class ProfilePageHeader extends Component {
   state = {
-    headerData: {}
+    headerData: {},
+    imageSrc: ""
   };
 
-  componentDidMount() {
-    // this.setState({ headerData: { ...this.props.headerData } });
-  }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (
-  //     this.props.headerData.domain_name === nextProps.headerData.domain_name &&
-  //     this.props.headerData.is_verified === nextProps.headerData.is_verified &&
-  //     this.props.headerData.rating === nextProps.headerData.rating &&
-  //     this.props.headerData.review_length === nextProps.headerData.review_length
-  //   ) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
   render() {
-    const { domainProfileData, isLoading } = this.props
-    const headerData = ((domainProfileData || {}).headerData || {}).data || {}
+    const { domainProfileData, isLoading } = this.props;
+    const headerData = ((domainProfileData || {}).headerData || {}).data || {};
     const ratings = (headerData || {}).rating || 0;
     const domain_name = (headerData || {}).domain_name || "";
     const is_verified = (headerData || {}).is_verified || false;
+    const screenshotUrl = (headerData || {}).screenshot || "";
     const review_length = (headerData || {}).review_length || 0;
     const willCome = (headerData || {}).willCome || false;
-
+    const parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
+    console.log(screenshotUrl, "screenshotUrl");
     const reviewCardBody = (
       <RatingIndicators
         rating={Number(ratings)}
@@ -47,12 +34,14 @@ class ProfilePageHeader extends Component {
         widgetSpacings="2px"
       />
     );
-    return (
-      isLoading ? <div className="row">
+    return isLoading ? (
+      <div className="row">
         <div className="col-md-12">
           <Placeholder />
         </div>
-      </div> : (<Paper paperStyles={{ padding: "5px 0 5px 0" }}>
+      </div>
+    ) : (
+      <Paper paperStyles={{ padding: "5px 0 5px 0" }}>
         <div className="profilePageHeaderContainer">
           <style jsx>{profilePageHeaderStyles}</style>
           <div className="container ">
@@ -63,11 +52,12 @@ class ProfilePageHeader extends Component {
                   image={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${domain_name}&viewport=1440x900&width=250&random=${Math.floor(
                     Math.random() * 10 + 1
                   )}`}
+                  fallbackImage={screenshotUrl}
+                  // image={`http://localhost:3000/upload?domain=https://www.${domain_name}/`}
                   imgContainerStyles={{
-                    maxWidth: "300px",
-
+                    maxWidth: "300px"
                   }}
-                  title={domain_name}
+                  title={parsed_domain_name}
                   subTitle={
                     <>
                       <span>Reviews {review_length}</span>
@@ -86,7 +76,8 @@ class ProfilePageHeader extends Component {
                   <Card>
                     <div className="companyLink">
                       <a href={`https://www.${domain_name}`} target="_blank">
-                        <i className="fa fa-share-square-o"></i>{domain_name}
+                        <i className="fa fa-share-square-o"></i>
+                        {domain_name}
                       </a>
                     </div>
                     <div>Visit this website</div>
@@ -101,19 +92,19 @@ class ProfilePageHeader extends Component {
                           style={{ color: "green" }}
                         ></i>
                       ) : (
-                          <i
-                            className="fa fa-warning"
-                            style={{ color: "#fcaf16" }}
-                          ></i>
-                        )}
+                        <i
+                          className="fa fa-warning"
+                          style={{ color: "#fcaf16" }}
+                        ></i>
+                      )}
                       <span className="claimed">
                         {is_verified ? "Verified" : "Unverified"}
                       </span>
                     </div>
                     <div>
                       {is_verified
-                        ? "This company has a Trust Search account but we have no records of them asking their customers for reviews."
-                        : "This company does not have a Trust Search account"}
+                        ? "This company has a Trustsearch account but we have no records of them asking their customers for reviews."
+                        : "This company does not have a Trustsearch account"}
                     </div>
                   </Card>
                 </div>
@@ -121,15 +112,15 @@ class ProfilePageHeader extends Component {
             </div>
           </div>
         </div>
-      </Paper>)
+      </Paper>
     );
   }
 }
 
 const mapStateToProps = state => {
-  const { profileData } = state
-  const { domainProfileData, isLoading } = profileData
-  return { domainProfileData, isLoading }
-}
+  const { profileData } = state;
+  const { domainProfileData, isLoading } = profileData;
+  return { domainProfileData, isLoading };
+};
 
-export default connect(mapStateToProps)(ProfilePageHeader)
+export default connect(mapStateToProps)(ProfilePageHeader);

@@ -7,7 +7,6 @@ import FormField from "../Components/Widgets/FormField/FormField";
 import Layout from "../hoc/layout/layout";
 import validate from "../utility/validate";
 import axios from "axios";
-import {baseURL} from '../utility/config';
 
 const handleChangeRating = (newRating, setRating) => {
   setRating(newRating);
@@ -35,32 +34,29 @@ const handleFormSubmit = (
     setLoading(true);
     let finalDataToSubmit = { ...data.dataToSubmit, rating: rating };
     axios
-      .post(
-        `${baseURL}/api/save-order-data-application`,
-        {
-          report_category_id: 8,
-          token: queryData.token,
-          campaign_processing_id: queryData.campaignProcessingId,
-          domain_name: queryData.domain_name,
-          data: {
-            review_rate: finalDataToSubmit.rating,
-            review_text: finalDataToSubmit.review.trim()
-          }
+      .post(`${process.env.BASE_URL}/api/save-order-data-application`, {
+        report_category_id: 8,
+        token: queryData.token,
+        campaign_processing_id: queryData.campaignProcessingId,
+        domain_name: queryData.domain_name,
+        data: {
+          review_rate: finalDataToSubmit.rating,
+          review_text: finalDataToSubmit.review.trim()
         }
-      )
+      })
       .then(res => {
         setLoading(false);
         setSubmitted("yes");
-        setTimeout(()=>{
-          Router.push(`/reviews/${queryData.domain_name}`)
-        }, 6000)
+        setTimeout(() => {
+          Router.push(`/reviews/${queryData.domain_name}`);
+        }, 6000);
       })
       .catch(err => {
         setLoading(false);
         setSubmitted("error");
-        setTimeout(()=>{
-          Router.push(`/reviews/${queryData.domain_name}`)
-        }, 6000)
+        setTimeout(() => {
+          Router.push(`/reviews/${queryData.domain_name}`);
+        }, 6000);
       });
   }
 };

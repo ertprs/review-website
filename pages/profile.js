@@ -8,12 +8,6 @@ import {
   scrollSpy,
   scroller
 } from "react-scroll";
-import Navbar from "../Components/MaterialComponents/NavBar";
-import ProfilePageHeader from "../Components/ProfilePage/ProfilePageHeader";
-import ProfilePageBody from "../Components/ProfilePage/ProfilePageBody";
-import Footer from "../Components/Footer/Footer";
-import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
-import SimpleTabs from "../Components/MaterialComponents/SimpleTabs";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../utility/constants/socialMediaConstants";
@@ -23,6 +17,34 @@ import {
 } from "../store/actions/domainProfileActions";
 import { connect } from "react-redux";
 import Router from "next/router";
+import dynamic from "next/dynamic";
+const Navbar = dynamic(() => import("../Components/MaterialComponents/NavBar"));
+const ProfilePageHeader = dynamic(() =>
+  import("../Components/ProfilePage/ProfilePageHeader")
+);
+const ProfilePageBody = dynamic(
+  () => import("../Components/ProfilePage/ProfilePageBody"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const Footer = dynamic(() => import("../Components/Footer/Footer"));
+import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
+const SimpleTabs = dynamic(() =>
+  import("../Components/MaterialComponents/SimpleTabs")
+);
 
 class Profile extends React.Component {
   state = {
@@ -41,9 +63,7 @@ class Profile extends React.Component {
   componentDidMount() {
     this.setState({ isMounted: true });
     Router.events.on("routeChangeStart", this.handleRouteChange);
-
     Events.scrollEvent.register("begin", function() {});
-
     Events.scrollEvent.register("end", function() {});
   }
 
@@ -349,7 +369,7 @@ Profile.getInitialProps = async ({ query }) => {
   const domain = query.domain ? query.domain : "google.com";
   if (query.amp === "1") {
     const response = await axios.get(
-      `${baseURL}/api/verify?domain=${searchURL}`
+      `${process.env.BASE_URL}/api/verify?domain=${searchURL}`
     );
     return { analysisData: { ...response.data }, domain };
   }

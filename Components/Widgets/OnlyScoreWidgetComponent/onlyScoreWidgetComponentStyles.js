@@ -4,7 +4,7 @@ export const onlyScoreWidgetComponentStyles = css`
   .widgetBox, .carouselWidgetBox {
     box-shadow: 0px 2px 4px #a1a1a1;
     padding: 7% 0 5% 0;
-    height: 100%;
+    max-height: 100%;
     max-width: 99%;
     margin: 0.5px auto;
     text-align: center;
@@ -13,6 +13,12 @@ export const onlyScoreWidgetComponentStyles = css`
     -moz-border-radius: 10px;
     -ms-border-radius: 10px;
     -o-border-radius: 10px;
+  }
+
+  .widgetRating{
+    margin-bottom:0;
+    font-weight:bolder;
+    font-size:1.3rem;
   }
 
   .carouselWidgetBox{
@@ -43,7 +49,7 @@ export const onlyScoreWidgetComponentStyles = css`
   }
 
   .widgetImgContainer {
-    height: 70px;
+    height: 65px;
     width: 100%;
     margin-top: 5px;
     display: flex;
@@ -59,9 +65,9 @@ export const onlyScoreWidgetComponentStyles = css`
   }
 
   .carouselWidgetImgContainerV{
-    height:30px;
+    height:25px;
     width:80%;
-    margin:0 auto;
+    margin:5px auto 0 auto;
   }
 
   /*----------- utility classes -----------*/
@@ -77,6 +83,30 @@ export const onlyScoreWidgetComponentStyles = css`
     margin-top: 5%;
   }
 
+  @media screen and (min-width:408px){
+    .widgetBox{
+      padding:0;
+      width:50%;
+      height:50%;
+      box-shadow:none;
+    }
+    .widgetImgContainer{
+    height: 50px;
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .widgetImgContainer img{
+    max-width:50% !important;
+    height:auto !important ;
+    margin:0 auto !important;
+  }
+  }
+
   @media screen and (max-width:991px){
       .carouselRatingIndicator{
           display:none;
@@ -86,6 +116,18 @@ export const onlyScoreWidgetComponentStyles = css`
           margin-bottom:3%;
       }
   }
+
+  /* @media screen and (max-width:448px){
+    .ratingIndicator {
+      display: none;
+    }
+
+    .smallRatingIndicator {
+      display: block;
+      margin: 4% 0 4% 0;
+    }
+    
+  } */
 
   @media screen and (max-width: 320px) {
     .ratingIndicator {
@@ -109,6 +151,7 @@ export const onlyScoreWidgetComponentStyles = css`
     }
     .widgetRating {
       font-size: 1.1rem;
+      margin-bottom:5px;
     }
     .smallRatingIndicator {
       display: none;

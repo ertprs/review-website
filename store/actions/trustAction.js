@@ -4,8 +4,7 @@ import {
   TRUST_VOTE_FAILURE,
   SEND_TRUST_DATA_LATER
 } from "./actionTypes";
-import { baseURL } from "../../utility/config";
-import _get from 'lodash/get';
+import _get from "lodash/get";
 
 import axios from "axios";
 import Router from "next/router";
@@ -18,22 +17,26 @@ export const sendTrustVote = trustData => {
       const { token } = auth.logIn || {};
       const res = await axios({
         method: "POST",
-        headers: { "Authorization": `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
         data: { ...trustData },
-        url: `${baseURL}/api/applications/domain-review`
+        url: `${process.env.BASE_URL}/api/applications/domain-review`
       });
       let success = _get(res, "data.success", false);
-      let status = _get(res, 'status', 0)
-      dispatch({ type: TRUST_VOTE_SUCCESS, payload: { success, shouldSend: false, status } })
-
+      let status = _get(res, "status", 0);
+      dispatch({
+        type: TRUST_VOTE_SUCCESS,
+        payload: { success, shouldSend: false, status }
+      });
     } catch (error) {
       let success = _get(error, "response.data.success", false);
-      let status = _get(error, 'status', 0)
-      dispatch({ type: TRUST_VOTE_FAILURE, payload: { success, shouldSend: false, status } })
+      let status = _get(error, "status", 0);
+      dispatch({
+        type: TRUST_VOTE_FAILURE,
+        payload: { success, shouldSend: false, status }
+      });
     }
   };
 };
-
 
 export const sendTrustDataLater = trustData => {
   return {
@@ -42,5 +45,5 @@ export const sendTrustDataLater = trustData => {
       data: { ...trustData },
       shouldSend: true
     }
-  }
+  };
 };

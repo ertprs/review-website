@@ -19,11 +19,9 @@ import Router from "next/router";
 // import Link from "../../src/Link";
 import Link from "next/link";
 import { GoogleLogout } from "react-google-login";
-import { googleClientId } from "../../utility/config";
 import { connect } from "react-redux";
 import { logOut } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
-import Logout from "../../pages/logout";
 import _get from "lodash/get";
 
 const useStyles = makeStyles(theme => ({
@@ -58,7 +56,8 @@ const useStyles = makeStyles(theme => ({
     padding: "25px",
     "&:hover": {
       color: "#d8d8d8",
-      textDecoration: "none"
+      textDecoration: "none",
+      cursor: "pointer"
     }
   },
   navLinkMobile: {
@@ -177,13 +176,23 @@ function PrimarySearchAppBar(props) {
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [showInputBase, setShowInputBase] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
 
   const handleProfileMenuOpen = event => {
-    setAnchorEl(event.currentTarget);
+    setProfileMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchorEl(null);
+  };
+
+  const handleMobileMenuOpen = event => {
+    setMobileMoreAnchorEl(event.currentTarget);
   };
 
   const handleMobileMenuClose = () => {
@@ -195,9 +204,59 @@ function PrimarySearchAppBar(props) {
     handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = event => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+  const profileMenuId = "profile-menu";
+  const renderProfileMenu = (
+    <Menu
+      style={{ marginTop: "30px" }}
+      anchorEl={profileMenuAnchorEl}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      id={profileMenuId}
+      keepMounted
+      transformOrigin={{ vertical: "bottom", horizontal: "center" }}
+      open={isProfileMenuOpen}
+      onClose={handleProfileMenuClose}
+    >
+      {authorized && loginType === 4 ? (
+        <Link href="/dashboard">
+          <MenuItem onClick={handleMenuClose}>Dashboard</MenuItem>
+        </Link>
+      ) : null}
+      {loginType === 1 || loginType === 2 ? (
+        <Link href="">
+          <MenuItem>
+            <a onClick={() => handleLogout()}>Logout</a>
+          </MenuItem>
+        </Link>
+      ) : (
+        ""
+      )}
+      {loginType === 3 ? (
+        <GoogleLogout
+          clientId={process.env.GOOGLE_CLIENT_ID}
+          buttonText="Logout"
+          render={renderProps => (
+            <Link href="">
+              <MenuItem>
+                <a onClick={() => handleLogout()}>Logout</a>
+              </MenuItem>
+            </Link>
+          )}
+          // onLogoutSuccess={logout}
+        ></GoogleLogout>
+      ) : (
+        ""
+      )}
+      {loginType === 4 ? (
+        <Link href="">
+          <MenuItem>
+            <a onClick={() => handleLogout()}>Logout</a>
+          </MenuItem>
+        </Link>
+      ) : (
+        ""
+      )}
+    </Menu>
+  );
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -226,12 +285,6 @@ function PrimarySearchAppBar(props) {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {/* <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p> */}
       <Link href="/about">
         <MenuItem>
           <a className={classes.navLinkMobile}>About Us</a>
@@ -258,39 +311,36 @@ function PrimarySearchAppBar(props) {
         </>
       ) : (
         <>
-          <Link href="">
+          <Link href="/dashboard">
             <MenuItem>
-              <span className={classes.navLinkMobile}>
-                Hello, <span style={{ marginRight: "10px" }}>{userName}</span>
-              </span>
+              <a className={classes.navLinkMobile}>Dashboard</a>
             </MenuItem>
           </Link>
           {loginType === 1 || loginType === 2 ? (
-            <Link href="">
-              <MenuItem>
-                <a
-                  target="_top"
-                  onClick={() => handleLogout()}
-                  className={classes.navLinkMobile}
-                >
-                  Logout
-                </a>
+            <Link href="/">
+              <MenuItem onClick={() => handleLogout()}>
+                <a className={classes.navLinkMobile}>Logout</a>
               </MenuItem>
             </Link>
-          ) : (
-            ""
-          )}
+          ) : null}
           {loginType === 3 ? (
-            <Link href="">
+            <Link href="/">
               <MenuItem>
                 <a onClick={() => handleLogout()} className={classes.navLink}>
                   Logout
                 </a>
               </MenuItem>
             </Link>
-          ) : (
-            ""
-          )}
+          ) : null}
+          {loginType === 4 ? (
+            <Link href="/">
+              <MenuItem>
+                <a onClick={() => handleLogout()} className={classes.navLink}>
+                  Logout
+                </a>
+              </MenuItem>
+            </Link>
+          ) : null}
         </>
       )}
     </Menu>
@@ -309,15 +359,6 @@ function PrimarySearchAppBar(props) {
               className={classes.logoImg}
             />
           </div>
-          {/* <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-            
-          </IconButton> */}
           {!showInputBase ? (
             <Typography
               onClick={() => Router.push("/")}
@@ -326,7 +367,7 @@ function PrimarySearchAppBar(props) {
               noWrap
               style={{ margin: "0 5px 0 0" }}
             >
-              Trust Search
+              TrustSearch
             </Typography>
           ) : null}
           {showInputBase ? (
@@ -366,43 +407,18 @@ function PrimarySearchAppBar(props) {
               </>
             ) : (
               <>
-                <Link href="">
-                  <span className={classes.navLink}>
-                    Hello,{" "}
-                    <span style={{ marginRight: "10px" }}>{userName}</span>
+                <Link>
+                  <span
+                    className={classes.navLink}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleProfileMenuOpen(e);
+                    }}
+                  >
+                    <span>{userName}</span>
                   </span>
                 </Link>
-                {loginType === 1 || loginType === 2 ? (
-                  <Link href="">
-                    <a
-                      onClick={() => handleLogout()}
-                      className={classes.navLink}
-                    >
-                      Logout
-                    </a>
-                  </Link>
-                ) : (
-                  ""
-                )}
-                {loginType === 3 ? (
-                  <GoogleLogout
-                    clientId={googleClientId}
-                    buttonText="Logout"
-                    render={renderProps => (
-                      <Link href="">
-                        <a
-                          onClick={() => handleLogout()}
-                          className={classes.navLink}
-                        >
-                          Logout
-                        </a>
-                      </Link>
-                    )}
-                    // onLogoutSuccess={logout}
-                  ></GoogleLogout>
-                ) : (
-                  ""
-                )}
+                {renderProfileMenu}
               </>
             )}
           </div>
