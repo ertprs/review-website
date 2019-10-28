@@ -327,14 +327,13 @@ function Dashboard(props) {
     homeDisabled = false;
     menuItemsDisabled = true;
     getStartedDisabled = true;
+  } else if (_get(props, "activation_required", false)) {
+    if (_get(props, "userActivated", false)) {
+      menuItemsDisabled = false;
+    } else if (_get(props, "userActivated", false) === false) {
+      menuItemsDisabled = true;
+    }
   }
-  // else if (_get(props, "activation_required", false)) {
-  //   if (_get(props, "userActivated", false)) {
-  //     menuItemsDisabled = false;
-  //   } else if (_get(props, "userActivated", false) === false) {
-  //     menuItemsDisabled = true;
-  //   }
-  // }
 
   const clickToUpgradeHandler = () => {
     const { upgradeToPremium, userName, userEmail, userPhone } = props;

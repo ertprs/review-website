@@ -93,7 +93,6 @@ class SendInvitations extends Component {
       clientName,
       entity,
       emailSubject,
-      services,
       googleDirectReviewUrl,
       googleDirectReviewUrlFirstTime
     } = this.props;
@@ -116,7 +115,6 @@ class SendInvitations extends Component {
       // { key: "Client Name", value: clientName },
       { key: "Entity", value: entity },
       { key: "Email Subject", value: emailSubject },
-      { key: "Services", value: services },
       // { key: "Reply-to Email", value: "art@cunami.lv" },
       {
         key: "Send your customers to this website to write their review",
@@ -251,7 +249,6 @@ const mapStateToProps = state => {
   const clientName = _get(selectTemplateData, "clientName.value", "");
   const entity = _get(selectTemplateData, "entity.value", "");
   const emailSubject = _get(selectTemplateData, "subject.value", "");
-  const services = _get(selectTemplateData, "services.value", "");
 
   const createCampaignRes = _get(dashboardData, "createCampaign", {});
   const isLoading = _get(createCampaignRes, "isLoading", false);
@@ -275,7 +272,6 @@ const mapStateToProps = state => {
     clientName,
     entity,
     emailSubject,
-    services,
     isLoading,
     success,
     errorMsg,

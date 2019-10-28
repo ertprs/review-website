@@ -57,7 +57,6 @@ class Home extends Component {
 
   renderActivationInfo = classes => {
     const { activated, isLoading, activation_required } = this.props;
-    console.log(isLoading, "isLoading");
     if (activated == false) {
       return (
         <Grid item xs={12} md={12} lg={12}>
@@ -293,7 +292,6 @@ class Home extends Component {
 
   renderInvitationsCard = () => {
     const { quotaDetails } = this.props;
-    console.log(quotaDetails, "quotaDetails");
     const total = _get(quotaDetails, "invitations.total", 0);
     const remaining = _get(quotaDetails, "invitations.remaining", 0);
     return (
@@ -420,7 +418,7 @@ class Home extends Component {
   };
 
   render() {
-    const { classes, isSubscriptionExpired } = this.props;
+    const { classes, isSubscriptionExpired, userActivated } = this.props;
     return (
       <>
         <style jsx>
@@ -451,7 +449,9 @@ class Home extends Component {
         <Grid container spacing={3}>
           {isSubscriptionExpired === true
             ? this.renderSubscriptionInfo(classes)
-            : this.renderActivationInfo(classes)}
+            : userActivated === false
+            ? this.renderActivationInfo(classes)
+            : ""}
           {this.renderOverviewCard()}
           {this.renderRecentReviewsCard()}
           {this.renderInvitationsCard()}
@@ -498,6 +498,7 @@ const mapStateToProps = state => {
   const userName = _get(auth, "logIn.userProfile.name", "");
   const userEmail = _get(auth, "logIn.userProfile.email", "");
   const userPhone = _get(auth, "logIn.userProfile.phone", "");
+  const userActivated = _get(auth, "userActivated", false);
   const upgradeToPremiumIsLoading = _get(
     dashboardData,
     "upgradePremium.isLoading",
@@ -529,7 +530,8 @@ const mapStateToProps = state => {
     userPhone,
     upgradeToPremiumIsLoading,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime
+    googleDirectReviewUrlFirstTime,
+    userActivated
   };
 };
 
