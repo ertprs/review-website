@@ -127,9 +127,12 @@ export default class GetWidget extends Component {
                     data-template-id="${this.props.widget.dataTempID}" 
                     data-businessunit-id="${this.props.domainName ||
                       "google.com"}"
-                    data-style-height="${this.state.widgetHeight}"
+                    data-style-height="${this.state.widgetHeight}px"
                     data-style-width="100%"
                     data-theme="light"
+                    style="position: relative;
+                    overflow: hidden;
+                    padding-top: 56.25%;"
                     ></div> 
                 `}</code>
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
