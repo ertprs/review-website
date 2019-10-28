@@ -20,7 +20,7 @@ const renderStandAloneWidget = requiredData => {
           <StarRatings
             rating={Number(requiredData.ratings)}
             starRatedColor="#21bc61"
-            starDimension="40px"
+            starDimension="34px"
             starSpacing="3px"
             numberOfStars={5}
             name="rating"
@@ -71,7 +71,7 @@ const renderStandAloneWidget = requiredData => {
               src="/static/business/index/images/gradientLogo.png"
               alt="logo"
               style={{
-                maxWidth: "65%",
+                maxWidth: "45%",
                 height: "auto",
                 margin: "0 auto"
               }}

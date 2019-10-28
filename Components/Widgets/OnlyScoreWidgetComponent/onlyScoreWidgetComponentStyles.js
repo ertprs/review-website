@@ -49,7 +49,7 @@ export const onlyScoreWidgetComponentStyles = css`
   }
 
   .widgetImgContainer {
-    height: 70px;
+    height: 65px;
     width: 100%;
     margin-top: 5px;
     display: flex;
@@ -85,7 +85,7 @@ export const onlyScoreWidgetComponentStyles = css`
 
   @media screen and (min-width:408px){
     .widgetBox{
-      padding-top:5%;
+      padding:0;
       width:50%;
       height:50%;
       box-shadow:none;
@@ -116,6 +116,18 @@ export const onlyScoreWidgetComponentStyles = css`
           margin-bottom:3%;
       }
   }
+
+  /* @media screen and (max-width:448px){
+    .ratingIndicator {
+      display: none;
+    }
+
+    .smallRatingIndicator {
+      display: block;
+      margin: 4% 0 4% 0;
+    }
+    
+  } */
 
   @media screen and (max-width: 320px) {
     .ratingIndicator {

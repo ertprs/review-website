@@ -105,10 +105,10 @@ const renderWidget = (reviewData, settings, domain) => {
                   display:none;
                 }
               }
-              @media screen and (max-width:252px){
-                .widgetBox{
-                  display:none;
-                }
+              // @media screen and (max-width:252px){
+              //   .widgetBox{
+              //     display:none;
+              //   }
               }
             `}
       </style>
