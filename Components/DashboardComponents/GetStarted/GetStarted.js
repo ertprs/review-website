@@ -149,7 +149,7 @@ class GetStarted extends Component {
       <div className="row">
         <div
           className="col-md-7"
-          style={{ alignItems: "center", display: "flex", flex: "1" }}
+          style={{ alignItems: "flex-end", display: "flex", flex: "1" }}
         >
           <div style={{ width: "100%" }}>
             <FormField
