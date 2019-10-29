@@ -26,7 +26,11 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_DIRECT_REVIEW_URL
+  SET_GOOGLE_DIRECT_REVIEW_URL,
+  SET_REVIEWS_PUSHER_CONNECT,
+  SEND_TEST_EMAIL_TEMPLATE_INIT,
+  SEND_TEST_EMAIL_TEMPLATE_SUCCESS,
+  SEND_TEST_EMAIL_TEMPLATE_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -45,7 +49,9 @@ const dashboardReducer = (state = {}, action) => {
     parsedCampaignLanguage,
     emailTemplate,
     googleDirectReviewUrl,
-    businessAddress
+    businessAddress,
+    sendEmailTemplate,
+    isReviewsPusherConnected
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -224,6 +230,31 @@ const dashboardReducer = (state = {}, action) => {
         type,
         googleDirectReviewUrl,
         businessAddress
+      };
+    }
+    case SEND_TEST_EMAIL_TEMPLATE_INIT:
+      return {
+        ...state,
+        type,
+        sendEmailTemplate
+      };
+    case SEND_TEST_EMAIL_TEMPLATE_SUCCESS:
+      return {
+        ...state,
+        type,
+        sendEmailTemplate
+      };
+    case SEND_TEST_EMAIL_TEMPLATE_FAILURE:
+      return {
+        ...state,
+        type,
+        sendEmailTemplate
+      };
+    case SET_REVIEWS_PUSHER_CONNECT: {
+      return {
+        ...state,
+        type,
+        isReviewsPusherConnected
       };
     }
     default:

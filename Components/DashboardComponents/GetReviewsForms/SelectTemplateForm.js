@@ -7,8 +7,16 @@ import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import _get from "lodash/get";
 import { emailTemplates } from "../../../utility/emailTemplates/emailTemplates";
 import { connect } from "react-redux";
+import Snackbar from "../../Widgets/Snackbar";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { clearCampaignData } from "../../../store/actions/dashboardActions";
 
 class SelectTemplateForm extends Component {
+  state = {
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
+  };
   renderHeader = () => {
     return (
       <div className="container">
@@ -217,8 +225,43 @@ class SelectTemplateForm extends Component {
     return [...output];
   };
 
+  componentDidUpdate(prevProps) {
+    const {
+      isLoading,
+      success,
+      errorMsg,
+      clearCampaignData,
+      createCampaignData
+    } = this.props;
+    if (this.props !== prevProps) {
+      if (success === true && !isLoading) {
+        this.setState(
+          {
+            showSnackbar: true,
+            variant: "success",
+            snackbarMsg: "Sample email Sent Successfully!"
+          },
+          () => {
+            clearCampaignData({
+              isLoading: false,
+              errorMsg: "",
+              quotaDetails: _get(createCampaignData, "quotaDetails", {}),
+              success: "undefined"
+            });
+          }
+        );
+      } else if (success === false && !isLoading) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: errorMsg
+        });
+      }
+    }
+  }
+
   render() {
-    const { formData } = this.props;
+    const { formData, isLoading } = this.props;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
@@ -264,8 +307,30 @@ class SelectTemplateForm extends Component {
                 Continue
               </Button>
             </div>
+            <div className="col-md-6">
+              {isLoading ? (
+                <Button variant="contained" color="primary" size="large">
+                  <CircularProgress color={"#f1f1f1"} size={16} />
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => this.props.handleNext("isTestEmail")}
+                  size="small"
+                >
+                  Send sample email on my mail
+                </Button>
+              )}
+            </div>
           </div>
         </div>
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </>
     );
   }
@@ -274,7 +339,15 @@ class SelectTemplateForm extends Component {
 const mapStateToProps = state => {
   const { dashboardData } = state;
   const templateId = _get(dashboardData, "emailTemplate.template.id", "");
-  return { templateId };
+  const createCampaignRes = _get(dashboardData, "createCampaign", {});
+  const isLoading = _get(createCampaignRes, "isLoading", false);
+  const success = _get(createCampaignRes, "success", "undefined");
+  const errorMsg = _get(createCampaignRes, "errorMsg", "");
+  const createCampaignData = _get(dashboardData, "createCampaign", {});
+  return { templateId, isLoading, success, errorMsg, createCampaignData };
 };
 
-export default connect(mapStateToProps)(SelectTemplateForm);
+export default connect(
+  mapStateToProps,
+  { clearCampaignData }
+)(SelectTemplateForm);

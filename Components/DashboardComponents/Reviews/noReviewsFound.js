@@ -1,6 +1,9 @@
 import React from "react";
+import _get from "lodash/get";
+import { connect } from "react-redux";
+import { CircularProgress } from "@material-ui/core";
 
-export default function NoReviewsFound() {
+const NoReviewsFound = ({ isReviewsPusherConnected }) => {
   return (
     <>
       <style jsx>{`
@@ -15,10 +18,27 @@ export default function NoReviewsFound() {
         }
       `}</style>
       <div className="container">
-        <h1 className="text">
-          No reviews found till yet! Will be updated soon
-        </h1>
+        {isReviewsPusherConnected === true ? (
+          <CircularProgress />
+        ) : (
+          <h1 className="text">Reviews will be updated soon!</h1>
+        )}
       </div>
     </>
   );
-}
+};
+
+const mapStateToProps = state => {
+  const { dashboardData } = state;
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
+
+  return {
+    isReviewsPusherConnected
+  };
+};
+
+export default connect(mapStateToProps)(NoReviewsFound);

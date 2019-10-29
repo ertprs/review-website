@@ -8,10 +8,11 @@ import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import { resendActivationLink } from "../../../store/actions/authActions";
-import { upgradeToPremium } from "../../../store/actions/dashboardActions";
 import { resendActivationLinkApi } from "../../../utility/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { upgradeToPremium } from "../../../store/actions/dashboardActions";
 import withStyles from "@material-ui/styles/withStyles";
 import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
@@ -258,7 +259,7 @@ class Home extends Component {
   };
 
   renderRecentReviewsCard = () => {
-    const { reviewsData } = this.props;
+    const { reviewsData, isReviewsPusherConnected } = this.props;
     const reviews = _get(reviewsData, "reviews", []);
     const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
@@ -283,9 +284,20 @@ class Home extends Component {
           </div>
           <div className="body">
             <div>
-              {topThreeReviews.length > 0
-                ? this.renderReviewSnippets(topThreeReviews)
-                : "Nothing found till yet, Will be updated in 24 hours !"}
+              {topThreeReviews.length > 0 ? (
+                this.renderReviewSnippets(topThreeReviews)
+              ) : isReviewsPusherConnected === true ? (
+                <>
+                  <div style={{ marginTop: "30px" }}>
+                    <h6 style={{ marginBottom: "50px", color: "green" }}>
+                      <b>Fetching reviews</b>
+                    </h6>
+                    <LinearProgress color="secondary" />
+                  </div>
+                </>
+              ) : (
+                "Reviews will be updated soon!"
+              )}
             </div>
           </div>
         </SimpleCard>
@@ -573,6 +585,12 @@ const mapStateToProps = state => {
     ""
   );
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
+
   return {
     reviewsData,
     quotaDetails,
@@ -592,7 +610,8 @@ const mapStateToProps = state => {
     googleDirectReviewUrlFirstTime,
     userActivated,
     businessAddress,
-    businessAddressFirstTime
+    businessAddressFirstTime,
+    isReviewsPusherConnected
   };
 };
 

@@ -8,6 +8,7 @@ import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
 import { Button, Link, CircularProgress, Typography } from "@material-ui/core";
+import NoReviewsFound from "./noReviewsFound";
 
 class Reviews extends Component {
   state = {
