@@ -18,6 +18,8 @@ import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
+import Moment from "react-moment";
+
 const styles = theme => ({
   button: {
     width: "150px"
@@ -441,7 +443,9 @@ class Home extends Component {
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
-          <div>{expiresAt}</div>
+          <div>
+            <Moment format="DD/MM/YYYY HH:mm">{expiresAt}</Moment>
+          </div>
         </div>
       </div>
     );
