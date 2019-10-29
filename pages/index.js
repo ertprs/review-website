@@ -58,7 +58,7 @@ const Home = props => {
       ) {
         let domainName = searchBoxVal.toLowerCase().trim();
         setLoading(true);
-        Router.push(`/profile?domain=${domainName}`, `/profile/${domainName}`);
+        Router.push(`/reviews?domain=${domainName}`, `/reviews/${domainName}`);
       } else {
         alert(
           "Please enter domain name in the format: (ex- thetrustsearch.com)"

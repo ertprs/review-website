@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Done = ({ changeStepToRender }) => {
+const Done = ({ changeStepToRender, handleInviteMoreClick }) => {
   const classes = useStyles();
   return (
     <>
@@ -55,7 +55,7 @@ const Done = ({ changeStepToRender }) => {
               <Button
                 variant="contained"
                 color="secondary"
-                // onClick={this.handleAddBtnClick}
+                onClick={handleInviteMoreClick}
                 className={classes.button}
               >
                 Invite more customers

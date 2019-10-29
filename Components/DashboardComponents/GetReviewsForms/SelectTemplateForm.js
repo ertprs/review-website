@@ -195,15 +195,22 @@ class SelectTemplateForm extends Component {
       if (item !== "clientName") {
         output = [
           ...output,
-          <div className="col-md-12">
-            <FormField
-              {...formData[item]}
-              id={item}
-              handleChange={e => {
-                this.props.handleChange(e, item, "selectTemplateData");
-              }}
-            />
-          </div>
+          <>
+            <div className="col-md-12">
+              <div style={{ marginBottom: "5px", fontWeight: "bold" }}>
+                {formData[item].labelText} :
+              </div>
+            </div>
+            <div className="col-md-12">
+              <FormField
+                {...formData[item]}
+                id={item}
+                handleChange={e => {
+                  this.props.handleChange(e, item, "selectTemplateData");
+                }}
+              />
+            </div>
+          </>
         ];
       }
     }

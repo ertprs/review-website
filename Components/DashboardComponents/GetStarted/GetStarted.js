@@ -145,19 +145,41 @@ class GetStarted extends Component {
   renderDirectReviewUrl = () => {
     const { formData, selectedAddress } = this.state;
     return Object.keys(selectedAddress).length > 0 ? (
-      <div>
-        <FormField
-          {...formData.directReviewUrl}
-          id="directReviewUrl"
-          handleChange={this.handleChange}
-          styles={{
-            border: "0",
-            borderBottom: "1px solid #999",
-            borderRadius: "0",
-            marginLeft: 0,
-            paddingLeft: 0
-          }}
-        />
+      <div className="container">
+        <div className="row">
+          <div
+            className="col-md-7"
+            style={{ alignItems: "center", display: "flex", flex: "1" }}
+          >
+            <div style={{width:"100%"}}>
+              <FormField
+                {...formData.directReviewUrl}
+                id="directReviewUrl"
+                handleChange={this.handleChange}
+                styles={{
+                  border: "0",
+                  borderBottom: "1px solid #999",
+                  borderRadius: "0",
+                  marginLeft: 0,
+                  paddingLeft: 0
+                }}
+              />
+            </div>
+          </div>
+          <div className="col-md-5">
+            <a
+              href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708"
+              target="_blank"
+            >
+              {" "}
+              <p>How to create review short link - Watch Video</p>{" "}
+              <img
+                style={{ maxWidth: "300px" }}
+                src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
+              />
+            </a>
+          </div>
+        </div>
       </div>
     ) : null;
   };
@@ -247,23 +269,41 @@ class GetStarted extends Component {
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
-        this.setState(
-          {
-            showSnackbar: true,
-            variant: "success",
-            snackbarMsg: "Data located successfully!"
-          },
-          () => {
-            changeStepToRender(1);
-            setGoogleDirectReviewUrl(directReviewUrl);
-          }
-        );
+        if (!this.props.home) {
+          this.setState(
+            {
+              showSnackbar: true,
+              variant: "success",
+              snackbarMsg: "Data located successfully!"
+            },
+            () => {
+              changeStepToRender(1);
+              setGoogleDirectReviewUrl(directReviewUrl);
+            }
+          );
+        } else if (this.props.home) {
+          setGoogleDirectReviewUrl(directReviewUrl);
+          this.props.changeEditMode();
+        }
       } else if (isLoading === false && !success) {
-        this.setState({
-          showSnackbar: true,
-          variant: "error",
-          snackbarMsg: errorMsg
-        });
+        if (!this.props.home) {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: errorMsg
+          });
+        } else if (this.props.home) {
+          this.setState(
+            {
+              showSnackbar: true,
+              variant: "error",
+              snackbarMsg: errorMsg
+            },
+            () => {
+              this.props.changeEditMode();
+            }
+          );
+        }
       }
     }
   }
@@ -284,7 +324,7 @@ class GetStarted extends Component {
           </Grid>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={6}>
-              <div
+              {/* <div
                 style={{
                   position: "relative",
                   paddingBottom: "56.25%",
@@ -305,7 +345,7 @@ class GetStarted extends Component {
                     height: "100%"
                   }}
                 ></iframe>
-              </div>
+              </div> */}
             </Grid>
           </Grid>
         </Container>
