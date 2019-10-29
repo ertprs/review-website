@@ -13,6 +13,9 @@ import PublishIcon from "@material-ui/icons/Publish";
 import DescriptionIcon from "@material-ui/icons/Description";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { Button } from "@material-ui/core";
+import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 const inviteOptions = [
   {
@@ -89,12 +92,45 @@ export default class GetReviewsHome extends Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
+        <style jsx>{`
+          .buttonContainer {
+            margin-top: 5%;
+            width: 50%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+        `}</style>
         <p>Ask your customers to leave a review about their experience</p>
-        <h5>Invite manually</h5>
+        <h5>Choose any of the methods below to add customers to invite</h5>
         <div className="container">
           <div className="row">
             <div className="col-md-6">{this.renderInviteOptionsList()}</div>
+          </div>
+        </div>
+        <div className="buttonContainer">
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ArrowLeft />}
+              onClick={this.props.handleBack}
+              size="small"
+            >
+              Back
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<ArrowRight />}
+              onClick={this.props.handleNext}
+              size="small"
+            >
+              Continue
+            </Button>
           </div>
         </div>
       </div>
