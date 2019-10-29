@@ -735,7 +735,15 @@ class GetReviews extends Component {
         );
       } else if (getReviewsActiveSubStep === 0) {
         return (
-          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+          <GetReviewsHome
+            handleListItemClick={this.handleListItemClick}
+            onBackClick={() => {
+              this.setState({ getReviewsActiveSubStep: -1 });
+            }}
+            onContinueClick={()=>{
+              this.setState({getReviewsActiveSubStep:3})
+            }}
+          />
         );
       } else if (getReviewsActiveSubStep === 1) {
         return (

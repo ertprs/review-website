@@ -115,7 +115,7 @@ export default class GetReviewsHome extends Component {
               variant="contained"
               color="primary"
               startIcon={<ArrowLeft />}
-              onClick={this.props.handleBack}
+              onClick={this.props.onBackClick}
               size="small"
             >
               Back
@@ -126,7 +126,7 @@ export default class GetReviewsHome extends Component {
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
-              onClick={this.props.handleNext}
+              onClick={this.props.onContinueClick}
               size="small"
             >
               Continue
