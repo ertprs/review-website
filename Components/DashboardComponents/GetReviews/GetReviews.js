@@ -429,7 +429,6 @@ class GetReviews extends Component {
     } else {
       if (activeStep <= columns.length) {
         this.setState(prevState => {
-          console.log(prevState.activeStep, "prevState");
           return { activeStep: prevState.activeStep + 1 };
         });
       }
@@ -824,7 +823,7 @@ class GetReviews extends Component {
         <Done
           changeStepToRender={this.props.changeStepToRender}
           handleInviteMoreClick={() => {
-            this.setState({activeStep:0, getReviewsActiveSubStep:-1})
+            this.setState({ activeStep: 0, getReviewsActiveSubStep: -1 });
           }}
         />
       );
