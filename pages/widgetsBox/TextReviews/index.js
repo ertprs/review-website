@@ -184,7 +184,11 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
             <div className="noReviewBox">
               <h4 style={{ marginTop: "40px" }}>No reviews Found</h4>
             </div>
-          ) : null}
+          ) : (
+            <div className="noReviewBox">
+              <h5 style={{ marginTop: "40px" }}>Fetching review data...</h5>
+            </div>
+          )}
           <div></div>
         </div>
         <div className="reviewBoxFooter">
