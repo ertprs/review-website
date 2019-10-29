@@ -70,11 +70,7 @@ const renderStandAloneWidget = requiredData => {
             <img
               src="/static/business/index/images/gradientLogo.png"
               alt="logo"
-              style={{
-                maxWidth: "45%",
-                height: "auto",
-                margin: "0 auto"
-              }}
+              className="widgetImg"
             />
           </a>
         </div>

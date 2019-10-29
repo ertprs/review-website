@@ -15,7 +15,7 @@ import { googleMapsURL } from "../../../utility/config";
 const retrieveRequiredData = reviewData => {
   const ratings = Number(_get(reviewData, "rating", 0));
 
-  const totalReviews = _get(reviewData, "total", 0);
+  const totalReviews = _get(reviewData, "total", "");
 
   const reviews = _get(reviewData, "reviews", []);
 
@@ -48,6 +48,7 @@ const renderWidget = (reviewData, settings, domain) => {
               }
               .widgetBox {
                 box-shadow: 0px 2px 4px #d1d1d1;
+                background:#fff;
                 padding: 3% 4% 4% 4%;
                 border-radius: 6px;
                 -webkit-border-radius: 10px;
@@ -70,6 +71,10 @@ const renderWidget = (reviewData, settings, domain) => {
                 margin-bottom:25px;
               }
 
+              .textRatings{
+                margin-top:7px;
+              }
+
               .reviewHeader > div {
                 flex-basis: 50%;
               }
@@ -80,6 +85,35 @@ const renderWidget = (reviewData, settings, domain) => {
 
               .reviewBoxSlider{
                 margin: 3% 0 0% 0;
+              }
+
+              @media screen and (min-width:408px){
+               .widgetBox{
+                // padding:0;
+                width:60%;
+                margin:0 auto;
+                // height:50%;
+                border-radius:4px;
+                box-shadow:none;
+               }
+               .reviewHeader{
+                 margin-bottom:0;
+               }
+              .ratingsContainer{
+                display:none;
+              }
+              .reviewHeader{
+                flex-basis:100% !important;
+                text-align:center;
+              }
+              .reviewsCountContainer{
+                flex-basis:100% !important;
+              }
+              .reviewBoxSlider{
+                margin-top:0;
+                margin:0 auto;
+                width:99%;
+              }
               }
 
               @media screen and (max-width:279px){
@@ -98,13 +132,28 @@ const renderWidget = (reviewData, settings, domain) => {
                 .textRatings{
                   display:none;
                 }
-              }
-
-              @media screen and (max-width:279px){
                 .starRatings{
                   display:none;
                 }
               }
+
+              @media screen and (max-width:200px){
+                // .reviewsCountContainer{
+                //   display:none;
+                // }
+                .reviewBoxSlider{
+                  display:none;
+                }
+                .widgetImgContainer{
+                  height:40px;
+                }
+              }
+
+              // @media screen and (max-width:279px){
+              //   .starRatings{
+              //     display:none;
+              //   }
+              // }
               // @media screen and (max-width:252px){
               //   .widgetBox{
               //     display:none;
@@ -127,37 +176,41 @@ const renderWidget = (reviewData, settings, domain) => {
           />
         </a>
       </div>
-      <div className="reviewHeader">
-        <div className="reviewsCountContainer">
-          <div>
-            <h5>Trusted Site !</h5>
+      {requiredData.totalReviews !== "" && requiredData.totalReviews > 0 ? (
+        <div className="reviewHeader">
+          <div className="reviewsCountContainer">
+            <div>
+              <h5>Trusted Site !</h5>
+            </div>
+            <div>
+              <span style={{ fontWeight: "bold", marginLeft: "4px" }}>
+                {requiredData.totalReviews}
+              </span>{" "}
+              reviews
+            </div>
           </div>
-          <div>
-            <span style={{ fontWeight: "bold" }}>
-              {requiredData.totalReviews}
-            </span>{" "}
-            reviews
+          <div className="ratingsContainer">
+            <div className="starRatings">
+              <StarRatings
+                rating={Number(requiredData.ratings)}
+                starRatedColor="#21bc61"
+                starDimension="23px"
+                starSpacing="0.5px"
+                numberOfStars={5}
+                name="rating"
+              />
+            </div>
+            <div className="textRatings">
+              <span style={{ fontWeight: "bold" }}>
+                {requiredData.ratings}/5
+              </span>{" "}
+              Average
+            </div>
           </div>
         </div>
-        <div className="ratingsContainer">
-          <div className="starRatings">
-            <StarRatings
-              rating={Number(requiredData.ratings)}
-              starRatedColor="#21bc61"
-              starDimension="23px"
-              starSpacing="0.5px"
-              numberOfStars={5}
-              name="rating"
-            />
-          </div>
-          <div className="textRatings">
-            <span style={{ fontWeight: "bold" }}>{requiredData.ratings}/5</span>{" "}
-            Average
-          </div>
-        </div>
-      </div>
+      ) : null}
       <div className="reviewBoxSlider">
-        {requiredData.reviews.length > 0 ? (
+        {requiredData.totalReviews > 0 ? (
           <Slider {...settings}>
             {requiredData.reviews.map(item => {
               return (
@@ -167,6 +220,8 @@ const renderWidget = (reviewData, settings, domain) => {
               );
             })}
           </Slider>
+        ) : requiredData.totalReviews === 0 ? (
+          <h5 style={{ textAlign: "center" }}>No reviews Found</h5>
         ) : (
           <div style={{ textAlign: "center" }}>
             <img
@@ -193,8 +248,12 @@ const TextReviewsWithScores = props => {
       .then(res => {
         if (!isEmpty(res.data)) setReviewData({ ...res.data });
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        // console.log(err);
+        let success = _get(error, "response.data.success", false);
+        if (!success) {
+          setReviewData({ rating: "0", reviews: [], total: 0, next: "" });
+        }
       });
   }, []);
 

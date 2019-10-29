@@ -4,9 +4,9 @@
     var container = getDOMNode();
     addCSSLoader(container);
     var widgetProps = getWidgetDataFromDOM(container);
-    var trustFrame = createTrustFrame(widgetProps);
+    var trustFrame = createTrustFrame(widgetProps ,removeCSSLoader, container);
     addTrustToPage(container, trustFrame);
-  };
+};
 
   thetrustSearchWidgets.interval = 0;
 
@@ -18,6 +18,11 @@
   function addCSSLoader(container) {
     container.style.cssText =
       "background:url('https://thetrustsearch-dev.cryptopolice.com/static/images/preloader.gif'); background-repeat:no-repeat; background-position:center";
+  }
+
+  //remove css loader
+  function removeCSSLoader(container) {
+    container.style.cssText = "background:transparent";
   }
 
   function getWidgetDataFromDOM(container) {
@@ -32,7 +37,7 @@
     });
   }
 
-  function createTrustFrame(widgetProps) {
+  function createTrustFrame(widgetProps, removeCSSLoader, container) {
     var trustFrame = document.createElement("iframe");
     trustFrame.frameBorder = "0";
     trustFrame.scrolling = "no";
@@ -46,6 +51,9 @@
     }&stars=${5}`;
 
     trustFrame.style.cssText = `position:relative;height:${widgetProps.dataStyleHeight}; width:${widgetProps.dataStyleWidth};borderStyle:none;display:block;overflow:hidden`;
+    trustFrame.onload = function(){
+      removeCSSLoader(container)
+    }
     return trustFrame;
   }
 
