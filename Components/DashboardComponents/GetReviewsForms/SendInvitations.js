@@ -48,6 +48,9 @@ class SendInvitations extends Component {
   };
 
   renderInfoCards = data => {
+    const { businessAddress, businessAddressFirstTime } = this.props;
+    const businessAdd =
+      businessAddress === "" ? businessAddressFirstTime : businessAddress;
     return data.map(item => {
       return (
         <div className="renderInfoContainer" key={uuid()}>
@@ -72,7 +75,7 @@ class SendInvitations extends Component {
               {item.key ===
               "Send your customers to this website to write their review" ? (
                 <a href={item.value} target="_blank">
-                  Review url
+                  {businessAdd}
                 </a>
               ) : (
                 item.value
@@ -211,7 +214,7 @@ class SendInvitations extends Component {
             <div className="col-md-3">
               {isLoading ? (
                 <Button variant="contained" color="primary" size="large">
-                  <CircularProgress color={"#f1f1f1"} size={20} />
+                  <CircularProgress color={"#f1f1f1"} size={16} />
                 </Button>
               ) : (
                 <Button
@@ -264,6 +267,12 @@ const mapStateToProps = state => {
     "googleDirectReviewUrl",
     ""
   );
+  const businessAddress = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.address",
+    ""
+  );
+  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
   return {
     campaignName,
     campaignLanguage,
@@ -276,7 +285,9 @@ const mapStateToProps = state => {
     success,
     errorMsg,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime
+    googleDirectReviewUrlFirstTime,
+    businessAddress,
+    businessAddressFirstTime
   };
 };
 
