@@ -131,8 +131,7 @@ export default class GetWidget extends Component {
                     data-style-width="100%"
                     data-theme="light"
                     style="position: relative;
-                    overflow: hidden;
-                    padding-top: 56.25%;"
+                    overflow: hidden;"
                     ></div> 
                 `}</code>
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
