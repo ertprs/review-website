@@ -15,6 +15,10 @@ export const onlyScoreWidgetComponentStyles = css`
     -o-border-radius: 10px;
   }
 
+  .widgetBox{
+    background:#fff;
+  }
+
   .widgetRating{
     margin-bottom:0;
     font-weight:bolder;
@@ -69,7 +73,11 @@ export const onlyScoreWidgetComponentStyles = css`
     width:80%;
     margin:5px auto 0 auto;
   }
-
+  .widgetImg{
+    max-width:50%;
+    margin:0 auto;
+    height:auto;
+  }
   /*----------- utility classes -----------*/
   .mb{
     margin-bottom: 5%;
@@ -85,10 +93,11 @@ export const onlyScoreWidgetComponentStyles = css`
 
   @media screen and (min-width:408px){
     .widgetBox{
-      padding:0;
+      padding:3% 0 3% 0;
       width:50%;
       height:50%;
       box-shadow:none;
+      /* background:transparent; */
     }
     .widgetImgContainer{
     height: 50px;
@@ -98,6 +107,10 @@ export const onlyScoreWidgetComponentStyles = css`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+
+  .widgetHeading{
+    font-size:1.2rem !important;
   }
 
   .widgetImgContainer img{
@@ -148,19 +161,27 @@ export const onlyScoreWidgetComponentStyles = css`
   @media screen and (max-width: 225px) {
     .widgetHeading {
       font-size: 1.2rem;
+      margin-bottom:1.5rem;
     }
     .widgetRating {
-      font-size: 1.1rem;
+      font-size: 1.5rem;
       margin-bottom:5px;
+    }
+    .ratingBasis{
+      margin:1rem 0 1rem 0;
     }
     .smallRatingIndicator {
       display: none;
     }
+    .learnMoreLink{
+      margin-top:1.2rem;
+      font-size:1rem;
+    }
   }
 
-  @media screen and (max-width: 225px) {
-    .learnMoreLink{
-      font-size:1rem;
+  @media screen and (max-width:190px){
+    .ratingBasis div:first-child{
+      display:none;
     }
   }
 `;

@@ -14,11 +14,11 @@ import isEmpty from "lodash/isEmpty";
 const retrieveRequiredData = reviewData => {
   const ratings = Number(_get(reviewData, "rating", 0));
 
-  const totalReviews = _get(reviewData, "total", 0);
+  const totalReviews = _get(reviewData, "total", "");
 
   const reviews = _get(reviewData, "reviews", []);
 
-  const success = _get(reviewData, "success", "")
+  const success = _get(reviewData, "success", "");
 
   return { ratings, totalReviews, reviews, success };
 };
@@ -50,7 +50,7 @@ const renderReviewBoxFooter = requiredData => {
           </span>{" "}
           reviews at{" "}
           <a href="https://thetrustsearch.com" target="_blank">
-            <img src="/static/images/small_logo.png" alt="logoImg"/>
+            <img src="/static/images/small_logo.png" alt="logoImg" />
           </a>
         </div>
         {/* <div className="flexImgContainer">
@@ -62,7 +62,6 @@ const renderReviewBoxFooter = requiredData => {
 };
 
 const renderTextReviewsWidget = (reviewData, settings, props) => {
-  console.log(reviewData)
   const requiredData = retrieveRequiredData(reviewData);
   return (
     <div className="flexContainer">
@@ -165,23 +164,27 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           <link href="/static/css/slick.css" type="text/css" rel="stylesheet" />
         </Head>
         <div className="reviewBoxSlider">
-          {requiredData.success!==false && requiredData.totalReviews > 0 ? <Slider {...settings}>
-            {requiredData.reviews.map(item => {
-              return (
-                <div key={uuid()}>
-                  <ReviewBox
-                    review={item}
-                    styles={{ height: "170px" }}
-                    reviewRatingStyles={{ margin: "8px 0 8px 0" }}
-                    reviewHeaderStyles={{ marginTop: "0px" }}
-                    domain={props.domain}
-                  />
-                </div>
-              );
-            })}
-          </Slider> : <div className="noReviewBox">
-            <h4 style={{marginTop:"40px"}}>No reviews Found</h4>
-          </div>}          
+          {requiredData.success !== false && requiredData.totalReviews > 0 ? (
+            <Slider {...settings}>
+              {requiredData.reviews.map(item => {
+                return (
+                  <div key={uuid()}>
+                    <ReviewBox
+                      review={item}
+                      styles={{ height: "170px" }}
+                      reviewRatingStyles={{ margin: "8px 0 8px 0" }}
+                      reviewHeaderStyles={{ marginTop: "0px" }}
+                      domain={props.domain}
+                    />
+                  </div>
+                );
+              })}
+            </Slider>
+          ) : requiredData.totalReviews === 0 ? (
+            <div className="noReviewBox">
+              <h4 style={{ marginTop: "40px" }}>No reviews Found</h4>
+            </div>
+          ) : null}
           <div></div>
         </div>
         <div className="reviewBoxFooter">
@@ -243,27 +246,27 @@ const TextReviews = props => {
   useEffect(() => {
     // const CancelToken = axios.CancelToken;
     // const source = CancelToken.source();
+    console.log("yes");
     axios
       .get(
         `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
       )
       .then(res => {
-        console.log("response form widget ",res.data)
         if (!isEmpty(res.data)) setReviewData({ ...res.data });
       })
       .catch(error => {
-        setReviewData({success: false})
+        setReviewData({ success: false });
         // if (axios.isCancel(error)) {
         //   console.log("cancelled");
         // } else {
         //   throw error;
         // }
-        console.log(error)
+        let success = _get(error, "response.data.success", false);
+        if (!success) {
+          setReviewData({ rating: "0", reviews: [], total: 0, next: "" });
+        }
       });
-
-      return ()=>{
-        
-      }
+    return () => {};
   }, []);
 
   const [parentState, setParentState] = useState(initState);
@@ -298,10 +301,9 @@ const TextReviews = props => {
 };
 
 TextReviews.getInitialProps = async ({ query }) => {
-  const searchURL = query.businessunitId
+  const searchURL = (await query.businessunitId)
     ? `${query.businessunitId}`
     : "google.com";
-
   return { domain: searchURL };
 };
 
