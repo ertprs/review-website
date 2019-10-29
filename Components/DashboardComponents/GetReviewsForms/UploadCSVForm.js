@@ -16,16 +16,7 @@ class UploadCSVForm extends Component {
           invite. The columns in the CSV file should contain: customer email,
           customer name and reference number.
         </h5>
-        <h6
-          style={{
-            margin: "25px 0 25px 0",
-            textDecoration: "underline",
-            color: "blue",
-            cursor: "pointer"
-          }}
-        >
-          Get instructions on how to create the correct format for the file
-        </h6>
+        <a href="/static/user_invite_sample.csv">Download Sample File</a>
       </div>
     );
   };
