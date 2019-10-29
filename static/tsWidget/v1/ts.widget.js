@@ -3,7 +3,7 @@
   thetrustSearchWidgets.init = function() {
     var container = getDOMNode();
     var widgetProps = getWidgetDataFromDOM(container);
-    addCSSLoader(container, widgetProps);
+    // addCSSLoader(container, widgetProps);
     var trustFrame = createTrustFrame(widgetProps, removeCSSLoader, container);
     addTrustToPage(container, trustFrame);
   };
@@ -53,9 +53,9 @@
     }&stars=${5}`;
 
     trustFrame.style.cssText = `position:relative;height:${widgetProps.dataStyleHeight}; width:${widgetProps.dataStyleWidth};borderStyle:none;display:block;overflow:hidden`;
-    trustFrame.onload = function() {
-      removeCSSLoader(container);
-    };
+    // trustFrame.onload = function() {
+    //   removeCSSLoader(container);
+    // };
     return trustFrame;
   }
 
