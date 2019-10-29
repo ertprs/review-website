@@ -20,7 +20,7 @@ const widgetsObj = [
     id: 1,
     title: "Trust carousel",
     tagLine: "Boost customer confidence with an honest TrustBox",
-    minHeight: 310,
+    minHeight: 238,
     imgURL: "/static/images/carouselWidget.png",
     listItems: [
       "Show off your 15 latest reviews",
@@ -29,7 +29,10 @@ const widgetsObj = [
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: ["Header or footer"],
-    support: ["Responsive (max. 100% x 24)"],
+    support: [
+      "Responsive (max. 100% x 24)",
+      "Suggested placement min-height: 238px"
+    ],
     dataTempID: "TextReviews"
   },
   {
@@ -37,18 +40,19 @@ const widgetsObj = [
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/onlyScoreWidget.png",
-    minHeight: 300,
+    minHeight: 290,
     listItems: ["Show off your total number of reviews"],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: [
       "Header or footer",
-      "Small enough to place almost anywhere",
-      "Complement larger TrustBoxes on your website"
+      "Small enough to place almost anywhere"
     ],
     support: [
       "Responsive (max. 100% x 24)",
-      "Mobile, tablet and desktop ready"
+      "Mobile, tablet and desktop ready",
+      "Suggested placement min-width: 285px",
+      "Suggested placement min-height: 290px"
     ],
     dataTempID: "OnlyScoreWidget"
   },
@@ -57,11 +61,11 @@ const widgetsObj = [
     title: "Trust card with reviews",
     tagLine: "Boost customer confidence with an honest TrustBox",
     imgURL: "/static/images/textReviewsWithScores.png",
-    minHeight: 400,
+    minHeight: 360,
     listItems: ["Show off your total number of reviews"],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
-    suggestedPlacement: ["Header or footer"],
+    suggestedPlacement: ["Header or footer", "Suggested placement min-width: 380px", "Suggested placement min-height : 360px"],
     support: ["Responsive (max. 100% x 24)"],
     dataTempID: "TextReviewsWithScores"
   }
@@ -156,12 +160,12 @@ class WidgetsShowCase extends Component {
       <div className="container">
         {!getWidget ? (
           <>
-          <h4 style={{marginBottom:"1.5rem"}}>Choose your widget</h4>
-          <div className="row" style={{ alignItems: "stretch" }}>
-            {widgetsObj.map((item, index) => {
-              return this.renderWidgetBox(item, index);
-            })}
-          </div>
+            <h4 style={{ marginBottom: "1.5rem" }}>Choose your widget</h4>
+            <div className="row" style={{ alignItems: "stretch" }}>
+              {widgetsObj.map((item, index) => {
+                return this.renderWidgetBox(item, index);
+              })}
+            </div>
           </>
         ) : (
           <GetWidget
