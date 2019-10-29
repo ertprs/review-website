@@ -8,15 +8,18 @@ import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import { resendActivationLink } from "../../../store/actions/authActions";
-import { upgradeToPremium } from "../../../store/actions/dashboardActions";
 import { resendActivationLinkApi } from "../../../utility/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { upgradeToPremium } from "../../../store/actions/dashboardActions";
 import withStyles from "@material-ui/styles/withStyles";
 import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
+import Moment from "react-moment";
+
 const styles = theme => ({
   button: {
     width: "150px"
@@ -258,7 +261,7 @@ class Home extends Component {
   };
 
   renderRecentReviewsCard = () => {
-    const { reviewsData } = this.props;
+    const { reviewsData, isReviewsPusherConnected } = this.props;
     const reviews = _get(reviewsData, "reviews", []);
     const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
@@ -283,9 +286,20 @@ class Home extends Component {
           </div>
           <div className="body">
             <div>
-              {topThreeReviews.length > 0
-                ? this.renderReviewSnippets(topThreeReviews)
-                : "Nothing found till yet, Will be updated in 24 hours !"}
+              {topThreeReviews.length > 0 ? (
+                this.renderReviewSnippets(topThreeReviews)
+              ) : isReviewsPusherConnected === true ? (
+                <>
+                  <div style={{ marginTop: "30px" }}>
+                    <h6 style={{ marginBottom: "50px", color: "green" }}>
+                      <b>Fetching reviews</b>
+                    </h6>
+                    <LinearProgress color="secondary" />
+                  </div>
+                </>
+              ) : (
+                "Reviews will be updated soon!"
+              )}
             </div>
           </div>
         </SimpleCard>
@@ -307,6 +321,13 @@ class Home extends Component {
             font-weight: lighter;
             color: #555;
           }
+          .container {
+            margin: 15% 0;
+            border-bottom: 1px solid #999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
         `}</style>
         <SimpleCard style={{ height: "298px" }}>
           <div className="header">
@@ -315,31 +336,17 @@ class Home extends Component {
             </Title>
           </div>
           <div className="body">
-            <div
-              style={{
-                marginBottom: "21px",
-                borderBottom: "1px solid #999"
-              }}
-            >
+            <div className="container">
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Total Invitations :{" "}
+                Total Invitations :
               </p>
-              <h1
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "flex-start",
-                  textAlign: "right"
-                }}
-              >
-                {total}
-              </h1>
+              <h1>{total}</h1>
             </div>
-            <div style={{ borderBottom: "1px solid #999" }}>
+            <div className="container">
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Invitations Left :{" "}
               </p>
-              <h1 style={{ textAlign: "right" }}>{remaining}</h1>
+              <h1>{remaining}</h1>
             </div>
           </div>
         </SimpleCard>
@@ -352,7 +359,9 @@ class Home extends Component {
       businessProfile,
       userProfile,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime
+      googleDirectReviewUrlFirstTime,
+      businessAddress,
+      businessAddressFirstTime
     } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
@@ -362,6 +371,8 @@ class Home extends Component {
       googleDirectReviewUrl === ""
         ? googleDirectReviewUrlFirstTime
         : googleDirectReviewUrl;
+    const businessAdd =
+      businessAddress === "" ? businessAddressFirstTime : businessAddress;
     return (
       <div className="businessDetailsContainer">
         <div className="editBtnContainer">
@@ -384,8 +395,8 @@ class Home extends Component {
             .bold {
               font-weight: bold;
             }
-            .editBtnContainer{
-              text-align:right;
+            .editBtnContainer {
+              text-align: right;
             }
             .businessDetailsContainer {
               margin-left: 25px;
@@ -426,22 +437,15 @@ class Home extends Component {
           <div className="bold">Google direct review url :</div>
           <div>
             <a href={googleReviewUrl} target="_blank">
-              Click here
+              {businessAdd}
             </a>
-            {/* <p
-              onClick={() => {
-                this.setState(prevState => {
-                  return { editMode: !prevState.editMode };
-                });
-              }}
-            >
-              Edit
-            </p> */}
           </div>
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
-          <div>{expiresAt}</div>
+          <div>
+            <Moment format="DD/MM/YYYY HH:mm">{expiresAt}</Moment>
+          </div>
         </div>
       </div>
     );
@@ -579,6 +583,18 @@ const mapStateToProps = state => {
     "googleDirectReviewUrl",
     ""
   );
+  const businessAddress = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.address",
+    ""
+  );
+  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
+
   return {
     reviewsData,
     quotaDetails,
@@ -596,7 +612,10 @@ const mapStateToProps = state => {
     upgradeToPremiumIsLoading,
     googleDirectReviewUrl,
     googleDirectReviewUrlFirstTime,
-    userActivated
+    userActivated,
+    businessAddress,
+    businessAddressFirstTime,
+    isReviewsPusherConnected
   };
 };
 

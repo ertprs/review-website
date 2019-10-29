@@ -42,12 +42,13 @@ class GetStarted extends Component {
   };
 
   handleContinueClick = () => {
-    const { selectedAddress } = this.state;
+    const { selectedAddress, address } = this.state;
     if (Object.keys(selectedAddress).length > 0) {
       this.props.locatePlaceByPlaceId(
         {
-          ...this.state.selectedAddress,
-          directReviewUrl: this.state.formData["directReviewUrl"].value
+          ...selectedAddress,
+          directReviewUrl: this.state.formData["directReviewUrl"].value,
+          address
         },
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
@@ -59,7 +60,7 @@ class GetStarted extends Component {
     const { userProfile } = this.props;
     const name = _get(userProfile, "company.name", "");
     this.setState({
-      selectedAddress: { ...reqBody, name: name },
+      selectedAddress: { ...reqBody, name },
       address: address
     });
   };
@@ -67,7 +68,7 @@ class GetStarted extends Component {
   renderSelectedAddress = () => {
     const { selectedAddress } = this.state;
     return Object.keys(selectedAddress).length > 0 ? (
-      <div style={{ marginTop: "50px" }}>
+      <div style={{ marginTop: "30px" }}>
         <p>
           <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
           {this.state.address}
@@ -145,40 +146,38 @@ class GetStarted extends Component {
   renderDirectReviewUrl = () => {
     const { formData, selectedAddress } = this.state;
     return Object.keys(selectedAddress).length > 0 ? (
-      <div className="container">
-        <div className="row">
-          <div
-            className="col-md-7"
-            style={{ alignItems: "center", display: "flex", flex: "1" }}
+      <div className="row">
+        <div
+          className="col-md-7"
+          style={{ alignItems: "center", display: "flex", flex: "1" }}
+        >
+          <div style={{ width: "100%" }}>
+            <FormField
+              {...formData.directReviewUrl}
+              id="directReviewUrl"
+              handleChange={this.handleChange}
+              styles={{
+                border: "0",
+                borderBottom: "1px solid #999",
+                borderRadius: "0",
+                marginLeft: 0,
+                paddingLeft: 0
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-5">
+          <a
+            href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708"
+            target="_blank"
           >
-            <div style={{width:"100%"}}>
-              <FormField
-                {...formData.directReviewUrl}
-                id="directReviewUrl"
-                handleChange={this.handleChange}
-                styles={{
-                  border: "0",
-                  borderBottom: "1px solid #999",
-                  borderRadius: "0",
-                  marginLeft: 0,
-                  paddingLeft: 0
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-5">
-            <a
-              href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708"
-              target="_blank"
-            >
-              {" "}
-              <p>How to create review short link - Watch Video</p>{" "}
-              <img
-                style={{ maxWidth: "300px" }}
-                src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
-              />
-            </a>
-          </div>
+            {" "}
+            <p>How to create review short link - Watch Video</p>{" "}
+            <img
+              style={{ maxWidth: "300px" }}
+              src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
+            />
+          </a>
         </div>
       </div>
     ) : null;
@@ -259,13 +258,12 @@ class GetStarted extends Component {
   componentDidUpdate(prevProps, prevState) {
     const {
       success,
-      type,
       changeStepToRender,
       isLoading,
       errorMsg,
       setGoogleDirectReviewUrl
     } = this.props;
-    const { formData } = this.state;
+    const { formData, address } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
@@ -278,13 +276,12 @@ class GetStarted extends Component {
             },
             () => {
               changeStepToRender(1);
-              setGoogleDirectReviewUrl(directReviewUrl);
             }
           );
         } else if (this.props.home) {
-          setGoogleDirectReviewUrl(directReviewUrl);
           this.props.changeEditMode();
         }
+        setGoogleDirectReviewUrl(directReviewUrl, address);
       } else if (isLoading === false && !success) {
         if (!this.props.home) {
           this.setState({

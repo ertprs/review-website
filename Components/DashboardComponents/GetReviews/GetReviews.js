@@ -12,15 +12,8 @@ import SenderInfo from "../GetReviewsForms/SenderInfo/SenderInfo";
 import GetReviewsHome from "../GetReviewsForms/GetReviewsHome";
 import Done from "../GetReviewsForms/Done";
 import Papa from "papaparse";
-import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import { getEmailTemplateData } from "../../../utility/emailTemplates/emailTemplates";
 import { connect } from "react-redux";
-import {
-  setGetReviewsData,
-  sendGetReviews
-} from "../../../store/actions/dashboardActions";
-import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
 import CopyPasteForm from "../GetReviewsForms/CopyPasteForm";
@@ -33,7 +26,10 @@ const columns = [
 ];
 import {
   createCampaign,
-  fetchEmailTemplate
+  fetchEmailTemplate,
+  setGetReviewsData,
+  sendGetReviews,
+  clearCampaignData
 } from "../../../store/actions/dashboardActions";
 import _omit from "lodash/omit";
 
@@ -421,15 +417,16 @@ class GetReviews extends Component {
     }
   };
 
-  handleNext = () => {
+  handleNext = isTestEmail => {
     const { activeStep } = this.state;
     const { success } = this.props;
     if (activeStep === 2) {
       this.createCampaignHandler();
+    } else if (isTestEmail === "isTestEmail") {
+      this.createCampaignHandler(true);
     } else {
       if (activeStep <= columns.length) {
         this.setState(prevState => {
-          console.log(prevState.activeStep, "prevState");
           return { activeStep: prevState.activeStep + 1 };
         });
       }
@@ -438,27 +435,23 @@ class GetReviews extends Component {
     }
   };
 
-  createCampaignHandler = () => {
+  createCampaignHandler = isTest => {
     const { createCampaign } = this.props;
     const { selectTemplateData, tableData } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
     const senderEmail = _get(campaign, "senderEmail.value", "");
-    // const subject = _get(selectTemplateData, "subject.value", "");
     const clientName = _get(selectTemplateData, "clientName.value", "");
     const entityDomain = _get(selectTemplateData, "entity.value", "");
-    const service = "product";
-
-    //NEW FIELDS
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
-    //New Field ends
+    // const subject = _get(selectTemplateData, "subject.value", "");
 
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
     });
-    const data = {
+    let data = {
       campaign: {
         name: campaignName,
         senderName: senderName,
@@ -480,6 +473,12 @@ class GetReviews extends Component {
         }
       }
     };
+    if (isTest) {
+      data = {
+        ...data,
+        test: true
+      };
+    }
     createCampaign(data);
   };
 
@@ -824,7 +823,7 @@ class GetReviews extends Component {
         <Done
           changeStepToRender={this.props.changeStepToRender}
           handleInviteMoreClick={() => {
-            this.setState({activeStep:0, getReviewsActiveSubStep:-1})
+            this.setState({ activeStep: 0, getReviewsActiveSubStep: -1 });
           }}
         />
       );
@@ -902,16 +901,24 @@ const mapStateToProps = state => {
   let campaignLanguage = parsedCampaignLanguage || [
     { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
   ];
+  const createCampaignData = _get(dashboardData, "createCampaign", {});
   return {
     success,
     campaignLanguage,
     companyName,
     dashboardData,
-    selectedEmailLanguage
+    selectedEmailLanguage,
+    createCampaignData
   };
 };
 
 export default connect(
   mapStateToProps,
-  { setGetReviewsData, sendGetReviews, createCampaign, fetchEmailTemplate }
+  {
+    setGetReviewsData,
+    sendGetReviews,
+    createCampaign,
+    fetchEmailTemplate,
+    clearCampaignData
+  }
 )(withStyles(styles)(GetReviews));

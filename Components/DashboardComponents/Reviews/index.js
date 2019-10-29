@@ -5,12 +5,10 @@ import _get from "lodash/get";
 import _map from "lodash/map";
 import { fetchReviews } from "../../../store/actions/dashboardActions";
 import ReactPaginate from "react-paginate";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Head from "next/head";
-import NoReviewsFound from "./noReviewsFound";
 import Snackbar from "../../Widgets/Snackbar";
-import { Paper } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+import { Button, Link, CircularProgress, Typography } from "@material-ui/core";
+import NoReviewsFound from "./noReviewsFound";
 
 class Reviews extends Component {
   state = {
@@ -45,13 +43,17 @@ class Reviews extends Component {
       isFetching,
       success,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime
+      googleDirectReviewUrlFirstTime,
+      businessAddress,
+      businessAddressFirstTime
     } = this.props;
     const { perPage } = this.state;
     let googleReviewUrl =
       googleDirectReviewUrl === ""
         ? googleDirectReviewUrlFirstTime
         : googleDirectReviewUrl;
+    const businessAdd =
+      businessAddress === "" ? businessAddressFirstTime : businessAddress;
     return (
       <>
         <Head>
@@ -114,13 +116,17 @@ class Reviews extends Component {
               <NoReviewsFound />
             ) : (
               <>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => window.open(googleReviewUrl)}
-                >
-                  Google Review Url
-                </Button>
+                <Typography>
+                  <b>Google Review Url: &nbsp;</b>
+                  <Link
+                    href="#"
+                    variant="body2"
+                    color="blue"
+                    onClick={() => window.open(googleReviewUrl)}
+                  >
+                    {businessAdd}
+                  </Link>
+                </Typography>
                 {_map(reviews, review => {
                   return <ReviewCard review={review} />;
                 })}
@@ -189,6 +195,12 @@ const mapStateToProps = state => {
     "googleDirectReviewUrl",
     ""
   );
+  const businessAddress = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.address",
+    ""
+  );
+  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
   return {
     token,
     ratings,
@@ -201,7 +213,9 @@ const mapStateToProps = state => {
     error,
     success,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime
+    googleDirectReviewUrlFirstTime,
+    businessAddress,
+    businessAddressFirstTime
   };
 };
 

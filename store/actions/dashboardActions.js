@@ -26,7 +26,11 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_DIRECT_REVIEW_URL
+  SET_GOOGLE_DIRECT_REVIEW_URL,
+  SET_REVIEWS_PUSHER_CONNECT,
+  SEND_TEST_EMAIL_TEMPLATE_INIT,
+  SEND_TEST_EMAIL_TEMPLATE_SUCCESS,
+  SEND_TEST_EMAIL_TEMPLATE_FAILURE
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -242,7 +246,7 @@ export const fetchTransactionHistory = token => {
   };
 };
 
-export const clearCampaignData = (data) => {
+export const clearCampaignData = data => {
   return {
     type: CREATE_CAMPAIGN_SUCCESS,
     createCampaign: {
@@ -366,7 +370,6 @@ export const setCampaignLanguage = parsedCampaignLanguage => {
 };
 
 export const fetchEmailTemplate = templateId => {
-  console.log(templateId, "templateId");
   let token = localStorage.getItem("token");
   return async dispatch => {
     dispatch({
@@ -413,9 +416,64 @@ export const fetchEmailTemplate = templateId => {
   };
 };
 
-export const setGoogleDirectReviewUrl = googleDirectReviewUrl => {
+export const setGoogleDirectReviewUrl = (
+  googleDirectReviewUrl,
+  businessAddress
+) => {
   return {
     type: SET_GOOGLE_DIRECT_REVIEW_URL,
-    googleDirectReviewUrl
+    googleDirectReviewUrl,
+    businessAddress
+  };
+};
+
+export const setReviewsPusherConnect = isReviewsPusherConnected => {
+  return {
+    type: SET_REVIEWS_PUSHER_CONNECT,
+    isReviewsPusherConnected
+  };
+};
+
+export const sendEmailTemplate = () => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: SEND_TEST_EMAIL_TEMPLATE_INIT,
+      sendEmailTemplate: {
+        isLoading: true,
+        success: "undefined",
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "GET",
+        url: `${process.env.BASE_URL}${fetchEmailTemplateApi}`,
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      dispatch({
+        type: SEND_TEST_EMAIL_TEMPLATE_SUCCESS,
+        sendEmailTemplate: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          errorMsg: ""
+        }
+      });
+      console.log(result.data, "result");
+    } catch (error) {
+      console.log(error.response.data, "error");
+      dispatch({
+        type: SEND_TEST_EMAIL_TEMPLATE_FAILURE,
+        sendEmailTemplate: {
+          isLoading: false,
+          success: "false",
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please try again later."
+          )
+        }
+      });
+    }
   };
 };

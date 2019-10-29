@@ -5,7 +5,7 @@ import FormField from "../../Widgets/FormField/FormField";
 import Tooltip from "@material-ui/core/Tooltip";
 import { clearCampaignData } from "../../../store/actions/dashboardActions";
 import _get from "lodash/get";
-import {connect} from 'react-redux';
+import { connect } from "react-redux";
 
 class CreateCampaign extends Component {
   componentDidMount() {
@@ -13,7 +13,7 @@ class CreateCampaign extends Component {
       isLoading: false,
       errorMsg: "",
       quotaDetails: _get(this.props.createCampaignData, "quotaDetails", {}),
-      success: false
+      success: "undefined"
     });
   }
   render() {
