@@ -352,7 +352,9 @@ class Home extends Component {
       businessProfile,
       userProfile,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime
+      googleDirectReviewUrlFirstTime,
+      businessAddress,
+      businessAddressFirstTime
     } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
@@ -362,6 +364,8 @@ class Home extends Component {
       googleDirectReviewUrl === ""
         ? googleDirectReviewUrlFirstTime
         : googleDirectReviewUrl;
+    const businessAdd =
+      businessAddress === "" ? businessAddressFirstTime : businessAddress;
     return (
       <div className="businessDetailsContainer">
         <div className="editBtnContainer">
@@ -384,8 +388,8 @@ class Home extends Component {
             .bold {
               font-weight: bold;
             }
-            .editBtnContainer{
-              text-align:right;
+            .editBtnContainer {
+              text-align: right;
             }
             .businessDetailsContainer {
               margin-left: 25px;
@@ -426,17 +430,8 @@ class Home extends Component {
           <div className="bold">Google direct review url :</div>
           <div>
             <a href={googleReviewUrl} target="_blank">
-              Click here
+              {businessAdd}
             </a>
-            {/* <p
-              onClick={() => {
-                this.setState(prevState => {
-                  return { editMode: !prevState.editMode };
-                });
-              }}
-            >
-              Edit
-            </p> */}
           </div>
         </div>
         <div className="businessDetailsFlexItem">
@@ -579,6 +574,12 @@ const mapStateToProps = state => {
     "googleDirectReviewUrl",
     ""
   );
+  const businessAddress = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.address",
+    ""
+  );
+  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
   return {
     reviewsData,
     quotaDetails,
@@ -596,7 +597,9 @@ const mapStateToProps = state => {
     upgradeToPremiumIsLoading,
     googleDirectReviewUrl,
     googleDirectReviewUrlFirstTime,
-    userActivated
+    userActivated,
+    businessAddress,
+    businessAddressFirstTime
   };
 };
 

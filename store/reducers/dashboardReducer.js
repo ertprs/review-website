@@ -44,7 +44,8 @@ const dashboardReducer = (state = {}, action) => {
     campaignLanguage,
     parsedCampaignLanguage,
     emailTemplate,
-    googleDirectReviewUrl
+    googleDirectReviewUrl,
+    businessAddress
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -221,7 +222,8 @@ const dashboardReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        googleDirectReviewUrl
+        googleDirectReviewUrl,
+        businessAddress
       };
     }
     default:

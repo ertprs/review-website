@@ -242,7 +242,7 @@ export const fetchTransactionHistory = token => {
   };
 };
 
-export const clearCampaignData = (data) => {
+export const clearCampaignData = data => {
   return {
     type: CREATE_CAMPAIGN_SUCCESS,
     createCampaign: {
@@ -413,9 +413,13 @@ export const fetchEmailTemplate = templateId => {
   };
 };
 
-export const setGoogleDirectReviewUrl = googleDirectReviewUrl => {
+export const setGoogleDirectReviewUrl = (
+  googleDirectReviewUrl,
+  businessAddress
+) => {
   return {
     type: SET_GOOGLE_DIRECT_REVIEW_URL,
-    googleDirectReviewUrl
+    googleDirectReviewUrl,
+    businessAddress
   };
 };
