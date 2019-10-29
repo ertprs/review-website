@@ -307,6 +307,13 @@ class Home extends Component {
             font-weight: lighter;
             color: #555;
           }
+          .container {
+            margin: 15% 0;
+            border-bottom: 1px solid #999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
         `}</style>
         <SimpleCard style={{ height: "298px" }}>
           <div className="header">
@@ -315,31 +322,17 @@ class Home extends Component {
             </Title>
           </div>
           <div className="body">
-            <div
-              style={{
-                marginBottom: "21px",
-                borderBottom: "1px solid #999"
-              }}
-            >
+            <div className="container">
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Total Invitations :{" "}
+                Total Invitations :
               </p>
-              <h1
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "flex-start",
-                  textAlign: "right"
-                }}
-              >
-                {total}
-              </h1>
+              <h1>{total}</h1>
             </div>
-            <div style={{ borderBottom: "1px solid #999" }}>
+            <div className="container">
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Invitations Left :{" "}
               </p>
-              <h1 style={{ textAlign: "right" }}>{remaining}</h1>
+              <h1>{remaining}</h1>
             </div>
           </div>
         </SimpleCard>
