@@ -3,23 +3,28 @@ import Card from "../../MaterialComponents/Card";
 import NewAnalysisCard from "../../Widgets/NewAnalysisCard/NewAnalysisCard";
 import { profilePageBodyRightStyles } from "./profilePageBodyRightStyles";
 import { trafficIcons } from "../../../utility/constants/trafficReportsConstants";
-import uuid from 'uuid/v1';
-import { connect } from 'react-redux';
-import _get from 'lodash/get';
-import _isEmpty from 'lodash/isEmpty';
-import { SocialMediaPlaceholder, TrafficReportsPlaceholder, AnalysisReportsPlaceholder } from './Placeholders';
-import ClaimYourWebsite from '../ClaimYourWebsite/ClaimYourWebsite';
+import uuid from "uuid/v1";
+import { connect } from "react-redux";
+import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
+import {
+  SocialMediaPlaceholder,
+  TrafficReportsPlaceholder,
+  AnalysisReportsPlaceholder
+} from "./Placeholders";
+import ClaimYourWebsite from "../ClaimYourWebsite/ClaimYourWebsite";
+import Button from "@material-ui/core/Button";
 
 class ProfilePageBodyRight extends Component {
-
-  renderAnalysisCards = (data) => {
+  renderAnalysisCards = data => {
     let output = [];
     if (Object.keys(data).length > 0) {
       for (let item in data) {
         if (data[item] !== "") {
           output = [
             ...output,
-            <NewAnalysisCard key={uuid()}
+            <NewAnalysisCard
+              key={uuid()}
               analysisTitle={item.split("_").join(" ")}
               analysisInfo={data[item]}
             />
@@ -30,23 +35,24 @@ class ProfilePageBodyRight extends Component {
     return output;
   };
 
-  renderAnalyzeReports = (data) => {
+  renderAnalyzeReports = data => {
     const analyzeReports = this.props.analyzeReports;
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{ textAlign: "left", marginLeft: "15px" }} className="analyzeCardHeading">
+            <h5
+              style={{ textAlign: "left", marginLeft: "15px" }}
+              className="analyzeCardHeading"
+            >
               <i className="fa fa-bar-chart analyzeCardHeaderIcon" />
               Analyze Reports
             </h5>
           </div>
           <div className="analyzeCardBody">
             <div className="row">
-              <div className="col-md-12">
-                {this.renderAnalysisCards(data)}
-              </div>
+              <div className="col-md-12">{this.renderAnalysisCards(data)}</div>
             </div>
           </div>
         </Card>
@@ -54,14 +60,15 @@ class ProfilePageBodyRight extends Component {
     );
   };
 
-  renderTrafficAnalysisCards = (data) => {
+  renderTrafficAnalysisCards = data => {
     let output = [];
     if (Object.keys(data).length > 0) {
       for (let item in data) {
         if (data[item] !== "") {
           output = [
             ...output,
-            <NewAnalysisCard key={uuid()}
+            <NewAnalysisCard
+              key={uuid()}
               analysisTitle={item.split("_").join(" ")}
               analysisInfo={data[item]}
               analysisIcon={trafficIcons[item].name}
@@ -73,17 +80,20 @@ class ProfilePageBodyRight extends Component {
     return output;
   };
 
-  renderSocialMediaCards = (data) => {
+  renderSocialMediaCards = data => {
     return data.map(item => {
-      return <NewAnalysisCard key={uuid()}
-        analysisTitle={item.name}
-        analysisInfo={item.followers}
-        analysisIcon={item.icon}
-      />;
+      return (
+        <NewAnalysisCard
+          key={uuid()}
+          analysisTitle={item.name}
+          analysisInfo={item.followers}
+          analysisIcon={item.icon}
+        />
+      );
     });
   };
 
-  renderTrafficAnalysisReports = (data) => {
+  renderTrafficAnalysisReports = data => {
     const analysisData = [
       {
         analysisTitle: "Daily Unique Visitors",
@@ -121,7 +131,10 @@ class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{ textAlign: "left", marginLeft: "15px" }} className="analyzeCardHeading">
+            <h5
+              style={{ textAlign: "left", marginLeft: "15px" }}
+              className="analyzeCardHeading"
+            >
               <i className="fa fa-line-chart analyzeCardHeaderIcon" />
               Traffic Reports
             </h5>
@@ -138,7 +151,233 @@ class ProfilePageBodyRight extends Component {
     );
   };
 
-  renderSocialMediaReports = (data) => {
+  renderTrustPilotCard = () => {
+    const trustPilotData = {
+      reviews: [],
+      claimed: false,
+      rating: 3.5,
+      max_rating: 5,
+      categories: ["sports", "wrestling"],
+      image_url: "/static/images/trustpilotLogo.png",
+      description:
+        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
+    };
+
+    return (
+      <div style={{ marginBottom: "50px" }}>
+        <style jsx>{`
+          .bold {
+            font-weight: bold;
+          }
+          .claimHeader {
+            text-align: right;
+          }
+          .claimHeaderIconContainer {
+            margin-right: 4px;
+          }
+          .claimHeaderIcon {
+            color: rgb(252, 175, 22);
+          }
+          .brandImageContainer {
+            height: 100px;
+            width: 100px;
+            margin: 0 auto;
+          }
+          .brandImage {
+            max-width: 100%;
+            height: auto;
+          }
+          .ratingContainer {
+            text-align: center;
+          }
+          .ratingContainerText {
+            font-size: 1.2rem;
+          }
+          .learnMoreBtn {
+            text-align: center;
+            margin: 15px 0 5px 0;
+          }
+          .description_header {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+          .additionalDetailsHeader {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+          .additionalDetails {
+            display:flex;
+            margin: 9px 0 9px 0;
+          }
+          .additionalDetails >div{
+            flex-basis:50%;
+          }
+          .additionalDetails >div:last-child{
+            text-align:center;
+          }
+        `}</style>
+        <Card>
+          <div className="claimHeader">
+            <div>
+              <span className="claimHeaderIconContainer">
+                <i className="fa fa-warning claimHeaderIcon"></i>
+              </span>
+              {trustPilotData.claimed ? "claimed" : "Unclaimed"}
+            </div>
+          </div>
+          <div className="brandImageContainer">
+            <img src={trustPilotData.image_url} className="brandImage" />
+          </div>
+          <div className="ratingContainer">
+            <div className="ratingContainerText">
+              <span className="bold">{trustPilotData.rating}</span> out of{" "}
+              <span className="bold">{trustPilotData.max_rating}</span>
+            </div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Categories :</div>{" "}
+            <div>
+              {trustPilotData.categories.map(item => {
+                return <span>{item} </span>;
+              })}
+            </div>
+          </div>
+          <div className="description">
+            <div className="description_header">Description :</div>
+            <p>
+              {trustPilotData.description.length > 100
+                ? trustPilotData.description.substring(0, 100) + "..."
+                : trustPilotData.description}
+            </p>
+          </div>
+          <div className="learnMoreBtn">
+            <Button variant="contained" color="primary" size="small">
+              See more
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  };
+
+  renderTrustedShopCard = () => {
+    const trustedShopData = {
+      reviews: [],
+      claimed: "",
+      certificate_expiry_date: "27/12/2019",
+      rating: 3.5,
+      max_rating: 5,
+      categories: ["sports", "wrestling"],
+      image_url: "/static/images/trustedShopLogo.jpg",
+      description:
+        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
+    };
+
+    return (
+      <div style={{ marginBottom: "50px" }}>
+        <style jsx>{`
+          .bold {
+            font-weight: bold;
+          }
+          .claimHeader {
+            text-align: right;
+          }
+          .claimHeaderIconContainer {
+            margin-right: 4px;
+          }
+          .claimHeaderIcon {
+            color: rgb(252, 175, 22);
+          }
+          .brandImageContainer {
+            height: 100px;
+            width: 100px;
+            margin: 0 auto;
+          }
+          .brandImage {
+            max-width: 100%;
+            height: auto;
+          }
+          .ratingContainer {
+            text-align: center;
+          }
+          .ratingContainerText {
+            font-size: 1.2rem;
+            margin:9px 0 9px 0;
+          }
+          .learnMoreBtn {
+            text-align: center;
+            margin: 15px 0 5px 0;
+          }
+          .description_header {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+          .additionalDetailsHeader {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+          .additionalDetails {
+            display:flex;
+            margin: 9px 0 9px 0;
+          }
+          .additionalDetails >div{
+            flex-basis:50%;
+          }
+          .additionalDetails >div:last-child{
+            text-align:center;
+          }
+        `}</style>
+        <Card>
+          <div className="claimHeader">
+            <div>
+              <span className="claimHeaderIconContainer">
+                <i className="fa fa-warning claimHeaderIcon"></i>
+              </span>
+              {trustedShopData.claimed ? "claimed" : "Unclaimed"}
+            </div>
+          </div>
+          <div className="brandImageContainer">
+            <img src={trustedShopData.image_url} className="brandImage" />
+          </div>
+          <div className="ratingContainer">
+            <div className="ratingContainerText">
+              <span className="bold">{trustedShopData.rating}</span> out of{" "}
+              <span className="bold">{trustedShopData.max_rating}</span>
+            </div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Categories :</div>{" "}
+            <div>
+              {trustedShopData.categories.map(item => {
+                return <span>{item} </span>;
+              })}
+            </div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Certifcate expiry date:</div>{" "}
+            <div>
+              {trustedShopData.certificate_expiry_date}
+            </div>
+          </div>
+          <div className="description">
+            <div className="description_header">Description :</div>
+            <p>
+              {trustedShopData.description.length > 100
+                ? trustedShopData.description.substring(0, 100) + "..."
+                : trustedShopData.description}
+            </p>
+          </div>
+          <div className="learnMoreBtn">
+            <Button variant="contained" color="primary" size="small">
+              See more
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  };
+
+  renderSocialMediaReports = data => {
     const analysisData = [
       {
         analysisTitle: "Facebook",
@@ -166,7 +405,10 @@ class ProfilePageBodyRight extends Component {
         <style jsx>{profilePageBodyRightStyles}</style>
         <Card>
           <div className="analyzeCardHeader">
-            <h5 style={{ textAlign: "left", marginLeft: "15px" }} className="analyzeCardHeading">
+            <h5
+              style={{ textAlign: "left", marginLeft: "15px" }}
+              className="analyzeCardHeading"
+            >
               <i className="fa fa-area-chart" style={{ marginRight: "7px" }} />
               Social Media Stats
             </h5>
@@ -184,76 +426,95 @@ class ProfilePageBodyRight extends Component {
   };
 
   render() {
-    const { domainProfileData, isLoading } = this.props
-    const analysisReportsData = (((domainProfileData || {}).analysisReports || {}).data || {})
-    const trafficReportsData = (((domainProfileData || {}).trafficReports || {}).data || {})
-    const socialMediaStatsData = (((domainProfileData || {}).socialMediaStats || {}).data || {})
+    const { domainProfileData, isLoading } = this.props;
+    const analysisReportsData =
+      ((domainProfileData || {}).analysisReports || {}).data || {};
+    const trafficReportsData =
+      ((domainProfileData || {}).trafficReports || {}).data || {};
+    const socialMediaStatsData =
+      ((domainProfileData || {}).socialMediaStats || {}).data || {};
 
-    const domainReviewsWillCome = (((domainProfileData || {}).domainReviews || {}).willCome || false)
-    const analysisReportsWillCome = (((domainProfileData || {}).analysisReports || {}).willCome || false)
-    const trafficReportsWillCome = (((domainProfileData || {}).trafficReports || {}).willCome || false)
-    const socialMediaStatsWillCome = (((domainProfileData || {}).socialMediaStats || {}).willCome || false)
+    const domainReviewsWillCome =
+      ((domainProfileData || {}).domainReviews || {}).willCome || false;
+    const analysisReportsWillCome =
+      ((domainProfileData || {}).analysisReports || {}).willCome || false;
+    const trafficReportsWillCome =
+      ((domainProfileData || {}).trafficReports || {}).willCome || false;
+    const socialMediaStatsWillCome =
+      ((domainProfileData || {}).socialMediaStats || {}).willCome || false;
 
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
         <style jsx>
           {`
-            @media only screen and (max-width:767px){
-              .claim{
-                margin-top:25px;
+            @media only screen and (max-width: 767px) {
+              .claim {
+                margin-top: 25px;
               }
             }
           `}
         </style>
-        {isLoading ? <div>
-          <div className="mb-25">
-            <Card>
-              <SocialMediaPlaceholder />
-            </Card>
+        {isLoading ? (
+          <div>
+            <div className="mb-25">
+              <Card>
+                <SocialMediaPlaceholder />
+              </Card>
+            </div>
+            <div className="mb-25">
+              <Card>
+                <TrafficReportsPlaceholder />
+              </Card>
+            </div>
+            <div className="mb-25">
+              <Card>
+                <AnalysisReportsPlaceholder />
+              </Card>
+            </div>
           </div>
-          <div className="mb-25" >
-            <Card>
-              <TrafficReportsPlaceholder />
-            </Card>
-          </div>
-          <div className="mb-25" >
-            <Card>
-              <AnalysisReportsPlaceholder />
-            </Card>
-          </div>
-        </div> : <div>
-            {!domainReviewsWillCome ? <div className="mb-25 claim">
-              <ClaimYourWebsite variant="small" />
-            </div> : null}
+        ) : (
+          <div>
+            {!domainReviewsWillCome ? (
+              <div className="mb-25 claim">
+                <ClaimYourWebsite variant="small" />
+              </div>
+            ) : null}
             <div>
-              {socialMediaStatsWillCome ?
+              {socialMediaStatsWillCome ? (
                 <div className="mb-25">
                   {this.renderSocialMediaReports(socialMediaStatsData)}
-                </div> : null}
+                </div>
+              ) : null}
             </div>
             <div>
-              {trafficReportsWillCome ?
+              {trafficReportsWillCome ? (
                 <div className="mb-25">
                   {this.renderTrafficAnalysisReports(trafficReportsData)}
-                </div> : null}
+                </div>
+              ) : null}
             </div>
             <div>
-              {analysisReportsWillCome ?
+              {analysisReportsWillCome ? (
                 <div className="mb-25">
                   {this.renderAnalyzeReports(analysisReportsData)}
-                </div> : null}
+                </div>
+              ) : null}
             </div>
-          </div>}
+            {/* add will come condition */}
+            {this.renderTrustPilotCard()}
+            {this.renderTrustedShopCard()}
+          </div>
+        )}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  const { profileData } = state
-  const { domainProfileData, isLoading } = profileData
-  return { domainProfileData, isLoading }
-}
+  const { profileData } = state;
+  const { domainProfileData, isLoading } = profileData;
+  return { domainProfileData, isLoading };
+};
 
 export default connect(mapStateToProps)(ProfilePageBodyRight);
