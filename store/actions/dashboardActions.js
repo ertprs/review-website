@@ -56,6 +56,7 @@ export const fetchReviews = (token, page, perPage) => {
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
       reviews: {
+        data: {},
         isFetching: true,
         error: "",
         success: "undefined"
@@ -93,6 +94,18 @@ export const fetchReviews = (token, page, perPage) => {
           success
         }
       });
+    }
+  };
+};
+
+export const clearReviewsData = () => {
+  return {
+    type: FETCH_REVIEWS_DATA_SUCCESS,
+    reviews: {
+      data: {},
+      isFetching: false,
+      error: "",
+      success: "undefined"
     }
   };
 };
@@ -146,7 +159,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         }
       });
       if (success) {
-        dispatch(fetchReviews(token));
+        // dispatch(fetchReviews(token));
         cookie.set("placeLocated", true, { expires: 7 });
       }
     } catch (error) {

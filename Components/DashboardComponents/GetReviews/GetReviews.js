@@ -94,11 +94,11 @@ class GetReviews extends Component {
           element: "input",
           labelText: "Subject",
           type: "text",
-          value: "",
-          valid: false,
-          touched: false,
+          value: "Email Subject: Leave a review on Entity",
+          valid: true,
+          touched: true,
           errorMessage: "Enter valid subject",
-          placeholder: "Email Subject: Leave a review on Entity",
+          placeholder: "",
           validationRules: {
             required: true
           }
@@ -226,7 +226,7 @@ class GetReviews extends Component {
         },
         senderEmail: {
           element: "input",
-          value: "noreply.invitations@trustsearchmail.com",
+          value: "noreply@thetrustsearch.com",
           placeholder: "Enter sender's email",
           errorMessage: "",
           valid: true,
@@ -740,8 +740,8 @@ class GetReviews extends Component {
             onBackClick={() => {
               this.setState({ getReviewsActiveSubStep: -1 });
             }}
-            onContinueClick={()=>{
-              this.setState({getReviewsActiveSubStep:3})
+            onContinueClick={() => {
+              this.setState({ getReviewsActiveSubStep: 3 });
             }}
           />
         );

@@ -14,7 +14,11 @@ import ArrowRight from "@material-ui/icons/ArrowRight";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormField from "../../Widgets/FormField/FormField";
 import validate from "../../../utility/validate";
-import { setGoogleDirectReviewUrl } from "../../../store/actions/dashboardActions";
+import {
+  setGoogleDirectReviewUrl,
+  setReviewsPusherConnect,
+  clearReviewsData
+} from "../../../store/actions/dashboardActions";
 
 class GetStarted extends Component {
   state = {
@@ -43,8 +47,13 @@ class GetStarted extends Component {
 
   handleContinueClick = () => {
     const { selectedAddress, address } = this.state;
+    const {
+      setReviewsPusherConnect,
+      locatePlaceByPlaceId,
+      clearReviewsData
+    } = this.props;
     if (Object.keys(selectedAddress).length > 0) {
-      this.props.locatePlaceByPlaceId(
+      locatePlaceByPlaceId(
         {
           ...selectedAddress,
           directReviewUrl: this.state.formData["directReviewUrl"].value,
@@ -53,6 +62,8 @@ class GetStarted extends Component {
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
+      setReviewsPusherConnect(true);
+      clearReviewsData();
     }
   };
 
@@ -391,5 +402,10 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { locatePlaceByPlaceId, setGoogleDirectReviewUrl }
+  {
+    locatePlaceByPlaceId,
+    setGoogleDirectReviewUrl,
+    setReviewsPusherConnect,
+    clearReviewsData
+  }
 )(GetStarted);
