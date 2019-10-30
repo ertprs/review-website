@@ -319,7 +319,7 @@ class SelectTemplateForm extends Component {
                   onClick={() => this.props.handleNext("isTestEmail")}
                   size="small"
                 >
-                  Send sample email on my mail
+                  Send sample template on my mail
                 </Button>
               )}
             </div>

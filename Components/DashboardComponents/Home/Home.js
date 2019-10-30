@@ -322,7 +322,7 @@ class Home extends Component {
             color: #555;
           }
           .container {
-            margin: 15% 0;
+            margin: 50px 0;
             border-bottom: 1px solid #999;
             display: flex;
             justify-content: space-between;

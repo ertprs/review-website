@@ -27,10 +27,7 @@ import {
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
   SET_GOOGLE_DIRECT_REVIEW_URL,
-  SET_REVIEWS_PUSHER_CONNECT,
-  SEND_TEST_EMAIL_TEMPLATE_INIT,
-  SEND_TEST_EMAIL_TEMPLATE_SUCCESS,
-  SEND_TEST_EMAIL_TEMPLATE_FAILURE
+  SET_REVIEWS_PUSHER_CONNECT
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -431,49 +428,5 @@ export const setReviewsPusherConnect = isReviewsPusherConnected => {
   return {
     type: SET_REVIEWS_PUSHER_CONNECT,
     isReviewsPusherConnected
-  };
-};
-
-export const sendEmailTemplate = () => {
-  let token = localStorage.getItem("token");
-  return async dispatch => {
-    dispatch({
-      type: SEND_TEST_EMAIL_TEMPLATE_INIT,
-      sendEmailTemplate: {
-        isLoading: true,
-        success: "undefined",
-        errorMsg: ""
-      }
-    });
-    try {
-      let result = await axios({
-        method: "GET",
-        url: `${process.env.BASE_URL}${fetchEmailTemplateApi}`,
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      dispatch({
-        type: SEND_TEST_EMAIL_TEMPLATE_SUCCESS,
-        sendEmailTemplate: {
-          isLoading: false,
-          success: _get(result, "data.success", false),
-          errorMsg: ""
-        }
-      });
-      console.log(result.data, "result");
-    } catch (error) {
-      console.log(error.response.data, "error");
-      dispatch({
-        type: SEND_TEST_EMAIL_TEMPLATE_FAILURE,
-        sendEmailTemplate: {
-          isLoading: false,
-          success: "false",
-          errorMsg: _get(
-            error,
-            "response.data.error.message",
-            "Some error occured. Please try again later."
-          )
-        }
-      });
-    }
   };
 };
