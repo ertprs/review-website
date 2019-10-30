@@ -2,11 +2,11 @@
   // public method
   thetrustSearchWidgets.init = function() {
     var container = getDOMNode();
-    addCSSLoader(container);
     var widgetProps = getWidgetDataFromDOM(container);
-    var trustFrame = createTrustFrame(widgetProps ,removeCSSLoader, container);
+    // addCSSLoader(container, widgetProps);
+    var trustFrame = createTrustFrame(widgetProps, removeCSSLoader, container);
     addTrustToPage(container, trustFrame);
-};
+  };
 
   thetrustSearchWidgets.interval = 0;
 
@@ -15,9 +15,11 @@
     return document.querySelector(".trustsearch-widget");
   }
 
-  function addCSSLoader(container) {
-    container.style.cssText =
-      "background:url('https://thetrustsearch-dev.cryptopolice.com/static/images/preloader.gif'); background-repeat:no-repeat; background-position:center";
+  function addCSSLoader(container, widgetProps) {
+    if (widgetProps.dataTemplateId !== "TextReviewsWithScores") {
+      container.style.cssText =
+        "background:url('https://thetrustsearch-dev.cryptopolice.com/static/images/preloader.gif'); background-repeat:no-repeat; background-position:center";
+    }
   }
 
   //remove css loader
@@ -51,9 +53,9 @@
     }&stars=${5}`;
 
     trustFrame.style.cssText = `position:relative;height:${widgetProps.dataStyleHeight}; width:${widgetProps.dataStyleWidth};borderStyle:none;display:block;overflow:hidden`;
-    trustFrame.onload = function(){
-      removeCSSLoader(container)
-    }
+    // trustFrame.onload = function() {
+    //   removeCSSLoader(container);
+    // };
     return trustFrame;
   }
 

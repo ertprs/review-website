@@ -85,7 +85,7 @@ class CreateCampaign extends Component {
                 />
               </Tooltip>
               <p className="textnote">
-                * Upgrade to premium to send inviatations using your own email
+                * Upgrade to premium to send invitations using your own email
                 domain.
               </p>
               <Button

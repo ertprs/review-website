@@ -21,7 +21,11 @@ const parseTableData = tableData => {
     let statusInWords = status === 1 ? "Sent" : "Not Sent";
     let reference = _get(data, "reference", "##");
     reference = reference === null ? "##" : reference;
-    let created = <Moment format="DD/MM/YYYY HH:mm">{data.created}</Moment>;
+    let created = (
+      <Moment format="DD/MM/YYYY HH:mm">
+        {data.created || new Date().getDate()}
+      </Moment>
+    );
     return { ...data, status: statusInWords, reference, created };
   });
   return result;

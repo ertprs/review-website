@@ -444,7 +444,9 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
           <div>
-            <Moment format="DD/MM/YYYY HH:mm">{expiresAt}</Moment>
+            <Moment format="DD/MM/YYYY HH:mm">
+              {expiresAt || new Date().getDate()}
+            </Moment>
           </div>
         </div>
       </div>
