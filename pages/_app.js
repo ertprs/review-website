@@ -46,7 +46,7 @@ class MyApp extends App {
   }
 
   render() {
-    console.warn = console.error = () => {};
+    console.log = console.warn = console.error = () => {};
     const { Component, pageProps, reduxStore } = this.props;
     return (
       <>
