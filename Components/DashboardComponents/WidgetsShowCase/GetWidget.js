@@ -141,7 +141,7 @@ export default class GetWidget extends Component {
               <div className="codeBlock">
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 <code className="blue">{`
-                    <script type="text/javascript" src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v1/ts.widget.js"
+                    <script type="text/javascript" src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
                     async></script>
                 `}</code>
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
