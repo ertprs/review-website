@@ -122,10 +122,8 @@ class Reviews extends Component {
                   <>
                     <Typography>
                       <b>Invitation url: &nbsp;</b>
-                      <Link
-                        href="#"
-                        variant="body2"
-                        color="blue"
+                      <div
+                        style={{color:"blue", cursor:"pointer"}}
                         onClick={() =>
                           window.open(
                             `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
@@ -133,22 +131,20 @@ class Reviews extends Component {
                         }
                       >
                         {businessAdd}
-                      </Link>
+                      </div>
                     </Typography>
                   </>
                 ) : (
                   <>
-                    <Typography>
-                      <b>Google Review Url: &nbsp;</b>
-                      <Link
-                        href="#"
-                        variant="body2"
-                        color="blue"
+                    <div style={{display:"flex"}}>
+                      <div><b>Google Review Url: &nbsp;</b></div>
+                      <div
+                        style={{color:"blue", cursor:"pointer"}}
                         onClick={() => window.open(googleReviewUrl)}
                       >
                         {businessAdd}
-                      </Link>
-                    </Typography>
+                      </div>
+                    </div>
                   </>
                 )}
 
