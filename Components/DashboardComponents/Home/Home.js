@@ -437,7 +437,7 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           {googleReviewUrl === "" ? (
             <>
-              <div className="bold">Add invite :</div>
+              <div className="bold">Invitation url :</div>
               <div>
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
