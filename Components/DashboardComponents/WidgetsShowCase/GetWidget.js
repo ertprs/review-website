@@ -23,9 +23,43 @@ export default class GetWidget extends Component {
     const { widget } = this.props;
     return (
       <Paper style={{ padding: "25px" }}>
+        <style jsx>
+          {`
+            .widgetBox {
+              padding: 15px;
+            }
+            .widgetImgContainer {
+              width: 80%;
+              height: auto;
+              margin: 0 auto;
+            }
+            .widgetImgContainerSm {
+              width: 40%;
+              height: auto;
+              margin: 0 auto;
+            }
+            .widgetImgContainer img,
+            .widgetImgContainerSm img {
+              max-width: 100%;
+              height: auto;
+            }
+            .mt {
+              margin-top: 20.5px;
+            }
+          `}
+        </style>
         <Title>About the {widget.title}</Title>
         <p>{widget.description}</p>
-        <h6>Suggested placement: </h6>
+        <div>
+          <div
+            className={`${
+              widget.id === 1 ? "widgetImgContainer" : "widgetImgContainerSm"
+            }`}
+          >
+            <img src={widget.imgURL} />
+          </div>
+        </div>
+        <h6 style={{marginTop:"25px"}}>Suggested placement: </h6>
         {this.renderContent(widget.suggestedPlacement)}
         <h6>Supported devices/sizes: </h6>
         {this.renderContent(widget.support)}
@@ -107,7 +141,7 @@ export default class GetWidget extends Component {
               <div className="codeBlock">
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 <code className="blue">{`
-                    <script type="text/javascript" src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v1/ts.widget.js"
+                    <script type="text/javascript" src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
                     async></script>
                 `}</code>
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
