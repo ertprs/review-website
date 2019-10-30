@@ -361,7 +361,8 @@ class Home extends Component {
       googleDirectReviewUrl,
       googleDirectReviewUrlFirstTime,
       businessAddress,
-      businessAddressFirstTime
+      businessAddressFirstTime,
+      googlePlaceId
     } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
@@ -434,12 +435,28 @@ class Home extends Component {
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          <div className="bold">Google direct review url :</div>
-          <div>
-            <a href={googleReviewUrl} target="_blank">
-              {businessAdd}
-            </a>
-          </div>
+          {googleReviewUrl === "" ? (
+            <>
+              <div className="bold">Add invite :</div>
+              <div>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
+                  target="_blank"
+                >
+                  {businessAdd}
+                </a>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="bold">Google direct review url :</div>
+              <div>
+                <a href={googleReviewUrl} target="_blank">
+                  {businessAdd}
+                </a>
+              </div>
+            </>
+          )}
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
@@ -596,7 +613,7 @@ const mapStateToProps = state => {
     "isReviewsPusherConnected",
     false
   );
-
+  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
   return {
     reviewsData,
     quotaDetails,
@@ -617,7 +634,8 @@ const mapStateToProps = state => {
     userActivated,
     businessAddress,
     businessAddressFirstTime,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    googlePlaceId
   };
 };
 

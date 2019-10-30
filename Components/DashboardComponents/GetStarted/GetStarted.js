@@ -32,12 +32,12 @@ class GetStarted extends Component {
         element: "input",
         type: "text",
         value: "",
-        valid: false,
-        touched: false,
+        valid: true,
+        touched: true,
         errorMessage: "Enter valid review URL",
         placeholder: "Enter google review URL",
         validationRules: {
-          required: true,
+          required: false,
           isDomain: true
         },
         label: "Google review URL: "
@@ -46,19 +46,28 @@ class GetStarted extends Component {
   };
 
   handleContinueClick = () => {
-    const { selectedAddress, address } = this.state;
+    const { selectedAddress, address, formData } = this.state;
     const {
       setReviewsPusherConnect,
       locatePlaceByPlaceId,
       clearReviewsData
     } = this.props;
     if (Object.keys(selectedAddress).length > 0) {
-      locatePlaceByPlaceId(
-        {
+      let data = {};
+      if (formData["directReviewUrl"].value === "") {
+        data = {
           ...selectedAddress,
-          directReviewUrl: this.state.formData["directReviewUrl"].value,
           address
-        },
+        };
+      } else {
+        data = {
+          ...selectedAddress,
+          directReviewUrl: formData["directReviewUrl"].value,
+          address
+        };
+      }
+      locatePlaceByPlaceId(
+        data,
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
@@ -274,7 +283,7 @@ class GetStarted extends Component {
       errorMsg,
       setGoogleDirectReviewUrl
     } = this.props;
-    const { formData, address } = this.state;
+    const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
@@ -292,26 +301,17 @@ class GetStarted extends Component {
         } else if (this.props.home) {
           this.props.changeEditMode();
         }
-        setGoogleDirectReviewUrl(directReviewUrl, address);
+        setGoogleDirectReviewUrl(
+          directReviewUrl,
+          address,
+          _get(selectedAddress, "placeId", "")
+        );
       } else if (isLoading === false && !success) {
-        if (!this.props.home) {
-          this.setState({
-            showSnackbar: true,
-            variant: "error",
-            snackbarMsg: errorMsg
-          });
-        } else if (this.props.home) {
-          this.setState(
-            {
-              showSnackbar: true,
-              variant: "error",
-              snackbarMsg: errorMsg
-            },
-            () => {
-              this.props.changeEditMode();
-            }
-          );
-        }
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: errorMsg
+        });
       }
     }
   }

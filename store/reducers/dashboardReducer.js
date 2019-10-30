@@ -47,8 +47,8 @@ const dashboardReducer = (state = {}, action) => {
     emailTemplate,
     googleDirectReviewUrl,
     businessAddress,
-    sendEmailTemplate,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    googlePlaceId
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -226,7 +226,8 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         googleDirectReviewUrl,
-        businessAddress
+        businessAddress,
+        googlePlaceId
       };
     }
     case SET_REVIEWS_PUSHER_CONNECT: {
