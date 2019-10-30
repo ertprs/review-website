@@ -124,7 +124,7 @@ class SenderInfoForm extends Component {
               </a> */}
               <p className="formText">
                 <b>Sender Email: </b>
-                <span>noreply.invitations@trustsearchmail.com</span>
+                <span>noreply@thetrustsearch.com</span>
               </p>
               <p className="textnote">
                 * Upgrade to premium to send inviatations using your own email
@@ -140,7 +140,7 @@ class SenderInfoForm extends Component {
                 <FormControlLabel
                   value="non-technical"
                   control={<Radio />}
-                  label="Send from noreply.invitations@trustsearchmail.com (no further setup required)"
+                  label="Send from noreply@thetrustsearch.com.com (no further setup required)"
                 />
                 <FormControlLabel
                   value="technical"
@@ -152,43 +152,43 @@ class SenderInfoForm extends Component {
           </div>
         </div>
         <div className="container">
-        <div className="row" style={{ marginTop: "20px" }}>
-          <style jsx>
-            {`
-              @media only screen and (max-width: 767px) {
-                .backBtn {
-                  margin-left: 5px;
-                  margin-bottom: 15px;
+          <div className="row" style={{ marginTop: "20px" }}>
+            <style jsx>
+              {`
+                @media only screen and (max-width: 767px) {
+                  .backBtn {
+                    margin-left: 5px;
+                    margin-bottom: 15px;
+                  }
                 }
-              }
-            `}
-          </style>
-          <div className="col-md-2">
-            <div className="backBtn">
+              `}
+            </style>
+            <div className="col-md-2">
+              <div className="backBtn">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  startIcon={<ArrowLeft />}
+                  onClick={this.props.handleBack}
+                >
+                  Back
+                </Button>
+              </div>
+            </div>
+            <div className="col-md-2">
               <Button
                 variant="contained"
                 color="primary"
                 size="small"
-                startIcon={<ArrowLeft />}
-                onClick={this.props.handleBack}
+                endIcon={<ArrowRight />}
+                onClick={this.props.handleNext}
+                disabled={!valid}
               >
-                Back
+                Continue
               </Button>
             </div>
           </div>
-          <div className="col-md-2">
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              endIcon={<ArrowRight />}
-              onClick={this.props.handleNext}
-              disabled={!valid}
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
         </div>
         <Modal
           showModal={this.state.showModal}
