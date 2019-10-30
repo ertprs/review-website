@@ -40,17 +40,22 @@ const OnlyScoreWidget = props => {
   const [reviewData, setReviewData] = useState({});
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
-      )
-      .then(res => {
-        console.log("response form widget ", res.data);
-        if (!isEmpty(res.data)) setReviewData({ ...res.data });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (props.domain !== undefined) {
+      axios
+        .get(
+          `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
+        )
+        .then(res => {
+          if (!isEmpty(res.data)) setReviewData({ ...res.data });
+        })
+        .catch(error => {
+          // console.log(err);
+          let success = _get(error, "response.data.success", false);
+          if (!success) {
+            setReviewData({ rating: "0", reviews: [], total: 0, next: "" });
+          }
+        });
+    }
   }, []);
   return (
     <>
@@ -65,7 +70,7 @@ OnlyScoreWidget.getInitialProps = async ({ query }) => {
     const searchURL = query.businessunitId
       ? `${query.businessunitId}`
       : "google.com";
-
+    console.log(searchURL, "searchURL");
     return { domain: searchURL };
   }
 };

@@ -137,13 +137,6 @@ const WidgetsShowCase = dynamic(
   }
 );
 
-// import Home from "../../Components/DashboardComponents/Home/Home";
-// import GetStarted from "../../Components/DashboardComponents/GetStarted/GetStarted";
-// import GetReviews from "../../Components/DashboardComponents/GetReviews/GetReviews";
-// import Reviews from "../../Components/DashboardComponents/Reviews";
-// import InvitationHistory from "../../Components/DashboardComponents/InvitationHistory";
-// import WidgetsShowCase from "../../Components/DashboardComponents/WidgetsShowCase/WidgetsShowCase";
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -274,7 +267,7 @@ function Dashboard(props) {
     if (stepToRender === 0) {
       return <GetStarted changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 1) {
-      return <Home />;
+      return <Home changeStepToRender={changeStepToRender} />;
     } else if (stepToRender === 2) {
       return <Reviews />;
     } else if (stepToRender === 3) {
@@ -355,13 +348,16 @@ function Dashboard(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      {/* && props.reviews.length===0    */}
-      {placeLocated && props.domain !== "" && props.reviews.length === 0 ? (
+      {placeLocated &&
+      props.domain !== "" &&
+      props.reviews.length === 0 &&
+      props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
           onChildStateChange={newState => {
             setParentState({ ...parentState, ...newState });
             const fetchSuccess = _get(newState, "response.success", false);
+            console.log(fetchSuccess, "fetchSuccess");
             if (fetchSuccess) {
               fetchReviews(token);
             }
@@ -504,6 +500,11 @@ const mapStateToProps = state => {
     false
   );
   const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    "undefined"
+  );
   return {
     authorized,
     loginType,
@@ -520,7 +521,8 @@ const mapStateToProps = state => {
     domain,
     reviews,
     token,
-    isSubscriptionExpired
+    isSubscriptionExpired,
+    isReviewsPusherConnected
   };
 };
 

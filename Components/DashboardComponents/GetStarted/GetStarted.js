@@ -14,7 +14,11 @@ import ArrowRight from "@material-ui/icons/ArrowRight";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormField from "../../Widgets/FormField/FormField";
 import validate from "../../../utility/validate";
-import { setGoogleDirectReviewUrl } from "../../../store/actions/dashboardActions";
+import {
+  setGoogleDirectReviewUrl,
+  setReviewsPusherConnect,
+  clearReviewsData
+} from "../../../store/actions/dashboardActions";
 
 class GetStarted extends Component {
   state = {
@@ -28,12 +32,12 @@ class GetStarted extends Component {
         element: "input",
         type: "text",
         value: "",
-        valid: false,
-        touched: false,
+        valid: true,
+        touched: true,
         errorMessage: "Enter valid review URL",
         placeholder: "Enter google review URL",
         validationRules: {
-          required: true,
+          required: false,
           isDomain: true
         },
         label: "Google review URL: "
@@ -42,16 +46,33 @@ class GetStarted extends Component {
   };
 
   handleContinueClick = () => {
-    const { selectedAddress } = this.state;
+    const { selectedAddress, address, formData } = this.state;
+    const {
+      setReviewsPusherConnect,
+      locatePlaceByPlaceId,
+      clearReviewsData
+    } = this.props;
     if (Object.keys(selectedAddress).length > 0) {
-      this.props.locatePlaceByPlaceId(
-        {
-          ...this.state.selectedAddress,
-          directReviewUrl: this.state.formData["directReviewUrl"].value
-        },
+      let data = {};
+      if (formData["directReviewUrl"].value === "") {
+        data = {
+          ...selectedAddress,
+          address
+        };
+      } else {
+        data = {
+          ...selectedAddress,
+          directReviewUrl: formData["directReviewUrl"].value,
+          address
+        };
+      }
+      locatePlaceByPlaceId(
+        data,
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
+      setReviewsPusherConnect(true);
+      clearReviewsData();
     }
   };
 
@@ -59,7 +80,7 @@ class GetStarted extends Component {
     const { userProfile } = this.props;
     const name = _get(userProfile, "company.name", "");
     this.setState({
-      selectedAddress: { ...reqBody, name: name },
+      selectedAddress: { ...reqBody, name },
       address: address
     });
   };
@@ -67,7 +88,7 @@ class GetStarted extends Component {
   renderSelectedAddress = () => {
     const { selectedAddress } = this.state;
     return Object.keys(selectedAddress).length > 0 ? (
-      <div style={{ marginTop: "50px" }}>
+      <div style={{ marginTop: "30px" }}>
         <p>
           <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
           {this.state.address}
@@ -106,8 +127,7 @@ class GetStarted extends Component {
   renderContinueBtn = () => {
     const { selectedAddress, formData } = this.state;
     const { type, isLoading } = this.props;
-    return Object.keys(selectedAddress).length > 0 &&
-      formData["directReviewUrl"].valid ? (
+    return Object.keys(selectedAddress).length > 0  ? (
       <div style={{ marginTop: "50px", textAlign: "right" }}>
         {isLoading === true ? (
           <CircularProgress size={25} />
@@ -145,19 +165,39 @@ class GetStarted extends Component {
   renderDirectReviewUrl = () => {
     const { formData, selectedAddress } = this.state;
     return Object.keys(selectedAddress).length > 0 ? (
-      <div>
-        <FormField
-          {...formData.directReviewUrl}
-          id="directReviewUrl"
-          handleChange={this.handleChange}
-          styles={{
-            border: "0",
-            borderBottom: "1px solid #999",
-            borderRadius: "0",
-            marginLeft: 0,
-            paddingLeft: 0
-          }}
-        />
+      <div className="row">
+        <div
+          className="col-md-7"
+          style={{ alignItems: "flex-end", display: "flex", flex: "1" }}
+        >
+          <div style={{ width: "100%" }}>
+            <FormField
+              {...formData.directReviewUrl}
+              id="directReviewUrl"
+              handleChange={this.handleChange}
+              styles={{
+                border: "0",
+                borderBottom: "1px solid #999",
+                borderRadius: "0",
+                marginLeft: 0,
+                paddingLeft: 0
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-5">
+          <a
+            href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708"
+            target="_blank"
+          >
+            {" "}
+            <p>How to create review short link - Watch Video</p>{" "}
+            <img
+              style={{ maxWidth: "300px" }}
+              src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
+            />
+          </a>
+        </div>
       </div>
     ) : null;
   };
@@ -237,26 +277,33 @@ class GetStarted extends Component {
   componentDidUpdate(prevProps, prevState) {
     const {
       success,
-      type,
       changeStepToRender,
       isLoading,
       errorMsg,
       setGoogleDirectReviewUrl
     } = this.props;
-    const { formData } = this.state;
+    const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
-        this.setState(
-          {
-            showSnackbar: true,
-            variant: "success",
-            snackbarMsg: "Data located successfully!"
-          },
-          () => {
-            changeStepToRender(1);
-            setGoogleDirectReviewUrl(directReviewUrl);
-          }
+        if (!this.props.home) {
+          this.setState(
+            {
+              showSnackbar: true,
+              variant: "success",
+              snackbarMsg: "Data located successfully!"
+            },
+            () => {
+              changeStepToRender(1);
+            }
+          );
+        } else if (this.props.home) {
+          this.props.changeEditMode();
+        }
+        setGoogleDirectReviewUrl(
+          directReviewUrl,
+          address,
+          _get(selectedAddress, "placeId", "")
         );
       } else if (isLoading === false && !success) {
         this.setState({
@@ -284,7 +331,7 @@ class GetStarted extends Component {
           </Grid>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={6}>
-              <div
+              {/* <div
                 style={{
                   position: "relative",
                   paddingBottom: "56.25%",
@@ -305,7 +352,7 @@ class GetStarted extends Component {
                     height: "100%"
                   }}
                 ></iframe>
-              </div>
+              </div> */}
             </Grid>
           </Grid>
         </Container>
@@ -354,5 +401,10 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { locatePlaceByPlaceId, setGoogleDirectReviewUrl }
+  {
+    locatePlaceByPlaceId,
+    setGoogleDirectReviewUrl,
+    setReviewsPusherConnect,
+    clearReviewsData
+  }
 )(GetStarted);

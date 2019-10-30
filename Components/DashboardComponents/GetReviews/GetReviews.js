@@ -12,15 +12,8 @@ import SenderInfo from "../GetReviewsForms/SenderInfo/SenderInfo";
 import GetReviewsHome from "../GetReviewsForms/GetReviewsHome";
 import Done from "../GetReviewsForms/Done";
 import Papa from "papaparse";
-import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import { getEmailTemplateData } from "../../../utility/emailTemplates/emailTemplates";
 import { connect } from "react-redux";
-import {
-  setGetReviewsData,
-  sendGetReviews
-} from "../../../store/actions/dashboardActions";
-import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
 import CopyPasteForm from "../GetReviewsForms/CopyPasteForm";
@@ -33,7 +26,10 @@ const columns = [
 ];
 import {
   createCampaign,
-  fetchEmailTemplate
+  fetchEmailTemplate,
+  setGetReviewsData,
+  sendGetReviews,
+  clearCampaignData
 } from "../../../store/actions/dashboardActions";
 import _omit from "lodash/omit";
 
@@ -96,12 +92,13 @@ class GetReviews extends Component {
       selectTemplateData: {
         subject: {
           element: "input",
+          labelText: "Subject",
           type: "text",
-          value: "",
-          valid: false,
-          touched: false,
+          value: "Email Subject: Leave a review on Entity",
+          valid: true,
+          touched: true,
           errorMessage: "Enter valid subject",
-          placeholder: "Email Subject: Leave a review on Entity",
+          placeholder: "",
           validationRules: {
             required: true
           }
@@ -109,6 +106,7 @@ class GetReviews extends Component {
         clientName: {
           element: "input",
           type: "text",
+          labelText: "Client Name",
           value: "Name",
           valid: true,
           touched: true,
@@ -121,6 +119,7 @@ class GetReviews extends Component {
         entity: {
           element: "input",
           type: "text",
+          labelText: "Entity",
           value: this.props.companyName + " " || " ",
           valid: true,
           touched: false,
@@ -131,6 +130,7 @@ class GetReviews extends Component {
           }
         },
         exampleText: {
+          labelText: "Example Text",
           element: "textarea",
           value: "",
           valid: true,
@@ -144,6 +144,7 @@ class GetReviews extends Component {
           rows: "5"
         },
         leaveReviewText: {
+          labelText: "Leave review text",
           element: "input",
           type: "text",
           value: "",
@@ -225,7 +226,7 @@ class GetReviews extends Component {
         },
         senderEmail: {
           element: "input",
-          value: "noreply.invitations@trustsearchmail.com",
+          value: "noreply@thetrustsearch.com",
           placeholder: "Enter sender's email",
           errorMessage: "",
           valid: true,
@@ -416,15 +417,16 @@ class GetReviews extends Component {
     }
   };
 
-  handleNext = () => {
+  handleNext = isTestEmail => {
     const { activeStep } = this.state;
     const { success } = this.props;
     if (activeStep === 2) {
       this.createCampaignHandler();
+    } else if (isTestEmail === "isTestEmail") {
+      this.createCampaignHandler("sendTest");
     } else {
       if (activeStep <= columns.length) {
         this.setState(prevState => {
-          console.log(prevState.activeStep, "prevState")
           return { activeStep: prevState.activeStep + 1 };
         });
       }
@@ -433,27 +435,23 @@ class GetReviews extends Component {
     }
   };
 
-  createCampaignHandler = () => {
+  createCampaignHandler = sendTest => {
     const { createCampaign } = this.props;
     const { selectTemplateData, tableData } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
     const senderEmail = _get(campaign, "senderEmail.value", "");
-    // const subject = _get(selectTemplateData, "subject.value", "");
     const clientName = _get(selectTemplateData, "clientName.value", "");
     const entityDomain = _get(selectTemplateData, "entity.value", "");
-    const service = "product";
-
-    //NEW FIELDS
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
-    //New Field ends
+    // const subject = _get(selectTemplateData, "subject.value", "");
 
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
     });
-    const data = {
+    let data = {
       campaign: {
         name: campaignName,
         senderName: senderName,
@@ -475,6 +473,12 @@ class GetReviews extends Component {
         }
       }
     };
+    if (sendTest === "sendTest") {
+      data = {
+        ...data,
+        test: true
+      };
+    }
     createCampaign(data);
   };
 
@@ -549,7 +553,7 @@ class GetReviews extends Component {
               exampleText: {
                 ...this.state.selectTemplateData.exampleText,
                 value: getEmailTemplateData(
-                    this.state.createCampaign.campaignLanguage.value,
+                  this.state.createCampaign.campaignLanguage.value,
                   "exampleText",
                   _get(this.props, "companyName", "")
                 )
@@ -731,7 +735,15 @@ class GetReviews extends Component {
         );
       } else if (getReviewsActiveSubStep === 0) {
         return (
-          <GetReviewsHome handleListItemClick={this.handleListItemClick} />
+          <GetReviewsHome
+            handleListItemClick={this.handleListItemClick}
+            onBackClick={() => {
+              this.setState({ getReviewsActiveSubStep: -1 });
+            }}
+            onContinueClick={() => {
+              this.setState({ getReviewsActiveSubStep: 3 });
+            }}
+          />
         );
       } else if (getReviewsActiveSubStep === 1) {
         return (
@@ -815,13 +827,20 @@ class GetReviews extends Component {
       );
     }
     if (activeStep === 3) {
-      return <Done changeStepToRender={this.props.changeStepToRender} />;
+      return (
+        <Done
+          changeStepToRender={this.props.changeStepToRender}
+          handleInviteMoreClick={() => {
+            this.setState({ activeStep: 0, getReviewsActiveSubStep: -1 });
+          }}
+        />
+      );
     }
   };
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
-    console.log(activeStep, success, "COMPONENT_DID_UPDATE")
+    console.log(activeStep, success, "COMPONENT_DID_UPDATE");
     if (this.props !== prevProps) {
       if (activeStep === 2) {
         if (success === true) {
@@ -890,16 +909,24 @@ const mapStateToProps = state => {
   let campaignLanguage = parsedCampaignLanguage || [
     { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
   ];
+  const createCampaignData = _get(dashboardData, "createCampaign", {});
   return {
     success,
     campaignLanguage,
     companyName,
     dashboardData,
-    selectedEmailLanguage
+    selectedEmailLanguage,
+    createCampaignData
   };
 };
 
 export default connect(
   mapStateToProps,
-  { setGetReviewsData, sendGetReviews, createCampaign, fetchEmailTemplate }
+  {
+    setGetReviewsData,
+    sendGetReviews,
+    createCampaign,
+    fetchEmailTemplate,
+    clearCampaignData
+  }
 )(withStyles(styles)(GetReviews));

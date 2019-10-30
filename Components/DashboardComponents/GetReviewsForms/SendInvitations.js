@@ -48,6 +48,9 @@ class SendInvitations extends Component {
   };
 
   renderInfoCards = data => {
+    const { businessAddress, businessAddressFirstTime } = this.props;
+    const businessAdd =
+      businessAddress === "" ? businessAddressFirstTime : businessAddress;
     return data.map(item => {
       return (
         <div className="renderInfoContainer" key={uuid()}>
@@ -72,7 +75,7 @@ class SendInvitations extends Component {
               {item.key ===
               "Send your customers to this website to write their review" ? (
                 <a href={item.value} target="_blank">
-                  Review url
+                  {businessAdd}
                 </a>
               ) : (
                 item.value
@@ -94,7 +97,9 @@ class SendInvitations extends Component {
       entity,
       emailSubject,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime
+      googleDirectReviewUrlFirstTime,
+      googlePlaceId,
+      domain
     } = this.props;
     const googleReviewUrl =
       googleDirectReviewUrl === ""
@@ -112,14 +117,17 @@ class SendInvitations extends Component {
       { key: "Campaign Language", value: campLangName },
       { key: "Sender Name", value: senderName },
       { key: "Sender Email", value: senderEmail },
-      // { key: "Client Name", value: clientName },
       { key: "Entity", value: entity },
       { key: "Email Subject", value: emailSubject },
-      // { key: "Reply-to Email", value: "art@cunami.lv" },
       {
         key: "Send your customers to this website to write their review",
-        value: googleReviewUrl
+        value:
+          googleReviewUrl === ""
+            ? `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
+            : googleReviewUrl
       }
+      // { key: "Client Name", value: clientName },
+      // { key: "Reply-to Email", value: "art@cunami.lv" },
       // { key: "Number of valid lines that will be processed", value: "1" }
     ];
     return (
@@ -177,7 +185,6 @@ class SendInvitations extends Component {
 
   render() {
     const { isLoading } = this.props;
-    console.log(isLoading, "SEND_INVITAIONS");
     return (
       <>
         {this.renderSendInvitationsHeader()}
@@ -211,7 +218,7 @@ class SendInvitations extends Component {
             <div className="col-md-3">
               {isLoading ? (
                 <Button variant="contained" color="primary" size="large">
-                  <CircularProgress color={"#f1f1f1"} size={20} />
+                  <CircularProgress color={"#f1f1f1"} size={16} />
                 </Button>
               ) : (
                 <Button
@@ -264,6 +271,14 @@ const mapStateToProps = state => {
     "googleDirectReviewUrl",
     ""
   );
+  const businessAddress = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.address",
+    ""
+  );
+  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   return {
     campaignName,
     campaignLanguage,
@@ -276,7 +291,11 @@ const mapStateToProps = state => {
     success,
     errorMsg,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime
+    googleDirectReviewUrlFirstTime,
+    businessAddress,
+    businessAddressFirstTime,
+    googlePlaceId,
+    domain
   };
 };
 

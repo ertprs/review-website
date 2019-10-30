@@ -1,3 +1,5 @@
+import { Template } from "react-amphtml";
+
 //AUTH ACTION TYPES
 
 export const LOGIN_INIT = "LOGIN_INIT";
@@ -106,3 +108,6 @@ export const FETCH_EMAIL_TEMPLATE_FAILURE = "FETCH_EMAIL_TEMPLATE_FAILURE";
 
 //Set google direct review url
 export const SET_GOOGLE_DIRECT_REVIEW_URL = "SET_GOOGLE_DIRECT_REVIEW_URL";
+
+// Review Pusher
+export const SET_REVIEWS_PUSHER_CONNECT = "SET_REVIEWS_PUSHER_CONNECT";

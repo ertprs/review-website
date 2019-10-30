@@ -26,7 +26,8 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_DIRECT_REVIEW_URL
+  SET_GOOGLE_DIRECT_REVIEW_URL,
+  SET_REVIEWS_PUSHER_CONNECT
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -55,6 +56,7 @@ export const fetchReviews = (token, page, perPage) => {
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
       reviews: {
+        data: {},
         isFetching: true,
         error: "",
         success: "undefined"
@@ -92,6 +94,18 @@ export const fetchReviews = (token, page, perPage) => {
           success
         }
       });
+    }
+  };
+};
+
+export const clearReviewsData = () => {
+  return {
+    type: FETCH_REVIEWS_DATA_SUCCESS,
+    reviews: {
+      data: {},
+      isFetching: false,
+      error: "",
+      success: false
     }
   };
 };
@@ -145,7 +159,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         }
       });
       if (success) {
-        dispatch(fetchReviews(token));
+        // dispatch(fetchReviews(token));
         cookie.set("placeLocated", true, { expires: 7 });
       }
     } catch (error) {
@@ -156,7 +170,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         },
         locatePlaceTemp: {
           isLoading: false,
-          errorMsg: _get(error, "response.data.error", "Some Error Occured!")
+          errorMsg: _get(error, "response.data.message", "Some Error Occured!")
         }
       });
     }
@@ -242,7 +256,7 @@ export const fetchTransactionHistory = token => {
   };
 };
 
-export const clearCampaignData = (data) => {
+export const clearCampaignData = data => {
   return {
     type: CREATE_CAMPAIGN_SUCCESS,
     createCampaign: {
@@ -366,7 +380,6 @@ export const setCampaignLanguage = parsedCampaignLanguage => {
 };
 
 export const fetchEmailTemplate = templateId => {
-  console.log(templateId, "templateId");
   let token = localStorage.getItem("token");
   return async dispatch => {
     dispatch({
@@ -413,9 +426,22 @@ export const fetchEmailTemplate = templateId => {
   };
 };
 
-export const setGoogleDirectReviewUrl = googleDirectReviewUrl => {
+export const setGoogleDirectReviewUrl = (
+  googleDirectReviewUrl,
+  businessAddress,
+  googlePlaceId
+) => {
   return {
     type: SET_GOOGLE_DIRECT_REVIEW_URL,
-    googleDirectReviewUrl
+    googleDirectReviewUrl,
+    businessAddress,
+    googlePlaceId
+  };
+};
+
+export const setReviewsPusherConnect = isReviewsPusherConnected => {
+  return {
+    type: SET_REVIEWS_PUSHER_CONNECT,
+    isReviewsPusherConnected
   };
 };

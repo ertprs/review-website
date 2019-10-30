@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
+import Moment from "react-moment";
 
 const columns = [
   { title: "Created", field: "created" },
@@ -20,7 +21,12 @@ const parseTableData = tableData => {
     let statusInWords = status === 1 ? "Sent" : "Not Sent";
     let reference = _get(data, "reference", "##");
     reference = reference === null ? "##" : reference;
-    return { ...data, status: statusInWords, reference };
+    let created = (
+      <Moment format="DD/MM/YYYY HH:mm">
+        {data.created || new Date().getDate()}
+      </Moment>
+    );
+    return { ...data, status: statusInWords, reference, created };
   });
   return result;
 };

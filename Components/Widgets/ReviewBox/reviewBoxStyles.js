@@ -6,6 +6,7 @@ export const reviewBoxStyles = css`
     margin: 2%;
     box-shadow: 0px 2px 7px #ddd;
     height:159px;
+    background:#fff;
   }
   .reviewVideoBox {
     padding: 0;

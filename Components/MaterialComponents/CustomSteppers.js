@@ -176,13 +176,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function getSteps() {
-  return ["Add invites", "Set up", "Select template", "Send invitations", "Done"];
+  return ["Invitation url", "Set up", "Select template", "Send invitations", "Done"];
 }
 
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return "Add invites";
+      return "Invitation url";
     case 1:
       return "Set up";
     case 2:
