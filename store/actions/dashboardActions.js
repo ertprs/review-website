@@ -160,7 +160,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       });
       if (success) {
         // dispatch(fetchReviews(token));
-        cookie.set("placeLocated", true, { expires: 7 });
+        cookie.set("placeLocated", true);
       }
     } catch (error) {
       dispatch({
