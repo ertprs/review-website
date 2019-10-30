@@ -423,7 +423,7 @@ class GetReviews extends Component {
     if (activeStep === 2) {
       this.createCampaignHandler();
     } else if (isTestEmail === "isTestEmail") {
-      this.createCampaignHandler(true);
+      this.createCampaignHandler("sendTest");
     } else {
       if (activeStep <= columns.length) {
         this.setState(prevState => {
@@ -435,7 +435,7 @@ class GetReviews extends Component {
     }
   };
 
-  createCampaignHandler = isTest => {
+  createCampaignHandler = sendTest => {
     const { createCampaign } = this.props;
     const { selectTemplateData, tableData } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
@@ -473,7 +473,7 @@ class GetReviews extends Component {
         }
       }
     };
-    if (isTest) {
+    if (sendTest === "sendTest") {
       data = {
         ...data,
         test: true
