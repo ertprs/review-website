@@ -127,8 +127,7 @@ class GetStarted extends Component {
   renderContinueBtn = () => {
     const { selectedAddress, formData } = this.state;
     const { type, isLoading } = this.props;
-    return Object.keys(selectedAddress).length > 0 &&
-      formData["directReviewUrl"].valid ? (
+    return Object.keys(selectedAddress).length > 0  ? (
       <div style={{ marginTop: "50px", textAlign: "right" }}>
         {isLoading === true ? (
           <CircularProgress size={25} />

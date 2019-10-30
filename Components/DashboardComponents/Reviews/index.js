@@ -121,7 +121,7 @@ class Reviews extends Component {
                 {googleReviewUrl === "" ? (
                   <>
                     <Typography>
-                      <b>Add Invite: &nbsp;</b>
+                      <b>Invitation url: &nbsp;</b>
                       <Link
                         href="#"
                         variant="body2"
