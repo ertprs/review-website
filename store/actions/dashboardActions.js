@@ -105,7 +105,7 @@ export const clearReviewsData = () => {
       data: {},
       isFetching: false,
       error: "",
-      success: "undefined"
+      success: false
     }
   };
 };
@@ -170,7 +170,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         },
         locatePlaceTemp: {
           isLoading: false,
-          errorMsg: _get(error, "response.data.error", "Some Error Occured!")
+          errorMsg: _get(error, "response.data.message", "Some Error Occured!")
         }
       });
     }
@@ -428,12 +428,14 @@ export const fetchEmailTemplate = templateId => {
 
 export const setGoogleDirectReviewUrl = (
   googleDirectReviewUrl,
-  businessAddress
+  businessAddress,
+  googlePlaceId
 ) => {
   return {
     type: SET_GOOGLE_DIRECT_REVIEW_URL,
     googleDirectReviewUrl,
-    businessAddress
+    businessAddress,
+    googlePlaceId
   };
 };
 

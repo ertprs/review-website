@@ -45,7 +45,9 @@ class Reviews extends Component {
       googleDirectReviewUrl,
       googleDirectReviewUrlFirstTime,
       businessAddress,
-      businessAddressFirstTime
+      businessAddressFirstTime,
+      domain,
+      googlePlaceId
     } = this.props;
     const { perPage } = this.state;
     let googleReviewUrl =
@@ -116,17 +118,40 @@ class Reviews extends Component {
               <NoReviewsFound />
             ) : (
               <>
-                <Typography>
-                  <b>Google Review Url: &nbsp;</b>
-                  <Link
-                    href="#"
-                    variant="body2"
-                    color="blue"
-                    onClick={() => window.open(googleReviewUrl)}
-                  >
-                    {businessAdd}
-                  </Link>
-                </Typography>
+                {googleReviewUrl === "" ? (
+                  <>
+                    <Typography>
+                      <b>Add Invite: &nbsp;</b>
+                      <Link
+                        href="#"
+                        variant="body2"
+                        color="blue"
+                        onClick={() =>
+                          window.open(
+                            `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
+                          )
+                        }
+                      >
+                        {businessAdd}
+                      </Link>
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Typography>
+                      <b>Google Review Url: &nbsp;</b>
+                      <Link
+                        href="#"
+                        variant="body2"
+                        color="blue"
+                        onClick={() => window.open(googleReviewUrl)}
+                      >
+                        {businessAdd}
+                      </Link>
+                    </Typography>
+                  </>
+                )}
+
                 {_map(reviews, review => {
                   return <ReviewCard review={review} />;
                 })}
@@ -201,6 +226,8 @@ const mapStateToProps = state => {
     ""
   );
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   return {
     token,
     ratings,
@@ -215,7 +242,9 @@ const mapStateToProps = state => {
     googleDirectReviewUrl,
     googleDirectReviewUrlFirstTime,
     businessAddress,
-    businessAddressFirstTime
+    businessAddressFirstTime,
+    googlePlaceId,
+    domain
   };
 };
 

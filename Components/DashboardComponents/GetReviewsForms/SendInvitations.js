@@ -97,7 +97,9 @@ class SendInvitations extends Component {
       entity,
       emailSubject,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime
+      googleDirectReviewUrlFirstTime,
+      googlePlaceId,
+      domain
     } = this.props;
     const googleReviewUrl =
       googleDirectReviewUrl === ""
@@ -115,14 +117,17 @@ class SendInvitations extends Component {
       { key: "Campaign Language", value: campLangName },
       { key: "Sender Name", value: senderName },
       { key: "Sender Email", value: senderEmail },
-      // { key: "Client Name", value: clientName },
       { key: "Entity", value: entity },
       { key: "Email Subject", value: emailSubject },
-      // { key: "Reply-to Email", value: "art@cunami.lv" },
       {
         key: "Send your customers to this website to write their review",
-        value: googleReviewUrl
+        value:
+          googleReviewUrl === ""
+            ? `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
+            : googleReviewUrl
       }
+      // { key: "Client Name", value: clientName },
+      // { key: "Reply-to Email", value: "art@cunami.lv" },
       // { key: "Number of valid lines that will be processed", value: "1" }
     ];
     return (
@@ -272,6 +277,8 @@ const mapStateToProps = state => {
     ""
   );
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   return {
     campaignName,
     campaignLanguage,
@@ -286,7 +293,9 @@ const mapStateToProps = state => {
     googleDirectReviewUrl,
     googleDirectReviewUrlFirstTime,
     businessAddress,
-    businessAddressFirstTime
+    businessAddressFirstTime,
+    googlePlaceId,
+    domain
   };
 };
 
