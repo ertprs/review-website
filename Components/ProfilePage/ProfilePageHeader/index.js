@@ -27,7 +27,8 @@ class ProfilePageHeader extends Component {
     const screenshotUrl = (headerData || {}).screenshot || "";
     const review_length = (headerData || {}).review_length || 0;
     const willCome = (headerData || {}).willCome || false;
-    const parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
+    let parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
+    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
     console.log(screenshotUrl, "screenshotUrl");
     const reviewCardBody = (
       <RatingIndicators
