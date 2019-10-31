@@ -90,9 +90,13 @@ class ProfilePageHeader extends Component {
                     </div>
                     <div className="claimed">
                       {is_verified ? (
-                        <Tooltip title="This company has a trustsearch account.">
+                        <Tooltip title={
+                          <React.Fragment>
+                            <h6>This company has a trustsearch account.</h6>
+                          </React.Fragment>
+                        }>
                           <div style={{ display: "flex" }}>
-                            <div>
+                            <div style={{alignSelf:"center"}}>
                               <VerifiedIcon
                                 style={{ color: "green", fontSize: "20px" }}
                               />
@@ -101,8 +105,9 @@ class ProfilePageHeader extends Component {
                               style={{
                                 fontSize: "17px",
                                 fontWeight: "bold",
+                                color:"#555",
                                 marginLeft: "5px",
-                                alignSelf: "flex-end",
+                                alignSelf: "center",
                                 letterSpacing: "1px"
                               }}
                             >
@@ -111,9 +116,13 @@ class ProfilePageHeader extends Component {
                           </div>
                         </Tooltip>
                       ) : (
-                        <Tooltip title="This company does not have a trustsearch account.">
+                        <Tooltip title={
+                          <React.Fragment>
+                            <h6>This company does not have a trustsearch account.</h6>
+                          </React.Fragment>
+                        }>
                           <div style={{ display: "flex" }}>
-                            <div>
+                            <div style={{alignSelf:"center"}}>
                               <UnVerifiedIcon
                                 style={{ color: "red", fontSize: "20px" }}
                               />
@@ -122,6 +131,7 @@ class ProfilePageHeader extends Component {
                               style={{
                                 fontSize: "17px",
                                 fontWeight: "bold",
+                                color:"#555",
                                 marginLeft: "5px",
                                 alignSelf: "flex-end",
                                 letterSpacing: "1px"

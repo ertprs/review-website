@@ -3,13 +3,14 @@ import Paper from "../../MaterialComponents/Paper";
 import { claimYourWebsiteStyles } from "./claimYourWebsiteStyles";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import Router from 'next/router';
 
 class ClaimYourWebsite extends Component {
   renderClaimButton = () => {
     return (
       <>
         <style jsx>{claimYourWebsiteStyles}</style>
-        <button className="claimBtn">
+        <button className="claimBtn" onClick={()=>Router.push("/login#business")}>
           <span className="claimBtnHeroText">click</span> if this is your
           website
         </button>
