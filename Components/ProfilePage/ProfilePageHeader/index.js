@@ -105,13 +105,16 @@ class ProfilePageHeader extends Component {
                         ></i>
                       )}
                       <span className="claimed">
-                        {is_verified ? "Verified" : "Unverified"}
+                        {/* {is_verified ? "Verified" : "Unverified"} */}
+                        Report this domain
                       </span>
                     </div>
                     <div>
-                      {is_verified
+                      {/* {is_verified
                         ? "This company has a Trustsearch account but we have no records of them asking their customers for reviews."
-                        : "This company does not have a Trustsearch account"}
+                        : "This company does not have a Trustsearch account"} */}
+                      If you think that this domain fraudulent. Please report
+                      this domain.
                     </div>
                   </Card>
                 </div>
