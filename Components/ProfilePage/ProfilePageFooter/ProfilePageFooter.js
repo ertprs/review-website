@@ -14,6 +14,16 @@ export default class ProfilePageFooter extends Component {
                 max-height: 150px;
                 width: auto;
               }
+              .widgetImgContainerSmall {
+                max-height: 150px;
+                width: auto;
+                display: none;
+              }
+              .widgetImgContainerSmall img {
+                max-width: 100%;
+                height: auto;
+              }
+
               .widgetImgContainer img {
                 max-width: 100%;
                 height: auto;
@@ -29,6 +39,21 @@ export default class ProfilePageFooter extends Component {
                 display: flex;
                 flex: 1;
               }
+              @media screen and (max-width: 991px) {
+                .widgetImgContainer {
+                  display: none;
+                }
+                .widgetHeader h3 {
+                  font-size: 1.2rem;
+                }
+
+                .widgetImgContainerSmall {
+                  display: block;
+                }
+                .widgetDescriptionHeader {
+                    margin:25px 0 25px 0;
+                }
+              }
             `}
           </style>
           <div className="widgetHeader">
@@ -37,9 +62,14 @@ export default class ProfilePageFooter extends Component {
           <div className="widgetImgContainer">
             <img src="/static/images/carouselDemo.png" />
           </div>
+          <div className="widgetImgContainerSmall">
+            <img src="/static/images/carousel.png" style={{maxWidth:"100%", height:"auto"}}/>
+          </div>
           <div className="widgetDescription">
-            <h5 style={{ textAlign: "center" }}>Is this your domain ?</h5>
-            <p style={{ textAlign: "center", fontSize:"0.9rem" }}>
+            <div className="widgetDescriptionHeader">
+              <h5 style={{ textAlign: "center" }}>Is this your domain ?</h5>
+            </div>
+            <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
               Claim the ownership of your domain or Sign In (if already claimed)
               to get access to your feedback bar.
             </p>
