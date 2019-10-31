@@ -192,7 +192,7 @@ class BusinessUserLogin extends Component {
                   marginTop: "10px"
                 }}
               >
-                <Link href="/registration">
+                <Link href="/registration#business">
                   <a>Don't have account? Sign Up</a>
                 </Link>
               </div>
