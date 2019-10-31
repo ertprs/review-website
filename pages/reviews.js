@@ -16,6 +16,7 @@ import {
   setLoading
 } from "../store/actions/domainProfileActions";
 import { connect } from "react-redux";
+import DomainPusherComponent from "../Components/DomainPusherComponent/DomainPusherComponent";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 const Navbar = dynamic(() => import("../Components/MaterialComponents/NavBar"));
@@ -374,6 +375,7 @@ class Profile extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
+        <DomainPusherComponent domain={domain}/>
         <Navbar
           handleSearchBoxChange={e =>
             this.setState({ searchBoxVal: e.target.value })
