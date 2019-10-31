@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ProfilePageBodyRight from "../ProfilePageBodyRight/ProfilePageBodyRight";
 import ProfilePageBodyLeft from "./ProfilePageBodyLeft";
 import { Element } from "react-scroll";
+import ProfilePageFooter from "../ProfilePageFooter/ProfilePageFooter";
 export default class ProfilePageBody extends Component {
   render() {
     return (
@@ -31,6 +32,9 @@ export default class ProfilePageBody extends Component {
             <div className="col-md-8 profilePageBodyLeftContainer">
               <Element name="reviews" className="reviews">
                 <ProfilePageBodyLeft {...this.props} />
+                <div style={{ marginBottom: "35px" }}>
+                  <ProfilePageFooter />
+                </div>
               </Element>
             </div>
             <div className="col-md-4 profilePageBodyRightContainer">

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Paper from "../../MaterialComponents/Paper";
 import { claimYourWebsiteStyles } from "./claimYourWebsiteStyles";
 import { connect } from "react-redux";
+import _get from "lodash/get";
 
 class ClaimYourWebsite extends Component {
   renderClaimButton = () => {
@@ -71,7 +72,8 @@ class ClaimYourWebsite extends Component {
 
 const mapStateToProps = state => {
   return {
-    domain_name: state.profileData.domainProfileData.headerData.data.domain_name
+    // domain_name: state.profileData.domainProfileData.headerData.data.domain_name
+    domain_name : _get(state,"profileData.domainProfileData.headerData.data.domain_name","")
   };
 };
 
