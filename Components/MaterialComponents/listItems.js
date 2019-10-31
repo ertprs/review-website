@@ -123,8 +123,8 @@ export const SecondaryListItems = ({
     <div>
       <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader>
       <ListItem />
-      <ListItem />
-      <ListItem />
+      {/* <ListItem />
+      <ListItem /> */}
       <ListItem
         button
         style={{
@@ -150,13 +150,13 @@ export const SecondaryListItems = ({
 
 export const DashboardLogo = () => {
   return (
-    <div className="container">
+    <div className="imgContainer">
       <style jsx>{`
-        .container {
+        .imgContainer {
           display: flex;
           justify-content: center;
           align-items: baseline;
-          height: 50px;
+          height: 40px;
           width: auto;
         }
         .imgStyle {
