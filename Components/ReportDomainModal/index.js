@@ -14,6 +14,7 @@ import {
 } from "../../store/actions/domainProfileActions";
 import _isEmpty from "lodash/isEmpty";
 import ReportIcon from "@material-ui/icons/Report";
+import validate from "../../utility/validate";
 
 class ReportDomainModal extends React.Component {
   state = {
@@ -52,7 +53,7 @@ class ReportDomainModal extends React.Component {
         touched: false,
         validationRules: {
           required: true,
-          minLength: 10,
+          minLength: 140,
           maxLength: 280
         },
         name: "description"
@@ -170,6 +171,23 @@ class ReportDomainModal extends React.Component {
       }
     }
   }
+
+  handleFormDataChange = (e, id) => {
+    const { value } = e.target;
+    const { formData } = this.state;
+
+    this.setState({
+      formData: {
+        ...formData,
+        [id]: {
+          ...formData[id],
+          value: value,
+          valid: validate(value, formData[id].validationRules),
+          touched: true
+        }
+      }
+    });
+  };
 
   render() {
     const { formData } = this.state;
