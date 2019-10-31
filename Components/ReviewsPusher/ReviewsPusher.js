@@ -29,7 +29,7 @@ class ReviewsPusher extends Component {
       this.setState({ reviewScrapeResult: { ...data } }, () => {
         this.props.onChildStateChange(this.state.reviewScrapeResult);
         console.log(data, "response from pusher");
-        pusher.disconnect();
+        // pusher.disconnect();
       });
     });
 

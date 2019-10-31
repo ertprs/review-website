@@ -373,7 +373,8 @@ class Home extends Component {
         ? googleDirectReviewUrlFirstTime
         : googleDirectReviewUrl;
     const businessAdd =
-      businessAddress === "" ? businessAddressFirstTime : businessAddress;
+      // businessAddress === "" ? businessAddressFirstTime : businessAddress;
+      businessAddressFirstTime !=="" ? businessAddressFirstTime : businessAddress;
     return (
       <div className="businessDetailsContainer">
         <div className="editBtnContainer">
