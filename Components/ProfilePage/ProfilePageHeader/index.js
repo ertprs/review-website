@@ -9,6 +9,9 @@ import { connect } from "react-redux";
 import Placeholder from "./headerPlaceholder";
 import CustomModal from "../../Widgets/CustomModal/CustomModal";
 import ReportDomainModal from "../../ReportDomainModal";
+import VerifiedIcon from "@material-ui/icons/VerifiedUser";
+import UnVerifiedIcon from "@material-ui/icons/NotInterested";
+import Tooltip from "@material-ui/core/Tooltip";
 
 class ProfilePageHeader extends Component {
   state = {
@@ -85,7 +88,51 @@ class ProfilePageHeader extends Component {
                         {domain_name}
                       </a>
                     </div>
-                    <div>Visit this website</div>
+                    <div className="claimed">
+                      {is_verified ? (
+                        <Tooltip title="This company has a trustsearch account.">
+                          <div style={{ display: "flex" }}>
+                            <div>
+                              <VerifiedIcon
+                                style={{ color: "green", fontSize: "20px" }}
+                              />
+                            </div>
+                            <div
+                              style={{
+                                fontSize: "17px",
+                                fontWeight: "bold",
+                                marginLeft: "5px",
+                                alignSelf: "flex-end",
+                                letterSpacing: "1px"
+                              }}
+                            >
+                              Verified
+                            </div>
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="This company does not have a trustsearch account.">
+                          <div style={{ display: "flex" }}>
+                            <div>
+                              <UnVerifiedIcon
+                                style={{ color: "red", fontSize: "20px" }}
+                              />
+                            </div>
+                            <div
+                              style={{
+                                fontSize: "17px",
+                                fontWeight: "bold",
+                                marginLeft: "5px",
+                                alignSelf: "flex-end",
+                                letterSpacing: "1px"
+                              }}
+                            >
+                              Unverified
+                            </div>
+                          </div>
+                        </Tooltip>
+                      )}
+                    </div>
                   </Card>
                 </div>
                 <div
