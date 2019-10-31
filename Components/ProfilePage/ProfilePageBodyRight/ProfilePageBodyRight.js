@@ -295,7 +295,7 @@ class ProfilePageBodyRight extends Component {
           .brandImage {
             max-width: 100%;
             height: auto;
-            border-radius:10px;
+            border-radius: 10px;
           }
           .ratingContainer {
             text-align: center;
@@ -362,9 +362,14 @@ class ProfilePageBodyRight extends Component {
             <div>{facebookData.username}</div>
           </div>
           <div className="learnMoreBtn">
-            <Button variant="contained" color="primary" size="small" onClick={()=>{
-              window.open(facebookData.businessProfile)
-            }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                window.open(facebookData.businessProfile);
+              }}
+            >
               Go to profile
             </Button>
           </div>
@@ -555,7 +560,11 @@ class ProfilePageBodyRight extends Component {
       ((domainProfileData || {}).trafficReports || {}).willCome || false;
     const socialMediaStatsWillCome =
       ((domainProfileData || {}).socialMediaStats || {}).willCome || false;
-
+    const is_verified = _get(
+      domainProfileData,
+      "headerData.data.is_verified",
+      false
+    );
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
@@ -588,7 +597,7 @@ class ProfilePageBodyRight extends Component {
           </div>
         ) : (
           <div>
-            {!domainReviewsWillCome ? (
+            {!domainReviewsWillCome && !is_verified ? (
               <div className="mb-25 claim">
                 <ClaimYourWebsite variant="small" />
               </div>
