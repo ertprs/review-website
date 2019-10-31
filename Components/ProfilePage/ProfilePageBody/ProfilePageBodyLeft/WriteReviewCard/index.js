@@ -11,6 +11,7 @@ import {
   sendTrustDataLater
 } from "../../../../../store/actions/trustAction";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Checkbox from "@material-ui/core/Checkbox";
 import OAuthButtons from "../../../../Widgets/oAuthBtns";
 import Snackbar from "../../../../../Components/Widgets/Snackbar";
 import Router from "next/router";
@@ -35,6 +36,7 @@ class WriteReview extends Component {
           name: "review"
         }
       },
+      trust: false,
       rating: 0,
       review: "",
       starSize: 24,
@@ -43,7 +45,8 @@ class WriteReview extends Component {
       variant: "success",
       snackbarMsg: "",
       reviewCharsLeft: 0,
-      reviewCharsMore: 0
+      reviewCharsMore: 0,
+      authButtonLoading: false
     };
     this.windowSize = 0;
   }
@@ -267,7 +270,8 @@ class WriteReview extends Component {
       isLoading,
       authButtonLoading,
       reviewCharsLeft,
-      reviewCharsMore
+      reviewCharsMore,
+      trust
     } = this.state;
     const authorized = _get(this.props, "auth.logIn.authorized", false);
     return (
@@ -307,6 +311,27 @@ class WriteReview extends Component {
                   rows="5"
                   col="5"
                 />
+                <Checkbox
+                  checked={trust}
+                  onChange={e =>
+                    this.setState({
+                      trust: e.target.checked
+                    })
+                  }
+                  value={trust}
+                  color="primary"
+                  inputProps={{
+                    "aria-label": "secondary checkbox"
+                  }}
+                />
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px"
+                  }}
+                >
+                  I trust this domain
+                </span>
                 {reviewCharsLeft > 0 ? (
                   <span style={{ color: "red" }}>
                     {reviewCharsLeft} characters left!

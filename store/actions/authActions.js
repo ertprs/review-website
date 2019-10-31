@@ -40,6 +40,7 @@ import { sendTrustVote } from "./trustAction";
 import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
 import cookie from "js-cookie";
 import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
+import { reportDomain } from "./domainProfileActions";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -135,10 +136,17 @@ export const signUp = (signupData, registerApi, signUpType) => {
 
 export const logIn = (loginData, loginApi, loginType) => {
   return async (dispatch, getState) => {
-    const { trustVote } = getState();
+    const { trustVote, profileData } = getState();
     const { payload } = trustVote;
+    const { reportDomainLaterData } = profileData;
     const shouldSend = _get(payload, "shouldSend", false);
     const trustVoteData = _get(payload, "data", {});
+    const shouldReportDomain = _get(
+      reportDomainLaterData,
+      "shouldReportDomain",
+      false
+    );
+    const reportDomainData = _get(reportDomainLaterData, "data", {});
     dispatch({
       type: LOGIN_INIT,
       logIn: {
@@ -186,10 +194,13 @@ export const logIn = (loginData, loginApi, loginType) => {
       if (success && shouldSend) {
         dispatch(sendTrustVote(trustVoteData));
       }
+      if (success && shouldReportDomain) {
+        dispatch(reportDomain(reportDomainData));
+      }
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "response.status", 0);
-      let message = _get(error, "response.data.message", "") === "Unauthorized";
+      let message = _get(error, "response.data.error", "") === "Unauthorized";
       dispatch({
         type: LOGIN_FAILURE,
         logIn: {

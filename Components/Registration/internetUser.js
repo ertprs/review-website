@@ -118,7 +118,7 @@ class InternetUserRegistration extends Component {
             [id]: {
               ...formData[id],
               valid: false,
-              value: value,
+              value,
               touched: true
             }
           }
@@ -134,12 +134,37 @@ class InternetUserRegistration extends Component {
             [id]: {
               ...formData[id],
               valid: true,
-              value: value,
+              value,
               touched: true
             }
           }
         });
       }
+    } else if (id === "password") {
+      let valid = value === _get(formData, "password_confirmation.value", "");
+      if (valid) {
+        this.setState({
+          errorMsg: {
+            ...errorMsg,
+            ["password_confirmation"]: ""
+          }
+        });
+      }
+      this.setState({
+        formData: {
+          ...formData,
+          [id]: {
+            ...formData[id],
+            valid: validate(value, formData[id].validationRules),
+            value: value,
+            touched: true
+          },
+          password_confirmation: {
+            ...formData["password_confirmation"],
+            valid
+          }
+        }
+      });
     } else {
       this.setState({
         formData: {

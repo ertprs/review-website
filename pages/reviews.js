@@ -45,6 +45,7 @@ import PusherDataComponent from "../Components/PusherDataComponent/PusherDataCom
 const SimpleTabs = dynamic(() =>
   import("../Components/MaterialComponents/SimpleTabs")
 );
+import Snackbar from "../Components/Widgets/Snackbar";
 
 class Profile extends React.Component {
   state = {
@@ -57,7 +58,10 @@ class Profile extends React.Component {
     selectedTab: "overview",
     isLoading: true,
     isMounted: false,
-    searchBoxVal: ""
+    searchBoxVal: "",
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: ""
   };
 
   componentDidMount() {
@@ -305,6 +309,42 @@ class Profile extends React.Component {
 
   handleRouteChange = url => {};
 
+  componentDidUpdate(prevProps, prevState) {
+    const { auth } = this.props;
+
+    if (this.props.auth !== prevProps.auth) {
+      const isLoginFailed = _get(auth, "logInTemp.isLoginFailed", false);
+      const isWrongCredentials = _get(
+        auth,
+        "logInTemp.isWrongCredentials",
+        false
+      );
+      const actionType = _get(auth, "type", "");
+      const authorized = _get(auth, "logIn.authorized", false);
+      if (isLoginFailed) {
+        if (isWrongCredentials) {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Incorrect credentials!"
+          });
+        } else {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Some Error Occured!"
+          });
+        }
+      } else if (authorized) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Logged in successfully!"
+        });
+      }
+    }
+  }
+
   render() {
     const { domain } = this.props;
     const {
@@ -356,6 +396,12 @@ class Profile extends React.Component {
           isMounted={this.state.isMounted}
         />
         <Footer />
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </>
     );
   }
@@ -376,7 +422,23 @@ Profile.getInitialProps = async ({ query }) => {
   return { domain: domain };
 };
 
+const mapStateToProps = state => {
+  const { auth, profileData } = state;
+  const reportDomainSuccess = _get(
+    profileData,
+    "reportDomain.success",
+    "undefined"
+  );
+  const reportDomainErrorMsg = _get(
+    profileData,
+    "reportDomain.errorMsg",
+    "undefined"
+  );
+  let reportDomainType = _get(profileData, "reportDomain.type", "");
+  return { auth, reportDomainSuccess, reportDomainErrorMsg, reportDomainType };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   { setDomainDataInRedux, setLoading }
 )(Profile);

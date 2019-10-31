@@ -1,10 +1,16 @@
 import {
   SET_DOMAIN_DATA_IN_REDUX,
-  SET_DOMAIN_PROFILE_LOADER
+  SET_DOMAIN_PROFILE_LOADER,
+  REPORT_DOMAIN_INIT,
+  REPORT_DOMAIN_SUCCESS,
+  REPORT_DOMAIN_FAILURE,
+  REPORT_DOMAIN_AFTER_LOGIN
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../../utility/constants/socialMediaConstants";
+import { reportDomainApi } from "../../utility/config";
+import axios from "axios";
 
 const createHeaderData = data => {
   let willCome = false;
@@ -232,5 +238,56 @@ export const setLoading = isLoading => {
   return {
     type: SET_DOMAIN_PROFILE_LOADER,
     isLoading
+  };
+};
+
+export const reportDomain = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: REPORT_DOMAIN_INIT,
+      reportDomain: {
+        isLoading: true,
+        success: "undefined",
+        errorMsg: ""
+      }
+    });
+    try {
+      await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${reportDomainApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      dispatch({
+        type: REPORT_DOMAIN_SUCCESS,
+        reportDomain: {
+          isLoading: false,
+          success: true,
+          errorMsg: ""
+        }
+      });
+      dispatch(reportDomainAfterLogin({}, false));
+    } catch (error) {
+      dispatch({
+        type: REPORT_DOMAIN_FAILURE,
+        reportDomain: {
+          isLoading: false,
+          success: false,
+          errorMsg: "Some error occured in reporting domain!"
+        }
+      });
+      dispatch(reportDomainAfterLogin({}, false));
+    }
+  };
+};
+
+export const reportDomainAfterLogin = (data, shouldReportDomain) => {
+  return {
+    type: REPORT_DOMAIN_AFTER_LOGIN,
+    reportDomainLaterData: {
+      data,
+      shouldReportDomain
+    }
   };
 };
