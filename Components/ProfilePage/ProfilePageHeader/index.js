@@ -9,6 +9,9 @@ import { connect } from "react-redux";
 import Placeholder from "./headerPlaceholder";
 import CustomModal from "../../Widgets/CustomModal/CustomModal";
 import ReportDomainModal from "../../ReportDomainModal";
+import VerifiedIcon from "@material-ui/icons/VerifiedUser";
+import UnVerifiedIcon from "@material-ui/icons/NotInterested";
+import Tooltip from "@material-ui/core/Tooltip";
 
 class ProfilePageHeader extends Component {
   state = {
@@ -27,7 +30,8 @@ class ProfilePageHeader extends Component {
     const screenshotUrl = (headerData || {}).screenshot || "";
     const review_length = (headerData || {}).review_length || 0;
     const willCome = (headerData || {}).willCome || false;
-    const parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
+    let parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
+    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
     console.log(screenshotUrl, "screenshotUrl");
     const reviewCardBody = (
       <RatingIndicators
@@ -84,7 +88,51 @@ class ProfilePageHeader extends Component {
                         {domain_name}
                       </a>
                     </div>
-                    <div>Visit this website</div>
+                    <div className="claimed">
+                      {is_verified ? (
+                        <Tooltip title="This company has a trustsearch account.">
+                          <div style={{ display: "flex" }}>
+                            <div>
+                              <VerifiedIcon
+                                style={{ color: "green", fontSize: "20px" }}
+                              />
+                            </div>
+                            <div
+                              style={{
+                                fontSize: "17px",
+                                fontWeight: "bold",
+                                marginLeft: "5px",
+                                alignSelf: "flex-end",
+                                letterSpacing: "1px"
+                              }}
+                            >
+                              Verified
+                            </div>
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="This company does not have a trustsearch account.">
+                          <div style={{ display: "flex" }}>
+                            <div>
+                              <UnVerifiedIcon
+                                style={{ color: "red", fontSize: "20px" }}
+                              />
+                            </div>
+                            <div
+                              style={{
+                                fontSize: "17px",
+                                fontWeight: "bold",
+                                marginLeft: "5px",
+                                alignSelf: "flex-end",
+                                letterSpacing: "1px"
+                              }}
+                            >
+                              Unverified
+                            </div>
+                          </div>
+                        </Tooltip>
+                      )}
+                    </div>
                   </Card>
                 </div>
                 <div
@@ -105,13 +153,16 @@ class ProfilePageHeader extends Component {
                         ></i>
                       )}
                       <span className="claimed">
-                        {is_verified ? "Verified" : "Unverified"}
+                        {/* {is_verified ? "Verified" : "Unverified"} */}
+                        Report this domain
                       </span>
                     </div>
                     <div>
-                      {is_verified
+                      {/* {is_verified
                         ? "This company has a Trustsearch account but we have no records of them asking their customers for reviews."
-                        : "This company does not have a Trustsearch account"}
+                        : "This company does not have a Trustsearch account"} */}
+                      If you think that this domain fraudulent. Please report
+                      this domain.
                     </div>
                   </Card>
                 </div>

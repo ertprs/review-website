@@ -202,7 +202,7 @@ class WriteReview extends Component {
             snackbarMsg: "Review Posted Successfully!"
           });
         }
-      } else if (actionType === "TRUST_VOTE_SUCCESS") {
+      } else if (actionType === "TRUST_VOTE_FAILURE") {
         if (!isSuccess) {
           this.setState({
             rating: 0,
@@ -311,6 +311,20 @@ class WriteReview extends Component {
                   rows="5"
                   col="5"
                 />
+
+                {reviewCharsLeft > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsLeft} characters left!
+                  </span>
+                ) : reviewCharsMore > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsMore} characters exceeding!
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
+              <label style={{ fontWeight: "bold", fontSize: "18px" }}>
                 <Checkbox
                   checked={trust}
                   onChange={e =>
@@ -324,26 +338,8 @@ class WriteReview extends Component {
                     "aria-label": "secondary checkbox"
                   }}
                 />
-                <span
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "16px"
-                  }}
-                >
-                  I trust this domain
-                </span>
-                {reviewCharsLeft > 0 ? (
-                  <span style={{ color: "red" }}>
-                    {reviewCharsLeft} characters left!
-                  </span>
-                ) : reviewCharsMore > 0 ? (
-                  <span style={{ color: "red" }}>
-                    {reviewCharsMore} characters exceeding!
-                  </span>
-                ) : (
-                  ""
-                )}
-              </div>
+                I trust this domain
+              </label>
               {this.renderAuthButtons(
                 formData,
                 isLoading,

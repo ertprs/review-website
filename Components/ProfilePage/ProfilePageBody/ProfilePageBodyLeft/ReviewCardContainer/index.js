@@ -15,6 +15,11 @@ class ReviewCardContainer extends Component {
       ((domainProfileData || {}).domainReviews || {}).data || [];
     const domainReviewsWillCome =
       ((domainProfileData || {}).domainReviews || {}).willCome || false;
+    const is_verified = _get(
+      domainProfileData,
+      "headerData.data.is_verified",
+      false
+    );
     return (
       <div>
         <style jsx>{`
@@ -36,6 +41,7 @@ class ReviewCardContainer extends Component {
             return (
               <div style={{ marginBottom: "25px" }} key={uuid()}>
                 <ReviewCard isLoading={isLoading} review={review || {}} />
+                {!is_verified ? <ClaimYourWebsite variant="big" /> : null}
               </div>
             );
           })
@@ -46,7 +52,7 @@ class ReviewCardContainer extends Component {
                 <h1 className="noReviewFoundText">No Reviews Found</h1>
               </div>
             </Paper>
-            <ClaimYourWebsite variant="big" />
+            {!is_verified ? <ClaimYourWebsite variant="big" /> : null}
           </>
         )}
       </div>
