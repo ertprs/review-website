@@ -145,8 +145,14 @@ const Home = props => {
 };
 
 const mapStateToProps = state => {
-  const { auth, trustVote } = state;
+  const { auth, trustVote, profileData } = state;
   const authorized = _get(auth, "logIn.authorized", false);
+  const reportDomainSuccess = _get(
+    profileData,
+    "reportDomain.success",
+    "undefined"
+  );
+  const reportDomainErrorMsg = _get(profileData, "reportDomain.errorMsg", "");
   let showSnackbar = false;
   let variant = "";
   let message = "";
@@ -163,6 +169,17 @@ const mapStateToProps = state => {
   } else {
     variant = "error";
     message = "Some Error Occured!";
+  }
+  if (authorized) {
+    if (reportDomainSuccess === true) {
+      showSnackbar = true;
+      variant = "success";
+      message = "Domain Reported successfully!";
+    } else if (reportDomainSuccess === false) {
+      showSnackbar = true;
+      variant = "error";
+      message = reportDomainErrorMsg;
+    }
   }
   return { showSnackbar, variant, message };
 };

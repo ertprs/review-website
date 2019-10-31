@@ -17,6 +17,17 @@ class ReviewCardContainer extends Component {
       ((domainProfileData || {}).domainReviews || {}).willCome || false;
     return (
       <div>
+        <style jsx>{`
+          .noReviewFound {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 5px;
+          }
+          .noReviewFoundText {
+            font-size: 22px;
+          }
+        `}</style>
         <WriteReviewCard />
         {isLoading ? (
           <ReviewCardPlaceholder />
@@ -31,15 +42,8 @@ class ReviewCardContainer extends Component {
         ) : (
           <>
             <Paper>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: "5px"
-                }}
-              >
-                <h1 style={{ fontSize: "22px" }}>No Reviews Found</h1>
+              <div className="noReviewFound">
+                <h1 className="noReviewFoundText">No Reviews Found</h1>
               </div>
             </Paper>
             <ClaimYourWebsite variant="big" />

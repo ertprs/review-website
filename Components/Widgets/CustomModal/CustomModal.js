@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Modal from "react-modal";
+import _get from "lodash/get";
 Modal.setAppElement("#modal");
 
 Modal.defaultStyles.overlay.backgroundColor = "rgba(0,0,0,0.25)";
@@ -33,6 +34,11 @@ class CustomModal extends React.Component {
     let modalStyles = {
       content: { ...this.customStyles.content, ...this.props.modalCustomStyles }
     };
+    const shouldCloseOnOverlayClick = _get(
+      this.props,
+      "shouldCloseOnOverlayClick",
+      true
+    );
     return ReactDOM.createPortal(
       <Modal
         isOpen={this.props.showModal}
@@ -41,9 +47,13 @@ class CustomModal extends React.Component {
         }}
         style={modalStyles}
         contentLabel="Example Modal"
+        shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
       >
         <>
-          <div style={{ ...this.closeBtnStyles }} onClick={this.props.handleModalClose}>
+          <div
+            style={{ ...this.closeBtnStyles }}
+            onClick={this.props.handleModalClose}
+          >
             <span>&#10005;</span>
           </div>
           {this.props.children}
