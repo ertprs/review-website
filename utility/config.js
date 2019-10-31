@@ -44,6 +44,7 @@ export const transactionHistoryApi =
 export const createCampaignApi = "/api/my-business/invitations/invite-manual";
 export const fetchCampaignLanguageApi = "/api/my-business/locales";
 export const fetchEmailTemplateApi = "/api/my-business/invitation-template";
+export const reportDomainApi = "/api/applications/fraud";
 
 //How to create review short link
 export const getStartedVideoUrl =

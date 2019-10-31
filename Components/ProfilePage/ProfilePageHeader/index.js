@@ -7,15 +7,19 @@ import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
 import _get from "lodash";
 import { connect } from "react-redux";
 import Placeholder from "./headerPlaceholder";
-import axios from "axios";
+import CustomModal from "../../Widgets/CustomModal/CustomModal";
+import ReportDomainModal from "../../ReportDomainModal";
+
 class ProfilePageHeader extends Component {
   state = {
     headerData: {},
-    imageSrc: ""
+    imageSrc: "",
+    showReportDomainModal: false
   };
 
   render() {
     const { domainProfileData, isLoading } = this.props;
+    const { showReportDomainModal } = this.state;
     const headerData = ((domainProfileData || {}).headerData || {}).data || {};
     const ratings = (headerData || {}).rating || 0;
     const domain_name = (headerData || {}).domain_name || "";
@@ -83,7 +87,10 @@ class ProfilePageHeader extends Component {
                     <div>Visit this website</div>
                   </Card>
                 </div>
-                <div className="headerCard">
+                <div
+                  className="headerCard"
+                  onClick={() => this.setState({ showReportDomainModal: true })}
+                >
                   <Card>
                     <div className="companyClaimStatus">
                       {is_verified ? (
@@ -112,6 +119,16 @@ class ProfilePageHeader extends Component {
             </div>
           </div>
         </div>
+        <CustomModal
+          showModal={showReportDomainModal}
+          handleModalClose={() => {
+            this.setState({ showReportDomainModal: false });
+          }}
+          modalCustomStyles={{ width: "70%" }}
+          shouldCloseOnOverlayClick={false}
+        >
+          <ReportDomainModal />
+        </CustomModal>
       </Paper>
     );
   }
