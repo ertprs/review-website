@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Card from "../../MaterialComponents/Card";
 import Button from "@material-ui/core/Button/Button";
 import ArrowIconRight from "@material-ui/icons/ArrowForward";
+import Router from "next/router";
 
 export default class ProfilePageFooter extends Component {
   render() {
@@ -78,6 +79,9 @@ export default class ProfilePageFooter extends Component {
                 variant="contained"
                 color="primary"
                 endIcon={<ArrowIconRight />}
+                onClick={()=>{
+                    Router.push("/login#business")
+                }}
               >
                 Click here to proceed
               </Button>
