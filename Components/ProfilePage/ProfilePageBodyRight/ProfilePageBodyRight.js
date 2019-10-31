@@ -206,14 +206,14 @@ class ProfilePageBodyRight extends Component {
             font-size: 1rem;
           }
           .additionalDetails {
-            display:flex;
+            display: flex;
             margin: 9px 0 9px 0;
           }
-          .additionalDetails >div{
-            flex-basis:50%;
+          .additionalDetails > div {
+            flex-basis: 50%;
           }
-          .additionalDetails >div:last-child{
-            text-align:center;
+          .additionalDetails > div:last-child {
+            text-align: center;
           }
         `}</style>
         <Card>
@@ -253,6 +253,119 @@ class ProfilePageBodyRight extends Component {
           <div className="learnMoreBtn">
             <Button variant="contained" color="primary" size="small">
               See more
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  };
+
+  renderFacebookCard = () => {
+    const facebookData = {
+      profile_url: "https://facebook.com",
+      verified: false,
+      likes: "58",
+      followers: "70",
+      rating: "1.8",
+      total: "21",
+      businessProfile: "https://facebook.com",
+      username: "Nest"
+    };
+
+    return (
+      <div style={{ marginBottom: "50px" }}>
+        <style jsx>{`
+          .bold {
+            font-weight: bold;
+          }
+          .claimHeader {
+            text-align: right;
+          }
+          .claimHeaderIconContainer {
+            margin-right: 4px;
+          }
+          .claimHeaderIcon {
+            color: rgb(252, 175, 22);
+          }
+          .brandImageContainer {
+            height: 80px;
+            width: 80px;
+            margin: 0 auto;
+          }
+          .brandImage {
+            max-width: 100%;
+            height: auto;
+            border-radius:10px;
+          }
+          .ratingContainer {
+            text-align: center;
+            margin: 15px 0 15px 0;
+          }
+          .ratingContainerText {
+            font-size: 1.2rem;
+          }
+          .learnMoreBtn {
+            text-align: center;
+            margin: 15px 0 5px 0;
+          }
+          .description_header {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+          .additionalDetailsHeader {
+            font-weight: bold;
+            font-size: 0.95rem;
+          }
+          .additionalDetails {
+            display: flex;
+            margin: 9px 0 9px 0;
+          }
+          .additionalDetails > div {
+            flex-basis: 50%;
+          }
+          .additionalDetails > div:last-child {
+            text-align: center;
+          }
+        `}</style>
+        <Card>
+          <div className="claimHeader">
+            <div>
+              <span className="claimHeaderIconContainer">
+                <i className="fa fa-warning claimHeaderIcon"></i>
+              </span>
+              {facebookData.verified ? "verified" : "unverified"}
+            </div>
+          </div>
+          <div className="brandImageContainer">
+            <img src="/static/images/facebookLogo.png" className="brandImage" />
+          </div>
+          <div className="ratingContainer">
+            <div className="ratingContainerText">
+              <span className="bold">{facebookData.rating}</span> out of{" "}
+              <span className="bold">5</span>
+            </div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Likes :</div>{" "}
+            <div>{facebookData.likes}</div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Followers :</div>{" "}
+            <div>{facebookData.followers}</div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Total reviews :</div>{" "}
+            <div>{facebookData.total}</div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Username :</div>{" "}
+            <div>{facebookData.username}</div>
+          </div>
+          <div className="learnMoreBtn">
+            <Button variant="contained" color="primary" size="small" onClick={()=>{
+              window.open(facebookData.businessProfile)
+            }}>
+              Go to profile
             </Button>
           </div>
         </Card>
@@ -302,7 +415,7 @@ class ProfilePageBodyRight extends Component {
           }
           .ratingContainerText {
             font-size: 1.2rem;
-            margin:9px 0 9px 0;
+            margin: 9px 0 9px 0;
           }
           .learnMoreBtn {
             text-align: center;
@@ -317,14 +430,14 @@ class ProfilePageBodyRight extends Component {
             font-size: 1rem;
           }
           .additionalDetails {
-            display:flex;
+            display: flex;
             margin: 9px 0 9px 0;
           }
-          .additionalDetails >div{
-            flex-basis:50%;
+          .additionalDetails > div {
+            flex-basis: 50%;
           }
-          .additionalDetails >div:last-child{
-            text-align:center;
+          .additionalDetails > div:last-child {
+            text-align: center;
           }
         `}</style>
         <Card>
@@ -354,10 +467,10 @@ class ProfilePageBodyRight extends Component {
             </div>
           </div>
           <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Certifcate expiry date:</div>{" "}
-            <div>
-              {trustedShopData.certificate_expiry_date}
-            </div>
+            <div className="additionalDetailsHeader">
+              Certifcate expiry date:
+            </div>{" "}
+            <div>{trustedShopData.certificate_expiry_date}</div>
           </div>
           <div className="description">
             <div className="description_header">Description :</div>
@@ -504,6 +617,7 @@ class ProfilePageBodyRight extends Component {
             {/* add will come condition */}
             {this.renderTrustPilotCard()}
             {this.renderTrustedShopCard()}
+            {this.renderFacebookCard()}
           </div>
         )}
       </div>
