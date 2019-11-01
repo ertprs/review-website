@@ -443,7 +443,7 @@ class GetReviews extends Component {
     const senderName = _get(campaign, "senderName.value", "");
     const senderEmail = _get(campaign, "senderEmail.value", "");
     const clientName = _get(selectTemplateData, "clientName.value", "");
-    const entityDomain = _get(selectTemplateData, "entity.value", "");
+    const entity = _get(selectTemplateData, "entity.value", "");
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
     // const subject = _get(selectTemplateData, "subject.value", "");
@@ -467,7 +467,7 @@ class GetReviews extends Component {
         // subject,
         vars: {
           clientName,
-          entityDomain,
+          entity,
           exampleText,
           leaveReviewText
         }
