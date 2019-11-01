@@ -13,7 +13,7 @@ import _isEmpty from "lodash/isEmpty";
 class ReviewCardContainer extends Component {
   state = {
     googleReviewsToShow: [],
-    wotReviewsToShow:[]
+    wotReviewsToShow: []
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -53,26 +53,26 @@ class ReviewCardContainer extends Component {
         return (
           googleReviewsToShow &&
           googleReviewsToShow.map(review => {
-            return <GoogleReviewCard review={review} provider="google"/>;
+            return <GoogleReviewCard review={review} provider="google" />;
           })
         );
       }
     }
   };
 
-  renderWotReviews = ()=>{
+  renderWotReviews = () => {
     const { wotReviewsToShow } = this.state;
     if (wotReviewsToShow) {
       if (wotReviewsToShow.length > 0) {
         return (
           wotReviewsToShow &&
           wotReviewsToShow.map(review => {
-            return <GoogleReviewCard review={review} provider="wot"/>;
+            return <GoogleReviewCard review={review} provider="wot" />;
           })
         );
       }
     }
-  }
+  };
 
   renderTrustSearchReviews = domainReviewsData => {
     return (
@@ -91,7 +91,6 @@ class ReviewCardContainer extends Component {
   handleShowMore = () => {
     const { googleReviewsToShow } = this.state;
     const { googleReviewsData } = this.props;
-
 
     if (googleReviewsData.length <= googleReviewsToShow.length) {
     }
@@ -122,7 +121,7 @@ class ReviewCardContainer extends Component {
     }
   };
 
-  handleWotShowMoreClick = ()=>{
+  handleWotShowMoreClick = () => {
     const { wotReviewsToShow } = this.state;
     const { wotReviewsData } = this.props;
     if (wotReviewsData.length <= wotReviewsToShow.length) {
@@ -152,10 +151,15 @@ class ReviewCardContainer extends Component {
         ]
       });
     }
-  }
+  };
 
   render() {
-    const { domainProfileData, isLoading, googleReviewsData, wotReviewsData } = this.props;
+    const {
+      domainProfileData,
+      isLoading,
+      googleReviewsData,
+      wotReviewsData
+    } = this.props;
     const domainReviewsData =
       ((domainProfileData || {}).domainReviews || {}).data || [];
     const domainReviewsWillCome =
@@ -165,7 +169,7 @@ class ReviewCardContainer extends Component {
       "headerData.data.is_verified",
       false
     );
-    const { googleReviewsToShow, wotReviewsToShow } =   this.state;
+    const { googleReviewsToShow, wotReviewsToShow } = this.state;
     return (
       <div>
         <style jsx>{`
@@ -197,7 +201,7 @@ class ReviewCardContainer extends Component {
             color: #21bc61;
           }
         `}</style>
-        <WriteReviewCard />
+        <WriteReviewCard trustClicked={this.props.trustClicked} />
         {isLoading ? (
           <ReviewCardPlaceholder />
         ) : true ? (
@@ -223,10 +227,12 @@ class ReviewCardContainer extends Component {
               <>
                 {this.renderWotReviews()}
                 {wotReviewsData.length <= 8 ||
-                wotReviewsToShow.length ===
-                  wotReviewsData.length ? null : (
+                wotReviewsToShow.length === wotReviewsData.length ? null : (
                   <div className="showMoreContainer">
-                    <span className="showMore" onClick={this.handleWotShowMoreClick}>
+                    <span
+                      className="showMore"
+                      onClick={this.handleWotShowMoreClick}
+                    >
                       Show more
                     </span>
                   </div>
@@ -266,7 +272,7 @@ const mapStateToProps = state => {
     googleReviewsData = [...googleReviewsFromRedux];
   }
 
-  const wotReviewsFromRedux =  _get(domainProfileData, "wotReviews.data",[]);
+  const wotReviewsFromRedux = _get(domainProfileData, "wotReviews.data", []);
   let wotReviewsData = [];
   if (
     Array.isArray(wotReviewsFromRedux) &&

@@ -69,7 +69,8 @@ class Profile extends React.Component {
     variant: "success",
     snackbarMsg: "",
     id: "",
-    aggregateSocialData: {}
+    aggregateSocialData: {},
+    trustClicked: false
   };
 
   componentDidMount() {
@@ -449,15 +450,19 @@ class Profile extends React.Component {
           <ProfilePageHeader
             headerData={headerData}
             isMounted={this.state.isMounted}
+            onTrustClick={() => this.setState({ trustClicked: true })}
           />
         </Element>
-        <ProfilePageBody
-          analyzeReports={analyzeReports}
-          trafficReports={trafficReports}
-          socialMediaStats={socialMediaStats}
-          domainReviews={domainReviews || []}
-          isMounted={this.state.isMounted}
-        />
+        <Element name="writeReview" className="writeReview">
+          <ProfilePageBody
+            analyzeReports={analyzeReports}
+            trafficReports={trafficReports}
+            socialMediaStats={socialMediaStats}
+            domainReviews={domainReviews || []}
+            isMounted={this.state.isMounted}
+            trustClicked={this.state.trustClicked}
+          />
+        </Element>
         <Footer />
         <Snackbar
           open={this.state.showSnackbar}

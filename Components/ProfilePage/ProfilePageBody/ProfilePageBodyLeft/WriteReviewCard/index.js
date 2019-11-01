@@ -15,6 +15,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import OAuthButtons from "../../../../Widgets/oAuthBtns";
 import Snackbar from "../../../../../Components/Widgets/Snackbar";
 import Router from "next/router";
+import Button from "@material-ui/core/Button";
 
 class WriteReview extends Component {
   constructor(props) {
@@ -148,13 +149,18 @@ class WriteReview extends Component {
             <>
               <OAuthButtons disabled={!_get(formData, "review.valid", false)} />
               <style jsx>{styles}</style>
-              <button
-                disabled={!_get(formData, "review.valid", false)}
-                className="postReviewButton"
-                onClick={this.handlePostReview}
-              >
-                Login and Post Review
-              </button>
+              <div style={{ margin: "10px 0px" }}>
+                <Button
+                  style={{ width: "100%" }}
+                  variant="contained"
+                  color="primary"
+                  disabled={!_get(formData, "review.valid", false)}
+                  // className="postReviewButton"
+                  onClick={this.handlePostReview}
+                >
+                  Login and Post Review
+                </Button>
+              </div>
             </>
           ) : (
             <div style={{ textAlign: "center", margin: "10px 0px" }}>
@@ -173,13 +179,17 @@ class WriteReview extends Component {
           ) : (
             <>
               <style jsx>{styles}</style>
-              <button
-                disabled={!_get(formData, "review.valid", false)}
-                className="postReviewButton"
-                onClick={this.handlePostReview}
-              >
-                Post Review
-              </button>
+              <div style={{ width: "100%", margin: "10px 0px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!_get(formData, "review.valid", false)}
+                  // className="postReviewButton"
+                  onClick={this.handlePostReview}
+                >
+                  Post Review
+                </Button>
+              </div>
             </>
           )}
         </>
@@ -253,6 +263,12 @@ class WriteReview extends Component {
         actionType === "LOGIN_FAILURE"
       ) {
         this.setState({ authButtonLoading: false });
+      }
+    }
+
+    if (this.props !== prevProps) {
+      if (this.props.trustClicked) {
+        this.setState({ rating: 5 });
       }
     }
   }
