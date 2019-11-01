@@ -19,7 +19,7 @@ import validate from "../../utility/validate";
 class ReportDomainModal extends React.Component {
   state = {
     formData: {
-      fraudType: {
+      report_category_id: {
         element: "select",
         value: "",
         placeholder: "Select Fraud Type",
@@ -30,18 +30,18 @@ class ReportDomainModal extends React.Component {
         validationRules: {
           required: true
         },
-        name: "fraudType"
+        name: "report_category_id"
       },
       title: {
         element: "input",
         value: "",
-        placeholder: "Title",
-        errorMessage: "Please enter the title",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true
-        },
+        placeholder: "Title(optional)",
+        errorMessage: "Please enter the title",
+        valid: true,
+        touched: true,
+        // validationRules: {
+        //   required: false
+        // },
         name: "title"
       },
       description: {
@@ -83,9 +83,22 @@ class ReportDomainModal extends React.Component {
 
   handleReportClick = () => {
     const { formData } = this.state;
-    const { authorized } = this.props;
+    const { authorized, profileData } = this.props;
     const { reportDomain, reportDomainAfterLogin } = this.props;
-    let reqBody = this.createReqBody(formData);
+    let domain = _get(
+      profileData,
+      "domainProfileData.headerData.data.domain_name",
+      ""
+    );
+    let report_category_id = _get(formData, "report_category_id.value", 0);
+    let reqBody = {
+      data: {
+        description: _get(formData, "description.value", ""),
+        title: _get(formData, "title.value", "")
+      },
+      report_category_id: Number(report_category_id),
+      url: domain
+    };
     if (authorized) {
       reportDomain(reqBody);
     } else {
@@ -100,12 +113,6 @@ class ReportDomainModal extends React.Component {
     const success = _get(reportDomainData, "success", "undefined");
     const errorMsg = _get(reportDomainData, "errorMsg", "Some Error Occured!");
     const { authButtonLoading } = this.state;
-    // let msg = "";
-    // if (success === true) {
-    //   msg = "Reported successfully!";
-    // } else if (errorMsg) {
-    //   msg = errorMsg;
-    // }
     if (!authorized) {
       return (
         <div className="container">
@@ -162,7 +169,12 @@ class ReportDomainModal extends React.Component {
   };
 
   componentDidUpdate(prevProps, nextProps) {
-    const { authType } = this.props;
+    const { authType, reportDomainSuccess, closeModal } = this.props;
+    if (reportDomainSuccess !== prevProps.reportDomainSuccess) {
+      if (reportDomainSuccess === true) {
+        closeModal();
+      }
+    }
     if (this.props !== prevProps) {
       if (authType === "LOGIN_INIT") {
         this.setState({ authButtonLoading: true });
@@ -203,9 +215,9 @@ class ReportDomainModal extends React.Component {
             <h3 className="heading">Report Fraud Domain</h3>
             <div className="trustReviewModalForm">
               <FormField
-                {...formData.fraudType}
+                {...formData.report_category_id}
                 handleChange={(e, id) => this.handleFormDataChange(e, id)}
-                id="fraudType"
+                id="report_category_id"
                 rows="5"
                 col="5"
                 styles={{ height: "38px" }}
@@ -241,7 +253,24 @@ const mapStateToProps = state => {
   const authorized = _get(auth, "logIn.authorized", false);
   const authType = _get(auth, "type", "");
   const reportDomainData = _get(profileData, "reportDomain", {});
-  return { authorized, reportDomainData, authType };
+  const reportDomainSuccess = _get(
+    profileData,
+    "reportDomain.success",
+    "undefined"
+  );
+  const reportDomainErrorMsg = _get(
+    profileData,
+    "reportDomain.errorMsg",
+    "undefined"
+  );
+  return {
+    authorized,
+    reportDomainData,
+    authType,
+    profileData,
+    reportDomainSuccess,
+    reportDomainErrorMsg
+  };
 };
 
 export default connect(

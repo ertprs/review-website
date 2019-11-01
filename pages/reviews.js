@@ -311,8 +311,24 @@ class Profile extends React.Component {
   handleRouteChange = url => {};
 
   componentDidUpdate(prevProps, prevState) {
-    const { auth } = this.props;
+    const { auth, reportDomainSuccess, reportDomainErrorMsg } = this.props;
 
+    if (reportDomainSuccess !== prevProps.reportDomainSuccess) {
+      if (reportDomainSuccess === true) {
+        console.log(reportDomainSuccess, "reportDomainSuccess");
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Domain Reported Successfully!!"
+        });
+      } else if (reportDomainSuccess === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: reportDomainErrorMsg || ""
+        });
+      }
+    }
     if (this.props.auth !== prevProps.auth) {
       const isLoginFailed = _get(auth, "logInTemp.isLoginFailed", false);
       const isWrongCredentials = _get(
@@ -320,7 +336,6 @@ class Profile extends React.Component {
         "logInTemp.isWrongCredentials",
         false
       );
-      const actionType = _get(auth, "type", "");
       const authorized = _get(auth, "logIn.authorized", false);
       if (isLoginFailed) {
         if (isWrongCredentials) {
@@ -375,7 +390,7 @@ class Profile extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
-        <DomainPusherComponent domain={domain}/>
+        <DomainPusherComponent domain={domain} />
         <Navbar
           handleSearchBoxChange={e =>
             this.setState({ searchBoxVal: e.target.value })
@@ -436,8 +451,7 @@ const mapStateToProps = state => {
     "reportDomain.errorMsg",
     "undefined"
   );
-  let reportDomainType = _get(profileData, "reportDomain.type", "");
-  return { auth, reportDomainSuccess, reportDomainErrorMsg, reportDomainType };
+  return { auth, reportDomainSuccess, reportDomainErrorMsg };
 };
 
 export default connect(

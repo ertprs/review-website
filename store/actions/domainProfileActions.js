@@ -253,21 +253,23 @@ export const reportDomain = data => {
       }
     });
     try {
-      await axios({
+      const result = await axios({
         method: "POST",
         url: `${process.env.BASE_URL}${reportDomainApi}`,
         headers: { Authorization: `Bearer ${token}` },
         data
       });
+      const success = _get(result, "data.success", false);
       dispatch({
         type: REPORT_DOMAIN_SUCCESS,
         reportDomain: {
           isLoading: false,
-          success: true,
+          success,
           errorMsg: ""
         }
       });
-      dispatch(reportDomainAfterLogin({}, false));
+      // setTimeout(dispatch(clearReportDomainData), 3000);
+      // dispatch(reportDomainAfterLogin({}, false));
     } catch (error) {
       dispatch({
         type: REPORT_DOMAIN_FAILURE,
@@ -277,7 +279,8 @@ export const reportDomain = data => {
           errorMsg: "Some error occured in reporting domain!"
         }
       });
-      dispatch(reportDomainAfterLogin({}, false));
+      // setTimeout(dispatch(clearReportDomainData), 3000);
+      // dispatch(reportDomainAfterLogin({}, false));
     }
   };
 };
@@ -288,6 +291,17 @@ export const reportDomainAfterLogin = (data, shouldReportDomain) => {
     reportDomainLaterData: {
       data,
       shouldReportDomain
+    }
+  };
+};
+
+export const clearReportDomainData = () => {
+  return {
+    type: REPORT_DOMAIN_SUCCESS,
+    reportDomain: {
+      isLoading: false,
+      success: "undefined",
+      errorMsg: ""
     }
   };
 };
