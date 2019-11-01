@@ -6,6 +6,7 @@ import trustReducer from "./trustReducer";
 import domainProfileReducer from "./domainProfileReducer";
 import dashboardReducer from "./dashboardReducer";
 import loaderReducer from "./loaderReducer";
+import aggregateReducer from "./aggregateReducer";
 
 const authPersistConfig = {
   key: "auth",
@@ -30,5 +31,6 @@ export default combineReducers({
   trustVote: trustReducer,
   profileData: persistReducer(profileDataConfig, domainProfileReducer),
   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
-  loader: loaderReducer
+  loader: loaderReducer,
+  aggregateData:aggregateReducer
 });

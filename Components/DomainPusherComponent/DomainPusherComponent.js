@@ -32,14 +32,7 @@ class DomainPusherComponent extends Component {
     });
 
     channel.bind("aggregator", data => {
-      //   this.setState({ reviewScrapeResult: { ...data } }, () => {
-      //     // this.props.onChildStateChange(this.state.reviewScrapeResult);
-      //     console.log(
-      //       data,
-      //       "response from DomainPusherComponent DomainNameAggregator"
-      //     );
-      //     // pusher.disconnect();
-      //   });
+      this.props.onAggregatorDataChange(data)
       console.log(
         data,
         "response from DomainPusherComponent DomainNameAggregator"

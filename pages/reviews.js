@@ -17,6 +17,10 @@ import {
 } from "../store/actions/domainProfileActions";
 import { connect } from "react-redux";
 import DomainPusherComponent from "../Components/DomainPusherComponent/DomainPusherComponent";
+import {
+  getAggregateData,
+  setAggregateData
+} from "../store/actions/aggregateActions";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 const Navbar = dynamic(() => import("../Components/MaterialComponents/NavBar"));
@@ -62,7 +66,9 @@ class Profile extends React.Component {
     searchBoxVal: "",
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    id: "",
+    aggregateSocialData: {}
   };
 
   componentDidMount() {
@@ -111,10 +117,27 @@ class Profile extends React.Component {
     Events.scrollEvent.remove("end");
   }
 
+  updateAggregatorData = newData => {
+    //send to action creator (newData, id)
+    // disable same data calls
+    const { id, aggregateSocialData } = this.state;
+    const socialAppId = _get(newData, "response.socialAppId", undefined);
+    console.log(socialAppId);
+    // if(socialAppId){
+    //   if(aggregateSocialData[socialAppId]===undefined){
+    //     this.props.getAggregateData(newData, id);
+    //   }
+    // }
+    this.props.getAggregateData(newData, id);
+  };
+
   updateParentState = newState => {
     this.props.setDomainDataInRedux(newState);
     const { domainData } = this.state;
-
+    if (this.state.id === "") {
+      const id = _get(newState, "id", "");
+      this.setState({ id });
+    }
     const headerData = {
       ...this.state.headerData,
       domain_name: _get(newState, "domain_data.name", ""),
@@ -223,6 +246,20 @@ class Profile extends React.Component {
       socialMediaStats: [...socialMediaStats],
       domainReviews: [...domainReviews]
     });
+
+    let aggregateSocialData = { ...this.state.aggregateSocialData };
+
+    if (
+      !_isEmpty(_get(newState, "social.payload", {})) &&
+      typeof _get(newState, "social.payload", {}) === "object"
+    ) {
+      const payload = _get(newState, "social.payload", {});
+      for (let item in _get(newState, "social.payload", {})) {
+        aggregateSocialData = { ...aggregateSocialData, [item]: payload[item] };
+      }
+    }
+    this.setState({ aggregateSocialData: { ...aggregateSocialData } });
+    this.props.setAggregateData({ ...aggregateSocialData });
   };
 
   handleTabChange = e => {};
@@ -389,7 +426,10 @@ class Profile extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
-        <DomainPusherComponent domain={domain} />
+        <DomainPusherComponent
+          domain={domain}
+          onAggregatorDataChange={this.updateAggregatorData}
+        />
         <Navbar
           handleSearchBoxChange={e =>
             this.setState({ searchBoxVal: e.target.value })
@@ -455,5 +495,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setDomainDataInRedux, setLoading }
+  { setDomainDataInRedux, setLoading, getAggregateData, setAggregateData }
 )(Profile);
