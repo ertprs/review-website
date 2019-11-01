@@ -51,6 +51,7 @@ const SimpleTabs = dynamic(() =>
   import("../Components/MaterialComponents/SimpleTabs")
 );
 import Snackbar from "../Components/Widgets/Snackbar";
+import { fetchGoogleReviews } from "../store/actions/googleReviewsAction";
 
 class Profile extends React.Component {
   state = {
@@ -72,6 +73,9 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
+    //call fetch reviews action creator
+    const { fetchGoogleReviews, domain } = this.props;
+    fetchGoogleReviews(domain);
     this.setState({ isMounted: true });
     Router.events.on("routeChangeStart", this.handleRouteChange);
     Events.scrollEvent.register("begin", function() {});
@@ -118,17 +122,19 @@ class Profile extends React.Component {
   }
 
   updateAggregatorData = newData => {
-    //send to action creator (newData, id)
-    // disable same data calls
     const { id, aggregateSocialData } = this.state;
     const socialAppId = _get(newData, "response.socialAppId", undefined);
     console.log(socialAppId);
-    // if(socialAppId){
-    //   if(aggregateSocialData[socialAppId]===undefined){
-    //     this.props.getAggregateData(newData, id);
-    //   }
-    // }
     this.props.getAggregateData(newData, id);
+  };
+
+  onGoogleReviewsChange = data => {
+    const googleReviewsTotal = _get(data, "response.reviewCount", 0);
+    console.log(data, "data from pusher");
+    const { fetchGoogleReviews, domain } = this.props;
+    if (googleReviewsTotal > 0) {
+      fetchGoogleReviews(domain);
+    }
   };
 
   updateParentState = newState => {
@@ -429,6 +435,7 @@ class Profile extends React.Component {
         <DomainPusherComponent
           domain={domain}
           onAggregatorDataChange={this.updateAggregatorData}
+          onGoogleReviewsChange={this.onGoogleReviewsChange}
         />
         <Navbar
           handleSearchBoxChange={e =>
@@ -495,5 +502,11 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { setDomainDataInRedux, setLoading, getAggregateData, setAggregateData }
+  {
+    setDomainDataInRedux,
+    setLoading,
+    getAggregateData,
+    setAggregateData,
+    fetchGoogleReviews
+  }
 )(Profile);

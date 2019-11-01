@@ -20,7 +20,8 @@ const persistConfig = {
     "trustVote",
     "dashboardData",
     "aggregateData",
-    "profileData"
+    "profileData",
+    "googleReviews"
   ]
 };
 
