@@ -45,7 +45,7 @@ export const createCampaignApi = "/api/my-business/invitations/invite-manual";
 export const fetchCampaignLanguageApi = "/api/my-business/locales";
 export const fetchEmailTemplateApi = "/api/my-business/invitation-template";
 export const reportDomainApi = "/api/applications/fraud";
-
+export const thirdPartyDataApi = "/api/third-party-data";
 //How to create review short link
 export const getStartedVideoUrl =
   "https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708";
