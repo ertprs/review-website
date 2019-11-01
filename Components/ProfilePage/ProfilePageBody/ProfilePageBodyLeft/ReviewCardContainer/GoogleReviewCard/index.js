@@ -3,7 +3,7 @@ import { reviewListStyles } from "../../../../../Widgets/MyReviewsUser/myReviews
 import RatingIndicators from "../../../../../Widgets/RatingIndicators/RatingIndicators";
 import _get from "lodash/get";
 
-const GoogleReviewCard = ({ review }) => {
+const GoogleReviewCard = ({ review, provider }) => {
   const { name, text, rating } = review;
 
   return (
@@ -23,10 +23,13 @@ const GoogleReviewCard = ({ review }) => {
               widgetSpacings="2px"
             />
             <p className="userName">
-              <img
+              {provider === "google" ? <img
                 src="/static/images/googleIcon.png"
                 style={{ height: "10px", width: "10px", marginRight: "10px" }}
-              />
+              />: provider ==="wot" ? <img
+              src="/static/images/wotLogo.png"
+              style={{ height: "10px", width: "10px", marginRight: "10px" }}
+            /> : null}
               {name || ""}
             </p>
           </div>
