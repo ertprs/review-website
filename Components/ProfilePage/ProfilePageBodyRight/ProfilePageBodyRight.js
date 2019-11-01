@@ -275,8 +275,8 @@ class ProfilePageBodyRight extends Component {
           ) : null}
           {total ? (
             <div className="additionalDetails">
-              <div className="additionalDetailsHeader">Total :</div>{" "}
-              <div style={{ textAlign: "left" }}>{total}</div>
+              <div className="additionalDetailsHeader">Total Reviews :</div>{" "}
+              <div style={{ textAlign: "center" }}>{total}</div>
             </div>
           ) : null}
           {description ? (
@@ -716,7 +716,7 @@ class ProfilePageBodyRight extends Component {
           ) : null}
           {total ? (
             <div className="additionalDetails">
-              <div className="additionalDetailsHeader">Total :</div>{" "}
+              <div className="additionalDetailsHeader">Total Reviews :</div>{" "}
               <div style={{ textAlign: "center" }}>{total}</div>
             </div>
           ) : null}
