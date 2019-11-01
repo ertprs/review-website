@@ -309,15 +309,15 @@ class ProfilePageBodyRight extends Component {
   renderLinkedInCard = () => {
     const { aggregateData } = this.props;
     const linkedInData = _get(aggregateData, "13", {});
-    const followers = _get(linkedInData, "followers", 83699);
-    const employee_count = _get(linkedInData, "employee_count", 1699);
-    const industry = _get(linkedInData, "industry", "Retail");
-    const company_size = _get(linkedInData, "company_size", "1001-5000 employees");
-    const headquarters = _get(linkedInData, "headquarters", "Las Vegas, Nevada");
-    const type = _get(linkedInData, "type", "Public Company");
-    const founded = _get(linkedInData, "founded", "1999");
-    const specialities = _get(linkedInData, "specialities", "Customer Service, eCommerce, Apparel, Footwear");
-    const url = _get(linkedInData, "url", "https://www.linkedin.com/company/zappos.com");
+    const followers = _get(linkedInData, "data.followers", 0);
+    const employee_count = _get(linkedInData, "data.employee_count", 0);
+    const industry = _get(linkedInData, "data.industry", "");
+    const company_size = _get(linkedInData, "data.company_size", "");
+    const headquarters = _get(linkedInData, "data.headquarters", "");
+    const type = _get(linkedInData, "data.type", "");
+    const founded = _get(linkedInData, "data.founded", "");
+    const specialities = _get(linkedInData, "data.specialities", "");
+    const url = _get(linkedInData, "data.url", "");
     const employees = _get(linkedInData, "empolyees", []);
 
     // const trustPilotData = {
@@ -584,19 +584,19 @@ class ProfilePageBodyRight extends Component {
   renderTrustedShopCard = () => {
     const { aggregateData } = this.props;
     const trustedShopData = _get(aggregateData, "19", {});
-    const total = _get(trustedShopData, "total", 0);
-    const claimed = _get(trustedShopData, "claimed", false);
+    const total = _get(trustedShopData, "data.total", 0);
+    const verified = _get(trustedShopData, "verified", false);
     const certificate_expiry_date = _get(
       trustedShopData,
-      "certificate_expiry_date",
+      "data.certificate_expiry_date",
       ""
     );
-    const rating = _get(trustedShopData, "rating", 0);
-    const max_rating = _get(trustedShopData, "max_rating", 0);
-    const categories = _get(trustedShopData, "categories", []);
-    const image_url = _get(trustedShopData, "image_url", "");
-    const description = _get(trustedShopData, "description", "");
-    const url = _get(trustedShopData, "url", "");
+    const rating = _get(trustedShopData, "data.rating", 0);
+    const max_rating = _get(trustedShopData, "data.max_rating", 0);
+    const categories = _get(trustedShopData, "data.categories", []);
+    const image_url = _get(trustedShopData, "data.image_url", "");
+    const description = _get(trustedShopData, "data.description", "");
+    const url = _get(trustedShopData, "data.url", "");
 
     // const trustedShopData = {
     //   reviews: [],
@@ -639,7 +639,7 @@ class ProfilePageBodyRight extends Component {
           }
           .ratingContainerText {
             font-size: 1.2rem;
-            margin: 9px 0 9px 0;
+            margin: 13px 0 13px 0;
           }
           .learnMoreBtn {
             text-align: center;
@@ -668,7 +668,7 @@ class ProfilePageBodyRight extends Component {
           <div className="claimHeader">
             <div>
               <span className="claimHeaderIconContainer">
-                {claimed ? (
+                {verified ? (
                   <i
                     className="fa fa-check-circle"
                     style={{ color: "green" }}
@@ -677,7 +677,7 @@ class ProfilePageBodyRight extends Component {
                   <i className="fa fa-warning claimHeaderIcon"></i>
                 )}
               </span>
-              {claimed ? "Claimed" : "Unclaimed"}
+              {verified ? "Verified" : "Unverified"}
             </div>
           </div>
           <div className="brandImageContainer">
@@ -717,7 +717,7 @@ class ProfilePageBodyRight extends Component {
           {total ? (
             <div className="additionalDetails">
               <div className="additionalDetailsHeader">Total :</div>{" "}
-              <div style={{ textAlign: "left" }}>{total}</div>
+              <div style={{ textAlign: "center" }}>{total}</div>
             </div>
           ) : null}
           {description ? (
@@ -731,7 +731,9 @@ class ProfilePageBodyRight extends Component {
             </div>
           ) : null}
           <div className="learnMoreBtn">
-            <Button variant="contained" color="primary" size="small">
+            <Button variant="contained" color="primary" size="small" onClick={()=>{
+              window.open(url)
+            }}>
               See more
             </Button>
           </div>
@@ -889,6 +891,14 @@ class ProfilePageBodyRight extends Component {
           </div>
         ) : (
           <div>
+            {showTrustPilot ? this.renderTrustPilotCard() : null}
+            {showTrustedShop ? this.renderTrustedShopCard() : null}
+            {showLinkedInCard ? (
+              <div className="mb-25">{this.renderLinkedInCard()}</div>
+            ) : null}
+            {showFacebook ? (
+              <div className="mb-25">{this.renderFacebookCard()}</div>
+            ) : null}
             {!domainReviewsWillCome && !is_verified ? (
               <div className="mb-25 claim">
                 <ClaimYourWebsite variant="small" />
@@ -915,15 +925,6 @@ class ProfilePageBodyRight extends Component {
                 </div>
               ) : null}
             </div>
-            {/* add will come condition */}
-            {showTrustPilot ? this.renderTrustPilotCard() : null}
-            {showTrustedShop ? this.renderTrustedShopCard() : null}
-            {!showLinkedInCard ? (
-              <div className="mb-25">{this.renderLinkedInCard()}</div>
-            ) : null}
-            {showFacebook ? (
-              <div className="mb-25">{this.renderFacebookCard()}</div>
-            ) : null}
           </div>
         )}
       </div>
