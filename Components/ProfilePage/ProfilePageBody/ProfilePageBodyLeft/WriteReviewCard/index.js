@@ -257,11 +257,11 @@ class WriteReview extends Component {
     }
   }
 
-  handleKeyDown = e => {
-    if (e.keyCode == 13) {
-      this.handlePostReview();
-    }
-  };
+  // handleKeyDown = e => {
+  //   if (e.keyCode == 13) {
+  //     this.handlePostReview();
+  //   }
+  // };
 
   render() {
     const {
@@ -307,7 +307,6 @@ class WriteReview extends Component {
                   {...formData.review}
                   handleChange={this.handleChange}
                   type="textarea"
-                  onkeyDown={this.handleKeyDown}
                   id="review"
                   rows="5"
                   col="5"
