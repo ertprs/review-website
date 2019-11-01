@@ -57,7 +57,7 @@ class ProfilePageHeader extends Component {
               <div className="col-md-8" style={{ marginTop: "25px" }}>
                 <ReviewCard
                   variant="profileHeaderCard"
-                  image={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+                  image={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
                     Math.random() * 10 + 1
                   )}`}
                   fallbackImage={screenshotUrl}
@@ -83,7 +83,7 @@ class ProfilePageHeader extends Component {
                 <div className="headerCard">
                   <Card>
                     <div className="companyLink">
-                      <a href={`https://www.${domain_name}`} target="_blank">
+                      <a href={`https://www.${parsed_domain_name}`} target="_blank">
                         <i className="fa fa-share-square-o"></i>
                         {domain_name}
                       </a>

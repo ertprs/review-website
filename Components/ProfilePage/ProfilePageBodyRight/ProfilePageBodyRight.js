@@ -152,16 +152,30 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderTrustPilotCard = () => {
-    const trustPilotData = {
-      reviews: [],
-      claimed: false,
-      rating: 3.5,
-      max_rating: 5,
-      categories: ["sports", "wrestling"],
-      image_url: "/static/images/trustpilotLogo.png",
-      description:
-        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
-    };
+    const { aggregateData } = this.props;
+    const trustPilotData = _get(aggregateData, "18", {});
+    const profile_url = _get(trustPilotData, "profile_url", "");
+    const verified = _get(trustPilotData, "verified", false);
+    const total = _get(trustPilotData, "data.total", 0);
+    const claimed = _get(trustPilotData, "data.claimed", false);
+    const rating = _get(trustPilotData, "data.rating", 0);
+    const max_rating = _get(trustPilotData, "data.max_rating", 0);
+    const categories = _get(trustPilotData, "data.categories", []);
+    const image_url = "/static/images/trustpilotLogo.png";
+    const description = _get(trustPilotData, "data.description", "");
+    const url = _get(trustPilotData, "data.url", "");
+    const followers = _get(trustPilotData, "followers", 0);
+
+    // const trustPilotData = {
+    //   reviews: [],
+    //   claimed: false,
+    //   rating: 3.5,
+    //   max_rating: 5,
+    //   categories: ["sports", "wrestling"],
+    //   image_url: "/static/images/trustpilotLogo.png",
+    //   description:
+    //     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
+    // };
 
     return (
       <div style={{ marginBottom: "50px" }}>
@@ -220,38 +234,62 @@ class ProfilePageBodyRight extends Component {
           <div className="claimHeader">
             <div>
               <span className="claimHeaderIconContainer">
-                <i className="fa fa-warning claimHeaderIcon"></i>
+                {claimed ? (
+                  <i
+                    className="fa fa-check-circle"
+                    style={{ color: "green" }}
+                  ></i>
+                ) : (
+                  <i className="fa fa-warning claimHeaderIcon"></i>
+                )}
               </span>
-              {trustPilotData.claimed ? "claimed" : "Unclaimed"}
+              {claimed ? "Claimed" : "Unclaimed"}
             </div>
           </div>
           <div className="brandImageContainer">
-            <img src={trustPilotData.image_url} className="brandImage" />
+            <img src={image_url} className="brandImage" />
           </div>
           <div className="ratingContainer">
             <div className="ratingContainerText">
-              <span className="bold">{trustPilotData.rating}</span> out of{" "}
-              <span className="bold">{trustPilotData.max_rating}</span>
+              <span className="bold">{rating}</span> out of{" "}
+              <span className="bold">{max_rating}</span>
             </div>
           </div>
           <div className="additionalDetails">
             <div className="additionalDetailsHeader">Categories :</div>{" "}
-            <div>
-              {trustPilotData.categories.map(item => {
-                return <span>{item} </span>;
-              })}
+            <div style={{ textAlign: "left" }}>
+              {Array.isArray(categories) && (categories || []).length > 0
+                ? categories.map((item, index) => {
+                    return (
+                      <span>
+                        {item} {index !== categories.length - 1 ? "," : ""}{" "}
+                      </span>
+                    );
+                  })
+                : null}
             </div>
+          </div>
+          <div className="additionalDetails">
+            <div className="additionalDetailsHeader">Total :</div>{" "}
+            <div style={{ textAlign: "left" }}>{total}</div>
           </div>
           <div className="description">
             <div className="description_header">Description :</div>
             <p>
-              {trustPilotData.description.length > 100
-                ? trustPilotData.description.substring(0, 100) + "..."
-                : trustPilotData.description}
+              {description.length > 200
+                ? description.substring(0, 200) + "..."
+                : description}
             </p>
           </div>
           <div className="learnMoreBtn">
-            <Button variant="contained" color="primary" size="small">
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                window.open(url);
+              }}
+            >
               See more
             </Button>
           </div>
@@ -261,105 +299,111 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderFacebookCard = () => {
-    const facebookData = {
-      profile_url: "https://facebook.com",
-      verified: false,
-      likes: "58",
-      followers: "70",
-      rating: "1.8",
-      total: "21",
-      businessProfile: "https://facebook.com",
-      username: "Nest"
-    };
+    const { aggregateData } = this.props;
+    const facebookData = _get(aggregateData, "1", {});
+    const profile_url = _get(facebookData, "profile_url", "");
+    const verified = _get(facebookData, "verified", false);
+    const likes = _get(facebookData, "data.likes", 0);
+    const url = _get(facebookData, "data.url", "");
+    const followers = _get(facebookData, "data.followers", "");
+    const username = _get(facebookData, "data.username", "");
 
     return (
-      <div style={{ marginBottom: "50px" }}>
-        <style jsx>{`
-          .bold {
-            font-weight: bold;
-          }
-          .claimHeader {
-            text-align: right;
-          }
-          .claimHeaderIconContainer {
-            margin-right: 4px;
-          }
-          .claimHeaderIcon {
-            color: rgb(252, 175, 22);
-          }
-          .brandImageContainer {
-            height: 80px;
-            width: 80px;
-            margin: 0 auto;
-          }
-          .brandImage {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-          }
-          .ratingContainer {
-            text-align: center;
-            margin: 15px 0 15px 0;
-          }
-          .ratingContainerText {
-            font-size: 1.2rem;
-          }
-          .learnMoreBtn {
-            text-align: center;
-            margin: 15px 0 5px 0;
-          }
-          .description_header {
-            font-weight: bold;
-            font-size: 1rem;
-          }
-          .additionalDetailsHeader {
-            font-weight: bold;
-            font-size: 0.95rem;
-          }
-          .additionalDetails {
-            display: flex;
-            margin: 9px 0 9px 0;
-          }
-          .additionalDetails > div {
-            flex-basis: 50%;
-          }
-          .additionalDetails > div:last-child {
-            text-align: center;
-          }
-        `}</style>
+      <div>
+        <style jsx>
+          {`
+            .flexContainer {
+              display: flex;
+              align-items: center;
+            }
+
+            .flexContainer > div:last-child {
+              flex-basis: 100%;
+              margin-left: 15px;
+            }
+
+            .brandImageContainer {
+              height: 100px;
+              width: 100px;
+            }
+            .brandImage {
+              max-width: 100%;
+              height: auto;
+              border-radius: 8px;
+            }
+            .brandImageContainer {
+              display: flex;
+              align-items: center;
+            }
+            .description_header {
+              font-weight: bold;
+              font-size: 1rem;
+            }
+            .additionalDetailsHeader {
+              font-weight: bold;
+              font-size: 1rem;
+            }
+            .additionalDetails {
+              display: flex;
+              margin: 9px 0 9px 0;
+            }
+            .additionalDetails > div {
+              flex-basis: 50%;
+            }
+            .additionalDetails > div:last-child {
+              text-align: center;
+            }
+            .bold {
+              font-weight: bold;
+            }
+            .claimHeader {
+              text-align: right;
+            }
+            .claimHeaderIconContainer {
+              margin-right: 4px;
+            }
+            .claimHeaderIcon {
+              color: rgb(252, 175, 22);
+            }
+            .learnMoreBtn {
+              text-align: center;
+              margin: 15px 0 5px 0;
+            }
+          `}
+        </style>
         <Card>
           <div className="claimHeader">
             <div>
               <span className="claimHeaderIconContainer">
-                <i className="fa fa-warning claimHeaderIcon"></i>
+                {verified ? (
+                  <i
+                    className="fa fa-check-circle"
+                    style={{ color: "green" }}
+                  ></i>
+                ) : (
+                  <i className="fa fa-warning claimHeaderIcon"></i>
+                )}
               </span>
-              {facebookData.verified ? "verified" : "unverified"}
+              {verified ? "Verified" : "Unverified"}
             </div>
           </div>
-          <div className="brandImageContainer">
-            <img src="/static/images/facebookLogo.png" className="brandImage" />
-          </div>
-          <div className="ratingContainer">
-            <div className="ratingContainerText">
-              <span className="bold">{facebookData.rating}</span> out of{" "}
-              <span className="bold">5</span>
+          <div className="flexContainer">
+            <div className="brandImageContainer">
+              <img
+                src="/static/images/facebookLogo.png"
+                className="brandImage"
+              />
             </div>
-          </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Likes :</div>{" "}
-            <div>{facebookData.likes}</div>
-          </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Followers :</div>{" "}
-            <div>{facebookData.followers}</div>
-          </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Total reviews :</div>{" "}
-            <div>{facebookData.total}</div>
-          </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Username :</div>{" "}
-            <div>{facebookData.username}</div>
+            <div className="detailsContainer">
+              <div className="additionalDetails">
+                <div className="additionalDetailsHeader">Followers :</div>{" "}
+                <div style={{ textAlign: "left" }}>{followers}</div>
+              </div>
+              <div className="additionalDetails">
+                <div className="additionalDetailsHeader">Likes :</div>{" "}
+                <div style={{ textAlign: "left" }}>{likes}</div>
+              </div>
+            </div>
           </div>
           <div className="learnMoreBtn">
             <Button
@@ -367,10 +411,10 @@ class ProfilePageBodyRight extends Component {
               color="primary"
               size="small"
               onClick={() => {
-                window.open(facebookData.businessProfile);
+                window.open(profile_url);
               }}
             >
-              Go to profile
+              See more
             </Button>
           </div>
         </Card>
@@ -544,7 +588,43 @@ class ProfilePageBodyRight extends Component {
   };
 
   render() {
-    const { domainProfileData, isLoading } = this.props;
+    const { domainProfileData, isLoading, aggregateData } = this.props;
+    let showTrustPilot = false;
+    let showTrustedShop = false;
+    let showFacebook = false;
+    if (aggregateData.hasOwnProperty("18")) {
+      if (
+        _get(aggregateData, "18.data", null) !== null &&
+        !_isEmpty(_get(aggregateData, "18.data", {}))
+      ) {
+        showTrustPilot = true;
+      } else {
+        showTrustPilot = false;
+      }
+    }
+
+    if (aggregateData.hasOwnProperty("19")) {
+      if (
+        _get(aggregateData, "19.data", null) !== null &&
+        !_isEmpty(_get(aggregateData, "19.data", {}))
+      ) {
+        showTrustedShop = true;
+      } else {
+        showTrustedShop = false;
+      }
+    }
+
+    if (aggregateData.hasOwnProperty("1")) {
+      if (
+        _get(aggregateData, "1.data", null) !== null &&
+        !_isEmpty(_get(aggregateData, "1.data", {}))
+      ) {
+        showFacebook = true;
+      } else {
+        showFacebook = false;
+      }
+    }
+
     const analysisReportsData =
       ((domainProfileData || {}).analysisReports || {}).data || {};
     const trafficReportsData =
@@ -624,9 +704,9 @@ class ProfilePageBodyRight extends Component {
               ) : null}
             </div>
             {/* add will come condition */}
-            {this.renderTrustPilotCard()}
-            {this.renderTrustedShopCard()}
-            {this.renderFacebookCard()}
+            {showTrustPilot ? this.renderTrustPilotCard() : null}
+            {showTrustedShop ? this.renderTrustedShopCard() : null}
+            {showFacebook ? <div className="mb-25">{this.renderFacebookCard()}</div> : null}
           </div>
         )}
       </div>
@@ -635,9 +715,9 @@ class ProfilePageBodyRight extends Component {
 }
 
 const mapStateToProps = state => {
-  const { profileData } = state;
+  const { profileData, aggregateData } = state;
   const { domainProfileData, isLoading } = profileData;
-  return { domainProfileData, isLoading };
+  return { domainProfileData, isLoading, aggregateData };
 };
 
 export default connect(mapStateToProps)(ProfilePageBodyRight);
