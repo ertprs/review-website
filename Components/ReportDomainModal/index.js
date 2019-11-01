@@ -48,7 +48,7 @@ class ReportDomainModal extends React.Component {
         element: "textarea",
         value: "",
         placeholder: "140 characters to 280",
-        errorMessage: "140 to 280 characters ",
+        errorMessage: "",
         valid: false,
         touched: false,
         validationRules: {
@@ -63,7 +63,9 @@ class ReportDomainModal extends React.Component {
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
-    authButtonLoading: false
+    authButtonLoading: false,
+    reviewCharsLeft: 0,
+    reviewCharsMore: 0
   };
 
   createReqBody = formData => {
@@ -187,6 +189,25 @@ class ReportDomainModal extends React.Component {
   handleFormDataChange = (e, id) => {
     const { value } = e.target;
     const { formData } = this.state;
+    let reviewCharsLeft = 0;
+    let reviewCharsMore = 0;
+    if (id === "description") {
+      if (value.length < _get(formData[id], "validationRules.minLength", 0)) {
+        if (reviewCharsLeft < 0) {
+          reviewCharsLeft = 0;
+        }
+        reviewCharsLeft =
+          _get(formData[id], "validationRules.minLength", 0) - value.length;
+      } else if (
+        value.length > _get(formData[id], "validationRules.maxLength", 0)
+      ) {
+        if (reviewCharsMore < 0) {
+          reviewCharsMore = 0;
+        }
+        reviewCharsMore =
+          value.length - _get(formData[id], "validationRules.maxLength", 0);
+      }
+    }
 
     this.setState({
       formData: {
@@ -197,12 +218,14 @@ class ReportDomainModal extends React.Component {
           valid: validate(value, formData[id].validationRules),
           touched: true
         }
-      }
+      },
+      reviewCharsLeft,
+      reviewCharsMore
     });
   };
 
   render() {
-    const { formData } = this.state;
+    const { formData, reviewCharsLeft, reviewCharsMore } = this.state;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
@@ -236,6 +259,19 @@ class ReportDomainModal extends React.Component {
                 rows="5"
                 col="5"
               />
+              <div style={{ marginBottom: "20px" }}>
+                {reviewCharsLeft > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsLeft} characters left!
+                  </span>
+                ) : reviewCharsMore > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsMore} characters exceeding!
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
               <div className="row">
                 <div className="col-md-12"></div>
                 {this.renderAuthButtons(valid)}
