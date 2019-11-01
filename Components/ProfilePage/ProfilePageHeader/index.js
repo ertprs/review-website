@@ -12,6 +12,15 @@ import ReportDomainModal from "../../ReportDomainModal";
 import VerifiedIcon from "@material-ui/icons/VerifiedUser";
 import UnVerifiedIcon from "@material-ui/icons/NotInterested";
 import Tooltip from "@material-ui/core/Tooltip";
+import {
+  Link,
+  DirectLink,
+  Element,
+  Events,
+  animateScroll as scroll,
+  scrollSpy,
+  scroller
+} from "react-scroll";
 
 class ProfilePageHeader extends Component {
   state = {
@@ -82,12 +91,32 @@ class ProfilePageHeader extends Component {
               <div className="col-md-4 headerRight">
                 <div className="headerCard">
                   <Card>
-                    <div className="companyLink">
-                      <a href={`https://www.${parsed_domain_name}`} target="_blank">
-                        <i className="fa fa-share-square-o"></i>
-                        {domain_name}
-                      </a>
-                    </div>
+                    <Link
+                      activeClass="active"
+                      className="writeReview"
+                      to="writeReview"
+                      spy={true}
+                      smooth={true}
+                      duration={500}
+                      offset={-50}
+                    >
+                      <div
+                        onClick={this.props.onTrustClick}
+                        className="companyLink"
+                        style={{ marginBottom: "14px" }}
+                      >
+                        <div className="companyClaimStatus">
+                          <i
+                            className="fa fa-thumbs-up"
+                            style={{ color: "green", fontSize: "20px" }}
+                          ></i>
+
+                          <span className="claimed" style={{ color: "green" }}>
+                            I trust this domain.
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
                     <div className="claimed">
                       {is_verified ? (
                         <Tooltip
