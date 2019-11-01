@@ -255,32 +255,187 @@ class ProfilePageBodyRight extends Component {
               <span className="bold">{max_rating}</span>
             </div>
           </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Categories :</div>{" "}
-            <div style={{ textAlign: "left" }}>
-              {Array.isArray(categories) && (categories || []).length > 0
-                ? categories.map((item, index) => {
-                    return (
-                      <span>
-                        {item} {index !== categories.length - 1 ? "," : ""}{" "}
-                      </span>
-                    );
-                  })
-                : null}
+          {categories &&
+          Array.isArray(categories) &&
+          (categories || []).length > 0 ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Categories :</div>{" "}
+              <div style={{ textAlign: "left" }}>
+                {Array.isArray(categories) && (categories || []).length > 0
+                  ? categories.map((item, index) => {
+                      return (
+                        <span>
+                          {item} {index !== categories.length - 1 ? "," : ""}{" "}
+                        </span>
+                      );
+                    })
+                  : null}
+              </div>
             </div>
+          ) : null}
+          {total ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Total :</div>{" "}
+              <div style={{ textAlign: "left" }}>{total}</div>
+            </div>
+          ) : null}
+          {description ? (
+            <div className="description">
+              <div className="description_header">Description :</div>
+              <p>
+                {description.length > 200
+                  ? description.substring(0, 200) + "..."
+                  : description}
+              </p>
+            </div>
+          ) : null}
+          <div className="learnMoreBtn">
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                window.open(url);
+              }}
+            >
+              See more
+            </Button>
           </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Total :</div>{" "}
-            <div style={{ textAlign: "left" }}>{total}</div>
+        </Card>
+      </div>
+    );
+  };
+
+  renderLinkedInCard = () => {
+    const { aggregateData } = this.props;
+    const linkedInData = _get(aggregateData, "13", {});
+    const followers = _get(linkedInData, "followers", 83699);
+    const employee_count = _get(linkedInData, "employee_count", 1699);
+    const industry = _get(linkedInData, "industry", "Retail");
+    const company_size = _get(linkedInData, "company_size", "1001-5000 employees");
+    const headquarters = _get(linkedInData, "headquarters", "Las Vegas, Nevada");
+    const type = _get(linkedInData, "type", "Public Company");
+    const founded = _get(linkedInData, "founded", "1999");
+    const specialities = _get(linkedInData, "specialities", "Customer Service, eCommerce, Apparel, Footwear");
+    const url = _get(linkedInData, "url", "https://www.linkedin.com/company/zappos.com");
+    const employees = _get(linkedInData, "empolyees", []);
+
+    // const trustPilotData = {
+    //   reviews: [],
+    //   claimed: false,
+    //   rating: 3.5,
+    //   max_rating: 5,
+    //   categories: ["sports", "wrestling"],
+    //   image_url: "/static/images/trustpilotLogo.png",
+    //   description:
+    //     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
+    // };
+
+    return (
+      <div style={{ marginBottom: "50px" }}>
+        <style jsx>{`
+          .bold {
+            font-weight: bold;
+          }
+          .claimHeader {
+            text-align: right;
+          }
+          .claimHeaderIconContainer {
+            margin-right: 4px;
+          }
+          .claimHeaderIcon {
+            color: rgb(252, 175, 22);
+          }
+          .brandImageContainer {
+            height: 80px;
+            width: 80px;
+            margin: 0 auto 30px auto;
+          }
+          .brandImage {
+            max-width: 100%;
+            height: auto;
+          }
+          .ratingContainer {
+            text-align: center;
+          }
+          .ratingContainerText {
+            font-size: 1.2rem;
+          }
+          .learnMoreBtn {
+            text-align: center;
+            margin: 15px 0 5px 0;
+          }
+          .description_header {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+          .additionalDetailsHeader {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+          .additionalDetails {
+            display: flex;
+            margin: 9px 0 9px 0;
+          }
+          .additionalDetails > div {
+            flex-basis: 50%;
+          }
+          .additionalDetails > div:last-child {
+            text-align: center;
+          }
+        `}</style>
+        <Card>
+          <div className="brandImageContainer">
+            <img src="/static/images/linkedinLogo.png" className="brandImage" />
           </div>
-          <div className="description">
-            <div className="description_header">Description :</div>
-            <p>
-              {description.length > 200
-                ? description.substring(0, 200) + "..."
-                : description}
-            </p>
-          </div>
+          {followers ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Followers :</div>{" "}
+              <div style={{ textAlign: "left" }}>{followers}</div>
+            </div>
+          ) : null}
+          {employee_count ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Employee count :</div>{" "}
+              <div style={{ textAlign: "left" }}>{employee_count}</div>
+            </div>
+          ) : null}
+          {industry ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Industry :</div>{" "}
+              <div style={{ textAlign: "left" }}>{industry}</div>
+            </div>
+          ) : null}
+          {company_size ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Company size :</div>{" "}
+              <div style={{ textAlign: "left" }}>{company_size}</div>
+            </div>
+          ) : null}
+          {headquarters ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Headquarters :</div>{" "}
+              <div style={{ textAlign: "left" }}>{headquarters}</div>
+            </div>
+          ) : null}
+          {type ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Type :</div>{" "}
+              <div style={{ textAlign: "left" }}>{type}</div>
+            </div>
+          ) : null}
+          {founded ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Founded :</div>{" "}
+              <div style={{ textAlign: "left" }}>{founded}</div>
+            </div>
+          ) : null}
+          {specialities ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Specialities :</div>{" "}
+              <div style={{ textAlign: "left" }}>{specialities}</div>
+            </div>
+          ) : null}
           <div className="learnMoreBtn">
             <Button
               variant="contained"
@@ -395,14 +550,18 @@ class ProfilePageBodyRight extends Component {
               />
             </div>
             <div className="detailsContainer">
-              <div className="additionalDetails">
-                <div className="additionalDetailsHeader">Followers :</div>{" "}
-                <div style={{ textAlign: "left" }}>{followers}</div>
-              </div>
-              <div className="additionalDetails">
-                <div className="additionalDetailsHeader">Likes :</div>{" "}
-                <div style={{ textAlign: "left" }}>{likes}</div>
-              </div>
+              {followers ? (
+                <div className="additionalDetails">
+                  <div className="additionalDetailsHeader">Followers :</div>{" "}
+                  <div style={{ textAlign: "left" }}>{followers}</div>
+                </div>
+              ) : null}
+              {likes ? (
+                <div className="additionalDetails">
+                  <div className="additionalDetailsHeader">Likes :</div>{" "}
+                  <div style={{ textAlign: "left" }}>{likes}</div>
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="learnMoreBtn">
@@ -423,17 +582,33 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderTrustedShopCard = () => {
-    const trustedShopData = {
-      reviews: [],
-      claimed: "",
-      certificate_expiry_date: "27/12/2019",
-      rating: 3.5,
-      max_rating: 5,
-      categories: ["sports", "wrestling"],
-      image_url: "/static/images/trustedShopLogo.jpg",
-      description:
-        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
-    };
+    const { aggregateData } = this.props;
+    const trustedShopData = _get(aggregateData, "19", {});
+    const total = _get(trustedShopData, "total", 0);
+    const claimed = _get(trustedShopData, "claimed", false);
+    const certificate_expiry_date = _get(
+      trustedShopData,
+      "certificate_expiry_date",
+      ""
+    );
+    const rating = _get(trustedShopData, "rating", 0);
+    const max_rating = _get(trustedShopData, "max_rating", 0);
+    const categories = _get(trustedShopData, "categories", []);
+    const image_url = _get(trustedShopData, "image_url", "");
+    const description = _get(trustedShopData, "description", "");
+    const url = _get(trustedShopData, "url", "");
+
+    // const trustedShopData = {
+    //   reviews: [],
+    //   claimed: "",
+    //   certificate_expiry_date: "27/12/2019",
+    //   rating: 3.5,
+    //   max_rating: 5,
+    //   categories: ["sports", "wrestling"],
+    //   image_url: "/static/images/trustedShopLogo.jpg",
+    //   description:
+    //     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
+    // };
 
     return (
       <div style={{ marginBottom: "50px" }}>
@@ -493,42 +668,68 @@ class ProfilePageBodyRight extends Component {
           <div className="claimHeader">
             <div>
               <span className="claimHeaderIconContainer">
-                <i className="fa fa-warning claimHeaderIcon"></i>
+                {claimed ? (
+                  <i
+                    className="fa fa-check-circle"
+                    style={{ color: "green" }}
+                  ></i>
+                ) : (
+                  <i className="fa fa-warning claimHeaderIcon"></i>
+                )}
               </span>
-              {trustedShopData.claimed ? "claimed" : "Unclaimed"}
+              {claimed ? "Claimed" : "Unclaimed"}
             </div>
           </div>
           <div className="brandImageContainer">
-            <img src={trustedShopData.image_url} className="brandImage" />
+            <img
+              src="/static/images/trustedShopLogo.jpg"
+              className="brandImage"
+            />
           </div>
           <div className="ratingContainer">
             <div className="ratingContainerText">
-              <span className="bold">{trustedShopData.rating}</span> out of{" "}
-              <span className="bold">{trustedShopData.max_rating}</span>
+              <span className="bold">{rating}</span> out of{" "}
+              <span className="bold">{max_rating}</span>
             </div>
           </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">Categories :</div>{" "}
-            <div>
-              {trustedShopData.categories.map(item => {
-                return <span>{item} </span>;
-              })}
+          {categories &&
+          Array.isArray(categories) &&
+          (categories || []).length > 0 ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Categories :</div>{" "}
+              <div>
+                {Array.isArray(categories) && (categories || []).length > 0
+                  ? categories.map(item => {
+                      return <span>{item} </span>;
+                    })
+                  : null}
+              </div>
             </div>
-          </div>
-          <div className="additionalDetails">
-            <div className="additionalDetailsHeader">
-              Certifcate expiry date:
-            </div>{" "}
-            <div>{trustedShopData.certificate_expiry_date}</div>
-          </div>
-          <div className="description">
-            <div className="description_header">Description :</div>
-            <p>
-              {trustedShopData.description.length > 100
-                ? trustedShopData.description.substring(0, 100) + "..."
-                : trustedShopData.description}
-            </p>
-          </div>
+          ) : null}
+          {certificate_expiry_date ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">
+                Certifcate expiry date:
+              </div>{" "}
+              <div>{certificate_expiry_date}</div>
+            </div>
+          ) : null}
+          {total ? (
+            <div className="additionalDetails">
+              <div className="additionalDetailsHeader">Total :</div>{" "}
+              <div style={{ textAlign: "left" }}>{total}</div>
+            </div>
+          ) : null}
+          {description ? (
+            <div className="description">
+              <div className="description_header">Description :</div>
+              <p>
+                {description.length > 200
+                  ? description.substring(0, 200) + "..."
+                  : description}
+              </p>
+            </div>
+          ) : null}
           <div className="learnMoreBtn">
             <Button variant="contained" color="primary" size="small">
               See more
@@ -592,6 +793,7 @@ class ProfilePageBodyRight extends Component {
     let showTrustPilot = false;
     let showTrustedShop = false;
     let showFacebook = false;
+    let showLinkedInCard = false;
     if (aggregateData.hasOwnProperty("18")) {
       if (
         _get(aggregateData, "18.data", null) !== null &&
@@ -622,6 +824,16 @@ class ProfilePageBodyRight extends Component {
         showFacebook = true;
       } else {
         showFacebook = false;
+      }
+    }
+    if (aggregateData.hasOwnProperty("13")) {
+      if (
+        _get(aggregateData, "13.data", null) !== null &&
+        !_isEmpty(_get(aggregateData, "13.data", {}))
+      ) {
+        showLinkedInCard = true;
+      } else {
+        showLinkedInCard = false;
       }
     }
 
@@ -706,7 +918,12 @@ class ProfilePageBodyRight extends Component {
             {/* add will come condition */}
             {showTrustPilot ? this.renderTrustPilotCard() : null}
             {showTrustedShop ? this.renderTrustedShopCard() : null}
-            {showFacebook ? <div className="mb-25">{this.renderFacebookCard()}</div> : null}
+            {!showLinkedInCard ? (
+              <div className="mb-25">{this.renderLinkedInCard()}</div>
+            ) : null}
+            {showFacebook ? (
+              <div className="mb-25">{this.renderFacebookCard()}</div>
+            ) : null}
           </div>
         )}
       </div>
