@@ -19,7 +19,7 @@ import validate from "../../utility/validate";
 class ReportDomainModal extends React.Component {
   state = {
     formData: {
-      fraudType: {
+      report_category_id: {
         element: "select",
         value: "",
         placeholder: "Select Fraud Type",
@@ -30,25 +30,25 @@ class ReportDomainModal extends React.Component {
         validationRules: {
           required: true
         },
-        name: "fraudType"
+        name: "report_category_id"
       },
       title: {
         element: "input",
         value: "",
-        placeholder: "Title",
-        errorMessage: "Please enter the title",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true
-        },
+        placeholder: "Title(optional)",
+        errorMessage: "Please enter the title",
+        valid: true,
+        touched: true,
+        // validationRules: {
+        //   required: false
+        // },
         name: "title"
       },
       description: {
         element: "textarea",
         value: "",
         placeholder: "140 characters to 280",
-        errorMessage: "140 to 280 characters ",
+        errorMessage: "",
         valid: false,
         touched: false,
         validationRules: {
@@ -63,7 +63,9 @@ class ReportDomainModal extends React.Component {
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
-    authButtonLoading: false
+    authButtonLoading: false,
+    reviewCharsLeft: 0,
+    reviewCharsMore: 0
   };
 
   createReqBody = formData => {
@@ -83,9 +85,22 @@ class ReportDomainModal extends React.Component {
 
   handleReportClick = () => {
     const { formData } = this.state;
-    const { authorized } = this.props;
+    const { authorized, profileData } = this.props;
     const { reportDomain, reportDomainAfterLogin } = this.props;
-    let reqBody = this.createReqBody(formData);
+    let domain = _get(
+      profileData,
+      "domainProfileData.headerData.data.domain_name",
+      ""
+    );
+    let report_category_id = _get(formData, "report_category_id.value", 0);
+    let reqBody = {
+      data: {
+        description: _get(formData, "description.value", ""),
+        title: _get(formData, "title.value", "")
+      },
+      report_category_id: Number(report_category_id),
+      url: domain
+    };
     if (authorized) {
       reportDomain(reqBody);
     } else {
@@ -100,12 +115,6 @@ class ReportDomainModal extends React.Component {
     const success = _get(reportDomainData, "success", "undefined");
     const errorMsg = _get(reportDomainData, "errorMsg", "Some Error Occured!");
     const { authButtonLoading } = this.state;
-    // let msg = "";
-    // if (success === true) {
-    //   msg = "Reported successfully!";
-    // } else if (errorMsg) {
-    //   msg = errorMsg;
-    // }
     if (!authorized) {
       return (
         <div className="container">
@@ -162,7 +171,12 @@ class ReportDomainModal extends React.Component {
   };
 
   componentDidUpdate(prevProps, nextProps) {
-    const { authType } = this.props;
+    const { authType, reportDomainSuccess, closeModal } = this.props;
+    if (reportDomainSuccess !== prevProps.reportDomainSuccess) {
+      if (reportDomainSuccess === true) {
+        closeModal();
+      }
+    }
     if (this.props !== prevProps) {
       if (authType === "LOGIN_INIT") {
         this.setState({ authButtonLoading: true });
@@ -175,6 +189,25 @@ class ReportDomainModal extends React.Component {
   handleFormDataChange = (e, id) => {
     const { value } = e.target;
     const { formData } = this.state;
+    let reviewCharsLeft = 0;
+    let reviewCharsMore = 0;
+    if (id === "description") {
+      if (value.length < _get(formData[id], "validationRules.minLength", 0)) {
+        if (reviewCharsLeft < 0) {
+          reviewCharsLeft = 0;
+        }
+        reviewCharsLeft =
+          _get(formData[id], "validationRules.minLength", 0) - value.length;
+      } else if (
+        value.length > _get(formData[id], "validationRules.maxLength", 0)
+      ) {
+        if (reviewCharsMore < 0) {
+          reviewCharsMore = 0;
+        }
+        reviewCharsMore =
+          value.length - _get(formData[id], "validationRules.maxLength", 0);
+      }
+    }
 
     this.setState({
       formData: {
@@ -185,12 +218,14 @@ class ReportDomainModal extends React.Component {
           valid: validate(value, formData[id].validationRules),
           touched: true
         }
-      }
+      },
+      reviewCharsLeft,
+      reviewCharsMore
     });
   };
 
   render() {
-    const { formData } = this.state;
+    const { formData, reviewCharsLeft, reviewCharsMore } = this.state;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
@@ -203,9 +238,9 @@ class ReportDomainModal extends React.Component {
             <h3 className="heading">Report Fraud Domain</h3>
             <div className="trustReviewModalForm">
               <FormField
-                {...formData.fraudType}
+                {...formData.report_category_id}
                 handleChange={(e, id) => this.handleFormDataChange(e, id)}
-                id="fraudType"
+                id="report_category_id"
                 rows="5"
                 col="5"
                 styles={{ height: "38px" }}
@@ -224,6 +259,19 @@ class ReportDomainModal extends React.Component {
                 rows="5"
                 col="5"
               />
+              <div style={{ marginBottom: "20px" }}>
+                {reviewCharsLeft > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsLeft} characters left!
+                  </span>
+                ) : reviewCharsMore > 0 ? (
+                  <span style={{ color: "red" }}>
+                    {reviewCharsMore} characters exceeding!
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
               <div className="row">
                 <div className="col-md-12"></div>
                 {this.renderAuthButtons(valid)}
@@ -241,7 +289,24 @@ const mapStateToProps = state => {
   const authorized = _get(auth, "logIn.authorized", false);
   const authType = _get(auth, "type", "");
   const reportDomainData = _get(profileData, "reportDomain", {});
-  return { authorized, reportDomainData, authType };
+  const reportDomainSuccess = _get(
+    profileData,
+    "reportDomain.success",
+    "undefined"
+  );
+  const reportDomainErrorMsg = _get(
+    profileData,
+    "reportDomain.errorMsg",
+    "undefined"
+  );
+  return {
+    authorized,
+    reportDomainData,
+    authType,
+    profileData,
+    reportDomainSuccess,
+    reportDomainErrorMsg
+  };
 };
 
 export default connect(

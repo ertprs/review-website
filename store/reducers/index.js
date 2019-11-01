@@ -7,6 +7,7 @@ import domainProfileReducer from "./domainProfileReducer";
 import dashboardReducer from "./dashboardReducer";
 import loaderReducer from "./loaderReducer";
 import aggregateReducer from "./aggregateReducer";
+import googleReviews from "./googleReviewReducer";
 
 const authPersistConfig = {
   key: "auth",
@@ -32,5 +33,6 @@ export default combineReducers({
   profileData: persistReducer(profileDataConfig, domainProfileReducer),
   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
   loader: loaderReducer,
-  aggregateData:aggregateReducer
+  aggregateData: aggregateReducer,
+  googleReviews
 });

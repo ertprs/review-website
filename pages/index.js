@@ -147,11 +147,14 @@ const Home = props => {
 const mapStateToProps = state => {
   const { auth, trustVote, profileData } = state;
   const authorized = _get(auth, "logIn.authorized", false);
+  const profileDataActionType = _get(profileData, "type", "");
   const reportDomainSuccess = _get(
     profileData,
     "reportDomain.success",
     "undefined"
   );
+  console.log(profileDataActionType, "profileDataActionType");
+  console.log(reportDomainSuccess, "reportDomainSuccess");
   const reportDomainErrorMsg = _get(profileData, "reportDomain.errorMsg", "");
   let showSnackbar = false;
   let variant = "";
@@ -170,7 +173,11 @@ const mapStateToProps = state => {
     variant = "error";
     message = "Some Error Occured!";
   }
-  if (authorized) {
+  if (
+    authorized &&
+    (profileDataActionType === "REPORT_DOMAIN_SUCCESS" ||
+      profileDataActionType === "REPORT_DOMAIN_FAILURE")
+  ) {
     if (reportDomainSuccess === true) {
       showSnackbar = true;
       variant = "success";

@@ -172,6 +172,7 @@ export const logIn = (loginData, loginApi, loginType) => {
       let status = _get(res, "status", 0);
       let token = _get(res, "data.token", "");
       if (success) {
+        localStorage.setItem("token", token);
         cookie.set("loginType", loginType);
         cookie.set("token", token);
       }

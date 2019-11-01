@@ -7,7 +7,7 @@ class DomainPusherComponent extends Component {
 
   componentDidMount() {
     const { domain } = this.props;
-    console.log(domain)
+    console.log(domain);
     const pusher = new Pusher("a962a1b0d1b0ab9e3399", {
       cluster: "ap2",
       forceTLS: true
@@ -23,16 +23,12 @@ class DomainPusherComponent extends Component {
   //change state and create separate onChildStateChange for both.
   bindToKey = (pusher, channel) => {
     channel.bind("google_reviews", data => {
-      //   this.setState({ reviewScrapeResult: { ...data } }, () => {
-      //     // this.props.onChildStateChange(this.state.reviewScrapeResult);
-      //     console.log(data, "response from DomainPusherComponent Google_Reviews");
-      //     // pusher.disconnect();
-      //   });
+      this.props.onGoogleReviewsChange(data);
       console.log(data, "response from DomainPusherComponent Google_Reviews");
     });
 
     channel.bind("aggregator", data => {
-      this.props.onAggregatorDataChange(data)
+      this.props.onAggregatorDataChange(data);
       console.log(
         data,
         "response from DomainPusherComponent DomainNameAggregator"

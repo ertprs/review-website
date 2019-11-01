@@ -122,10 +122,11 @@ class WriteReview extends Component {
       "domainProfileData.headerData.data.domain_name",
       ""
     );
+    let parsed_domain = domain.replace(/https:\/\//gim, "");
     const reqBody = {
       rating,
       text: value,
-      domain
+      domain: parsed_domain
     };
     if (authorized) {
       sendTrustVote(reqBody);
@@ -324,7 +325,7 @@ class WriteReview extends Component {
                   ""
                 )}
               </div>
-              <label style={{ fontWeight: "bold", fontSize: "18px" }}>
+              {/* <label style={{ fontWeight: "bold", fontSize: "18px" }}>
                 <Checkbox
                   checked={trust}
                   onChange={e =>
@@ -339,7 +340,7 @@ class WriteReview extends Component {
                   }}
                 />
                 I trust this domain
-              </label>
+              </label> */}
               {this.renderAuthButtons(
                 formData,
                 isLoading,

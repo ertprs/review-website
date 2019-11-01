@@ -90,13 +90,15 @@ class ProfilePageHeader extends Component {
                     </div>
                     <div className="claimed">
                       {is_verified ? (
-                        <Tooltip title={
-                          <React.Fragment>
-                            <h6>This company has a trustsearch account.</h6>
-                          </React.Fragment>
-                        }>
+                        <Tooltip
+                          title={
+                            <React.Fragment>
+                              <h6>This company has a trustsearch account.</h6>
+                            </React.Fragment>
+                          }
+                        >
                           <div style={{ display: "flex" }}>
-                            <div style={{alignSelf:"center"}}>
+                            <div style={{ alignSelf: "center" }}>
                               <VerifiedIcon
                                 style={{ color: "green", fontSize: "20px" }}
                               />
@@ -105,7 +107,7 @@ class ProfilePageHeader extends Component {
                               style={{
                                 fontSize: "17px",
                                 fontWeight: "bold",
-                                color:"#555",
+                                color: "#555",
                                 marginLeft: "5px",
                                 alignSelf: "center",
                                 letterSpacing: "1px"
@@ -116,13 +118,18 @@ class ProfilePageHeader extends Component {
                           </div>
                         </Tooltip>
                       ) : (
-                        <Tooltip title={
-                          <React.Fragment>
-                            <h6>This company does not have a trustsearch account.</h6>
-                          </React.Fragment>
-                        }>
+                        <Tooltip
+                          title={
+                            <React.Fragment>
+                              <h6>
+                                This company does not have a trustsearch
+                                account.
+                              </h6>
+                            </React.Fragment>
+                          }
+                        >
                           <div style={{ display: "flex" }}>
-                            <div style={{alignSelf:"center"}}>
+                            <div style={{ alignSelf: "center" }}>
                               <UnVerifiedIcon
                                 style={{ color: "red", fontSize: "20px" }}
                               />
@@ -131,7 +138,7 @@ class ProfilePageHeader extends Component {
                               style={{
                                 fontSize: "17px",
                                 fontWeight: "bold",
-                                color:"#555",
+                                color: "#555",
                                 marginLeft: "5px",
                                 alignSelf: "flex-end",
                                 letterSpacing: "1px"
@@ -188,7 +195,9 @@ class ProfilePageHeader extends Component {
           modalCustomStyles={{ width: "70%" }}
           shouldCloseOnOverlayClick={false}
         >
-          <ReportDomainModal />
+          <ReportDomainModal
+            closeModal={() => this.setState({ showReportDomainModal: false })}
+          />
         </CustomModal>
       </Paper>
     );
