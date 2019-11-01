@@ -295,13 +295,13 @@ export const reportDomainAfterLogin = (data, shouldReportDomain) => {
   };
 };
 
-export const clearReportDomainData = () => {
-  return {
-    type: REPORT_DOMAIN_SUCCESS,
-    reportDomain: {
-      isLoading: false,
-      success: "undefined",
-      errorMsg: ""
-    }
-  };
-};
+// export const clearReportDomainData = () => {
+//   return {
+//     type: REPORT_DOMAIN_SUCCESS,
+//     reportDomain: {
+//       isLoading: false,
+//       success: "undefined",
+//       errorMsg: ""
+//     }
+//   };
+// };
