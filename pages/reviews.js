@@ -315,7 +315,6 @@ class Profile extends React.Component {
 
     if (reportDomainSuccess !== prevProps.reportDomainSuccess) {
       if (reportDomainSuccess === true) {
-        console.log(reportDomainSuccess, "reportDomainSuccess");
         this.setState({
           showSnackbar: true,
           variant: "success",
