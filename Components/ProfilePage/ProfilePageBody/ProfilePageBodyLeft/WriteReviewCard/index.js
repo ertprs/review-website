@@ -8,7 +8,8 @@ import _get from "lodash/get";
 import { connect } from "react-redux";
 import {
   sendTrustVote,
-  sendTrustDataLater
+  sendTrustDataLater,
+  clearTrustVoteData
 } from "../../../../../store/actions/trustAction";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -198,7 +199,7 @@ class WriteReview extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { trustVote, auth } = this.props;
+    const { trustVote, auth, clearTrustVoteData } = this.props;
     const { formData } = this.state;
     const isSuccess = _get(trustVote, "payload.success", false);
     const actionType = _get(trustVote, "type", "");
@@ -220,6 +221,9 @@ class WriteReview extends Component {
             variant: "success",
             snackbarMsg: "Review Posted Successfully!"
           });
+          setTimeout(() => {
+            clearTrustVoteData();
+          }, 3000);
         }
       } else if (actionType === "TRUST_VOTE_FAILURE") {
         if (!isSuccess) {
@@ -230,6 +234,9 @@ class WriteReview extends Component {
             variant: "error",
             snackbarMsg: "Some Error Occured!"
           });
+          setTimeout(() => {
+            clearTrustVoteData();
+          }, 3000);
         }
       }
     }
@@ -401,5 +408,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { sendTrustVote, sendTrustDataLater }
+  { sendTrustVote, sendTrustDataLater, clearTrustVoteData }
 )(WriteReview);

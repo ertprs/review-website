@@ -41,7 +41,13 @@ const GoogleReviewCard = ({ review, provider }) => {
         <div className="col-md-6">
           <div>
             <div>
-              <span className="reviewText">{text || ""}</span>
+              <span
+                className={`${
+                  provider === "wot" ? "reviewText wordBreak" : "reviewText"
+                }`}
+              >
+                {text || ""}
+              </span>
             </div>
           </div>
         </div>
