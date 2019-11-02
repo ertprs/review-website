@@ -27,6 +27,12 @@ export const sendTrustVote = trustData => {
         type: TRUST_VOTE_SUCCESS,
         payload: { success, shouldSend: false, status }
       });
+      setTimeout(() => {
+        dispatch({
+          type: TRUST_VOTE_INIT,
+          payload: { success: undefined, shouldSend: false, status: 0 }
+        });
+      }, 4000);
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "status", 0);
@@ -34,6 +40,12 @@ export const sendTrustVote = trustData => {
         type: TRUST_VOTE_FAILURE,
         payload: { success, shouldSend: false, status }
       });
+      setTimeout(() => {
+        dispatch({
+          type: TRUST_VOTE_INIT,
+          payload: { success: undefined, shouldSend: false, status: 0 }
+        });
+      }, 4000);
     }
   };
 };

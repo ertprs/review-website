@@ -450,7 +450,13 @@ class Profile extends React.Component {
           <ProfilePageHeader
             headerData={headerData}
             isMounted={this.state.isMounted}
-            onTrustClick={() => this.setState({ trustClicked: true })}
+            onTrustClick={() =>
+              this.setState({ trustClicked: true }, () => {
+                setTimeout(() => {
+                  this.setState({ trustClicked: false });
+                }, 3000);
+              })
+            }
           />
         </Element>
         <Element name="writeReview" className="writeReview">

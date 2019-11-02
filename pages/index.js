@@ -159,20 +159,25 @@ const mapStateToProps = state => {
   let showSnackbar = false;
   let variant = "";
   let message = "";
+
   if (
     authorized &&
-    (_get(trustVote, "type", "") === "TRUST_VOTE_SUCCESS" ||
-      _get(trustVote, "type", "") === "TRUST_VOTE_FAILURE")
+    _get(trustVote, "payload.success", false) === true &&
+    _get(trustVote, "type", "") === "TRUST_VOTE_SUCCESS"
   ) {
     showSnackbar = true;
-  }
-  if (_get(trustVote, "payload.success", false)) {
     variant = "success";
     message = "Review Posted Successfully!";
-  } else {
+  } else if (
+    authorized &&
+    !_get(trustVote, "payload.success", false) === false &&
+    _get(trustVote, "type", "") === "TRUST_VOTE_FAILURE"
+  ) {
+    showSnackbar = true;
     variant = "error";
     message = "Some Error Occured!";
   }
+
   if (
     authorized &&
     (profileDataActionType === "REPORT_DOMAIN_SUCCESS" ||

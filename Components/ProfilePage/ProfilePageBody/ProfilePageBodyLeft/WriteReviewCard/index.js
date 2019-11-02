@@ -199,6 +199,7 @@ class WriteReview extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { trustVote, auth } = this.props;
+    const { formData } = this.state;
     const isSuccess = _get(trustVote, "payload.success", false);
     const actionType = _get(trustVote, "type", "");
     const status = _get(trustVote, "payload.status", 0);
@@ -206,6 +207,13 @@ class WriteReview extends Component {
       if (actionType === "TRUST_VOTE_SUCCESS") {
         if (isSuccess && status === 200) {
           this.setState({
+            formData: {
+              ...formData,
+              review: {
+                ...formData["review"],
+                value: ""
+              }
+            },
             rating: 0,
             isLoading: false,
             showSnackbar: true,
@@ -223,6 +231,11 @@ class WriteReview extends Component {
             snackbarMsg: "Some Error Occured!"
           });
         }
+      }
+    }
+    if (this.props !== prevProps) {
+      if (this.props.trustClicked === true) {
+        this.setState({ rating: 5 });
       }
     }
 
@@ -263,12 +276,6 @@ class WriteReview extends Component {
         actionType === "LOGIN_FAILURE"
       ) {
         this.setState({ authButtonLoading: false });
-      }
-    }
-
-    if (this.props !== prevProps) {
-      if (this.props.trustClicked) {
-        this.setState({ rating: 5 });
       }
     }
   }
