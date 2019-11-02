@@ -78,7 +78,7 @@ const ReviewCard = ({ review, isLoading }) => {
           </div>
           <div className="cardBodyMain">
             {/* <h4>Great service and customer care.</h4> */}
-            <p style={{ fontSize: "16px", marginTop: "10px" }}>
+            <p style={{ marginTop: "10px" }}>
               {_get(review, "text", "")}
             </p>
           </div>

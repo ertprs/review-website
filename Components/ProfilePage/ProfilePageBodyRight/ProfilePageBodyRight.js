@@ -402,6 +402,22 @@ class ProfilePageBodyRight extends Component {
           .additionalDetails > div:last-child {
             text-align: center;
           }
+          @media screen and (max-width:991px){
+            .additionalDetails {
+              flex-direction:column;
+            }
+            .additionalDetailsHeader {
+              font-weight: bold;
+              font-size: 1rem;
+              margin-bottom:5px;
+            }
+            .description_header{
+              margin-bottom:5px;
+            }
+            .total{
+              text-align:left !important;
+            }
+          }
         `}</style>
         <Card>
           <div className="brandImageContainer">
@@ -546,6 +562,9 @@ class ProfilePageBodyRight extends Component {
             @media only screen and (max-width:991px){
               .additionalDetails{
                 flex-direction:column;
+              }
+              .clainHeader{
+                margin-bottom:10px;
               }
             }
             @media only screen and (max-width:767px){
@@ -693,6 +712,9 @@ class ProfilePageBodyRight extends Component {
             text-align: center;
           }
           @media screen and (max-width:991px){
+            .claimHeader{
+              margin-bottom:10px;
+            }
             .additionalDetails {
               flex-direction:column;
             }
@@ -709,6 +731,11 @@ class ProfilePageBodyRight extends Component {
             }
             .additionalDetails > div:last-child {
               text-align: left;
+            }
+          }
+          @media screen and (max-width:767px){
+            .clainHeader{
+              margin-bottom:0;
             }
           }
         `}</style>
