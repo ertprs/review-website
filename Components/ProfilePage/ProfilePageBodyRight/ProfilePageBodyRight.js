@@ -570,7 +570,7 @@ class ProfilePageBodyRight extends Component {
               color="primary"
               size="small"
               onClick={() => {
-                window.open(profile_url);
+                window.open(url);
               }}
             >
               See more
@@ -731,9 +731,14 @@ class ProfilePageBodyRight extends Component {
             </div>
           ) : null}
           <div className="learnMoreBtn">
-            <Button variant="contained" color="primary" size="small" onClick={()=>{
-              window.open(url)
-            }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                window.open(url);
+              }}
+            >
               See more
             </Button>
           </div>
