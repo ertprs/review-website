@@ -60,7 +60,9 @@ class ClaimYourWebsite extends Component {
                   start to build your online reputation!
                 </p>
                 <div className="claimYourWebsiteFooter">
-                  {this.renderClaimButton()}
+                  <div style={{ textAlign: "center" }}>
+                    {this.renderClaimButton()}
+                  </div>
                 </div>
               </div>
             </Paper>
