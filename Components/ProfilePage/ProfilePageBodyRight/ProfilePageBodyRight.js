@@ -570,7 +570,7 @@ class ProfilePageBodyRight extends Component {
               color="primary"
               size="small"
               onClick={() => {
-                window.open(profile_url);
+                window.open(url);
               }}
             >
               See more

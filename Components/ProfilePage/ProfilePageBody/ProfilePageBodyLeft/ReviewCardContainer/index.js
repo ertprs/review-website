@@ -74,7 +74,7 @@ class ReviewCardContainer extends Component {
     }
   };
 
-  renderTrustSearchReviews = domainReviewsData => {
+  renderTrustSearchReviews = (domainReviewsData, isLoading, is_verified) => {
     return (
       domainReviewsData &&
       domainReviewsData.map(review => {
@@ -207,7 +207,7 @@ class ReviewCardContainer extends Component {
         ) : true ? (
           <>
             {domainReviewsWillCome
-              ? this.renderTrustSearchReviews(domainReviewsData)
+              ? this.renderTrustSearchReviews(domainReviewsData, isLoading, is_verified)
               : null}
             {googleReviewsData.length > 0 ? (
               <>

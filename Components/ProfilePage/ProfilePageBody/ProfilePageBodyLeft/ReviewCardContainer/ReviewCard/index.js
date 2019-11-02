@@ -43,6 +43,7 @@ const ReviewCard = ({ review, isLoading }) => {
           />
           <div className="userNameReview">
             <p className="userName">{_get(review, "userName", "")}</p>
+            <div style={{marginBottom:"8px"}}><img src="/static/images/logo_footer.png" alt="footer logo" style={{height:"20px", width:"20px"}}/></div>
             {/* <span className='reviews'>
                         <EditIcon
                             style={{ fontSize: "22px", padding: "0 4px 0 0" }}
@@ -82,7 +83,7 @@ const ReviewCard = ({ review, isLoading }) => {
             </p>
           </div>
         </div>
-        <div className="cardFooter">
+        {/* <div className="cardFooter">
           <div>
             <span className="useful">
               <LikeIcon style={{ fontSize: "22px", padding: "0 4px 0 0" }} />
@@ -96,7 +97,7 @@ const ReviewCard = ({ review, isLoading }) => {
           <span>
             <FlagIcon style={{ fontSize: "18px", marginRight: "16px" }} />
           </span>
-        </div>
+        </div> */}
       </>
     </Card>
   );
