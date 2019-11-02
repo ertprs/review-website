@@ -74,14 +74,13 @@ class ReviewCardContainer extends Component {
     }
   };
 
-  renderTrustSearchReviews = (domainReviewsData, isLoading, is_verified) => {
+  renderTrustSearchReviews = (domainReviewsData, isLoading) => {
     return (
       domainReviewsData &&
       domainReviewsData.map(review => {
         return (
           <div style={{ marginBottom: "25px" }} key={uuid()}>
             <ReviewCard isLoading={isLoading} review={review || {}} />
-            {!is_verified ? <ClaimYourWebsite variant="big" /> : null}
           </div>
         );
       })
@@ -204,14 +203,12 @@ class ReviewCardContainer extends Component {
         <WriteReviewCard trustClicked={this.props.trustClicked} />
         {isLoading ? (
           <ReviewCardPlaceholder />
-        ) : true ? (
+        ) : domainReviewsWillCome ||
+          googleReviewsData.length > 0 ||
+          wotReviewsData.length > 0 ? (
           <>
             {domainReviewsWillCome
-              ? this.renderTrustSearchReviews(
-                  domainReviewsData,
-                  isLoading,
-                  is_verified
-                )
+              ? this.renderTrustSearchReviews(domainReviewsData, isLoading)
               : null}
             {googleReviewsData.length > 0 ? (
               <>
@@ -251,7 +248,6 @@ class ReviewCardContainer extends Component {
                 <h1 className="noReviewFoundText">No Reviews Found</h1>
               </div>
             </Paper>
-            {!is_verified ? <ClaimYourWebsite variant="big" /> : null}
           </>
         )}
       </div>
