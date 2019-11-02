@@ -108,10 +108,10 @@ class ProfilePageHeader extends Component {
                         <div className="companyClaimStatus">
                           <i
                             className="fa fa-thumbs-up"
-                            style={{ color: "green", fontSize: "20px" }}
+                            style={{ color: "#21BC61", fontSize: "20px" }}
                           ></i>
 
-                          <span className="claimed" style={{ color: "green" }}>
+                          <span className="claimed" style={{ color: "#21BC61" }}>
                             I trust this domain.
                           </span>
                         </div>
