@@ -6,7 +6,8 @@ import trustReducer from "./trustReducer";
 import domainProfileReducer from "./domainProfileReducer";
 import dashboardReducer from "./dashboardReducer";
 import loaderReducer from "./loaderReducer";
-import cookie from "js-cookie";
+import aggregateReducer from "./aggregateReducer";
+import googleReviews from "./googleReviewReducer";
 
 const authPersistConfig = {
   key: "auth",
@@ -20,31 +21,18 @@ const dashboardPersistConfig = {
   blacklist: ["locatePlaceTemp", "upgradePremium"]
 };
 
+const profileDataConfig = {
+  key: "profileData",
+  storage: storage,
+  blacklist: ["reportDomain"]
+};
+
 export default combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   trustVote: trustReducer,
-  profileData: domainProfileReducer,
+  profileData: persistReducer(profileDataConfig, domainProfileReducer),
   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
-  loader: loaderReducer
+  loader: loaderReducer,
+  aggregateData: aggregateReducer,
+  googleReviews
 });
-
-// const appReducer = combineReducers({
-//   auth: persistReducer(authPersistConfig, authReducer),
-//   trustVote: trustReducer,
-//   profileData: domainProfileReducer,
-//   dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
-//   loader: loaderReducer
-// });
-
-// const rootReducer = (state, action) => {
-//   if (action.type === "LOGOUT") {
-//     state = undefined;
-//     cookie.remove("loginType");
-//     cookie.remove("token");
-//     return appReducer((state = undefined), action);
-//   } else {
-//     return appReducer({ ...state }, action);
-//   }
-// };
-
-// export default rootReducer;

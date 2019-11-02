@@ -115,7 +115,6 @@ class InternetUserLogin extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { logIn, logInTemp, signUpTemp, type } = this.props.auth;
-    console.log(type, "type");
     const { formData } = this.state;
     if (this.props !== prevProps) {
       let isWrongCredentials = _get(

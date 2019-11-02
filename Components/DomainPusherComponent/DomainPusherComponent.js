@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import Pusher from "pusher-js";
-import { setReviewsPusherConnect } from "../../store/actions/dashboardActions";
-import { connect } from "react-redux";
 
-class ReviewsPusher extends Component {
+class DomainPusherComponent extends Component {
   state = { reviewScrapeResult: {} };
   pusherCopy = null;
 
   componentDidMount() {
-    const { domain, setReviewsPusherConnect } = this.props;
+    const { domain } = this.props;
+    console.log(domain);
     const pusher = new Pusher("a962a1b0d1b0ab9e3399", {
       cluster: "ap2",
       forceTLS: true
@@ -18,19 +17,22 @@ class ReviewsPusher extends Component {
     const channel = pusher.subscribe(domain);
     pusher.connection.bind("connected", () => {
       console.log("connected");
-      setReviewsPusherConnect(true);
       this.bindToKey(pusher, channel);
     });
   }
-
+  //change state and create separate onChildStateChange for both.
   bindToKey = (pusher, channel) => {
-    const { setReviewsPusherConnect } = this.props;
     channel.bind("google_reviews", data => {
-      this.setState({ reviewScrapeResult: { ...data } }, () => {
-        this.props.onChildStateChange(this.state.reviewScrapeResult);
-        console.log(data, "response from pusher");
-        // pusher.disconnect();
-      });
+      this.props.onGoogleReviewsChange(data);
+      console.log(data, "response from DomainPusherComponent Google_Reviews");
+    });
+
+    channel.bind("aggregator", data => {
+      this.props.onAggregatorDataChange(data);
+      console.log(
+        data,
+        "response from DomainPusherComponent DomainNameAggregator"
+      );
     });
 
     setTimeout(() => {
@@ -38,7 +40,6 @@ class ReviewsPusher extends Component {
     }, 300000);
 
     pusher.connection.bind("disconnected", () => {
-      setReviewsPusherConnect(false);
       console.log("disconnected");
     });
   };
@@ -52,7 +53,4 @@ class ReviewsPusher extends Component {
   }
 }
 
-export default connect(
-  null,
-  { setReviewsPusherConnect }
-)(ReviewsPusher);
+export default DomainPusherComponent;

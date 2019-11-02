@@ -1,10 +1,17 @@
 import {
   SET_DOMAIN_DATA_IN_REDUX,
-  SET_DOMAIN_PROFILE_LOADER
+  SET_DOMAIN_PROFILE_LOADER,
+  REPORT_DOMAIN_INIT,
+  REPORT_DOMAIN_SUCCESS,
+  REPORT_DOMAIN_FAILURE,
+  REPORT_DOMAIN_AFTER_LOGIN
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import _isNumber from "lodash/isEmpty";
 import { iconNames } from "../../utility/constants/socialMediaConstants";
+import { reportDomainApi } from "../../utility/config";
+import axios from "axios";
 
 const createHeaderData = data => {
   let willCome = false;
@@ -214,13 +221,57 @@ const createDomainReviews = data => {
   };
 };
 
+const createWotReviews = data => {
+  let wotReviews = [];
+  let willCome = false;
+  let isScheduled = false;
+  if (Array.isArray(data.sch)) {
+    isScheduled = data.sch.includes("wot");
+  }
+  if (isScheduled || data.hasOwnProperty("wot")) {
+    if (
+      _get(data, "wot.payload.comments", []) !== null &&
+      Array.isArray(_get(data, "wot.payload.comments", []))
+    ) {
+      if (!_isEmpty(_get(data, "wot.payload.comments", []))) {
+        willCome = true;
+      }
+    }
+  }
+  if (_get(data, "wot.payload.comments", []) !== null) {
+    _get(data, "wot.payload.comments", []).map(review => {
+      let rating = _get(review, "score", 0);
+      if(rating){
+        if(_isNumber(rating)){
+          rating = (_get(review, "score", 0)/100 ).toFixed(2)* 5
+        }
+        else{
+          rating=0;
+        }
+      }
+      let temp = {
+        ...temp,
+        name: _get(review, "name", ""),
+        text: _get(review, "text", ""),
+        rating: rating
+      };
+      wotReviews = [...wotReviews, temp];
+    });
+  }
+  return {
+    data: wotReviews,
+    willCome
+  };
+};
+
 export const setDomainDataInRedux = profileData => {
   const domainProfileData = {
     headerData: createHeaderData(profileData),
     analysisReports: createAnalysisData(profileData),
     trafficReports: createTrafficReports(profileData),
     socialMediaStats: createSocialMediaStats(profileData),
-    domainReviews: createDomainReviews(profileData)
+    domainReviews: createDomainReviews(profileData),
+    wotReviews: createWotReviews(profileData)
   };
   return {
     type: SET_DOMAIN_DATA_IN_REDUX,
@@ -234,3 +285,68 @@ export const setLoading = isLoading => {
     isLoading
   };
 };
+
+export const reportDomain = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: REPORT_DOMAIN_INIT,
+      reportDomain: {
+        isLoading: true,
+        success: "undefined",
+        errorMsg: ""
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${reportDomainApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      const success = _get(result, "data.success", false);
+      dispatch({
+        type: REPORT_DOMAIN_SUCCESS,
+        reportDomain: {
+          isLoading: false,
+          success,
+          errorMsg: ""
+        }
+      });
+      // setTimeout(dispatch(clearReportDomainData), 3000);
+      // dispatch(reportDomainAfterLogin({}, false));
+    } catch (error) {
+      dispatch({
+        type: REPORT_DOMAIN_FAILURE,
+        reportDomain: {
+          isLoading: false,
+          success: false,
+          errorMsg: "Some error occured in reporting domain!"
+        }
+      });
+      // setTimeout(dispatch(clearReportDomainData), 3000);
+      // dispatch(reportDomainAfterLogin({}, false));
+    }
+  };
+};
+
+export const reportDomainAfterLogin = (data, shouldReportDomain) => {
+  return {
+    type: REPORT_DOMAIN_AFTER_LOGIN,
+    reportDomainLaterData: {
+      data,
+      shouldReportDomain
+    }
+  };
+};
+
+// export const clearReportDomainData = () => {
+//   return {
+//     type: REPORT_DOMAIN_SUCCESS,
+//     reportDomain: {
+//       isLoading: false,
+//       success: "undefined",
+//       errorMsg: ""
+//     }
+//   };
+// };

@@ -9,6 +9,17 @@ import _get from "lodash/get";
 import axios from "axios";
 import Router from "next/router";
 
+export const clearTrustVoteData = () => {
+  return {
+    type: TRUST_VOTE_INIT,
+    payload: {
+      shouldSend: false,
+      success: undefined,
+      status: 0
+    }
+  };
+};
+
 export const sendTrustVote = trustData => {
   return async (dispatch, getState) => {
     dispatch({ type: TRUST_VOTE_INIT, payload: { shouldSend: false } });
@@ -27,6 +38,12 @@ export const sendTrustVote = trustData => {
         type: TRUST_VOTE_SUCCESS,
         payload: { success, shouldSend: false, status }
       });
+      // setTimeout(() => {
+      //   dispatch({
+      //     type: TRUST_VOTE_SUCCESS,
+      //     payload: { success: undefined, shouldSend: false, status: 0 }
+      //   });
+      // }, 3000);
     } catch (error) {
       let success = _get(error, "response.data.success", false);
       let status = _get(error, "status", 0);
@@ -34,6 +51,12 @@ export const sendTrustVote = trustData => {
         type: TRUST_VOTE_FAILURE,
         payload: { success, shouldSend: false, status }
       });
+      // setTimeout(() => {
+      //   dispatch({
+      //     type: TRUST_VOTE_FAILURE,
+      //     payload: { success: undefined, shouldSend: false, status: 0 }
+      //   });
+      // }, 3000);
     }
   };
 };

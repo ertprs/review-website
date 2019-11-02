@@ -15,5 +15,7 @@ export const iconNames = {
     14: { name: "vk", color: "#4c75a3" },
     15: { name: "odnoklassniki", color: "#ed812b" },
     16: { name: "meetup", color: "#e51937" },
-    17: { name: "medium", color: "#00ab6c" }
+    17: { name: "medium", color: "#00ab6c" },
+    18: {name:"trustpilot", color:"#000"},
+    19: {name:"trustedshops", color:"#000"}
   };

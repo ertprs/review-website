@@ -2,8 +2,13 @@ import React, { Component } from "react";
 import ProfilePageBodyRight from "../ProfilePageBodyRight/ProfilePageBodyRight";
 import ProfilePageBodyLeft from "./ProfilePageBodyLeft";
 import { Element } from "react-scroll";
-export default class ProfilePageBody extends Component {
+import ProfilePageFooter from "../ProfilePageFooter/ProfilePageFooter";
+import { connect } from "react-redux";
+import _get from "lodash/get";
+
+class ProfilePageBody extends Component {
   render() {
+    const { is_verified } = this.props;
     return (
       <div style={{ background: "#f5f5f5" }}>
         <style jsx>
@@ -31,6 +36,11 @@ export default class ProfilePageBody extends Component {
             <div className="col-md-8 profilePageBodyLeftContainer">
               <Element name="reviews" className="reviews">
                 <ProfilePageBodyLeft {...this.props} />
+                {!is_verified ? (
+                  <div style={{ margin: "35px 0px" }}>
+                    <ProfilePageFooter />
+                  </div>
+                ) : null}
               </Element>
             </div>
             <div className="col-md-4 profilePageBodyRightContainer">
@@ -50,3 +60,15 @@ export default class ProfilePageBody extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { domainProfileData } = state.profileData;
+  const is_verified = _get(
+    domainProfileData,
+    "headerData.data.is_verified",
+    false
+  );
+  return { is_verified };
+};
+
+export default connect(mapStateToProps)(ProfilePageBody);

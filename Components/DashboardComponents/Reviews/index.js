@@ -55,7 +55,8 @@ class Reviews extends Component {
         ? googleDirectReviewUrlFirstTime
         : googleDirectReviewUrl;
     const businessAdd =
-      businessAddress === "" ? businessAddressFirstTime : businessAddress;
+    businessAddressFirstTime !=="" ? businessAddressFirstTime : businessAddress;
+
     return (
       <>
         <Head>

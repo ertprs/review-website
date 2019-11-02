@@ -35,7 +35,7 @@ class GetStarted extends Component {
         valid: true,
         touched: true,
         errorMessage: "Enter valid review URL",
-        placeholder: "Enter google review URL",
+        placeholder: "Enter google review URL (optional)",
         validationRules: {
           required: false,
           isDomain: true

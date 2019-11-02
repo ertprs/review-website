@@ -2,16 +2,23 @@ import React, { Component } from "react";
 import Paper from "../../MaterialComponents/Paper";
 import { claimYourWebsiteStyles } from "./claimYourWebsiteStyles";
 import { connect } from "react-redux";
+import _get from "lodash/get";
+import Router from "next/router";
+import Button from "@material-ui/core/Button";
 
 class ClaimYourWebsite extends Component {
   renderClaimButton = () => {
     return (
       <>
         <style jsx>{claimYourWebsiteStyles}</style>
-        <button className="claimBtn">
-          <span className="claimBtnHeroText">click</span> if this is your
-          website
-        </button>
+        <Button
+          variant="contained"
+          color="primary"
+          // className="claimBtn"
+          onClick={() => Router.push("/registration#business")}
+        >
+          Click if this is your website
+        </Button>
       </>
     );
   };
@@ -53,7 +60,9 @@ class ClaimYourWebsite extends Component {
                   start to build your online reputation!
                 </p>
                 <div className="claimYourWebsiteFooter">
-                  {this.renderClaimButton()}
+                  <div style={{ textAlign: "center" }}>
+                    {this.renderClaimButton()}
+                  </div>
                 </div>
               </div>
             </Paper>
@@ -71,7 +80,12 @@ class ClaimYourWebsite extends Component {
 
 const mapStateToProps = state => {
   return {
-    domain_name: state.profileData.domainProfileData.headerData.data.domain_name
+    // domain_name: state.profileData.domainProfileData.headerData.data.domain_name
+    domain_name: _get(
+      state,
+      "profileData.domainProfileData.headerData.data.domain_name",
+      ""
+    )
   };
 };
 

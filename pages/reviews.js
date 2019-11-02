@@ -16,6 +16,11 @@ import {
   setLoading
 } from "../store/actions/domainProfileActions";
 import { connect } from "react-redux";
+import DomainPusherComponent from "../Components/DomainPusherComponent/DomainPusherComponent";
+import {
+  getAggregateData,
+  setAggregateData
+} from "../store/actions/aggregateActions";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 const Navbar = dynamic(() => import("../Components/MaterialComponents/NavBar"));
@@ -45,6 +50,8 @@ import PusherDataComponent from "../Components/PusherDataComponent/PusherDataCom
 const SimpleTabs = dynamic(() =>
   import("../Components/MaterialComponents/SimpleTabs")
 );
+import Snackbar from "../Components/Widgets/Snackbar";
+import { fetchGoogleReviews } from "../store/actions/googleReviewsAction";
 
 class Profile extends React.Component {
   state = {
@@ -57,10 +64,19 @@ class Profile extends React.Component {
     selectedTab: "overview",
     isLoading: true,
     isMounted: false,
-    searchBoxVal: ""
+    searchBoxVal: "",
+    showSnackbar: false,
+    variant: "success",
+    snackbarMsg: "",
+    id: "",
+    aggregateSocialData: {},
+    trustClicked: false
   };
 
   componentDidMount() {
+    //call fetch reviews action creator
+    const { fetchGoogleReviews, domain } = this.props;
+    fetchGoogleReviews(domain);
     this.setState({ isMounted: true });
     Router.events.on("routeChangeStart", this.handleRouteChange);
     Events.scrollEvent.register("begin", function() {});
@@ -106,10 +122,29 @@ class Profile extends React.Component {
     Events.scrollEvent.remove("end");
   }
 
+  updateAggregatorData = newData => {
+    const { id, aggregateSocialData } = this.state;
+    const socialAppId = _get(newData, "response.socialAppId", undefined);
+    console.log(socialAppId);
+    this.props.getAggregateData(newData, id);
+  };
+
+  onGoogleReviewsChange = data => {
+    const googleReviewsTotal = _get(data, "response.reviewCount", 0);
+    console.log(data, "data from pusher");
+    const { fetchGoogleReviews, domain } = this.props;
+    if (googleReviewsTotal > 0) {
+      fetchGoogleReviews(domain);
+    }
+  };
+
   updateParentState = newState => {
     this.props.setDomainDataInRedux(newState);
     const { domainData } = this.state;
-
+    if (this.state.id === "") {
+      const id = _get(newState, "id", "");
+      this.setState({ id });
+    }
     const headerData = {
       ...this.state.headerData,
       domain_name: _get(newState, "domain_data.name", ""),
@@ -218,6 +253,20 @@ class Profile extends React.Component {
       socialMediaStats: [...socialMediaStats],
       domainReviews: [...domainReviews]
     });
+
+    let aggregateSocialData = { ...this.state.aggregateSocialData };
+
+    if (
+      !_isEmpty(_get(newState, "social.payload", {})) &&
+      typeof _get(newState, "social.payload", {}) === "object"
+    ) {
+      const payload = _get(newState, "social.payload", {});
+      for (let item in _get(newState, "social.payload", {})) {
+        aggregateSocialData = { ...aggregateSocialData, [item]: payload[item] };
+      }
+    }
+    this.setState({ aggregateSocialData: { ...aggregateSocialData } });
+    this.props.setAggregateData({ ...aggregateSocialData });
   };
 
   handleTabChange = e => {};
@@ -305,6 +354,56 @@ class Profile extends React.Component {
 
   handleRouteChange = url => {};
 
+  componentDidUpdate(prevProps, prevState) {
+    const { auth, reportDomainSuccess, reportDomainErrorMsg } = this.props;
+
+    if (reportDomainSuccess !== prevProps.reportDomainSuccess) {
+      if (reportDomainSuccess === true) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Domain Reported Successfully!!"
+        });
+      } else if (reportDomainSuccess === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: reportDomainErrorMsg || ""
+        });
+      }
+    }
+    if (this.props.auth !== prevProps.auth) {
+      const isLoginFailed = _get(auth, "logInTemp.isLoginFailed", false);
+      const isWrongCredentials = _get(
+        auth,
+        "logInTemp.isWrongCredentials",
+        false
+      );
+      const authorized = _get(auth, "logIn.authorized", false);
+      if (isLoginFailed) {
+        if (isWrongCredentials) {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Incorrect credentials!"
+          });
+        } else {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: "Some Error Occured!"
+          });
+        }
+      } else if (authorized) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Logged in successfully!"
+        });
+      }
+    }
+  }
+
   render() {
     const { domain } = this.props;
     const {
@@ -334,6 +433,11 @@ class Profile extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
+        <DomainPusherComponent
+          domain={domain}
+          onAggregatorDataChange={this.updateAggregatorData}
+          onGoogleReviewsChange={this.onGoogleReviewsChange}
+        />
         <Navbar
           handleSearchBoxChange={e =>
             this.setState({ searchBoxVal: e.target.value })
@@ -346,16 +450,32 @@ class Profile extends React.Component {
           <ProfilePageHeader
             headerData={headerData}
             isMounted={this.state.isMounted}
+            onTrustClick={() =>
+              this.setState({ trustClicked: true }, () => {
+                setTimeout(() => {
+                  this.setState({ trustClicked: false });
+                }, 3000);
+              })
+            }
           />
         </Element>
-        <ProfilePageBody
-          analyzeReports={analyzeReports}
-          trafficReports={trafficReports}
-          socialMediaStats={socialMediaStats}
-          domainReviews={domainReviews || []}
-          isMounted={this.state.isMounted}
-        />
+        <Element name="writeReview" className="writeReview">
+          <ProfilePageBody
+            analyzeReports={analyzeReports}
+            trafficReports={trafficReports}
+            socialMediaStats={socialMediaStats}
+            domainReviews={domainReviews || []}
+            isMounted={this.state.isMounted}
+            trustClicked={this.state.trustClicked}
+          />
+        </Element>
         <Footer />
+        <Snackbar
+          open={this.state.showSnackbar}
+          variant={this.state.variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={this.state.snackbarMsg}
+        />
       </>
     );
   }
@@ -376,7 +496,28 @@ Profile.getInitialProps = async ({ query }) => {
   return { domain: domain };
 };
 
+const mapStateToProps = state => {
+  const { auth, profileData } = state;
+  const reportDomainSuccess = _get(
+    profileData,
+    "reportDomain.success",
+    "undefined"
+  );
+  const reportDomainErrorMsg = _get(
+    profileData,
+    "reportDomain.errorMsg",
+    "undefined"
+  );
+  return { auth, reportDomainSuccess, reportDomainErrorMsg };
+};
+
 export default connect(
-  null,
-  { setDomainDataInRedux, setLoading }
+  mapStateToProps,
+  {
+    setDomainDataInRedux,
+    setLoading,
+    getAggregateData,
+    setAggregateData,
+    fetchGoogleReviews
+  }
 )(Profile);

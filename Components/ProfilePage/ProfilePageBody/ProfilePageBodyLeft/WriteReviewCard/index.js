@@ -8,12 +8,15 @@ import _get from "lodash/get";
 import { connect } from "react-redux";
 import {
   sendTrustVote,
-  sendTrustDataLater
+  sendTrustDataLater,
+  clearTrustVoteData
 } from "../../../../../store/actions/trustAction";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Checkbox from "@material-ui/core/Checkbox";
 import OAuthButtons from "../../../../Widgets/oAuthBtns";
 import Snackbar from "../../../../../Components/Widgets/Snackbar";
 import Router from "next/router";
+import Button from "@material-ui/core/Button";
 
 class WriteReview extends Component {
   constructor(props) {
@@ -35,6 +38,7 @@ class WriteReview extends Component {
           name: "review"
         }
       },
+      trust: false,
       rating: 0,
       review: "",
       starSize: 24,
@@ -43,7 +47,8 @@ class WriteReview extends Component {
       variant: "success",
       snackbarMsg: "",
       reviewCharsLeft: 0,
-      reviewCharsMore: 0
+      reviewCharsMore: 0,
+      authButtonLoading: false
     };
     this.windowSize = 0;
   }
@@ -119,10 +124,11 @@ class WriteReview extends Component {
       "domainProfileData.headerData.data.domain_name",
       ""
     );
+    let parsed_domain = domain.replace(/https:\/\//gim, "");
     const reqBody = {
       rating,
       text: value,
-      domain
+      domain: parsed_domain
     };
     if (authorized) {
       sendTrustVote(reqBody);
@@ -144,13 +150,18 @@ class WriteReview extends Component {
             <>
               <OAuthButtons disabled={!_get(formData, "review.valid", false)} />
               <style jsx>{styles}</style>
-              <button
-                disabled={!_get(formData, "review.valid", false)}
-                className="postReviewButton"
-                onClick={this.handlePostReview}
-              >
-                Login and Post Review
-              </button>
+              <div style={{ margin: "10px 0px" }}>
+                <Button
+                  style={{ width: "100%" }}
+                  variant="contained"
+                  color="primary"
+                  disabled={!_get(formData, "review.valid", false)}
+                  // className="postReviewButton"
+                  onClick={this.handlePostReview}
+                >
+                  Login and Post Review
+                </Button>
+              </div>
             </>
           ) : (
             <div style={{ textAlign: "center", margin: "10px 0px" }}>
@@ -169,13 +180,17 @@ class WriteReview extends Component {
           ) : (
             <>
               <style jsx>{styles}</style>
-              <button
-                disabled={!_get(formData, "review.valid", false)}
-                className="postReviewButton"
-                onClick={this.handlePostReview}
-              >
-                Post Review
-              </button>
+              <div style={{ width: "100%", margin: "10px 0px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!_get(formData, "review.valid", false)}
+                  // className="postReviewButton"
+                  onClick={this.handlePostReview}
+                >
+                  Post Review
+                </Button>
+              </div>
             </>
           )}
         </>
@@ -184,7 +199,8 @@ class WriteReview extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { trustVote, auth } = this.props;
+    const { trustVote, auth, clearTrustVoteData } = this.props;
+    const { formData } = this.state;
     const isSuccess = _get(trustVote, "payload.success", false);
     const actionType = _get(trustVote, "type", "");
     const status = _get(trustVote, "payload.status", 0);
@@ -192,14 +208,24 @@ class WriteReview extends Component {
       if (actionType === "TRUST_VOTE_SUCCESS") {
         if (isSuccess && status === 200) {
           this.setState({
+            formData: {
+              ...formData,
+              review: {
+                ...formData["review"],
+                value: ""
+              }
+            },
             rating: 0,
             isLoading: false,
             showSnackbar: true,
             variant: "success",
             snackbarMsg: "Review Posted Successfully!"
           });
+          setTimeout(() => {
+            clearTrustVoteData();
+          }, 3000);
         }
-      } else if (actionType === "TRUST_VOTE_SUCCESS") {
+      } else if (actionType === "TRUST_VOTE_FAILURE") {
         if (!isSuccess) {
           this.setState({
             rating: 0,
@@ -208,7 +234,15 @@ class WriteReview extends Component {
             variant: "error",
             snackbarMsg: "Some Error Occured!"
           });
+          setTimeout(() => {
+            clearTrustVoteData();
+          }, 3000);
         }
+      }
+    }
+    if (this.props !== prevProps) {
+      if (this.props.trustClicked === true) {
+        this.setState({ rating: 5 });
       }
     }
 
@@ -253,11 +287,11 @@ class WriteReview extends Component {
     }
   }
 
-  handleKeyDown = e => {
-    if (e.keyCode == 13) {
-      this.handlePostReview();
-    }
-  };
+  // handleKeyDown = e => {
+  //   if (e.keyCode == 13) {
+  //     this.handlePostReview();
+  //   }
+  // };
 
   render() {
     const {
@@ -267,7 +301,8 @@ class WriteReview extends Component {
       isLoading,
       authButtonLoading,
       reviewCharsLeft,
-      reviewCharsMore
+      reviewCharsMore,
+      trust
     } = this.state;
     const authorized = _get(this.props, "auth.logIn.authorized", false);
     return (
@@ -302,11 +337,11 @@ class WriteReview extends Component {
                   {...formData.review}
                   handleChange={this.handleChange}
                   type="textarea"
-                  onkeyDown={this.handleKeyDown}
                   id="review"
                   rows="5"
                   col="5"
                 />
+
                 {reviewCharsLeft > 0 ? (
                   <span style={{ color: "red" }}>
                     {reviewCharsLeft} characters left!
@@ -319,6 +354,22 @@ class WriteReview extends Component {
                   ""
                 )}
               </div>
+              {/* <label style={{ fontWeight: "bold", fontSize: "18px" }}>
+                <Checkbox
+                  checked={trust}
+                  onChange={e =>
+                    this.setState({
+                      trust: e.target.checked
+                    })
+                  }
+                  value={trust}
+                  color="primary"
+                  inputProps={{
+                    "aria-label": "secondary checkbox"
+                  }}
+                />
+                I trust this domain
+              </label> */}
               {this.renderAuthButtons(
                 formData,
                 isLoading,
@@ -357,5 +408,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { sendTrustVote, sendTrustDataLater }
+  { sendTrustVote, sendTrustDataLater, clearTrustVoteData }
 )(WriteReview);

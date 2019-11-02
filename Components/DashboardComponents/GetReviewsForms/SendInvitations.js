@@ -50,7 +50,7 @@ class SendInvitations extends Component {
   renderInfoCards = data => {
     const { businessAddress, businessAddressFirstTime } = this.props;
     const businessAdd =
-      businessAddress === "" ? businessAddressFirstTime : businessAddress;
+    businessAddressFirstTime !=="" ? businessAddressFirstTime : businessAddress;
     return data.map(item => {
       return (
         <div className="renderInfoContainer" key={uuid()}>
