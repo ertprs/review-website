@@ -212,6 +212,12 @@ const renderReviewCard = (
       );
 
     case "profileHeaderCard":
+      let imgSrc = "";
+      image === ""
+        ? fallbackImage !== ""
+          ? (imgSrc = fallbackImage)
+          : (imgSrc = "/static/images/noimageavailable.jpg")
+        : (imgSrc = image);
       return (
         <div className="productCardContainer">
           <style jsx>{reviewCardStyles}</style>
@@ -220,7 +226,15 @@ const renderReviewCard = (
               className="productCardPicContainer profileHeaderPicContainer"
               style={{ ...imgContainerStyles }}
             >
-              <Img
+              <img
+                src={imgSrc}
+                style={{
+                  height: "auto",
+                  maxWidth: "100%",
+                  ...productPicStyles
+                }}
+              />
+              {/* <Img
                 src={[
                   fallbackImage,
                   image,
@@ -242,7 +256,7 @@ const renderReviewCard = (
                   maxWidth: "100%",
                   ...productPicStyles
                 }}
-              />
+              /> */}
             </div>
           </div>
           <div className="productCardDetails">

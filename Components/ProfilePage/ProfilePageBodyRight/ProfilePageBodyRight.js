@@ -806,9 +806,14 @@ class ProfilePageBodyRight extends Component {
             </div>
           ) : null}
           <div className="learnMoreBtn">
-            <Button variant="contained" color="primary" size="small" onClick={()=>{
-              window.open(url)
-            }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                window.open(url);
+              }}
+            >
               See more
             </Button>
           </div>
@@ -974,7 +979,7 @@ class ProfilePageBodyRight extends Component {
             {showFacebook ? (
               <div className="mb-25">{this.renderFacebookCard()}</div>
             ) : null}
-            {!domainReviewsWillCome && !is_verified ? (
+            {!is_verified ? (
               <div className="mb-25 claim">
                 <ClaimYourWebsite variant="small" />
               </div>

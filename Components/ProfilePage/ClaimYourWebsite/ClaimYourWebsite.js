@@ -15,7 +15,7 @@ class ClaimYourWebsite extends Component {
           variant="contained"
           color="primary"
           // className="claimBtn"
-          onClick={() => Router.push("/login#business")}
+          onClick={() => Router.push("/registration#business")}
         >
           Click if this is your website
         </Button>
@@ -60,7 +60,9 @@ class ClaimYourWebsite extends Component {
                   start to build your online reputation!
                 </p>
                 <div className="claimYourWebsiteFooter">
-                  {this.renderClaimButton()}
+                  <div style={{ textAlign: "center" }}>
+                    {this.renderClaimButton()}
+                  </div>
                 </div>
               </div>
             </Paper>
