@@ -201,6 +201,9 @@ class ProfilePageBodyRight extends Component {
             max-width: 100%;
             height: auto;
           }
+          .total{
+            text-align:center;
+          }
           .ratingContainer {
             text-align: center;
           }
@@ -228,6 +231,22 @@ class ProfilePageBodyRight extends Component {
           }
           .additionalDetails > div:last-child {
             text-align: center;
+          }
+          @media screen and (max-width:991px){
+            .additionalDetails {
+              flex-direction:column;
+            }
+            .additionalDetailsHeader {
+              font-weight: bold;
+              font-size: 1rem;
+              margin-bottom:5px;
+            }
+            .description_header{
+              margin-bottom:5px;
+            }
+            .total{
+              text-align:left !important;
+            }
           }
         `}</style>
         <Card>
@@ -276,7 +295,7 @@ class ProfilePageBodyRight extends Component {
           {total ? (
             <div className="additionalDetails">
               <div className="additionalDetailsHeader">Total Reviews :</div>{" "}
-              <div style={{ textAlign: "center" }}>{total}</div>
+              <div className="total">{total}</div>
             </div>
           ) : null}
           {description ? (
@@ -382,6 +401,22 @@ class ProfilePageBodyRight extends Component {
           }
           .additionalDetails > div:last-child {
             text-align: center;
+          }
+          @media screen and (max-width:991px){
+            .additionalDetails {
+              flex-direction:column;
+            }
+            .additionalDetailsHeader {
+              font-weight: bold;
+              font-size: 1rem;
+              margin-bottom:5px;
+            }
+            .description_header{
+              margin-bottom:5px;
+            }
+            .total{
+              text-align:left !important;
+            }
           }
         `}</style>
         <Card>
@@ -524,6 +559,19 @@ class ProfilePageBodyRight extends Component {
               text-align: center;
               margin: 15px 0 5px 0;
             }
+            @media only screen and (max-width:991px){
+              .additionalDetails{
+                flex-direction:column;
+              }
+              .clainHeader{
+                margin-bottom:10px;
+              }
+            }
+            @media only screen and (max-width:767px){
+              .additionalDetails{
+                flex-direction:row;
+              }
+            }
           `}
         </style>
         <Card>
@@ -570,7 +618,7 @@ class ProfilePageBodyRight extends Component {
               color="primary"
               size="small"
               onClick={() => {
-                window.open(profile_url);
+                window.open(url);
               }}
             >
               See more
@@ -663,6 +711,33 @@ class ProfilePageBodyRight extends Component {
           .additionalDetails > div:last-child {
             text-align: center;
           }
+          @media screen and (max-width:991px){
+            .claimHeader{
+              margin-bottom:10px;
+            }
+            .additionalDetails {
+              flex-direction:column;
+            }
+            .additionalDetailsHeader {
+              font-weight: bold;
+              font-size: 1rem;
+              margin-bottom:5px;
+            }
+            .description_header{
+              margin-bottom:5px;
+            }
+            .total{
+              text-align:left !important;
+            }
+            .additionalDetails > div:last-child {
+              text-align: left;
+            }
+          }
+          @media screen and (max-width:767px){
+            .clainHeader{
+              margin-bottom:0;
+            }
+          }
         `}</style>
         <Card>
           <div className="claimHeader">
@@ -717,7 +792,7 @@ class ProfilePageBodyRight extends Component {
           {total ? (
             <div className="additionalDetails">
               <div className="additionalDetailsHeader">Total Reviews :</div>{" "}
-              <div style={{ textAlign: "center" }}>{total}</div>
+              <div className="total">{total}</div>
             </div>
           ) : null}
           {description ? (
