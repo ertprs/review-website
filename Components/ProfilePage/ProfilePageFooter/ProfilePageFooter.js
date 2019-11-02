@@ -52,7 +52,7 @@ export default class ProfilePageFooter extends Component {
                   display: block;
                 }
                 .widgetDescriptionHeader {
-                    margin:25px 0 25px 0;
+                  margin: 25px 0 25px 0;
                 }
               }
             `}
@@ -64,7 +64,10 @@ export default class ProfilePageFooter extends Component {
             <img src="/static/images/carouselDemo.png" />
           </div>
           <div className="widgetImgContainerSmall">
-            <img src="/static/images/carousel.png" style={{maxWidth:"100%", height:"auto"}}/>
+            <img
+              src="/static/images/carousel.png"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
           </div>
           <div className="widgetDescription">
             <div className="widgetDescriptionHeader">
@@ -79,8 +82,8 @@ export default class ProfilePageFooter extends Component {
                 variant="contained"
                 color="primary"
                 endIcon={<ArrowIconRight />}
-                onClick={()=>{
-                    Router.push("/login#business")
+                onClick={() => {
+                  Router.push("/registration#business");
                 }}
               >
                 Click here to proceed

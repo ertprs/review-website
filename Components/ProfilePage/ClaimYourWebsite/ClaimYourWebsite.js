@@ -15,7 +15,7 @@ class ClaimYourWebsite extends Component {
           variant="contained"
           color="primary"
           // className="claimBtn"
-          onClick={() => Router.push("/login#business")}
+          onClick={() => Router.push("/registration#business")}
         >
           Click if this is your website
         </Button>
