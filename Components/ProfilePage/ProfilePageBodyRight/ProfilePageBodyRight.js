@@ -904,7 +904,7 @@ class ProfilePageBodyRight extends Component {
             {showFacebook ? (
               <div className="mb-25">{this.renderFacebookCard()}</div>
             ) : null}
-            {!domainReviewsWillCome && !is_verified ? (
+            {!is_verified ? (
               <div className="mb-25 claim">
                 <ClaimYourWebsite variant="small" />
               </div>
