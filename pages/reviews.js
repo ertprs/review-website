@@ -343,12 +343,14 @@ class Profile extends React.Component {
     if (
       e.keyCode === 13 &&
       this.state.searchBoxVal.trim() !== "" &&
-      /^[^www.][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
+      /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
         searchBoxVal
       )
     ) {
       let domainName = searchBoxVal.toLowerCase().trim();
-      window.location.assign(`${domainName}`);
+      let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
+      parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+      window.location.assign(`${parsed_domain_name}`);
     }
   };
 
