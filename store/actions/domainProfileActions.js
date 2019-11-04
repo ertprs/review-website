@@ -241,19 +241,19 @@ const createWotReviews = data => {
   if (_get(data, "wot.payload.comments", []) !== null) {
     _get(data, "wot.payload.comments", []).map(review => {
       let rating = _get(review, "score", 0);
-      if(rating){
-        if(_isNumber(rating)){
-          rating = (_get(review, "score", 0)/100 ).toFixed(2)* 5
-        }
-        else{
-          rating=0;
+      if (rating) {
+        if (_isNumber(rating)) {
+          rating = (_get(review, "score", 0) / 100).toFixed(2) * 5;
+        } else {
+          rating = 0;
         }
       }
       let temp = {
         ...temp,
         name: _get(review, "name", ""),
         text: _get(review, "text", ""),
-        rating: rating
+        rating: rating,
+        date: _get(review, "date", "")
       };
       wotReviews = [...wotReviews, temp];
     });
