@@ -291,7 +291,7 @@ function PrimarySearchAppBar(props) {
         </MenuItem>
       </Link>
 
-      <Link href="/business">
+      <Link href="https://b2b.thetrustsearch.com/en/">
         <MenuItem>
           <a className={classes.navLinkMobile}>Business</a>
         </MenuItem>
@@ -393,7 +393,7 @@ function PrimarySearchAppBar(props) {
             <Link href="/about">
               <a className={classes.navLink}>About Us</a>
             </Link>
-            <Link href="/business">
+            <Link href="https://b2b.thetrustsearch.com/en/">
               <a className={classes.navLink}>Business</a>
             </Link>
             {!authorized ? (
