@@ -52,13 +52,15 @@ const Home = props => {
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
       if (
-        /^[^www.][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
+        /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
           searchBoxVal
         )
       ) {
         let domainName = searchBoxVal.toLowerCase().trim();
+        let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
+        parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
         setLoading(true);
-        Router.push(`/reviews?domain=${domainName}`, `/reviews/${domainName}`);
+        Router.push(`/reviews?domain=${parsed_domain_name}`, `/reviews/${parsed_domain_name}`);
       } else {
         alert(
           "Please enter domain name in the format: (ex- thetrustsearch.com)"
