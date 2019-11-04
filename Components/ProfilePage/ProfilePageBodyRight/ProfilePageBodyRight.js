@@ -270,7 +270,8 @@ class ProfilePageBodyRight extends Component {
           </div>
           <div className="ratingContainer">
             <div className="ratingContainerText">
-              <span className="bold">{rating ? rating : null}</span> {rating ? <span>out of{" "}</span> : null}
+              <span className="bold">{rating ? rating : null}</span>{" "}
+              {rating ? <span>out of </span> : null}
               <span className="bold">{max_rating ? max_rating : null}</span>
             </div>
           </div>
@@ -904,7 +905,11 @@ class ProfilePageBodyRight extends Component {
         _get(aggregateData, "1.data", null) !== null &&
         !_isEmpty(_get(aggregateData, "1.data", {}))
       ) {
-        showFacebook = true;
+        if (
+          _get(aggregateData, "1.data.likes", "") ||
+          _get(aggregateData, "1.data.followers")
+        )
+          showFacebook = true;
       } else {
         showFacebook = false;
       }

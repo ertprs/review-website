@@ -70,7 +70,8 @@ const renderFooterMiddleSection = () => {
     <div className="footerMiddleSection">
       <style jsx>{footerStyles}</style>
       <div className="footerContainerInner">
-        <div className="row" style={{ flexBasis: "80%" }}>
+        <div className="container">
+        <div className="row">
           <div className="col-md-3">
             <div className="footerMiddleLinksSection">
               <div>
@@ -78,16 +79,16 @@ const renderFooterMiddleSection = () => {
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
-                  <a href="/">Claim your ownership</a>
+                  <a href="https://thetrustsearch.com/registration#business" target="_blank">Claim your ownership</a>
                 </div>
-                <div>
+                {/* <div>
                   <a href="/">Engage your community</a>
-                </div>
-                <div>
+                </div> */}
+                {/* <div>
                   <a href="/">Receive alerts</a>
-                </div>
+                </div> */}
                 <div>
-                  <a href="/">Plans &amp; Pricing</a>
+                  <a href="https://thetrustsearch.com/business" target="_blank">Plans &amp; Pricing</a>
                 </div>
               </div>
             </div>
@@ -101,9 +102,9 @@ const renderFooterMiddleSection = () => {
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
-                  <a href="/">Check website reputation</a>
+                  <a href="https://thetrustsearch.com" target="_blank">Check website reputation</a>
                 </div>
-                <div>
+                {/* <div>
                   <a href="/">Get rewards</a>
                 </div>
                 <div>
@@ -111,7 +112,7 @@ const renderFooterMiddleSection = () => {
                 </div>
                 <div>
                   <a href="/">Referral program</a>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -122,7 +123,7 @@ const renderFooterMiddleSection = () => {
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
-                  <a href="/">Contact</a>
+                  <a href="https://thetrustsearch.com/about" target="_blank">Contact</a>
                 </div>
                 <div>
                   <Link href="/termsAndConditions">
@@ -143,17 +144,20 @@ const renderFooterMiddleSection = () => {
                 <h3 className="footerMiddleSectionHeading">Account</h3>
               </div>
               <div className="footerMiddleSectionLinks">
+              <Link href="/login">
+                    <a>Login</a>
+              </Link>
                 <div>
-                  <a href="/">Login</a>
-                </div>
-                <div>
-                  <a href="/">My Account</a>
+                <Link href="/registration">
+                    <a>Register</a>
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {renderNewsLetter()}
+        </div>
+        {/* {renderNewsLetter()} */}
       </div>
     </div>
   );
@@ -211,7 +215,7 @@ const Footer = props => {
       <style jsx>{footerStyles}</style>
       <footer className="footer" style={{ ...props.footerStyles }}>
         {renderFooterTopSection()}
-        {/* {renderFooterMiddleSection()} */}
+        {renderFooterMiddleSection()}
         {renderFooterBottomSection()}
       </footer>
     </>

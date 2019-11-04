@@ -85,7 +85,7 @@ export default css`
 
   .footerMiddleSectionHeading {
     font-size: 18px;
-    margin-bottom: 18%;
+    margin-bottom: 12%;
     color: #fff;
     font-weight: 400;
   }
