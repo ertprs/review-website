@@ -2,9 +2,10 @@ import React from "react";
 import { reviewListStyles } from "../../../../../Widgets/MyReviewsUser/myReviewsStyles";
 import RatingIndicators from "../../../../../Widgets/RatingIndicators/RatingIndicators";
 import _get from "lodash/get";
+import moment from "moment";
 
 const GoogleReviewCard = ({ review, provider }) => {
-  const { name, text, rating } = review;
+  const { name, text, rating, date } = review;
 
   return (
     <div className="reviewCard">
@@ -51,6 +52,15 @@ const GoogleReviewCard = ({ review, provider }) => {
             </div>
           </div>
         </div>
+        {provider === "wot" ? (
+          <div className="col-md-2">
+            <div>
+              <div>
+                <span>{moment(date).format("DD/MM/YYYY")}</span>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

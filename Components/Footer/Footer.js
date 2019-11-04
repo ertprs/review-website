@@ -1,14 +1,12 @@
 import React from "react";
 import footerStyles from "./footerStyles";
-import AmpImgWrapper from '../AmpWrappers/AmpImgWrapper';
+import AmpImgWrapper from "../AmpWrappers/AmpImgWrapper";
 import Link from "next/link";
 
 const renderFooterTopSection = () => {
   return (
     <div className="footerTopSection">
-      <style jsx>
-      {footerStyles}
-    </style>
+      <style jsx>{footerStyles}</style>
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
           <AmpImgWrapper
@@ -18,16 +16,24 @@ const renderFooterTopSection = () => {
             width="176.04"
             height="45.99"
             layout="responsive"
-            imgContainerStyles={{width:"176.04px", height:"45.99px"}}
+            imgContainerStyles={{ width: "176.04px", height: "45.99px" }}
           ></AmpImgWrapper>
         </div>
 
         <div className="footerTopSocialLinksContainer">
-          {/* <div className="footerTopSocialLink">
-            <a href="/">
+          <div className="footerTopSocialLink">
+            <a href="https://www.facebook.com/CryptoPolicecom/" target="_blank">
               <i className="fa fa-facebook" />
             </a>
-          </div> */}
+          </div>
+          <div className="footerTopSocialLink">
+            <a
+              href="https://www.linkedin.com/company/trustsearch/"
+              target="_blank"
+            >
+              <i className="fa fa-linkedin" />
+            </a>
+          </div>
           {/* <div className="footerTopSocialLink">
             <a href="/">
               <i className="fa fa-twitter" />
@@ -38,11 +44,6 @@ const renderFooterTopSection = () => {
               <i className="fa fa-google-plus" />
             </a>
           </div> */}
-          {/* <div className="footerTopSocialLink">
-            <a href="/">
-              <i className="fa fa-linkedin" />
-            </a>
-          </div> */}
         </div>
 
         {/* <div className="footerTopLocalizationContainer">
@@ -51,7 +52,13 @@ const renderFooterTopSection = () => {
           </button>
         </div> */}
         <div className="footerTopLocalizationContainer">
-          <a href="https://thetrustsearch.com/termsAndConditions" target="_blank" style={{color:"#fff", textDecoration:"none"}}>Terms and Conditions</a>
+          <a
+            href="https://thetrustsearch.com/termsAndConditions"
+            target="_blank"
+            style={{ color: "#fff", textDecoration: "none" }}
+          >
+            Terms and Conditions
+          </a>
         </div>
       </div>
     </div>
@@ -61,17 +68,13 @@ const renderFooterTopSection = () => {
 const renderFooterMiddleSection = () => {
   return (
     <div className="footerMiddleSection">
-      <style jsx>
-      {footerStyles}
-    </style>
+      <style jsx>{footerStyles}</style>
       <div className="footerContainerInner">
         <div className="row" style={{ flexBasis: "80%" }}>
           <div className="col-md-3">
             <div className="footerMiddleLinksSection">
               <div>
-                <h3 className="footerMiddleSectionHeading">
-                  For Business
-                </h3>
+                <h3 className="footerMiddleSectionHeading">For Business</h3>
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
@@ -115,9 +118,7 @@ const renderFooterMiddleSection = () => {
           <div className="col-md-3">
             <div className="footerMiddleLinksSection">
               <div>
-                <h3 className="footerMiddleSectionHeading">
-                  Helpful Links
-                </h3>
+                <h3 className="footerMiddleSectionHeading">Helpful Links</h3>
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
@@ -162,9 +163,7 @@ const renderNewsLetter = () => {
   // make newsletter input controlled and subscription
   return (
     <div className="newsLetterSection">
-      <style jsx>
-      {footerStyles}
-    </style>
+      <style jsx>{footerStyles}</style>
       <div>
         <h3
           className="footerMiddleSectionHeading"
@@ -196,29 +195,25 @@ const renderNewsLetter = () => {
 const renderFooterBottomSection = () => {
   return (
     <div className="footerBottomSection">
-      <style jsx>
-      {footerStyles}
-    </style>
-      <div style={{textAlign:"center"}}>
+      <style jsx>{footerStyles}</style>
+      <div style={{ textAlign: "center" }}>
         &copy; {new Date().getFullYear()}{" "}
-        <span style={{color:"#fff",fontWeight:"400"}}>TrustSearch.</span> All Rights
-        Reserved.
+        <span style={{ color: "#fff", fontWeight: "400" }}>TrustSearch.</span>{" "}
+        All Rights Reserved.
       </div>
     </div>
   );
 };
 
-const Footer = (props) => {
+const Footer = props => {
   return (
     <>
-    <style jsx>
-      {footerStyles}
-    </style>
-    <footer className="footer" style={{...props.footerStyles}}>
-      {renderFooterTopSection()}
-      {/* {renderFooterMiddleSection()} */}
-      {renderFooterBottomSection()}
-    </footer>
+      <style jsx>{footerStyles}</style>
+      <footer className="footer" style={{ ...props.footerStyles }}>
+        {renderFooterTopSection()}
+        {/* {renderFooterMiddleSection()} */}
+        {renderFooterBottomSection()}
+      </footer>
     </>
   );
 };
