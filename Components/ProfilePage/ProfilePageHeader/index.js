@@ -4,7 +4,7 @@ import Card from "../../../Components/MaterialComponents/Card";
 import ReviewCard from "../../Widgets/ReviewCard/ReviewCard";
 import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
-import _get from "lodash";
+import _get from "lodash/get";
 import { connect } from "react-redux";
 import Placeholder from "./headerPlaceholder";
 import CustomModal from "../../Widgets/CustomModal/CustomModal";
@@ -30,7 +30,21 @@ class ProfilePageHeader extends Component {
   };
 
   render() {
-    const { domainProfileData, isLoading } = this.props;
+    const {
+      domainProfileData,
+      isLoading,
+      googleRating,
+      trustPilotRating,
+      watchdogRating
+    } = this.props;
+    console.log(
+      googleRating,
+      "googleRating",
+      trustPilotRating,
+      "trustPilotRating",
+      watchdogRating,
+      "watchdogRating"
+    );
     const { showReportDomainModal } = this.state;
     const headerData = ((domainProfileData || {}).headerData || {}).data || {};
     const ratings = (headerData || {}).rating || 0;
@@ -41,10 +55,18 @@ class ProfilePageHeader extends Component {
     const willCome = (headerData || {}).willCome || false;
     let parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
     parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
-    console.log(screenshotUrl, "screenshotUrl");
+    let domainRating = 0;
+    if (googleRating && Number(googleRating) > 0) {
+      domainRating = Number(googleRating);
+    } else if (trustPilotRating && Number(trustPilotRating) > 0) {
+      domainRating = trustPilotRating;
+    } else if (watchdogRating && Number(watchdogRating) > 0) {
+      domainRating = watchdogRating;
+    }
+
     const reviewCardBody = (
       <RatingIndicators
-        rating={Number(ratings)}
+        rating={Number(domainRating)}
         typeOfWidget="star"
         widgetRatedColors="#21bc61"
         widgetDimensions="35px"
@@ -111,7 +133,10 @@ class ProfilePageHeader extends Component {
                             style={{ color: "#21BC61", fontSize: "20px" }}
                           ></i>
 
-                          <span className="claimed" style={{ color: "#21BC61" }}>
+                          <span
+                            className="claimed"
+                            style={{ color: "#21BC61" }}
+                          >
                             I trust this domain.
                           </span>
                         </div>
@@ -234,9 +259,22 @@ class ProfilePageHeader extends Component {
 }
 
 const mapStateToProps = state => {
-  const { profileData } = state;
+  const { profileData, googleReviews, aggregateData } = state;
   const { domainProfileData, isLoading } = profileData;
-  return { domainProfileData, isLoading };
+  const googleRating = _get(googleReviews, "reviews.data.rating", 0);
+  const trustPilotRating = _get(aggregateData, "18.data.rating", 0);
+  const watchdogRating = _get(
+    profileData,
+    "domainProfileData.watchdogRating",
+    0
+  );
+  return {
+    domainProfileData,
+    isLoading,
+    googleRating,
+    trustPilotRating,
+    watchdogRating
+  };
 };
 
 export default connect(mapStateToProps)(ProfilePageHeader);
