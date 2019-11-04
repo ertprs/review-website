@@ -324,7 +324,7 @@ class WriteReview extends Component {
                 typeOfWidget="star"
                 widgetRatedColors="#21bc61"
                 widgetHoverColors="#21bc61"
-                widgetDimensions={starSize.toString()}
+                widgetDimensions="24px"
                 widgetSpacings="1px"
                 changeRating={this.changeRating}
               />

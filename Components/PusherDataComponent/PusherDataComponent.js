@@ -35,6 +35,7 @@ class PusherDataComponent extends React.Component {
               }
             },
             () => {
+              console.log(this.state.domainData, "DOMAIN_DATA")
               this.props.onChildStateChange(this.state.domainData);
             }
           );
