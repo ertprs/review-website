@@ -338,13 +338,13 @@ class SelectTemplateForm extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const templateId = _get(dashboardData, "emailTemplate.template.id", "");
+  // const templateId = _get(dashboardData, "emailTemplate.template.id", "");
   const createCampaignRes = _get(dashboardData, "createCampaign", {});
   const isLoading = _get(createCampaignRes, "isLoading", false);
   const success = _get(createCampaignRes, "success", "undefined");
   const errorMsg = _get(createCampaignRes, "errorMsg", "");
   const createCampaignData = _get(dashboardData, "createCampaign", {});
-  return { templateId, isLoading, success, errorMsg, createCampaignData };
+  return { isLoading, success, errorMsg, createCampaignData };
 };
 
 export default connect(
