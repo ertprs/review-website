@@ -13,8 +13,15 @@ import _isEmpty from "lodash/isEmpty";
 class ReviewCardContainer extends Component {
   state = {
     googleReviewsToShow: [],
-    wotReviewsToShow: []
+    wotReviewsToShow: [],
+    showNoReviewsFound:false
   };
+
+  componentDidMount(){
+    setTimeout(()=>{
+      this.setState({showNoReviewsFound:true})
+    }, 54000)
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps) {
@@ -243,11 +250,11 @@ class ReviewCardContainer extends Component {
           </>
         ) : (
           <>
-            <Paper>
+            {this.state.showNoReviewsFound ? <Paper>
               <div className="noReviewFound">
                 <h1 className="noReviewFoundText">No Reviews Found</h1>
               </div>
-            </Paper>
+            </Paper> : <ReviewCardPlaceholder />}
           </>
         )}
       </div>
