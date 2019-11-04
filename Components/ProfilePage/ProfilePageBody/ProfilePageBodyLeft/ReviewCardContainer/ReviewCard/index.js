@@ -57,7 +57,7 @@ const ReviewCard = ({ review, isLoading }) => {
                 rating={Number(ratings)}
                 typeOfWidget="star"
                 widgetRatedColors="#21bc61"
-                widgetDimensions={starSize.toString()}
+                widgetDimensions="24px"
                 widgetSpacings="1px"
               />
             </div>
