@@ -265,6 +265,7 @@ const createWotReviews = data => {
 };
 
 export const setDomainDataInRedux = profileData => {
+  console.log(profileData, "SET_DOMAIN_DATA_IN_REDUX")
   const domainProfileData = {
     headerData: createHeaderData(profileData),
     analysisReports: createAnalysisData(profileData),

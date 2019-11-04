@@ -20,8 +20,8 @@ const GoogleReviewCard = ({ review, provider }) => {
               rating={Number(rating) || 0}
               typeOfWidget="star"
               widgetRatedColors="#21bc61"
-              widgetDimensions="22px"
-              widgetSpacings="2px"
+              widgetDimensions="21px"
+              widgetSpacings="1px"
             />
             <p className="userName">
               {provider === "google" ? (

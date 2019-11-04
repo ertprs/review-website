@@ -58,6 +58,7 @@ export default css`
     flex-basis: 20%;
     display: flex;
     justify-content: flex-end;
+    align-items:center;
   }
 
   .footerTopLocalizationBtn {
