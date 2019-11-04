@@ -266,14 +266,21 @@ const createWotReviews = data => {
 };
 
 export const setDomainDataInRedux = profileData => {
-  console.log(profileData, "SET_DOMAIN_DATA_IN_REDUX")
+  console.log(profileData, "SET_DOMAIN_DATA_IN_REDUX");
+  const watchdogRating = _get(
+    profileData,
+    "general_analysis.payload.ratings.watchdog",
+    0
+  );
+  console.log(watchdogRating, "watchdogRating");
   const domainProfileData = {
     headerData: createHeaderData(profileData),
     analysisReports: createAnalysisData(profileData),
     trafficReports: createTrafficReports(profileData),
     socialMediaStats: createSocialMediaStats(profileData),
     domainReviews: createDomainReviews(profileData),
-    wotReviews: createWotReviews(profileData)
+    wotReviews: createWotReviews(profileData),
+    watchdogRating
   };
   return {
     type: SET_DOMAIN_DATA_IN_REDUX,
@@ -315,8 +322,6 @@ export const reportDomain = data => {
           errorMsg: ""
         }
       });
-      // setTimeout(dispatch(clearReportDomainData), 3000);
-      // dispatch(reportDomainAfterLogin({}, false));
     } catch (error) {
       dispatch({
         type: REPORT_DOMAIN_FAILURE,
@@ -326,8 +331,6 @@ export const reportDomain = data => {
           errorMsg: "Some error occured in reporting domain!"
         }
       });
-      // setTimeout(dispatch(clearReportDomainData), 3000);
-      // dispatch(reportDomainAfterLogin({}, false));
     }
   };
 };
@@ -341,14 +344,3 @@ export const reportDomainAfterLogin = (data, shouldReportDomain) => {
     }
   };
 };
-
-// export const clearReportDomainData = () => {
-//   return {
-//     type: REPORT_DOMAIN_SUCCESS,
-//     reportDomain: {
-//       isLoading: false,
-//       success: "undefined",
-//       errorMsg: ""
-//     }
-//   };
-// };
