@@ -222,6 +222,7 @@ const createDomainReviews = data => {
 };
 
 const createWotReviews = data => {
+  console.log(data, "CREATE_WOT");
   let wotReviews = [];
   let willCome = false;
   let isScheduled = false;
