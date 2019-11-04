@@ -201,8 +201,8 @@ class ProfilePageBodyRight extends Component {
             max-width: 100%;
             height: auto;
           }
-          .total{
-            text-align:center;
+          .total {
+            text-align: center;
           }
           .ratingContainer {
             text-align: center;
@@ -232,20 +232,20 @@ class ProfilePageBodyRight extends Component {
           .additionalDetails > div:last-child {
             text-align: center;
           }
-          @media screen and (max-width:991px){
+          @media screen and (max-width: 991px) {
             .additionalDetails {
-              flex-direction:column;
+              flex-direction: column;
             }
             .additionalDetailsHeader {
               font-weight: bold;
               font-size: 1rem;
-              margin-bottom:5px;
+              margin-bottom: 5px;
             }
-            .description_header{
-              margin-bottom:5px;
+            .description_header {
+              margin-bottom: 5px;
             }
-            .total{
-              text-align:left !important;
+            .total {
+              text-align: left !important;
             }
           }
         `}</style>
@@ -270,8 +270,8 @@ class ProfilePageBodyRight extends Component {
           </div>
           <div className="ratingContainer">
             <div className="ratingContainerText">
-              <span className="bold">{rating}</span> out of{" "}
-              <span className="bold">{max_rating}</span>
+              <span className="bold">{rating ? rating : null}</span> {rating ? <span>out of{" "}</span> : null}
+              <span className="bold">{max_rating ? max_rating : null}</span>
             </div>
           </div>
           {categories &&
@@ -402,20 +402,20 @@ class ProfilePageBodyRight extends Component {
           .additionalDetails > div:last-child {
             text-align: center;
           }
-          @media screen and (max-width:991px){
+          @media screen and (max-width: 991px) {
             .additionalDetails {
-              flex-direction:column;
+              flex-direction: column;
             }
             .additionalDetailsHeader {
               font-weight: bold;
               font-size: 1rem;
-              margin-bottom:5px;
+              margin-bottom: 5px;
             }
-            .description_header{
-              margin-bottom:5px;
+            .description_header {
+              margin-bottom: 5px;
             }
-            .total{
-              text-align:left !important;
+            .total {
+              text-align: left !important;
             }
           }
         `}</style>
@@ -559,17 +559,17 @@ class ProfilePageBodyRight extends Component {
               text-align: center;
               margin: 15px 0 5px 0;
             }
-            @media only screen and (max-width:991px){
-              .additionalDetails{
-                flex-direction:column;
+            @media only screen and (max-width: 991px) {
+              .additionalDetails {
+                flex-direction: column;
               }
-              .clainHeader{
-                margin-bottom:10px;
+              .clainHeader {
+                margin-bottom: 10px;
               }
             }
-            @media only screen and (max-width:767px){
-              .additionalDetails{
-                flex-direction:row;
+            @media only screen and (max-width: 767px) {
+              .additionalDetails {
+                flex-direction: row;
               }
             }
           `}
@@ -711,31 +711,31 @@ class ProfilePageBodyRight extends Component {
           .additionalDetails > div:last-child {
             text-align: center;
           }
-          @media screen and (max-width:991px){
-            .claimHeader{
-              margin-bottom:10px;
+          @media screen and (max-width: 991px) {
+            .claimHeader {
+              margin-bottom: 10px;
             }
             .additionalDetails {
-              flex-direction:column;
+              flex-direction: column;
             }
             .additionalDetailsHeader {
               font-weight: bold;
               font-size: 1rem;
-              margin-bottom:5px;
+              margin-bottom: 5px;
             }
-            .description_header{
-              margin-bottom:5px;
+            .description_header {
+              margin-bottom: 5px;
             }
-            .total{
-              text-align:left !important;
+            .total {
+              text-align: left !important;
             }
             .additionalDetails > div:last-child {
               text-align: left;
             }
           }
-          @media screen and (max-width:767px){
-            .clainHeader{
-              margin-bottom:0;
+          @media screen and (max-width: 767px) {
+            .clainHeader {
+              margin-bottom: 0;
             }
           }
         `}</style>
@@ -763,8 +763,9 @@ class ProfilePageBodyRight extends Component {
           </div>
           <div className="ratingContainer">
             <div className="ratingContainerText">
-              <span className="bold">{rating}</span> out of{" "}
-              <span className="bold">{max_rating}</span>
+              <span className="bold">{rating ? rating : null}</span>{" "}
+              {rating ? <span>out of </span> : null}
+              {max_rating ? <span className="bold">{max_rating}</span> : null}
             </div>
           </div>
           {categories &&
