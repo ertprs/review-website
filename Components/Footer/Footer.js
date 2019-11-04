@@ -23,32 +23,35 @@ const renderFooterTopSection = () => {
         </div>
 
         <div className="footerTopSocialLinksContainer">
-          <div className="footerTopSocialLink">
+          {/* <div className="footerTopSocialLink">
             <a href="/">
               <i className="fa fa-facebook" />
             </a>
-          </div>
-          <div className="footerTopSocialLink">
+          </div> */}
+          {/* <div className="footerTopSocialLink">
             <a href="/">
               <i className="fa fa-twitter" />
             </a>
-          </div>
-          <div className="footerTopSocialLink">
+          </div> */}
+          {/* <div className="footerTopSocialLink">
             <a href="/">
               <i className="fa fa-google-plus" />
             </a>
-          </div>
-          <div className="footerTopSocialLink">
+          </div> */}
+          {/* <div className="footerTopSocialLink">
             <a href="/">
               <i className="fa fa-linkedin" />
             </a>
-          </div>
+          </div> */}
         </div>
 
-        <div className="footerTopLocalizationContainer">
+        {/* <div className="footerTopLocalizationContainer">
           <button className="footerTopLocalizationBtn">
             English
           </button>
+        </div> */}
+        <div className="footerTopLocalizationContainer">
+          <a href="https://thetrustsearch.com/termsAndConditions" target="_blank" style={{color:"#fff", textDecoration:"none"}}>Terms and Conditions</a>
         </div>
       </div>
     </div>
@@ -213,7 +216,7 @@ const Footer = (props) => {
     </style>
     <footer className="footer" style={{...props.footerStyles}}>
       {renderFooterTopSection()}
-      {renderFooterMiddleSection()}
+      {/* {renderFooterMiddleSection()} */}
       {renderFooterBottomSection()}
     </footer>
     </>
