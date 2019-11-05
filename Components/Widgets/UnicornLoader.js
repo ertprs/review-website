@@ -24,14 +24,8 @@ const UnicornLoader = () => {
   return (
     <div>
       <style jsx>{`
-        // .textContainer {
-        //   position: absolute;
-        //   top: 50%;
-        //   left: 50%;
-        //   transform: translate(-50%, -50%);
-        // }
-
         .title {
+          text-align: center;
           font-size: 32px;
           font-weight: bold;
           display: block;
@@ -39,7 +33,30 @@ const UnicornLoader = () => {
         }
 
         .subTitle {
-          font-size: 18px;
+          text-align: center;
+          font-size: 22px;
+        }
+
+        @media screen and (max-width: 767px) {
+          .title {
+            font-size: 30px;
+            margin-bottom: 12px;
+          }
+          .subTitle {
+            text-align: center;
+            font-size: 18px;
+          }
+        }
+
+        @media screen and (max-width: 467px) {
+          .title {
+            font-size: 28px;
+            margin-bottom: 8px;
+          }
+          .subTitle {
+            text-align: center;
+            font-size: 16px;
+          }
         }
       `}</style>
       <Dialog
