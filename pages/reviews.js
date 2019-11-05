@@ -126,13 +126,11 @@ class Profile extends React.Component {
   updateAggregatorData = newData => {
     const { id, aggregateSocialData } = this.state;
     const socialAppId = _get(newData, "response.socialAppId", undefined);
-    console.log(socialAppId);
     this.props.getAggregateData(newData, id);
   };
 
   onGoogleReviewsChange = data => {
     const googleReviewsTotal = _get(data, "response.reviewCount", 0);
-    console.log(data, "data from pusher");
     const { fetchGoogleReviews, domain } = this.props;
     if (googleReviewsTotal > 0) {
       fetchGoogleReviews(domain);
