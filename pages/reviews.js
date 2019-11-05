@@ -52,6 +52,7 @@ const SimpleTabs = dynamic(() =>
 );
 import Snackbar from "../Components/Widgets/Snackbar";
 import { fetchGoogleReviews } from "../store/actions/googleReviewsAction";
+import UnicornLoader from "../Components/Widgets/UnicornLoader";
 
 class Profile extends React.Component {
   state = {
@@ -125,13 +126,11 @@ class Profile extends React.Component {
   updateAggregatorData = newData => {
     const { id, aggregateSocialData } = this.state;
     const socialAppId = _get(newData, "response.socialAppId", undefined);
-    console.log(socialAppId);
     this.props.getAggregateData(newData, id);
   };
 
   onGoogleReviewsChange = data => {
     const googleReviewsTotal = _get(data, "response.reviewCount", 0);
-    console.log(data, "data from pusher");
     const { fetchGoogleReviews, domain } = this.props;
     if (googleReviewsTotal > 0) {
       fetchGoogleReviews(domain);
@@ -407,7 +406,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    const { domain } = this.props;
+    const { domain, unicornLoading } = this.props;
     const {
       headerData,
       analyzeReports,
@@ -440,38 +439,44 @@ class Profile extends React.Component {
           onAggregatorDataChange={this.updateAggregatorData}
           onGoogleReviewsChange={this.onGoogleReviewsChange}
         />
-        <Navbar
-          handleSearchBoxChange={e =>
-            this.setState({ searchBoxVal: e.target.value })
-          }
-          handleSearchBoxKeyPress={this.handleSearchBoxKeyPress}
-          value={this.state.searchBoxVal}
-        />
-        {this.renderSimpleTabs()}
-        <Element name="overview" className="overview">
-          <ProfilePageHeader
-            headerData={headerData}
-            isMounted={this.state.isMounted}
-            onTrustClick={() =>
-              this.setState({ trustClicked: true }, () => {
-                setTimeout(() => {
-                  this.setState({ trustClicked: false });
-                }, 3000);
-              })
-            }
-          />
-        </Element>
-        <Element name="writeReview" className="writeReview">
-          <ProfilePageBody
-            analyzeReports={analyzeReports}
-            trafficReports={trafficReports}
-            socialMediaStats={socialMediaStats}
-            domainReviews={domainReviews || []}
-            isMounted={this.state.isMounted}
-            trustClicked={this.state.trustClicked}
-          />
-        </Element>
-        <Footer />
+        {unicornLoading ? (
+          <UnicornLoader />
+        ) : (
+          <>
+            <Navbar
+              handleSearchBoxChange={e =>
+                this.setState({ searchBoxVal: e.target.value })
+              }
+              handleSearchBoxKeyPress={this.handleSearchBoxKeyPress}
+              value={this.state.searchBoxVal}
+            />
+            {this.renderSimpleTabs()}
+            <Element name="overview" className="overview">
+              <ProfilePageHeader
+                headerData={headerData}
+                isMounted={this.state.isMounted}
+                onTrustClick={() =>
+                  this.setState({ trustClicked: true }, () => {
+                    setTimeout(() => {
+                      this.setState({ trustClicked: false });
+                    }, 3000);
+                  })
+                }
+              />
+            </Element>
+            <Element name="writeReview" className="writeReview">
+              <ProfilePageBody
+                analyzeReports={analyzeReports}
+                trafficReports={trafficReports}
+                socialMediaStats={socialMediaStats}
+                domainReviews={domainReviews || []}
+                isMounted={this.state.isMounted}
+                trustClicked={this.state.trustClicked}
+              />
+            </Element>
+            <Footer />
+          </>
+        )}
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}
@@ -510,7 +515,15 @@ const mapStateToProps = state => {
     "reportDomain.errorMsg",
     "undefined"
   );
-  return { auth, reportDomainSuccess, reportDomainErrorMsg };
+  const isNewDomain = _get(profileData, "domainProfileData.isNewDomain", false);
+  const hasData = _get(profileData, "domainProfileData.hasData", false);
+  let unicornLoading = false;
+  if (isNewDomain && !hasData) {
+    unicornLoading = true;
+  } else if (hasData) {
+    unicornLoading = false;
+  }
+  return { auth, reportDomainSuccess, reportDomainErrorMsg, unicornLoading };
 };
 
 export default connect(

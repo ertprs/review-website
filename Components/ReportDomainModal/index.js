@@ -47,13 +47,13 @@ class ReportDomainModal extends React.Component {
       description: {
         element: "textarea",
         value: "",
-        placeholder: "140 characters to 280",
+        placeholder: "70 characters to 280",
         errorMessage: "",
         valid: false,
         touched: false,
         validationRules: {
           required: true,
-          minLength: 140,
+          minLength: 70,
           maxLength: 280
         },
         name: "description"

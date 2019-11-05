@@ -14,13 +14,13 @@ class ReviewCardContainer extends Component {
   state = {
     googleReviewsToShow: [],
     wotReviewsToShow: [],
-    showNoReviewsFound:false
+    showNoReviewsFound: false
   };
 
-  componentDidMount(){
-    setTimeout(()=>{
-      this.setState({showNoReviewsFound:true})
-    }, 54000)
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ showNoReviewsFound: true });
+    }, 54000);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,7 +87,11 @@ class ReviewCardContainer extends Component {
       domainReviewsData.map(review => {
         return (
           <div style={{ marginBottom: "25px" }} key={uuid()}>
-            <ReviewCard isLoading={isLoading} review={review || {}} />
+            <GoogleReviewCard
+              isLoading={isLoading}
+              review={review || {}}
+              provider="trustsearch"
+            />
           </div>
         );
       })
@@ -250,11 +254,15 @@ class ReviewCardContainer extends Component {
           </>
         ) : (
           <>
-            {this.state.showNoReviewsFound ? <Paper>
-              <div className="noReviewFound">
-                <h1 className="noReviewFoundText">No Reviews Found</h1>
-              </div>
-            </Paper> : <ReviewCardPlaceholder />}
+            {this.state.showNoReviewsFound ? (
+              <Paper>
+                <div className="noReviewFound">
+                  <h1 className="noReviewFoundText">No Reviews Found</h1>
+                </div>
+              </Paper>
+            ) : (
+              <ReviewCardPlaceholder />
+            )}
           </>
         )}
       </div>

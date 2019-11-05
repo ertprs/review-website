@@ -208,9 +208,9 @@ const createDomainReviews = data => {
     _get(data, "reviews.domain.reviews", []).map(review => {
       let temp = {
         ...temp,
-        userName: _get(review, "user.name", ""),
+        name: _get(review, "user.name", ""),
         text: _get(review, "text", ""),
-        ratings: _get(review, "avg_rating", 0)
+        rating: _get(review, "avg_rating", 0)
       };
       domainReviews = [...domainReviews, temp];
     });
@@ -266,13 +266,6 @@ const createWotReviews = data => {
 };
 
 export const setDomainDataInRedux = profileData => {
-  console.log(profileData, "SET_DOMAIN_DATA_IN_REDUX");
-  const watchdogRating = _get(
-    profileData,
-    "general_analysis.payload.ratings.watchdog",
-    0
-  );
-  console.log(watchdogRating, "watchdogRating");
   const domainProfileData = {
     headerData: createHeaderData(profileData),
     analysisReports: createAnalysisData(profileData),
@@ -280,7 +273,17 @@ export const setDomainDataInRedux = profileData => {
     socialMediaStats: createSocialMediaStats(profileData),
     domainReviews: createDomainReviews(profileData),
     wotReviews: createWotReviews(profileData),
-    watchdogRating
+    watchdogRating: _get(
+      profileData,
+      "general_analysis.payload.ratings.watchdog",
+      0
+    ),
+    isNewDomain: _get(
+      profileData,
+      "notifications.payload.is_new_domain",
+      false
+    ),
+    hasData: _get(profileData, "notifications.payload.has_data", false)
   };
   return {
     type: SET_DOMAIN_DATA_IN_REDUX,
