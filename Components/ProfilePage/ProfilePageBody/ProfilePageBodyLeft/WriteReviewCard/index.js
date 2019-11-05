@@ -32,8 +32,8 @@ class WriteReview extends Component {
           touched: false,
           validationRules: {
             required: true,
-            minLength: 140,
-            maxLength: 1000
+            minLength: 70,
+            maxLength: 280
           },
           name: "review"
         }
