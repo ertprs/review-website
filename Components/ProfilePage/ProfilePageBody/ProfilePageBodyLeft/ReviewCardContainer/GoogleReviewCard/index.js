@@ -10,6 +10,30 @@ const GoogleReviewCard = ({ review, provider }) => {
   return (
     <div className="reviewCard">
       <style jsx> {reviewListStyles}</style>
+      <style jsx>{`
+        .smallDate{
+          display:none;
+        }
+        @media screen and (max-width:991px){
+          .fullDate{
+            display:none;
+          }
+          .smallDate{
+            display:block;
+          }
+        }
+        @media screen and (max-width:767px){
+          .dateContainer{
+            margin-top:22px;
+          }
+          .fullDate{
+            display:block;
+          }
+          .smallDate{
+            display:none;
+          }
+        }
+      `}</style>
       <div style={{ textAlign: "right", margin: "7px 20px 0px 0px" }}>
         {/* <i style={{ color: "#DB4437" }} className="fa fa-google"></i> */}
       </div>
@@ -55,8 +79,9 @@ const GoogleReviewCard = ({ review, provider }) => {
         {provider === "wot" ? (
           <div className="col-md-2">
             <div>
-              <div>
-                <span>{moment(date).format("DD/MM/YYYY")}</span>
+              <div className="dateContainer">
+                <span className="fullDate">{moment(date).format("DD/MM/YYYY")}</span>
+                <span className="smallDate">{moment(date).format("YYYY")}</span>
               </div>
             </div>
           </div>
