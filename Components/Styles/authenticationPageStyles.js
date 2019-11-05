@@ -126,6 +126,29 @@ export const authenticationPageStyles = css.global`
     margin-bottom: 10px;
   }
 
+  @media screen and (width:1024px) and (height:1366px){
+    .mainContainer{
+      height:48vh;
+    }
+  }
+
+  @media screen and (width:800px) and (height:1280px){
+    .mainContainer{
+      height:60vh;
+    }
+    .mainContainer {
+      width: 90%;
+      align-self:center;
+      margin:80px auto 0 50px;
+    }
+  }
+
+  @media screen and (width:768px) and (height:1024px){
+    .mainContainer{
+      height:45vh;
+    }
+  }
+
   @media screen and (max-width:539px){
     .mainContainer{
       height:72vh;
