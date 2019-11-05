@@ -517,7 +517,14 @@ const mapStateToProps = state => {
     "reportDomain.errorMsg",
     "undefined"
   );
-  const unicornLoading = _get(profileData, "isLoading", false);
+  const isNewDomain = _get(profileData, "domainProfileData.isNewDomain", false);
+  const hasData = _get(profileData, "domainProfileData.hasData", false);
+  let unicornLoading = false;
+  if (isNewDomain && !hasData) {
+    unicornLoading = true;
+  } else if (hasData) {
+    unicornLoading = false;
+  }
   return { auth, reportDomainSuccess, reportDomainErrorMsg, unicornLoading };
 };
 
