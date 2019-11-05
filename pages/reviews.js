@@ -344,7 +344,7 @@ class Profile extends React.Component {
     if (
       e.keyCode === 13 &&
       this.state.searchBoxVal.trim() !== "" &&
-      /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
+      /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim.test(
         searchBoxVal
       )
     ) {

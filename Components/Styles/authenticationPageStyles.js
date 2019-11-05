@@ -1,9 +1,9 @@
 import css from "styled-jsx/css";
 
 export const authenticationPageStyles = css.global`
-  .mainContainer {
-    margin: 45px 0 50px 0;
-
+  .mainContainer, .loginContainer, .regContainer {
+    margin: 95px 0 100px 0;
+    display:block;
   }
 
   .card {
@@ -124,5 +124,14 @@ export const authenticationPageStyles = css.global`
   .forgotPasswordLink {
     display: block;
     margin-bottom: 10px;
+  }
+
+  @media screen and (max-width:539px){
+    .mainContainer{
+      height:72vh;
+      display:flex;
+      align-items:center;
+      margin: 25px auto 0 auto;
+    }
   }
 `;

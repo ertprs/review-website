@@ -186,4 +186,10 @@ export default css`
       margin: 5% 0 5% 0;
     }
   }
+  
+  @media screen and (max-width:539px){
+    .footerMiddleSection{
+      display:none;
+    }
+  }
 `;

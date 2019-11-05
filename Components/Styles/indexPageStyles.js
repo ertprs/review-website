@@ -1,4 +1,4 @@
-import css from 'styled-jsx/css';
+import css from "styled-jsx/css";
 
 export const indexPageStyles = css.global`
   .homeContainer {
@@ -88,8 +88,23 @@ export const indexPageStyles = css.global`
   }
 
   @media only screen and (max-width: 539px) {
+    .homeContainer{
+      height:75vh;
+      background:#f5f5f5;
+    }
     .homeContainerInner {
-      width: 95%;
+      width: 90%;
+      align-self:center;
+      margin: 25px auto 0 auto;
+    }
+    .heroSubHeading{
+      display:none;
+    }
+    .analyseBtn{
+      display:none;
+    }
+    .homeSearchBoxContainer{
+      margin:50px 0 150px 0;
     }
   }
   }
