@@ -77,6 +77,36 @@ export const indexPageStyles = css.global`
   }
 
   /*----- Media queries for responsiveness to different screen sizes ----*/
+
+  @media screen and (width:1024px) and (height:1366px){
+    .homeContainer{
+      height:59vh;
+    }
+
+    .homeContainerInner {
+      width: 90%;
+      align-self:center;
+      margin: 25px auto 0 auto;
+    }
+  }
+
+  @media screen and (width:800px) and (height:1280px){
+    .homeContainer{
+      height:61vh;
+    }
+    .homeContainerInner {
+      width: 90%;
+      align-self:center;
+      margin: 25px auto 0 auto;
+    }
+  }
+
+  @media screen and (width:768px) and (height:1024px){
+    .homeContainer{
+      height:55vh;
+    }
+  }
+  
   @media only screen and (max-width: 767px) {
     .homeSearchBoxContainer{
       margin: 3% 0 11% 0;
