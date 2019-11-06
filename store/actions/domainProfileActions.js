@@ -4,7 +4,8 @@ import {
   REPORT_DOMAIN_INIT,
   REPORT_DOMAIN_SUCCESS,
   REPORT_DOMAIN_FAILURE,
-  REPORT_DOMAIN_AFTER_LOGIN
+  REPORT_DOMAIN_AFTER_LOGIN,
+  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -12,6 +13,7 @@ import _isNumber from "lodash/isEmpty";
 import { iconNames } from "../../utility/constants/socialMediaConstants";
 import { reportDomainApi } from "../../utility/config";
 import axios from "axios";
+import Router from "next/router";
 
 const createHeaderData = data => {
   let willCome = false;
@@ -345,5 +347,15 @@ export const reportDomainAfterLogin = (data, shouldReportDomain) => {
       data,
       shouldReportDomain
     }
+  };
+};
+
+export const redirectWithDomain = (route, domain) => {
+  if (route) {
+    Router.push(route);
+  }
+  return {
+    type: REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL,
+    domain
   };
 };

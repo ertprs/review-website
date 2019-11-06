@@ -12,7 +12,7 @@ import { businessSignUp } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import Link from "next/link";
-import PageLoader from "../../Components/Widgets/PageLoader";
+import { redirectWithDomain } from "../../store/actions/domainProfileActions";
 
 class BusinessUserRegistration extends Component {
   state = {
@@ -211,6 +211,30 @@ class BusinessUserRegistration extends Component {
       });
     }
   };
+
+  componentWillMount() {
+    window.scrollTo(0, 0);
+    const { domainName } = this.props;
+    const { formData } = this.state;
+    if (domainName) {
+      this.setState({
+        formData: {
+          ...formData,
+          website: {
+            ...formData.website,
+            value: domainName,
+            valid: true,
+            touched: true
+          }
+        }
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { redirectWithDomain } = this.props;
+    redirectWithDomain("", "");
+  }
 
   createReqBody = formData => {
     let reqBody = {};
@@ -441,7 +465,7 @@ class BusinessUserRegistration extends Component {
 }
 
 const mapStateToProps = state => {
-  const { auth } = state;
+  const { auth, profileData } = state;
   const { businessSignUpTemp } = auth;
   const isSignUpFailed = _get(businessSignUpTemp, "isSignupFailed", false);
   const isSignupSuccess = _get(businessSignUpTemp, "signUpSuccess", false);
@@ -449,6 +473,7 @@ const mapStateToProps = state => {
   const error = _get(businessSignUpTemp, "error", "");
   const isSigningUp = _get(businessSignUpTemp, "isSigningUp", false);
   const authorized = _get(auth, "logIn.authorized", "undefiend");
+  const domainName = _get(profileData, "domain", "");
   return {
     auth,
     isSignUpFailed,
@@ -456,11 +481,12 @@ const mapStateToProps = state => {
     status,
     error,
     isSigningUp,
-    authorized
+    authorized,
+    domainName
   };
 };
 
 export default connect(
   mapStateToProps,
-  { businessSignUp }
+  { businessSignUp, redirectWithDomain }
 )(BusinessUserRegistration);

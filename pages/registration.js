@@ -71,9 +71,10 @@ const Registration = () => {
   );
 };
 
-Registration.getInitialProps = async ctx => {
-  isAlreadyLoggedIn(ctx);
-  return {};
-};
+//!internet user can register as register
+// Registration.getInitialProps = async ctx => {
+//   isAlreadyLoggedIn(ctx);
+//   return {};
+// };
 
 export default Registration;

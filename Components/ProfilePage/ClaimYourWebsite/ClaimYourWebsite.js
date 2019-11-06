@@ -3,11 +3,12 @@ import Paper from "../../MaterialComponents/Paper";
 import { claimYourWebsiteStyles } from "./claimYourWebsiteStyles";
 import { connect } from "react-redux";
 import _get from "lodash/get";
-import Router from "next/router";
 import Button from "@material-ui/core/Button";
+import { redirectWithDomain } from "../../../store/actions/domainProfileActions";
 
 class ClaimYourWebsite extends Component {
   renderClaimButton = () => {
+    const { redirectWithDomain, domain_name } = this.props;
     return (
       <>
         <style jsx>{claimYourWebsiteStyles}</style>
@@ -15,7 +16,9 @@ class ClaimYourWebsite extends Component {
           variant="contained"
           color="primary"
           // className="claimBtn"
-          onClick={() => Router.push("/registration#business")}
+          onClick={() =>
+            redirectWithDomain("/registration#business", domain_name)
+          }
         >
           Click if this is your website
         </Button>
@@ -24,7 +27,7 @@ class ClaimYourWebsite extends Component {
   };
 
   renderAppropriateBox = () => {
-    const { variant, domain_name } = this.props;
+    const { variant, domain_name, redirectWithDomain } = this.props;
     switch (variant) {
       case "big":
         return (
@@ -80,7 +83,6 @@ class ClaimYourWebsite extends Component {
 
 const mapStateToProps = state => {
   return {
-    // domain_name: state.profileData.domainProfileData.headerData.data.domain_name
     domain_name: _get(
       state,
       "profileData.domainProfileData.headerData.data.domain_name",
@@ -89,4 +91,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ClaimYourWebsite);
+export default connect(
+  mapStateToProps,
+  { redirectWithDomain }
+)(ClaimYourWebsite);
