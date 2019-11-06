@@ -53,6 +53,7 @@ const SimpleTabs = dynamic(() =>
 import Snackbar from "../Components/Widgets/Snackbar";
 import { fetchGoogleReviews } from "../store/actions/googleReviewsAction";
 import UnicornLoader from "../Components/Widgets/UnicornLoader";
+import { removeAggregateData } from "../store/actions/aggregateActions";
 
 class Profile extends React.Component {
   state = {
@@ -121,6 +122,8 @@ class Profile extends React.Component {
   componentWillUnmount() {
     Events.scrollEvent.remove("begin");
     Events.scrollEvent.remove("end");
+    const { removeAggregateData } = this.props;
+    removeAggregateData();
   }
 
   updateAggregatorData = newData => {
@@ -443,13 +446,7 @@ class Profile extends React.Component {
           <UnicornLoader />
         ) : (
           <>
-            <Navbar
-              handleSearchBoxChange={e =>
-                this.setState({ searchBoxVal: e.target.value })
-              }
-              handleSearchBoxKeyPress={this.handleSearchBoxKeyPress}
-              value={this.state.searchBoxVal}
-            />
+            <Navbar />
             {this.renderSimpleTabs()}
             <Element name="overview" className="overview">
               <ProfilePageHeader
@@ -533,6 +530,7 @@ export default connect(
     setLoading,
     getAggregateData,
     setAggregateData,
-    fetchGoogleReviews
+    fetchGoogleReviews,
+    removeAggregateData
   }
 )(Profile);
