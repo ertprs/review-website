@@ -24,7 +24,7 @@ const dashboardPersistConfig = {
 const profileDataConfig = {
   key: "profileData",
   storage: storage,
-  blacklist: ["reportDomain"]
+  blacklist: ["reportDomain", "isNewDomain"]
 };
 
 export default combineReducers({

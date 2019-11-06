@@ -72,11 +72,19 @@ class Profile extends React.Component {
     snackbarMsg: "",
     id: "",
     aggregateSocialData: {},
-    trustClicked: false
+    trustClicked: false,
+    waitingTimeOut: true,
+    isNewDomain: false
   };
 
   componentDidMount() {
     //call fetch reviews action creator
+    if (this.state.isLoading) {
+      this.props.setLoading(true);
+    }
+    setTimeout(() => {
+      this.setState({ waitingTimeOut: false });
+    }, 40000);
     const { fetchGoogleReviews, domain } = this.props;
     fetchGoogleReviews(domain);
     this.setState({ isMounted: true });
@@ -142,6 +150,12 @@ class Profile extends React.Component {
 
   updateParentState = newState => {
     this.props.setDomainDataInRedux(newState);
+    const isNewDomain = _get(
+      newState,
+      "notifications.payload.is_new_domain",
+      false
+    );
+    this.setState({ isNewDomain });
     const { domainData } = this.state;
     if (this.state.id === "") {
       const id = _get(newState, "id", "");
@@ -154,6 +168,10 @@ class Profile extends React.Component {
       review_length: _get(newState, "reviews.domain.reviews", []).length,
       rating: _get(newState, "general_analysis.payload.ratings.watchdog", 0)
     };
+
+    if (!_isEmpty(headerData)) {
+      this.props.setLoading(false);
+    }
 
     const analyzeReports = {
       ...this.state.analyzeReports,
@@ -358,9 +376,35 @@ class Profile extends React.Component {
 
   handleRouteChange = url => {};
 
+  unicornLoaderHandler = () => {
+    const { googleReviewsData, wotReviews, trustsearchReviews } = this.props;
+    let invalidReviews = true;
+    if (googleReviewsData) {
+      if (Array.isArray(googleReviewsData)) {
+        if (googleReviewsData.length > 0) {
+          invalidReviews = false;
+        }
+      }
+    }
+    if (wotReviews) {
+      if (Array.isArray(wotReviews)) {
+        if (wotReviews.length > 0) {
+          invalidReviews = false;
+        }
+      }
+    }
+    if (trustsearchReviews) {
+      if (Array.isArray(trustsearchReviews)) {
+        if (trustsearchReviews.length > 0) {
+          invalidReviews = false;
+        }
+      }
+    }
+    return invalidReviews;
+  };
+
   componentDidUpdate(prevProps, prevState) {
     const { auth, reportDomainSuccess, reportDomainErrorMsg } = this.props;
-
     if (reportDomainSuccess !== prevProps.reportDomainSuccess) {
       if (reportDomainSuccess === true) {
         this.setState({
@@ -406,10 +450,21 @@ class Profile extends React.Component {
         });
       }
     }
+
+    if (this.state.isLoading) {
+      if (!_isEmpty(_get(this.state, "domainData", {}))) {
+        if (!_isEmpty(_get(this.state, "domainData.domain_data", {}))) {
+          this.setState({ isLoading: false }, () => {
+            this.props.setLoading(false);
+          });
+        }
+      }
+    }
   }
 
   render() {
-    const { domain, unicornLoading } = this.props;
+    const { domain } = this.props;
+    const { waitingTimeOut, isNewDomain } = this.state;
     const {
       headerData,
       analyzeReports,
@@ -417,19 +472,6 @@ class Profile extends React.Component {
       socialMediaStats,
       domainReviews
     } = this.state;
-    if (!_isEmpty(_get(this.state, "domainData", {}))) {
-      if (!_isEmpty(_get(this.state, "domainData.domain_data", {}))) {
-        if (this.state.isLoading) {
-          this.setState({ isLoading: false });
-        }
-      }
-    }
-
-    if (this.state.isLoading) {
-      this.props.setLoading(true);
-    } else {
-      this.props.setLoading(false);
-    }
 
     return (
       <>
@@ -442,7 +484,7 @@ class Profile extends React.Component {
           onAggregatorDataChange={this.updateAggregatorData}
           onGoogleReviewsChange={this.onGoogleReviewsChange}
         />
-        {unicornLoading ? (
+        {isNewDomain && waitingTimeOut && this.unicornLoaderHandler() ? (
           <UnicornLoader />
         ) : (
           <>
@@ -501,7 +543,7 @@ Profile.getInitialProps = async ({ query }) => {
 };
 
 const mapStateToProps = state => {
-  const { auth, profileData } = state;
+  const { auth, profileData, googleReviews } = state;
   const reportDomainSuccess = _get(
     profileData,
     "reportDomain.success",
@@ -512,15 +554,23 @@ const mapStateToProps = state => {
     "reportDomain.errorMsg",
     "undefined"
   );
+  const googleReviewsData = _get(googleReviews, "reviews.data.reviews", []);
+  const wotReviews = _get(profileData, "domainProfileData.wotReviews.data", []);
+  const trustsearchReviews = _get(
+    profileData,
+    "domainProfileData.domainReviews.data",
+    []
+  );
   const isNewDomain = _get(profileData, "domainProfileData.isNewDomain", false);
-  const hasData = _get(profileData, "domainProfileData.hasData", false);
-  let unicornLoading = false;
-  if (isNewDomain && !hasData) {
-    unicornLoading = true;
-  } else if (hasData) {
-    unicornLoading = false;
-  }
-  return { auth, reportDomainSuccess, reportDomainErrorMsg, unicornLoading };
+  return {
+    auth,
+    reportDomainSuccess,
+    reportDomainErrorMsg,
+    googleReviewsData,
+    wotReviews,
+    trustsearchReviews,
+    isNewDomain
+  };
 };
 
 export default connect(
