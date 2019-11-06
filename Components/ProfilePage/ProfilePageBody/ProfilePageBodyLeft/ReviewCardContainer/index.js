@@ -20,7 +20,7 @@ class ReviewCardContainer extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ showNoReviewsFound: true });
-    }, 54000);
+    }, 40000);
     const { googleReviewsData, wotReviewsData } = this.props;
     const calGoogleReviewsToShow = () => {
       let googleReviewsToShow = [];
@@ -279,15 +279,15 @@ class ReviewCardContainer extends Component {
           </>
         ) : (
           <>
-            {this.state.showNoReviewsFound ? (
-              <Paper>
-                <div className="noReviewFound">
-                  <h1 className="noReviewFoundText">No Reviews Found</h1>
-                </div>
-              </Paper>
-            ) : (
+            {/* {this.state.showNoReviewsFound ? ( */}
+            <Paper>
+              <div className="noReviewFound">
+                <h1 className="noReviewFoundText">No Reviews Found</h1>
+              </div>
+            </Paper>
+            {/* ) : (
               <ReviewCardPlaceholder />
-            )}
+            )} */}
           </>
         )}
       </div>

@@ -70,7 +70,7 @@ const UnicornLoader = () => {
         disableBackdropClick={true}
         disableEscapeKeyDown={true}
         disablePortal={true}
-        className="dialogContainer"
+        className={classes.dialogContainer}
       >
         <DialogContent className={classes.root}>
           <div>
@@ -81,7 +81,7 @@ const UnicornLoader = () => {
                 while we gather data around the web.
               </span>
             </div>
-            <div style={{maxWidth:"450px", maxHeight:"450px"}}>
+            <div style={{ maxWidth: "450px", maxHeight: "450px" }}>
               <img
                 src="/static/images/unicorn_running.gif"
                 style={{ maxWidth: "100%", height: "auto" }}
