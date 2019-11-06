@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import Card from "../../MaterialComponents/Card";
 import Button from "@material-ui/core/Button/Button";
 import ArrowIconRight from "@material-ui/icons/ArrowForward";
-import Router from "next/router";
+import { redirectWithDomain } from "../../../store/actions/domainProfileActions";
+import { connect } from "react-redux";
+import _get from "lodash/get";
 
-export default class ProfilePageFooter extends Component {
+class ProfilePageFooter extends Component {
   render() {
+    const { redirectWithDomain, domainName } = this.props;
     return (
       <div>
         <Card>
@@ -83,7 +86,7 @@ export default class ProfilePageFooter extends Component {
                 color="primary"
                 endIcon={<ArrowIconRight />}
                 onClick={() => {
-                  Router.push("/registration#business");
+                  redirectWithDomain("/registration#business", domainName);
                 }}
               >
                 Click here to proceed
@@ -95,3 +98,18 @@ export default class ProfilePageFooter extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const { profileData } = state;
+  const domainName = _get(
+    profileData,
+    "domainProfileData.headerData.data.domain_name",
+    ""
+  );
+  return { domainName };
+};
+
+export default connect(
+  mapStateToProps,
+  { redirectWithDomain }
+)(ProfilePageFooter);

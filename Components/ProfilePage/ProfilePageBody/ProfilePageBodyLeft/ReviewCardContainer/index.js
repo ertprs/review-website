@@ -14,13 +14,38 @@ class ReviewCardContainer extends Component {
   state = {
     googleReviewsToShow: [],
     wotReviewsToShow: [],
-    showNoReviewsFound:false
+    showNoReviewsFound: false
   };
 
-  componentDidMount(){
-    setTimeout(()=>{
-      this.setState({showNoReviewsFound:true})
-    }, 54000)
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ showNoReviewsFound: true });
+    }, 54000);
+    const { googleReviewsData, wotReviewsData } = this.props;
+    const calGoogleReviewsToShow = () => {
+      let googleReviewsToShow = [];
+      if (googleReviewsData.length > 8) {
+        googleReviewsToShow = googleReviewsData.slice(0, 8);
+      } else {
+        googleReviewsToShow = googleReviewsData;
+      }
+      return googleReviewsToShow;
+    };
+
+    const calWotReviewsToShow = () => {
+      let wotReviewsToShow = [];
+      if (wotReviewsData.length > 8) {
+        wotReviewsToShow = wotReviewsData.slice(0, 8);
+      } else {
+        wotReviewsToShow = wotReviewsData;
+      }
+      return wotReviewsToShow;
+    };
+
+    this.setState({
+      googleReviewsToShow: calGoogleReviewsToShow(),
+      wotReviewsToShow: calWotReviewsToShow()
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,7 +112,11 @@ class ReviewCardContainer extends Component {
       domainReviewsData.map(review => {
         return (
           <div style={{ marginBottom: "25px" }} key={uuid()}>
-            <ReviewCard isLoading={isLoading} review={review || {}} />
+            <GoogleReviewCard
+              isLoading={isLoading}
+              review={review || {}}
+              provider="trustsearch"
+            />
           </div>
         );
       })
@@ -250,11 +279,15 @@ class ReviewCardContainer extends Component {
           </>
         ) : (
           <>
-            {this.state.showNoReviewsFound ? <Paper>
-              <div className="noReviewFound">
-                <h1 className="noReviewFoundText">No Reviews Found</h1>
-              </div>
-            </Paper> : <ReviewCardPlaceholder />}
+            {this.state.showNoReviewsFound ? (
+              <Paper>
+                <div className="noReviewFound">
+                  <h1 className="noReviewFoundText">No Reviews Found</h1>
+                </div>
+              </Paper>
+            ) : (
+              <ReviewCardPlaceholder />
+            )}
           </>
         )}
       </div>

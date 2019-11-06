@@ -4,7 +4,8 @@ import {
   REPORT_DOMAIN_INIT,
   REPORT_DOMAIN_SUCCESS,
   REPORT_DOMAIN_FAILURE,
-  REPORT_DOMAIN_AFTER_LOGIN
+  REPORT_DOMAIN_AFTER_LOGIN,
+  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -12,6 +13,7 @@ import _isNumber from "lodash/isEmpty";
 import { iconNames } from "../../utility/constants/socialMediaConstants";
 import { reportDomainApi } from "../../utility/config";
 import axios from "axios";
+import Router from "next/router";
 
 const createHeaderData = data => {
   let willCome = false;
@@ -208,9 +210,9 @@ const createDomainReviews = data => {
     _get(data, "reviews.domain.reviews", []).map(review => {
       let temp = {
         ...temp,
-        userName: _get(review, "user.name", ""),
+        name: _get(review, "user.name", ""),
         text: _get(review, "text", ""),
-        ratings: _get(review, "avg_rating", 0)
+        rating: _get(review, "avg_rating", 0)
       };
       domainReviews = [...domainReviews, temp];
     });
@@ -266,13 +268,6 @@ const createWotReviews = data => {
 };
 
 export const setDomainDataInRedux = profileData => {
-  console.log(profileData, "SET_DOMAIN_DATA_IN_REDUX");
-  const watchdogRating = _get(
-    profileData,
-    "general_analysis.payload.ratings.watchdog",
-    0
-  );
-  console.log(watchdogRating, "watchdogRating");
   const domainProfileData = {
     headerData: createHeaderData(profileData),
     analysisReports: createAnalysisData(profileData),
@@ -280,7 +275,17 @@ export const setDomainDataInRedux = profileData => {
     socialMediaStats: createSocialMediaStats(profileData),
     domainReviews: createDomainReviews(profileData),
     wotReviews: createWotReviews(profileData),
-    watchdogRating
+    watchdogRating: _get(
+      profileData,
+      "general_analysis.payload.ratings.watchdog",
+      0
+    ),
+    isNewDomain: _get(
+      profileData,
+      "notifications.payload.is_new_domain",
+      false
+    ),
+    hasData: _get(profileData, "notifications.payload.has_data", false)
   };
   return {
     type: SET_DOMAIN_DATA_IN_REDUX,
@@ -342,5 +347,15 @@ export const reportDomainAfterLogin = (data, shouldReportDomain) => {
       data,
       shouldReportDomain
     }
+  };
+};
+
+export const redirectWithDomain = (route, domain) => {
+  if (route) {
+    Router.push(route);
+  }
+  return {
+    type: REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL,
+    domain
   };
 };

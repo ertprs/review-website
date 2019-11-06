@@ -44,7 +44,7 @@ const Registration = () => {
 
   return (
     <Layout>
-      <div className="mainContainer">
+      <div className="regContainer">
         <div className="container">
           <div className="col-md-6 offset-md-3">
             <style jsx> {authenticationPageStyles} </style>{" "}
@@ -71,9 +71,10 @@ const Registration = () => {
   );
 };
 
-Registration.getInitialProps = async ctx => {
-  isAlreadyLoggedIn(ctx);
-  return {};
-};
+//!internet user can register as register
+// Registration.getInitialProps = async ctx => {
+//   isAlreadyLoggedIn(ctx);
+//   return {};
+// };
 
 export default Registration;

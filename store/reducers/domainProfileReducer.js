@@ -4,7 +4,8 @@ import {
   REPORT_DOMAIN_INIT,
   REPORT_DOMAIN_SUCCESS,
   REPORT_DOMAIN_FAILURE,
-  REPORT_DOMAIN_AFTER_LOGIN
+  REPORT_DOMAIN_AFTER_LOGIN,
+  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL
 } from "../actions/actionTypes";
 
 const domainProfileReducer = (state = {}, action) => {
@@ -13,7 +14,8 @@ const domainProfileReducer = (state = {}, action) => {
     domainProfileData,
     isLoading,
     reportDomain,
-    reportDomainLaterData
+    reportDomainLaterData,
+    domain
   } = action;
   switch (type) {
     case SET_DOMAIN_DATA_IN_REDUX:
@@ -54,6 +56,13 @@ const domainProfileReducer = (state = {}, action) => {
         ...state,
         type,
         reportDomainLaterData
+      };
+    }
+    case REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL: {
+      return {
+        ...state,
+        type,
+        domain
       };
     }
     default:

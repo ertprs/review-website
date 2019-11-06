@@ -238,7 +238,7 @@ const renderReviewCard = (
                 src={[
                   fallbackImage,
                   image,
-                  "/static/images/noimageavailable.jpg"
+                  "/static/images/noimageavailable2.jpg"
                 ]}
                 loader={
                   <div

@@ -122,6 +122,21 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const handleSearchBoxKeyPress = (e, searchBoxVal) => {
+  if (
+    e.keyCode === 13 &&
+    searchBoxVal.trim() !== "" &&
+    /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim.test(
+      searchBoxVal
+    )
+  ) {
+    let domainName = searchBoxVal.toLowerCase().trim();
+    let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
+    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    window.location.assign(`${parsed_domain_name}`);
+  }
+};
+
 function PrimarySearchAppBar(props) {
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const { auth } = props;
@@ -178,6 +193,7 @@ function PrimarySearchAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [profileMenuAnchorEl, setProfileMenuAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [searchBoxValue, setSearchBoxValue] = React.useState("");
   const [showInputBase, setShowInputBase] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -291,11 +307,16 @@ function PrimarySearchAppBar(props) {
         </MenuItem>
       </Link>
 
-      <Link href="https://b2b.thetrustsearch.com/en/">
+      <div>
         <MenuItem>
-          <a className={classes.navLinkMobile}>Business</a>
+          <a
+            href="https://b2b.thetrustsearch.com/en/"
+            className={classes.navLinkMobile}
+          >
+            Business
+          </a>
         </MenuItem>
-      </Link>
+      </div>
       {!authorized ? (
         <>
           <Link href="/login">
@@ -382,9 +403,9 @@ function PrimarySearchAppBar(props) {
                   input: classes.inputInput
                 }}
                 inputProps={{ "aria-label": "search" }}
-                onChange={props.handleSearchBoxChange}
-                onKeyDown={props.handleSearchBoxKeyPress}
-                value={props.value}
+                onChange={e => setSearchBoxValue(e.target.value)}
+                onKeyDown={e => handleSearchBoxKeyPress(e, searchBoxValue)}
+                value={searchBoxValue}
               />
             </div>
           ) : null}

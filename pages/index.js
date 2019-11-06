@@ -52,7 +52,7 @@ const Home = props => {
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
       if (
-        /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/.test(
+        /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gmi.test(
           searchBoxVal
         )
       ) {

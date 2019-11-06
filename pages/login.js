@@ -44,7 +44,7 @@ const Login = () => {
 
   return (
     <Layout>
-      <div className="mainContainer">
+      <div className="loginContainer">
         <div className="container">
           <div className="col-md-6 offset-md-3">
             <style jsx> {authenticationPageStyles} </style>{" "}
