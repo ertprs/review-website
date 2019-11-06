@@ -21,6 +21,31 @@ class ReviewCardContainer extends Component {
     setTimeout(() => {
       this.setState({ showNoReviewsFound: true });
     }, 54000);
+    const { googleReviewsData, wotReviewsData } = this.props;
+    const calGoogleReviewsToShow = () => {
+      let googleReviewsToShow = [];
+      if (googleReviewsData.length > 8) {
+        googleReviewsToShow = googleReviewsData.slice(0, 8);
+      } else {
+        googleReviewsToShow = googleReviewsData;
+      }
+      return googleReviewsToShow;
+    };
+
+    const calWotReviewsToShow = () => {
+      let wotReviewsToShow = [];
+      if (wotReviewsData.length > 8) {
+        wotReviewsToShow = wotReviewsData.slice(0, 8);
+      } else {
+        wotReviewsToShow = wotReviewsData;
+      }
+      return wotReviewsToShow;
+    };
+
+    this.setState({
+      googleReviewsToShow: calGoogleReviewsToShow(),
+      wotReviewsToShow: calWotReviewsToShow()
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
