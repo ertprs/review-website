@@ -446,13 +446,7 @@ class Profile extends React.Component {
           <UnicornLoader />
         ) : (
           <>
-            <Navbar
-              handleSearchBoxChange={e =>
-                this.setState({ searchBoxVal: e.target.value })
-              }
-              handleSearchBoxKeyPress={this.handleSearchBoxKeyPress}
-              value={this.state.searchBoxVal}
-            />
+            <Navbar />
             {this.renderSimpleTabs()}
             <Element name="overview" className="overview">
               <ProfilePageHeader
