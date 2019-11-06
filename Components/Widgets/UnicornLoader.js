@@ -8,6 +8,9 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: "rgb(245, 249, 249)"
+  },
+  dialogContainer: {
+    overflowY: "hidden"
   }
 }));
 
@@ -67,6 +70,7 @@ const UnicornLoader = () => {
         disableBackdropClick={true}
         disableEscapeKeyDown={true}
         disablePortal={true}
+        className="dialogContainer"
       >
         <DialogContent className={classes.root}>
           <div>
@@ -77,10 +81,12 @@ const UnicornLoader = () => {
                 while we gather data around the web.
               </span>
             </div>
-            <img
-              src="/static/images/unicorn_running.gif"
-              style={{ maxWidth: "100%", height: "auto" }}
-            />
+            <div style={{maxWidth:"450px", maxHeight:"450px"}}>
+              <img
+                src="/static/images/unicorn_running.gif"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div>
           </div>
         </DialogContent>
       </Dialog>

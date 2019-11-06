@@ -226,15 +226,15 @@ const renderReviewCard = (
               className="productCardPicContainer profileHeaderPicContainer"
               style={{ ...imgContainerStyles }}
             >
-              {/* <img
+              <img
                 src={imgSrc}
                 style={{
                   height: "auto",
                   maxWidth: "100%",
                   ...productPicStyles
                 }}
-              /> */}
-              <Img
+              />
+              {/* <Img
                 src={[
                   fallbackImage,
                   image,
@@ -256,7 +256,7 @@ const renderReviewCard = (
                   maxWidth: "100%",
                   ...productPicStyles
                 }}
-              />
+              /> */}
             </div>
           </div>
           <div className="productCardDetails">
