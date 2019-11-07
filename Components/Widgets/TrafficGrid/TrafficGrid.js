@@ -4,8 +4,6 @@ import ToolTip from "../ToolTip/ToolTip";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import Head from "next/head";
 import uuid from 'uuid/v1';
-import * as AmpHelpers from "react-amphtml/helpers";
-import * as Amp from "react-amphtml";
 
 export const config = { amp: "hybrid" };
 
@@ -36,12 +34,12 @@ const renderTrafficGridItems = (
             key={uuid()}
           >
             {
-              <AmpHelpers.Action
-                events={{
-                  tap: [
-                    "AMP.setState({ showAlexaGraph: { show: !showAlexaGraph.show } })"
-                  ]
-                }}
+              <div
+                // events={{
+                //   tap: [
+                //     "AMP.setState({ showAlexaGraph: { show: !showAlexaGraph.show } })"
+                //   ]
+                // }}
               >
                 {props => (
                   <div
@@ -62,7 +60,7 @@ const renderTrafficGridItems = (
                     />
                   </div>
                 )}
-              </AmpHelpers.Action>
+              </div>
             }
            {trafficData[item]!=="N/A" ?  <ToolTip visible={showAlexaGraph} styles={{}}>
               <div style={{ height: "auto", width: "260px" }}>
@@ -120,9 +118,9 @@ const TrafficGrid = props => {
         />
       </Head>
       <div>
-        <Amp.AmpState specName="amp-state" id="showAlexaGraph">
+        {/* <Amp.AmpState specName="amp-state" id="showAlexaGraph">
           {{ show: true }}
-        </Amp.AmpState>
+        </Amp.AmpState> */}
         <div className="row">
           {renderTrafficGridItems(
             props,
