@@ -84,7 +84,7 @@ class Profile extends React.Component {
     }
     setTimeout(() => {
       this.setState({ waitingTimeOut: false });
-    }, 40000);
+    }, 60000);
     const { fetchGoogleReviews, domain } = this.props;
     fetchGoogleReviews(domain);
     this.setState({ isMounted: true });
