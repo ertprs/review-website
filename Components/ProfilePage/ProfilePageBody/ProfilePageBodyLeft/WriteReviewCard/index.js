@@ -17,6 +17,7 @@ import OAuthButtons from "../../../../Widgets/oAuthBtns";
 import Snackbar from "../../../../../Components/Widgets/Snackbar";
 import Router from "next/router";
 import Button from "@material-ui/core/Button";
+import { ratingColor } from "../../../../../utility/ratingTypeColor";
 
 class WriteReview extends Component {
   constructor(props) {
@@ -322,8 +323,8 @@ class WriteReview extends Component {
               <RatingIndicators
                 rating={rating}
                 typeOfWidget="star"
-                widgetRatedColors="#21bc61"
-                widgetHoverColors="#21bc61"
+                widgetRatedColors={ratingColor[Math.round(Number(rating)) || 0]}
+                widgetHoverColors="#4edf12"
                 widgetDimensions="24px"
                 widgetSpacings="1px"
                 changeRating={this.changeRating}
