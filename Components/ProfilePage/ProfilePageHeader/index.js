@@ -112,7 +112,9 @@ class ProfilePageHeader extends Component {
                   subTitle={
                     <>
                       <span>
-                        {reviewsCount ? `Reviews ${reviewsCount || 0} ` : null}
+                        {reviewsCount
+                          ? `Reviews ${reviewsCount || 0} `
+                          : "Reviews 0"}
                       </span>
                       <span style={{ marginLeft: "5px" }}>
                         {domainRating
