@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import ReviewCard from "./ReviewCard";
 import WriteReviewCard from "../WriteReviewCard";
 import _get from "lodash/get";
 import Paper from "../../../../MaterialComponents/Paper";
 import { connect } from "react-redux";
 import uuid from "uuid/v1";
 import ReviewCardPlaceholder from "./ReviewCardPlaceholder";
-import ClaimYourWebsite from "../../../ClaimYourWebsite/ClaimYourWebsite";
 import GoogleReviewCard from "./GoogleReviewCard";
 import _isEmpty from "lodash/isEmpty";
 

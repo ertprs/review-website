@@ -21,6 +21,7 @@ import {
   scrollSpy,
   scroller
 } from "react-scroll";
+import { ratingType, ratingColor } from "../../../utility/ratingTypeColor";
 
 class ProfilePageHeader extends Component {
   state = {
@@ -58,29 +59,11 @@ class ProfilePageHeader extends Component {
       domainRating = watchdogRating;
     }
 
-    let ratingType = {
-      0: "",
-      1: "Poor",
-      2: "Bad",
-      3: "Average",
-      4: "Great",
-      5: "Excellent"
-    };
-
-    let ratingColor = {
-      0: "grey",
-      1: "#FF432F",
-      2: "#FF8622",
-      3: "#FFCE00",
-      4: "#73CF11",
-      5: "#21bc61"
-    };
-
     const reviewCardBody = (
       <RatingIndicators
         rating={Number(domainRating)}
         typeOfWidget="star"
-        widgetRatedColors={ratingColor[Math.round(Number(domainRating))]}
+        widgetRatedColors={ratingColor[Math.round(Number(domainRating)) || 0]}
         widgetDimensions="35px"
         widgetSpacings="2px"
       />
