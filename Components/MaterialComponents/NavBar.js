@@ -89,13 +89,13 @@ const useStyles = makeStyles(theme => ({
     }
   },
   searchIcon: {
-    width: theme.spacing(7),
+    width: "10px",
     height: "100%",
     position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+    margin: "-28px 0px 0px 10px",
+    "&:hover": {
+      cursor: "pointer"
+    }
   },
   inputRoot: {
     color: "inherit"
@@ -122,9 +122,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const handleSearchBoxKeyPress = (e, searchBoxVal) => {
+const hitDomainApi = searchBoxVal => {
   if (
-    e.keyCode === 13 &&
     searchBoxVal.trim() !== "" &&
     /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim.test(
       searchBoxVal
@@ -134,6 +133,12 @@ const handleSearchBoxKeyPress = (e, searchBoxVal) => {
     let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
     parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
     window.location.assign(`${parsed_domain_name}`);
+  }
+};
+
+const handleSearchBoxKeyPress = (e, searchBoxVal) => {
+  if (e.keyCode === 13) {
+    hitDomainApi(searchBoxVal);
   }
 };
 
@@ -393,9 +398,6 @@ function PrimarySearchAppBar(props) {
           ) : null}
           {showInputBase ? (
             <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
               <InputBase
                 placeholder="Search…"
                 classes={{
@@ -407,6 +409,17 @@ function PrimarySearchAppBar(props) {
                 onKeyDown={e => handleSearchBoxKeyPress(e, searchBoxValue)}
                 value={searchBoxValue}
               />
+              <div
+                // style={{
+
+                // }}
+                onClick={() => {
+                  hitDomainApi(searchBoxValue);
+                }}
+                className={classes.searchIcon}
+              >
+                <SearchIcon />
+              </div>
             </div>
           ) : null}
           <div className={classes.grow} />
