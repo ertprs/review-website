@@ -75,7 +75,7 @@ const UnicornLoader = () => {
         <DialogContent className={classes.root}>
           <div>
             <div className="textContainer">
-              <span className="title">Great done! </span>
+              <span className="title">Well done! </span>
               <span className="subTitle">
                 You entered a new domain for our database. Please wait a moment
                 while we gather data around the web.
