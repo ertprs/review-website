@@ -35,7 +35,6 @@
     "pusher": "^2.2.2",
     "pusher-js": "^5.0.0",
     "react": "^16.8.6",
-    "react-amphtml": "^4.0.1",
     "react-avatar": "^3.7.0",
     "react-content-loader": "^4.3.2",
     "react-dom": "^16.8.6",

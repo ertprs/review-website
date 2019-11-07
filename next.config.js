@@ -70,85 +70,85 @@ module.exports = {
       }
     });
 
-    config.module.rules.push({
-      test: path.resolve(
-        "./node_modules/react-amphtml/dist/amphtml/amphtml.js"
-      ),
-      loader: "babel-loader",
-      options: {
-        babelrc: false,
-        cacheDirectory: true,
-        presets: ["@babel/preset-env"]
-      }
-    });
+    // config.module.rules.push({
+    //   test: path.resolve(
+    //     "./node_modules/react-amphtml/dist/amphtml/amphtml.js"
+    //   ),
+    //   loader: "babel-loader",
+    //   options: {
+    //     babelrc: false,
+    //     cacheDirectory: true,
+    //     presets: ["@babel/preset-env"]
+    //   }
+    // });
 
-    config.module.rules.push({
-      test: path.resolve(
-        "./node_modules/react-amphtml/dist/amphtml/components/AmpState.js"
-      ),
-      loader: "babel-loader",
-      options: {
-        babelrc: false,
-        cacheDirectory: true,
-        presets: ["@babel/preset-env"]
-      }
-    });
+    // config.module.rules.push({
+    //   test: path.resolve(
+    //     "./node_modules/react-amphtml/dist/amphtml/components/AmpState.js"
+    //   ),
+    //   loader: "babel-loader",
+    //   options: {
+    //     babelrc: false,
+    //     cacheDirectory: true,
+    //     presets: ["@babel/preset-env"]
+    //   }
+    // });
 
-    config.module.rules.push({
-      test: path.resolve(
-        "./node_modules/react-amphtml/dist/amphtml/components/Html.js"
-      ),
-      loader: "babel-loader",
-      options: {
-        babelrc: false,
-        cacheDirectory: true,
-        presets: ["@babel/preset-env"]
-      }
-    });
+    // config.module.rules.push({
+    //   test: path.resolve(
+    //     "./node_modules/react-amphtml/dist/amphtml/components/Html.js"
+    //   ),
+    //   loader: "babel-loader",
+    //   options: {
+    //     babelrc: false,
+    //     cacheDirectory: true,
+    //     presets: ["@babel/preset-env"]
+    //   }
+    // });
 
-    config.module.rules.push({
-      test: path.resolve(
-        "./node_modules/react-amphtml/dist/amphtml/components/Script.js"
-      ),
-      loader: "babel-loader",
-      options: {
-        babelrc: false,
-        cacheDirectory: true,
-        presets: ["@babel/preset-env"]
-      }
-    });
+    // config.module.rules.push({
+    //   test: path.resolve(
+    //     "./node_modules/react-amphtml/dist/amphtml/components/Script.js"
+    //   ),
+    //   loader: "babel-loader",
+    //   options: {
+    //     babelrc: false,
+    //     cacheDirectory: true,
+    //     presets: ["@babel/preset-env"]
+    //   }
+    // });
 
-    config.module.rules.push({
-      test: path.resolve("./node_modules/react-amphtml/dist/helpers/Action.js"),
-      loader: "babel-loader",
-      options: {
-        babelrc: false,
-        cacheDirectory: true,
-        presets: ["@babel/preset-env"]
-      }
-    });
+    // config.module.rules.push({
+    //   test: path.resolve("./node_modules/react-amphtml/dist/helpers/Action.js"),
+    //   loader: "babel-loader",
+    //   options: {
+    //     babelrc: false,
+    //     cacheDirectory: true,
+    //     presets: ["@babel/preset-env"]
+    //   }
+    // });
 
-    config.module.rules.push({
-      test: path.resolve("./node_modules/react-amphtml/dist/helpers/Bind.js"),
-      loader: "babel-loader",
-      options: {
-        babelrc: false,
-        cacheDirectory: true,
-        presets: ["@babel/preset-env"]
-      }
-    });
+    // config.module.rules.push({
+    //   test: path.resolve("./node_modules/react-amphtml/dist/helpers/Bind.js"),
+    //   loader: "babel-loader",
+    //   options: {
+    //     babelrc: false,
+    //     cacheDirectory: true,
+    //     presets: ["@babel/preset-env"]
+    //   }
+    // });
 
-    config.module.rules.push({
-      test: path.resolve(
-        "./node_modules/react-amphtml/dist/lib/contextHelper.js"
-      ),
-      loader: "babel-loader",
-      options: {
-        babelrc: false,
-        cacheDirectory: true,
-        presets: ["@babel/preset-env"]
-      }
-    });
+    // config.module.rules.push({
+    //   test: path.resolve(
+    //     "./node_modules/react-amphtml/dist/lib/contextHelper.js"
+    //   ),
+    //   loader: "babel-loader",
+    //   options: {
+    //     babelrc: false,
+    //     cacheDirectory: true,
+    //     presets: ["@babel/preset-env"]
+    //   }
+    // });
 
     return config;
   }

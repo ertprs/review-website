@@ -1,6 +1,4 @@
 import React from "react";
-import { useAmp } from "next/amp";
-import * as Amp from "react-amphtml";
 import Head from "next/head";
 import {
   LineChart,
@@ -14,7 +12,7 @@ import {
 } from "recharts";
 
 export default (props) => {
-  return !useAmp() ? (
+  return (
     <>
       <ResponsiveContainer height="100%" width="100%">
         <LineChart
@@ -42,25 +40,5 @@ export default (props) => {
         </LineChart>
       </ResponsiveContainer>
     </>
-  ) : (
-    <>
-      <Head>
-        <script
-          async
-          custom-element="amp-iframe"
-          src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"
-        />
-      </Head>
-      <amp-iframe
-        width="730"
-        height="250"
-        title="Unique monthly visitors graph"
-        layout="responsive"
-        sandbox="allow-scripts allow-same-origin allow-popups"
-        frameborder="0"
-        src={`http://localhost:8000/index?data=${JSON.stringify(data)}`}
-        scrolling="no"
-      />
-    </>
-  );
+  )
 };

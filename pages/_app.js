@@ -68,6 +68,8 @@ class MyApp extends App {
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
 
+          <script src="/static/polyfills/polyfill.min.js" ></script>
+
           <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0yD1Nm-2HeTnWMZUSXN8CzvzejmGKEXk&libraries=places"></script>
 
           {process.env.NODE_ENV === "production" ? (

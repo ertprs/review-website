@@ -1,6 +1,4 @@
 import React from "react";
-import * as AmpHelpers from "react-amphtml/helpers";
-import { useAmp } from "next/amp";
 
 const renderToolTipBox = (children, styles) => {
   return (
@@ -37,17 +35,6 @@ const renderToolTipBox = (children, styles) => {
 };
 
 const ToolTip = ({ children, visible, styles }) => {
-  if (useAmp()) {
-    return (
-      <AmpHelpers.Bind hidden="showAlexaGraph.show">
-        {props => (
-          <div {...props} hidden={true}>
-            {renderToolTipBox(children)}
-          </div>
-        )}
-      </AmpHelpers.Bind>
-    );
-  }
   return visible ? renderToolTipBox(children, styles) : null;
 };
 

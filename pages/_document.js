@@ -23,8 +23,26 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/static/images/favicon_io/apple-touch-icon.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/static/images/favicon_io/favicon-32x32.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/static/images/favicon_io/favicon-16x16.png"
+          />
+          <link rel="manifest" href="/static/images/favicon_io/site.webmanifest" />
         </Head>
-        <body style={{background:"transparent"}}>
+        <body style={{ background: "transparent" }}>
           <Main />
           <div id="modal" />
           <NextScript />
@@ -63,7 +81,7 @@ MyDocument.getInitialProps = async ctx => {
 
   ctx.renderPage = () =>
     originalRenderPage({
-      enhanceApp: App => props => sheets.collect(<App {...props} />),
+      enhanceApp: App => props => sheets.collect(<App {...props} />)
     });
 
   const initialProps = await Document.getInitialProps(ctx);
@@ -75,8 +93,8 @@ MyDocument.getInitialProps = async ctx => {
       <React.Fragment key="styles">
         {initialProps.styles}
         {sheets.getStyleElement()}
-      </React.Fragment>,
-    ],
+      </React.Fragment>
+    ]
   };
 };
 

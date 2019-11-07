@@ -1,10 +1,8 @@
 import React from "react";
 import navBarStyles from "./navBarStyles";
 import ResponsiveSideNav from "../ResponsiveSideNav/ResponsiveSideNav";
-import * as AmpHelpers from "react-amphtml/helpers";
 import AmpLinkWrapper from "../../AmpWrappers/AmpLinkWrapper";
 import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
-import { useAmp } from "next/amp";
 import _get from "lodash";
 import _isEmpty from "lodash/isEmpty";
 import { GoogleLogout } from "react-google-login";
@@ -20,17 +18,6 @@ const renderResponsiveSideNav = (
   authorized,
   userName
 ) => {
-  if (useAmp()) {
-    return (
-      <AmpHelpers.Bind hidden="showSideNav.show">
-        {props => (
-          <div {...props} hidden={true}>
-            <ResponsiveSideNav authorized={authorized} userName={userName} />
-          </div>
-        )}
-      </AmpHelpers.Bind>
-    );
-  } else
     return showSideNav ? (
       <ResponsiveSideNav
         showSideNav={showSideNav}
@@ -128,7 +115,7 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
         </div>
         <div className="menuIconContainer">
           {
-            <AmpHelpers.Action
+            <div
               events={{
                 tap: [
                   "AMP.setState({ showSideNav: { show: !showSideNav.show } })"
@@ -144,7 +131,7 @@ const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {
                   <i className="fa fa-bars" />
                 </button>
               )}
-            </AmpHelpers.Action>
+            </div>
           }
         </div>
       </nav>
