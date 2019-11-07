@@ -35,7 +35,7 @@ class PusherDataComponent extends React.Component {
               }
             },
             () => {
-              console.log(this.state.domainData, "DOMAIN_DATA")
+              console.log(this.state.domainData, "DOMAIN_DATA");
               this.props.onChildStateChange(this.state.domainData);
             }
           );
@@ -56,6 +56,7 @@ class PusherDataComponent extends React.Component {
     const channel = pusher.subscribe(domain);
     // on connection make a network request for intial keys -
     pusher.connection.bind("connected", () => {
+      console.log("main pusher connected");
       axios
         .get(`${process.env.BASE_URL}/api/verify?domain=https://${domain}`)
         .then(res => {
@@ -109,8 +110,12 @@ class PusherDataComponent extends React.Component {
         })
         .catch(err => {});
     });
-
-    pusher.connection.bind("disconnected", () => {});
+    setTimeout(() => {
+      this.pusherCopy.disconnect();
+    }, 60000);
+    pusher.connection.bind("disconnected", () => {
+      console.log("Main pusher disconnected");
+    });
   }
 
   componentWillUnmount() {
