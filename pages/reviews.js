@@ -484,38 +484,39 @@ class Profile extends React.Component {
           onAggregatorDataChange={this.updateAggregatorData}
           onGoogleReviewsChange={this.onGoogleReviewsChange}
         />
-        {isNewDomain && waitingTimeOut && this.unicornLoaderHandler() ? (
-          <UnicornLoader />
-        ) : (
-          <>
-            <Navbar />
-            {this.renderSimpleTabs()}
-            <Element name="overview" className="overview">
-              <ProfilePageHeader
-                headerData={headerData}
-                isMounted={this.state.isMounted}
-                onTrustClick={() =>
-                  this.setState({ trustClicked: true }, () => {
-                    setTimeout(() => {
-                      this.setState({ trustClicked: false });
-                    }, 3000);
-                  })
-                }
-              />
-            </Element>
-            <Element name="writeReview" className="writeReview">
-              <ProfilePageBody
-                analyzeReports={analyzeReports}
-                trafficReports={trafficReports}
-                socialMediaStats={socialMediaStats}
-                domainReviews={domainReviews || []}
-                isMounted={this.state.isMounted}
-                trustClicked={this.state.trustClicked}
-              />
-            </Element>
-            <Footer />
-          </>
-        )}
+
+        <>
+          <Navbar />
+          {isNewDomain && waitingTimeOut && this.unicornLoaderHandler() ? (
+            <UnicornLoader />
+          ) : null}
+          {this.renderSimpleTabs()}
+          <Element name="overview" className="overview">
+            <ProfilePageHeader
+              headerData={headerData}
+              isMounted={this.state.isMounted}
+              onTrustClick={() =>
+                this.setState({ trustClicked: true }, () => {
+                  setTimeout(() => {
+                    this.setState({ trustClicked: false });
+                  }, 3000);
+                })
+              }
+            />
+          </Element>
+          <Element name="writeReview" className="writeReview">
+            <ProfilePageBody
+              analyzeReports={analyzeReports}
+              trafficReports={trafficReports}
+              socialMediaStats={socialMediaStats}
+              domainReviews={domainReviews || []}
+              isMounted={this.state.isMounted}
+              trustClicked={this.state.trustClicked}
+            />
+          </Element>
+          <Footer />
+        </>
+
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}

@@ -6,11 +6,16 @@ import { useTheme } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  dialogContent: {
     backgroundColor: "rgb(245, 249, 249)"
   },
-  dialogContainer: {
-    overflowY: "hidden"
+  root: {
+    background: "rgba(0, 0, 0, 0.6)",
+    boxShadow: "none"
+  },
+  paper: {
+    background: "rgba(0, 0, 0, 0.6)",
+    boxShadow: "none"
   }
 }));
 
@@ -64,15 +69,24 @@ const UnicornLoader = () => {
       `}</style>
       <Dialog
         // fullScreen={fullScreen}
+        BackdropProps={{
+          classes: {
+            root: classes.root
+          }
+        }}
+        PaperProps={{
+          classes: {
+            root: classes.paper
+          }
+        }}
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
         disableBackdropClick={true}
         disableEscapeKeyDown={true}
         disablePortal={true}
-        className={classes.dialogContainer}
       >
-        <DialogContent className={classes.root}>
+        <DialogContent className={classes.dialogContent}>
           <div>
             <div className="textContainer">
               <span className="title">Well done! </span>
