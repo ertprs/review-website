@@ -52,7 +52,7 @@ const Home = props => {
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
       if (
-        /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gmi.test(
+        /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gim.test(
           searchBoxVal
         )
       ) {
@@ -60,7 +60,10 @@ const Home = props => {
         let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
         parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
         setLoading(true);
-        Router.push(`/reviews?domain=${parsed_domain_name}`, `/reviews/${parsed_domain_name}`);
+        Router.push(
+          `/reviews?domain=${parsed_domain_name}`,
+          `/reviews/${parsed_domain_name}`
+        );
       } else {
         alert(
           "Please enter domain name in the format: (ex- thetrustsearch.com)"
@@ -155,8 +158,6 @@ const mapStateToProps = state => {
     "reportDomain.success",
     "undefined"
   );
-  console.log(profileDataActionType, "profileDataActionType");
-  console.log(reportDomainSuccess, "reportDomainSuccess");
   const reportDomainErrorMsg = _get(profileData, "reportDomain.errorMsg", "");
   let showSnackbar = false;
   let variant = "";

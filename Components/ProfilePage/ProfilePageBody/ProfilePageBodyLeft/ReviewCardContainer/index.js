@@ -1,12 +1,10 @@
 import React, { Component } from "react";
-import ReviewCard from "./ReviewCard";
 import WriteReviewCard from "../WriteReviewCard";
 import _get from "lodash/get";
 import Paper from "../../../../MaterialComponents/Paper";
 import { connect } from "react-redux";
 import uuid from "uuid/v1";
 import ReviewCardPlaceholder from "./ReviewCardPlaceholder";
-import ClaimYourWebsite from "../../../ClaimYourWebsite/ClaimYourWebsite";
 import GoogleReviewCard from "./GoogleReviewCard";
 import _isEmpty from "lodash/isEmpty";
 
@@ -20,7 +18,7 @@ class ReviewCardContainer extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ showNoReviewsFound: true });
-    }, 54000);
+    }, 40000);
     const { googleReviewsData, wotReviewsData } = this.props;
     const calGoogleReviewsToShow = () => {
       let googleReviewsToShow = [];
@@ -279,15 +277,15 @@ class ReviewCardContainer extends Component {
           </>
         ) : (
           <>
-            {this.state.showNoReviewsFound ? (
-              <Paper>
-                <div className="noReviewFound">
-                  <h1 className="noReviewFoundText">No Reviews Found</h1>
-                </div>
-              </Paper>
-            ) : (
+            {/* {this.state.showNoReviewsFound ? ( */}
+            <Paper>
+              <div className="noReviewFound">
+                <h1 className="noReviewFoundText">No Reviews Found</h1>
+              </div>
+            </Paper>
+            {/* ) : (
               <ReviewCardPlaceholder />
-            )}
+            )} */}
           </>
         )}
       </div>

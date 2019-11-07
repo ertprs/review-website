@@ -1,6 +1,5 @@
 import React from "react";
 import Head from "next/head";
-import { useAmp } from "next/amp";
 import {
   BarChart,
   Bar,
@@ -76,31 +75,9 @@ export default ({socialData}) => {
     if(Object.keys(socialData).length > 0){
       const data = getData(socialData)
       return(
-        !useAmp() ? (
+        (
           renderChart(data)
-        ) : (
-          <>
-            <Head>
-              <script
-                async
-                custom-element="amp-iframe"
-                src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"
-              />
-            </Head>
-            <amp-iframe
-              width="730"
-              height="250"
-              title="Unique monthly visitors graph"
-              layout="responsive"
-              sandbox="allow-scripts allow-same-origin allow-popups"
-              frameborder="0"
-              src={`http://localhost:8000/socialMediaChart?data=${JSON.stringify(
-                getData(socialData)
-              )}`}
-              scrolling="no"
-            />
-          </>
-      )
+        )
       )
     }
     else{

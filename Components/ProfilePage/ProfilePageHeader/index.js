@@ -21,6 +21,7 @@ import {
   scrollSpy,
   scroller
 } from "react-scroll";
+import { ratingType, ratingColor } from "../../../utility/ratingTypeColor";
 
 class ProfilePageHeader extends Component {
   state = {
@@ -35,16 +36,10 @@ class ProfilePageHeader extends Component {
       isLoading,
       googleRating,
       trustPilotRating,
-      watchdogRating
-    } = this.props;
-    console.log(
-      googleRating,
-      "googleRating",
-      trustPilotRating,
-      "trustPilotRating",
       watchdogRating,
-      "watchdogRating"
-    );
+      reviewsCount
+    } = this.props;
+
     const { showReportDomainModal } = this.state;
     const headerData = ((domainProfileData || {}).headerData || {}).data || {};
     const ratings = (headerData || {}).rating || 0;
@@ -68,7 +63,7 @@ class ProfilePageHeader extends Component {
       <RatingIndicators
         rating={Number(domainRating)}
         typeOfWidget="star"
-        widgetRatedColors="#21bc61"
+        widgetRatedColors={ratingColor[Math.round(Number(domainRating)) || 0]}
         widgetDimensions="35px"
         widgetSpacings="2px"
       />
@@ -99,8 +94,16 @@ class ProfilePageHeader extends Component {
                   title={parsed_domain_name}
                   subTitle={
                     <>
-                      <span>Reviews {review_length}</span>
-                      <span style={{ marginLeft: "5px" }}>• Average</span>
+                      <span>
+                        {reviewsCount
+                          ? `Reviews ${reviewsCount || 0} `
+                          : "Reviews 0"}
+                      </span>
+                      <span style={{ marginLeft: "5px" }}>
+                        {domainRating
+                          ? `• ${ratingType[Math.round(Number(domainRating))]}`
+                          : null}
+                      </span>
                     </>
                   }
                   body={reviewCardBody}
@@ -268,12 +271,42 @@ const mapStateToProps = state => {
     "domainProfileData.watchdogRating",
     0
   );
+  const googleReviewsData = _get(googleReviews, "reviews.data.reviews", []);
+  const wotReviews = _get(domainProfileData, "wotReviews.data", []);
+  const trustsearchReviews = _get(domainProfileData, "domainReviews.data", []);
+
+  let reviewsCount = 0;
+  if (googleReviewsData) {
+    if (Array.isArray(googleReviewsData)) {
+      if (googleReviewsData.length > 0) {
+        reviewsCount = reviewsCount + googleReviewsData.length;
+      }
+    }
+  }
+
+  if (wotReviews) {
+    if (Array.isArray(wotReviews)) {
+      if (wotReviews.length > 0) {
+        reviewsCount = reviewsCount + wotReviews.length;
+      }
+    }
+  }
+
+  if (trustsearchReviews) {
+    if (Array.isArray(trustsearchReviews)) {
+      if (trustsearchReviews.length > 0) {
+        reviewsCount = reviewsCount + trustsearchReviews.length;
+      }
+    }
+  }
   return {
     domainProfileData,
     isLoading,
     googleRating,
     trustPilotRating,
-    watchdogRating
+    watchdogRating,
+    googleReviews,
+    reviewsCount
   };
 };
 

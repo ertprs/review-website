@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAmp } from "next/amp"; // query.amp==="1"
+// import { useAmp } from "next/amp"; // query.amp==="1"
 import Head from "next/head";
 import {
   baseURL,
@@ -243,7 +243,7 @@ const renderAnalysisCards = analysisReport => {
   if (cardsArray.length > 0) {
     return cardsArray;
   } else {
-    return !useAmp() ? <img src="/static/images/825.gif" /> : null;
+    return <img src="/static/images/825.gif" />;
   }
 };
 
@@ -322,13 +322,13 @@ const renderTrafficReports = parentState => {
         <div className="row reviewStatsFlex">
           {Object.keys(trafficData.payload).length > 0 ? (
             <>
-              {!useAmp() ? (
+              {(
                 <div className="col-md-8">
                   <div style={{ height: "250px", width: "auto" }}>
                     <TrafficStatsChart data={uniqueVisitorsTimeLine} />
                   </div>
                 </div>
-              ) : null}
+              )}
               <div className="col-md-4" style={{ marginBottom: "5%" }}>
                 <TrafficGrid trafficData={trafficData.payload} />
               </div>
@@ -337,11 +337,11 @@ const renderTrafficReports = parentState => {
             <div className="col-md-12">
               <div style={{ textAlign: "center" }}>
                 {trafficData.success ? (
-                  !useAmp() ? (
+                  (
                     <div>
                       <img src="/static/images/traffic_data.gif" />
                     </div>
-                  ) : null
+                  )
                 ) : (
                   <div>No traffic records found :(</div>
                 )}
@@ -369,7 +369,7 @@ const renderSocialReports = parentState => {
         <div className="row reviewStatsFlex">
           {Object.keys(socialData.payload || {}).length > 0 ? (
             <>
-              {!useAmp() ? (
+              {(
                 <div className="col-md-8">
                   <div style={{ height: "250px", width: "auto" }}>
                     <SocialMediaPieChart
@@ -377,7 +377,7 @@ const renderSocialReports = parentState => {
                     />
                   </div>
                 </div>
-              ) : null}
+              )}
               <div className="col-md-4" style={{ marginBottom: "5%" }}>
                 <SocialMediaGrid socialData={{ ...socialData.payload }} />
               </div>
@@ -386,11 +386,11 @@ const renderSocialReports = parentState => {
             <div className="col-md-12">
               <div style={{ textAlign: "center" }}>
                 {socialData.success ? (
-                  !useAmp() ? (
+                  (
                     <div>
                       <img src="/static/images/social_data.gif" />
                     </div>
-                  ) : null
+                  )
                 ) : (
                   <div>No social media records found :(</div>
                 )}
@@ -471,11 +471,11 @@ const renderTextualReviews = comments => {
                 {commentsToRender[0] === "not found" ||
                 commentsToRender.length === 0 ? (
                   <div>No text reviews found :(</div>
-                ) : !useAmp() ? (
+                ) : (
                   <div>
                     <img src="/static/images/253.gif" />
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
           )}
@@ -704,9 +704,9 @@ const getCommentsObject = parentState => {
 
 const Reviews = props => {
   let initState = {};
-  if (useAmp()) {
-    initState = { ...props.analysisData.response };
-  }
+  // if (useAmp()) {
+  //   initState = { ...props.analysisData.response };
+  // }
   const [parentState, setParentState] = useState(initState);
   const [showTrustModal, setTrustModalVisibility] = useState(false);
   const domain = props.domain;
@@ -733,14 +733,14 @@ const Reviews = props => {
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
       </Head>
-      {!useAmp() ? (
+      {(
         <PusherDataComponent
           domain={props.domain}
           onChildStateChange={newState => {
             setParentState({ ...parentState, ...newState });
           }}
         />
-      ) : null}
+      )}
       {renderMajorData(
         parentState,
         domain,

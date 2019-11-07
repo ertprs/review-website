@@ -15,6 +15,7 @@ import ReplyIcon from "@material-ui/icons/Reply";
 import SearchIcon from "@material-ui/icons/Search";
 import FlagIcon from "@material-ui/icons/Flag";
 import { makeStyles } from "@material-ui/core/styles";
+import { ratingColor } from "../../../utility/ratingTypeColor";
 
 const useStyles = makeStyles({
   root: {
@@ -193,7 +194,7 @@ const ReviewCardBusiness = ({ review }) => {
             <RatingIndicators
               rating={Number(rating) || 0}
               typeOfWidget="star"
-              widgetRatedColors="#21bc61"
+              widgetRatedColors={ratingColor[Math.round(Number(rating)) || 0]}
               widgetDimensions="24px"
               widgetSpacings="2px"
             />

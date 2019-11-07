@@ -1,5 +1,4 @@
 import React from "react";
-import { useAmp } from "next/amp";
 import Head from "next/head";
 
 // if it's an amp page, get the amp form scripts and change to AMP FORM else continue with react js as it is.
@@ -47,11 +46,9 @@ const returnAmpForm = props => {
 };
 
 const AmpFormWrapper = props => {
-  return !useAmp() ? (
+  return (
     <form onSubmit={props.onSubmit}>{props.children}</form>
-  ) : (
-    returnAmpForm(props)
-  );
+  )
 };
 
 export default AmpFormWrapper;

@@ -6,11 +6,16 @@ import { useTheme } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  dialogContent: {
     backgroundColor: "rgb(245, 249, 249)"
   },
-  dialogContainer: {
-    overflowY: "hidden"
+  root: {
+    background: "rgba(0, 0, 0, 0.6)",
+    boxShadow: "none"
+  },
+  paper: {
+    background: "rgba(0, 0, 0, 0.6)",
+    boxShadow: "none"
   }
 }));
 
@@ -64,24 +69,33 @@ const UnicornLoader = () => {
       `}</style>
       <Dialog
         // fullScreen={fullScreen}
+        BackdropProps={{
+          classes: {
+            root: classes.root
+          }
+        }}
+        PaperProps={{
+          classes: {
+            root: classes.paper
+          }
+        }}
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
         disableBackdropClick={true}
         disableEscapeKeyDown={true}
         disablePortal={true}
-        className="dialogContainer"
       >
-        <DialogContent className={classes.root}>
+        <DialogContent className={classes.dialogContent}>
           <div>
             <div className="textContainer">
-              <span className="title">Great done! </span>
+              <span className="title">Well done! </span>
               <span className="subTitle">
                 You entered a new domain for our database. Please wait a moment
                 while we gather data around the web.
               </span>
             </div>
-            <div style={{maxWidth:"450px", maxHeight:"450px"}}>
+            <div style={{ maxWidth: "450px", maxHeight: "450px" }}>
               <img
                 src="/static/images/unicorn_running.gif"
                 style={{ maxWidth: "100%", height: "auto" }}

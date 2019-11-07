@@ -4,6 +4,7 @@ import RatingIndicators from "../../../../../Widgets/RatingIndicators/RatingIndi
 import _get from "lodash/get";
 import moment from "moment";
 import Avatar from "react-avatar";
+import { ratingColor } from "../../../../../../utility/ratingTypeColor";
 
 const GoogleReviewCard = ({ review, provider }) => {
   const { name, text, rating, date } = review;
@@ -73,7 +74,7 @@ const GoogleReviewCard = ({ review, provider }) => {
               <RatingIndicators
                 rating={Number(rating) || 0}
                 typeOfWidget="star"
-                widgetRatedColors="#21bc61"
+                widgetRatedColors={ratingColor[Math.round(Number(rating)) || 0]}
                 widgetDimensions="21px"
                 widgetSpacings="1px"
               />

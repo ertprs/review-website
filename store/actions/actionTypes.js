@@ -1,4 +1,3 @@
-import { Template } from "react-amphtml";
 
 //AUTH ACTION TYPES
 

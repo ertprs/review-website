@@ -19,6 +19,7 @@ import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
 import Moment from "react-moment";
+import { ratingColor } from "../../../utility/ratingTypeColor";
 
 const styles = theme => ({
   button: {
@@ -189,7 +190,7 @@ class Home extends Component {
             <div className="ratingsContainer">
               <StarRatings
                 rating={Number(rating)}
-                starRatedColor="#21bc61"
+                starRatedColor={ratingColor[Math.round(Number(rating)) || 0]}
                 starDimension="30px"
                 starSpacing="0.5px"
                 numberOfStars={5}
@@ -245,8 +246,10 @@ class Home extends Component {
           <div className="reviewBody">
             <div>
               <StarRatings
-                rating={item.rating}
-                starRatedColor="#21bc61"
+                rating={Number(item.rating)}
+                starRatedColor={
+                  ratingColor[Math.round(Number(item.rating)) || 0]
+                }
                 starDimension="17px"
                 starSpacing="0.5px"
                 numberOfStars={5}
@@ -374,7 +377,9 @@ class Home extends Component {
         : googleDirectReviewUrl;
     const businessAdd =
       // businessAddress === "" ? businessAddressFirstTime : businessAddress;
-      businessAddressFirstTime !=="" ? businessAddressFirstTime : businessAddress;
+      businessAddressFirstTime !== ""
+        ? businessAddressFirstTime
+        : businessAddress;
     return (
       <div className="businessDetailsContainer">
         <div className="editBtnContainer">

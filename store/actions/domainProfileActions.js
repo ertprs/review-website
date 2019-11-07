@@ -280,12 +280,7 @@ export const setDomainDataInRedux = profileData => {
       "general_analysis.payload.ratings.watchdog",
       0
     ),
-    isNewDomain: _get(
-      profileData,
-      "notifications.payload.is_new_domain",
-      false
-    ),
-    hasData: _get(profileData, "notifications.payload.has_data", false)
+    isNewDomain: _get(profileData, "notifications.payload.is_new_domain", false)
   };
   return {
     type: SET_DOMAIN_DATA_IN_REDUX,

@@ -16,7 +16,7 @@ class DomainPusherComponent extends Component {
     this.pusherCopy = pusher;
     const channel = pusher.subscribe(domain);
     pusher.connection.bind("connected", () => {
-      console.log("connected");
+      console.log("aggregator pusher connected");
       this.bindToKey(pusher, channel);
     });
   }
@@ -37,10 +37,10 @@ class DomainPusherComponent extends Component {
 
     setTimeout(() => {
       pusher.disconnect();
-    }, 300000);
+    }, 60000);
 
     pusher.connection.bind("disconnected", () => {
-      console.log("disconnected");
+      console.log("aggregator pusher disconnected");
     });
   };
 
