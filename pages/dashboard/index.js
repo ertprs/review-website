@@ -31,6 +31,7 @@ import {
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
+import { useRouter } from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
@@ -38,6 +39,7 @@ import dynamic from "next/dynamic";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
 import Tooltip from "@material-ui/core/Tooltip";
 import nextCookie from "next-cookies";
+import _findKey from "lodash/findKey";
 
 //Dynamic imported components
 const Home = dynamic(() =>
@@ -220,6 +222,10 @@ const useStyles = makeStyles(theme => ({
 
 function Dashboard(props) {
   const classes = useStyles();
+  const router = useRouter();
+
+  const { pathname, query } = router;
+
   const [open, setOpen] = React.useState(false);
   const [stepToRender, setStepToRender] = React.useState(
     (props.pLocated === false || props.pLocated === undefined) &&
@@ -233,59 +239,6 @@ function Dashboard(props) {
   const { upgradeToPremiumRes, placeLocated, fetchReviews, token } = props;
   const initState = {};
   const [parentState, setParentState] = useState(initState);
-
-  useEffect(() => {
-    if (upgradeToPremiumRes === true) {
-      setShowSnackbar(true);
-      setSnackbarVariant("success");
-      setSnackbarMsg("Request Sent Successfully!");
-    } else if (upgradeToPremiumRes === false) {
-      setShowSnackbar(true);
-      setSnackbarVariant("success");
-      setSnackbarMsg("Request Sent Successfully!");
-    }
-  }, [upgradeToPremiumRes]);
-
-  const handleMenuItemClicked = index => {
-    setStepToRender(index);
-  };
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
-  const changeStepToRender = step => {
-    console.log(step, "step");
-    setStepToRender(step);
-  };
-
-  const renderAppropriateComponent = pId => {
-    if (stepToRender === 0) {
-      return <GetStarted changeStepToRender={changeStepToRender} />;
-    } else if (stepToRender === 1) {
-      return <Home changeStepToRender={changeStepToRender} />;
-    } else if (stepToRender === 2) {
-      return <Reviews />;
-    } else if (stepToRender === 3) {
-      return <GetReviews changeStepToRender={changeStepToRender} />;
-    } else if (stepToRender === 4) {
-      return <InvitationHistory />;
-    } else if (stepToRender === 5) {
-      return <WidgetsShowCase />;
-    }
-  };
-
-  const handleLogout = () => {
-    setShowSnackbar(true);
-    setSnackbarVariant("success");
-    setSnackbarMsg("Logout Successfully!");
-    props.logOut();
-    Router.push("/");
-  };
 
   let userName = "";
   if (_get(props, "userName", "").length > 0) {
@@ -327,6 +280,113 @@ function Dashboard(props) {
       menuItemsDisabled = true;
     }
   }
+
+  useEffect(() => {
+    if (props.queryStep) {
+      if (props.queryStep.v) {
+        // console.log(props.queryStep.v, "QUERY_STEP");
+        const stepQuery = props.queryStep.v;
+        const stepKey = _findKey(dashboardSteps, { name: stepQuery });
+        // console.log(Number(stepKey));
+        if (!menuItemsDisabled && !homeDisabled && !getStartedDisabled) {
+          // Current URL is "/"
+          const href = `/dashboard?v=${stepQuery}`;
+          const as = `/dashboard/${stepQuery}`;
+          Router.push(href, as, { shallow: true });
+          setStepToRender(Number(stepKey));
+        }
+      }
+    }
+    if (upgradeToPremiumRes === true) {
+      setShowSnackbar(true);
+      setSnackbarVariant("success");
+      setSnackbarMsg("Request Sent Successfully!");
+    } else if (upgradeToPremiumRes === false) {
+      setShowSnackbar(true);
+      setSnackbarVariant("success");
+      setSnackbarMsg("Request Sent Successfully!");
+    }
+  }, [upgradeToPremiumRes]);
+
+  const handleMenuItemClicked = index => {
+    const step = dashboardSteps[index].name;
+    // Current URL is "/"
+    const href = `/dashboard?v=${step}`;
+    const as = `/dashboard/${step}`;
+    Router.push(href, as, { shallow: true });
+    setStepToRender(index);
+  };
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const changeStepToRender = index => {
+    const step = dashboardSteps[index].name;
+    // Current URL is "/"
+    const href = `/dashboard?v=${step}`;
+    const as = `/dashboard/${step}`;
+    Router.push(href, as, { shallow: true });
+    console.log(step, "step");
+    setStepToRender(index);
+  };
+
+  const dashboardSteps = {
+    0: {
+      name: "getStarted",
+      componentToRender: <GetStarted changeStepToRender={changeStepToRender} />
+    },
+    1: {
+      name: "home",
+      componentToRender: <Home changeStepToRender={changeStepToRender} />
+    },
+    2: {
+      name: "reviews",
+      componentToRender: <Reviews />
+    },
+    3: {
+      name: "getReviews",
+      componentToRender: <GetReviews changeStepToRender={changeStepToRender} />
+    },
+    4: {
+      name: "invitationHistory",
+      componentToRender: <InvitationHistory />
+    },
+    5: {
+      name: "widgets",
+      componentToRender: <WidgetsShowCase />
+    }
+  };
+
+  const renderAppropriateComponent = pId => {
+    const ComponentToRender = dashboardSteps[stepToRender].componentToRender;
+    return ComponentToRender;
+    // if (stepToRender === 0) {
+    //   return <GetStarted changeStepToRender={changeStepToRender} />;
+    // } else if (stepToRender === 1) {
+    //   return <Home changeStepToRender={changeStepToRender} />;
+    // } else if (stepToRender === 2) {
+    //   return <Reviews />;
+    // } else if (stepToRender === 3) {
+    //   return <GetReviews changeStepToRender={changeStepToRender} />;
+    // } else if (stepToRender === 4) {
+    //   return <InvitationHistory />;
+    // } else if (stepToRender === 5) {
+    //   return <WidgetsShowCase />;
+    // }
+  };
+
+  const handleLogout = () => {
+    setShowSnackbar(true);
+    setSnackbarVariant("success");
+    setSnackbarMsg("Logout Successfully!");
+    props.logOut();
+    Router.push("/");
+  };
 
   const clickToUpgradeHandler = () => {
     const { upgradeToPremium, userName, userEmail, userPhone } = props;
@@ -460,9 +520,10 @@ function Dashboard(props) {
 
 Dashboard.getInitialProps = async ctx => {
   // Check user's session
+  const queryStep = ctx.query;
   isAuthenticatedBusiness(ctx);
   const { placeId, placeLocated } = nextCookie(ctx);
-  return { pId: placeId, pLocated: placeLocated };
+  return { pId: placeId, pLocated: placeLocated, queryStep };
 };
 
 const mapStateToProps = state => {
