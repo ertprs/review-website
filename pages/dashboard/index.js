@@ -61,6 +61,24 @@ const GetStarted = dynamic(
     )
   }
 );
+const UserProfile = dynamic(
+  () => import("../../Components/DashboardComponents/UserProfile"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
 const GetReviews = dynamic(
   () => import("../../Components/DashboardComponents/GetReviews/GetReviews"),
   {
@@ -276,6 +294,8 @@ function Dashboard(props) {
       return <InvitationHistory />;
     } else if (stepToRender === 5) {
       return <WidgetsShowCase />;
+    } else if (stepToRender === 6) {
+      return <UserProfile />;
     }
   };
 
