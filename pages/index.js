@@ -5,6 +5,9 @@ import WebStats from "../Components/Widgets/WebStats/WebStats";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import IconButton from "@material-ui/core/IconButton";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import Button from "@material-ui/core/Button";
 import Head from "next/head";
 import Router from "next/router";
 import uuid from "uuid/v1";
@@ -16,9 +19,17 @@ import Snackbar from "../Components/Widgets/Snackbar";
 import { startLoading } from "../store/actions/loaderAction";
 import { GoogleLogout } from "react-google-login";
 import { logOut } from "../store/actions/authActions";
+import {
+  Link,
+  DirectLink,
+  Element,
+  Events,
+  animateScroll as scroll,
+  scrollSpy,
+  scroller
+} from "react-scroll";
 import _get from "lodash/get";
-import Link from "next/link";
-
+import NextLink from "next/link";
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
@@ -136,12 +147,16 @@ const renderWebStats = () => {
 const Home = props => {
   const [showSnackbar, setShowSnacbar] = useState(false);
   const [isLoading, setPageLoading] = React.useState(false);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+
   useEffect(() => {
     // code to run on component mount
     if (props.showSnackbar) {
       setShowSnacbar(true);
     }
     window.scrollTo(0, 0);
+    Events.scrollEvent.register("begin", function() {});
+    Events.scrollEvent.register("end", function() {});
   }, []);
   const [searchBoxVal, setSearchBoxVal] = useState("");
   const [loading, setLoading] = useState(false);
@@ -173,6 +188,40 @@ const Home = props => {
         );
       }
     }
+  };
+
+  const scrollToTop = () => {
+    scroll.scrollToTop();
+  };
+  const scrollTo = () => {
+    scroller.scrollTo("scroll-to-element", {
+      duration: 800,
+      delay: 0,
+      smooth: "easeInOutQuart"
+    });
+  };
+  const scrollToWithContainer = () => {
+    let goToContainer = new Promise((resolve, reject) => {
+      Events.scrollEvent.register("end", () => {
+        resolve();
+        Events.scrollEvent.remove("end");
+      });
+
+      scroller.scrollTo("scroll-container", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart"
+      });
+    });
+
+    goToContainer.then(() =>
+      scroller.scrollTo("scroll-container-second-element", {
+        duration: 800,
+        delay: 0,
+        smooth: "easeInOutQuart",
+        containerId: "scroll-container"
+      })
+    );
   };
 
   const renderHeroContent = () => {
@@ -241,9 +290,9 @@ const Home = props => {
         <style jsx>
           {`
             .logoImgContainer {
-              max-width: 600px;
+              max-width: 275px;
               height: auto;
-              margin: 0 auto 35px auto;
+              margin: 0 auto 50px auto;
             }
             .logoImgContainer img {
               max-width: 100%;
@@ -256,7 +305,7 @@ const Home = props => {
         <div className="row">
           <div className="col-md-12">
             <div className="logoImgContainer">
-              <img src="/static/images/main-page-logo.png" />
+              <img src="/static/images/gradientLogo.png" />
             </div>
           </div>
         </div>
@@ -264,32 +313,487 @@ const Home = props => {
     );
   };
 
-  const renderFooter = () => {
+  // const renderFooter = () => {
+  //   return (
+  //     <div className="footerContainer">
+  //       <style jsx>{`
+  //         .footerContainer {
+  //           background: #f2f2f2;
+  //           position: absolute;
+  //           bottom: 0;
+  //           width: 100%;
+  //           padding: 5px;
+  //         }
+  //       `}</style>
+  //       <div className="container">
+  //         <div style={{ textAlign: "right", marginTop: "10px" }}>
+  //           <a
+  //             href="https://thetrustsearch.com/termsAndConditions"
+  //             target="_blank"
+  //             style={{ color: "#000" }}
+  //           >
+  //             Terms and Conditions
+  //           </a>
+  //         </div>
+  //         <div style={{ textAlign: "center" }}>
+  //           &copy; {new Date().getFullYear()} TrustSearch. All rights reserved
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
+  const renderReviewGatheringSteps = () => {
     return (
-      <div className="footerContainer">
-        <style jsx>{`
-          .footerContainer {
-            background: #f2f2f2;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            padding: 5px;
-          }
-        `}</style>
+      <div className="reviewGatheringContainer">
+        <style jsx>
+          {`
+            .reviewGatheringContainer {
+              background: #a186be;
+              height: 100%;
+            }
+            .reviewGatheringContent {
+              text-align: center;
+              padding-top: 130px;
+              margin-bottom: 100px;
+            }
+            .reviewGatheringContentHeader {
+              text-transform: uppercase;
+              color: #fff;
+            }
+            .reviewGatheringContentSubHeader {
+              color: #fff;
+              margin-top: 20px;
+            }
+            .reviewStep {
+              text-align: center;
+              color: #f6f6f6;
+            }
+            .reviewStepImgContainer {
+              max-width: 200px;
+              height: auto;
+              margin: 35px auto 35px auto;
+            }
+
+            .reviewGatheringImgContainer {
+              max-width: 800px;
+              height: auto;
+              margin: 80px auto 0 auto;
+            }
+            .reviewSteptext {
+              max-width: 98%;
+              margin: 0 auto;
+            }
+          `}
+        </style>
         <div className="container">
-          <div style={{ textAlign: "right", marginTop: "10px" }}>
-            <a
-              href="https://thetrustsearch.com/termsAndConditions"
-              target="_blank"
-              style={{ color: "#000" }}
-            >
-              Terms and Conditions
-            </a>
+          <div className="reviewGatheringContent">
+            <h1 className="reviewGatheringContentHeader">
+              Review gathering automation
+            </h1>
           </div>
-          <div style={{ textAlign: "center" }}>
-            &copy; {new Date().getFullYear()} TrustSearch. All rights reserved
+          <div className="row">
+            <div className="col-md-3">
+              <div className="reviewStep">
+                <div
+                  className="reviewStepImgContainer"
+                  style={{ maxWidth: "150px", height: "auto" }}
+                >
+                  <img
+                    src="/static/images/2.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+                <div className="reviewSteptext">You have a new customer</div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="reviewStep">
+                <div
+                  className="reviewStepImgContainer"
+                  style={{ maxWidth: "126px", height: "auto" }}
+                >
+                  <img
+                    src="/static/images/3.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+                <div className="reviewSteptext">
+                  He will receive an email notification to leave a review
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="reviewStep">
+                <div
+                  className="reviewStepImgContainer"
+                  style={{ maxWidth: "220px", height: "auto" }}
+                >
+                  <img
+                    src="/static/images/4.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+                <div className="reviewSteptext">
+                  The customer will be able to quickly and easily leave a review
+                  about your company and product
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="reviewStep">
+                <div
+                  className="reviewStepImgContainer"
+                  style={{ maxWidth: "160px", height: "auto" }}
+                >
+                  <img
+                    src="/static/images/5.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+                <div className="reviewSteptext">
+                  Collecting customer reviews will build trust in your website,
+                  which will boost your sales
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="reviewGatheringImgContainer">
+                <img
+                  src="/static/images/6.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderReviewWidget = () => {
+    return (
+      <div className="renderReviewWidgetContainer">
+        <style jsx>
+          {`
+            .renderReviewWidgetContainer {
+              background: #fff;
+              height: 100%;
+            }
+            .renderReviewWidgetContent {
+              text-align: center;
+              padding-top: 130px;
+              margin-bottom: 100px;
+            }
+            .renderReviewWidgetContentHeader {
+              text-transform: uppercase;
+              color: #000;
+            }
+            .widgetImageContainer {
+              max-width: 1050px;
+              height: auto;
+              margin: 0 auto;
+            }
+            .widgetStepsImgContainer {
+              max-width: 1050px;
+              height: auto;
+              margin: 100px auto 50px auto;
+            }
+            .arrangeMeetingBtnContainer {
+              text-align: center;
+              margin-bottom: 5%;
+            }
+            .arrangeMeetingBtn {
+              padding: 1.5% 6% 1.5% 6%;
+              border-radius: 50px;
+              border-top: 1px solid #00a7f6;
+              border-bottom: 1px solid #00d350;
+              border-right: 1px solid #00a7f6;
+              border-left: 1px solid #00a7f6;
+              outline: none;
+              color: #fff;
+              text-transform: uppercase;
+              font-weight: bold;
+              background: linear-gradient(
+                to bottom right,
+                rgba(0, 167, 246, 0.9) 20%,
+                rgba(0, 211, 80, 0.95)
+              );
+              transition: all 0.4s;
+              -webkit-transition: all 0.4s;
+              cursor: pointer;
+            }
+
+            .arrangeMeetingBtn:link,
+            .arrangeMeetingBtn:visited,
+            .arrangeMeetingBtn:hover,
+            .arrangeMeetingBtn:active {
+              outline: none;
+            }
+          `}
+        </style>
+        <div className="container">
+          <div className="renderReviewWidgetContent">
+            <h1 className="renderReviewWidgetContentHeader">
+              Review Widget in your webpage
+            </h1>
+          </div>
+          <div className="widgetImageContainer">
+            <div>
+              <img
+                src="/static/images/7.png"
+                style={{ maxWidth: "100%", height: "auto" }}
+              />
+            </div>
+          </div>
+          <div className="widgetStepsImgContainer">
+            <img
+              src="/static/images/newLandingWidget.png"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          </div>
+          <div className="arrangeMeetingBtnContainer">
+            <button
+              className="arrangeMeetingBtn"
+              onClick={() => {
+                Router.push("/registration");
+              }}
+            >
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderWhyYouNeedReviews = () => {
+    return (
+      <div className="whyYouNeedReviewsContainer">
+        <style jsx>
+          {`
+            .whyYouNeedReviewsContainer {
+              background: rgb(36, 181, 231);
+              height: 100%;
+            }
+            .whyYouNeedReviewsContent {
+              text-align: center;
+              padding-top: 80px;
+              margin-bottom: 100px;
+            }
+            .whyYouNeedReviewsContentHeader {
+              text-transform: uppercase;
+              color: #fff;
+            }
+            .whyYouNeedReviewsContentSubHeader {
+              color: #fff;
+              margin-top: 20px;
+            }
+            .whyToHeader {
+              margin: 3% 0 8% 0;
+            }
+
+            .whyToHeader h2 {
+              font-size: 2.2rem;
+            }
+
+            .whyToNumberBox {
+              color: #fff;
+            }
+
+            .whyToNumber {
+              text-align: center;
+            }
+
+            .whyToNumber .number {
+              font-weight: bolder;
+              font-size: 4.5rem;
+              vertical-align: baseline;
+            }
+
+            .whyToNumber .symbol {
+              margin-left: 1%;
+              font-size: 3.2rem;
+            }
+
+            .whyToText {
+              font-size: 0.9rem;
+              text-align: center;
+              width: 98%;
+              margin: 0 auto;
+              color: #fefefe;
+            }
+            .whyYouNeedReviewsImgContainer {
+              max-width: 900px;
+              height: auto;
+              margin: 50px auto 0 auto;
+            }
+          `}
+        </style>
+        <div className="container">
+          <div className="whyYouNeedReviewsContent">
+            <h1 className="whyYouNeedReviewsContentHeader">
+              why you need customer reviews
+            </h1>
+          </div>
+          <div className="row">
+            <div className="col-md-4">
+              <div className="whyToNumberBox">
+                <div className="whyToNumber">
+                  <span className="number">63</span>
+                  <span className="symbol">%</span>
+                </div>
+                <div className="whyToText">
+                  Of internet users are more likely to buy from a site that
+                  shows customer testimonials, and an average internet user will
+                  read 6 reviews before feeling confident about their purchase.
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="whyToNumberBox">
+                <div className="whyToNumber">
+                  <span className="number">95</span>
+                  <span className="symbol">%</span>
+                </div>
+                <div className="whyToText">
+                  Of dissatisfied cutomers will return if their negative
+                  experience is resolved.
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="whyToNumberBox">
+                <div className="whyToNumber">
+                  <span className="number">91</span>
+                  <span className="symbol">%</span>
+                </div>
+                <div className="whyToText">
+                  Of shoppers consider feedback as the most important factor
+                  when making a purchase.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="whyYouNeedReviewsImgContainer">
+                <img
+                  src="/static/images/1.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSlidingArrow = () => {
+    return (
+      <Link
+        activeClass="banner"
+        className="banner"
+        to="banner"
+        spy={true}
+        smooth={true}
+        duration={500}
+        // offset={-200}
+        // onSetActive={this.handleSetActive}
+        // onClick={e => {
+        //   this.setState({ selectedTab: "overview" });
+        // }}
+      >
+        <div className="slidingArrowContainer">
+          <style jsx>
+            {`
+              .slidingArrowContainer {
+                margin-top: 20vh;
+                margin-bottom: 10vh;
+              }
+              .arrowImageContainer {
+                max-width: 48px;
+                margin: 0 auto;
+                cursor:pointer;
+              }
+            `}
+          </style>
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12">
+                <div className="arrowImageContainer">
+                  <img
+                    src="/static/images/arrow.png"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  };
+
+  const handleMobileMenuLeftClick = event => {
+    setAnchorEl2(event.currentTarget);
+  };
+
+  const handleMobileMenuLeftClose = () => {
+    setAnchorEl2(null);
+  };
+
+  const renderMobileMenuLeft = () => {
+    return (
+      <div>
+        <IconButton
+          // aria-label="more"
+          aria-controls="simple-menu"
+          aria-haspopup="true"
+          onClick={handleMobileMenuLeftClick}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl2}
+          keepMounted
+          open={Boolean(anchorEl2)}
+          onClose={handleMobileMenuLeftClose}
+        >
+          <MenuItem onClick={handleMobileMenuLeftClose}>
+            <NextLink href="/about">
+              <a className={classes.navLinkMobile}>About us</a>
+            </NextLink>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuLeftClose}>
+            <a
+              className={classes.navLinkMobile}
+              href="https://b2b.thetrustsearch.com/en/"
+              target="_blank"
+            >
+              Business
+            </a>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuLeftClose}>
+            <a
+              className={classes.navLinkMobile}
+              href="https://thetrustsearch.com/termsAndConditions"
+              target="_blank"
+            >
+              Terms &amp; Conditions
+            </a>
+          </MenuItem>
+        </Menu>
       </div>
     );
   };
@@ -310,7 +814,6 @@ const Home = props => {
     }
   }
 
-  
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [profileMenuAnchorEl, setProfileMenuAnchorEl] = React.useState(null);
@@ -343,7 +846,6 @@ const Home = props => {
     props.logOut();
     Router.push("/");
   };
-
 
   const handleProfileMenuOpen = event => {
     setProfileMenuAnchorEl(event.currentTarget);
@@ -379,16 +881,16 @@ const Home = props => {
       onClose={handleProfileMenuClose}
     >
       {authorized && loginType === 4 ? (
-        <Link href="/dashboard">
+        <NextLink href="/dashboard">
           <MenuItem onClick={handleMenuClose}>Dashboard</MenuItem>
-        </Link>
+        </NextLink>
       ) : null}
       {loginType === 1 || loginType === 2 ? (
-        <Link href="">
+        <NextLink href="">
           <MenuItem onClick={() => handleLogout()}>
             <a>Logout</a>
           </MenuItem>
-        </Link>
+        </NextLink>
       ) : (
         ""
       )}
@@ -397,11 +899,11 @@ const Home = props => {
           clientId={process.env.GOOGLE_CLIENT_ID}
           buttonText="Logout"
           render={renderProps => (
-            <Link href="">
+            <NextLink href="">
               <MenuItem onClick={() => handleLogout()}>
-                <a >Logout</a>
+                <a>Logout</a>
               </MenuItem>
-            </Link>
+            </NextLink>
           )}
           // onLogoutSuccess={logout}
         ></GoogleLogout>
@@ -409,11 +911,11 @@ const Home = props => {
         ""
       )}
       {loginType === 4 ? (
-        <Link href="">
+        <NextLink href="">
           <MenuItem onClick={() => handleLogout()}>
-            <a >Logout</a>
+            <a>Logout</a>
           </MenuItem>
-        </Link>
+        </NextLink>
       ) : (
         ""
       )}
@@ -437,33 +939,125 @@ const Home = props => {
   );
 
   return (
-    <>
+    <div style={{ background: "rgb(251,251,251)" }}>
       {/* <style jsx>{indexPageStyles}</style> */}
       <div className="topRightLinksContainer">
         <style jsx>
           {`
+            .mobileMenuContainer {
+              display: none;
+            }
+            .mobileMenuContainerOuter {
+              justify-content: center;
+              align-items: center;
+            }
             .topRightLinksContainer {
               display: flex;
-              justify-content: flex-end;
+              padding-top: 15px;
+            }
+            .topRightLinksContainer > div {
+              flex-basis: 50%;
             }
             .topRightLinksItem {
               display: flex;
-              flex-basis: 50%;
-              justify-content: flex-end;
+              flex-bjustiasis: 50%;
+              fy-content: center;
             }
             .topRightLinksItem > div {
               text-align: center;
-              margin: 15px 20px 15px 20px;
+              margin: 15px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            .loginBtn,
+            .signUpBtn {
+              border: 2.2px solid rgb(1, 172, 231);
+              background: #fff;
+              display: inline-block;
+              padding: 6px 35px 6px 35px;
+              border-radius: 35px;
+              -webkit-transition: all 0.4s;
+              transition: all 0.4s;
+            }
+            .loginBtn:hover,
+            .signUpBtn:hover {
+              text-decoration: none;
+              color: #fff;
+              background: rgb(1, 172, 231);
+            }
+            .signUpBtn {
+              border: 2.2px solid rgb(1, 172, 231);
+              background: rgb(1, 172, 231);
+              color: #fff;
+            }
+            .signUpBtn:hover {
+              color: #000;
+              background: #fff;
+            }
+            @media screen and (max-width: 1241px) {
+              .topRightLinksContainer > div:first-child {
+                flex-basis: 30%;
+              }
+              .topRightLinksContainer > div:last-child {
+                flex-basis: 70%;
+              }
+            }
+            @media screen and (max-width: 890px) {
+              .topRightLinksContainer > div:first-child {
+                flex-basis: 10%;
+              }
+              .topRightLinksContainer > div:last-child {
+                flex-basis: 90%;
+              }
+            }
+            @media screen and (max-width: 689px) {
+              .topRightLinksContainer > div:first-child {
+                flex-basis: 2%;
+              }
+              .topRightLinksContainer > div:last-child {
+                flex-basis: 98%;
+              }
+              .topRightLinksItem {
+                justify-content: flex-end;
+              }
+              .hide-sm,
+              .hide-sm a {
+                display: none;
+              }
+              .topRightLinksItem > div {
+                margin: 0 5px 0 5px !important;
+              }
+              .mobileMenuContainer {
+                display: block;
+              }
+            }
+            @media screen and (max-width: 340px) {
+              .topRightLinksItem {
+                justify-content: center;
+              }
+              .loginBtn,
+              .signUpBtn {
+                border: 2.2px solid rgb(1, 172, 231);
+                display: inline-block;
+                padding: 6px 20px 6px 20px;
+                border-radius: 35px;
+                -webkit-transition: all 0.4s;
+                transition: all 0.4s;
+              }
             }
           `}
         </style>
+        <div className="mobileMenuContainerOuter">
+          <div className="mobileMenuContainer">{renderMobileMenuLeft()}</div>
+        </div>
         <div className="topRightLinksItem">
-          <div>
-            <Link href="/about">
+          <div className="hide-sm">
+            <NextLink href="/about">
               <a className={classes.navLinkMobile}>About us</a>
-            </Link>
+            </NextLink>
           </div>
-          <div>
+          <div className="hide-sm">
             <a
               className={classes.navLinkMobile}
               href="https://b2b.thetrustsearch.com/en/"
@@ -472,22 +1066,33 @@ const Home = props => {
               Business
             </a>
           </div>
+          <div className="hide-sm">
+            <a
+              className={classes.navLinkMobile}
+              href="https://thetrustsearch.com/termsAndConditions"
+              target="_blank"
+            >
+              Terms &amp; Conditions
+            </a>
+          </div>
           {!authorized ? (
             <>
               <div>
-                <Link href="/login">
-                  <a className={classes.navLinkMobile}>Login</a>
-                </Link>
+                <NextLink href="/login">
+                  <a className={`${classes.navLinkMobile} loginBtn`}>Login</a>
+                </NextLink>
               </div>
               <div>
-                <Link href="/registration">
-                  <a className={classes.navLinkMobile}>Sign up</a>
-                </Link>
+                <NextLink href="/registration">
+                  <a className={`${classes.navLinkMobile} signUpBtn`}>
+                    Sign up
+                  </a>
+                </NextLink>
               </div>
             </>
           ) : (
             <>
-              <Link>
+              <NextLink>
                 <span
                   className={classes.navLink}
                   onClick={e => {
@@ -497,7 +1102,7 @@ const Home = props => {
                 >
                   <span>{userName}</span>
                 </span>
-              </Link>
+              </NextLink>
               {renderProfileMenu}
             </>
           )}
@@ -506,22 +1111,27 @@ const Home = props => {
       <div className="boxContainer">
         <style jsx>{`
           .boxContainer {
-            // position: absolute;
-            // top: 50%;
-            // left: 50%;
-            // width: 100%;
-            // transform: translate(-50%, -90%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 70vh;
+            height: 58vh;
           }
           .boxContent {
             width: 100%;
           }
           .searchBoxContainer {
-            width: 80%;
+            width: 62%;
             margin: 0 auto;
+          }
+          .taglineContainer {
+            text-align: center;
+            margin-top: 35px;
+          }
+          .taglineHeader {
+            font-weight: 390;
+            font-size: 1.1rem;
+            color: #000;
+            letter-spacing: 2.2px;
           }
         `}</style>
         <div className="boxContent">
@@ -530,50 +1140,37 @@ const Home = props => {
           <div className="container">
             <div className="row">
               <div className="col-md-12">
-                {/* {!loading ? (
-                  <div className="searchBoxContainer">
-                    <SearchInput
-                      onchange={handleSearchBoxChange}
-                      value={searchBoxVal}
-                      onkeyDown={e => {
-                        if (e.keyCode == 13) {
-                          handleSearchSubmit();
-                        }
-                      }}
-                      onsubmit={handleSearchSubmit}
-                    />
-                  </div>
-                ) : (
-                  <div style={{ textAlign: "center" }}>
-                    <CircularProgress color="secondary" />
-                  </div>
-                )} */}
                 <div className="searchBoxContainer">
-                    <SearchInput
-                      onchange={handleSearchBoxChange}
-                      value={searchBoxVal}
-                      onkeyDown={e => {
-                        if (e.keyCode == 13) {
-                          handleSearchSubmit();
-                        }
-                      }}
-                      onsubmit={handleSearchSubmit}
-                    />
-                  </div>
+                  <SearchInput
+                    onchange={handleSearchBoxChange}
+                    value={searchBoxVal}
+                    onkeyDown={e => {
+                      if (e.keyCode == 13) {
+                        handleSearchSubmit();
+                      }
+                    }}
+                    onsubmit={handleSearchSubmit}
+                  />
+                </div>
               </div>
             </div>
           </div>
-          {renderFooter()}
+          {/* {renderFooter()} */}
         </div>
       </div>
-
+      {renderSlidingArrow()}
+      <Element name="banner" className="banner">
+        <div>{renderWhyYouNeedReviews()}</div>
+      </Element>
+      {renderReviewGatheringSteps()}
+      {renderReviewWidget()}
       <Snackbar
         open={showSnackbar}
         variant={_get(props, "variant", "")}
         handleClose={() => setShowSnacbar(false)}
         message={_get(props, "message", "")}
       />
-    </>
+    </div>
   );
 };
 
@@ -627,7 +1224,4 @@ const mapStateToProps = state => {
   return { showSnackbar, variant, message, auth };
 };
 
-export default connect(
-  mapStateToProps,
-  { startLoading, logOut }
-)(Home);
+export default connect(mapStateToProps, { startLoading, logOut })(Home);
