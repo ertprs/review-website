@@ -1,9 +1,12 @@
 import React from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
+import dynamic from "next/dynamic";
+const ReactCountdownClock = dynamic(() => import("react-countdown-clock"), {
+  ssr: false
+});
 
 const useStyles = makeStyles(theme => ({
   dialogContent: {
@@ -21,8 +24,8 @@ const useStyles = makeStyles(theme => ({
 
 const UnicornLoader = () => {
   const [open, setOpen] = React.useState(true);
+  const [clockVisible, setClockVisible] = React.useState(true);
   const theme = useTheme();
-  // const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const classes = useStyles();
 
   const handleClose = () => {
@@ -43,6 +46,10 @@ const UnicornLoader = () => {
         .subTitle {
           text-align: center;
           font-size: 22px;
+        }
+
+        .timer {
+          float: right;
         }
 
         @media screen and (max-width: 767px) {
@@ -66,9 +73,20 @@ const UnicornLoader = () => {
             font-size: 16px;
           }
         }
+
+        @media screen and (max-width: 320px) {
+          .title {
+            text-align: left;
+            font-size: 22px;
+            margin-bottom: 8px;
+          }
+          .subTitle {
+            text-align: center;
+            font-size: 12px;
+          }
+        }
       `}</style>
       <Dialog
-        // fullScreen={fullScreen}
         BackdropProps={{
           classes: {
             root: classes.root
@@ -88,7 +106,21 @@ const UnicornLoader = () => {
       >
         <DialogContent className={classes.dialogContent}>
           <div>
-            <div className="textContainer">
+            {clockVisible ? (
+              <div className="timer">
+                <ReactCountdownClock
+                  weight={5}
+                  seconds={60}
+                  color="#19857b"
+                  alpha={0.7}
+                  size={50}
+                  onComplete={() => {
+                    setClockVisible(false);
+                  }}
+                />
+              </div>
+            ) : null}
+            <div>
               <span className="title">Well done! </span>
               <span className="subTitle">
                 You entered a new domain for our database. Please wait a moment
