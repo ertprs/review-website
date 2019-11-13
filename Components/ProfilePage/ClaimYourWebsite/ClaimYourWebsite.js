@@ -16,9 +16,7 @@ class ClaimYourWebsite extends Component {
           variant="contained"
           color="primary"
           // className="claimBtn"
-          onClick={() =>
-            redirectWithDomain("/registration#business", domain_name)
-          }
+          onClick={() => redirectWithDomain("/get-widgets", domain_name)}
         >
           Click if this is your website
         </Button>
@@ -91,7 +89,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { redirectWithDomain }
-)(ClaimYourWebsite);
+export default connect(mapStateToProps, { redirectWithDomain })(
+  ClaimYourWebsite
+);
