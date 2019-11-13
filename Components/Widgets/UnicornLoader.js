@@ -111,7 +111,7 @@ const UnicornLoader = () => {
                 <ReactCountdownClock
                   weight={5}
                   seconds={60}
-                  color="#19857b"
+                  color="#21bc61"
                   alpha={0.7}
                   size={50}
                   onComplete={() => {
