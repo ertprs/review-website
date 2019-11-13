@@ -55,7 +55,9 @@ class Reviews extends Component {
         ? googleDirectReviewUrlFirstTime
         : googleDirectReviewUrl;
     const businessAdd =
-    businessAddressFirstTime !=="" ? businessAddressFirstTime : businessAddress;
+      businessAddressFirstTime !== ""
+        ? businessAddressFirstTime
+        : businessAddress;
 
     return (
       <>
@@ -123,8 +125,8 @@ class Reviews extends Component {
                   <>
                     <Typography>
                       <b>Invitation url: &nbsp;</b>
-                      <div
-                        style={{color:"blue", cursor:"pointer"}}
+                      <span
+                        style={{ color: "blue", cursor: "pointer" }}
                         onClick={() =>
                           window.open(
                             `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
@@ -132,15 +134,17 @@ class Reviews extends Component {
                         }
                       >
                         {businessAdd}
-                      </div>
+                      </span>
                     </Typography>
                   </>
                 ) : (
                   <>
-                    <div style={{display:"flex"}}>
-                      <div><b>Google Review Url: &nbsp;</b></div>
+                    <div style={{ display: "flex" }}>
+                      <div>
+                        <b>Google Review Url: &nbsp;</b>
+                      </div>
                       <div
-                        style={{color:"blue", cursor:"pointer"}}
+                        style={{ color: "blue", cursor: "pointer" }}
                         onClick={() => window.open(googleReviewUrl)}
                       >
                         {businessAdd}

@@ -391,7 +391,7 @@ function PrimarySearchAppBar(props) {
               className={classes.title}
               variant="h6"
               noWrap
-              style={{ margin: "0 5px 0 0" }}
+              style={{ margin: "0 5px 0 0", color: "#f1f1f1" }}
             >
               TrustSearch
             </Typography>
@@ -485,7 +485,4 @@ const mapStateToProps = state => {
   return { auth };
 };
 
-export default connect(
-  mapStateToProps,
-  { logOut }
-)(PrimarySearchAppBar);
+export default connect(mapStateToProps, { logOut })(PrimarySearchAppBar);

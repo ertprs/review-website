@@ -37,6 +37,7 @@
     "react": "^16.8.6",
     "react-avatar": "^3.7.0",
     "react-content-loader": "^4.3.2",
+    "react-countdown-clock": "^2.7.0",
     "react-dom": "^16.8.6",
     "react-dropdown": "^1.6.4",
     "react-facebook-login": "^4.1.1",

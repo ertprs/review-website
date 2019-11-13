@@ -86,7 +86,7 @@ class ProfilePageFooter extends Component {
                 color="primary"
                 endIcon={<ArrowIconRight />}
                 onClick={() => {
-                  redirectWithDomain("/registration#business", domainName);
+                  redirectWithDomain("/get-widgets", domainName);
                 }}
               >
                 Click here to proceed
@@ -109,7 +109,6 @@ const mapStateToProps = state => {
   return { domainName };
 };
 
-export default connect(
-  mapStateToProps,
-  { redirectWithDomain }
-)(ProfilePageFooter);
+export default connect(mapStateToProps, { redirectWithDomain })(
+  ProfilePageFooter
+);

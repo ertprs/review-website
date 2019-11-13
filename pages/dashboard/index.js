@@ -366,17 +366,17 @@ function Dashboard(props) {
     const ComponentToRender = dashboardSteps[stepToRender].componentToRender;
     return ComponentToRender;
     // if (stepToRender === 0) {
-    //   return <GetStarted changeStepToRender={changeStepToRender} />;
+    // return <GetStarted changeStepToRender={changeStepToRender} />;
     // } else if (stepToRender === 1) {
-    //   return <Home changeStepToRender={changeStepToRender} />;
+    // return <Home changeStepToRender={changeStepToRender} />;
     // } else if (stepToRender === 2) {
-    //   return <Reviews />;
+    // return <Reviews />;
     // } else if (stepToRender === 3) {
-    //   return <GetReviews changeStepToRender={changeStepToRender} />;
+    // return <GetReviews changeStepToRender={changeStepToRender} />;
     // } else if (stepToRender === 4) {
-    //   return <InvitationHistory />;
+    // return <InvitationHistory />;
     // } else if (stepToRender === 5) {
-    //   return <WidgetsShowCase />;
+    // return <WidgetsShowCase />;
     // }
   };
 
