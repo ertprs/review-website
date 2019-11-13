@@ -19,6 +19,7 @@ import Snackbar from "../Components/Widgets/Snackbar";
 import { startLoading } from "../store/actions/loaderAction";
 import { GoogleLogout } from "react-google-login";
 import { logOut } from "../store/actions/authActions";
+import SubscriptionPlanCard from "../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
 import {
   Link,
   DirectLink,
@@ -475,14 +476,82 @@ const Home = props => {
     );
   };
 
+  const renderSubscriptionCards = () => {
+    const cardsData = [
+      {
+        cardHeader: "Free",
+        cardBody: [
+          "Display your reviews on the website with 1 design review widget.",
+          "Invite 100 customers per month to leave reviews.",
+          "You can only manually invite customers by copying contacts.",
+          "Collect and respond to company reviews in the Trustsearch dashboard.",
+          "Choose from 1 email template form."
+        ],
+        cardFooter: { price: "Free", duration: "" }
+      },
+
+      {
+        cardHeader: "Premium",
+        cardBody: [
+          "10 different design review widgets.",
+          "Invite 500 customers per month to leave feedback",
+          "Ability to automate customer invitations to leave reviews.",
+          "Option to add motivation (discounts, rewards) to clients.",
+          "Custom invitation email template.",
+          "Invitations are possible to Google reviews, Facebook reviews, TrustPilot.",
+          "Individual customer support."
+        ],
+        cardFooter: { price: "99", duration: "month" }
+      },
+
+      {
+        cardHeader: "Professional",
+        cardBody: [
+          "Free and Premium benefits +",
+          "A fully customizable review widget.",
+          "Invite an unlimited number of customers per month to leave reviews.",
+          "Ability to send invitations to WhatsApp, SMS, Messenger.",
+          "Software for a physical review stands in the shop or office.",
+          "Ability to add other reputation facts to the review widget."
+        ],
+        cardFooter: { price: "Coming Soon", duration: "" }
+      }
+    ];
+    return (
+      <div className="subscriptionPlanCardsContainer">
+        <style jsx>{`
+          .subscriptionPlanCardsContainer{
+            background:#F5DA98;
+            padding-top:150px;
+          }
+        `}</style>
+        <div className="container">
+          <div className="row">
+            {cardsData.map(item => {
+              return (
+                <div
+                  className="col-md-4"
+                  style={{ marginBottom: "10%" }}
+                  key={uuid()}
+                >
+                  <SubscriptionPlanCard {...item} variant="newIndexPage"/>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderReviewWidget = () => {
     return (
       <div className="renderReviewWidgetContainer">
         <style jsx>
           {`
             .renderReviewWidgetContainer {
-              background: #fff;
               height: 100%;
+              margin-bottom:100px;
             }
             .renderReviewWidgetContent {
               text-align: center;
@@ -723,7 +792,7 @@ const Home = props => {
               .arrowImageContainer {
                 max-width: 48px;
                 margin: 0 auto;
-                cursor:pointer;
+                cursor: pointer;
               }
             `}
           </style>
@@ -1164,6 +1233,7 @@ const Home = props => {
       </Element>
       {renderReviewGatheringSteps()}
       {renderReviewWidget()}
+      {renderSubscriptionCards()}
       <Snackbar
         open={showSnackbar}
         variant={_get(props, "variant", "")}
