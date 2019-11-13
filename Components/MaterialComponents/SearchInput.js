@@ -10,10 +10,12 @@ const useStyles = makeStyles(theme => ({
     padding: "2px 4px",
     display: "flex",
     alignItems: "center",
-    width: "90%"
+    width: "100%",
+    boxShadow:"0px 2px 4px #b2b2b2",
+    borderRadius:"50px"
   },
   input: {
-    marginLeft: theme.spacing(1),
+    marginLeft: theme.spacing(5),
     flex: 1
   },
   iconButton: {
@@ -34,7 +36,7 @@ export default function CustomizedInputBase(props) {
         className={classes.input}
         value={props.value}
         onChange={(e)=> props.onchange(e)}
-        placeholder="Enter any website domain for verification (ex format: thetrustsearch.com"
+        placeholder="domain.com"
         onKeyDown={props.onkeyDown}
         inputProps={{ "aria-label": "search google maps" }}
       />
