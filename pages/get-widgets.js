@@ -162,9 +162,9 @@ class GetWidgets extends Component {
 
   componentDidMount() {
     const { domainName } = this.props;
-    // if (!domainName) {
-    //   Router.push("/");
-    // }
+    if (!domainName) {
+      Router.push("/");
+    }
     window.scrollTo(0, 0);
   }
 
