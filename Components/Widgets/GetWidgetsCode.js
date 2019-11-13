@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input/Input";
 import uuid from "uuid/v1";
 import Head from "next/head";
+import BackArrowIcon from "@material-ui/icons/KeyboardBackspace";
 
 class GetWidgetsCode extends Component {
   constructor(props) {
@@ -12,6 +13,10 @@ class GetWidgetsCode extends Component {
     this.state = {
       widgetHeight: this.props.widget.minHeight
     };
+  }
+
+  componentDidMount() {
+    window.scrollTo(0, 0);
   }
 
   renderContent = data => {
@@ -124,6 +129,10 @@ class GetWidgetsCode extends Component {
             .inputContainer {
               margin: 25px 0 25px 0;
             }
+
+            .mb-50 {
+              margin-bottom: 50px;
+            }
           `}
         </style>
         <Paper
@@ -203,6 +212,19 @@ class GetWidgetsCode extends Component {
             async
           ></script>
         </Head>
+        <div style={{ marginBottom: "50px" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<BackArrowIcon />}
+            onClick={() => {
+              this.props.getMoreWidgets();
+            }}
+          >
+            Back
+          </Button>
+        </div>
         <div
           className="trustsearch-widget"
           data-locale="en-US"
