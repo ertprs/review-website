@@ -27,6 +27,7 @@ const Registration = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(0,0);
     let location = window.location.href;
     let splittedLocation = location.split("#");
     let isBusiness = "";
