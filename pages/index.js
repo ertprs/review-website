@@ -5,6 +5,7 @@ import WebStats from "../Components/Widgets/WebStats/WebStats";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import MenuIcon from "@material-ui/icons/Menu";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Button from "@material-ui/core/Button";
@@ -301,6 +302,12 @@ const Home = props => {
               margin: 0 auto;
               display: block;
             }
+            @media screen and (max-width: 455px) {
+              .logoImgContainer {
+                max-width: 190px;
+                margin-bottom: 30px;
+              }
+            }
           `}
         </style>
         <div className="row">
@@ -314,35 +321,88 @@ const Home = props => {
     );
   };
 
-  // const renderFooter = () => {
-  //   return (
-  //     <div className="footerContainer">
-  //       <style jsx>{`
-  //         .footerContainer {
-  //           background: #f2f2f2;
-  //           position: absolute;
-  //           bottom: 0;
-  //           width: 100%;
-  //           padding: 5px;
-  //         }
-  //       `}</style>
-  //       <div className="container">
-  //         <div style={{ textAlign: "right", marginTop: "10px" }}>
-  //           <a
-  //             href="https://thetrustsearch.com/termsAndConditions"
-  //             target="_blank"
-  //             style={{ color: "#000" }}
-  //           >
-  //             Terms and Conditions
-  //           </a>
-  //         </div>
-  //         <div style={{ textAlign: "center" }}>
-  //           &copy; {new Date().getFullYear()} TrustSearch. All rights reserved
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // };
+  const renderFooter = () => {
+    return (
+      <div className="container">
+        <style>{`
+          .footerTopSecContainer{
+            text-align:center;
+            margin-top:40px;
+            margin-bottom:30px;
+          }
+          .footerTopSecContainer a{
+            color:#000;
+            text-decoration:underline;
+            font-weight:bold;
+          }
+          .footerLogoContainer{
+            max-width:70px;
+            height:auto;
+            margin:0 auto;
+          }
+          .footerLowerSecContainer{
+            margin:20px 0 20px 0;
+          }
+          .first{
+            text-align:right;
+          }
+          .second{
+            text-align:center;
+          }
+          @media screen and (max-width:767px){
+            .first, .second{
+              text-align:center;
+              margin-bottom:5%;
+            }
+            .third{
+              text-align:center;
+              margin-bottom:5%;
+            }
+          }
+        `}</style>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="footerTopSecContainer">
+              <NextLink href="/about">
+                <a>About us</a>
+              </NextLink>
+            </div>
+            <div className="footerMiddleSecContainer">
+              <div className="row">
+                <div className="col-md-4 first">
+                  TrustSearch, Ltd
+                </div>
+                <div className="col-md-4 second">
+                  <a
+                    href="tel:+37128632492"
+                    style={{ color: "#000", textDecoration: "none" }}
+                  >
+                    +371 28632492
+                  </a>
+                </div>
+                <div className="col-md-4 third">
+                  <a
+                    href="mailto:info@thetrustsearch.com"
+                    style={{ color: "#000", textDecoration: "none" }}
+                  >
+                    info@thetrustsearch.com
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="footerLowerSecContainer">
+              <div className="footerLogoContainer">
+                <img
+                  src="/static/images/9.png"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderReviewGatheringSteps = () => {
     return (
@@ -384,6 +444,35 @@ const Home = props => {
             .reviewSteptext {
               max-width: 98%;
               margin: 0 auto;
+            }
+            @media screen and (max-width: 767px) {
+              .reviewGatheringContent {
+                margin-bottom: 50px;
+                padding-top: 80px;
+
+              }
+              .reviewGatheringContentHeader{
+                font-size:2.2rem;
+              }
+              .reviewStep {
+                margin-bottom: 8%;
+              }
+            }
+            @media screen and (max-width: 575px) {
+              .reviewGatheringContent {
+                margin-bottom: 50px;
+              }
+            }
+            @media screen and (max-width: 480px) {
+              .reviewGatheringContent {
+                padding-top: 60px;
+              }
+              .reviewGatheringContentHeader {
+                font-size: 1.5rem;
+              }
+              .reviewSteptext {
+                font-size: 0.85rem;
+              }
             }
           `}
         </style>
@@ -520,9 +609,55 @@ const Home = props => {
     return (
       <div className="subscriptionPlanCardsContainer">
         <style jsx>{`
-          .subscriptionPlanCardsContainer{
-            background:#F5DA98;
-            padding-top:150px;
+          .subscriptionPlanCardsContainer {
+            background: #f5da98;
+            padding-top: 150px;
+          }
+          .arrangeMeetingBtnContainer {
+            text-align: center;
+            margin-bottom: 5%;
+          }
+          .arrangeMeetingBtn {
+            padding: 1.5% 6% 1.5% 6%;
+            border-radius: 50px;
+            border-top: 1px solid #00a7f6;
+            border-bottom: 1px solid #00d350;
+            border-right: 1px solid #00a7f6;
+            border-left: 1px solid #00a7f6;
+            outline: none;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: bold;
+            background: linear-gradient(
+              to bottom right,
+              rgba(0, 167, 246, 0.9) 20%,
+              rgba(0, 211, 80, 0.95)
+            );
+            transition: all 0.4s;
+            -webkit-transition: all 0.4s;
+            cursor: pointer;
+          }
+
+          .arrangeMeetingBtn:link,
+          .arrangeMeetingBtn:visited,
+          .arrangeMeetingBtn:hover,
+          .arrangeMeetingBtn:active {
+            outline: none;
+          }
+          @media screen and (max-width: 767px) {
+            .subscriptionPlanCardsContainer {
+              padding-top: 100px;
+            }
+            .subscriptionCardBox {
+              margin-bottom: 12%;
+            }
+            .arrangeMeetingBtnContainer {
+              text-align: center;
+              margin-bottom: 15%;
+            }
+            .arrangeMeetingBtn {
+              padding: 4% 12% 4% 12%;
+            }
           }
         `}</style>
         <div className="container">
@@ -531,13 +666,29 @@ const Home = props => {
               return (
                 <div
                   className="col-md-4"
-                  style={{ marginBottom: "10%" }}
+                  style={{ marginBottom: "15px" }}
                   key={uuid()}
                 >
-                  <SubscriptionPlanCard {...item} variant="newIndexPage"/>
+                  <div className="subscriptionCardBox">
+                    <SubscriptionPlanCard {...item} variant="newIndexPage" />
+                  </div>
                 </div>
               );
             })}
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <div className="arrangeMeetingBtnContainer">
+                <button
+                  className="arrangeMeetingBtn"
+                  onClick={() => {
+                    Router.push("/registration#business");
+                  }}
+                >
+                  Register
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -551,7 +702,7 @@ const Home = props => {
           {`
             .renderReviewWidgetContainer {
               height: 100%;
-              margin-bottom:100px;
+              margin-bottom: 100px;
             }
             .renderReviewWidgetContent {
               text-align: center;
@@ -562,15 +713,20 @@ const Home = props => {
               text-transform: uppercase;
               color: #000;
             }
-            .widgetImageContainer {
+            .widgetImageContainer,
+            .widgetSmallImageContainerUpper,
+            .widgetSmallImageContainerLower {
               max-width: 1050px;
               height: auto;
               margin: 0 auto;
+              text-align: center;
             }
-            .widgetStepsImgContainer {
-              max-width: 1050px;
-              height: auto;
-              margin: 100px auto 50px auto;
+            .widgetSmallImageContainerUpper {
+              margin-bottom: 6%;
+            }
+            .widgetSmallImageContainerUpper,
+            .widgetSmallImageContainerLower {
+              display: none;
             }
             .arrangeMeetingBtnContainer {
               text-align: center;
@@ -603,6 +759,47 @@ const Home = props => {
             .arrangeMeetingBtn:active {
               outline: none;
             }
+            @media screen and (max-width: 767px) {
+              .renderReviewWidgetContent {
+                margin-bottom: 50px;
+                padding-top: 80px;
+
+              }
+              .renderReviewWidgetContentHeader{
+                font-size:2.2rem;
+              }
+              .widgetImageContainer {
+                display: none;
+              }
+              .widgetSmallImageContainerUpper,
+              .widgetSmallImageContainerLower {
+                display: block;
+              }
+              .arrangeMeetingBtnContainer {
+                text-align: center;
+                margin-bottom: 15%;
+              }
+              .arrangeMeetingBtn {
+                padding: 4% 12% 4% 12%;
+              }
+            }
+            @media screen and (max-width: 575px) {
+              .renderReviewWidgetContent {
+                margin-bottom: 50px;
+                padding-top: 60px;
+              }
+            }
+            @media screen and (max-width: 480px) {
+              .renderReviewWidgetContent {
+                padding-top: 60px;
+              }
+              .renderReviewWidgetContentHeader {
+                font-size: 1.5rem;
+              }
+              .reviewSteptext {
+                font-size: 0.85rem;
+              }
+            }
           `}
         </style>
         <div className="container">
@@ -619,21 +816,115 @@ const Home = props => {
               />
             </div>
           </div>
-          <div className="widgetStepsImgContainer">
+          <div className="widgetSmallImageContainerUpper">
             <img
-              src="/static/images/newLandingWidget.png"
+              src="/static/images/small_9b.png"
               style={{ maxWidth: "100%", height: "auto" }}
             />
           </div>
+          <div className="widgetSmallImageContainerLower">
+            <img
+              src="/static/images/small_9c.png"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          </div>
+          <div>{renderWidgetSteps()}</div>
           <div className="arrangeMeetingBtnContainer">
             <button
               className="arrangeMeetingBtn"
               onClick={() => {
-                Router.push("/registration");
+                Router.push("/registration#business");
               }}
             >
               Register
             </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderWidgetSteps = () => {
+    return (
+      <div className="widgetAddStepsContainer">
+        <style jsx>{`
+          .widgetAddStepsContainer {
+            margin: 100px auto 50px auto;
+          }
+          .widgetAddStep {
+            display: flex;
+            justify-content: space-between;
+          }
+          .widgetAddStepText {
+            font-weight: bold;
+            align-self: center;
+          }
+          .widgetAddStepImgContainer {
+            max-width: 32px;
+            height: auto;
+          }
+          .widgetAddStepImgContainer img {
+            max-width: 100%;
+            height: auto;
+          }
+          .smallImg {
+            display: none;
+          }
+          @media screen and (max-width: 767px) {
+            .widgetAddStepsContainer {
+              margin: 50px auto 50px auto;
+            }
+            .widgetAddStep {
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+            }
+            .widgetAddStepImgContainer {
+              max-width: 25px;
+              height: auto;
+            }
+            .smallImg {
+              display: block;
+              margin: 15px 0 15px 0;
+            }
+            .bigImg {
+              display: none;
+            }
+            .lastStep {
+              text-align: center;
+            }
+          }
+        `}</style>
+        <div className="row">
+          <div className="col-md-4">
+            <div className="widgetAddStep">
+              <div className="widgetAddStepText">
+                1. Apply to receive your review widget.
+              </div>
+              <div className="widgetAddStepImgContainer">
+                <img src="/static/images/8.png" className="bigImg" />
+                <img src="/static/images/9d.png" className="smallImg" />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="widgetAddStep">
+              <div className="widgetAddStepText">
+                2. Copy the widget code generated for you.
+              </div>
+              <div className="widgetAddStepImgContainer">
+                <img src="/static/images/8.png" className="bigImg" />
+                <img src="/static/images/9d.png" className="smallImg" />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="widgetAddStep">
+              <div className="widgetAddStepText lastStep">
+                3. Paste this code into your homepage and your review widget
+                will appear.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -700,6 +991,63 @@ const Home = props => {
               max-width: 900px;
               height: auto;
               margin: 50px auto 0 auto;
+            }
+            @media screen and (max-width: 767px) {
+              .whyYouNeedReviewsContent {
+                margin-bottom: 50px;
+              }
+
+              .whyYouNeedReviewsContentHeader{
+                font-size:2.2rem;
+              }
+
+              .whyToNumberBox {
+                margin-bottom: 8%;
+              }
+
+              .whyToNumber .symbol {
+                margin-left: 3%;
+                font-size: 2.3rem;
+              }
+            }
+            
+            @media screen and (max-width: 575px) {
+              .whyYouNeedReviewsContent {
+                margin-bottom: 50px;
+              }
+            }
+            
+            @media screen and (max-width: 520px) {
+              /*---- WhyTo section ----*/
+              .whyToHeader {
+                text-align: center;
+              }
+              .whyToHeader h2 {
+                font-size: 2.05rem;
+              }
+            }
+            @media screen and (max-width: 480px) {
+              .whyYouNeedReviewsContent {
+                padding-top: 60px;
+              }
+              .whyYouNeedReviewsContentHeader {
+                font-size: 1.5rem;
+              }
+              .whyToNumber .number {
+                font-size: 2.5rem;
+              }
+              .whyToNumber .symbol {
+                font-size: 2rem;
+              }
+              .whyToText {
+                font-size: 0.85rem;
+              }
+            }
+            @media screen and (max-width: 363px) {
+              /*---- WhyTo section ----*/
+              .whyToHeader {
+                text-align: right;
+              }
             }
           `}
         </style>
@@ -786,13 +1134,20 @@ const Home = props => {
           <style jsx>
             {`
               .slidingArrowContainer {
-                margin-top: 20vh;
+                margin-top: 15vh;
                 margin-bottom: 10vh;
               }
               .arrowImageContainer {
                 max-width: 48px;
                 margin: 0 auto;
                 cursor: pointer;
+              }
+              @media screen and (max-width: 455px) {
+                .arrowImageContainer {
+                  max-width: 40px;
+                  margin: 0 auto;
+                  cursor: pointer;
+                }
               }
             `}
           </style>
@@ -821,16 +1176,28 @@ const Home = props => {
     setAnchorEl2(null);
   };
 
-  const renderMobileMenuLeft = () => {
+  const renderMobileMenuRight = () => {
+    const { auth } = props;
+    const loginType = _get(auth, "logIn.loginType", 0);
+    const { authorized } = auth.logIn || false;
+
     return (
       <div>
+        <style jsx>
+          {`
+            .mobileLink {
+              color: #000;
+            }
+          `}
+        </style>
         <IconButton
           // aria-label="more"
           aria-controls="simple-menu"
           aria-haspopup="true"
           onClick={handleMobileMenuLeftClick}
         >
-          <MoreVertIcon />
+          <MenuIcon style={{ color: "rgb(36,181,231)", fontSize: "28px" }} />
+          {/* <i className="fa fa-bars" style={{ color: "rgb(36,181,231)" }}></i> */}
         </IconButton>
         <Menu
           id="simple-menu"
@@ -839,29 +1206,116 @@ const Home = props => {
           open={Boolean(anchorEl2)}
           onClose={handleMobileMenuLeftClose}
         >
-          <MenuItem onClick={handleMobileMenuLeftClose}>
-            <NextLink href="/about">
-              <a className={classes.navLinkMobile}>About us</a>
-            </NextLink>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuLeftClose}>
-            <a
-              className={classes.navLinkMobile}
-              href="https://b2b.thetrustsearch.com/en/"
-              target="_blank"
-            >
-              Business
-            </a>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuLeftClose}>
-            <a
-              className={classes.navLinkMobile}
-              href="https://thetrustsearch.com/termsAndConditions"
-              target="_blank"
-            >
+          <NextLink href="/about">
+            <MenuItem onClick={handleMobileMenuLeftClose}>
+              <a className="mobileLink">About us</a>
+            </MenuItem>
+          </NextLink>
+          <a
+            href="https://b2b.thetrustsearch.com/en/"
+            target="_blank"
+            className="mobileLink"
+          >
+            <MenuItem onClick={handleMobileMenuLeftClose}>Business</MenuItem>
+          </a>
+
+          <a
+            href="https://thetrustsearch.com/termsAndConditions"
+            target="_blank"
+            className="mobileLink"
+          >
+            <MenuItem onClick={handleMobileMenuLeftClose}>
               Terms &amp; Conditions
-            </a>
-          </MenuItem>
+            </MenuItem>
+          </a>
+          <div>
+            {!authorized ? (
+              <>
+                <NextLink href="/login">
+                  <MenuItem className="hide-sm">
+                    <a className={`${classes.navLinkMobile} loginBtn`}>Login</a>
+                  </MenuItem>
+                </NextLink>
+                <NextLink href="/registration">
+                  <MenuItem className="hide-sm">
+                    <a className={`${classes.navLinkMobile} signUpBtn`}>
+                      Sign up
+                    </a>
+                  </MenuItem>
+                </NextLink>
+              </>
+            ) : (
+              <>
+                {authorized && loginType === 4 ? (
+                  <NextLink href="/dashboard">
+                    <MenuItem onClick={handleMenuClose}>
+                      <a style={{ textDecoration: "none", color: "#000" }}>
+                        Dashboard
+                      </a>
+                    </MenuItem>
+                  </NextLink>
+                ) : null}
+                {loginType === 1 || loginType === 2 ? (
+                  <NextLink href="">
+                    <MenuItem>
+                      <a
+                        onClick={() => handleLogout()}
+                        style={{
+                          textDecoration: "none",
+                          color: "#000"
+                        }}
+                      >
+                        Logout
+                      </a>
+                    </MenuItem>
+                  </NextLink>
+                ) : (
+                  ""
+                )}
+                {loginType === 3 ? (
+                  <GoogleLogout
+                    clientId={process.env.GOOGLE_CLIENT_ID}
+                    buttonText="Logout"
+                    render={renderProps => (
+                      <NextLink href="">
+                        <MenuItem>
+                          <a
+                            onClick={() => handleLogout()}
+                            style={{
+                              textDecoration: "none",
+                              color: "#000"
+                            }}
+                          >
+                            Logout
+                          </a>
+                        </MenuItem>
+                      </NextLink>
+                    )}
+                    // onLogoutSuccess={logout}
+                  ></GoogleLogout>
+                ) : (
+                  ""
+                )}
+                {loginType === 4 ? (
+                  <NextLink href="">
+                    <MenuItem>
+                      <a
+                        onClick={() => handleLogout()}
+                        style={{
+                          textDecoration: "none",
+                          color: "#000"
+                        }}
+                      >
+                        Logout
+                      </a>
+                    </MenuItem>
+                  </NextLink>
+                ) : (
+                  ""
+                )}
+              </>
+            )}
+          </div>
         </Menu>
       </div>
     );
@@ -1013,24 +1467,25 @@ const Home = props => {
       <div className="topRightLinksContainer">
         <style jsx>
           {`
+            .mobileMenuContainerOuter,
             .mobileMenuContainer {
               display: none;
-            }
-            .mobileMenuContainerOuter {
-              justify-content: center;
-              align-items: center;
             }
             .topRightLinksContainer {
               display: flex;
               padding-top: 15px;
             }
             .topRightLinksContainer > div {
-              flex-basis: 50%;
+              flex-basis: 40%;
+            }
+            .topRightLinksContainer > div:last-child {
+              flex-basis: 60%;
+              justify-content: flex-end;
             }
             .topRightLinksItem {
               display: flex;
-              flex-bjustiasis: 50%;
-              fy-content: center;
+              flex-basis: 50%;
+              justify-content: center;
             }
             .topRightLinksItem > div {
               text-align: center;
@@ -1044,7 +1499,7 @@ const Home = props => {
               border: 2.2px solid rgb(1, 172, 231);
               background: #fff;
               display: inline-block;
-              padding: 6px 35px 6px 35px;
+              padding: 10px 40px 10px 40px;
               border-radius: 35px;
               -webkit-transition: all 0.4s;
               transition: all 0.4s;
@@ -1064,62 +1519,67 @@ const Home = props => {
               color: #000;
               background: #fff;
             }
-            @media screen and (max-width: 1241px) {
+            @media screen and (max-width: 1281px) {
               .topRightLinksContainer > div:first-child {
                 flex-basis: 30%;
               }
               .topRightLinksContainer > div:last-child {
                 flex-basis: 70%;
-              }
-            }
-            @media screen and (max-width: 890px) {
-              .topRightLinksContainer > div:first-child {
-                flex-basis: 10%;
-              }
-              .topRightLinksContainer > div:last-child {
-                flex-basis: 90%;
-              }
-            }
-            @media screen and (max-width: 689px) {
-              .topRightLinksContainer > div:first-child {
-                flex-basis: 2%;
-              }
-              .topRightLinksContainer > div:last-child {
-                flex-basis: 98%;
-              }
-              .topRightLinksItem {
                 justify-content: flex-end;
               }
-              .hide-sm,
-              .hide-sm a {
-                display: none;
+            }
+
+            @media screen and (max-width: 958px) {
+              .topRightLinksContainer > div:first-child {
+                flex-basis: 25%;
               }
-              .topRightLinksItem > div {
-                margin: 0 5px 0 5px !important;
-              }
-              .mobileMenuContainer {
-                display: block;
+              .topRightLinksContainer > div:last-child {
+                flex-basis: 75%;
+                justify-content: flex-end;
               }
             }
-            @media screen and (max-width: 340px) {
-              .topRightLinksItem {
-                justify-content: center;
+
+            @media screen and (max-width: 920px) {
+              .topRightLinksContainer > div:first-child {
+                flex-basis: 15%;
+              }
+              .topRightLinksContainer > div:last-child {
+                flex-basis: 85%;
+                justify-content: flex-end;
               }
               .loginBtn,
               .signUpBtn {
                 border: 2.2px solid rgb(1, 172, 231);
                 display: inline-block;
-                padding: 6px 20px 6px 20px;
+                padding: 6px 35px 6px 35px;
                 border-radius: 35px;
                 -webkit-transition: all 0.4s;
                 transition: all 0.4s;
               }
             }
+            @media screen and (max-width: 767px) {
+              .topRightLinksContainer {
+                padding: 0;
+              }
+              .hide-sm {
+                display: none;
+              }
+              .hide-sm a {
+                display: none;
+              }
+              .mobileMenuContainerOuter {
+                display: flex;
+              }
+              .mobileMenuContainer {
+                display: flex;
+              }
+            }
           `}
         </style>
-        <div className="mobileMenuContainerOuter">
+        {/* <div className="mobileMenuContainerOuter">
           <div className="mobileMenuContainer">{renderMobileMenuLeft()}</div>
-        </div>
+        </div> */}
+        <div></div>
         <div className="topRightLinksItem">
           <div className="hide-sm">
             <NextLink href="/about">
@@ -1146,12 +1606,12 @@ const Home = props => {
           </div>
           {!authorized ? (
             <>
-              <div>
+              <div className="hide-sm">
                 <NextLink href="/login">
                   <a className={`${classes.navLinkMobile} loginBtn`}>Login</a>
                 </NextLink>
               </div>
-              <div>
+              <div className="hide-sm">
                 <NextLink href="/registration">
                   <a className={`${classes.navLinkMobile} signUpBtn`}>
                     Sign up
@@ -1163,7 +1623,7 @@ const Home = props => {
             <>
               <NextLink>
                 <span
-                  className={classes.navLink}
+                  className={`${classes.navLink} hide-sm`}
                   onClick={e => {
                     e.preventDefault();
                     handleProfileMenuOpen(e);
@@ -1175,6 +1635,9 @@ const Home = props => {
               {renderProfileMenu}
             </>
           )}
+          <div className="mobileMenuContainerOuter">
+            <div className="mobileMenuContainer">{renderMobileMenuRight()}</div>
+          </div>
         </div>
       </div>
       <div className="boxContainer">
@@ -1183,7 +1646,7 @@ const Home = props => {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 58vh;
+            height: 65vh;
           }
           .boxContent {
             width: 100%;
@@ -1201,6 +1664,19 @@ const Home = props => {
             font-size: 1.1rem;
             color: #000;
             letter-spacing: 2.2px;
+          }
+
+          @media screen and (max-width: 767px) {
+            .searchBoxContainer {
+              width: 90%;
+              margin: 0 auto;
+            }
+          }
+          @media screen and (max-width: 455px) {
+            .taglineHeader {
+              font-size: 0.9rem;
+              letter-spacing: 0px;
+            }
           }
         `}</style>
         <div className="boxContent">
@@ -1223,6 +1699,15 @@ const Home = props => {
                 </div>
               </div>
             </div>
+            <div className="row">
+              <div className="col-md-12">
+                <div className="taglineContainer">
+                  <div className="taglineHeader">
+                    Check your current website trustworthiness
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           {/* {renderFooter()} */}
         </div>
@@ -1234,6 +1719,7 @@ const Home = props => {
       {renderReviewGatheringSteps()}
       {renderReviewWidget()}
       {renderSubscriptionCards()}
+      {renderFooter()}
       <Snackbar
         open={showSnackbar}
         variant={_get(props, "variant", "")}
