@@ -113,5 +113,8 @@ export const subscriptionPlanCardStyles = css`
     .subscriptionPlanCardBody .professional li {
       margin-bottom: 2.248rem;
     }
+    .translateY{
+      transform:translateY(0)
+    }
   }
 `;
