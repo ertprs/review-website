@@ -25,8 +25,14 @@ app.prepare().then(() => {
     return app.render(req, res, "/reset-password", { token: req.params.token });
   });
 
-  server.get("/dashboard/:component", (req,res)=>{
+  server.get("/dashboard/:component", (req, res) => {
     return app.render(req, res, "/dashboard", { v: req.params.component });
+  });
+
+  server.get("/get-widgets/:domain/", (req, res) => {
+    return app.render(req, res, "/get-widgets", {
+      domain: req.params.domain
+    });
   });
 
   server.get("*", (req, res) => {
