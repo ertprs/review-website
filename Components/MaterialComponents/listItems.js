@@ -111,7 +111,7 @@ export const MainListItems = ({
         </ListItemIcon>
         <ListItemText primary="Widgets" />
       </ListItem>
-      <ListItem
+      {/* <ListItem
         button
         onClick={() => {
           handleMainListItemClick(6);
@@ -123,7 +123,7 @@ export const MainListItems = ({
           <UserProfileIcon />
         </ListItemIcon>
         <ListItemText primary="User Profile" />
-      </ListItem>
+      </ListItem> */}
     </div>
   );
 };
