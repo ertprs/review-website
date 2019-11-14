@@ -122,7 +122,7 @@ export const MainListItems = ({
         <ListItemIcon>
           <UserProfileIcon />
         </ListItemIcon>
-        <ListItemText primary="Widgets" />
+        <ListItemText primary="User Profile" />
       </ListItem> */}
     </div>
   );

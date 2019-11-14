@@ -13,9 +13,9 @@ import CheckBox from "@material-ui/icons/CheckBox";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowForward";
 import uuid from "uuid/v1";
-import { connect } from "react-redux";
 import _get from "lodash/get";
 import Router from "next/router";
+import _findIndex from "lodash/findIndex";
 
 const widgetsObj = [
   {
@@ -35,7 +35,8 @@ const widgetsObj = [
       "Responsive (max. 100% x 24)",
       "Suggested placement min-height: 238px"
     ],
-    dataTempID: "TextReviews"
+    dataTempID: "TextReviews",
+    widgetType: "carousel"
   },
   {
     id: 2,
@@ -56,7 +57,8 @@ const widgetsObj = [
       "Suggested placement min-width: 285px",
       "Suggested placement min-height: 290px"
     ],
-    dataTempID: "OnlyScoreWidget"
+    dataTempID: "OnlyScoreWidget",
+    widgetType: "card"
   },
   {
     id: 3,
@@ -73,7 +75,8 @@ const widgetsObj = [
       "Suggested placement min-height : 360px"
     ],
     support: ["Responsive (max. 100% x 24)"],
-    dataTempID: "TextReviewsWithScores"
+    dataTempID: "TextReviewsWithScores",
+    widgetType: "card_with_reviews"
   }
 ];
 
@@ -82,7 +85,9 @@ class GetWidgets extends Component {
     getWidget: false,
     selectedWidgetIndex: 0
   };
+
   renderWidgetBox = (item, index) => {
+    const { domain } = this.props;
     return (
       <div
         className={item.id === 1 ? "col-md-12" : "col-md-6"}
@@ -145,6 +150,9 @@ class GetWidgets extends Component {
                 endIcon={<ArrowRight />}
                 size="small"
                 onClick={() => {
+                  const href = `/get-widgets?domain=${domain}`;
+                  const as = `/get-widgets/${domain}#${item.widgetType}`;
+                  Router.push(href, as, { shallow: true });
                   this.setState({
                     getWidget: true,
                     selectedWidgetIndex: index
@@ -161,18 +169,27 @@ class GetWidgets extends Component {
   };
 
   componentDidMount() {
-    const { domainName } = this.props;
-    if (!domainName) {
-      Router.push("/");
+    let url = window.location.href;
+    let urlSplit = url.split("#");
+    if (urlSplit.length > 1) {
+      let widgetType = urlSplit[urlSplit.length - 1];
+      let selectedWidgetIndex = _findIndex(widgetsObj, [
+        "widgetType",
+        widgetType
+      ]);
+      this.setState({
+        getWidget: true,
+        selectedWidgetIndex
+      });
     }
+    console.log(url, "url");
     window.scrollTo(0, 0);
   }
 
   render() {
+    console.log(this.props, "qhjqgdhjqghjdfqh");
     const { getWidget, selectedWidgetIndex } = this.state;
-    const { domainName } = this.props;
-    let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
-    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    const { domain } = this.props;
     return (
       <Layout>
         <div
@@ -190,7 +207,7 @@ class GetWidgets extends Component {
             </>
           ) : (
             <GetWidgetCode
-              domainName={parsed_domain_name || ""}
+              domainName={domain || ""}
               widget={widgetsObj[selectedWidgetIndex]}
               getMoreWidgets={() => {
                 this.setState({ getWidget: false });
@@ -203,10 +220,20 @@ class GetWidgets extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const { profileData } = state;
-  const domainName = _get(profileData, "domain", "");
-  return { domainName };
+GetWidgets.getInitialProps = async ctx => {
+  const { query, res } = ctx;
+  let domain = query.domain || "";
+  if (!domain) {
+    if (res) {
+      res.writeHead(302, {
+        Location: "/"
+      });
+      res.end();
+    } else {
+      Router.push("/");
+    }
+  }
+  return { domain };
 };
 
-export default connect(mapStateToProps)(GetWidgets);
+export default GetWidgets;

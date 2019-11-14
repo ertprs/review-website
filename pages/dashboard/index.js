@@ -139,6 +139,25 @@ const WidgetsShowCase = dynamic(
   }
 );
 
+// const UserProfile = dynamic(
+//   () => import("../../Components/DashboardComponents/UserProfile"),
+//   {
+//     loading: () => (
+//       <div
+//         style={{
+//           width: "100%",
+//           height: "80vh",
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "center"
+//         }}
+//       >
+//         <p>Loading.....</p>
+//       </div>
+//     )
+//   }
+// );
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -360,6 +379,10 @@ function Dashboard(props) {
       name: "widgets",
       componentToRender: <WidgetsShowCase />
     }
+    // 6: {
+    //   name: "userProfile",
+    //   componentToRender: <UserProfile />
+    // }
   };
 
   const renderAppropriateComponent = pId => {
@@ -587,7 +610,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { logOut, upgradeToPremium, fetchReviews }
-)(Dashboard);
+export default connect(mapStateToProps, {
+  logOut,
+  upgradeToPremium,
+  fetchReviews
+})(Dashboard);
