@@ -6,12 +6,14 @@ import Input from "@material-ui/core/Input/Input";
 import uuid from "uuid/v1";
 import Head from "next/head";
 import BackArrowIcon from "@material-ui/icons/KeyboardBackspace";
+import _get from "lodash/get";
+import Router from "next/router";
 
 class GetWidgetsCode extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      widgetHeight: this.props.widget.minHeight
+      widgetHeight: _get(this.props, "widget.minHeight", 0)
     };
   }
 
@@ -26,7 +28,7 @@ class GetWidgetsCode extends Component {
   };
 
   renderWidgetInfo = () => {
-    const { widget } = this.props;
+    const { widget, domainName } = this.props;
     return (
       <Paper style={{ padding: "25px" }}>
         <style jsx>
@@ -75,6 +77,10 @@ class GetWidgetsCode extends Component {
             color="primary"
             size="small"
             onClick={() => {
+              const href = `/get-widgets?domain=${domainName}#${widget.widgetType ||
+                ""}`;
+              const as = `/get-widgets/${domainName}`;
+              Router.push(href, as, { shallow: true });
               this.props.getMoreWidgets();
             }}
           >
@@ -104,6 +110,7 @@ class GetWidgetsCode extends Component {
   };
 
   getYourWidgetBox = () => {
+    const { domainName, widget } = this.props;
     return (
       <>
         <style jsx>
@@ -190,6 +197,10 @@ class GetWidgetsCode extends Component {
               color="primary"
               size="small"
               onClick={() => {
+                const href = `/get-widgets?domain=${domainName}#${widget.widgetType ||
+                  ""}`;
+                const as = `/get-widgets/${domainName}`;
+                Router.push(href, as, { shallow: true });
                 this.props.getMoreWidgets();
               }}
             >
@@ -202,7 +213,7 @@ class GetWidgetsCode extends Component {
   };
 
   render() {
-    const { domainName } = this.props;
+    const { domainName, widget } = this.props;
     return (
       <div className="container">
         <Head>
@@ -219,6 +230,10 @@ class GetWidgetsCode extends Component {
             size="small"
             startIcon={<BackArrowIcon />}
             onClick={() => {
+              const href = `/get-widgets?domain=${domainName}#${widget.widgetType ||
+                ""}`;
+              const as = `/get-widgets/${domainName}`;
+              Router.push(href, as, { shallow: true });
               this.props.getMoreWidgets();
             }}
           >
@@ -228,9 +243,9 @@ class GetWidgetsCode extends Component {
         <div
           className="trustsearch-widget"
           data-locale="en-US"
-          data-template-id={this.props.widget.dataTempID}
-          data-businessunit-id={this.props.domainName}
-          data-style-height={`${this.state.widgetHeight}px`}
+          data-template-id={_get(this.props, "widget.dataTempID", "")}
+          data-businessunit-id={_get(this.props, "domainName", "")}
+          data-style-height={`${_get(this.state, "widgetHeight", "")}px`}
           data-style-width="100%"
           data-theme="light"
           style={{ position: "relative", overflow: "hidden" }}
