@@ -12,6 +12,11 @@ const userProfileStyles = css`
     margin: 150px;
   }
 
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .heading {
     margin-bottom: 23px;
     letter-spacing: 0.5px;
