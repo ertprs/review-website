@@ -7,6 +7,7 @@ import Home from "@material-ui/icons/Home";
 import AllInbox from "@material-ui/icons/AllInbox";
 import FormatQuote from "@material-ui/icons/FormatQuote";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
+import UserProfileIcon from "@material-ui/icons/AccountCircleSharp";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
@@ -110,6 +111,19 @@ export const MainListItems = ({
         </ListItemIcon>
         <ListItemText primary="Widgets" />
       </ListItem>
+      {/* <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(6);
+        }}
+        disabled={menuItemDisabled}
+        className={stepToRender === 6 ? "grayBg" : ""}
+      >
+        <ListItemIcon>
+          <UserProfileIcon />
+        </ListItemIcon>
+        <ListItemText primary="User Profile" />
+      </ListItem> */}
     </div>
   );
 };

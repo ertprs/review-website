@@ -10,9 +10,15 @@ export const subscriptionPlanCardStyles = css`
     box-shadow: 0px 0px 32px #d9d9d9;
   }
 
+  .translateY{
+    transform:translateY(-50px);
+    box-shadow: 0px 0px 15px #999;
+
+  }
+
   .subscriptionPlanCardHeader {
     text-align: center;
-    padding: 5%;
+    padding: 8% 5% 5% 5%;
   }
 
   .subscriptionPlanCardHeader h4 {
@@ -29,6 +35,12 @@ export const subscriptionPlanCardStyles = css`
   }
   .subscriptionPlanCardBody ul li {
     padding-left: 1rem;
+  }
+
+  .free .subscriptionPlanCardBody .free li,
+  .premium .subscriptionPlanCardBody .premium li,
+  .professional .subscriptionPlanCardBody .professional li {
+    margin-bottom: 2.0rem;
   }
 
   .subscriptionPlanCardBody .standard li {
@@ -57,6 +69,16 @@ export const subscriptionPlanCardStyles = css`
     font-size: 3.5rem;
     font-weight: 300;
   }
+
+  .professional .subscriptionPlanCardFooter, .free .subscriptionPlanCardFooter{
+    margin-bottom:15px;
+  }
+
+  .professional .subscriptionPlanCardFooter .price,
+  .free .subscriptionPlanCardFooter .price {
+    font-size: 2rem;
+  }
+
   .subscriptionPlanCardFooter .duration {
     font-size: 1.7rem;
     font-weight: lighter;
@@ -79,7 +101,7 @@ export const subscriptionPlanCardStyles = css`
     }
   }
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     .subscriptionPlanCardBody ul li {
       padding-left: 1rem;
     }
@@ -90,6 +112,9 @@ export const subscriptionPlanCardStyles = css`
 
     .subscriptionPlanCardBody .professional li {
       margin-bottom: 2.248rem;
+    }
+    .translateY{
+      transform:translateY(0)
     }
   }
 `;
