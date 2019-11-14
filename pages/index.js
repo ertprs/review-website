@@ -1142,6 +1142,12 @@ const Home = props => {
                 margin: 0 auto;
                 cursor: pointer;
               }
+              @media screen and (max-width:767px){
+                .slidingArrowContainer {
+                  margin-top: 5vh;
+                  margin-bottom: 20vh;
+                }
+              }
               @media screen and (max-width: 455px) {
                 .arrowImageContainer {
                   max-width: 40px;
@@ -1629,7 +1635,7 @@ const Home = props => {
                     handleProfileMenuOpen(e);
                   }}
                 >
-                  <span>{userName}</span>
+                  <span>Hello, {userName}</span>
                 </span>
               </NextLink>
               {renderProfileMenu}
