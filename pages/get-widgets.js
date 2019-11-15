@@ -76,8 +76,8 @@ const widgetsObj = [
     ],
     support: [
       // "Responsive (max. 100% x 24)",
-      "Suggested placement min-width: 380px",
-      "Suggested placement min-height : 360px"
+      "Suggested minimum width: 380px",
+      "Suggested minimum height : 360px"
     ],
     dataTempID: "TextReviewsWithScores",
     widgetType: "card_with_reviews"
