@@ -15,6 +15,7 @@ import uuid from "uuid/v1";
 import { CircularProgress } from "@material-ui/core";
 import Layout from "../hoc/layout/layout";
 import SearchInput from "../Components/MaterialComponents/SearchInput";
+import SearchBoxSuggestion from "../Components/Widgets/SuggestionBox";
 import { connect } from "react-redux";
 import Snackbar from "../Components/Widgets/Snackbar";
 import { startLoading } from "../store/actions/loaderAction";
@@ -167,7 +168,8 @@ const Home = props => {
     setSearchBoxVal(e.target.value);
   };
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = searchBoxVal => {
+    console.log(searchBoxVal, "searchbox");
     props.startLoading();
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
@@ -226,66 +228,6 @@ const Home = props => {
     );
   };
 
-  const renderHeroContent = () => {
-    return (
-      <div className="homeContainerInner">
-        <style jsx>{indexPageStyles}</style>
-        <div>
-          <h3 className="heroHeading">
-            TrustSearch - the search engine for trust!{" "}
-          </h3>
-          <h4 className="heroSubHeading">
-            We help you to check
-            <span className="heroSubHeadingMainText">trustworthiness</span> to
-            <br /> websites, people and businesses.
-          </h4>
-        </div>
-
-        <div
-          className="analyseBtn"
-          style={{ marginTop: "1rem", marginBottom: "1rem" }}
-        >
-          Analyse any website
-        </div>
-
-        <div className="homeSearchBoxContainer">
-          {!loading ? (
-            <>
-              {/* <SearchBox
-              onchange={handleSearchBoxChange}
-              value={searchBoxVal}
-              stateMethod={setSearchBoxVal}
-              variant="thetrustsearchIndex"
-              handleSearchSubmit={searchBoxVal => {
-                handleSearchSubmit(setLoading, searchBoxVal);
-              }}
-            /> */}
-              <SearchInput
-                onchange={handleSearchBoxChange}
-                value={searchBoxVal}
-                onkeyDown={e => {
-                  if (e.keyCode == 13) {
-                    handleSearchSubmit();
-                  }
-                }}
-                onsubmit={handleSearchSubmit}
-              />
-            </>
-          ) : (
-            <div style={{ textAlign: "center" }}>
-              <CircularProgress color="secondary" />
-            </div>
-          )}
-        </div>
-        <div className="row">
-          <div className="col-md-12 col-lg-12 col-xl-12">
-            <div className="homeWebStatsContainer">{renderWebStats()}</div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const renderLogo = () => {
     return (
       <div className="container">
@@ -309,17 +251,17 @@ const Home = props => {
               }
             }
             @media screen and (min-width: 1366px) {
-              .logoImgContainer{
+              .logoImgContainer {
                 max-width: 330px;
               }
             }
             @media screen and (min-width: 1920px) {
-              .logoImgContainer{
+              .logoImgContainer {
                 max-width: 390px;
               }
             }
             @media screen and (min-width: 2560px) {
-              .logoImgContainer{
+              .logoImgContainer {
                 max-width: 435px;
               }
             }
@@ -479,10 +421,9 @@ const Home = props => {
               .reviewGatheringContent {
                 margin-bottom: 50px;
                 padding-top: 80px;
-
               }
-              .reviewGatheringContentHeader{
-                font-size:2.2rem;
+              .reviewGatheringContentHeader {
+                font-size: 2.2rem;
               }
               .reviewStep {
                 margin-bottom: 8%;
@@ -504,19 +445,19 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
-            @media screen and (min-width:1366px){
-              .reviewSteptext{
-                font-size:1.2em;
+            @media screen and (min-width: 1366px) {
+              .reviewSteptext {
+                font-size: 1.2em;
               }
             }
-            @media screen and (min-width:1920px){
-              .reviewSteptext{
-                font-size:1.4em;
+            @media screen and (min-width: 1920px) {
+              .reviewSteptext {
+                font-size: 1.4em;
               }
             }
-            @media screen and (min-width:2560px){
-              .reviewSteptext{
-                font-size:1.6em;
+            @media screen and (min-width: 2560px) {
+              .reviewSteptext {
+                font-size: 1.6em;
               }
             }
           `}
@@ -704,19 +645,19 @@ const Home = props => {
               padding: 4% 12% 4% 12%;
             }
           }
-          @media screen and (min-width:1366px){
-            .arrangeMeetingBtn{
-              font-size:1.2em;
+          @media screen and (min-width: 1366px) {
+            .arrangeMeetingBtn {
+              font-size: 1.2em;
             }
           }
-          @media screen and (min-width:1920px){
-            .arrangeMeetingBtn{
-              font-size:1.4em;
+          @media screen and (min-width: 1920px) {
+            .arrangeMeetingBtn {
+              font-size: 1.4em;
             }
           }
-          @media screen and (min-width:2560px){
-            .arrangeMeetingBtn{
-              font-size:1.6em;
+          @media screen and (min-width: 2560px) {
+            .arrangeMeetingBtn {
+              font-size: 1.6em;
             }
           }
         `}</style>
@@ -823,10 +764,9 @@ const Home = props => {
               .renderReviewWidgetContent {
                 margin-bottom: 50px;
                 padding-top: 80px;
-
               }
-              .renderReviewWidgetContentHeader{
-                font-size:2.2rem;
+              .renderReviewWidgetContentHeader {
+                font-size: 2.2rem;
               }
               .widgetImageContainer {
                 display: none;
@@ -860,19 +800,19 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
-            @media screen and (min-width:1366px){
-              .arrangeMeetingBtn{
-                font-size:1.3em;
+            @media screen and (min-width: 1366px) {
+              .arrangeMeetingBtn {
+                font-size: 1.3em;
               }
             }
-            @media screen and (min-width:1920px){
-              .arrangeMeetingBtn{
-                font-size:1.4em;
+            @media screen and (min-width: 1920px) {
+              .arrangeMeetingBtn {
+                font-size: 1.4em;
               }
             }
-            @media screen and (min-width:2560px){
-              .arrangeMeetingBtn{
-                font-size:1.6em;
+            @media screen and (min-width: 2560px) {
+              .arrangeMeetingBtn {
+                font-size: 1.6em;
               }
             }
           `}
@@ -969,19 +909,19 @@ const Home = props => {
               text-align: center;
             }
           }
-          @media screen and (min-width:1366px){
-            .widgetAddStepText{
-              font-size:1.3em;
+          @media screen and (min-width: 1366px) {
+            .widgetAddStepText {
+              font-size: 1.3em;
             }
           }
-          @media screen and (min-width:1920px){
-            .widgetAddStepText{
-              font-size:1.4em;
+          @media screen and (min-width: 1920px) {
+            .widgetAddStepText {
+              font-size: 1.4em;
             }
           }
-          @media screen and (min-width:2560px){
-            .widgetAddStepText{
-              font-size:1.6em;
+          @media screen and (min-width: 2560px) {
+            .widgetAddStepText {
+              font-size: 1.6em;
             }
           }
         `}</style>
@@ -1087,8 +1027,8 @@ const Home = props => {
                 margin-bottom: 50px;
               }
 
-              .whyYouNeedReviewsContentHeader{
-                font-size:2.2rem;
+              .whyYouNeedReviewsContentHeader {
+                font-size: 2.2rem;
               }
 
               .whyToNumberBox {
@@ -1100,13 +1040,13 @@ const Home = props => {
                 font-size: 2.3rem;
               }
             }
-            
+
             @media screen and (max-width: 575px) {
               .whyYouNeedReviewsContent {
                 margin-bottom: 50px;
               }
             }
-            
+
             @media screen and (max-width: 520px) {
               /*---- WhyTo section ----*/
               .whyToHeader {
@@ -1139,19 +1079,19 @@ const Home = props => {
                 text-align: right;
               }
             }
-            @media screen and (min-width:1366px){
-              .whyToText{
-                font-size:1.3em;
+            @media screen and (min-width: 1366px) {
+              .whyToText {
+                font-size: 1.3em;
               }
             }
-            @media screen and (min-width:1920px){
-              .whyToText{
-                font-size:1.4em;
+            @media screen and (min-width: 1920px) {
+              .whyToText {
+                font-size: 1.4em;
               }
             }
-            @media screen and (min-width:2560px){
-              .whyToText{
-                font-size:1.6em;
+            @media screen and (min-width: 2560px) {
+              .whyToText {
+                font-size: 1.6em;
               }
             }
           `}
@@ -1247,7 +1187,7 @@ const Home = props => {
                 margin: 0 auto;
                 cursor: pointer;
               }
-              @media screen and (max-width:767px){
+              @media screen and (max-width: 767px) {
                 .slidingArrowContainer {
                   margin-top: 5vh;
                   margin-bottom: 20vh;
@@ -1685,23 +1625,23 @@ const Home = props => {
                 display: flex;
               }
             }
-            @media screen and (min-width:1366px){
-              .topRightLinksContainer{
+            @media screen and (min-width: 1366px) {
+              .topRightLinksContainer {
               }
-              .topRightLinksItem{
-                font-size:1.2em;
-              }
-            }
-            @media screen and (min-width:1920px){
-              .topRightLinksItem{
-                font-size:1.4em;
-                padding-top:40px;
+              .topRightLinksItem {
+                font-size: 1.2em;
               }
             }
-            @media screen and (min-width:2560px){
-              .topRightLinksItem{
-                font-size:1.6em;
-                padding-top:40px;
+            @media screen and (min-width: 1920px) {
+              .topRightLinksItem {
+                font-size: 1.4em;
+                padding-top: 40px;
+              }
+            }
+            @media screen and (min-width: 2560px) {
+              .topRightLinksItem {
+                font-size: 1.6em;
+                padding-top: 40px;
               }
             }
           `}
@@ -1782,6 +1722,7 @@ const Home = props => {
             width: 100%;
           }
           .searchBoxContainer {
+            position: relative;
             width: 62%;
             margin: 0 auto;
           }
@@ -1808,19 +1749,19 @@ const Home = props => {
               letter-spacing: 0px;
             }
           }
-          @media screen and (min-width:1366px){
-            .taglineHeader{
-              font-size:1.3em;
+          @media screen and (min-width: 1366px) {
+            .taglineHeader {
+              font-size: 1.3em;
             }
           }
-          @media screen and (min-width:1920px){
-            .taglineHeader{
-              font-size:1.4em;
+          @media screen and (min-width: 1920px) {
+            .taglineHeader {
+              font-size: 1.4em;
             }
           }
-          @media screen and (min-width:2560px){
-            .taglineHeader{
-              font-size:1.6em;
+          @media screen and (min-width: 2560px) {
+            .taglineHeader {
+              font-size: 1.6em;
             }
           }
         `}</style>
@@ -1836,11 +1777,17 @@ const Home = props => {
                     value={searchBoxVal}
                     onkeyDown={e => {
                       if (e.keyCode == 13) {
-                        handleSearchSubmit();
+                        handleSearchSubmit(searchBoxVal);
                       }
                     }}
-                    onsubmit={handleSearchSubmit}
+                    onsubmit={() => handleSearchSubmit(searchBoxVal)}
                   />
+                  {searchBoxVal.length > 0 ? (
+                    <SearchBoxSuggestion
+                      searchBoxVal={searchBoxVal}
+                      handleSearchSuggestionClick={handleSearchSubmit}
+                    />
+                  ) : null}
                 </div>
               </div>
             </div>
