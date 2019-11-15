@@ -15,6 +15,7 @@ import uuid from "uuid/v1";
 import { CircularProgress } from "@material-ui/core";
 import Layout from "../hoc/layout/layout";
 import SearchInput from "../Components/MaterialComponents/SearchInput";
+import SearchBoxSuggestion from "../Components/Widgets/SuggestionBox";
 import { connect } from "react-redux";
 import Snackbar from "../Components/Widgets/Snackbar";
 import { startLoading } from "../store/actions/loaderAction";
@@ -167,7 +168,8 @@ const Home = props => {
     setSearchBoxVal(e.target.value);
   };
 
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = searchBoxVal => {
+    console.log(searchBoxVal, "searchbox");
     props.startLoading();
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
@@ -223,66 +225,6 @@ const Home = props => {
         smooth: "easeInOutQuart",
         containerId: "scroll-container"
       })
-    );
-  };
-
-  const renderHeroContent = () => {
-    return (
-      <div className="homeContainerInner">
-        <style jsx>{indexPageStyles}</style>
-        <div>
-          <h3 className="heroHeading">
-            TrustSearch - the search engine for trust!{" "}
-          </h3>
-          <h4 className="heroSubHeading">
-            We help you to check
-            <span className="heroSubHeadingMainText">trustworthiness</span> to
-            <br /> websites, people and businesses.
-          </h4>
-        </div>
-
-        <div
-          className="analyseBtn"
-          style={{ marginTop: "1rem", marginBottom: "1rem" }}
-        >
-          Analyse any website
-        </div>
-
-        <div className="homeSearchBoxContainer">
-          {!loading ? (
-            <>
-              {/* <SearchBox
-              onchange={handleSearchBoxChange}
-              value={searchBoxVal}
-              stateMethod={setSearchBoxVal}
-              variant="thetrustsearchIndex"
-              handleSearchSubmit={searchBoxVal => {
-                handleSearchSubmit(setLoading, searchBoxVal);
-              }}
-            /> */}
-              <SearchInput
-                onchange={handleSearchBoxChange}
-                value={searchBoxVal}
-                onkeyDown={e => {
-                  if (e.keyCode == 13) {
-                    handleSearchSubmit();
-                  }
-                }}
-                onsubmit={handleSearchSubmit}
-              />
-            </>
-          ) : (
-            <div style={{ textAlign: "center" }}>
-              <CircularProgress color="secondary" />
-            </div>
-          )}
-        </div>
-        <div className="row">
-          <div className="col-md-12">
-            <div className="homeWebStatsContainer">{renderWebStats()}</div>
-          </div>
-        </div>
-      </div>
     );
   };
 
@@ -369,9 +311,7 @@ const Home = props => {
             </div>
             <div className="footerMiddleSecContainer">
               <div className="row">
-                <div className="col-md-4 first">
-                  TrustSearch, Ltd
-                </div>
+                <div className="col-md-4 first">TrustSearch, Ltd</div>
                 <div className="col-md-4 second">
                   <a
                     href="tel:+37128632492"
@@ -449,10 +389,9 @@ const Home = props => {
               .reviewGatheringContent {
                 margin-bottom: 50px;
                 padding-top: 80px;
-
               }
-              .reviewGatheringContentHeader{
-                font-size:2.2rem;
+              .reviewGatheringContentHeader {
+                font-size: 2.2rem;
               }
               .reviewStep {
                 margin-bottom: 8%;
@@ -763,10 +702,9 @@ const Home = props => {
               .renderReviewWidgetContent {
                 margin-bottom: 50px;
                 padding-top: 80px;
-
               }
-              .renderReviewWidgetContentHeader{
-                font-size:2.2rem;
+              .renderReviewWidgetContentHeader {
+                font-size: 2.2rem;
               }
               .widgetImageContainer {
                 display: none;
@@ -997,8 +935,8 @@ const Home = props => {
                 margin-bottom: 50px;
               }
 
-              .whyYouNeedReviewsContentHeader{
-                font-size:2.2rem;
+              .whyYouNeedReviewsContentHeader {
+                font-size: 2.2rem;
               }
 
               .whyToNumberBox {
@@ -1010,13 +948,13 @@ const Home = props => {
                 font-size: 2.3rem;
               }
             }
-            
+
             @media screen and (max-width: 575px) {
               .whyYouNeedReviewsContent {
                 margin-bottom: 50px;
               }
             }
-            
+
             @media screen and (max-width: 520px) {
               /*---- WhyTo section ----*/
               .whyToHeader {
@@ -1142,7 +1080,7 @@ const Home = props => {
                 margin: 0 auto;
                 cursor: pointer;
               }
-              @media screen and (max-width:767px){
+              @media screen and (max-width: 767px) {
                 .slidingArrowContainer {
                   margin-top: 5vh;
                   margin-bottom: 20vh;
@@ -1658,6 +1596,7 @@ const Home = props => {
             width: 100%;
           }
           .searchBoxContainer {
+            position: relative;
             width: 62%;
             margin: 0 auto;
           }
@@ -1697,11 +1636,17 @@ const Home = props => {
                     value={searchBoxVal}
                     onkeyDown={e => {
                       if (e.keyCode == 13) {
-                        handleSearchSubmit();
+                        handleSearchSubmit(searchBoxVal);
                       }
                     }}
-                    onsubmit={handleSearchSubmit}
+                    onsubmit={() => handleSearchSubmit(searchBoxVal)}
                   />
+                  {searchBoxVal.length > 0 ? (
+                    <SearchBoxSuggestion
+                      searchBoxVal={searchBoxVal}
+                      handleSearchSuggestionClick={handleSearchSubmit}
+                    />
+                  ) : null}
                 </div>
               </div>
             </div>
