@@ -3,6 +3,8 @@ import StarRatings from "react-star-ratings";
 import Slider from "react-slick";
 import ReviewBox from "../../../Components/Widgets/ReviewBox/ReviewBox";
 import PusherDataComponent from "../../../Components/PusherDataComponent/PusherDataComponent";
+import RatingIndicators from "../../../Components/Widgets/RatingIndicators/RatingIndicators";
+import { ratingColor } from "../../../utility/ratingTypeColor";
 import Head from "next/head";
 import uuid from "uuid/v1";
 import { layoutStyles } from "../../../style";
@@ -191,13 +193,16 @@ const renderWidget = (reviewData, settings, domain) => {
           </div>
           <div className="ratingsContainer">
             <div className="starRatings">
-              <StarRatings
-                rating={Number(requiredData.ratings)}
-                starRatedColor="#21bc61"
-                starDimension="23px"
-                starSpacing="0.5px"
-                numberOfStars={5}
-                name="rating"
+              <RatingIndicators
+                rating={Number((requiredData || {}).ratings) || 0}
+                typeOfWidget="star"
+                widgetRatedColors={
+                  ratingColor[
+                    Math.round(Number((requiredData || {}).ratings)) || 0
+                  ]
+                }
+                widgetDimensions="23px"
+                widgetSpacings="0.5px"
               />
             </div>
             <div className="textRatings">
@@ -213,11 +218,11 @@ const renderWidget = (reviewData, settings, domain) => {
         {requiredData.totalReviews > 0 ? (
           <Slider {...settings}>
             {requiredData.reviews.map(item => {
-              return (
+              return (item || {}).text ? (
                 <div key={uuid()} style={{ height: "100%" }}>
                   <ReviewBox review={item} domain={domain} />
                 </div>
-              );
+              ) : null;
             })}
           </Slider>
         ) : requiredData.totalReviews === 0 ? (
