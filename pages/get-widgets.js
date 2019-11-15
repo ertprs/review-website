@@ -32,8 +32,8 @@ const widgetsObj = [
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: ["Header or footer"],
     support: [
-      "Responsive (max. 100% x 24)",
-      "Suggested placement min-height: 238px"
+      // "Responsive (max. 100% x 24)",
+      "Suggested minimum height: 238px"
     ],
     dataTempID: "TextReviews",
     widgetType: "carousel"
@@ -52,10 +52,10 @@ const widgetsObj = [
       "Small enough to place almost anywhere"
     ],
     support: [
-      "Responsive (max. 100% x 24)",
-      "Mobile, tablet and desktop ready",
-      "Suggested placement min-width: 285px",
-      "Suggested placement min-height: 290px"
+      // "Responsive (max. 100% x 24)",
+      // "Mobile, tablet and desktop ready",
+      "Suggested minimum width: 285px",
+      "Suggested minimum height: 290px"
     ],
     dataTempID: "OnlyScoreWidget",
     widgetType: "card"
@@ -74,7 +74,11 @@ const widgetsObj = [
       "Suggested placement min-width: 380px",
       "Suggested placement min-height : 360px"
     ],
-    support: ["Responsive (max. 100% x 24)"],
+    support: [
+      // "Responsive (max. 100% x 24)",
+      "Suggested minimum width: 380px",
+      "Suggested minimum height : 360px"
+    ],
     dataTempID: "TextReviewsWithScores",
     widgetType: "card_with_reviews"
   }
@@ -168,26 +172,54 @@ class GetWidgets extends Component {
     );
   };
 
-  componentDidMount() {
+  onBackButtonEvent = event => {
+    if (event) {
+      this.setState({
+        getWidget: false
+      });
+    }
+    this.toggleViewWithUrl();
+  };
+
+  toggleViewWithUrl = () => {
+    const { domain } = this.props;
+    const widgetTypes = ["carousel", "card", "card_with_reviews"];
     let url = window.location.href;
     let urlSplit = url.split("#");
     if (urlSplit.length > 1) {
       let widgetType = urlSplit[urlSplit.length - 1];
-      let selectedWidgetIndex = _findIndex(widgetsObj, [
-        "widgetType",
-        widgetType
-      ]);
-      this.setState({
-        getWidget: true,
-        selectedWidgetIndex
-      });
+      const WidgetTypeIndex = widgetTypes.findIndex(val => val === widgetType);
+      if (WidgetTypeIndex === -1) {
+        const href = `/get-widgets?domain=${domain}#${widgetType}`;
+        const as = `/get-widgets/${domain}`;
+        Router.push(href, as, { shallow: true });
+        this.setState({
+          getWidget: false
+        });
+      } else {
+        let selectedWidgetIndex = _findIndex(widgetsObj, [
+          "widgetType",
+          widgetType
+        ]);
+        this.setState({
+          getWidget: true,
+          selectedWidgetIndex
+        });
+      }
     }
-    console.log(url, "url");
+  };
+
+  componentDidMount() {
+    window.addEventListener("popstate", this.onBackButtonEvent);
     window.scrollTo(0, 0);
+    this.toggleViewWithUrl();
   }
 
+  componentWillUnmount = () => {
+    window.removeEventListener("popstate", this.onBackButtonEvent);
+  };
+
   render() {
-    console.log(this.props, "qhjqgdhjqghjdfqh");
     const { getWidget, selectedWidgetIndex } = this.state;
     const { domain } = this.props;
     return (

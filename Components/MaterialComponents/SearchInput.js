@@ -12,7 +12,13 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     width: "100%",
     boxShadow:"0px 2px 4px #b2b2b2",
-    borderRadius:"50px"
+    borderRadius:"50px",
+    [theme.breakpoints.up("lg")]: {
+      padding: "0.1rem"
+    },
+    [theme.breakpoints.up("xl")]: {
+      padding: "0.5rem"
+    }
   },
   input: {
     marginLeft: theme.spacing(5),

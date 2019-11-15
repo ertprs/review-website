@@ -23,7 +23,11 @@ class GetWidgetsCode extends Component {
 
   renderContent = data => {
     return data.map(item => {
-      return <p key={uuid()}>{item}</p>;
+      return (
+        <p style={{ fontWeight: "bold" }} key={uuid()}>
+          {item}
+        </p>
+      );
     });
   };
 
@@ -149,6 +153,10 @@ class GetWidgetsCode extends Component {
             <div className="header">
               <Title>Get your trust widget</Title>
             </div>
+            <div style={{ marginTop: "20px" }}>
+              {this.renderContent(widget.support)}
+            </div>
+
             <div className="body">
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
               <div className="inputContainer">{this.renderInput()}</div>

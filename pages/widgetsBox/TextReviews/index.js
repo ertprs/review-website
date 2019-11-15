@@ -167,7 +167,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
           {requiredData.success !== false && requiredData.totalReviews > 0 ? (
             <Slider {...settings}>
               {requiredData.reviews.map(item => {
-                return (
+                return (item || {}).text ? (
                   <div key={uuid()}>
                     <ReviewBox
                       review={item}
@@ -177,7 +177,7 @@ const renderTextReviewsWidget = (reviewData, settings, props) => {
                       domain={props.domain}
                     />
                   </div>
-                );
+                ) : null;
               })}
             </Slider>
           ) : requiredData.totalReviews === 0 ? (
