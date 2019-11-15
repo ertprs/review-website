@@ -10,10 +10,9 @@ export const subscriptionPlanCardStyles = css`
     box-shadow: 0px 0px 32px #d9d9d9;
   }
 
-  .translateY{
-    transform:translateY(-50px);
+  .translateY {
+    transform: translateY(-50px);
     box-shadow: 0px 0px 15px #999;
-
   }
 
   .subscriptionPlanCardHeader {
@@ -40,7 +39,7 @@ export const subscriptionPlanCardStyles = css`
   .free .subscriptionPlanCardBody .free li,
   .premium .subscriptionPlanCardBody .premium li,
   .professional .subscriptionPlanCardBody .professional li {
-    margin-bottom: 2.0rem;
+    margin-bottom: 2rem;
   }
 
   .subscriptionPlanCardBody .standard li {
@@ -70,8 +69,9 @@ export const subscriptionPlanCardStyles = css`
     font-weight: 300;
   }
 
-  .professional .subscriptionPlanCardFooter, .free .subscriptionPlanCardFooter{
-    margin-bottom:15px;
+  .professional .subscriptionPlanCardFooter,
+  .free .subscriptionPlanCardFooter {
+    margin-bottom: 15px;
   }
 
   .professional .subscriptionPlanCardFooter .price,
@@ -113,8 +113,23 @@ export const subscriptionPlanCardStyles = css`
     .subscriptionPlanCardBody .professional li {
       margin-bottom: 2.248rem;
     }
-    .translateY{
-      transform:translateY(0)
+    .translateY {
+      transform: translateY(0);
+    }
+  }
+  @media screen and (min-width: 1366px) {
+    .subscriptionPlanCardBody {
+      font-size: 1.3em;
+    }
+  }
+  @media screen and (min-width: 1920px) {
+    .subscriptionPlanCardBody {
+      font-size: 1.4em;
+    }
+  }
+  @media screen and (min-width: 2560px) {
+    .subscriptionPlanCardBody {
+      font-size: 1.6em;
     }
   }
 `;

@@ -250,10 +250,25 @@ const Home = props => {
                 margin-bottom: 30px;
               }
             }
+            @media screen and (min-width: 1366px) {
+              .logoImgContainer {
+                max-width: 330px;
+              }
+            }
+            @media screen and (min-width: 1920px) {
+              .logoImgContainer {
+                max-width: 390px;
+              }
+            }
+            @media screen and (min-width: 2560px) {
+              .logoImgContainer {
+                max-width: 435px;
+              }
+            }
           `}
         </style>
         <div className="row">
-          <div className="col-md-12">
+          <div className="col-md-12 col-lg-12 col-xl-12">
             <div className="logoImgContainer">
               <img src="/static/images/gradientLogo.png" />
             </div>
@@ -265,7 +280,7 @@ const Home = props => {
 
   const renderFooter = () => {
     return (
-      <div className="container">
+      <div className="container footer">
         <style>{`
           .footerTopSecContainer{
             text-align:center;
@@ -301,9 +316,24 @@ const Home = props => {
               margin-bottom:5%;
             }
           }
+          @media screen and (min-width: 1366px) {
+            .footer{
+              font-size: 1.2em;
+            }
+          }
+          @media screen and (min-width: 1920px) {
+            .footer{
+              font-size: 1.4em;
+            }
+          }
+          @media screen and (min-width: 2560px) {
+            .footer{
+              font-size: 1.6em;
+            }
+          }
         `}</style>
         <div className="row">
-          <div className="col-md-12">
+          <div className="col-md-12 col-lg-12 col-xl-12">
             <div className="footerTopSecContainer">
               <NextLink href="/about">
                 <a>About us</a>
@@ -311,8 +341,10 @@ const Home = props => {
             </div>
             <div className="footerMiddleSecContainer">
               <div className="row">
-                <div className="col-md-4 first">TrustSearch, Ltd</div>
-                <div className="col-md-4 second">
+                <div className="col-md-4 col-lg-4 col-xl-4 first">
+                  TrustSearch, Ltd
+                </div>
+                <div className="col-md-4 col-lg-4 col-xl-4 second">
                   <a
                     href="tel:+37128632492"
                     style={{ color: "#000", textDecoration: "none" }}
@@ -320,7 +352,7 @@ const Home = props => {
                     +371 28632492
                   </a>
                 </div>
-                <div className="col-md-4 third">
+                <div className="col-md-4 col-lg-4 col-xl-4 third">
                   <a
                     href="mailto:info@thetrustsearch.com"
                     style={{ color: "#000", textDecoration: "none" }}
@@ -413,6 +445,21 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
+            @media screen and (min-width: 1366px) {
+              .reviewSteptext {
+                font-size: 1.2em;
+              }
+            }
+            @media screen and (min-width: 1920px) {
+              .reviewSteptext {
+                font-size: 1.4em;
+              }
+            }
+            @media screen and (min-width: 2560px) {
+              .reviewSteptext {
+                font-size: 1.6em;
+              }
+            }
           `}
         </style>
         <div className="container">
@@ -422,7 +469,7 @@ const Home = props => {
             </h1>
           </div>
           <div className="row">
-            <div className="col-md-3">
+            <div className="col-md-3 col-lg-3 col-xl-3">
               <div className="reviewStep">
                 <div
                   className="reviewStepImgContainer"
@@ -436,7 +483,7 @@ const Home = props => {
                 <div className="reviewSteptext">You have a new customer</div>
               </div>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-3 col-lg-3 col-xl-3">
               <div className="reviewStep">
                 <div
                   className="reviewStepImgContainer"
@@ -452,7 +499,7 @@ const Home = props => {
                 </div>
               </div>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-3 col-lg-3 col-xl-3">
               <div className="reviewStep">
                 <div
                   className="reviewStepImgContainer"
@@ -469,7 +516,7 @@ const Home = props => {
                 </div>
               </div>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-3 col-lg-3 col-xl-3">
               <div className="reviewStep">
                 <div
                   className="reviewStepImgContainer"
@@ -490,7 +537,7 @@ const Home = props => {
         </div>
         <div className="container">
           <div className="row">
-            <div className="col-md-12">
+            <div className="col-md-12 col-lg-12 col-xl-12">
               <div className="reviewGatheringImgContainer">
                 <img
                   src="/static/images/6.png"
@@ -598,13 +645,28 @@ const Home = props => {
               padding: 4% 12% 4% 12%;
             }
           }
+          @media screen and (min-width: 1366px) {
+            .arrangeMeetingBtn {
+              font-size: 1.2em;
+            }
+          }
+          @media screen and (min-width: 1920px) {
+            .arrangeMeetingBtn {
+              font-size: 1.4em;
+            }
+          }
+          @media screen and (min-width: 2560px) {
+            .arrangeMeetingBtn {
+              font-size: 1.6em;
+            }
+          }
         `}</style>
         <div className="container">
           <div className="row">
             {cardsData.map(item => {
               return (
                 <div
-                  className="col-md-4"
+                  className="col-md-4 col-lg-4 col-xl-4"
                   style={{ marginBottom: "15px" }}
                   key={uuid()}
                 >
@@ -616,7 +678,7 @@ const Home = props => {
             })}
           </div>
           <div className="row">
-            <div className="col-md-12">
+            <div className="col-md-12 col-lg-12 col-xl-12">
               <div className="arrangeMeetingBtnContainer">
                 <button
                   className="arrangeMeetingBtn"
@@ -738,6 +800,21 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
+            @media screen and (min-width: 1366px) {
+              .arrangeMeetingBtn {
+                font-size: 1.3em;
+              }
+            }
+            @media screen and (min-width: 1920px) {
+              .arrangeMeetingBtn {
+                font-size: 1.4em;
+              }
+            }
+            @media screen and (min-width: 2560px) {
+              .arrangeMeetingBtn {
+                font-size: 1.6em;
+              }
+            }
           `}
         </style>
         <div className="container">
@@ -832,9 +909,24 @@ const Home = props => {
               text-align: center;
             }
           }
+          @media screen and (min-width: 1366px) {
+            .widgetAddStepText {
+              font-size: 1.3em;
+            }
+          }
+          @media screen and (min-width: 1920px) {
+            .widgetAddStepText {
+              font-size: 1.4em;
+            }
+          }
+          @media screen and (min-width: 2560px) {
+            .widgetAddStepText {
+              font-size: 1.6em;
+            }
+          }
         `}</style>
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-4 col-lg-4 col-xl-4">
             <div className="widgetAddStep">
               <div className="widgetAddStepText">
                 1. Apply to receive your review widget.
@@ -845,7 +937,7 @@ const Home = props => {
               </div>
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-4 col-lg-4 col-xl-4">
             <div className="widgetAddStep">
               <div className="widgetAddStepText">
                 2. Copy the widget code generated for you.
@@ -856,7 +948,7 @@ const Home = props => {
               </div>
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-4 col-lg-4 col-xl-4">
             <div className="widgetAddStep">
               <div className="widgetAddStepText lastStep">
                 3. Paste this code into your homepage and your review widget
@@ -987,6 +1079,21 @@ const Home = props => {
                 text-align: right;
               }
             }
+            @media screen and (min-width: 1366px) {
+              .whyToText {
+                font-size: 1.3em;
+              }
+            }
+            @media screen and (min-width: 1920px) {
+              .whyToText {
+                font-size: 1.4em;
+              }
+            }
+            @media screen and (min-width: 2560px) {
+              .whyToText {
+                font-size: 1.6em;
+              }
+            }
           `}
         </style>
         <div className="container">
@@ -996,7 +1103,7 @@ const Home = props => {
             </h1>
           </div>
           <div className="row">
-            <div className="col-md-4">
+            <div className="col-md-4 col-lg-4 col-xl-4">
               <div className="whyToNumberBox">
                 <div className="whyToNumber">
                   <span className="number">63</span>
@@ -1010,7 +1117,7 @@ const Home = props => {
               </div>
             </div>
 
-            <div className="col-md-4">
+            <div className="col-md-4 col-lg-4 col-xl-4">
               <div className="whyToNumberBox">
                 <div className="whyToNumber">
                   <span className="number">95</span>
@@ -1023,7 +1130,7 @@ const Home = props => {
               </div>
             </div>
 
-            <div className="col-md-4">
+            <div className="col-md-4 col-lg-4 col-xl-4">
               <div className="whyToNumberBox">
                 <div className="whyToNumber">
                   <span className="number">91</span>
@@ -1039,7 +1146,7 @@ const Home = props => {
         </div>
         <div className="container">
           <div className="row">
-            <div className="col-md-12">
+            <div className="col-md-12 col-lg-12 col-xl-12">
               <div className="whyYouNeedReviewsImgContainer">
                 <img
                   src="/static/images/1.png"
@@ -1097,7 +1204,7 @@ const Home = props => {
           </style>
           <div className="container">
             <div className="row">
-              <div className="col-md-12">
+              <div className="col-md-12 col-lg-12 col-xl-12">
                 <div className="arrowImageContainer">
                   <img
                     src="/static/images/arrow.png"
@@ -1518,6 +1625,25 @@ const Home = props => {
                 display: flex;
               }
             }
+            @media screen and (min-width: 1366px) {
+              .topRightLinksContainer {
+              }
+              .topRightLinksItem {
+                font-size: 1.2em;
+              }
+            }
+            @media screen and (min-width: 1920px) {
+              .topRightLinksItem {
+                font-size: 1.4em;
+                padding-top: 40px;
+              }
+            }
+            @media screen and (min-width: 2560px) {
+              .topRightLinksItem {
+                font-size: 1.6em;
+                padding-top: 40px;
+              }
+            }
           `}
         </style>
         {/* <div className="mobileMenuContainerOuter">
@@ -1623,13 +1749,28 @@ const Home = props => {
               letter-spacing: 0px;
             }
           }
+          @media screen and (min-width: 1366px) {
+            .taglineHeader {
+              font-size: 1.3em;
+            }
+          }
+          @media screen and (min-width: 1920px) {
+            .taglineHeader {
+              font-size: 1.4em;
+            }
+          }
+          @media screen and (min-width: 2560px) {
+            .taglineHeader {
+              font-size: 1.6em;
+            }
+          }
         `}</style>
         <div className="boxContent">
           {/* {renderHeroContent(searchBoxVal, setSearchBoxVal, loading, setLoading)} */}
           {renderLogo()}
           <div className="container">
             <div className="row">
-              <div className="col-md-12">
+              <div className="col-md-12 col-lg-12 col-xl-12">
                 <div className="searchBoxContainer">
                   <SearchInput
                     onchange={handleSearchBoxChange}
@@ -1651,7 +1792,7 @@ const Home = props => {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-12">
+              <div className="col-md-12 col-lg-12 col-xl-12">
                 <div className="taglineContainer">
                   <div className="taglineHeader">
                     Check your current website trustworthiness
