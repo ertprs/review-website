@@ -33,7 +33,7 @@ const widgetsObj = [
     suggestedPlacement: ["Header or footer"],
     support: [
       // "Responsive (max. 100% x 24)",
-      "Suggested placement min-height: 238px"
+      "Suggested minimum height: 238px"
     ],
     dataTempID: "TextReviews",
     widgetType: "carousel"
@@ -54,8 +54,8 @@ const widgetsObj = [
     support: [
       // "Responsive (max. 100% x 24)",
       // "Mobile, tablet and desktop ready",
-      "Suggested placement min-width: 285px",
-      "Suggested placement min-height: 290px"
+      "Suggested minimum width: 285px",
+      "Suggested minimum height: 290px"
     ],
     dataTempID: "OnlyScoreWidget",
     widgetType: "card"
@@ -70,11 +70,15 @@ const widgetsObj = [
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
     suggestedPlacement: [
-      // "Header or footer",
+      "Header or footer",
       "Suggested placement min-width: 380px",
       "Suggested placement min-height : 360px"
     ],
-    support: ["Responsive (max. 100% x 24)"],
+    support: [
+      // "Responsive (max. 100% x 24)",
+      "Suggested placement min-width: 380px",
+      "Suggested placement min-height : 360px"
+    ],
     dataTempID: "TextReviewsWithScores",
     widgetType: "card_with_reviews"
   }
