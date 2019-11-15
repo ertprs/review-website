@@ -2,6 +2,8 @@ import React from "react";
 import { layoutStyles } from "../../../style";
 import { onlyScoreWidgetComponentStyles } from "./onlyScoreWidgetComponentStyles";
 import StarRatings from "react-star-ratings";
+import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
+import { ratingColor } from "../../../utility/ratingTypeColor";
 
 const renderStandAloneWidget = requiredData => {
   return (
@@ -17,13 +19,22 @@ const renderStandAloneWidget = requiredData => {
 
       <div className="ratingIndicator">
         {requiredData.ratings !== "" ? (
-          <StarRatings
-            rating={Number(requiredData.ratings)}
-            starRatedColor="#21bc61"
-            starDimension="34px"
-            starSpacing="3px"
-            numberOfStars={5}
-            name="rating"
+          // <StarRatings
+          //   rating={Number(requiredData.ratings)}
+          //   starRatedColor="#21bc61"
+          //   starDimension="34px"
+          //   starSpacing="3px"
+          //   numberOfStars={5}
+          //   name="rating"
+          // />
+          <RatingIndicators
+            rating={Number((requiredData || {}).ratings) || 0}
+            typeOfWidget="star"
+            widgetRatedColors={
+              ratingColor[Math.round(Number((requiredData || {}).ratings)) || 0]
+            }
+            widgetDimensions="34px"
+            widgetSpacings="3px"
           />
         ) : (
           "Loading..."
@@ -32,13 +43,22 @@ const renderStandAloneWidget = requiredData => {
 
       <div className="smallRatingIndicator">
         {requiredData.ratings !== "" ? (
-          <StarRatings
-            rating={Number(requiredData.ratings)}
-            starRatedColor="#21bc61"
-            starDimension="25px"
-            starSpacing="3px"
-            numberOfStars={5}
-            name="rating"
+          // <StarRatings
+          //   rating={Number(requiredData.ratings)}
+          //   starRatedColor="#21bc61"
+          //   starDimension="25px"
+          //   starSpacing="3px"
+          //   numberOfStars={5}
+          //   name="rating"
+          // />
+          <RatingIndicators
+            rating={Number((requiredData || {}).ratings) || 0}
+            typeOfWidget="star"
+            widgetRatedColors={
+              ratingColor[Math.round(Number((requiredData || {}).ratings)) || 0]
+            }
+            widgetDimensions="25px"
+            widgetSpacings="3px"
           />
         ) : (
           "Loading..."
@@ -92,18 +112,30 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
         `}
       </style>
       <div className={`ratingText ${textReviews ? "mt" : ""}`}>
-        <h5 className="widgetRating">{requiredData.ratings}<span style={{margin:"0px 1px 0 1px"}}>/</span>5</h5>
+        <h5 className="widgetRating">
+          {requiredData.ratings}
+          <span style={{ margin: "0px 1px 0 1px" }}>/</span>5
+        </h5>
       </div>
 
       <div className={`carouselRatingIndicator ${textReviews ? "" : ""}`}>
         {requiredData.ratings !== "" ? (
-          <StarRatings
-            rating={Number(requiredData.ratings)}
-            starRatedColor="#21bc61"
-            starDimension="33px"
-            starSpacing="1.5px"
-            numberOfStars={5}
-            name="rating"
+          // <StarRatings
+          //   rating={Number(requiredData.ratings)}
+          //   starRatedColor="#21bc61"
+          //   starDimension="33px"
+          //   starSpacing="1.5px"
+          //   numberOfStars={5}
+          //   name="rating"
+          // />
+          <RatingIndicators
+            rating={Number((requiredData || {}).ratings) || 0}
+            typeOfWidget="star"
+            widgetRatedColors={
+              ratingColor[Math.round(Number((requiredData || {}).ratings)) || 0]
+            }
+            widgetDimensions="33px"
+            widgetSpacings="1.5px"
           />
         ) : (
           "Loading...."
@@ -114,13 +146,22 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
       </div>
       <div className={`carouselSmallRatingIndicator ${textReviews ? "" : ""}`}>
         {requiredData.ratings !== "" ? (
-          <StarRatings
-            rating={Number(requiredData.ratings)}
-            starRatedColor="#21bc61"
-            starDimension="33px"
-            starSpacing="1.5px"
-            numberOfStars={5}
-            name="rating"
+          // <StarRatings
+          //   rating={Number(requiredData.ratings)}
+          //   starRatedColor="#21bc61"
+          //   starDimension="33px"
+          //   starSpacing="1.5px"
+          //   numberOfStars={5}
+          //   name="rating"
+          // />
+          <RatingIndicators
+            rating={Number((requiredData || {}).ratings) || 0}
+            typeOfWidget="star"
+            widgetRatedColors={
+              ratingColor[Math.round(Number((requiredData || {}).ratings)) || 0]
+            }
+            widgetDimensions="33px"
+            widgetSpacings="1.5px"
           />
         ) : (
           "Loading...."

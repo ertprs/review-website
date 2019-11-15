@@ -2,42 +2,54 @@ import React from "react";
 import { reviewBoxStyles } from "./reviewBoxStyles.js";
 import stringHelpers from "../../../utility/stringHelpers";
 import ReviewCard from "../ReviewCard/ReviewCard";
+import RatingIndicators from '../../Widgets/RatingIndicators/RatingIndicators';
+import { ratingColor } from '../../../utility/ratingTypeColor';
 import StarRatings from "react-star-ratings";
-import {googleMapsURL} from "../../../utility/config";
-const renderTextualReviewBox = (review, reviewRatingStyles, reviewHeaderStyles, domain) => {
+import { googleMapsURL } from "../../../utility/config";
+const renderTextualReviewBox = (
+  review,
+  reviewRatingStyles,
+  reviewHeaderStyles,
+  domain
+) => {
   return (
     <div>
       <style jsx>{reviewBoxStyles}</style>
-      <div className="reviewHeader" style={{...reviewHeaderStyles}}>
+      <div className="reviewHeader" style={{ ...reviewHeaderStyles }}>
         <div className="reviewHeaderTitle">
           {/* {review.name.length > 7
             ? review.name.substring(0, 7) + ".."
             : review.name} */}
-            {review.name.replace(/\s+/gmi, ' ')}
+          {review.name.replace(/\s+/gim, " ")}
         </div>
         {/* <div className="reviewHeaderDate">
           {stringHelpers("shortenMonths", review.date)}
           In the css change flex-basis to 50%
         </div> */}
       </div>
-      <div className="reviewRatings" style={{...reviewRatingStyles}}>
+      <div className="reviewRatings" style={{ ...reviewRatingStyles }}>
         <div>
-          <StarRatings
-            rating={review.rating}
-            starRatedColor="#21bc61"
-            numberOfStars={5}
-            name="rating"
-            starDimension="20px"
-            starSpacing="1px"
+          <RatingIndicators
+            rating={Number((review || {}).rating) || 0}
+            typeOfWidget="star"
+            widgetRatedColors={ratingColor[Math.round(Number(review.rating)) || 0]}
+            widgetDimensions="20px"
+            widgetSpacings="1px"
           />
         </div>
       </div>
       <div className="reviewText">
         <p>
-          <a href={`${googleMapsURL}/${domain}`} target="_blank" style={{textDecoration:"none", color:"#000"}}>
-          {review.text!==null ? review.text.length <= 95
-            ? review.text.replace(/\s\s+/g, ' ')
-            : review.text.substring(0, 93).replace(/\s\s+/g, ' ') + "..." : "no textual review"}
+          <a
+            href={`${googleMapsURL}/${domain}`}
+            target="_blank"
+            style={{ textDecoration: "none", color: "#000" }}
+          >
+            {review.text !== null && review.text
+              ? review.text.length <= 95
+                ? review.text.replace(/\s\s+/g, " ")
+                : review.text.substring(0, 93).replace(/\s\s+/g, " ") + "..."
+              : "no textual review"}
           </a>
         </p>
       </div>
@@ -55,7 +67,7 @@ const renderTrustDontTrustReviewBox = review => {
             ? review.name.substring(0, 7) + ".."
             : review.name}
         </div>
-        <div style={{textAlign:"center"}}>
+        <div style={{ textAlign: "center" }}>
           {/* <div style={{ maxWidth: "22px", height: "auto" }}>
               <img
                 src={`/static/images/${review.image}.svg`}
@@ -67,7 +79,8 @@ const renderTrustDontTrustReviewBox = review => {
               review.image === "trust"
                 ? "thumbs-up trustIconGreen"
                 : "thumbs-down trustIconRed"
-            }`} style={{fontSize:"1.2rem"}}
+            }`}
+            style={{ fontSize: "1.2rem" }}
           ></i>
         </div>
         {/* <div className="reviewHeaderDate">
@@ -82,10 +95,14 @@ const renderTrustDontTrustReviewBox = review => {
                 textTransform: "capitalize",
                 textAlign: "left",
                 flexBasis: "100%",
-                fontWeight:"bold"
+                fontWeight: "bold"
               }}
             >
-              {review.image ==="trust" ? <span className="trustIconGreen">Trust</span> : <span className="trustIconRed">Don't Trust</span>}
+              {review.image === "trust" ? (
+                <span className="trustIconGreen">Trust</span>
+              ) : (
+                <span className="trustIconRed">Don't Trust</span>
+              )}
             </div>
           </div>
         </div>
@@ -147,9 +164,14 @@ const ReviewBox = props => {
       {renderTrustDontTrustReviewBox(props.review)}
     </div>
   ) : (
-    <div className="reviewBox" style={{...props.styles}}>
+    <div className="reviewBox" style={{ ...props.styles }}>
       <style jsx>{reviewBoxStyles}</style>
-      {renderTextualReviewBox(props.review, props.reviewRatingStyles, props.reviewHeaderStyles, props.domain)}
+      {renderTextualReviewBox(
+        props.review,
+        props.reviewRatingStyles,
+        props.reviewHeaderStyles,
+        props.domain
+      )}
     </div>
   );
 };
