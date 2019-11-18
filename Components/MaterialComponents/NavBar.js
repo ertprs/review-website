@@ -22,6 +22,7 @@ import { GoogleLogout } from "react-google-login";
 import { connect } from "react-redux";
 import { logOut } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
+import SearchBoxSuggestion from "../../Components/Widgets/SuggestionBox";
 import _get from "lodash/get";
 
 const useStyles = makeStyles(theme => ({
@@ -68,11 +69,6 @@ const useStyles = makeStyles(theme => ({
       textDecoration: "none"
     }
   },
-  // navLink:{
-  //   color:"#fff",
-  //   textDecoration:"none",
-  //   padding:"25px"
-  // },
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -449,7 +445,7 @@ function PrimarySearchAppBar(props) {
                       handleProfileMenuOpen(e);
                     }}
                   >
-                    <span>{userName}</span>
+                    <span>{userName ? `Hello, ${userName}` : ""}</span>
                   </span>
                 </Link>
                 {renderProfileMenu}
@@ -471,6 +467,12 @@ function PrimarySearchAppBar(props) {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {searchBoxValue.length > 0 ? (
+        <SearchBoxSuggestion
+          searchBoxVal={searchBoxValue}
+          handleSearchSuggestionClick={hitDomainApi}
+        />
+      ) : null}
       <Snackbar
         open={showSnackbar}
         variant="success"
