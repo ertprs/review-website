@@ -544,8 +544,14 @@ class Home extends Component {
                   editMode: false
                 });
               }}
+              editMode= {this.state.editMode}
+              handleEditModeClose={()=>{
+                this.setState({
+                  editMode: false
+                });
+              }}
             />
-            <div style={{ marginLeft: "30px" }}>
+            {/* <div style={{ marginLeft: "30px" }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -559,7 +565,7 @@ class Home extends Component {
               >
                 Back
               </Button>
-            </div>
+            </div> */}
           </div>
         )}
         <Snackbar
