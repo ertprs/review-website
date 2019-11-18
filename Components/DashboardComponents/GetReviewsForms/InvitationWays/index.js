@@ -3,6 +3,7 @@ import { Button } from "@material-ui/core";
 import { KeyboardArrowRight, KeyboardArrowLeft } from "@material-ui/icons";
 import ManulaInvitation from "./ManualInvitation";
 import AutomaticInvitation from "./AutomaticInvitation";
+import NeedDeveloperSupport from "../../../Widgets/NeedDeveloperSupport/NeedDeveloperSupport";
 
 export default class InvitationWays extends Component {
   render() {
@@ -49,6 +50,7 @@ export default class InvitationWays extends Component {
             </Button>
           </div>
         </div>
+        <NeedDeveloperSupport />
       </div>
     );
   }
