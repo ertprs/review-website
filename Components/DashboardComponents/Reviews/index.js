@@ -7,7 +7,7 @@ import { fetchReviews } from "../../../store/actions/dashboardActions";
 import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
-import { Button, Link, CircularProgress, Typography } from "@material-ui/core";
+import { CircularProgress, Typography } from "@material-ui/core";
 import NoReviewsFound from "./noReviewsFound";
 
 class Reviews extends Component {
@@ -104,6 +104,14 @@ class Reviews extends Component {
           .hiddenPagination {
             display: none;
           }
+          .invitation_link {
+            color: blue;
+            cursor: pointer;
+          }
+          .invitation_link:hover {
+            text-decoration: underline;
+          }
+
           @media only screen and (max-width: 420px) {
             .reviewsContainer {
               margin: 0;
@@ -126,7 +134,7 @@ class Reviews extends Component {
                     <Typography>
                       <b>Invitation url: &nbsp;</b>
                       <span
-                        style={{ color: "blue", cursor: "pointer" }}
+                        className="invitation_link"
                         onClick={() =>
                           window.open(
                             `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
@@ -249,7 +257,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchReviews }
-)(Reviews);
+export default connect(mapStateToProps, { fetchReviews })(Reviews);

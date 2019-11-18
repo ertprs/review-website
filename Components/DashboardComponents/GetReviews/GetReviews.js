@@ -9,7 +9,7 @@ import validate from "../../../utility/validate";
 import SendInvitations from "../GetReviewsForms/SendInvitations";
 import SelectTemplateForm from "../GetReviewsForms/SelectTemplateForm";
 import SenderInfo from "../GetReviewsForms/SenderInfo/SenderInfo";
-import GetReviewsHome from "../GetReviewsForms/GetReviewsHome";
+import InvitationWays from "../GetReviewsForms/InvitationWays";
 import Done from "../GetReviewsForms/Done";
 import Papa from "papaparse";
 import { getEmailTemplateData } from "../../../utility/emailTemplates/emailTemplates";
@@ -740,7 +740,10 @@ class GetReviews extends Component {
         );
       } else if (getReviewsActiveSubStep === 0) {
         return (
-          <GetReviewsHome
+          <InvitationWays
+            sendToSelectTemplate={() => {
+              this.setState({ activeStep: 1 });
+            }}
             handleListItemClick={this.handleListItemClick}
             onBackClick={() => {
               this.setState({ getReviewsActiveSubStep: -1 });
@@ -930,13 +933,10 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    setGetReviewsData,
-    sendGetReviews,
-    createCampaign,
-    fetchEmailTemplate,
-    clearCampaignData
-  }
-)(withStyles(styles)(GetReviews));
+export default connect(mapStateToProps, {
+  setGetReviewsData,
+  sendGetReviews,
+  createCampaign,
+  fetchEmailTemplate,
+  clearCampaignData
+})(withStyles(styles)(GetReviews));

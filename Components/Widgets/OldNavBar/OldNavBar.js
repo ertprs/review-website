@@ -18,13 +18,13 @@ const renderResponsiveSideNav = (
   authorized,
   userName
 ) => {
-    return showSideNav ? (
-      <ResponsiveSideNav
-        showSideNav={showSideNav}
-        authorized={authorized}
-        userName={userName}
-      />
-    ) : null;
+  return showSideNav ? (
+    <ResponsiveSideNav
+      showSideNav={showSideNav}
+      authorized={authorized}
+      userName={userName}
+    />
+  ) : null;
 };
 
 const NavBar = ({ showSideNav, handleMenuBtnClick, auth }) => {

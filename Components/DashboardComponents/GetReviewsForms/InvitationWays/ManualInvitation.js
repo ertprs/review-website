@@ -2,20 +2,14 @@ import React, { Component } from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import FolderIcon from "@material-ui/icons/Folder";
-import DeleteIcon from "@material-ui/icons/Delete";
 import PublishIcon from "@material-ui/icons/Publish";
 import DescriptionIcon from "@material-ui/icons/Description";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { Button } from "@material-ui/core";
-import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 const inviteOptions = [
   {
@@ -38,7 +32,7 @@ const inviteOptions = [
   }
 ];
 
-export default class GetReviewsHome extends Component {
+export default class InvitationWays extends Component {
   renderInviteOptionsList = () => {
     return inviteOptions.map((item, index) => {
       return (
@@ -47,7 +41,7 @@ export default class GetReviewsHome extends Component {
             {`
               .renderInviteOptionsListContainer {
                 -webkit-transition: all 0.4s;
-                /forsafari3.1to6.0/transition: all 0.4s;
+                /forsafari3.1to6.0/trafnsition: all 0.4s;
                 -webkit-touch-callout: none;
                 /iossafari/-webkit-user-select: none;
                 /safari/-khtml-user-select: none;
@@ -93,46 +87,10 @@ export default class GetReviewsHome extends Component {
   render() {
     return (
       <div className="container">
-        <style jsx>{`
-          .buttonContainer {
-            margin-top: 5%;
-            width: 50%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-        `}</style>
+        <h1>Manual Invitation</h1>
         <p>Ask your customers to leave a review about their experience</p>
         <h5>Choose any of the methods below to add customers to invite</h5>
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">{this.renderInviteOptionsList()}</div>
-          </div>
-        </div>
-        <div className="buttonContainer">
-          <div>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ArrowLeft />}
-              onClick={this.props.onBackClick}
-              size="small"
-            >
-              Back
-            </Button>
-          </div>
-          <div>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<ArrowRight />}
-              onClick={this.props.onContinueClick}
-              size="small"
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
+        <div className="container">{this.renderInviteOptionsList()}</div>
       </div>
     );
   }

@@ -2,9 +2,6 @@ import css from "styled-jsx/css";
 
 const userProfileStyles = css`
   .avatarContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .cardContainer {
@@ -35,6 +32,16 @@ const userProfileStyles = css`
 
   .mt-50 {
     margin-top: 50px;
+  }
+
+  .mt-20 {
+    margin-top: 20px;
+  }
+
+  @media screen and (max-width: 589px) {
+    .avatarContainer {
+      text-align: center;
+    }
   }
 `;
 
