@@ -139,24 +139,24 @@ const WidgetsShowCase = dynamic(
   }
 );
 
-// const UserProfile = dynamic(
-//   () => import("../../Components/DashboardComponents/UserProfile"),
-//   {
-//     loading: () => (
-//       <div
-//         style={{
-//           width: "100%",
-//           height: "80vh",
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center"
-//         }}
-//       >
-//         <p>Loading.....</p>
-//       </div>
-//     )
-//   }
-// );
+const UserProfile = dynamic(
+  () => import("../../Components/DashboardComponents/UserProfile"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
 
 const drawerWidth = 240;
 
@@ -378,11 +378,11 @@ function Dashboard(props) {
     5: {
       name: "widgets",
       componentToRender: <WidgetsShowCase />
+    },
+    6: {
+      name: "userProfile",
+      componentToRender: <UserProfile />
     }
-    // 6: {
-    //   name: "userProfile",
-    //   componentToRender: <UserProfile />
-    // }
   };
 
   const renderAppropriateComponent = pId => {

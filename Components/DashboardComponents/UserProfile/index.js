@@ -11,6 +11,8 @@ import SaveIcon from "@material-ui/icons/Check";
 import CancelIcon from "@material-ui/icons/CloseRounded";
 import EditIcon from "@material-ui/icons/Edit";
 import Tooltip from "@material-ui/core/Tooltip";
+import UpdateIcon from "@material-ui/icons/PhotoCamera";
+import Button from "@material-ui/core/Button";
 
 class UserProfile extends Component {
   state = {
@@ -184,15 +186,32 @@ class UserProfile extends Component {
     const { userProfile } = this.props;
     const { name } = userProfile;
     return (
-      <div className="avatarContainer mt-50">
-        <style jsx>{styles}</style>
-        <Avatar
-          style={{ marginRight: "20px" }}
-          name={name || "Not Found"}
-          size="150"
-          round={true}
-        />
-      </div>
+      <>
+        <div className="avatarContainer mt-50">
+          <style jsx>{styles}</style>
+          <div className="row">
+            <div className="col-md-12">
+              <Avatar
+                style={{ marginRight: "20px" }}
+                name={name || "Not Found"}
+                size="150"
+                round={true}
+              />
+            </div>
+          </div>
+          <div className="row mt-20">
+            <div className="col-md-12">
+              <Button
+                // color="primary"
+                // variant="contained"
+                startIcon={<UpdateIcon />}
+              >
+                Update Avatar
+              </Button>
+            </div>
+          </div>
+        </div>
+      </>
     );
   };
 
@@ -436,7 +455,7 @@ class UserProfile extends Component {
                   styles={{
                     borderWidth: "0px 0px 1px 0px",
                     borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)"
+                    borderColor: "#ced4da"
                   }}
                 />
               </div>
@@ -448,7 +467,7 @@ class UserProfile extends Component {
                   styles={{
                     borderWidth: "0px 0px 1px 0px",
                     borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)"
+                    borderColor: "#ced4da"
                   }}
                 />
               </div>
@@ -463,7 +482,7 @@ class UserProfile extends Component {
                   styles={{
                     borderWidth: "0px 0px 1px 0px",
                     borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)"
+                    borderColor: "#ced4da"
                   }}
                 />
               </div>
@@ -475,7 +494,7 @@ class UserProfile extends Component {
                   styles={{
                     borderWidth: "0px 0px 1px 0px",
                     borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)",
+                    borderColor: "#ced4da",
                     height: "38px"
                   }}
                 />
