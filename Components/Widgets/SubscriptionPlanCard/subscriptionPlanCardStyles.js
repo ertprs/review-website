@@ -39,7 +39,7 @@ export const subscriptionPlanCardStyles = css`
   .free .subscriptionPlanCardBody .free li,
   .premium .subscriptionPlanCardBody .premium li,
   .professional .subscriptionPlanCardBody .professional li {
-    margin-bottom: 2rem;
+    margin-bottom: 1.8rem;
   }
 
   .subscriptionPlanCardBody .standard li {
@@ -117,7 +117,7 @@ export const subscriptionPlanCardStyles = css`
       transform: translateY(0);
     }
   }
-  @media screen and (min-width: 1366px) {
+  @media screen and (min-width: 1367px) {
     .subscriptionPlanCardBody {
       font-size: 1.3em;
     }

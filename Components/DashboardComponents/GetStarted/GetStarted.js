@@ -6,6 +6,7 @@ import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/P
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
 import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
 import { connect } from "react-redux";
 import _get from "lodash/get";
@@ -19,6 +20,7 @@ import {
   setReviewsPusherConnect,
   clearReviewsData
 } from "../../../store/actions/dashboardActions";
+import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 
 class GetStarted extends Component {
   state = {
@@ -41,6 +43,81 @@ class GetStarted extends Component {
           isDomain: true
         },
         label: "Google review URL: "
+      },
+      facebookReviewUrl: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: true,
+        touched: true,
+        errorMessage: "",
+        placeholder: "Enter facebook business page URL (optional)",
+        validationRules: {
+          required: false,
+          isDomain: true
+        },
+        label: "Facebook Business Page URL: ",
+        logo: "facebookLogo.png"
+      },
+      trustPilotReviewUrl: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: true,
+        touched: true,
+        errorMessage: "",
+        placeholder: "Enter TrustPilot page URL (optional)",
+        validationRules: {
+          required: false,
+          isDomain: true
+        },
+        label: "TrustPilot Page URL: ",
+        logo: "trustpilotLogo.png"
+      },
+      trustedShopsReviewUrl: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: true,
+        touched: true,
+        errorMessage: "",
+        placeholder: "Enter TrustedShops page URL (optional)",
+        validationRules: {
+          required: false,
+          isDomain: true
+        },
+        label: "TrustedShops Page URL: ",
+        logo: "trustedShopLogo.jpg"
+      },
+      appStoreReviewUrl: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: true,
+        touched: true,
+        errorMessage: "",
+        placeholder: "Enter App Store review page URL (optional)",
+        validationRules: {
+          required: false,
+          isDomain: true
+        },
+        label: "App Store review Page URL: ",
+        logo: "appStoreLogo.png"
+      },
+      googlePlayStoreReviewUrl: {
+        element: "input",
+        type: "text",
+        value: "",
+        valid: true,
+        touched: true,
+        errorMessage: "",
+        placeholder: "Enter Google play Store review page URL (optional)",
+        validationRules: {
+          required: false,
+          isDomain: true
+        },
+        label: "Google play Store URL: ",
+        logo: "googlePlayStoreLogo.png"
       }
     }
   };
@@ -194,10 +271,12 @@ class GetStarted extends Component {
           >
             {" "}
             <p>How to create review short link - Watch Video</p>{" "}
-            <img
-              style={{ maxWidth: "300px" }}
-              src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
-            />
+            <div style={{ maxWidth: "300px", height: "auto" }}>
+              <img
+                style={{ maxWidth: "100%", height: "auto" }}
+                src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
+              />
+            </div>
           </a>
         </div>
       </div>
@@ -260,7 +339,7 @@ class GetStarted extends Component {
                 />
                 {this.renderSelectedAddress()}
                 {this.renderDirectReviewUrl()}
-                {this.renderContinueBtn()}
+                {/* {this.renderContinueBtn()} */}
               </>
             </div>
           </div>
@@ -317,6 +396,79 @@ class GetStarted extends Component {
     }
   }
 
+  renderReviewItemBox = () => {
+    const { formData } = this.state;
+    let output = [];
+    for (let item in formData) {
+      if (item !== "directReviewUrl") {
+        output = [
+          ...output,
+          <div className="reviewBoxItemContainer">
+            <style jsx>{reviewChannelBoxStyles}</style>
+            <div>
+              <div className="reviewBoxItemLogoContainer">
+                <img src={`/static/images/${formData[item].logo}`} />
+              </div>
+            </div>
+            <div className="reviewBoxItemTextBoxContainer">
+              <FormField
+                {...formData[item]}
+                id={item}
+                handleChange={this.handleChange}
+                styles={{
+                  border: "0",
+                  borderBottom: "1px solid #999",
+                  borderRadius: "0",
+                  marginLeft: 0,
+                  paddingLeft: 0
+                }}
+              />
+            </div>
+          </div>
+        ];
+      }
+    }
+    return output;
+  };
+
+  renderReviewChannelBox = () => {
+    const { formData } = this.state;
+    return (
+      <Paper>
+        <style jsx>{reviewChannelBoxStyles}</style>
+        <div className="reviewChannelBox">
+          <div className="reviewChannelBoxHeader">
+            <h4>Set up your review channels</h4>
+          </div>
+          {/* reviewBoxItem start*/}
+          {this.renderReviewItemBox()}
+          {/* <div className="reviewBoxItemContainer">
+            <div>
+              <div className="reviewBoxItemLogoContainer">
+                <img src="/static/images/facebookLogo.png" />
+              </div>
+            </div>
+            <div className="reviewBoxItemTextBoxContainer">
+              <FormField
+                {...formData.facebookReviewUrl}
+                id="facebookReviewUrl"
+                handleChange={this.handleChange}
+                styles={{
+                  border: "0",
+                  borderBottom: "1px solid #999",
+                  borderRadius: "0",
+                  marginLeft: 0,
+                  paddingLeft: 0
+                }}
+              />
+            </div>
+          </div> */}
+          {/* reviewBoxItem end */}
+        </div>
+      </Paper>
+    );
+  };
+
   render() {
     return (
       <div>
@@ -327,34 +479,25 @@ class GetStarted extends Component {
             </Grid>
           </Grid>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={12} lg={12}>
+            <Grid item xs={7} md={7} lg={7}>
               {this.renderGetStartedBox()}
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              {/* <div
-                style={{
-                  position: "relative",
-                  paddingBottom: "56.25%",
-                  height: "0"
-                }}
-              >
-                <iframe
-                  src="https://www.loom.com/embed/ef51f581d64842a6bcdcd000d2645708"
-                  frameborder="0"
-                  webkitallowfullscreen
-                  mozallowfullscreen
-                  allowfullscreen
-                  style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                    width: "100%",
-                    height: "100%"
+              {this.renderContinueBtn()}
+              {this.props.editMode ? <div style={{ marginTop: "30px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  startIcon={<ArrowBackIcon />}
+                  onClick={()=>{
+                    this.props.handleEditModeClose()
                   }}
-                ></iframe>
-              </div> */}
+                >
+                  Back
+                </Button>
+              </div> : null}
+            </Grid>
+            <Grid item xs={5} md={5} lg={5}>
+              {this.renderReviewChannelBox()}
             </Grid>
           </Grid>
         </Container>
@@ -401,12 +544,9 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    locatePlaceByPlaceId,
-    setGoogleDirectReviewUrl,
-    setReviewsPusherConnect,
-    clearReviewsData
-  }
-)(GetStarted);
+export default connect(mapStateToProps, {
+  locatePlaceByPlaceId,
+  setGoogleDirectReviewUrl,
+  setReviewsPusherConnect,
+  clearReviewsData
+})(GetStarted);

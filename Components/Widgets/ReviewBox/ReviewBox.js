@@ -2,8 +2,8 @@ import React from "react";
 import { reviewBoxStyles } from "./reviewBoxStyles.js";
 import stringHelpers from "../../../utility/stringHelpers";
 import ReviewCard from "../ReviewCard/ReviewCard";
-import RatingIndicators from '../../Widgets/RatingIndicators/RatingIndicators';
-import { ratingColor } from '../../../utility/ratingTypeColor';
+import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
+import { ratingColor } from "../../../utility/ratingTypeColor";
 import StarRatings from "react-star-ratings";
 import { googleMapsURL } from "../../../utility/config";
 const renderTextualReviewBox = (
@@ -20,6 +20,20 @@ const renderTextualReviewBox = (
           {/* {review.name.length > 7
             ? review.name.substring(0, 7) + ".."
             : review.name} */}
+          <a
+            href={`${googleMapsURL}/${domain}`}
+            target="_blank"
+          >
+            <img
+              src="/static/images/googleIcon.png"
+              style={{
+                height: "10px",
+                width: "10px",
+                marginRight: "10px",
+                display: "inline-block"
+              }}
+            />
+          </a>
           {review.name.replace(/\s+/gim, " ")}
         </div>
         {/* <div className="reviewHeaderDate">
@@ -32,7 +46,9 @@ const renderTextualReviewBox = (
           <RatingIndicators
             rating={Number((review || {}).rating) || 0}
             typeOfWidget="star"
-            widgetRatedColors={ratingColor[Math.round(Number(review.rating)) || 0]}
+            widgetRatedColors={
+              ratingColor[Math.round(Number(review.rating)) || 0]
+            }
             widgetDimensions="20px"
             widgetSpacings="1px"
           />

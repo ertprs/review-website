@@ -250,7 +250,7 @@ const Home = props => {
                 margin-bottom: 30px;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .logoImgContainer {
                 max-width: 330px;
               }
@@ -316,7 +316,7 @@ const Home = props => {
               margin-bottom:5%;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .footer{
               font-size: 1.2em;
             }
@@ -445,7 +445,7 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .reviewSteptext {
                 font-size: 1.2em;
               }
@@ -645,7 +645,7 @@ const Home = props => {
               padding: 4% 12% 4% 12%;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .arrangeMeetingBtn {
               font-size: 1.2em;
             }
@@ -800,7 +800,7 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .arrangeMeetingBtn {
                 font-size: 1.3em;
               }
@@ -909,7 +909,7 @@ const Home = props => {
               text-align: center;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .widgetAddStepText {
               font-size: 1.3em;
             }
@@ -1079,7 +1079,7 @@ const Home = props => {
                 text-align: right;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .whyToText {
                 font-size: 1.3em;
               }
@@ -1625,7 +1625,7 @@ const Home = props => {
                 display: flex;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .topRightLinksContainer {
               }
               .topRightLinksItem {
@@ -1749,7 +1749,7 @@ const Home = props => {
               letter-spacing: 0px;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .taglineHeader {
               font-size: 1.3em;
             }
