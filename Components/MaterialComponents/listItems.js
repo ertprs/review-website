@@ -12,6 +12,7 @@ import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import HistoryIcon from "@material-ui/icons/History";
+import Tooltip from "@material-ui/core/Tooltip";
 import { CircularProgress } from "@material-ui/core";
 
 export const MainListItems = ({
@@ -40,9 +41,11 @@ export const MainListItems = ({
           className={stepToRender === 0 ? "grayBg" : ""}
           disabled={getStartedDisabled}
         >
-          <ListItemIcon>
-            <FormatListBulletedIcon />
-          </ListItemIcon>
+          <Tooltip title="Get Started" placement="right">
+            <ListItemIcon>
+              <FormatListBulletedIcon />
+            </ListItemIcon>
+          </Tooltip>
           <ListItemText primary="Get started" />
         </ListItem>
       )}
@@ -54,9 +57,11 @@ export const MainListItems = ({
         className={stepToRender === 1 ? "grayBg" : ""}
         disabled={homeDisabled}
       >
-        <ListItemIcon>
-          <Home />
-        </ListItemIcon>
+        <Tooltip title="Home" placement="right">
+          <ListItemIcon>
+            <Home />
+          </ListItemIcon>
+        </Tooltip>
         <ListItemText primary="Home" />
       </ListItem>
       <ListItem
@@ -67,9 +72,11 @@ export const MainListItems = ({
         className={stepToRender === 2 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
-        <ListItemIcon>
-          <AllInbox />
-        </ListItemIcon>
+        <Tooltip title="Reviews" placement="right">
+          <ListItemIcon>
+            <AllInbox />
+          </ListItemIcon>
+        </Tooltip>
         <ListItemText primary="Reviews" />
       </ListItem>
       <ListItem
@@ -80,9 +87,11 @@ export const MainListItems = ({
         className={stepToRender === 3 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
-        <ListItemIcon>
-          <FormatQuote />
-        </ListItemIcon>
+        <Tooltip title="Get Reviews" placement="right">
+          <ListItemIcon>
+            <FormatQuote />
+          </ListItemIcon>
+        </Tooltip>
         <ListItemText primary="Get Reviews" />
       </ListItem>
       <ListItem
@@ -93,9 +102,11 @@ export const MainListItems = ({
         className={stepToRender === 4 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
-        <ListItemIcon>
-          <HistoryIcon />
-        </ListItemIcon>
+        <Tooltip title="Invitation History" placement="right">
+          <ListItemIcon>
+            <HistoryIcon />
+          </ListItemIcon>
+        </Tooltip>
         <ListItemText primary="Invitation History" />
       </ListItem>
       <ListItem
@@ -106,12 +117,14 @@ export const MainListItems = ({
         disabled={menuItemDisabled}
         className={stepToRender === 5 ? "grayBg" : ""}
       >
-        <ListItemIcon>
-          <LayersIcon />
-        </ListItemIcon>
+        <Tooltip title="Widgets" placement="right">
+          <ListItemIcon>
+            <LayersIcon />
+          </ListItemIcon>
+        </Tooltip>
         <ListItemText primary="Widgets" />
       </ListItem>
-      {/* <ListItem
+      <ListItem
         button
         onClick={() => {
           handleMainListItemClick(6);
@@ -119,11 +132,13 @@ export const MainListItems = ({
         disabled={menuItemDisabled}
         className={stepToRender === 6 ? "grayBg" : ""}
       >
-        <ListItemIcon>
-          <UserProfileIcon />
-        </ListItemIcon>
+        <Tooltip title="User Profile" placement="right">
+          <ListItemIcon>
+            <UserProfileIcon />
+          </ListItemIcon>
+        </Tooltip>
         <ListItemText primary="User Profile" />
-      </ListItem> */}
+      </ListItem>
     </div>
   );
 };
