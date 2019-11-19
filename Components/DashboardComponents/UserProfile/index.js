@@ -15,6 +15,9 @@ import UpdateIcon from "@material-ui/icons/PhotoCamera";
 import Button from "@material-ui/core/Button";
 import Modal from "../../Widgets/CustomModal/CustomModal";
 import ImageUpload from "./imageUpload";
+import ShowCompany from "./company/showCompany";
+import EditCompany from "./company/editCompany";
+import Snackbar from "../../Widgets/Snackbar";
 
 class UserProfile extends Component {
   state = {
@@ -85,10 +88,10 @@ class UserProfile extends Component {
         },
         name: "name"
       },
-      reg_number: {
+      regNumber: {
         element: "input",
         value: _get(this.props, "userProfile.company.reg_number", ""),
-        placeholder: "Enter tax number",
+        placeholder: "Enter reg number",
         errorMessage: "",
         valid: false,
         touched: false,
@@ -96,9 +99,9 @@ class UserProfile extends Component {
           required: true,
           minLength: 5
         },
-        name: "reg_number"
+        name: "regNumber"
       },
-      tax_number: {
+      taxNumber: {
         element: "input",
         value: _get(this.props, "userProfile.company.tax_number", ""),
         placeholder: "Enter tax number",
@@ -109,9 +112,9 @@ class UserProfile extends Component {
           required: true,
           minLength: 5
         },
-        name: "tax_number"
+        name: "taxNumber"
       },
-      legal_address: {
+      legalAddress: {
         element: "input",
         value: _get(this.props, "userProfile.company.legal_address", ""),
         placeholder: "Enter legal address",
@@ -122,9 +125,9 @@ class UserProfile extends Component {
           required: true,
           minLength: 5
         },
-        name: "legal_address"
+        name: "legalAddress"
       },
-      actual_address: {
+      actualAddress: {
         element: "input",
         value: _get(this.props, "userProfile.company.actual_address", ""),
         placeholder: "Enter actual address",
@@ -135,12 +138,12 @@ class UserProfile extends Component {
           required: true,
           minLength: 5
         },
-        name: "actual_address"
+        name: "actualAddress"
       },
       country: {
         element: "select",
         name: "country",
-        value: _get(this.props, "userProfile.country", ""),
+        value: _get(this.props, "userProfile.company.country_id", ""),
         options: [...countrieslist],
         placeholder: "Select your country",
         valid: false,
@@ -170,16 +173,16 @@ class UserProfile extends Component {
     showModal: false
   };
 
-  handleChange = (e, id) => {
-    const { value } = e.target;
-    const { formData } = this.state;
+  handleCompanyDetailsChange = (e, id) => {
+    const { value, name } = e.target;
+    const { companyDetails } = this.state;
     this.setState({
-      formData: {
-        ...formData,
-        [id]: {
-          ...formData[id],
-          value: value,
-          valid: validate(value, formData[id].validationRules),
+      companyDetails: {
+        ...companyDetails,
+        [name]: {
+          ...companyDetails[name],
+          value,
+          valid: validate(value, companyDetails[name].validationRules),
           touched: true
         }
       }
@@ -376,192 +379,36 @@ class UserProfile extends Component {
     );
   };
 
-  companyDetailsData = () => {
-    const { company } = this.props.userProfile || {};
-
-    const {
-      name,
-      reg_number,
-      tax_number,
-      legal_address,
-      actual_address,
-      description,
-      country
-    } = company || {};
-    const companyDetails = [
-      { key: "Name", value: name },
-      { key: "Registration Number", value: "email" },
-      { key: "Tax Number", value: "575757575875" },
-      { key: "Legal Address", value: "Arjunganj" },
-      { key: "Actual Address", value: "Lucknow" },
-      { key: "Description", value: "226002" },
-      { key: "Country", value: "India" }
-    ];
-    return companyDetails;
-  };
-
-  renderCompanyDetails = () => {
-    const companyData = this.companyDetailsData();
-    let halfCompanyData = Math.floor(companyData.length / 2);
-    let companyDataLeft = companyData.splice(0, halfCompanyData);
-    let companyDataRight = companyData.splice(0, companyData.length);
-    return (
-      <div className="mt-50">
-        <style jsx>{styles}</style>
-        <div className="cardHeader">
-          <h3 className="heading">Company Details</h3>
-          <Tooltip title={"Edit"} placement="top-end">
-            <EditIcon
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                this.setState({ companyDetailsEdit: true });
-              }}
-            />
-          </Tooltip>
-        </div>
-        <Card>
-          <div className="row">
-            {this.mapOverArray(companyDataLeft)}
-            {this.mapOverArray(companyDataRight)}
-          </div>
-        </Card>
-      </div>
-    );
-  };
-
-  renderCompanyDetailsEdit = () => {
-    const { companyDetails } = this.state;
-    return (
-      <div className="mt-50">
-        <style jsx>{styles}</style>
-        <Card>
-          <div className="cardHeader">
-            <h3 className="heading">Edit Company Details</h3>
-            <div>
-              <Tooltip title={"Cancel"} placement="top">
-                <CancelIcon
-                  style={{ marginRight: "20px", cursor: "pointer" }}
-                  onClick={() => {
-                    this.setState({ companyDetailsEdit: false });
-                  }}
-                />
-              </Tooltip>
-              <Tooltip title={"Save"} placement="top">
-                <SaveIcon
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    this.setState({ companyDetailsEdit: false });
-                  }}
-                />
-              </Tooltip>
-            </div>
-          </div>
-          <>
-            <div className="row">
-              <div className="col-md-6">
-                <FormField
-                  {...companyDetails.name}
-                  handleChange={this.handleChange}
-                  id="name"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "#ced4da"
-                  }}
-                />
-              </div>
-              <div className="col-md-6">
-                <FormField
-                  {...companyDetails.reg_number}
-                  handleChange={this.handleChange}
-                  id="email"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "#ced4da"
-                  }}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <FormField
-                  {...companyDetails.tax_number}
-                  handleChange={this.handleChange}
-                  onkeyDown={this.handleKeyDown}
-                  id="phone"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "#ced4da"
-                  }}
-                />
-              </div>
-              <div className="col-md-6">
-                <FormField
-                  {...companyDetails.legal_address}
-                  handleChange={this.handleChange}
-                  id="country"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "#ced4da",
-                    height: "38px"
-                  }}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <FormField
-                  {...companyDetails.actual_address}
-                  handleChange={this.handleChange}
-                  onkeyDown={this.handleKeyDown}
-                  id="phone"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)"
-                  }}
-                />
-              </div>
-              <div className="col-md-6">
-                <FormField
-                  {...companyDetails.description}
-                  handleChange={this.handleChange}
-                  id="country"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)",
-                    height: "38px"
-                  }}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <FormField
-                  {...companyDetails.country}
-                  handleChange={this.handleChange}
-                  id="country"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)",
-                    height: "38px"
-                  }}
-                />
-              </div>
-            </div>
-          </>
-        </Card>
-      </div>
-    );
-  };
+  componentDidUpdate(prevProps, prevState) {
+    const { success, errorMsg } = this.props;
+    if (this.props !== prevProps) {
+      if (success === true) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Data Updated Successfully!"
+        });
+      } else if (success === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: errorMsg
+        });
+      }
+    }
+  }
 
   render() {
-    const { userDetailsEdit, companyDetailsEdit, showModal } = this.state;
+    const {
+      userDetailsEdit,
+      companyDetailsEdit,
+      showModal,
+      companyDetails,
+      showSnackbar,
+      variant,
+      snackbarMsg
+    } = this.state;
+    const { userProfile } = this.props;
     return (
       <>
         <div className="container">
@@ -577,9 +424,25 @@ class UserProfile extends Component {
               </div>
               <div className="row">
                 <div className="col-md-12">
-                  {companyDetailsEdit
-                    ? this.renderCompanyDetailsEdit()
-                    : this.renderCompanyDetails()}
+                  {companyDetailsEdit ? (
+                    <EditCompany
+                      companyDetails={companyDetails}
+                      handleChange={this.handleCompanyDetailsChange}
+                      handleSaveClick={() => {
+                        this.setState({ companyDetailsEdit: false });
+                      }}
+                      handleCancelClick={() => {
+                        this.setState({ companyDetailsEdit: false });
+                      }}
+                    />
+                  ) : (
+                    <ShowCompany
+                      userProfile={userProfile || {}}
+                      handleEditClick={() => {
+                        this.setState({ companyDetailsEdit: true });
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -601,6 +464,12 @@ class UserProfile extends Component {
             }}
           />
         </Modal>
+        <Snackbar
+          open={showSnackbar}
+          variant={variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={snackbarMsg}
+        />
       </>
     );
   }
@@ -608,7 +477,11 @@ class UserProfile extends Component {
 
 const mapStateToProps = state => {
   const { userProfile } = state.auth.logIn || {};
-  return { userProfile };
+  const companyDetails = _get(state, "dashboardData.companyDetails", {});
+  const isLoading = _get(companyDetails, "isLoading", false);
+  const success = _get(companyDetails, "success", "undefined");
+  const errorMsg = _get(companyDetails, "errorMsg", "");
+  return { userProfile, isLoading, success, errorMsg };
 };
 
 export default connect(mapStateToProps)(UserProfile);

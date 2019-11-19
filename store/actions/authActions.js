@@ -29,10 +29,7 @@ import {
   RESEND_ACTIVATION_LINK_SUCCESS,
   RESEND_ACTIVATION_LINK_FAILURE,
   SET_USER_ACTIVATED,
-  SET_BUSINESS_SUBSCRIPTION,
-  UPDATE_USER_DETAILS_DATA_INIT,
-  UPDATE_USER_DETAILS_DATA_SUCCESS,
-  UPDATE_USER_DETAILS_DATA_ERROR
+  SET_BUSINESS_SUBSCRIPTION
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -626,48 +623,5 @@ export const setSubscription = isSubscriptionExpired => {
   return {
     type: SET_BUSINESS_SUBSCRIPTION,
     isSubscriptionExpired
-  };
-};
-
-export const updateUserDetailsData = (data, url) => {
-  let token = localStorage.getItem("token");
-  return async (dispatch, getState) => {
-    dispatch({
-      type: UPDATE_USER_DETAILS_DATA_INIT,
-      updateUserDetails: {
-        success: undefined,
-        isLoading: true,
-        data: {}
-      }
-    });
-    try {
-      const result = await axios({
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        data,
-        url
-      });
-      const success = await _get(result, "data.success", false);
-      dispatch({
-        type: UPDATE_USER_DETAILS_DATA_SUCCESS,
-        updateUserDetails: {
-          success: true,
-          isLoading: false,
-          data: {}
-        }
-      });
-      if (success) {
-        cookie.set("placeLocated", true);
-      }
-    } catch (error) {
-      dispatch({
-        type: UPDATE_USER_DETAILS_DATA_ERROR,
-        updateUserDetails: {
-          success: false,
-          isLoading: false,
-          data: {}
-        }
-      });
-    }
   };
 };
