@@ -147,10 +147,12 @@ function PrimarySearchAppBar(props) {
   let userName = "";
   if (userProfile) {
     if (userProfile.hasOwnProperty("name")) {
-      if (userProfile.name.length > 0) {
-        let nameAfterSplit = userProfile.name.split(" ");
-        if (nameAfterSplit.length > 0) {
-          userName = nameAfterSplit[0];
+      if (userProfile.name) {
+        if (userProfile.name.length > 0) {
+          let nameAfterSplit = userProfile.name.split(" ");
+          if (nameAfterSplit.length > 0) {
+            userName = nameAfterSplit[0];
+          }
         }
       }
     }

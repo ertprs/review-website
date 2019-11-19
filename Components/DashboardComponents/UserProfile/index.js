@@ -200,16 +200,12 @@ class UserProfile extends Component {
           <style jsx>{styles}</style>
           <div className="row">
             <div className="col-md-12">
-              {imageFile.length > 0 ? (
-                <img src={imageFile[0].path} />
-              ) : (
-                <Avatar
-                  style={{ marginRight: "20px" }}
-                  name={name || "Not Found"}
-                  size="150"
-                  round={true}
-                />
-              )}
+              <Avatar
+                style={{ marginRight: "20px" }}
+                name={name || "Not Found"}
+                size="150"
+                round={true}
+              />
             </div>
           </div>
           <div className="row mt-20">
