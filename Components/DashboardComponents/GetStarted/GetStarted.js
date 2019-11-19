@@ -21,6 +21,7 @@ import {
   clearReviewsData
 } from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
+import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
 
 class GetStarted extends Component {
   state = {
@@ -50,14 +51,15 @@ class GetStarted extends Component {
         value: "",
         valid: true,
         touched: true,
-        errorMessage: "",
+        errorMessage: "Enter valid URL",
         placeholder: "Enter facebook business page URL (optional)",
         validationRules: {
           required: false,
           isDomain: true
         },
         label: "Facebook Business Page URL: ",
-        logo: "facebookLogo.png"
+        logo: "facebookLogo.png",
+        title: "Facebook reviews"
       },
       trustPilotReviewUrl: {
         element: "input",
@@ -65,14 +67,15 @@ class GetStarted extends Component {
         value: "",
         valid: true,
         touched: true,
-        errorMessage: "",
+        errorMessage: "Enter valid URL",
         placeholder: "Enter TrustPilot page URL (optional)",
         validationRules: {
           required: false,
           isDomain: true
         },
         label: "TrustPilot Page URL: ",
-        logo: "trustpilotLogo.png"
+        logo: "trustpilotLogo.png",
+        title: "TrustPilot reviews"
       },
       trustedShopsReviewUrl: {
         element: "input",
@@ -80,14 +83,15 @@ class GetStarted extends Component {
         value: "",
         valid: true,
         touched: true,
-        errorMessage: "",
+        errorMessage: "Enter valid URL",
         placeholder: "Enter TrustedShops page URL (optional)",
         validationRules: {
           required: false,
           isDomain: true
         },
         label: "TrustedShops Page URL: ",
-        logo: "trustedShopLogo.jpg"
+        logo: "trustedShopLogo.jpg",
+        title: "TrustedShops reviews"
       },
       appStoreReviewUrl: {
         element: "input",
@@ -95,14 +99,15 @@ class GetStarted extends Component {
         value: "",
         valid: true,
         touched: true,
-        errorMessage: "",
+        errorMessage: "Enter valid URL",
         placeholder: "Enter App Store review page URL (optional)",
         validationRules: {
           required: false,
           isDomain: true
         },
         label: "App Store review Page URL: ",
-        logo: "appStoreLogo.png"
+        logo: "appStoreLogo.png",
+        title: "App Store reviews"
       },
       googlePlayStoreReviewUrl: {
         element: "input",
@@ -110,14 +115,15 @@ class GetStarted extends Component {
         value: "",
         valid: true,
         touched: true,
-        errorMessage: "",
+        errorMessage: "Enter valid URL",
         placeholder: "Enter Google play Store review page URL (optional)",
         validationRules: {
           required: false,
           isDomain: true
         },
         label: "Google play Store URL: ",
-        logo: "googlePlayStoreLogo.png"
+        logo: "googlePlayStoreLogo.png",
+        title: "Google play store reviews"
       }
     }
   };
@@ -201,11 +207,20 @@ class GetStarted extends Component {
     );
   };
 
+  anyURLSelected = () => {
+    let valid = false;
+    let { formData } = this.state;
+    for (let item in formData) {
+      valid = valid || (formData[item].value !== "" && formData[item].valid);
+    }
+    return valid;
+  };
+
   renderContinueBtn = () => {
     const { selectedAddress, formData } = this.state;
     const { type, isLoading } = this.props;
-    return Object.keys(selectedAddress).length > 0 ? (
-      <div style={{ marginTop: "50px", textAlign: "right" }}>
+    return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
+      <div style={{ textAlign: "right" }}>
         {isLoading === true ? (
           <Button>
             <CircularProgress size={25} />
@@ -216,6 +231,7 @@ class GetStarted extends Component {
             onClick={this.handleContinueClick}
             variant="contained"
             color="primary"
+            size="large"
           >
             Claim &amp; continue
           </Button>
@@ -326,7 +342,7 @@ class GetStarted extends Component {
         </style>
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
-            <h4>Please claim your Business</h4>
+            <h4>Google Reviews</h4>
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxImgContainer">
@@ -396,109 +412,128 @@ class GetStarted extends Component {
     }
   }
 
-  renderReviewItemBox = () => {
+  renderReviewURLBoxes = () => {
     const { formData } = this.state;
     let output = [];
     for (let item in formData) {
       if (item !== "directReviewUrl") {
         output = [
           ...output,
-          <div className="reviewBoxItemContainer">
-            <style jsx>{reviewChannelBoxStyles}</style>
-            <div>
-              <div className="reviewBoxItemLogoContainer">
-                <img src={`/static/images/${formData[item].logo}`} />
+          <Grid item xs={6} md={6} lg={6}>
+            <Paper>
+              <style jsx>{reviewURLBoxStyles}</style>
+              <div className="reviewURLBox">
+                <div className="reviewURLBoxHeader">
+                  <h4>{formData[item].title}</h4>
+                </div>
+                <div className="reviewURLBoxContainerInner">
+                  <div className="reviewURLBoxImgContainer">
+                    <img src={`/static/images/${formData[item].logo}`} />
+                  </div>
+                  <div className="reviewURLBoxAutoComplete">
+                    <>
+                      <FormField
+                        {...formData[item]}
+                        id={item}
+                        handleChange={this.handleChange}
+                        styles={{
+                          border: "0",
+                          borderBottom: "1px solid #999",
+                          borderRadius: "0",
+                          marginLeft: 0,
+                          paddingLeft: 0
+                        }}
+                      />
+                    </>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="reviewBoxItemTextBoxContainer">
-              <FormField
-                {...formData[item]}
-                id={item}
-                handleChange={this.handleChange}
-                styles={{
-                  border: "0",
-                  borderBottom: "1px solid #999",
-                  borderRadius: "0",
-                  marginLeft: 0,
-                  paddingLeft: 0
-                }}
-              />
-            </div>
-          </div>
+            </Paper>
+          </Grid>
         ];
       }
     }
     return output;
   };
 
-  renderReviewChannelBox = () => {
-    const { formData } = this.state;
+  renderSpecificReviewURLBox = reviewURLToEdit => {
+    console.log(reviewURLToEdit);
+    const {formData} = this.state;
     return (
-      <Paper>
-        <style jsx>{reviewChannelBoxStyles}</style>
-        <div className="reviewChannelBox">
-          <div className="reviewChannelBoxHeader">
-            <h4>Set up your review channels</h4>
-          </div>
-          {/* reviewBoxItem start*/}
-          {this.renderReviewItemBox()}
-          {/* <div className="reviewBoxItemContainer">
-            <div>
-              <div className="reviewBoxItemLogoContainer">
-                <img src="/static/images/facebookLogo.png" />
+      <Grid item xs={6} md={6} lg={6}>
+        <Paper>
+          <style jsx>{reviewURLBoxStyles}</style>
+          <div className="reviewURLBox">
+            <div className="reviewURLBoxHeader">
+              <h4>{formData[reviewURLToEdit].title}</h4>
+            </div>
+            <div className="reviewURLBoxContainerInner">
+              <div className="reviewURLBoxImgContainer">
+                <img src={`/static/images/${formData[reviewURLToEdit].logo}`} />
+              </div>
+              <div className="reviewURLBoxAutoComplete">
+                <>
+                  <FormField
+                    {...formData[reviewURLToEdit]}
+                    id={reviewURLToEdit}
+                    handleChange={this.handleChange}
+                    styles={{
+                      border: "0",
+                      borderBottom: "1px solid #999",
+                      borderRadius: "0",
+                      marginLeft: 0,
+                      paddingLeft: 0
+                    }}
+                  />
+                </>
               </div>
             </div>
-            <div className="reviewBoxItemTextBoxContainer">
-              <FormField
-                {...formData.facebookReviewUrl}
-                id="facebookReviewUrl"
-                handleChange={this.handleChange}
-                styles={{
-                  border: "0",
-                  borderBottom: "1px solid #999",
-                  borderRadius: "0",
-                  marginLeft: 0,
-                  paddingLeft: 0
-                }}
-              />
-            </div>
-          </div> */}
-          {/* reviewBoxItem end */}
-        </div>
-      </Paper>
+          </div>
+        </Paper>
+      </Grid>
     );
   };
 
   render() {
+    const { reviewURLToEdit } = this.props;
     return (
       <div>
         <Container>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={12} lg={12}>
+            <Grid item xs={12} md={8} lg={8}>
               {this.renderGetStartedHeader()}
+            </Grid>
+            <Grid item xs={12} md={4} lg={4}>
+              {this.renderContinueBtn()}
             </Grid>
           </Grid>
           <Grid container spacing={3}>
-            <Grid item xs={7} md={7} lg={7}>
-              {this.renderGetStartedBox()}
+            {reviewURLToEdit === "" ? (
+              <Grid item xs={12} md={6} lg={6}>
+                {this.renderGetStartedBox()}
+              </Grid>
+            ) : null}
+            {reviewURLToEdit === ""
+              ? this.renderReviewURLBoxes()
+              : this.renderSpecificReviewURLBox(reviewURLToEdit)}
+          </Grid>
+          <Grid container spacing={3} style={{marginTop:"35px"}}>
+              {this.props.editMode ? (
+                <div style={{ marginRight: "50px", marginLeft: "10px" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => {
+                      this.props.handleEditModeClose();
+                    }}
+                  >
+                    Back
+                  </Button>
+                </div>
+              ) : null}
               {this.renderContinueBtn()}
-              {this.props.editMode ? <div style={{ marginTop: "30px" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  startIcon={<ArrowBackIcon />}
-                  onClick={()=>{
-                    this.props.handleEditModeClose()
-                  }}
-                >
-                  Back
-                </Button>
-              </div> : null}
-            </Grid>
-            <Grid item xs={5} md={5} lg={5}>
-              {this.renderReviewChannelBox()}
-            </Grid>
           </Grid>
         </Container>
         <Snackbar

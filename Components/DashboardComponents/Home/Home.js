@@ -18,8 +18,11 @@ import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton/IconButton";
 import Moment from "react-moment";
 import { ratingColor } from "../../../utility/ratingTypeColor";
+import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
+import { Paper } from "@material-ui/core";
 
 const styles = theme => ({
   button: {
@@ -32,7 +35,8 @@ class Home extends Component {
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
-    editMode: false
+    editMode: false,
+    reviewURLToEdit: ""
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -476,6 +480,37 @@ class Home extends Component {
     );
   };
 
+  renderReviewURLBoxes = (imageLogo, URL, editURL) => {
+    return (
+      <div className="reviewBoxItemContainer">
+        <style jsx>{reviewChannelBoxStyles}</style>
+        <div>
+          <div className="reviewBoxItemLogoContainer">
+            <img src={`/static/images/${imageLogo}`} />
+          </div>
+        </div>
+        <div className="reviewBoxItemTextBoxContainer">{URL}</div>
+        <div>
+          <IconButton
+            key="edit"
+            aria-label="edit"
+            color="inherit"
+            onClick={() => {
+              this.setState(prevState => {
+                return {
+                  editMode: !prevState.editMode,
+                  reviewURLToEdit: editURL
+                };
+              });
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const {
       classes,
@@ -483,7 +518,7 @@ class Home extends Component {
       userActivated,
       changeStepToRender
     } = this.props;
-    const { editMode } = this.state;
+    const { editMode, reviewURLToEdit } = this.state;
     return (
       <>
         <style jsx>
@@ -533,6 +568,30 @@ class Home extends Component {
                 </div>
               </SimpleCard>
             </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              <h4 style={{ marginLeft: "5px" }}>Review URL Links : </h4>
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              {this.renderReviewURLBoxes(
+                "facebookLogo.png",
+                "https://www.facebook.com/GoogleIndia/?brand_redir=104958162837",
+                "facebookReviewUrl"
+              )}
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              {this.renderReviewURLBoxes(
+                "trustpilotLogo.png",
+                "https://www.trustpilot.com/review/www.google.com",
+                "trustPilotReviewUrl"
+              )}
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              {this.renderReviewURLBoxes(
+                "trustedShopLogo.jpg",
+                "https://www.trustedshops.fr/evaluation/info_XD5963EA6BCACE0C453226C6D9CC84B33.html",
+                "trustedShopsReviewUrl"
+              )}
+            </Grid>
           </Grid>
         ) : (
           <div>
@@ -541,15 +600,18 @@ class Home extends Component {
               home={true}
               changeEditMode={() => {
                 this.setState({
-                  editMode: false
+                  editMode: false,
+                  reviewURLToEdit: ""
                 });
               }}
-              editMode= {this.state.editMode}
-              handleEditModeClose={()=>{
+              editMode={this.state.editMode}
+              handleEditModeClose={() => {
                 this.setState({
-                  editMode: false
+                  editMode: false,
+                  reviewURLToEdit: ""
                 });
               }}
+              reviewURLToEdit={reviewURLToEdit}
             />
             {/* <div style={{ marginLeft: "30px" }}>
               <Button
@@ -651,7 +713,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { resendActivationLink, upgradeToPremium }
-)(withStyles(styles)(Home));
+export default connect(mapStateToProps, {
+  resendActivationLink,
+  upgradeToPremium
+})(withStyles(styles)(Home));

@@ -12,16 +12,25 @@ export const  reviewChannelBoxStyles = css`
     margin-bottom:20px;
     box-shadow:0px 2px 4px #d8d8d8;
     padding:15px;
+    height:90px;
   }
-  .reviewBoxItemContainer > div:first-child {
+  .reviewBoxItemContainer > div:nth-child(1) {
     flex-basis: 20%;
   }
-  .reviewBoxItemContainer > div:last-child {
-    flex-basis: 80%;
+  .reviewBoxItemContainer > div:nth-child(2) {
+    flex-basis: 68%;
     align-self: center;
+    margin-left:2%;
+    word-break:break-all;
   }
+  .reviewBoxItemContainer > div:nth-child(3) {
+    flex-basis: 10%;
+    align-self: center;
+    text-align:right;
+  }
+
   .reviewBoxItemLogoContainer {
-    max-width: 60px;
+    max-width: 65px;
     height: auto;
   }
   .reviewBoxItemLogoContainer img {
