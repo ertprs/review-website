@@ -13,6 +13,8 @@ import EditIcon from "@material-ui/icons/Edit";
 import Tooltip from "@material-ui/core/Tooltip";
 import UpdateIcon from "@material-ui/icons/PhotoCamera";
 import Button from "@material-ui/core/Button";
+import Modal from "../../Widgets/CustomModal/CustomModal";
+import ImageUpload from "./imageUpload";
 
 class UserProfile extends Component {
   state = {
@@ -162,8 +164,10 @@ class UserProfile extends Component {
         name: "description"
       }
     },
+    imageFile: [],
     userDetailsEdit: false,
-    companyDetailsEdit: false
+    companyDetailsEdit: false,
+    showModal: false
   };
 
   handleChange = (e, id) => {
@@ -184,26 +188,33 @@ class UserProfile extends Component {
 
   renderAvatar = () => {
     const { userProfile } = this.props;
+    const { imageFile } = this.state;
     const { name } = userProfile;
+
     return (
       <>
         <div className="avatarContainer mt-50">
           <style jsx>{styles}</style>
           <div className="row">
             <div className="col-md-12">
-              <Avatar
-                style={{ marginRight: "20px" }}
-                name={name || "Not Found"}
-                size="150"
-                round={true}
-              />
+              {imageFile.length > 0 ? (
+                <img src={imageFile[0].path} />
+              ) : (
+                <Avatar
+                  style={{ marginRight: "20px" }}
+                  name={name || "Not Found"}
+                  size="150"
+                  round={true}
+                />
+              )}
             </div>
           </div>
           <div className="row mt-20">
             <div className="col-md-12">
               <Button
-                // color="primary"
-                // variant="contained"
+                onClick={() => {
+                  this.setState({ showModal: true });
+                }}
                 startIcon={<UpdateIcon />}
               >
                 Update Avatar
@@ -550,29 +561,47 @@ class UserProfile extends Component {
   };
 
   render() {
-    const { userDetailsEdit, companyDetailsEdit } = this.state;
+    const { userDetailsEdit, companyDetailsEdit, showModal } = this.state;
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-4">{this.renderAvatar()}</div>
-          <div className="col-md-8">
-            <div className="row">
-              <div className="col-md-12">
-                {userDetailsEdit
-                  ? this.renderUserDetailsEdit()
-                  : this.renderUserDetails()}
+      <>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-4">{this.renderAvatar()}</div>
+            <div className="col-md-8">
+              <div className="row">
+                <div className="col-md-12">
+                  {userDetailsEdit
+                    ? this.renderUserDetailsEdit()
+                    : this.renderUserDetails()}
+                </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-md-12">
-                {companyDetailsEdit
-                  ? this.renderCompanyDetailsEdit()
-                  : this.renderCompanyDetails()}
+              <div className="row">
+                <div className="col-md-12">
+                  {companyDetailsEdit
+                    ? this.renderCompanyDetailsEdit()
+                    : this.renderCompanyDetails()}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        <Modal
+          showModal={showModal}
+          handleModalClose={() => {
+            this.setState({ showModal: false });
+          }}
+          modalCustomStyles={{
+            background: "#f9f9f9",
+            border: "1px solid #fff"
+          }}
+        >
+          <ImageUpload
+            onUpload={imageFile => {
+              this.setState({ imageFile, showModal: false });
+            }}
+          />
+        </Modal>
+      </>
     );
   }
 }
