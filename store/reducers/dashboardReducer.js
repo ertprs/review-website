@@ -27,8 +27,13 @@ import {
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
   SET_GOOGLE_DIRECT_REVIEW_URL,
-  SET_REVIEWS_PUSHER_CONNECT
+  SET_REVIEWS_PUSHER_CONNECT,
+  UPDATE_COMPANY_DETAILS_INIT,
+  UPDATE_COMPANY_DETAILS_SUCCESS,
+  UPDATE_COMPANY_DETAILS_ERROR,
+  EMPTY_COMPANY_DETAILS
 } from "../actions/actionTypes";
+import { updateComapnyDetails } from "../actions/dashboardActions";
 
 const dashboardReducer = (state = {}, action) => {
   const {
@@ -48,7 +53,8 @@ const dashboardReducer = (state = {}, action) => {
     googleDirectReviewUrl,
     businessAddress,
     isReviewsPusherConnected,
-    googlePlaceId
+    googlePlaceId,
+    companyDetails
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -235,6 +241,34 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         isReviewsPusherConnected
+      };
+    }
+    case UPDATE_COMPANY_DETAILS_INIT: {
+      return {
+        ...state,
+        type,
+        companyDetails
+      };
+    }
+    case UPDATE_COMPANY_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        type,
+        companyDetails
+      };
+    }
+    case UPDATE_COMPANY_DETAILS_ERROR: {
+      return {
+        ...state,
+        type,
+        companyDetails
+      };
+    }
+    case EMPTY_COMPANY_DETAILS: {
+      return {
+        ...state,
+        type,
+        companyDetails: {}
       };
     }
     default:
