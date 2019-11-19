@@ -192,7 +192,7 @@ class UserProfile extends Component {
   renderAvatar = () => {
     const { userProfile } = this.props;
     const { imageFile } = this.state;
-    const { name } = userProfile;
+    const name = _get(userProfile, "name", "");
 
     return (
       <>
