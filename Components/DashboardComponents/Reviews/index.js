@@ -1,260 +1,107 @@
-import React, { Component } from "react";
-import ReviewCard from "../../Widgets/MyReviewsBusiness/ReviewCard";
-import { connect } from "react-redux";
-import _get from "lodash/get";
-import _map from "lodash/map";
-import { fetchReviews } from "../../../store/actions/dashboardActions";
-import ReactPaginate from "react-paginate";
-import Head from "next/head";
-import Snackbar from "../../Widgets/Snackbar";
-import { CircularProgress, Typography } from "@material-ui/core";
-import NoReviewsFound from "./noReviewsFound";
+import React from 'react';
+import PropTypes from 'prop-types';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import {withStyles} from '@material-ui/styles';
+import GoogleReviewsDs from "./GoogleReviewsDs";
 
-class Reviews extends Component {
-  state = {
-    perPage: 10,
-    showSnackbar: false,
-    variant: "success",
-    snackbarMsg: ""
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
+      {...other}
+    >
+      <Box p={3}>{children}</Box>
+    </Typography>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `scrollable-auto-tab-${index}`,
+    'aria-controls': `scrollable-auto-tabpanel-${index}`,
   };
+}
 
-  handlePageChange = ({ selected }) => {
-    const { fetchReviews, token } = this.props;
-    fetchReviews(token, selected + 1);
-  };
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props !== prevProps) {
-      const { error, success } = this.props;
-      if (error && !success) {
-        this.setState({
-          showSnackbar: true,
-          variant: "error",
-          snackbarMsg: error
-        });
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        width: '100%',
+        background:"#fff !important"
+        // backgroundColor: theme.palette.background.paper
       }
-    }
+  });
+
+class ReviewsContainer extends React.Component {
+
+  state = {
+      selectedTab:0
   }
 
-  render() {
-    const {
-      reviews,
-      total,
-      isFetching,
-      success,
-      googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime,
-      businessAddress,
-      businessAddressFirstTime,
-      domain,
-      googlePlaceId
-    } = this.props;
-    const { perPage } = this.state;
-    let googleReviewUrl =
-      googleDirectReviewUrl === ""
-        ? googleDirectReviewUrlFirstTime
-        : googleDirectReviewUrl;
-    const businessAdd =
-      businessAddressFirstTime !== ""
-        ? businessAddressFirstTime
-        : businessAddress;
-
+ handleChange = (event, newValue) => {
+    this.setState({selectedTab:newValue})
+  };
+  render(){
+    const {classes} = this.props;
+    const {selectedTab} = this.state;
     return (
-      <>
-        <Head>
-          <link rel="stylesheet" href="/static/css/reviews.css" />
-        </Head>
-        <style jsx>{`
-          .reviewsContainer {
-            margin: 20px 40px;
-          }
-          .pagination {
-            list-style-type: none;
-            display: inline-block;
-            background-color: red;
-          }
-          .active {
-            color: red;
-          }
-
-          .loaderContainer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          .listItem {
-            display: none;
-          }
-
-          .paginationContainer {
-            display: flex;
-            flex: 1;
-            justify-content: center;
-            margin-top: 35px;
-          }
-
-          .loaderContainer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          .listItem {
-            display: none;
-          }
-          .hiddenPagination {
-            display: none;
-          }
-          .invitation_link {
-            color: blue;
-            cursor: pointer;
-          }
-          .invitation_link:hover {
-            text-decoration: underline;
-          }
-
-          @media only screen and (max-width: 420px) {
-            .reviewsContainer {
-              margin: 0;
-              font-size: 0.8rem;
-            }
-          }
-        `}</style>
-        <div className="reviewsContainer">
-          {isFetching === true ? (
-            <div className="loaderContainer">
-              <CircularProgress color="secondary" />
-            </div>
-          ) : isFetching === false ? (
-            !success ? (
-              <NoReviewsFound />
-            ) : (
-              <>
-                {googleReviewUrl === "" ? (
-                  <>
-                    <Typography>
-                      <b>Invitation url: &nbsp;</b>
-                      <span
-                        className="invitation_link"
-                        onClick={() =>
-                          window.open(
-                            `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
-                          )
-                        }
-                      >
-                        {businessAdd}
-                      </span>
-                    </Typography>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ display: "flex" }}>
-                      <div>
-                        <b>Google Review Url: &nbsp;</b>
-                      </div>
-                      <div
-                        style={{ color: "blue", cursor: "pointer" }}
-                        onClick={() => window.open(googleReviewUrl)}
-                      >
-                        {businessAdd}
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {_map(reviews, review => {
-                  return <ReviewCard review={review} />;
-                })}
-              </>
-            )
-          ) : null}
+        <div className={classes.root}>
+          <AppBar position="static" color="default">
+            <Tabs
+              value={selectedTab}
+              onChange={this.handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab label="All reviews" {...a11yProps(0)} />
+              <Tab label="Google reviews" {...a11yProps(1)} />
+              <Tab label="Trustpilot reviews" {...a11yProps(2)} />
+              <Tab label="TrustedShops reviews" {...a11yProps(3)} />
+              <Tab label="App Store reviews" {...a11yProps(4)} />
+              <Tab label="Google play reviews" {...a11yProps(5)} />
+            </Tabs>
+          </AppBar>
+          <TabPanel value={selectedTab} index={0}>
+            <GoogleReviewsDs />
+          </TabPanel>
+          <TabPanel value={selectedTab} index={1}>
+            Item Two
+          </TabPanel>
+          <TabPanel value={selectedTab} index={2}>
+            Item Three
+          </TabPanel>
+          <TabPanel value={selectedTab} index={3}>
+            Item Four
+          </TabPanel>
+          <TabPanel value={selectedTab} index={4}>
+            Item Five
+          </TabPanel>
+          <TabPanel value={selectedTab} index={5}>
+            Item Six
+          </TabPanel>
+          <TabPanel value={selectedTab} index={6}>
+            Item Seven
+          </TabPanel>
         </div>
-        <div
-          className={`${
-            isFetching || success == false
-              ? "hiddenPagination"
-              : "paginationContainer"
-          }`}
-        >
-          <ReactPaginate
-            pageCount={total / perPage}
-            pageRangeDisplayed={total / perPage}
-            marginPagesDisplayed={0}
-            initialPage={0}
-            onPageChange={this.handlePageChange}
-            containerClassName={"pagination"}
-            subContainerClassName={"pages pagination"}
-            activeClassName={"active"}
-            pageClassName={"listItem"}
-            nextClassName={"listItem"}
-            previousClassName={"listItem"}
-            pageLinkClassName={"listLink"}
-            nextLinkClassName={"listLink"}
-            previousLinkClassName={"listLink"}
-            activeClassName={"selectedPage"}
-            activeLinkClassName={"selectedPage"}
-            disabledClassName={"disabledButtons"}
-            disableInitialCallback={true}
-          />
-        </div>
-        <Snackbar
-          open={this.state.showSnackbar}
-          variant={this.state.variant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={this.state.snackbarMsg}
-        />
-      </>
-    );
+      );
   }
 }
 
-const mapStateToProps = state => {
-  const { dashboardData, auth } = state;
-  const token = _get(auth, "logIn.token", "");
-  const ratings = _get(dashboardData, "reviews.data.rating", 0);
-  const reviews = _get(dashboardData, "reviews.data.reviews", []);
-  const total = _get(dashboardData, "reviews.data.total", 0);
-  const nextReviews = _get(dashboardData, "reviews.data.next", "");
-  const prevReviews = _get(dashboardData, "reviews.data.prev", "");
-  const isFetching = _get(dashboardData, "reviews.isFetching", "undefined");
-  const success = _get(dashboardData, "reviews.success", false);
-  const error = _get(dashboardData, "reviews.error", "");
-  const type = _get(dashboardData, "type", "");
-  const googleDirectReviewUrl = _get(
-    auth,
-    "logIn.userProfile.business_profile.google_places.directReviewUrl",
-    ""
-  );
-  const googleDirectReviewUrlFirstTime = _get(
-    dashboardData,
-    "googleDirectReviewUrl",
-    ""
-  );
-  const businessAddress = _get(
-    auth,
-    "logIn.userProfile.business_profile.google_places.address",
-    ""
-  );
-  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
-  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
-  const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
-  return {
-    token,
-    ratings,
-    reviews,
-    total,
-    nextReviews,
-    prevReviews,
-    type,
-    isFetching,
-    error,
-    success,
-    googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime,
-    businessAddress,
-    businessAddressFirstTime,
-    googlePlaceId,
-    domain
-  };
-};
-
-export default connect(mapStateToProps, { fetchReviews })(Reviews);
+export default withStyles(styles)(ReviewsContainer);
