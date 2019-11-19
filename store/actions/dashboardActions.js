@@ -27,7 +27,11 @@ import {
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
   SET_GOOGLE_DIRECT_REVIEW_URL,
-  SET_REVIEWS_PUSHER_CONNECT
+  SET_REVIEWS_PUSHER_CONNECT,
+  UPDATE_COMPANY_DETAILS_INIT,
+  UPDATE_COMPANY_DETAILS_SUCCESS,
+  UPDATE_COMPANY_DETAILS_ERROR,
+  EMPTY_COMPANY_DETAILS
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -38,7 +42,8 @@ import {
   transactionHistoryApi,
   createCampaignApi,
   fetchCampaignLanguageApi,
-  fetchEmailTemplateApi
+  fetchEmailTemplateApi,
+  updateComapnyDetailsApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 
@@ -178,7 +183,6 @@ export const locatePlaceByPlaceId = (data, token, url) => {
 };
 
 export const upgradeToPremium = data => {
-  console.log(data, "data");
   return async (dispatch, getState) => {
     const { auth } = getState() | {};
     let token = _get(auth, "logIn.token", "");
@@ -266,7 +270,6 @@ export const clearCampaignData = data => {
 };
 
 export const createCampaign = data => {
-  console.log(data, "craete campaign data");
   const token = localStorage.getItem("token");
   return async dispatch => {
     dispatch({
@@ -333,9 +336,7 @@ export const fetchCampaignLanguage = token => {
       });
       let locales = _get(result, "data.locales", {});
       if (!_isEmpty(locales)) {
-        console.log(locales, "locales");
         const data = createCampaignLanguage(locales);
-        console.log(data, "data is here");
         dispatch(setCampaignLanguage(data));
       }
       dispatch({
@@ -406,9 +407,7 @@ export const fetchEmailTemplate = templateId => {
           errorMsg: ""
         }
       });
-      console.log(result.data, "result");
     } catch (error) {
-      console.log(error.response.data, "error");
       dispatch({
         type: FETCH_EMAIL_TEMPLATE_FAILURE,
         emailTemplate: {
@@ -441,7 +440,59 @@ export const setGoogleDirectReviewUrl = (
 
 export const setReviewsPusherConnect = isReviewsPusherConnected => {
   return {
-    type: SET_REVIEWS_PUSHER_CONNECT,
+    type: update,
     isReviewsPusherConnected
+  };
+};
+
+export const updateComapnyDetails = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: UPDATE_COMPANY_DETAILS_INIT,
+      companyDetails: {
+        isLoading: true,
+        success: "undefined",
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${updateComapnyDetailsApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      dispatch({
+        type: UPDATE_COMPANY_DETAILS_SUCCESS,
+        companyDetails: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          data: _get(result, "data.data", {}),
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: UPDATE_COMPANY_DETAILS_ERROR,
+        companyDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please try again later."
+          )
+        }
+      });
+    }
+  };
+};
+
+export const emptyCompanyDetails = () => {
+  return {
+    type: EMPTY_COMPANY_DETAILS
   };
 };

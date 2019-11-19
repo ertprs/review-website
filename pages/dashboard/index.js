@@ -260,10 +260,12 @@ function Dashboard(props) {
   const [parentState, setParentState] = useState(initState);
 
   let userName = "";
-  if (_get(props, "userName", "").length > 0) {
-    let nameAfterSplit = _get(props, "userName", "").split(" ");
-    if (nameAfterSplit.length > 0) {
-      userName = nameAfterSplit[0];
+  if (_get(props, "userName", "")) {
+    if (_get(props, "userName", "").length > 0) {
+      let nameAfterSplit = _get(props, "userName", "").split(" ");
+      if (nameAfterSplit.length > 0) {
+        userName = nameAfterSplit[0];
+      }
     }
   }
   let getStartedHide = false;
