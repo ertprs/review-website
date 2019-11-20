@@ -236,6 +236,13 @@ class GetReviews extends Component {
             isEmail: true
           },
           name: "senderEmail"
+        },
+        campaignInvitationMethod: {
+          valid: false,
+          value: "",
+          validationRules: {
+            required: true
+          }
         }
         // replyToEmail: {
         //   element: "select",
@@ -751,6 +758,9 @@ class GetReviews extends Component {
             onContinueClick={() => {
               this.setState({ getReviewsActiveSubStep: 3 });
             }}
+            invitationWayToRender={
+              this.state.createCampaign.campaignInvitationMethod.value
+            }
           />
         );
       } else if (getReviewsActiveSubStep === 1) {
