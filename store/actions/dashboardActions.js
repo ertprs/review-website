@@ -450,7 +450,7 @@ export const setGoogleDirectReviewUrl = (
 
 export const setReviewsPusherConnect = isReviewsPusherConnected => {
   return {
-    type: update,
+    type: SET_REVIEWS_PUSHER_CONNECT,
     isReviewsPusherConnected
   };
 };
