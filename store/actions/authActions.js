@@ -37,7 +37,11 @@ import { loginApiOAuth } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
-import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
+import {
+  fetchReviews,
+  fetchTransactionHistory,
+  getThirdPartyReviews
+} from "./dashboardActions";
 import cookie from "js-cookie";
 import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 import { reportDomain } from "./domainProfileActions";
@@ -460,7 +464,7 @@ export const businessSignUp = (signupData, api) => {
 };
 
 export const businessLogIn = (loginData, api, directLogin) => {
-  return async (dispatch, getState) => {
+  return async dispatch => {
     dispatch({
       type: BUSINESS_LOGIN_INIT,
       logIn: {
@@ -489,6 +493,9 @@ export const businessLogIn = (loginData, api, directLogin) => {
         ""
       );
       let loginType = 0;
+      const businessProfile = _get(res, "data.user.business_profile", {});
+      const domainId = _get(businessProfile, "domainId", 0);
+      const socialArray = _get(businessProfile, "social", []);
       if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
           if (
@@ -531,6 +538,19 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 error: ""
               }
             });
+            // fetch all thirdy party reviews
+            // console.log(socialArray)
+            if (socialArray) {
+              if (socialArray.length > 0) {
+                socialArray.map(item => {
+                  let hasData = _get(item, "hasData", 0);
+                  let socialAppId = _get(item, "social_media_app_id", "");
+                  if (hasData === 1) {
+                    dispatch(getThirdPartyReviews(socialAppId, domainId));
+                  }
+                });
+              }
+            }
           }
         }
       } else {
