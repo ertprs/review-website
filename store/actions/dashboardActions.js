@@ -27,7 +27,6 @@ import {
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
   SET_GOOGLE_DIRECT_REVIEW_URL,
-  SET_REVIEWS_PUSHER_CONNECT,
   UPDATE_COMPANY_DETAILS_INIT,
   UPDATE_COMPANY_DETAILS_SUCCESS,
   UPDATE_COMPANY_DETAILS_ERROR,
@@ -35,7 +34,12 @@ import {
   UPDATE_USER_DETAILS_INIT,
   UPDATE_USER_DETAILS_SUCCESS,
   UPDATE_USER_DETAILS_ERROR,
-  EMPTY_USER_DETAILS
+  EMPTY_USER_DETAILS,
+  UPDATE_DOMAIN_DETAILS_INIT,
+  UPDATE_DOMAIN_DETAILS_SUCCESS,
+  UPDATE_DOMAIN_DETAILS_ERROR,
+  EMPTY_DOMAIN_DETAILS,
+  SET_REVIEWS_PUSHER_CONNECT
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -47,8 +51,9 @@ import {
   createCampaignApi,
   fetchCampaignLanguageApi,
   fetchEmailTemplateApi,
-  updateComapnyDetailsApi,
-  updateUserDetailsApi
+  updateCompanyDetailsApi,
+  updateUserDetailsApi,
+  updateDomainDetailsApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 
@@ -450,7 +455,7 @@ export const setReviewsPusherConnect = isReviewsPusherConnected => {
   };
 };
 
-export const updateComapnyDetails = data => {
+export const updateCompanyDetails = data => {
   let token = localStorage.getItem("token");
   return async dispatch => {
     dispatch({
@@ -465,7 +470,7 @@ export const updateComapnyDetails = data => {
     try {
       let result = await axios({
         method: "POST",
-        url: `${process.env.BASE_URL}${updateComapnyDetailsApi}`,
+        url: `${process.env.BASE_URL}${updateCompanyDetailsApi}`,
         headers: { Authorization: `Bearer ${token}` },
         data
       });
@@ -564,5 +569,60 @@ export const updateUserDetails = data => {
 export const emptyUserDetails = () => {
   return {
     type: EMPTY_USER_DETAILS
+  };
+};
+
+export const updateDomainDetails = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: UPDATE_DOMAIN_DETAILS_INIT,
+      domainDetails: {
+        isLoading: true,
+        success: "undefined",
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${updateDomainDetailsApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      const response = {
+        domain: _get(result, "data.data.fullName", "")
+      };
+      dispatch({
+        type: UPDATE_DOMAIN_DETAILS_SUCCESS,
+        domainDetails: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          data: response,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: UPDATE_USER_DETAILS_ERROR,
+        domainDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please try again later."
+          )
+        }
+      });
+    }
+  };
+};
+
+export const emptyDomainDetails = () => {
+  return {
+    type: EMPTY_DOMAIN_DETAILS
   };
 };

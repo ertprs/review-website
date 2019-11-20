@@ -30,7 +30,8 @@ import {
   SET_USER_ACTIVATED,
   SET_BUSINESS_SUBSCRIPTION,
   UPDATE_COMPANY_DETAILS_SUCCESS,
-  UPDATE_USER_DETAILS_SUCCESS
+  UPDATE_USER_DETAILS_SUCCESS,
+  UPDATE_DOMAIN_DETAILS_SUCCESS
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -50,7 +51,8 @@ const authReducer = (state = {}, action) => {
     userActivated,
     isSubscriptionExpired,
     companyDetails,
-    userDetails
+    userDetails,
+    domainDetails
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -247,6 +249,22 @@ const authReducer = (state = {}, action) => {
             ...userDetails.data,
             company: {
               ...state.logIn.userProfile.company
+            }
+          }
+        },
+        type
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              ...domainDetails.data
             }
           }
         },

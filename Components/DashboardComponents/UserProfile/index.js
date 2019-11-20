@@ -13,6 +13,8 @@ import ShowCompany from "./company/showCompany";
 import EditCompany from "./company/editCompany";
 import ShowUser from "./user/showUser";
 import EditUser from "./user/editUser";
+import EditDomain from "./domain/editDomain";
+import ShowDomain from "./domain/showDomain";
 import Snackbar from "../../Widgets/Snackbar";
 import Languages from "../../../utility/languages";
 
@@ -201,9 +203,25 @@ class UserProfile extends Component {
         name: "description"
       }
     },
+    domainDetails: {
+      domain: {
+        element: "input",
+        value: _get(this.props, "domainName", ""),
+        placeholder: "Enter domain name",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          minLength: 5
+        },
+        name: "domain"
+      }
+    },
     imageFile: [],
     userDetailsEdit: false,
     companyDetailsEdit: false,
+    domainDetailsEdit: false,
     showModal: false
   };
 
@@ -233,6 +251,22 @@ class UserProfile extends Component {
           ...userDetails[name],
           value,
           valid: validate(value, userDetails[name].validationRules),
+          touched: true
+        }
+      }
+    });
+  };
+
+  handleDomainDetailsChange = e => {
+    const { value, name } = e.target;
+    const { domainDetails } = this.state;
+    this.setState({
+      domainDetails: {
+        ...domainDetails,
+        [name]: {
+          ...domainDetails[name],
+          value,
+          valid: validate(value, domainDetails[name].validationRules),
           touched: true
         }
       }
@@ -280,20 +314,30 @@ class UserProfile extends Component {
       successCompany,
       errorMsgCompany,
       successUser,
-      errorMsgUser
+      errorMsgUser,
+      successDomain,
+      errorMsgDomain
     } = this.props;
     if (this.props !== prevProps) {
-      if (successCompany === true || successUser === true) {
+      if (
+        successCompany === true ||
+        successUser === true ||
+        successDomain === true
+      ) {
         this.setState({
           showSnackbar: true,
           variant: "success",
           snackbarMsg: "Data Updated Successfully!"
         });
-      } else if (successCompany === false || successUser === false) {
+      } else if (
+        successCompany === false ||
+        successUser === false ||
+        successDomain === false
+      ) {
         this.setState({
           showSnackbar: true,
           variant: "error",
-          snackbarMsg: errorMsgCompany || errorMsgUser
+          snackbarMsg: errorMsgCompany || errorMsgUser || errorMsgDomain
         });
       }
     }
@@ -303,14 +347,16 @@ class UserProfile extends Component {
     const {
       userDetailsEdit,
       companyDetailsEdit,
+      domainDetailsEdit,
       showModal,
       companyDetails,
       userDetails,
+      domainDetails,
       showSnackbar,
       variant,
       snackbarMsg
     } = this.state;
-    const { userProfile } = this.props;
+    const { userProfile, domainName } = this.props;
     return (
       <>
         <div className="container">
@@ -318,6 +364,24 @@ class UserProfile extends Component {
             <div className="col-md-4">{this.renderAvatar()}</div>
             <div className="col-md-8">
               <div className="row">
+                <div className="col-md-12">
+                  {domainDetailsEdit ? (
+                    <EditDomain
+                      domainDetails={domainDetails || {}}
+                      handleChange={this.handleDomainDetailsChange}
+                      closeEditMode={() => {
+                        this.setState({ domainDetailsEdit: false });
+                      }}
+                    />
+                  ) : (
+                    <ShowDomain
+                      domainName={domainName}
+                      handleEditClick={() => {
+                        this.setState({ domainDetailsEdit: true });
+                      }}
+                    />
+                  )}
+                </div>
                 <div className="col-md-12">
                   {userDetailsEdit ? (
                     <EditUser
@@ -336,8 +400,6 @@ class UserProfile extends Component {
                     />
                   )}
                 </div>
-              </div>
-              <div className="row">
                 <div className="col-md-12">
                   {companyDetailsEdit ? (
                     <EditCompany
@@ -395,14 +457,23 @@ class UserProfile extends Component {
 
 const mapStateToProps = state => {
   const { userProfile } = state.auth.logIn || {};
+  const domainName = _get(userProfile, "business_profile.domain", "");
+
   const companyDetails = _get(state, "dashboardData.companyDetails", {});
   const isLoadingCompany = _get(companyDetails, "isLoading", false);
   const successCompany = _get(companyDetails, "success", "undefined");
   const errorMsgCompany = _get(companyDetails, "errorMsg", "");
+
   const userDetails = _get(state, "dashboardData.userDetails", {});
   const isLoadingUser = _get(userDetails, "isLoading", false);
   const successUser = _get(userDetails, "success", "undefined");
   const errorMsgUser = _get(userDetails, "errorMsg", "");
+
+  const domainDetails = _get(state, "dashboardData.domainDetails", {});
+  const isLoadingDomain = _get(domainDetails, "isLoading", false);
+  const successDomain = _get(domainDetails, "success", "undefined");
+  const errorMsgDomain = _get(domainDetails, "errorMsg", "");
+
   return {
     userProfile,
     isLoadingCompany,
@@ -410,7 +481,11 @@ const mapStateToProps = state => {
     errorMsgCompany,
     isLoadingUser,
     successUser,
-    errorMsgUser
+    errorMsgUser,
+    isLoadingDomain,
+    successDomain,
+    errorMsgDomain,
+    domainName
   };
 };
 

@@ -47,8 +47,9 @@ export const fetchEmailTemplateApi = "/api/my-business/invitation-template";
 export const reportDomainApi = "/api/applications/fraud";
 export const thirdPartyDataApi = "/api/third-party-data";
 export const fetchGoogleReviewsApi = "/api/reviews/domain";
-export const updateComapnyDetailsApi = "/api/my-business/profile/company";
+export const updateCompanyDetailsApi = "/api/my-business/profile/company";
 export const updateUserDetailsApi = "/api/profiles/update-profile";
+export const updateDomainDetailsApi = "/api/my-business/profile/domain";
 
 //How to create review short link
 export const getStartedVideoUrl =
