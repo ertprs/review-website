@@ -292,7 +292,7 @@ class UserProfile extends Component {
               />
             </div>
           </div>
-          <div className="row mt-20">
+          {/* <div className="row mt-20">
             <div className="col-md-12">
               <Button
                 onClick={() => {
@@ -303,7 +303,7 @@ class UserProfile extends Component {
                 Update Avatar
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </>
     );
@@ -361,8 +361,8 @@ class UserProfile extends Component {
       <>
         <div className="container">
           <div className="row">
-            <div className="col-md-4">{this.renderAvatar()}</div>
-            <div className="col-md-8">
+            <div className="col-md-3">{this.renderAvatar()}</div>
+            <div className="col-md-9">
               <div className="row">
                 <div className="col-md-12">
                   {domainDetailsEdit ? (
