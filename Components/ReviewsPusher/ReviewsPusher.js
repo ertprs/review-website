@@ -33,6 +33,11 @@ class ReviewsPusher extends Component {
       });
     });
 
+    channel.bind("aggregator", data => {
+      // this.props.onAggregatorDataChange(data);
+      console.log(data, "response from reviews pusher DomainNameAggregator");
+    });
+
     setTimeout(() => {
       pusher.disconnect();
     }, 300000);
@@ -52,7 +57,4 @@ class ReviewsPusher extends Component {
   }
 }
 
-export default connect(
-  null,
-  { setReviewsPusherConnect }
-)(ReviewsPusher);
+export default connect(null, { setReviewsPusherConnect })(ReviewsPusher);
