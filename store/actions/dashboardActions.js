@@ -427,7 +427,7 @@ export const fetchEmailTemplate = templateId => {
           errorMsg: _get(
             error,
             "response.data.error.message",
-            "Some error occured. Please try again later."
+            "Some error occurred. Please try again later."
           )
         }
       });
