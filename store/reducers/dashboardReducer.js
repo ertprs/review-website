@@ -31,9 +31,16 @@ import {
   UPDATE_COMPANY_DETAILS_INIT,
   UPDATE_COMPANY_DETAILS_SUCCESS,
   UPDATE_COMPANY_DETAILS_ERROR,
-  EMPTY_COMPANY_DETAILS
+  EMPTY_COMPANY_DETAILS,
+  UPDATE_USER_DETAILS_INIT,
+  UPDATE_USER_DETAILS_SUCCESS,
+  UPDATE_USER_DETAILS_ERROR,
+  EMPTY_USER_DETAILS,
+  UPDATE_DOMAIN_DETAILS_INIT,
+  UPDATE_DOMAIN_DETAILS_SUCCESS,
+  UPDATE_DOMAIN_DETAILS_ERROR,
+  EMPTY_DOMAIN_DETAILS
 } from "../actions/actionTypes";
-import { updateComapnyDetails } from "../actions/dashboardActions";
 
 const dashboardReducer = (state = {}, action) => {
   const {
@@ -54,7 +61,9 @@ const dashboardReducer = (state = {}, action) => {
     businessAddress,
     isReviewsPusherConnected,
     googlePlaceId,
-    companyDetails
+    companyDetails,
+    userDetails,
+    domainDetails
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -269,6 +278,62 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         companyDetails: {}
+      };
+    }
+    case UPDATE_USER_DETAILS_INIT: {
+      return {
+        ...state,
+        type,
+        userDetails
+      };
+    }
+    case UPDATE_USER_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        type,
+        userDetails
+      };
+    }
+    case UPDATE_USER_DETAILS_ERROR: {
+      return {
+        ...state,
+        type,
+        userDetails
+      };
+    }
+    case EMPTY_USER_DETAILS: {
+      return {
+        ...state,
+        type,
+        userDetails: {}
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_INIT: {
+      return {
+        ...state,
+        type,
+        domainDetails
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        type,
+        domainDetails
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_ERROR: {
+      return {
+        ...state,
+        type,
+        domainDetails
+      };
+    }
+    case EMPTY_DOMAIN_DETAILS: {
+      return {
+        ...state,
+        type,
+        domainDetails: {}
       };
     }
     default:
