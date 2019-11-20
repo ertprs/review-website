@@ -29,7 +29,9 @@ import {
   RESEND_ACTIVATION_LINK_FAILURE,
   SET_USER_ACTIVATED,
   SET_BUSINESS_SUBSCRIPTION,
-  UPDATE_COMPANY_DETAILS_SUCCESS
+  UPDATE_COMPANY_DETAILS_SUCCESS,
+  UPDATE_USER_DETAILS_SUCCESS,
+  UPDATE_DOMAIN_DETAILS_SUCCESS
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -48,7 +50,9 @@ const authReducer = (state = {}, action) => {
     resendActivation,
     userActivated,
     isSubscriptionExpired,
-    companyDetails
+    companyDetails,
+    userDetails,
+    domainDetails
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -229,6 +233,38 @@ const authReducer = (state = {}, action) => {
             company: {
               ...state.logIn.userProfile.company,
               ...companyDetails.data
+            }
+          }
+        },
+        type
+      };
+    }
+    case UPDATE_USER_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            ...userDetails.data,
+            company: {
+              ...state.logIn.userProfile.company
+            }
+          }
+        },
+        type
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              ...domainDetails.data
             }
           }
         },

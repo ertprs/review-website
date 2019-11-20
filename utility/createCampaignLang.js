@@ -15,13 +15,11 @@ const createCampaignLang = locales => {
       temp.name = locales[key];
       return { ...temp };
     });
-    console.log(localesArray, "localesArray");
     if (!_isEmpty(localesArray) && !_isEmpty(templateIds)) {
       campaignLanguage =
         localesArray &&
         localesArray.map(locales => {
           let template = _filter(templateIds, ["name", locales.value]);
-          console.log(template, "template");
           if (template && template !== undefined) {
             let temp = {};
             temp.name = locales.name;
@@ -29,7 +27,6 @@ const createCampaignLang = locales => {
             return { ...temp };
           } else return;
         });
-      console.log(campaignLanguage, "campaignLanguage");
     } else return;
   }
   if (!_isEmpty(campaignLanguage) && Array.isArray(campaignLanguage)) {

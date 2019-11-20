@@ -3,21 +3,20 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import Avatar from "react-avatar";
 import styles from "./userProfileStyles";
-import Card from "../../MaterialComponents/Card";
 import countrieslist from "../../../utility/newCountryList.json";
-import FormField from "../../Widgets/FormField/FormField";
 import validate from "../../../utility/validate";
-import SaveIcon from "@material-ui/icons/Check";
-import CancelIcon from "@material-ui/icons/CloseRounded";
-import EditIcon from "@material-ui/icons/Edit";
-import Tooltip from "@material-ui/core/Tooltip";
 import UpdateIcon from "@material-ui/icons/PhotoCamera";
 import Button from "@material-ui/core/Button";
 import Modal from "../../Widgets/CustomModal/CustomModal";
 import ImageUpload from "./imageUpload";
 import ShowCompany from "./company/showCompany";
 import EditCompany from "./company/editCompany";
+import ShowUser from "./user/showUser";
+import EditUser from "./user/editUser";
+import EditDomain from "./domain/editDomain";
+import ShowDomain from "./domain/showDomain";
 import Snackbar from "../../Widgets/Snackbar";
+import Languages from "../../../utility/languages";
 
 class UserProfile extends Component {
   state = {
@@ -35,10 +34,10 @@ class UserProfile extends Component {
         },
         name: "name"
       },
-      email: {
+      city: {
         element: "input",
-        value: _get(this.props, "userProfile.email", ""),
-        placeholder: "username@email.com",
+        value: _get(this.props, "userProfile.city", ""),
+        placeholder: "Enter your city",
         errorMessage: "",
         valid: false,
         touched: false,
@@ -46,7 +45,7 @@ class UserProfile extends Component {
           required: true,
           isEmail: true
         },
-        name: "email"
+        name: "city"
       },
       phone: {
         element: "input",
@@ -60,12 +59,49 @@ class UserProfile extends Component {
         },
         name: "phone"
       },
+      address: {
+        element: "input",
+        value: _get(this.props, "userProfile.address", ""),
+        placeholder: "Enter your address",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "address"
+      },
+      zip: {
+        element: "input",
+        value: _get(this.props, "userProfile.zip", ""),
+        placeholder: "Enter your zip code",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true
+        },
+        name: "zip"
+      },
       country: {
         element: "select",
         name: "country",
         value: _get(this.props, "userProfile.country", ""),
         options: [...countrieslist],
         placeholder: "Select your country",
+        valid: false,
+        validationRules: {
+          required: true
+        },
+        touched: false,
+        errorMessage: ""
+      },
+      lang: {
+        element: "select",
+        name: "lang",
+        value: _get(this.props, "userProfile.lang", ""),
+        options: [...Languages],
+        placeholder: "Select your language",
         valid: false,
         validationRules: {
           required: true
@@ -167,13 +203,29 @@ class UserProfile extends Component {
         name: "description"
       }
     },
+    domainDetails: {
+      domain: {
+        element: "input",
+        value: _get(this.props, "domainName", ""),
+        placeholder: "Enter domain name",
+        errorMessage: "",
+        valid: false,
+        touched: false,
+        validationRules: {
+          required: true,
+          minLength: 5
+        },
+        name: "domain"
+      }
+    },
     imageFile: [],
     userDetailsEdit: false,
     companyDetailsEdit: false,
+    domainDetailsEdit: false,
     showModal: false
   };
 
-  handleCompanyDetailsChange = (e, id) => {
+  handleCompanyDetailsChange = e => {
     const { value, name } = e.target;
     const { companyDetails } = this.state;
     this.setState({
@@ -183,6 +235,38 @@ class UserProfile extends Component {
           ...companyDetails[name],
           value,
           valid: validate(value, companyDetails[name].validationRules),
+          touched: true
+        }
+      }
+    });
+  };
+
+  handleUserDetailsChange = e => {
+    const { value, name } = e.target;
+    const { userDetails } = this.state;
+    this.setState({
+      userDetails: {
+        ...userDetails,
+        [name]: {
+          ...userDetails[name],
+          value,
+          valid: validate(value, userDetails[name].validationRules),
+          touched: true
+        }
+      }
+    });
+  };
+
+  handleDomainDetailsChange = e => {
+    const { value, name } = e.target;
+    const { domainDetails } = this.state;
+    this.setState({
+      domainDetails: {
+        ...domainDetails,
+        [name]: {
+          ...domainDetails[name],
+          value,
+          valid: validate(value, domainDetails[name].validationRules),
           touched: true
         }
       }
@@ -208,7 +292,7 @@ class UserProfile extends Component {
               />
             </div>
           </div>
-          <div className="row mt-20">
+          {/* <div className="row mt-20">
             <div className="col-md-12">
               <Button
                 onClick={() => {
@@ -219,176 +303,41 @@ class UserProfile extends Component {
                 Update Avatar
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </>
     );
   };
 
-  mapOverArray = array => {
-    return array.map(data => {
-      if (data.value || "") {
-        return (
-          <>
-            <div className="col-md-3 textBold">
-              <style jsx>{styles}</style>
-              <p>{data.key}</p>
-            </div>
-            <div className="col-md-3">
-              <p className="value">{data.value}</p>
-            </div>
-          </>
-        );
-      } else {
-        return null;
-      }
-    });
-  };
-
-  userDetailsData = () => {
-    const { userProfile } = this.props;
-    const { name, email, phone, country } = userProfile || {};
-    const userDetails = [
-      { key: "Name", value: name },
-      { key: "Email", value: email },
-      { key: "Phone", value: "575757575875" },
-      { key: "Country", value: "India" }
-    ];
-    return userDetails;
-  };
-
-  renderUserDetails = () => {
-    const userData = this.userDetailsData();
-    let halfUserData = Math.floor(userData.length / 2);
-    let userDataLeft = userData.splice(0, halfUserData);
-    let userDataRight = userData.splice(0, userData.length);
-    return (
-      <div className="mt-50">
-        <style jsx>{styles}</style>
-        <Card>
-          <div className="cardHeader">
-            <h3 className="heading">User Details</h3>
-            <Tooltip title={"Edit"} placement="top-end">
-              <EditIcon
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  this.setState({ userDetailsEdit: true });
-                }}
-              />
-            </Tooltip>
-          </div>
-          <div className="row">
-            {this.mapOverArray(userDataLeft)}
-            {this.mapOverArray(userDataRight)}
-          </div>
-        </Card>
-      </div>
-    );
-  };
-
-  renderUserDetailsEdit = () => {
-    const { userDetails } = this.state;
-    return (
-      <div className="mt-50">
-        <style jsx>{styles}</style>
-        <Card>
-          <div className="cardHeader">
-            <h3 className="heading">Edit User Details</h3>
-            <div>
-              <Tooltip title={"Cancel"} placement="top">
-                <CancelIcon
-                  style={{ marginRight: "20px", cursor: "pointer" }}
-                  onClick={() => {
-                    this.setState({ userDetailsEdit: false });
-                  }}
-                />
-              </Tooltip>
-              <Tooltip title={"Save"} placement="top">
-                <SaveIcon
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    this.setState({ userDetailsEdit: false });
-                  }}
-                />
-              </Tooltip>
-            </div>
-          </div>
-          <>
-            <div className="row">
-              <div className="col-md-6">
-                <FormField
-                  {...userDetails.name}
-                  handleChange={this.handleChange}
-                  id="name"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)"
-                  }}
-                />
-              </div>
-              <div className="col-md-6">
-                <FormField
-                  {...userDetails.email}
-                  handleChange={this.handleChange}
-                  id="email"
-                  disabled
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)"
-                  }}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <FormField
-                  {...userDetails.phone}
-                  handleChange={this.handleChange}
-                  onkeyDown={this.handleKeyDown}
-                  id="phone"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)"
-                  }}
-                />
-              </div>
-              <div className="col-md-6">
-                <FormField
-                  {...userDetails.country}
-                  handleChange={this.handleChange}
-                  id="country"
-                  styles={{
-                    borderWidth: "0px 0px 1px 0px",
-                    borderStyle: "solid",
-                    borderColor: "rgb(206, 212, 218)",
-                    height: "38px"
-                  }}
-                />
-              </div>
-            </div>
-          </>
-        </Card>
-      </div>
-    );
-  };
-
   componentDidUpdate(prevProps, prevState) {
-    const { success, errorMsg } = this.props;
+    const {
+      successCompany,
+      errorMsgCompany,
+      successUser,
+      errorMsgUser,
+      successDomain,
+      errorMsgDomain
+    } = this.props;
     if (this.props !== prevProps) {
-      if (success === true) {
+      if (
+        successCompany === true ||
+        successUser === true ||
+        successDomain === true
+      ) {
         this.setState({
           showSnackbar: true,
           variant: "success",
           snackbarMsg: "Data Updated Successfully!"
         });
-      } else if (success === false) {
+      } else if (
+        successCompany === false ||
+        successUser === false ||
+        successDomain === false
+      ) {
         this.setState({
           showSnackbar: true,
           variant: "error",
-          snackbarMsg: errorMsg
+          snackbarMsg: errorMsgCompany || errorMsgUser || errorMsgDomain
         });
       }
     }
@@ -398,32 +347,67 @@ class UserProfile extends Component {
     const {
       userDetailsEdit,
       companyDetailsEdit,
+      domainDetailsEdit,
       showModal,
       companyDetails,
+      userDetails,
+      domainDetails,
       showSnackbar,
       variant,
       snackbarMsg
     } = this.state;
-    const { userProfile } = this.props;
+    const { userProfile, domainName } = this.props;
     return (
       <>
         <div className="container">
           <div className="row">
-            <div className="col-md-4">{this.renderAvatar()}</div>
-            <div className="col-md-8">
+            <div className="col-md-3">{this.renderAvatar()}</div>
+            <div className="col-md-9">
               <div className="row">
                 <div className="col-md-12">
-                  {userDetailsEdit
-                    ? this.renderUserDetailsEdit()
-                    : this.renderUserDetails()}
+                  {domainDetailsEdit ? (
+                    <EditDomain
+                      domainDetails={domainDetails || {}}
+                      handleChange={this.handleDomainDetailsChange}
+                      closeEditMode={() => {
+                        this.setState({ domainDetailsEdit: false });
+                      }}
+                    />
+                  ) : (
+                    <ShowDomain
+                      domainName={domainName}
+                      handleEditClick={() => {
+                        this.setState({ domainDetailsEdit: true });
+                      }}
+                    />
+                  )}
                 </div>
-              </div>
-              <div className="row">
+                <div className="col-md-12">
+                  {userDetailsEdit ? (
+                    <EditUser
+                      userDetails={userDetails || {}}
+                      handleChange={this.handleUserDetailsChange}
+                      closeEditMode={() => {
+                        this.setState({ userDetailsEdit: false });
+                      }}
+                    />
+                  ) : (
+                    <ShowUser
+                      userProfile={userProfile || {}}
+                      handleEditClick={() => {
+                        this.setState({ userDetailsEdit: true });
+                      }}
+                    />
+                  )}
+                </div>
                 <div className="col-md-12">
                   {companyDetailsEdit ? (
                     <EditCompany
                       companyDetails={companyDetails}
                       handleChange={this.handleCompanyDetailsChange}
+                      closeEditMode={() => {
+                        this.setState({ companyDetailsEdit: false });
+                      }}
                       handleSaveClick={() => {
                         this.setState({ companyDetailsEdit: false });
                       }}
@@ -473,11 +457,36 @@ class UserProfile extends Component {
 
 const mapStateToProps = state => {
   const { userProfile } = state.auth.logIn || {};
+  const domainName = _get(userProfile, "business_profile.domain", "");
+
   const companyDetails = _get(state, "dashboardData.companyDetails", {});
-  const isLoading = _get(companyDetails, "isLoading", false);
-  const success = _get(companyDetails, "success", "undefined");
-  const errorMsg = _get(companyDetails, "errorMsg", "");
-  return { userProfile, isLoading, success, errorMsg };
+  const isLoadingCompany = _get(companyDetails, "isLoading", false);
+  const successCompany = _get(companyDetails, "success", "undefined");
+  const errorMsgCompany = _get(companyDetails, "errorMsg", "");
+
+  const userDetails = _get(state, "dashboardData.userDetails", {});
+  const isLoadingUser = _get(userDetails, "isLoading", false);
+  const successUser = _get(userDetails, "success", "undefined");
+  const errorMsgUser = _get(userDetails, "errorMsg", "");
+
+  const domainDetails = _get(state, "dashboardData.domainDetails", {});
+  const isLoadingDomain = _get(domainDetails, "isLoading", false);
+  const successDomain = _get(domainDetails, "success", "undefined");
+  const errorMsgDomain = _get(domainDetails, "errorMsg", "");
+
+  return {
+    userProfile,
+    isLoadingCompany,
+    successCompany,
+    errorMsgCompany,
+    isLoadingUser,
+    successUser,
+    errorMsgUser,
+    isLoadingDomain,
+    successDomain,
+    errorMsgDomain,
+    domainName
+  };
 };
 
 export default connect(mapStateToProps)(UserProfile);
