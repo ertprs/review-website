@@ -458,7 +458,7 @@ class GetStarted extends Component {
 
   renderSpecificReviewURLBox = reviewURLToEdit => {
     console.log(reviewURLToEdit);
-    const {formData} = this.state;
+    const { formData } = this.state;
     return (
       <Grid item xs={6} md={6} lg={6}>
         <Paper>
@@ -495,7 +495,7 @@ class GetStarted extends Component {
   };
 
   render() {
-    const { reviewURLToEdit } = this.props;
+    const reviewURLToEdit = _get(this.props, "reviewURLToEdit", "");
     return (
       <div>
         <Container>
@@ -517,23 +517,23 @@ class GetStarted extends Component {
               ? this.renderReviewURLBoxes()
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid>
-          <Grid container spacing={3} style={{marginTop:"35px"}}>
-              {this.props.editMode ? (
-                <div style={{ marginRight: "50px", marginLeft: "10px" }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    startIcon={<ArrowBackIcon />}
-                    onClick={() => {
-                      this.props.handleEditModeClose();
-                    }}
-                  >
-                    Back
-                  </Button>
-                </div>
-              ) : null}
-              {this.renderContinueBtn()}
+          <Grid container spacing={3} style={{ marginTop: "35px" }}>
+            {this.props.editMode ? (
+              <div style={{ marginRight: "50px", marginLeft: "10px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  startIcon={<ArrowBackIcon />}
+                  onClick={() => {
+                    this.props.handleEditModeClose();
+                  }}
+                >
+                  Back
+                </Button>
+              </div>
+            ) : null}
+            {this.renderContinueBtn()}
           </Grid>
         </Container>
         <Snackbar

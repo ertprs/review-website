@@ -432,7 +432,7 @@ export const fetchEmailTemplate = templateId => {
           errorMsg: _get(
             error,
             "response.data.error.message",
-            "Some error occured. Please try again later."
+            "Some error occurred. Please try again later."
           )
         }
       });
@@ -455,7 +455,7 @@ export const setGoogleDirectReviewUrl = (
 
 export const setReviewsPusherConnect = isReviewsPusherConnected => {
   return {
-    type: update,
+    type: SET_REVIEWS_PUSHER_CONNECT,
     isReviewsPusherConnected
   };
 };
