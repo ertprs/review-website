@@ -39,7 +39,10 @@ import {
   UPDATE_DOMAIN_DETAILS_INIT,
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_ERROR,
-  EMPTY_DOMAIN_DETAILS
+  EMPTY_DOMAIN_DETAILS,
+  FETCH_THIRD_PARTY_REVIEWS_INIT,
+  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+  FETCH_THIRD_PARTY_REVIEWS_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -63,7 +66,8 @@ const dashboardReducer = (state = {}, action) => {
     googlePlaceId,
     companyDetails,
     userDetails,
-    domainDetails
+    domainDetails,
+    thirdPartyReviews
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -336,6 +340,12 @@ const dashboardReducer = (state = {}, action) => {
         domainDetails: {}
       };
     }
+    case FETCH_THIRD_PARTY_REVIEWS_INIT:
+      return { ...state, type, ...thirdPartyReviews };
+    case FETCH_THIRD_PARTY_REVIEWS_SUCCESS:
+      return { ...state, type, ...thirdPartyReviews };
+    case FETCH_THIRD_PARTY_REVIEWS_FAILURE:
+      return { ...state, type, ...thirdPartyReviews };
     default:
       return state;
   }

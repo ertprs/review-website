@@ -8,6 +8,7 @@ import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
+import GoogleReviewCard from "../../ProfilePage/ProfilePageBody/ProfilePageBodyLeft/ReviewCardContainer/GoogleReviewCard"
 import NoReviewsFound from "./noReviewsFound";
 
 class GoogleReviewsDs extends Component {
@@ -162,7 +163,7 @@ class GoogleReviewsDs extends Component {
                 )}
 
                 {_map(reviews, review => {
-                  return <ReviewCard review={review} />;
+                  return <GoogleReviewCard review={review} provider="google"/>;
                 })}
               </>
             )

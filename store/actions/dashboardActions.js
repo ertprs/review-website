@@ -39,12 +39,16 @@ import {
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_ERROR,
   EMPTY_DOMAIN_DETAILS,
-  SET_REVIEWS_PUSHER_CONNECT
+  SET_REVIEWS_PUSHER_CONNECT,
+  FETCH_THIRD_PARTY_REVIEWS_INIT,
+  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+  FETCH_THIRD_PARTY_REVIEWS_FAILURE
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import { iconNames } from "../../utility/constants/socialMediaConstants";
 import {
   upgradePremiumApi,
   transactionHistoryApi,
@@ -53,7 +57,8 @@ import {
   fetchEmailTemplateApi,
   updateCompanyDetailsApi,
   updateUserDetailsApi,
-  updateDomainDetailsApi
+  updateDomainDetailsApi,
+  thirdPartyDataApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 
@@ -625,4 +630,52 @@ export const emptyDomainDetails = () => {
   return {
     type: EMPTY_DOMAIN_DETAILS
   };
+};
+
+export const getThirdPartyReviews = (socialAppId, domainId) => {
+  //handle pagination also
+  if (socialAppId && domainId) {
+    return async (dispatch, getState) => {
+      let socialAppName = iconNames[socialAppId].name;
+      dispatch({
+        type: FETCH_THIRD_PARTY_REVIEWS_INIT,
+        thirdPartyReviews: {
+          [socialAppName]: {
+            isLoading: true,
+            success: undefined,
+            errorMsg: "",
+            data: {}
+          }
+        }
+      });
+      try {
+        const result = await axios.get(
+          `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
+        );
+        dispatch({
+          type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+          thirdPartyReviews: {
+            [socialAppName]: {
+              isLoading: false,
+              success: true,
+              errorMsg: "",
+              data: { ...result.data }
+            }
+          }
+        });
+      } catch (error) {
+        dispatch({
+          type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+          thirdPartyReviews: {
+            [socialAppName]: {
+              isLoading: false,
+              success: false,
+              errorMsg: "",
+              data: {}
+            }
+          }
+        });
+      }
+    };
+  }
 };

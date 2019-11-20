@@ -6,7 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import {withStyles} from '@material-ui/styles';
-import GoogleReviewsDs from "./GoogleReviewsDs";
+import GoogleReviews from "./Google";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -79,7 +79,7 @@ class ReviewsContainer extends React.Component {
             </Tabs>
           </AppBar>
           <TabPanel value={selectedTab} index={0}>
-            <GoogleReviewsDs />
+            <GoogleReviews />
           </TabPanel>
           <TabPanel value={selectedTab} index={1}>
             Item Two
