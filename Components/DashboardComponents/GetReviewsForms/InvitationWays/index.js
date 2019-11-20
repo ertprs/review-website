@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { Button } from "@material-ui/core";
 import { KeyboardArrowRight, KeyboardArrowLeft } from "@material-ui/icons";
-import ManulaInvitation from "./ManualInvitation";
+import ManualInvitation from "./ManualInvitation";
 import AutomaticInvitation from "./AutomaticInvitation";
 import NeedDeveloperSupport from "../../../Widgets/NeedDeveloperSupport/NeedDeveloperSupport";
 
 export default class InvitationWays extends Component {
   render() {
+    const { invitationWayToRender } = this.props;
     return (
       <div className="container">
         <style jsx>{`
@@ -19,12 +20,20 @@ export default class InvitationWays extends Component {
           }
         `}</style>
         <div className="row">
-          <div className="col-md-6">
-            <ManulaInvitation {...this.props} />
-          </div>
-          <div className="col-md-6">
-            <AutomaticInvitation {...this.props} />
-          </div>
+          {invitationWayToRender === "automatic" ? (
+            <>
+              <div className="col-md-6">
+                <AutomaticInvitation {...this.props} />
+              </div>
+              <div className="col-md-6">
+                <NeedDeveloperSupport />
+              </div>
+            </>
+          ) : (
+            <div className="col-md-12">
+              <ManualInvitation {...this.props} />
+            </div>
+          )}
         </div>
         <div className="buttonContainer">
           <div>
@@ -39,18 +48,19 @@ export default class InvitationWays extends Component {
             </Button>
           </div>
           <div>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<KeyboardArrowRight />}
-              onClick={this.props.onContinueClick}
-              size="small"
-            >
-              Continue
-            </Button>
+            {invitationWayToRender !== "automatic" ? (
+              <Button
+                variant="contained"
+                color="primary"
+                endIcon={<KeyboardArrowRight />}
+                onClick={this.props.onContinueClick}
+                size="small"
+              >
+                Continue
+              </Button>
+            ) : null}
           </div>
         </div>
-        <NeedDeveloperSupport />
       </div>
     );
   }

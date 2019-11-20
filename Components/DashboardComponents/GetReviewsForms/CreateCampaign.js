@@ -3,6 +3,11 @@ import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import FormField from "../../Widgets/FormField/FormField";
 import Tooltip from "@material-ui/core/Tooltip";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 import { clearCampaignData } from "../../../store/actions/dashboardActions";
 import _get from "lodash/get";
 import { connect } from "react-redux";
@@ -29,6 +34,7 @@ class CreateCampaign extends Component {
             .textnote {
               color: grey;
               font-size: 16px;
+              margin-top: 12px;
             }
             .heading {
               margin-bottom: 20px;
@@ -88,6 +94,38 @@ class CreateCampaign extends Component {
                 * Upgrade to premium to send invitations using your own email
                 domain.
               </p>
+              <FormControl
+                component="fieldset"
+                style={{ marginBottom: "15px", marginTop: "12px" }}
+              >
+                <FormLabel component="legend" style={{ marginBottom: "15px" }}>
+                  Choose your invitation type :{" "}
+                </FormLabel>
+                <RadioGroup
+                  aria-label="campaignInvitationMethod"
+                  name="campaignInvitationMethod"
+                  value={formData.campaignInvitationMethod.value}
+                  onChange={e => {
+                    this.props.handleChange(
+                      e,
+                      "campaignInvitationMethod",
+                      "createCampaign"
+                    );
+                  }}
+                >
+                  <FormControlLabel
+                    value="manual"
+                    control={<Radio />}
+                    label="Manual invitations (by uploading a csv/xls file, copy/pasting, or by entering customers data manually)"
+                    style={{ marginBottom: "25px" }}
+                  />
+                  <FormControlLabel
+                    value="automatic"
+                    control={<Radio />}
+                    label="Automatic invitations (API integration, Woocommerce, Wordpress, Magento, shopify, etc"
+                  />
+                </RadioGroup>
+              </FormControl>
               <Button
                 variant="contained"
                 color="primary"
@@ -112,7 +150,4 @@ const mapStateToProps = (state, ownProps) => {
   return { createCampaignData: { ...createCampaign } };
 };
 
-export default connect(
-  mapStateToProps,
-  { clearCampaignData }
-)(CreateCampaign);
+export default connect(mapStateToProps, { clearCampaignData })(CreateCampaign);

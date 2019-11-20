@@ -6,7 +6,7 @@ import { withStyles } from "@material-ui/styles";
 const styles = theme => ({
   paperContainer: {
     padding: "30px",
-    marginTop: "50px"
+    paddingLeft: "35px"
   }
 });
 
@@ -40,23 +40,22 @@ class NeedDeveloperSupport extends Component {
                 display: flex;
                 flex: 1;
               }
-              .nDSLastListItem > div > div {
-                flex-basis: 50%;
-              }
+              // .nDSLastListItem > div > div {
+              //   flex-basis: 50%;
+              // }
               .nDSRequestBtnContainer {
                 text-align: center;
               }
             `}
           </style>
           <div className="nDSHeader">
-            <h2>Need Developer Support?</h2>
+            <h3>Need Developer Support?</h3>
           </div>
           <div className="nDSSubheader">
-            <h5>
+            <h6>
               We have a team of developers to support any installation and
-              custom <br />
-              developments.
-            </h5>
+              custom developments.
+            </h6>
           </div>
           <div className="nDSList">
             <ul>
@@ -67,14 +66,19 @@ class NeedDeveloperSupport extends Component {
                   <div>
                     Design of custom review templates which match your branding
                   </div>
-                  <div className="nDSRequestBtnContainer">
+                  {/* <div className="nDSRequestBtnContainer">
                     <Button variant="contained" color="primary" size="large">
                       Request Installation
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               </li>
             </ul>
+          </div>
+          <div style={{textAlign:"right"}}>
+            <Button variant="contained" color="primary" size="medium">
+              Request Installation
+            </Button>
           </div>
         </div>
       </Paper>
