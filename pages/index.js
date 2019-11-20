@@ -826,20 +826,20 @@ const Home = props => {
           <div className="widgetImageContainer">
             <div>
               <img
-                src="/static/images/7.png"
+                src="/static/images/review_for_page.svg"
                 style={{ maxWidth: "100%", height: "auto" }}
               />
             </div>
           </div>
-          <div className="widgetSmallImageContainerUpper">
+          {/* <div className="widgetSmallImageContainerUpper">
             <img
               src="/static/images/small_9b.png"
               style={{ maxWidth: "100%", height: "auto" }}
             />
-          </div>
+          </div> */}
           <div className="widgetSmallImageContainerLower">
             <img
-              src="/static/images/small_9c.png"
+              src="/static/images/review_for_page_mob.svg"
               style={{ maxWidth: "100%", height: "auto" }}
             />
           </div>
