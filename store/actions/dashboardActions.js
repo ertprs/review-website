@@ -31,7 +31,11 @@ import {
   UPDATE_COMPANY_DETAILS_INIT,
   UPDATE_COMPANY_DETAILS_SUCCESS,
   UPDATE_COMPANY_DETAILS_ERROR,
-  EMPTY_COMPANY_DETAILS
+  EMPTY_COMPANY_DETAILS,
+  UPDATE_USER_DETAILS_INIT,
+  UPDATE_USER_DETAILS_SUCCESS,
+  UPDATE_USER_DETAILS_ERROR,
+  EMPTY_USER_DETAILS
 } from "./actionTypes";
 import axios from "axios";
 import cookie from "js-cookie";
@@ -43,7 +47,8 @@ import {
   createCampaignApi,
   fetchCampaignLanguageApi,
   fetchEmailTemplateApi,
-  updateComapnyDetailsApi
+  updateComapnyDetailsApi,
+  updateUserDetailsApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 
@@ -494,5 +499,70 @@ export const updateComapnyDetails = data => {
 export const emptyCompanyDetails = () => {
   return {
     type: EMPTY_COMPANY_DETAILS
+  };
+};
+
+export const updateUserDetails = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: UPDATE_USER_DETAILS_INIT,
+      userDetails: {
+        isLoading: true,
+        success: "undefined",
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${updateUserDetailsApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      let success = _get(result, "data.success", false);
+      if (success) {
+        dispatch({
+          type: UPDATE_USER_DETAILS_SUCCESS,
+          userDetails: {
+            isLoading: false,
+            success: _get(result, "data.success", false),
+            data,
+            errorMsg: ""
+          }
+        });
+      } else {
+        dispatch({
+          type: UPDATE_USER_DETAILS_ERROR,
+          userDetails: {
+            isLoading: false,
+            success: false,
+            data: {},
+            errorMsg: "Some error occured. Please try again later."
+          }
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: UPDATE_USER_DETAILS_ERROR,
+        userDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please try again later."
+          )
+        }
+      });
+    }
+  };
+};
+
+export const emptyUserDetails = () => {
+  return {
+    type: EMPTY_USER_DETAILS
   };
 };

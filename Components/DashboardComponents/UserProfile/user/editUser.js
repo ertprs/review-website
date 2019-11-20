@@ -7,39 +7,39 @@ import FormField from "../../../Widgets/FormField/FormField";
 import Card from "../../../MaterialComponents/Card";
 import createReqBody from "../../../../utility/createReqBody";
 import {
-  updateComapnyDetails,
-  emptyCompanyDetails
+  updateUserDetails,
+  emptyUserDetails
 } from "../../../../store/actions/dashboardActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 
-class editCompany extends Component {
+class editUser extends Component {
   handleSaveClick = () => {
-    const { companyDetails, updateComapnyDetails } = this.props;
-    const reqBody = createReqBody(companyDetails);
-    updateComapnyDetails(reqBody);
+    const { userDetails, updateUserDetails } = this.props;
+    const reqBody = createReqBody(userDetails);
+    updateUserDetails(reqBody);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { success, closeEditMode, emptyCompanyDetails } = this.props;
+    const { success, closeEditMode, emptyUserDetails } = this.props;
     if (this.props !== prevProps) {
       if (success === true || success === false) {
         closeEditMode();
-        emptyCompanyDetails();
+        emptyUserDetails();
       }
     }
   }
 
   renderFormFields = () => {
-    const { companyDetails, handleChange } = this.props;
+    const { userDetails, handleChange } = this.props;
     let formFields = [];
-    for (let formField in companyDetails) {
+    for (let formField in userDetails) {
       formFields = [
         ...formFields,
         <div className="col-md-6">
           <FormField
-            {...companyDetails[formField]}
+            {...userDetails[formField]}
             handleChange={handleChange}
             id={formField}
             styles={{
@@ -56,18 +56,13 @@ class editCompany extends Component {
   };
 
   render() {
-    const {
-      companyDetails,
-      handleChange,
-      closeEditMode,
-      isLoading
-    } = this.props;
+    const { closeEditMode, isLoading } = this.props;
     return (
       <div className="mt-50">
         <style jsx>{styles}</style>
         <Card>
           <div className="cardHeader">
-            <h3 className="heading">Edit Company Details</h3>
+            <h3 className="heading">Edit User Details</h3>
             <div>
               <Tooltip title={"Cancel"} placement="top">
                 <CancelIcon
@@ -97,14 +92,14 @@ class editCompany extends Component {
 }
 
 const mapStateToProps = state => {
-  const companyDetails = _get(state, "dashboardData.companyDetails", {});
-  const isLoading = _get(companyDetails, "isLoading", false);
-  const success = _get(companyDetails, "success", "undefined");
-  const errorMsg = _get(companyDetails, "errorMsg", "");
+  const userDetails = _get(state, "dashboardData.userDetails", {});
+  const isLoading = _get(userDetails, "isLoading", false);
+  const success = _get(userDetails, "success", "undefined");
+  const errorMsg = _get(userDetails, "errorMsg", "");
   return { isLoading, success, errorMsg };
 };
 
 export default connect(mapStateToProps, {
-  updateComapnyDetails,
-  emptyCompanyDetails
-})(editCompany);
+  updateUserDetails,
+  emptyUserDetails
+})(editUser);
