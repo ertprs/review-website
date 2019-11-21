@@ -163,7 +163,7 @@ class TrustedShops extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const reviews = _get(dashboardData, "trustedshopsReviews.data.reviews", []);
+  const reviews = _get(dashboardData, "trustedshopsReviews.data", []);
   const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
   const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");

@@ -163,7 +163,7 @@ class Facebook extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const reviews = _get(dashboardData, "facebookReviews.data.reviews", []);
+  const reviews = _get(dashboardData, "facebookReviews.data", []);
   const success = _get(dashboardData, "facebookReviews.success", undefined);
   const isLoading = _get(dashboardData, "facebookReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "facebookReviews.errorMsg", "");
