@@ -633,7 +633,6 @@ export const emptyDomainDetails = () => {
 };
 
 export const getThirdPartyReviews = (socialAppId, domainId) => {
-  //handle pagination also
   if (socialAppId && domainId) {
     return async (dispatch, getState) => {
       let socialAppName = `${iconNames[socialAppId].name}Reviews`;
@@ -656,12 +655,9 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
         let reviews = _get(result, "data.data.reviews", []);
         if (reviews) {
           if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-            reviews.slice(0, 10);
             success = true;
           }
         }
-        let slicedReviews = reviews.slice(1, 10);
-        console.log(slicedReviews, "slicedReviews");
         dispatch({
           type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
           thirdPartyReviews: {
@@ -669,7 +665,7 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
               isLoading: false,
               success,
               errorMsg: "",
-              data: slicedReviews
+              data: _get(result, "data.data", {})
             }
           }
         });
