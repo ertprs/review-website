@@ -16,10 +16,13 @@ class Facebook extends Component {
     reviews: [],
     total: 0,
     pageNo: 1,
-    perPage: 10,
+    perPage: (this.props.totalReviews || []).length >= 10
+    ? 10
+    : this.props.totalReviews.length,
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    showDelay:false
   };
 
   calReviews = () => {
@@ -34,14 +37,25 @@ class Facebook extends Component {
   handlePageChange = ({ selected }) => {
     this.setState({ pageNo: selected + 1 }, () => {
       this.calReviews();
+      window.scrollTo(0,0)
+      this.setState({showDelay:true})
+      this.delayForSometime(400).then(()=>{
+        this.setState({showDelay:false})
+      })
     });
   };
+
+  delayForSometime = (ms)=>{
+    return new Promise(resolve =>{
+      setTimeout(resolve, ms)
+    })
+  }
 
   componentDidMount() {
     const { success, totalReviews } = this.props;
     if (success) {
       const { perPage } = this.state;
-      let slicedReviews = totalReviews.slice(0, 2);
+      let slicedReviews = totalReviews.slice(0, perPage);
       this.setState({
         totalReviews,
         total: totalReviews.length,
@@ -52,7 +66,7 @@ class Facebook extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps) {
-      const { error, success, reviews } = this.props;
+      const { error, success, reviews, totalReviews } = this.props;
       // if (error && !success) {
       //   this.setState({
       //     showSnackbar: true,
@@ -68,9 +82,17 @@ class Facebook extends Component {
     }
   }
 
+  showLoadingEffect = ()=>{
+   return(
+     <div style={{textAlign:"center"}}>
+       <CircularProgress />
+     </div>
+   )
+  }
+
   render() {
     const { isLoading, success } = this.props;
-    const { perPage, total, reviews } = this.state;
+    const { perPage, total, reviews, showDelay } = this.state;
     return (
       <>
         <Head>
@@ -140,24 +162,24 @@ class Facebook extends Component {
             !success ? (
               <NoReviewsFound />
             ) : (
-              <>
-                {_map(reviews, review => {
-                  let reviewToSend = {
-                    name: _get(review, "user", ""),
-                    text: _get(review, "text", ""),
-                    rating: _get(review, "rating", 0)
-                  };
-                  return (
-                    <ReviewCard review={reviewToSend} provider="facebook" />
-                  );
-                })}
-              </>
+              !showDelay ? <>
+              {_map(reviews, review => {
+                let reviewToSend = {
+                  name: _get(review, "user", ""),
+                  text: _get(review, "text", ""),
+                  rating: _get(review, "rating", 0)
+                };
+                return (
+                  <ReviewCard review={reviewToSend} provider="facebook" />
+                );
+              })}
+            </> : this.showLoadingEffect()
             )
           ) : null}
         </div>
         <div
           className={`${
-            isLoading || success == false
+            isLoading || success == false || this.state.totalReviews.length ===0 || showDelay
               ? "hiddenPagination"
               : "paginationContainer"
           }`}

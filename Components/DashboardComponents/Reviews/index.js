@@ -10,6 +10,7 @@ import GoogleReviews from "./Google";
 import FacebookReviews from "./Facebook";
 import TrustpilotReviews from "./Trustpilot";
 import TrustedshopReviews from "./Trustedshop";
+import Paper from '@material-ui/core/Paper/Paper';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,7 +46,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: "100%",
-    background: "#fff !important"
+    background: "#fff"
     // backgroundColor: theme.palette.background.paper
   }
 });
@@ -58,6 +59,11 @@ class ReviewsContainer extends React.Component {
   handleChange = (event, newValue) => {
     this.setState({ selectedTab: newValue });
   };
+
+  scrollToTop = ()=>{
+    window.scrollTo(0,0);
+  }
+
   render() {
     const { classes } = this.props;
     const { selectedTab } = this.state;
@@ -88,7 +94,7 @@ class ReviewsContainer extends React.Component {
           <TrustedshopReviews />
         </TabPanel>
         <TabPanel value={selectedTab} index={3}>
-          <TrustpilotReviews />
+          <TrustpilotReviews scrollToTop={this.scrollToTop}/>
         </TabPanel>
       </div>
     );
