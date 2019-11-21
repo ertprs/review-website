@@ -22,6 +22,7 @@ import {
 } from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
+import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 
 class GetStarted extends Component {
   state = {
@@ -35,8 +36,8 @@ class GetStarted extends Component {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid review URL",
         placeholder: "Enter google review URL (optional)",
         validationRules: {
@@ -49,8 +50,8 @@ class GetStarted extends Component {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid URL",
         placeholder: "Enter facebook business page URL (optional)",
         validationRules: {
@@ -59,14 +60,15 @@ class GetStarted extends Component {
         },
         label: "Facebook Business Page URL: ",
         logo: "facebookLogo.png",
-        title: "Facebook reviews"
+        title: "Facebook reviews",
+        key: 1
       },
       trustPilotReviewUrl: {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid URL",
         placeholder: "Enter TrustPilot page URL (optional)",
         validationRules: {
@@ -75,14 +77,15 @@ class GetStarted extends Component {
         },
         label: "TrustPilot Page URL: ",
         logo: "trustpilotLogo.png",
-        title: "TrustPilot reviews"
+        title: "TrustPilot reviews",
+        key: 18
       },
       trustedShopsReviewUrl: {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid URL",
         placeholder: "Enter TrustedShops page URL (optional)",
         validationRules: {
@@ -91,40 +94,41 @@ class GetStarted extends Component {
         },
         label: "TrustedShops Page URL: ",
         logo: "trustedShopLogo.jpg",
-        title: "TrustedShops reviews"
-      },
-      appStoreReviewUrl: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: true,
-        touched: true,
-        errorMessage: "Enter valid URL",
-        placeholder: "Enter App Store review page URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "App Store review Page URL: ",
-        logo: "appStoreLogo.png",
-        title: "App Store reviews"
-      },
-      googlePlayStoreReviewUrl: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: true,
-        touched: true,
-        errorMessage: "Enter valid URL",
-        placeholder: "Enter Google play Store review page URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "Google play Store URL: ",
-        logo: "googlePlayStoreLogo.png",
-        title: "Google play store reviews"
+        title: "TrustedShops reviews",
+        key: 19
       }
+      //   appStoreReviewUrl: {
+      //     element: "input",
+      //     type: "text",
+      //     value: "",
+      //     valid: false,
+      //     touched: false,
+      //     errorMessage: "Enter valid URL",
+      //     placeholder: "Enter App Store review page URL (optional)",
+      //     validationRules: {
+      //       required: false,
+      //       isDomain: true
+      //     },
+      //     label: "App Store review Page URL: ",
+      //     logo: "appStoreLogo.png",
+      //     title: "App Store reviews"
+      //   },
+      //   googlePlayStoreReviewUrl: {
+      //     element: "input",
+      //     type: "text",
+      //     value: "",
+      //     valid: false,
+      //     touched: false,
+      //     errorMessage: "Enter valid URL",
+      //     placeholder: "Enter Google play Store review page URL (optional)",
+      //     validationRules: {
+      //       required: false,
+      //       isDomain: true
+      //     },
+      //     label: "Google play Store URL: ",
+      //     logo: "googlePlayStoreLogo.png",
+      //     title: "Google play store reviews"
+      //   }
     }
   };
 
@@ -133,24 +137,34 @@ class GetStarted extends Component {
     const {
       setReviewsPusherConnect,
       locatePlaceByPlaceId,
-      clearReviewsData
+      clearReviewsData,
     } = this.props;
-    if (Object.keys(selectedAddress).length > 0) {
-      let data = {};
-      if (formData["directReviewUrl"].value === "") {
-        data = {
-          ...selectedAddress,
-          address
-        };
+    let reqBody = {};
+    for (let item in formData) {
+      if (item === "directReviewUrl") {
+        if (Object.keys(selectedAddress).length > 0) {
+          reqBody = {
+            ...reqBody,
+            google: {
+              ...selectedAddress,
+              address,
+              directReviewUrl: formData[item].value
+            }
+          };
+        }
       } else {
-        data = {
-          ...selectedAddress,
-          directReviewUrl: formData["directReviewUrl"].value,
-          address
-        };
+        if (formData[item].valid && formData[item].touched) {
+          let key = formData[item].key;
+          reqBody = { ...reqBody, [key]: formData[item].value };
+        }
       }
+    }
+
+    console.log(reqBody);
+
+    if (Object.keys(reqBody).length > 0) {
       locatePlaceByPlaceId(
-        data,
+        reqBody,
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
@@ -369,6 +383,12 @@ class GetStarted extends Component {
     if (placeId !== "" || locatePlace) {
       this.props.changeStepToRender(1);
     }
+    const socialArray = _get(this.props, "socialArray", []);
+    if (socialArray) {
+      if (socialArray.length > 0) {
+        this.prefillSocialURLs(socialArray);
+      }
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -381,6 +401,8 @@ class GetStarted extends Component {
     } = this.props;
     const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
+    const socialArrayPrev = _get(prevProps, "socialArray", []);
+    const socialArray = _get(this.props, "socialArray", []);
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
         if (!this.props.home) {
@@ -411,6 +433,28 @@ class GetStarted extends Component {
       }
     }
   }
+
+  prefillSocialURLs = socialArray => {
+    let formDataLocal = this.state.formData;
+    socialArray.forEach(item => {
+      if (reviewURLObjects[item.social_media_app_id]) {
+        let socialObj = reviewURLObjects[item.social_media_app_id] || {};
+        let editURL = _get(socialObj, "editURL", "");
+        let URL = _get(item, "url", "");
+        if (formDataLocal[editURL]) {
+          formDataLocal = {
+            ...formDataLocal,
+            [editURL]: {
+              ...formDataLocal[editURL],
+              value: URL,
+              valid: true
+            }
+          };
+        }
+      }
+    });
+    this.setState({ formData: { ...this.state.formData, ...formDataLocal } });
+  };
 
   renderReviewURLBoxes = () => {
     const { formData } = this.state;
@@ -552,6 +596,7 @@ const mapStateToProps = state => {
   const token = _get(auth, "logIn.token", "");
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const socialArray = _get(businessProfile, "social", []);
   const isLoading = _get(
     dashboardData,
     "locatePlaceTemp.isLoading",
@@ -575,7 +620,8 @@ const mapStateToProps = state => {
     locatePlace,
     userProfile,
     isLoading,
-    errorMsg
+    errorMsg,
+    socialArray
   };
 };
 
@@ -583,5 +629,5 @@ export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
   setGoogleDirectReviewUrl,
   setReviewsPusherConnect,
-  clearReviewsData
+  clearReviewsData,
 })(GetStarted);

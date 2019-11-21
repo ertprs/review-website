@@ -29,7 +29,8 @@ import {
   RESEND_ACTIVATION_LINK_SUCCESS,
   RESEND_ACTIVATION_LINK_FAILURE,
   SET_USER_ACTIVATED,
-  SET_BUSINESS_SUBSCRIPTION
+  SET_BUSINESS_SUBSCRIPTION,
+  UPDATE_AUTH_SOCIAL_ARRAY
 } from "./actionTypes";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -177,8 +178,8 @@ export const logIn = (loginData, loginApi, loginType) => {
       let token = _get(res, "data.token", "");
       if (success) {
         localStorage.setItem("token", token);
-        cookie.set("loginType", loginType);
-        cookie.set("token", token);
+        cookie.set("loginType", loginType, { expires: 7 });
+        cookie.set("token", token, { expires: 7 });
       }
       dispatch({
         type: LOGIN_SUCCESS,
@@ -514,9 +515,9 @@ export const businessLogIn = (loginData, api, directLogin) => {
               "subscription.expired",
               false
             );
-            cookie.set("loginType", loginType);
-            cookie.set("token", token);
-            cookie.set("placeId", placeId);
+            cookie.set("loginType", loginType, { expires: 7 });
+            cookie.set("token", token, { expires: 7 });
+            cookie.set("placeId", placeId, { expires: 7 });
             dispatch(fetchReviews(token));
             dispatch(fetchTransactionHistory(token));
             dispatch(setSubscription(subscriptionExpired));
@@ -643,5 +644,25 @@ export const setSubscription = isSubscriptionExpired => {
   return {
     type: SET_BUSINESS_SUBSCRIPTION,
     isSubscriptionExpired
+  };
+};
+
+export const updateAuthSocialArray = data => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const socialArray = _get(
+      state,
+      "auth.logIn.userProfile.business_profile.social"
+    );
+    const newSocialArray = socialArray.map(item => {
+      let socialId = _get(item, "social_media_app_id", 0);
+      if (data[socialId] !== undefined) {
+        return { ...item, url: data[socialId] };
+      } else return { ...item };
+    });
+    dispatch({
+      type: UPDATE_AUTH_SOCIAL_ARRAY,
+      socialArray: [...newSocialArray]
+    });
   };
 };

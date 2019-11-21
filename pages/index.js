@@ -22,6 +22,7 @@ import { startLoading } from "../store/actions/loaderAction";
 import { GoogleLogout } from "react-google-login";
 import { logOut } from "../store/actions/authActions";
 import SubscriptionPlanCard from "../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
+import cookie from "js-cookie";
 import {
   Link,
   DirectLink,
@@ -1280,7 +1281,7 @@ const Home = props => {
             </MenuItem>
           </a>
           <div>
-            {!authorized ? (
+            {!authorized || cookie.get("token") !== undefined ? (
               <>
                 <NextLink href="/login">
                   <MenuItem className="hide-sm">
@@ -1297,7 +1298,9 @@ const Home = props => {
               </>
             ) : (
               <>
-                {authorized && loginType === 4 ? (
+                {authorized &&
+                loginType === 4 &&
+                cookie.get("token") !== undefined ? (
                   <NextLink href="/dashboard">
                     <MenuItem onClick={handleMenuClose}>
                       <a style={{ textDecoration: "none", color: "#000" }}>
@@ -1306,7 +1309,8 @@ const Home = props => {
                     </MenuItem>
                   </NextLink>
                 ) : null}
-                {loginType === 1 || loginType === 2 ? (
+                {(loginType === 1 || loginType === 2) &&
+                cookie.get("token") !== undefined ? (
                   <NextLink href="">
                     <MenuItem>
                       <a
@@ -1323,7 +1327,7 @@ const Home = props => {
                 ) : (
                   ""
                 )}
-                {loginType === 3 ? (
+                {loginType === 3 && cookie.get("token") !== undefined ? (
                   <GoogleLogout
                     clientId={process.env.GOOGLE_CLIENT_ID}
                     buttonText="Logout"
@@ -1347,7 +1351,7 @@ const Home = props => {
                 ) : (
                   ""
                 )}
-                {loginType === 4 ? (
+                {loginType === 4 && cookie.get("token") !== undefined ? (
                   <NextLink href="">
                     <MenuItem>
                       <a
@@ -1399,14 +1403,14 @@ const Home = props => {
   const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
 
   const handleLogout = () => {
-    if (loginType === 2) {
+    if (loginType === 2 && cookie.get("token") !== undefined) {
       if (window) {
         if (window.hasOwnProperty("FB")) {
           window.FB.logout();
         }
       }
     }
-    if (loginType === 3) {
+    if (loginType === 3 && cookie.get("token") !== undefined) {
       const auth2 = window.gapi.auth2.getAuthInstance();
       if (auth2 != null) {
         auth2
@@ -1456,12 +1460,13 @@ const Home = props => {
       open={isProfileMenuOpen}
       onClose={handleProfileMenuClose}
     >
-      {authorized && loginType === 4 ? (
+      {authorized && loginType === 4 && cookie.get("token") !== undefined ? (
         <NextLink href="/dashboard">
           <MenuItem onClick={handleMenuClose}>Dashboard</MenuItem>
         </NextLink>
       ) : null}
-      {loginType === 1 || loginType === 2 ? (
+      {(loginType === 1 || loginType === 2) &&
+      cookie.get("token") !== undefined ? (
         <NextLink href="">
           <MenuItem onClick={() => handleLogout()}>
             <a>Logout</a>
@@ -1470,7 +1475,7 @@ const Home = props => {
       ) : (
         ""
       )}
-      {loginType === 3 ? (
+      {loginType === 3 && cookie.get("token") !== undefined ? (
         <GoogleLogout
           clientId={process.env.GOOGLE_CLIENT_ID}
           buttonText="Logout"
@@ -1486,7 +1491,7 @@ const Home = props => {
       ) : (
         ""
       )}
-      {loginType === 4 ? (
+      {loginType === 4 && cookie.get("token") !== undefined ? (
         <NextLink href="">
           <MenuItem onClick={() => handleLogout()}>
             <a>Logout</a>
@@ -1676,7 +1681,7 @@ const Home = props => {
               Terms &amp; Conditions
             </a>
           </div>
-          {!authorized ? (
+          {!authorized || cookie.get("token") === undefined ? (
             <>
               <div className="hide-sm">
                 <NextLink href="/login">

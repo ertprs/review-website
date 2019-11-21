@@ -27,7 +27,8 @@ import {
 import { logOut } from "../../store/actions/authActions";
 import {
   upgradeToPremium,
-  fetchReviews
+  fetchReviews,
+  getThirdPartyReviews
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -430,12 +431,13 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
+ const { domainId, getThirdPartyReviews} = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
       {placeLocated &&
       props.domain !== "" &&
-      props.reviews.length === 0 &&
+      // props.reviews.length === 0 &&
       props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
@@ -446,6 +448,10 @@ function Dashboard(props) {
             if (fetchSuccess) {
               fetchReviews(token);
             }
+          }}
+          onAggregatorDataChange = {data=>{
+            let socialAppId = _get(data, "response.socialAppId", 0)
+            getThirdPartyReviews(socialAppId, domainId)
           }}
         />
       ) : null}
@@ -561,6 +567,7 @@ const mapStateToProps = state => {
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const reviews = _get(dashboardData, "reviews.data.reviews", []);
   const token = _get(auth, "logIn.token", "");
+  const domainId = _get(auth,"logIn.userProfile.business_profile.domainId",0)
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",
@@ -608,12 +615,14 @@ const mapStateToProps = state => {
     reviews,
     token,
     isSubscriptionExpired,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    domainId
   };
 };
 
 export default connect(mapStateToProps, {
   logOut,
   upgradeToPremium,
-  fetchReviews
+  fetchReviews,
+  getThirdPartyReviews
 })(Dashboard);

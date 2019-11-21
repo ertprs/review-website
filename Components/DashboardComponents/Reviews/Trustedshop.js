@@ -12,32 +12,87 @@ import NoReviewsFound from "./noReviewsFound";
 
 class TrustedShops extends Component {
   state = {
-    perPage: 10,
+    totalReviews: [],
+    reviews: [],
+    total: 0,
+    pageNo: 1,
+    perPage: (this.props.totalReviews || []).length >= 10
+    ? 10
+    : this.props.totalReviews.length,
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    showDelay: false
+  };
+
+  calReviews = () => {
+    const { totalReviews, pageNo, perPage } = this.state;
+    let slicedReviews = totalReviews.slice(
+      (pageNo - 1) * perPage,
+      pageNo * perPage
+    );
+    this.setState({ reviews: slicedReviews });
   };
 
   handlePageChange = ({ selected }) => {
-    const { fetchReviews, token } = this.props;
-    fetchReviews(token, selected + 1);
+    this.setState({ pageNo: selected + 1 }, () => {
+      this.calReviews();
+      window.scrollTo(0, 0);
+      this.setState({ showDelay: true });
+      this.delayForSometime(400).then(() => {
+        this.setState({ showDelay: false });
+      });
+    });
   };
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.props !== prevProps) {
-  //     const { error, success } = this.props;
-  //     if (error && !success) {
-  //       this.setState({
-  //         showSnackbar: true,
-  //         variant: "error",
-  //         snackbarMsg: error
-  //       });
-  //     }
-  //   }
-  // }
+  delayForSometime = (ms)=>{
+    return new Promise(resolve =>{
+      setTimeout(resolve, ms)
+    })
+  }
+
+  componentDidMount() {
+    const { success, totalReviews } = this.props;
+    if (success) {
+      const { perPage } = this.state;
+      let slicedReviews = totalReviews.slice(0, perPage);
+      this.setState({
+        totalReviews,
+        total: totalReviews.length,
+        reviews: slicedReviews
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props !== prevProps) {
+      const { error, success, reviews, totalReviews } = this.props;
+      // if (error && !success) {
+      //   this.setState({
+      //     showSnackbar: true,
+      //     variant: "error",
+      //     snackbarMsg: error
+      //   });
+      // }
+      if (totalReviews !== prevProps.totalReviews) {
+        if (success) {
+          this.setState({ totalReviews });
+        }
+      }
+    }
+  }
+
+  showLoadingEffect = ()=>{
+    return(
+      <div style={{textAlign:"center"}}>
+        <CircularProgress />
+      </div>
+    )
+   }
 
   render() {
-    const { reviews, isLoading, success } = this.props;
+    const { isLoading, success } = this.props;
+    const { perPage, total, reviews, showDelay } = this.state;
     return (
       <>
         <Head>
@@ -107,7 +162,7 @@ class TrustedShops extends Component {
             !success ? (
               <NoReviewsFound />
             ) : (
-              <>
+              !showDelay ? <>
                 {_map(reviews, review => {
                   let reviewToSend = {
                     name: _get(review, "user", ""),
@@ -118,13 +173,15 @@ class TrustedShops extends Component {
                     <ReviewCard review={reviewToSend} provider="trustedshops" />
                   );
                 })}
-              </>
+              </> : this.showLoadingEffect()
             )
           ) : null}
         </div>
-        {/* <div
+        <div
           className={`${
-            isLoading || success == false
+            isLoading ||
+            success == false ||
+            this.state.totalReviews.length === 0
               ? "hiddenPagination"
               : "paginationContainer"
           }`}
@@ -149,13 +206,7 @@ class TrustedShops extends Component {
             disabledClassName={"disabledButtons"}
             disableInitialCallback={true}
           />
-        </div> */}
-        {/* <Snackbar
-          open={this.state.showSnackbar}
-          variant={this.state.variant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={this.state.snackbarMsg}
-        /> */}
+        </div>
       </>
     );
   }
@@ -163,11 +214,11 @@ class TrustedShops extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const reviews = _get(dashboardData, "trustedshopsReviews.data", []);
+  const totalReviews = _get(dashboardData, "trustedshopsReviews.data", []);
   const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
   const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");
-  return { reviews, success, isLoading, errorMsg };
+  return { totalReviews, success, isLoading, errorMsg };
 };
 
 export default connect(mapStateToProps, { getThirdPartyReviews })(TrustedShops);
