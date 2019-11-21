@@ -12,32 +12,65 @@ import NoReviewsFound from "./noReviewsFound";
 
 class Facebook extends Component {
   state = {
+    totalReviews: [],
+    reviews: [],
+    total: 0,
+    pageNo: 1,
     perPage: 10,
     showSnackbar: false,
     variant: "success",
     snackbarMsg: ""
   };
 
-  handlePageChange = ({ selected }) => {
-    const { fetchReviews, token } = this.props;
-    fetchReviews(token, selected + 1);
+  calReviews = () => {
+    const { totalReviews, pageNo, perPage } = this.state;
+    let slicedReviews = totalReviews.slice(
+      (pageNo - 1) * perPage,
+      pageNo * perPage
+    );
+    this.setState({ reviews: slicedReviews });
   };
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.props !== prevProps) {
-  //     const { error, success } = this.props;
-  //     if (error && !success) {
-  //       this.setState({
-  //         showSnackbar: true,
-  //         variant: "error",
-  //         snackbarMsg: error
-  //       });
-  //     }
-  //   }
-  // }
+  handlePageChange = ({ selected }) => {
+    this.setState({ pageNo: selected + 1 }, () => {
+      this.calReviews();
+    });
+  };
+
+  componentDidMount() {
+    const { success, totalReviews } = this.props;
+    if (success) {
+      const { perPage } = this.state;
+      let slicedReviews = totalReviews.slice(0, 2);
+      this.setState({
+        totalReviews,
+        total: totalReviews.length,
+        reviews: slicedReviews
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props !== prevProps) {
+      const { error, success, reviews } = this.props;
+      // if (error && !success) {
+      //   this.setState({
+      //     showSnackbar: true,
+      //     variant: "error",
+      //     snackbarMsg: error
+      //   });
+      // }
+      if (totalReviews !== prevProps.totalReviews) {
+        if (success) {
+          this.setState({ totalReviews });
+        }
+      }
+    }
+  }
 
   render() {
-    const { reviews, isLoading, success } = this.props;
+    const { isLoading, success } = this.props;
+    const { perPage, total, reviews } = this.state;
     return (
       <>
         <Head>
@@ -122,7 +155,7 @@ class Facebook extends Component {
             )
           ) : null}
         </div>
-        {/* <div
+        <div
           className={`${
             isLoading || success == false
               ? "hiddenPagination"
@@ -149,7 +182,7 @@ class Facebook extends Component {
             disabledClassName={"disabledButtons"}
             disableInitialCallback={true}
           />
-        </div> */}
+        </div>
         {/* <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}
@@ -163,11 +196,11 @@ class Facebook extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const reviews = _get(dashboardData, "facebookReviews.data", []);
+  const totalReviews = _get(dashboardData, "facebookReviews.data.reviews", []);
   const success = _get(dashboardData, "facebookReviews.success", undefined);
   const isLoading = _get(dashboardData, "facebookReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "facebookReviews.errorMsg", "");
-  return { reviews, success, isLoading, errorMsg };
+  return { totalReviews, success, isLoading, errorMsg };
 };
 
 export default connect(mapStateToProps, { getThirdPartyReviews })(Facebook);
