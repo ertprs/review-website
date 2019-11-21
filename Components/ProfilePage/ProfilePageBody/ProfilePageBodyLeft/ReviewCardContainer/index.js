@@ -5,7 +5,7 @@ import Paper from "../../../../MaterialComponents/Paper";
 import { connect } from "react-redux";
 import uuid from "uuid/v1";
 import ReviewCardPlaceholder from "./ReviewCardPlaceholder";
-import GoogleReviewCard from "./GoogleReviewCard";
+import ReviewCard from "../../../../Widgets/CommonReviewCard";
 import _isEmpty from "lodash/isEmpty";
 
 class ReviewCardContainer extends Component {
@@ -83,7 +83,7 @@ class ReviewCardContainer extends Component {
         return (
           googleReviewsToShow &&
           googleReviewsToShow.map(review => {
-            return <GoogleReviewCard review={review} provider="google" />;
+            return <ReviewCard review={review} provider="google" />;
           })
         );
       }
@@ -97,7 +97,7 @@ class ReviewCardContainer extends Component {
         return (
           wotReviewsToShow &&
           wotReviewsToShow.map(review => {
-            return <GoogleReviewCard review={review} provider="wot" />;
+            return <ReviewCard review={review} provider="wot" />;
           })
         );
       }
@@ -110,7 +110,7 @@ class ReviewCardContainer extends Component {
       domainReviewsData.map(review => {
         return (
           <div style={{ marginBottom: "25px" }} key={uuid()}>
-            <GoogleReviewCard
+            <ReviewCard
               isLoading={isLoading}
               review={review || {}}
               provider="trustsearch"
