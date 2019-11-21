@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReviewCard from "../../Widgets/MyReviewsBusiness/ReviewCard";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import _map from "lodash/map";
@@ -8,7 +7,7 @@ import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
-import GoogleReviewCard from "../../ProfilePage/ProfilePageBody/ProfilePageBodyLeft/ReviewCardContainer/GoogleReviewCard"
+import GoogleReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
 
 class GoogleReviewsDs extends Component {
@@ -163,7 +162,7 @@ class GoogleReviewsDs extends Component {
                 )}
 
                 {_map(reviews, review => {
-                  return <GoogleReviewCard review={review} provider="google"/>;
+                  return <GoogleReviewCard review={review} provider="google" />;
                 })}
               </>
             )

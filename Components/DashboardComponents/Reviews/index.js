@@ -9,7 +9,7 @@ import { withStyles } from "@material-ui/styles";
 import GoogleReviews from "./Google";
 import FacebookReviews from "./Facebook";
 import TrustpilotReviews from "./Trustpilot";
-import TrustedshopsReviews from "./TrustedShops";
+import TrustedshopReviews from "./Trustedshop";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -72,34 +72,23 @@ class ReviewsContainer extends React.Component {
             variant="scrollable"
             scrollButtons="auto"
           >
-            <Tab label="All reviews" {...a11yProps(0)} />
-            <Tab label="Google reviews" {...a11yProps(1)} />
-            <Tab label="Facebook reviews" {...a11yProps(2)} />
-            <Tab label="TrustedShops reviews" {...a11yProps(3)} />
-            <Tab label="Trustpilot reviews" {...a11yProps(4)} />
-            <Tab label="Google play reviews" {...a11yProps(5)} />
+            <Tab label="Google reviews" {...a11yProps(0)} />
+            <Tab label="Facebook reviews" {...a11yProps(1)} />
+            <Tab label="TrustedShop reviews" {...a11yProps(2)} />
+            <Tab label="Trustpilot reviews" {...a11yProps(3)} />
           </Tabs>
         </AppBar>
         <TabPanel value={selectedTab} index={0}>
           <GoogleReviews />
         </TabPanel>
         <TabPanel value={selectedTab} index={1}>
-          <GoogleReviews />
-        </TabPanel>
-        <TabPanel value={selectedTab} index={2}>
           <FacebookReviews />
         </TabPanel>
+        <TabPanel value={selectedTab} index={2}>
+          <TrustedshopReviews />
+        </TabPanel>
         <TabPanel value={selectedTab} index={3}>
-          <TrustedshopsReviews />
-        </TabPanel>
-        <TabPanel value={selectedTab} index={4}>
           <TrustpilotReviews />
-        </TabPanel>
-        <TabPanel value={selectedTab} index={5}>
-          Item Six
-        </TabPanel>
-        <TabPanel value={selectedTab} index={6}>
-          Item Seven
         </TabPanel>
       </div>
     );

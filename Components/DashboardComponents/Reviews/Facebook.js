@@ -7,7 +7,7 @@ import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
-import ReviewCard from "../../ProfilePage/ProfilePageBody/ProfilePageBodyLeft/ReviewCardContainer/GoogleReviewCard";
+import ReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
 
 class Facebook extends Component {

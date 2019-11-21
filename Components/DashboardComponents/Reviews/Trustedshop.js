@@ -7,7 +7,7 @@ import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
-import ReviewCard from "../../ProfilePage/ProfilePageBody/ProfilePageBodyLeft/ReviewCardContainer/GoogleReviewCard";
+import ReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
 
 class TrustedShops extends Component {
@@ -111,7 +111,7 @@ class TrustedShops extends Component {
                 {_map(reviews, review => {
                   let reviewToSend = {
                     name: _get(review, "user", ""),
-                    text: _get(review, "text", ""),
+                    text: _get(review, "review", ""),
                     rating: _get(review, "rating", 0)
                   };
                   return (
