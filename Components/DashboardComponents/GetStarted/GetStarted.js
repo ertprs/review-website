@@ -36,8 +36,8 @@ class GetStarted extends Component {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid review URL",
         placeholder: "Enter google review URL (optional)",
         validationRules: {
@@ -50,8 +50,8 @@ class GetStarted extends Component {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid URL",
         placeholder: "Enter facebook business page URL (optional)",
         validationRules: {
@@ -60,14 +60,15 @@ class GetStarted extends Component {
         },
         label: "Facebook Business Page URL: ",
         logo: "facebookLogo.png",
-        title: "Facebook reviews"
+        title: "Facebook reviews",
+        key: 1
       },
       trustPilotReviewUrl: {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid URL",
         placeholder: "Enter TrustPilot page URL (optional)",
         validationRules: {
@@ -76,14 +77,15 @@ class GetStarted extends Component {
         },
         label: "TrustPilot Page URL: ",
         logo: "trustpilotLogo.png",
-        title: "TrustPilot reviews"
+        title: "TrustPilot reviews",
+        key: 18
       },
       trustedShopsReviewUrl: {
         element: "input",
         type: "text",
         value: "",
-        valid: true,
-        touched: true,
+        valid: false,
+        touched: false,
         errorMessage: "Enter valid URL",
         placeholder: "Enter TrustedShops page URL (optional)",
         validationRules: {
@@ -92,40 +94,41 @@ class GetStarted extends Component {
         },
         label: "TrustedShops Page URL: ",
         logo: "trustedShopLogo.jpg",
-        title: "TrustedShops reviews"
-      },
-      appStoreReviewUrl: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: true,
-        touched: true,
-        errorMessage: "Enter valid URL",
-        placeholder: "Enter App Store review page URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "App Store review Page URL: ",
-        logo: "appStoreLogo.png",
-        title: "App Store reviews"
-      },
-      googlePlayStoreReviewUrl: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: true,
-        touched: true,
-        errorMessage: "Enter valid URL",
-        placeholder: "Enter Google play Store review page URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "Google play Store URL: ",
-        logo: "googlePlayStoreLogo.png",
-        title: "Google play store reviews"
+        title: "TrustedShops reviews",
+        key: 19
       }
+      //   appStoreReviewUrl: {
+      //     element: "input",
+      //     type: "text",
+      //     value: "",
+      //     valid: false,
+      //     touched: false,
+      //     errorMessage: "Enter valid URL",
+      //     placeholder: "Enter App Store review page URL (optional)",
+      //     validationRules: {
+      //       required: false,
+      //       isDomain: true
+      //     },
+      //     label: "App Store review Page URL: ",
+      //     logo: "appStoreLogo.png",
+      //     title: "App Store reviews"
+      //   },
+      //   googlePlayStoreReviewUrl: {
+      //     element: "input",
+      //     type: "text",
+      //     value: "",
+      //     valid: false,
+      //     touched: false,
+      //     errorMessage: "Enter valid URL",
+      //     placeholder: "Enter Google play Store review page URL (optional)",
+      //     validationRules: {
+      //       required: false,
+      //       isDomain: true
+      //     },
+      //     label: "Google play Store URL: ",
+      //     logo: "googlePlayStoreLogo.png",
+      //     title: "Google play store reviews"
+      //   }
     }
   };
 
@@ -136,22 +139,32 @@ class GetStarted extends Component {
       locatePlaceByPlaceId,
       clearReviewsData
     } = this.props;
-    if (Object.keys(selectedAddress).length > 0) {
-      let data = {};
-      if (formData["directReviewUrl"].value === "") {
-        data = {
-          ...selectedAddress,
-          address
-        };
+    let reqBody = {};
+    for (let item in formData) {
+      if (item === "directReviewUrl") {
+        if (Object.keys(selectedAddress).length > 0) {
+          reqBody = {
+            ...reqBody,
+            google: {
+              ...selectedAddress,
+              address,
+              directReviewUrl: formData[item].value
+            }
+          };
+        }
       } else {
-        data = {
-          ...selectedAddress,
-          directReviewUrl: formData["directReviewUrl"].value,
-          address
-        };
+        if (formData[item].valid && formData[item].touched) {
+          let key = formData[item].key;
+          reqBody = { ...reqBody, [key]: formData[item].value };
+        }
       }
+    }
+
+    console.log(reqBody);
+
+    if (Object.keys(reqBody).length > 0) {
       locatePlaceByPlaceId(
-        data,
+        reqBody,
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
@@ -418,14 +431,6 @@ class GetStarted extends Component {
           snackbarMsg: errorMsg
         });
       }
-      // Prefill social urls (Check the length logic here)
-      // if (socialArray) {
-      //   if (socialArrayPrev) {
-      //     if (socialArrayPrev.length !== socialArray.length) {
-      //       this.prefillSocialURLs(socialArray);
-      //     }
-      //   }
-      // }
     }
   }
 
@@ -448,7 +453,7 @@ class GetStarted extends Component {
         }
       }
     });
-    this.setState({formData:{...this.state.formData, ...formDataLocal}})
+    this.setState({ formData: { ...this.state.formData, ...formDataLocal } });
   };
 
   renderReviewURLBoxes = () => {
