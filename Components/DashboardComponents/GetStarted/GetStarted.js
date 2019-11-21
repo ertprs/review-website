@@ -137,7 +137,7 @@ class GetStarted extends Component {
     const {
       setReviewsPusherConnect,
       locatePlaceByPlaceId,
-      clearReviewsData
+      clearReviewsData,
     } = this.props;
     let reqBody = {};
     for (let item in formData) {
@@ -629,5 +629,5 @@ export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
   setGoogleDirectReviewUrl,
   setReviewsPusherConnect,
-  clearReviewsData
+  clearReviewsData,
 })(GetStarted);

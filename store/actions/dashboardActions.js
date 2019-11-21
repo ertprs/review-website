@@ -44,6 +44,7 @@ import {
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
   FETCH_THIRD_PARTY_REVIEWS_FAILURE
 } from "./actionTypes";
+import {updateAuthSocialArray} from '../actions/authActions';
 import axios from "axios";
 import cookie from "js-cookie";
 import _get from "lodash/get";
@@ -181,6 +182,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       if (success) {
         // dispatch(fetchReviews(token));
         cookie.set("placeLocated", true, { expires: 7 });
+        dispatch(updateAuthSocialArray(data))
       }
     } catch (error) {
       dispatch({

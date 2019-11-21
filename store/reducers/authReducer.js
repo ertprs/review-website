@@ -31,7 +31,8 @@ import {
   SET_BUSINESS_SUBSCRIPTION,
   UPDATE_COMPANY_DETAILS_SUCCESS,
   UPDATE_USER_DETAILS_SUCCESS,
-  UPDATE_DOMAIN_DETAILS_SUCCESS
+  UPDATE_DOMAIN_DETAILS_SUCCESS,
+  UPDATE_AUTH_SOCIAL_ARRAY
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -52,7 +53,8 @@ const authReducer = (state = {}, action) => {
     isSubscriptionExpired,
     companyDetails,
     userDetails,
-    domainDetails
+    domainDetails,
+    socialArray
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -265,6 +267,22 @@ const authReducer = (state = {}, action) => {
             business_profile: {
               ...state.logIn.userProfile.business_profile,
               ...domainDetails.data
+            }
+          }
+        },
+        type
+      };
+    }
+    case UPDATE_AUTH_SOCIAL_ARRAY: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              social: [...socialArray]
             }
           }
         },
