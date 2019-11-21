@@ -1,12 +1,49 @@
 import React from "react";
-import { reviewListStyles } from "../../../../../Widgets/MyReviewsUser/myReviewsStyles";
-import RatingIndicators from "../../../../../Widgets/RatingIndicators/RatingIndicators";
+import { reviewListStyles } from "../Widgets/MyReviewsUser/myReviewsStyles";
+import RatingIndicators from "../Widgets/RatingIndicators/RatingIndicators";
+import { ratingColor } from "../../utility/ratingTypeColor";
 import _get from "lodash/get";
 import moment from "moment";
 import Avatar from "react-avatar";
-import { ratingColor } from "../../../../../../utility/ratingTypeColor";
 
-const GoogleReviewCard = ({ review, provider }) => {
+const renderIcon = provider => {
+  let src = "";
+  switch (provider) {
+    case "trustsearch":
+      src = "/static/images/logo_footer.png";
+      break;
+    case "google":
+      src = "/static/images/googleIcon.png";
+      break;
+    case "facebook":
+      src = "/static/images/facebookicon.png";
+      break;
+    case "trustpilot":
+      src = "/static/images/trustpiloticon.png";
+      break;
+    case "trustedshops":
+      src = "/static/images/trustedShopLogo.jpg";
+      break;
+    case "wot":
+      src = "/static/images/wotLogo.png";
+      break;
+    default:
+      src = "";
+  }
+  return (
+    <img
+      src={src}
+      alt="icon"
+      style={{
+        height: "15px",
+        width: "15px",
+        marginRight: "10px"
+      }}
+    />
+  );
+};
+
+const ReviewCard = ({ review, provider }) => {
   const { name, text, rating, date } = review;
 
   return (
@@ -22,33 +59,11 @@ const GoogleReviewCard = ({ review, provider }) => {
           margin: 20px 40px 0px 0px;
           font-weight: bold;
         }
-        // @media screen and (max-width: 991px) {
-        //   .fullDate {
-        //     display: none;
-        //   }
-        //   .smallDate {
-        //     display: block;
-        //   }
-        // }
-
-        @media screen and (max-width: 767px) {
-          // .dateContainer {
-          //   margin-top: 22px;
-          // }
-          // .fullDate {
-          //   display: block;
-          // }
-          // .smallDate {
-          //   display: none;
-          // }
           .ratingContainer {
             margin-top: 10px;
           }
         }
       `}</style>
-      {/* <div style={{ textAlign: "right", margin: "7px 20px 0px 0px" }}>
-        <i style={{ color: "#DB4437" }} className="fa fa-google"></i>
-      </div> */}
       <div>
         {provider === "wot" ? (
           <div className="dateContainer">
@@ -79,7 +94,7 @@ const GoogleReviewCard = ({ review, provider }) => {
                 widgetSpacings="1px"
               />
               <p className="userName">
-                {provider === "google" ? (
+                {/* {provider === "google" ? (
                   <img
                     src="/static/images/googleIcon.png"
                     style={{
@@ -107,19 +122,11 @@ const GoogleReviewCard = ({ review, provider }) => {
                       marginRight: "10px"
                     }}
                   />
-                ) : null}
+                ) : null} */}
+                {renderIcon(provider)}
                 {name || ""}
               </p>
             </div>
-            {/* <div>
-              <RatingIndicators
-                rating={Number(rating) || 0}
-                typeOfWidget="star"
-                widgetRatedColors="#21bc61"
-                widgetDimensions="21px"
-                widgetSpacings="1px"
-              />
-            </div> */}
           </div>
         </div>
         <div className="col-md-6">
@@ -140,4 +147,4 @@ const GoogleReviewCard = ({ review, provider }) => {
   );
 };
 
-export default GoogleReviewCard;
+export default ReviewCard;
