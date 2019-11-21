@@ -22,8 +22,8 @@ import IconButton from "@material-ui/core/IconButton/IconButton";
 import Moment from "react-moment";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
-import { Paper } from "@material-ui/core";
-
+import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
+import Paper from "@material-ui/core/Paper/Paper";
 const styles = theme => ({
   button: {
     width: "150px"
@@ -41,7 +41,8 @@ class Home extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps) {
-      const { success } = this.props;
+      const { success, socialArray } = this.props;
+      const socialArrayPrev = _get(prevProps, "socialArray", []);
       let snackbarMsg = "";
       if (success === true) {
         snackbarMsg = "Mail sent successfully, Please verify your email.";
@@ -480,35 +481,50 @@ class Home extends Component {
     );
   };
 
-  renderReviewURLBoxes = (imageLogo, URL, editURL) => {
-    return (
-      <div className="reviewBoxItemContainer">
-        <style jsx>{reviewChannelBoxStyles}</style>
-        <div>
-          <div className="reviewBoxItemLogoContainer">
-            <img src={`/static/images/${imageLogo}`} />
-          </div>
-        </div>
-        <div className="reviewBoxItemTextBoxContainer">{URL}</div>
-        <div>
-          <IconButton
-            key="edit"
-            aria-label="edit"
-            color="inherit"
-            onClick={() => {
-              this.setState(prevState => {
-                return {
-                  editMode: !prevState.editMode,
-                  reviewURLToEdit: editURL
-                };
-              });
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </div>
-      </div>
-    );
+  renderReviewURLBoxes = () => {
+    const socialArray = _get(this.props, "socialArray", []);
+    return socialArray.map(item => {
+      if (reviewURLObjects[item.social_media_app_id]) {
+        let socialObj = reviewURLObjects[item.social_media_app_id] || {};
+        let editURL = _get(socialObj, "editURL", "");
+        let imageLogo = _get(socialObj, "imageLogo", "");
+        let URL = _get(item, "url", "");
+        return (
+          <Grid item xs={12} md={6} lg={6}>
+            <div className="reviewBoxItemContainer">
+              <style jsx>{reviewChannelBoxStyles}</style>
+              <div>
+                <div className="reviewBoxItemLogoContainer">
+                  <img src={`/static/images/${imageLogo}`} />
+                </div>
+              </div>
+              <div className="reviewBoxItemTextBoxContainer">
+                <a href={URL} target="_blank">
+                  {URL}
+                </a>
+              </div>
+              <div>
+                <IconButton
+                  key="edit"
+                  aria-label="edit"
+                  color="inherit"
+                  onClick={() => {
+                    this.setState(prevState => {
+                      return {
+                        editMode: !prevState.editMode,
+                        reviewURLToEdit: editURL
+                      };
+                    });
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </div>
+            </div>
+          </Grid>
+        );
+      }
+    });
   };
 
   render() {
@@ -568,30 +584,12 @@ class Home extends Component {
                 </div>
               </SimpleCard>
             </Grid>
-            <Grid item xs={12} md={12} lg={12}>
-              <h4 style={{ marginLeft: "5px" }}>Review URL Links : </h4>
-            </Grid>
-            <Grid item xs={12} md={6} lg={6}>
-              {this.renderReviewURLBoxes(
-                "facebookLogo.png",
-                "https://www.facebook.com/GoogleIndia/?brand_redir=104958162837",
-                "facebookReviewUrl"
-              )}
-            </Grid>
-            <Grid item xs={12} md={6} lg={6}>
-              {this.renderReviewURLBoxes(
-                "trustpilotLogo.png",
-                "https://www.trustpilot.com/review/www.google.com",
-                "trustPilotReviewUrl"
-              )}
-            </Grid>
-            <Grid item xs={12} md={6} lg={6}>
-              {this.renderReviewURLBoxes(
-                "trustedShopLogo.jpg",
-                "https://www.trustedshops.fr/evaluation/info_XD5963EA6BCACE0C453226C6D9CC84B33.html",
-                "trustedShopsReviewUrl"
-              )}
-            </Grid>
+            {(this.props.socialArray || []).length > 0 ? (
+              <Grid item xs={12} md={12} lg={12}>
+                <h4 style={{ marginLeft: "5px" }}>Review URL Links : </h4>
+              </Grid>
+            ) : null}
+            {this.renderReviewURLBoxes()}
           </Grid>
         ) : (
           <div>
@@ -656,6 +654,7 @@ const mapStateToProps = state => {
   const isLoading = _get(auth, "resendActivation.isLoading", false);
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const socialArray = _get(businessProfile, "social", []);
   const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
   const userName = _get(auth, "logIn.userProfile.name", "");
   const userEmail = _get(auth, "logIn.userProfile.email", "");
@@ -709,7 +708,8 @@ const mapStateToProps = state => {
     businessAddress,
     businessAddressFirstTime,
     isReviewsPusherConnected,
-    googlePlaceId
+    googlePlaceId,
+    socialArray
   };
 };
 

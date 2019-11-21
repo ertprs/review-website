@@ -22,6 +22,7 @@ import {
 } from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
+import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 
 class GetStarted extends Component {
   state = {
@@ -369,6 +370,12 @@ class GetStarted extends Component {
     if (placeId !== "" || locatePlace) {
       this.props.changeStepToRender(1);
     }
+    const socialArray = _get(this.props, "socialArray", []);
+    if (socialArray) {
+      if (socialArray.length > 0) {
+        this.prefillSocialURLs(socialArray);
+      }
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -381,6 +388,8 @@ class GetStarted extends Component {
     } = this.props;
     const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
+    const socialArrayPrev = _get(prevProps, "socialArray", []);
+    const socialArray = _get(this.props, "socialArray", []);
     if (this.props !== prevProps) {
       if (isLoading === false && success) {
         if (!this.props.home) {
@@ -409,8 +418,38 @@ class GetStarted extends Component {
           snackbarMsg: errorMsg
         });
       }
+      // Prefill social urls (Check the length logic here)
+      // if (socialArray) {
+      //   if (socialArrayPrev) {
+      //     if (socialArrayPrev.length !== socialArray.length) {
+      //       this.prefillSocialURLs(socialArray);
+      //     }
+      //   }
+      // }
     }
   }
+
+  prefillSocialURLs = socialArray => {
+    let formDataLocal = this.state.formData;
+    socialArray.forEach(item => {
+      if (reviewURLObjects[item.social_media_app_id]) {
+        let socialObj = reviewURLObjects[item.social_media_app_id] || {};
+        let editURL = _get(socialObj, "editURL", "");
+        let URL = _get(item, "url", "");
+        if (formDataLocal[editURL]) {
+          formDataLocal = {
+            ...formDataLocal,
+            [editURL]: {
+              ...formDataLocal[editURL],
+              value: URL,
+              valid: true
+            }
+          };
+        }
+      }
+    });
+    this.setState({formData:{...this.state.formData, ...formDataLocal}})
+  };
 
   renderReviewURLBoxes = () => {
     const { formData } = this.state;
@@ -552,6 +591,7 @@ const mapStateToProps = state => {
   const token = _get(auth, "logIn.token", "");
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const socialArray = _get(businessProfile, "social", []);
   const isLoading = _get(
     dashboardData,
     "locatePlaceTemp.isLoading",
@@ -575,7 +615,8 @@ const mapStateToProps = state => {
     locatePlace,
     userProfile,
     isLoading,
-    errorMsg
+    errorMsg,
+    socialArray
   };
 };
 
