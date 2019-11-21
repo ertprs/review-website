@@ -34,7 +34,7 @@ class ReviewsPusher extends Component {
     });
 
     channel.bind("aggregator", data => {
-      // this.props.onAggregatorDataChange(data);
+      this.props.onAggregatorDataChange(data);
       console.log(data, "response from reviews pusher DomainNameAggregator");
     });
 
