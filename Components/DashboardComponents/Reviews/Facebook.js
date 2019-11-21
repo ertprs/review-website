@@ -10,7 +10,7 @@ import { CircularProgress, Typography } from "@material-ui/core";
 import ReviewCard from "../../ProfilePage/ProfilePageBody/ProfilePageBodyLeft/ReviewCardContainer/GoogleReviewCard";
 import NoReviewsFound from "./noReviewsFound";
 
-class TrustedShops extends Component {
+class Facebook extends Component {
   state = {
     perPage: 10,
     showSnackbar: false,
@@ -115,7 +115,7 @@ class TrustedShops extends Component {
                     rating: _get(review, "rating", 0)
                   };
                   return (
-                    <ReviewCard review={reviewToSend} provider="trustedshops" />
+                    <ReviewCard review={reviewToSend} provider="facebook" />
                   );
                 })}
               </>
@@ -163,11 +163,11 @@ class TrustedShops extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const reviews = _get(dashboardData, "trustedshopsReviews.data.reviews", []);
-  const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
-  const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
-  const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");
+  const reviews = _get(dashboardData, "facebookReviews.data.reviews", []);
+  const success = _get(dashboardData, "facebookReviews.success", undefined);
+  const isLoading = _get(dashboardData, "facebookReviews.isLoading", false);
+  const errorMsg = _get(dashboardData, "facebookReviews.errorMsg", "");
   return { reviews, success, isLoading, errorMsg };
 };
 
-export default connect(mapStateToProps, { getThirdPartyReviews })(TrustedShops);
+export default connect(mapStateToProps, { getThirdPartyReviews })(Facebook);

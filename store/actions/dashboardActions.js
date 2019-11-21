@@ -636,7 +636,7 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
   //handle pagination also
   if (socialAppId && domainId) {
     return async (dispatch, getState) => {
-      let socialAppName = iconNames[socialAppId].name;
+      let socialAppName = `${iconNames[socialAppId].name}Reviews`;
       dispatch({
         type: FETCH_THIRD_PARTY_REVIEWS_INIT,
         thirdPartyReviews: {
@@ -652,14 +652,21 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
         const result = await axios.get(
           `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
         );
+        let success = false;
+        let reviews = _get(result, "data.data.reviews", []);
+        if (reviews) {
+          if (!_isEmpty(reviews) && Array.isArray(reviews)) {
+            success = true;
+          }
+        }
         dispatch({
           type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
           thirdPartyReviews: {
             [socialAppName]: {
               isLoading: false,
-              success: true,
+              success,
               errorMsg: "",
-              data: { ...result.data }
+              data: _get(result, "data.data", [])
             }
           }
         });
@@ -670,7 +677,11 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
             [socialAppName]: {
               isLoading: false,
               success: false,
-              errorMsg: "",
+              errorMsg: _get(
+                error,
+                "response.data.message",
+                "Unable to fetch reviews!"
+              ),
               data: {}
             }
           }
