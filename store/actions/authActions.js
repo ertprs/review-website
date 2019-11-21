@@ -177,8 +177,8 @@ export const logIn = (loginData, loginApi, loginType) => {
       let token = _get(res, "data.token", "");
       if (success) {
         localStorage.setItem("token", token);
-        cookie.set("loginType", loginType);
-        cookie.set("token", token);
+        cookie.set("loginType", loginType, { expires: 7 });
+        cookie.set("token", token, { expires: 7 });
       }
       dispatch({
         type: LOGIN_SUCCESS,
@@ -514,9 +514,9 @@ export const businessLogIn = (loginData, api, directLogin) => {
               "subscription.expired",
               false
             );
-            cookie.set("loginType", loginType);
-            cookie.set("token", token);
-            cookie.set("placeId", placeId);
+            cookie.set("loginType", loginType, { expires: 7 });
+            cookie.set("token", token, { expires: 7 });
+            cookie.set("placeId", placeId, { expires: 7 });
             dispatch(fetchReviews(token));
             dispatch(fetchTransactionHistory(token));
             dispatch(setSubscription(subscriptionExpired));
