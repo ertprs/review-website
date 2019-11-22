@@ -16,9 +16,10 @@ class TrustedShops extends Component {
     reviews: [],
     total: 0,
     pageNo: 1,
-    perPage: (this.props.totalReviews || []).length >= 10
-    ? 10
-    : this.props.totalReviews.length,
+    perPage:
+      (this.props.totalReviews || []).length >= 10
+        ? 10
+        : this.props.totalReviews.length,
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
@@ -45,11 +46,11 @@ class TrustedShops extends Component {
     });
   };
 
-  delayForSometime = (ms)=>{
-    return new Promise(resolve =>{
-      setTimeout(resolve, ms)
-    })
-  }
+  delayForSometime = ms => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  };
 
   componentDidMount() {
     const { success, totalReviews } = this.props;
@@ -82,16 +83,21 @@ class TrustedShops extends Component {
     }
   }
 
-  showLoadingEffect = ()=>{
-    return(
-      <div style={{textAlign:"center"}}>
+  showLoadingEffect = () => {
+    return (
+      <div style={{ textAlign: "center" }}>
         <CircularProgress />
       </div>
-    )
-   }
+    );
+  };
 
   render() {
-    const { isLoading, success } = this.props;
+    const {
+      isLoading,
+      success,
+      areTrustedShopsReviewsFetching,
+      isReviewsPusherConnected
+    } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
       <>
@@ -153,20 +159,23 @@ class TrustedShops extends Component {
             }
           }
         `}</style>
+
+        {/* We are using areTrustedShopsReviewsFetching to update the reviews from pusher */}
+
         <div className="reviewsContainer">
-          {isLoading === true ? (
+          {isLoading === true || areTrustedShopsReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound />
-            ) : (
-              !showDelay ? <>
+            ) : !showDelay ? (
+              <>
                 {_map(reviews, review => {
                   let name = _get(review, "user", "");
                   let reviewToSend = {
-                    name: name==="N/A" ? "" : name,
+                    name: name === "N/A" ? "" : name,
                     text: _get(review, "review", ""),
                     rating: _get(review, "rating", 0)
                   };
@@ -174,7 +183,9 @@ class TrustedShops extends Component {
                     <ReviewCard review={reviewToSend} provider="trustedshops" />
                   );
                 })}
-              </> : this.showLoadingEffect()
+              </>
+            ) : (
+              this.showLoadingEffect()
             )
           ) : null}
         </div>
@@ -215,11 +226,32 @@ class TrustedShops extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const totalReviews = _get(dashboardData, "trustedshopsReviews.data.reviews", []);
+  const totalReviews = _get(
+    dashboardData,
+    "trustedshopsReviews.data.reviews",
+    []
+  );
   const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
   const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");
-  return { totalReviews, success, isLoading, errorMsg };
+  const areTrustedShopsReviewsFetching = _get(
+    dashboardData,
+    "reviewsObject.trustedshops",
+    false
+  );
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
+  return {
+    totalReviews,
+    success,
+    isLoading,
+    errorMsg,
+    areTrustedShopsReviewsFetching,
+    isReviewsPusherConnected
+  };
 };
 
 export default connect(mapStateToProps, { getThirdPartyReviews })(TrustedShops);

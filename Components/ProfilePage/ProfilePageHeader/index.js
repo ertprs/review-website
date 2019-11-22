@@ -250,7 +250,7 @@ class ProfilePageHeader extends Component {
             this.setState({ showReportDomainModal: false });
           }}
           modalCustomStyles={{ width: "70%" }}
-          shouldCloseOnOverlayClick={false}
+          // shouldCloseOnOverlayClick={false}
         >
           <ReportDomainModal
             closeModal={() => this.setState({ showReportDomainModal: false })}

@@ -42,9 +42,10 @@ import {
   SET_REVIEWS_PUSHER_CONNECT,
   FETCH_THIRD_PARTY_REVIEWS_INIT,
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-  FETCH_THIRD_PARTY_REVIEWS_FAILURE
+  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+  SET_REVIEWS_OBJECT_WITH_PUSHER
 } from "./actionTypes";
-import {updateAuthSocialArray} from '../actions/authActions';
+import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
 import cookie from "js-cookie";
 import _get from "lodash/get";
@@ -70,10 +71,14 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
+//! It is used to fetch only google reviews, don't get confused by it's name
+
 export const fetchReviews = (token, page, perPage) => {
   const pageNo = page || 1;
   const perPageLimit = perPage || 10;
   return async (dispatch, getState) => {
+    let { dashboardData } = getState();
+    let reviewsObject = _get(dashboardData, "reviewsObject", {});
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
       reviews: {
@@ -93,17 +98,20 @@ export const fetchReviews = (token, page, perPage) => {
       let reviews = _get(result, "data.reviews", []);
       if (!_isEmpty(reviews) && Array.isArray(reviews)) {
         success = true;
+        reviewsObject["google"] = false;
+        dispatch(setReviewsObjectWithPusher(reviewsObject));
       }
       dispatch({
         type: FETCH_REVIEWS_DATA_SUCCESS,
         reviews: {
-          data: { ...result.data },
+          data: _get(result, "data", {}),
           isFetching: false,
           error: "",
           success
         }
       });
     } catch (err) {
+      console.log(err, "error");
       const success = _get(err, "response.data.success", false);
       const error = _get(err, "response.data.error", "Some Error Occured.");
       dispatch({
@@ -182,7 +190,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       if (success) {
         // dispatch(fetchReviews(token));
         cookie.set("placeLocated", true, { expires: 7 });
-        dispatch(updateAuthSocialArray(data))
+        dispatch(updateAuthSocialArray(data));
       }
     } catch (error) {
       dispatch({
@@ -462,6 +470,13 @@ export const setReviewsPusherConnect = isReviewsPusherConnected => {
   };
 };
 
+export const setReviewsObjectWithPusher = reviewsObject => {
+  return {
+    type: SET_REVIEWS_OBJECT_WITH_PUSHER,
+    reviewsObject: { ...reviewsObject }
+  };
+};
+
 export const updateCompanyDetails = data => {
   let token = localStorage.getItem("token");
   return async dispatch => {
@@ -635,9 +650,20 @@ export const emptyDomainDetails = () => {
 };
 
 export const getThirdPartyReviews = (socialAppId, domainId) => {
+  //! here appName is used to set the value to trus for doamins whose reviews are successfully fetched to stop the loader in rviews sections
+
   if (socialAppId && domainId) {
+    let appName = "";
+    if (iconNames.hasOwnProperty(socialAppId)) {
+      if (iconNames) {
+        appName = iconNames[socialAppId].name;
+      }
+    }
     return async (dispatch, getState) => {
       let socialAppName = `${iconNames[socialAppId].name}Reviews`;
+      let { dashboardData } = getState();
+      let reviewsObject = _get(dashboardData, "reviewsObject", {});
+
       dispatch({
         type: FETCH_THIRD_PARTY_REVIEWS_INIT,
         thirdPartyReviews: {
@@ -658,6 +684,8 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
         if (reviews) {
           if (!_isEmpty(reviews) && Array.isArray(reviews)) {
             success = true;
+            reviewsObject[appName] = false;
+            dispatch(setReviewsObjectWithPusher(reviewsObject));
           }
         }
         dispatch({

@@ -47,7 +47,9 @@ class GoogleReviewsDs extends Component {
       businessAddress,
       businessAddressFirstTime,
       domain,
-      googlePlaceId
+      googlePlaceId,
+      areGoogleReviewsFetching,
+      isReviewsPusherConnected
     } = this.props;
     const { perPage } = this.state;
     let googleReviewUrl =
@@ -119,8 +121,9 @@ class GoogleReviewsDs extends Component {
             }
           }
         `}</style>
+        {/* We are using areGoogleReviewsFetching to update the reviews from pusher */}
         <div className="reviewsContainer">
-          {isFetching === true ? (
+          {isFetching === true || areGoogleReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -237,6 +240,16 @@ const mapStateToProps = state => {
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
   const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
+  const areGoogleReviewsFetching = _get(
+    dashboardData,
+    "reviewsObject.google",
+    false
+  );
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
   return {
     token,
     ratings,
@@ -253,7 +266,9 @@ const mapStateToProps = state => {
     businessAddress,
     businessAddressFirstTime,
     googlePlaceId,
-    domain
+    domain,
+    areGoogleReviewsFetching,
+    isReviewsPusherConnected
   };
 };
 
