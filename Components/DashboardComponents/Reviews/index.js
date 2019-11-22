@@ -46,7 +46,8 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: "100%",
-    background: "#fff"
+    background: "#fff",
+    marginTop:"-12px"
     // backgroundColor: theme.palette.background.paper
   }
 });
@@ -77,6 +78,7 @@ class ReviewsContainer extends React.Component {
             textColor="primary"
             variant="scrollable"
             scrollButtons="auto"
+            className={classes.flexContainer}
           >
             <Tab label="Google reviews" {...a11yProps(0)} />
             <Tab label="Facebook reviews" {...a11yProps(1)} />

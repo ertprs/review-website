@@ -164,8 +164,9 @@ class TrustedShops extends Component {
             ) : (
               !showDelay ? <>
                 {_map(reviews, review => {
+                  let name = _get(review, "user", "");
                   let reviewToSend = {
-                    name: _get(review, "user", ""),
+                    name: name==="N/A" ? "" : name,
                     text: _get(review, "review", ""),
                     rating: _get(review, "rating", 0)
                   };
@@ -188,8 +189,8 @@ class TrustedShops extends Component {
         >
           <ReactPaginate
             pageCount={total / perPage}
-            pageRangeDisplayed={total / perPage}
-            marginPagesDisplayed={0}
+            pageRangeDisplayed={4}
+            marginPagesDisplayed={1}
             initialPage={0}
             onPageChange={this.handlePageChange}
             containerClassName={"pagination"}
@@ -214,7 +215,7 @@ class TrustedShops extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const totalReviews = _get(dashboardData, "trustedshopsReviews.data", []);
+  const totalReviews = _get(dashboardData, "trustedshopsReviews.data.reviews", []);
   const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
   const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");
