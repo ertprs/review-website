@@ -16,9 +16,10 @@ class TrustedShops extends Component {
     reviews: [],
     total: 0,
     pageNo: 1,
-    perPage: (this.props.totalReviews || []).length >= 10
-    ? 10
-    : this.props.totalReviews.length,
+    perPage:
+      (this.props.totalReviews || []).length >= 10
+        ? 10
+        : this.props.totalReviews.length,
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
@@ -45,11 +46,11 @@ class TrustedShops extends Component {
     });
   };
 
-  delayForSometime = (ms)=>{
-    return new Promise(resolve =>{
-      setTimeout(resolve, ms)
-    })
-  }
+  delayForSometime = ms => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  };
 
   componentDidMount() {
     const { success, totalReviews } = this.props;
@@ -82,13 +83,13 @@ class TrustedShops extends Component {
     }
   }
 
-  showLoadingEffect = ()=>{
-    return(
-      <div style={{textAlign:"center"}}>
+  showLoadingEffect = () => {
+    return (
+      <div style={{ textAlign: "center" }}>
         <CircularProgress />
       </div>
-    )
-   }
+    );
+  };
 
   render() {
     const { isLoading, success } = this.props;
@@ -161,8 +162,8 @@ class TrustedShops extends Component {
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound />
-            ) : (
-              !showDelay ? <>
+            ) : !showDelay ? (
+              <>
                 {_map(reviews, review => {
                   let reviewToSend = {
                     name: _get(review, "user", ""),
@@ -173,7 +174,9 @@ class TrustedShops extends Component {
                     <ReviewCard review={reviewToSend} provider="trustedshops" />
                   );
                 })}
-              </> : this.showLoadingEffect()
+              </>
+            ) : (
+              this.showLoadingEffect()
             )
           ) : null}
         </div>
@@ -188,8 +191,8 @@ class TrustedShops extends Component {
         >
           <ReactPaginate
             pageCount={total / perPage}
-            pageRangeDisplayed={total / perPage}
-            marginPagesDisplayed={0}
+            pageRangeDisplayed={4}
+            marginPagesDisplayed={1}
             initialPage={0}
             onPageChange={this.handlePageChange}
             containerClassName={"pagination"}
@@ -214,7 +217,11 @@ class TrustedShops extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  const totalReviews = _get(dashboardData, "trustedshopsReviews.data", []);
+  const totalReviews = _get(
+    dashboardData,
+    "trustedshopsReviews.data.reviews",
+    []
+  );
   const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
   const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");
