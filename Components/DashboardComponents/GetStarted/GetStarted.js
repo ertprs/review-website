@@ -18,6 +18,7 @@ import validate from "../../../utility/validate";
 import {
   setGoogleDirectReviewUrl,
   setReviewsPusherConnect,
+  setReviewsObjectWithPusher,
   clearReviewsData
 } from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
@@ -44,7 +45,8 @@ class GetStarted extends Component {
           required: false,
           isDomain: true
         },
-        label: "Google review URL: "
+        label: "Google review URL: ",
+        name: "google"
       },
       facebookReviewUrl: {
         element: "input",
@@ -61,7 +63,8 @@ class GetStarted extends Component {
         label: "Facebook Business Page URL: ",
         logo: "facebookLogo.png",
         title: "Facebook reviews",
-        key: 1
+        key: 1,
+        name: "facebook"
       },
       trustPilotReviewUrl: {
         element: "input",
@@ -78,7 +81,8 @@ class GetStarted extends Component {
         label: "TrustPilot Page URL: ",
         logo: "trustpilotLogo.png",
         title: "TrustPilot reviews",
-        key: 18
+        key: 18,
+        name: "trustpilot"
       },
       trustedShopsReviewUrl: {
         element: "input",
@@ -95,7 +99,8 @@ class GetStarted extends Component {
         label: "TrustedShops Page URL: ",
         logo: "trustedShopLogo.jpg",
         title: "TrustedShops reviews",
-        key: 19
+        key: 19,
+        name: "trustedshops"
       }
       //   appStoreReviewUrl: {
       //     element: "input",
@@ -136,13 +141,26 @@ class GetStarted extends Component {
     const { selectedAddress, address, formData } = this.state;
     const {
       setReviewsPusherConnect,
+      setReviewsObjectWithPusher,
       locatePlaceByPlaceId,
-      clearReviewsData,
+      clearReviewsData
     } = this.props;
     let reqBody = {};
+
+    //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
+
+    let reviewsObject = {
+      google: false,
+      facebook: false,
+      trustpilot: false,
+      trustedshops: false
+    };
+
     for (let item in formData) {
+      console.log(item, "item");
       if (item === "directReviewUrl") {
         if (Object.keys(selectedAddress).length > 0) {
+          reviewsObject.google = true;
           reqBody = {
             ...reqBody,
             google: {
@@ -154,14 +172,13 @@ class GetStarted extends Component {
         }
       } else {
         if (formData[item].valid && formData[item].touched) {
+          let itemName = formData[item].name;
+          reviewsObject[itemName] = true;
           let key = formData[item].key;
           reqBody = { ...reqBody, [key]: formData[item].value };
         }
       }
     }
-
-    console.log(reqBody);
-
     if (Object.keys(reqBody).length > 0) {
       locatePlaceByPlaceId(
         reqBody,
@@ -169,7 +186,9 @@ class GetStarted extends Component {
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
       setReviewsPusherConnect(true);
-      clearReviewsData();
+      setReviewsObjectWithPusher(reviewsObject);
+      //! we don't want to clear google reviews data as they will be already updating.
+      // clearReviewsData();
     }
   };
 
@@ -629,5 +648,6 @@ export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
   setGoogleDirectReviewUrl,
   setReviewsPusherConnect,
-  clearReviewsData,
+  setReviewsObjectWithPusher,
+  clearReviewsData
 })(GetStarted);

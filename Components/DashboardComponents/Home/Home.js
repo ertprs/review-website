@@ -269,7 +269,7 @@ class Home extends Component {
   };
 
   renderRecentReviewsCard = () => {
-    const { reviewsData, isReviewsPusherConnected } = this.props;
+    const { reviewsData, reviewsObject } = this.props;
     const reviews = _get(reviewsData, "reviews", []);
     const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
@@ -293,10 +293,11 @@ class Home extends Component {
             <div className="fadedHeader">(Top 3 )</div>
           </div>
           <div className="body">
+            {/* reviewsObject for google means fetching reviews for google from pusher  */}
             <div>
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
-              ) : isReviewsPusherConnected === true ? (
+              ) : reviewsObject["google"] === true ? (
                 <>
                   <div style={{ marginTop: "30px" }}>
                     <h6 style={{ marginBottom: "50px", color: "green" }}>
@@ -730,11 +731,7 @@ const mapStateToProps = state => {
     ""
   );
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
-  const isReviewsPusherConnected = _get(
-    dashboardData,
-    "isReviewsPusherConnected",
-    false
-  );
+  const reviewsObject = _get(dashboardData, "reviewsObject", {});
   const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
   return {
     reviewsData,
@@ -756,7 +753,7 @@ const mapStateToProps = state => {
     userActivated,
     businessAddress,
     businessAddressFirstTime,
-    isReviewsPusherConnected,
+    reviewsObject,
     googlePlaceId,
     socialArray,
     dashboardData
