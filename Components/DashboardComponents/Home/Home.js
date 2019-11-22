@@ -483,12 +483,29 @@ class Home extends Component {
 
   renderReviewURLBoxes = () => {
     const socialArray = _get(this.props, "socialArray", []);
+    const dashboardData = _get(this.props, "dashboardData", {});
     return socialArray.map(item => {
       if (reviewURLObjects[item.social_media_app_id]) {
         let socialObj = reviewURLObjects[item.social_media_app_id] || {};
         let editURL = _get(socialObj, "editURL", "");
         let imageLogo = _get(socialObj, "imageLogo", "");
         let URL = _get(item, "url", "");
+        let name = _get(socialObj, "name", "");
+        console.log(name, "NAME")
+        let likes = "";
+        let followers = "";
+        let ratings = "";
+        let totalReviews = "";
+        if (dashboardData[name]) {
+          let data = _get(dashboardData[name], "data", {});
+          if (name === "facebookReviews") {
+            likes = _get(data, "likes", "");
+            followers = _get(data, "followers", "");
+          } else {
+            ratings = _get(data, "rating", 0);
+            totalReviews = _get(data, "total", 0);
+          }
+        }
         return (
           <Grid item xs={12} md={6} lg={6}>
             <div className="reviewBoxItemContainer">
@@ -499,9 +516,41 @@ class Home extends Component {
                 </div>
               </div>
               <div className="reviewBoxItemTextBoxContainer">
-                <a href={URL} target="_blank">
-                  {URL}
-                </a>
+                <div>
+                  <a href={URL} target="_blank">
+                    {URL}
+                  </a>
+                </div>
+                {name === "facebookReviews" ? (
+                  <div className="row" style={{ marginTop: "15px" }}>
+                    <div className="col-md-6">
+                      <span style={{ fontWeight: "bold" }}>
+                        Likes : {likes}
+                      </span>{" "}
+                    </div>
+                    <div className="col-md-6">
+                      {" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        Followers : {followers}
+                      </span>{" "}
+                    </div>
+                  </div>
+                ) : null}
+                {name === "trustpilotReviews" || name ==="trustedshopsReviews" ? (
+                  <div className="row" style={{ marginTop: "15px" }}>
+                    <div className="col-md-6">
+                      <span style={{ fontWeight: "bold" }}>
+                        Ratings : {ratings}
+                      </span>{" "}
+                    </div>
+                    <div className="col-md-6">
+                      {" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        Total reviews : {totalReviews}
+                      </span>{" "}
+                    </div>
+                  </div>
+                ) : null}
               </div>
               <div>
                 <IconButton
@@ -709,7 +758,8 @@ const mapStateToProps = state => {
     businessAddressFirstTime,
     isReviewsPusherConnected,
     googlePlaceId,
-    socialArray
+    socialArray,
+    dashboardData
   };
 };
 
