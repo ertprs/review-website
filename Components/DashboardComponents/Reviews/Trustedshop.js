@@ -92,7 +92,12 @@ class TrustedShops extends Component {
   };
 
   render() {
-    const { isLoading, success } = this.props;
+    const {
+      isLoading,
+      success,
+      areTrustedShopsReviewsFetching,
+      isReviewsPusherConnected
+    } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
       <>
@@ -154,8 +159,11 @@ class TrustedShops extends Component {
             }
           }
         `}</style>
+
+        {/* We are using areTrustedShopsReviewsFetching to update the reviews from pusher */}
+
         <div className="reviewsContainer">
-          {isLoading === true ? (
+          {isLoading === true || areTrustedShopsReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -225,7 +233,24 @@ const mapStateToProps = state => {
   const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
   const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");
-  return { totalReviews, success, isLoading, errorMsg };
+  const areTrustedShopsReviewsFetching = _get(
+    dashboardData,
+    "reviewsObject.trustedshops",
+    false
+  );
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
+  return {
+    totalReviews,
+    success,
+    isLoading,
+    errorMsg,
+    areTrustedShopsReviewsFetching,
+    isReviewsPusherConnected
+  };
 };
 
 export default connect(mapStateToProps, { getThirdPartyReviews })(TrustedShops);

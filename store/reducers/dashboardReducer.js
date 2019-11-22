@@ -42,7 +42,8 @@ import {
   EMPTY_DOMAIN_DETAILS,
   FETCH_THIRD_PARTY_REVIEWS_INIT,
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-  FETCH_THIRD_PARTY_REVIEWS_FAILURE
+  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+  SET_REVIEWS_OBJECT_WITH_PUSHER
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -63,6 +64,7 @@ const dashboardReducer = (state = {}, action) => {
     googleDirectReviewUrl,
     businessAddress,
     isReviewsPusherConnected,
+    reviewsObject,
     googlePlaceId,
     companyDetails,
     userDetails,
@@ -254,6 +256,13 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         isReviewsPusherConnected
+      };
+    }
+    case SET_REVIEWS_OBJECT_WITH_PUSHER: {
+      return {
+        ...state,
+        type,
+        reviewsObject: { ...state.reviewsObject, ...reviewsObject }
       };
     }
     case UPDATE_COMPANY_DETAILS_INIT: {

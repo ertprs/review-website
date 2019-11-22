@@ -18,11 +18,14 @@ const NoReviewsFound = ({ isReviewsPusherConnected }) => {
         }
       `}</style>
       <div className="container">
-        {isReviewsPusherConnected === true ? (
+        {/* commented this because we are handling this loading case in
+        individual components, remove the code when evrything is orking fine */}
+
+        {/* {isReviewsPusherConnected === true ? (
           <CircularProgress />
-        ) : (
-          <h1 className="text">Reviews will be updated soon!</h1>
-        )}
+        ) : ( */}
+        <h1 className="text">Reviews will be updated soon!</h1>
+        {/* )} */}
       </div>
     </>
   );

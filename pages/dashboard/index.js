@@ -435,16 +435,15 @@ function Dashboard(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      {placeLocated &&
+      {/* {placeLocated &&
       props.domain !== "" &&
-      // props.reviews.length === 0 &&
-      props.isReviewsPusherConnected === true ? (
+      props.reviews.length === 0 && */}
+      {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
           onChildStateChange={newState => {
             setParentState({ ...parentState, ...newState });
             const fetchSuccess = _get(newState, "response.success", false);
-            console.log(fetchSuccess, "fetchSuccess");
             if (fetchSuccess) {
               fetchReviews(token);
             }

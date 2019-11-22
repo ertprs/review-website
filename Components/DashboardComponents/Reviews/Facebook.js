@@ -16,13 +16,14 @@ class Facebook extends Component {
     reviews: [],
     total: 0,
     pageNo: 1,
-    perPage: (this.props.totalReviews || []).length >= 10
-    ? 10
-    : this.props.totalReviews.length,
+    perPage:
+      (this.props.totalReviews || []).length >= 10
+        ? 10
+        : this.props.totalReviews.length,
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
-    showDelay:false
+    showDelay: false
   };
 
   calReviews = () => {
@@ -37,19 +38,19 @@ class Facebook extends Component {
   handlePageChange = ({ selected }) => {
     this.setState({ pageNo: selected + 1 }, () => {
       this.calReviews();
-      window.scrollTo(0,0)
-      this.setState({showDelay:true})
-      this.delayForSometime(400).then(()=>{
-        this.setState({showDelay:false})
-      })
+      window.scrollTo(0, 0);
+      this.setState({ showDelay: true });
+      this.delayForSometime(400).then(() => {
+        this.setState({ showDelay: false });
+      });
     });
   };
 
-  delayForSometime = (ms)=>{
-    return new Promise(resolve =>{
-      setTimeout(resolve, ms)
-    })
-  }
+  delayForSometime = ms => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  };
 
   componentDidMount() {
     const { success, totalReviews } = this.props;
@@ -82,16 +83,21 @@ class Facebook extends Component {
     }
   }
 
-  showLoadingEffect = ()=>{
-   return(
-     <div style={{textAlign:"center"}}>
-       <CircularProgress />
-     </div>
-   )
-  }
+  showLoadingEffect = () => {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <CircularProgress />
+      </div>
+    );
+  };
 
   render() {
-    const { isLoading, success } = this.props;
+    const {
+      isLoading,
+      success,
+      areFacebookReviewsFetching,
+      isReviewsPusherConnected
+    } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
       <>
@@ -153,33 +159,41 @@ class Facebook extends Component {
             }
           }
         `}</style>
+
+        {/* We are using areFacebookReviewsFetching to update the reviews from pusher */}
+
         <div className="reviewsContainer">
-          {isLoading === true ? (
+          {isLoading === true || areFacebookReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound />
+            ) : !showDelay ? (
+              <>
+                {_map(reviews, review => {
+                  let reviewToSend = {
+                    name: _get(review, "user", ""),
+                    text: _get(review, "text", ""),
+                    rating: _get(review, "rating", 0)
+                  };
+                  return (
+                    <ReviewCard review={reviewToSend} provider="facebook" />
+                  );
+                })}
+              </>
             ) : (
-              !showDelay ? <>
-              {_map(reviews, review => {
-                let reviewToSend = {
-                  name: _get(review, "user", ""),
-                  text: _get(review, "text", ""),
-                  rating: _get(review, "rating", 0)
-                };
-                return (
-                  <ReviewCard review={reviewToSend} provider="facebook" />
-                );
-              })}
-            </> : this.showLoadingEffect()
+              this.showLoadingEffect()
             )
           ) : null}
         </div>
         <div
           className={`${
-            isLoading || success == false || this.state.totalReviews.length ===0 || showDelay
+            isLoading ||
+            success == false ||
+            this.state.totalReviews.length === 0 ||
+            showDelay
               ? "hiddenPagination"
               : "paginationContainer"
           }`}
@@ -222,7 +236,24 @@ const mapStateToProps = state => {
   const success = _get(dashboardData, "facebookReviews.success", undefined);
   const isLoading = _get(dashboardData, "facebookReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "facebookReviews.errorMsg", "");
-  return { totalReviews, success, isLoading, errorMsg };
+  const areFacebookReviewsFetching = _get(
+    dashboardData,
+    "reviewsObject.facebook",
+    false
+  );
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
+  return {
+    totalReviews,
+    success,
+    isLoading,
+    errorMsg,
+    areFacebookReviewsFetching,
+    isReviewsPusherConnected
+  };
 };
 
 export default connect(mapStateToProps, { getThirdPartyReviews })(Facebook);

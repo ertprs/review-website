@@ -92,7 +92,12 @@ class Trustpilot extends Component {
   };
 
   render() {
-    const { isLoading, success } = this.props;
+    const {
+      isLoading,
+      success,
+      areTrustpilotReviewsFetching,
+      isReviewsPusherConnected
+    } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
       <>
@@ -154,8 +159,11 @@ class Trustpilot extends Component {
             }
           }
         `}</style>
+
+        {/* We are using areTrustpilotReviewsFetching to update the reviews from pusher */}
+
         <div className="reviewsContainer">
-          {isLoading === true ? (
+          {isLoading === true || areTrustpilotReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -225,7 +233,24 @@ const mapStateToProps = state => {
   const success = _get(dashboardData, "trustpilotReviews.success", undefined);
   const isLoading = _get(dashboardData, "trustpilotReviews.isLoading", false);
   const errorMsg = _get(dashboardData, "trustpilotReviews.errorMsg", "");
-  return { totalReviews, success, isLoading, errorMsg };
+  const areTrustpilotReviewsFetching = _get(
+    dashboardData,
+    "reviewsObject.trustpilot",
+    false
+  );
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
+  return {
+    totalReviews,
+    success,
+    isLoading,
+    errorMsg,
+    areTrustpilotReviewsFetching,
+    isReviewsPusherConnected
+  };
 };
 
 export default connect(mapStateToProps, { getThirdPartyReviews })(Trustpilot);
