@@ -16,10 +16,7 @@ class TrustedShops extends Component {
     reviews: [],
     total: 0,
     pageNo: 1,
-    perPage:
-      (this.props.totalReviews || []).length >= 10
-        ? 10
-        : this.props.totalReviews.length,
+    perPage: 10,
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
@@ -28,11 +25,13 @@ class TrustedShops extends Component {
 
   calReviews = () => {
     const { totalReviews, pageNo, perPage } = this.state;
-    let slicedReviews = totalReviews.slice(
-      (pageNo - 1) * perPage,
-      pageNo * perPage
-    );
-    this.setState({ reviews: slicedReviews });
+    if (totalReviews && pageNo && perPage) {
+      let slicedReviews = totalReviews.slice(
+        (pageNo - 1) * perPage,
+        pageNo * perPage
+      );
+      this.setState({ reviews: slicedReviews });
+    }
   };
 
   handlePageChange = ({ selected }) => {
@@ -54,20 +53,21 @@ class TrustedShops extends Component {
 
   componentDidMount() {
     const { success, totalReviews } = this.props;
-    if (success) {
-      const { perPage } = this.state;
-      let slicedReviews = totalReviews.slice(0, perPage);
-      this.setState({
-        totalReviews,
-        total: totalReviews.length,
-        reviews: slicedReviews
-      });
+    if (success && totalReviews) {
+      let total = totalReviews.length;
+      let perPage = total >= 10 ? 10 : total;
+      if (total > 0) {
+        this.setState({ totalReviews, total, perPage, pageNo: 1 }, () => {
+          this.calReviews();
+        });
+      }
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps) {
       const { error, success, reviews, totalReviews } = this.props;
+      const { perPage } = this.state;
       // if (error && !success) {
       //   this.setState({
       //     showSnackbar: true,
@@ -76,8 +76,15 @@ class TrustedShops extends Component {
       //   });
       // }
       if (totalReviews !== prevProps.totalReviews) {
-        if (success) {
-          this.setState({ totalReviews });
+        const { success, totalReviews } = this.props;
+        if (success && totalReviews) {
+          let total = totalReviews.length;
+          let perPage = total >= 10 ? 10 : total;
+          if (total > 0) {
+            this.setState({ totalReviews, total, perPage, pageNo: 1 }, () => {
+              this.calReviews();
+            });
+          }
         }
       }
     }
@@ -193,7 +200,10 @@ class TrustedShops extends Component {
           className={`${
             isLoading ||
             success == false ||
-            this.state.totalReviews.length === 0
+            total === 0 ||
+            reviews === 0 ||
+            areTrustedShopsReviewsFetching ||
+            showDelay
               ? "hiddenPagination"
               : "paginationContainer"
           }`}
