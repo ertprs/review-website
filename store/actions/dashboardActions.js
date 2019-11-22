@@ -684,10 +684,10 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
         if (reviews) {
           if (!_isEmpty(reviews) && Array.isArray(reviews)) {
             success = true;
-            reviewsObject[appName] = false;
-            dispatch(setReviewsObjectWithPusher(reviewsObject));
           }
         }
+        reviewsObject[appName] = false;
+        dispatch(setReviewsObjectWithPusher(reviewsObject));
         dispatch({
           type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
           thirdPartyReviews: {
@@ -700,6 +700,8 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
           }
         });
       } catch (error) {
+        reviewsObject[appName] = false;
+        dispatch(setReviewsObjectWithPusher(reviewsObject));
         dispatch({
           type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
           thirdPartyReviews: {
