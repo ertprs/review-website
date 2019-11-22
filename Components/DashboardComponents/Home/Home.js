@@ -491,7 +491,7 @@ class Home extends Component {
         let imageLogo = _get(socialObj, "imageLogo", "");
         let URL = _get(item, "url", "");
         let name = _get(socialObj, "name", "");
-        console.log(name, "NAME")
+        console.log(name, "NAME");
         let likes = "";
         let followers = "";
         let ratings = "";
@@ -536,7 +536,31 @@ class Home extends Component {
                     </div>
                   </div>
                 ) : null}
-                {name === "trustpilotReviews" || name ==="trustedshopsReviews" ? (
+                <div className="reviewBoxRatingContainer">
+                  {name === "trustedshopsReviews" ? (
+                    <div style={{marginLeft:"-4px"}}>
+                      <StarRatings
+                        rating={Number(ratings)}
+                        starRatedColor="#FFDC0F"
+                        starDimension="20px"
+                        starSpacing="0.5px"
+                        numberOfStars={5}
+                        name="rating"
+                      />
+                    </div>
+                  ) : name === "trustpilotReviews" ? (
+                    <div className="trustPilotImageContainer">
+                      <img
+                        src={`http://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-${Math.round(
+                          Number(ratings)
+                        ) || 0}.svg`}
+                        alt=""
+                      />
+                    </div>
+                  ) : null}
+                </div>
+                {name === "trustpilotReviews" ||
+                name === "trustedshopsReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
                     <div className="col-md-6">
                       <span style={{ fontWeight: "bold" }}>
