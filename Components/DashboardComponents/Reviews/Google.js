@@ -150,7 +150,7 @@ class GoogleReviewsDs extends Component {
                   </>
                 ) : (
                   <>
-                    <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex", marginBottom:"30px" }}>
                       <div>
                         <b>Google Review Url: &nbsp;</b>
                       </div>
@@ -180,8 +180,8 @@ class GoogleReviewsDs extends Component {
         >
           <ReactPaginate
             pageCount={total / perPage}
-            pageRangeDisplayed={total / perPage}
-            marginPagesDisplayed={0}
+            pageRangeDisplayed={4}
+            marginPagesDisplayed={1}
             initialPage={0}
             onPageChange={this.handlePageChange}
             containerClassName={"pagination"}

@@ -200,8 +200,8 @@ class Facebook extends Component {
         >
           <ReactPaginate
             pageCount={total / perPage}
-            pageRangeDisplayed={total / perPage}
-            marginPagesDisplayed={0}
+            pageRangeDisplayed={4}
+            marginPagesDisplayed={1}
             initialPage={0}
             onPageChange={this.handlePageChange}
             containerClassName={"pagination"}
