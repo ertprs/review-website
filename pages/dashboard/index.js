@@ -410,8 +410,8 @@ function Dashboard(props) {
     setShowSnackbar(true);
     setSnackbarVariant("success");
     setSnackbarMsg("Logout Successfully!");
+    // Router.push("/");
     props.logOut();
-    Router.push("/");
   };
 
   const clickToUpgradeHandler = () => {
@@ -431,7 +431,7 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
- const { domainId, getThirdPartyReviews} = props;
+  const { domainId, getThirdPartyReviews } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -449,9 +449,9 @@ function Dashboard(props) {
               fetchReviews(token);
             }
           }}
-          onAggregatorDataChange = {data=>{
-            let socialAppId = _get(data, "response.socialAppId", 0)
-            getThirdPartyReviews(socialAppId, domainId)
+          onAggregatorDataChange={data => {
+            let socialAppId = _get(data, "response.socialAppId", 0);
+            getThirdPartyReviews(socialAppId, domainId);
           }}
         />
       ) : null}
@@ -567,7 +567,7 @@ const mapStateToProps = state => {
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const reviews = _get(dashboardData, "reviews.data.reviews", []);
   const token = _get(auth, "logIn.token", "");
-  const domainId = _get(auth,"logIn.userProfile.business_profile.domainId",0)
+  const domainId = _get(auth, "logIn.userProfile.business_profile.domainId", 0);
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",
