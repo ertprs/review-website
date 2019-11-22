@@ -494,7 +494,7 @@ class Home extends Component {
         console.log(name, "NAME");
         let likes = "";
         let followers = "";
-        let ratings = "";
+        let ratings = 1;
         let totalReviews = "";
         if (dashboardData[name]) {
           let data = _get(dashboardData[name], "data", {});
@@ -502,7 +502,9 @@ class Home extends Component {
             likes = _get(data, "likes", "");
             followers = _get(data, "followers", "");
           } else {
-            ratings = _get(data, "rating", 0);
+            if (ratings) {
+              ratings = _get(data, "rating", 0);
+            }
             totalReviews = _get(data, "total", 0);
           }
         }
@@ -538,7 +540,7 @@ class Home extends Component {
                 ) : null}
                 <div className="reviewBoxRatingContainer">
                   {name === "trustedshopsReviews" ? (
-                    <div style={{marginLeft:"-4px"}}>
+                    <div style={{ marginLeft: "-4px" }}>
                       <StarRatings
                         rating={Number(ratings)}
                         starRatedColor="#FFDC0F"
