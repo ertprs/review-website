@@ -12,10 +12,11 @@ export const  reviewChannelBoxStyles = css`
     margin-bottom:20px;
     box-shadow:0px 2px 4px #d8d8d8;
     padding:15px;
-    height:90px;
+    height:150px;
   }
   .reviewBoxItemContainer > div:nth-child(1) {
     flex-basis: 20%;
+    align-self:center;
   }
   .reviewBoxItemContainer > div:nth-child(2) {
     flex-basis: 68%;
@@ -25,7 +26,7 @@ export const  reviewChannelBoxStyles = css`
   }
   .reviewBoxItemContainer > div:nth-child(3) {
     flex-basis: 10%;
-    align-self: center;
+    align-self: flex-start;
     text-align:right;
   }
 
@@ -37,5 +38,16 @@ export const  reviewChannelBoxStyles = css`
     max-width: 100%;
     height: auto;
     border-radius: 5px;
+  }
+  .reviewBoxRatingContainer{
+    margin:10px 0 10px 0;
+  }
+  .trustPilotImageContainer{
+    width: 108px;
+    height: 20px;
+  }
+  .trustPilotImageContainer img{
+    max-width:100%;
+    height:auto;
   }
 `;
