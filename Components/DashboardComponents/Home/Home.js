@@ -495,7 +495,7 @@ class Home extends Component {
         console.log(name, "NAME");
         let likes = "";
         let followers = "";
-        let ratings = 1;
+        let ratings = 0;
         let totalReviews = "";
         if (dashboardData[name]) {
           let data = _get(dashboardData[name], "data", {});
@@ -503,7 +503,7 @@ class Home extends Component {
             likes = _get(data, "likes", "");
             followers = _get(data, "followers", "");
           } else {
-            if (ratings) {
+            if (_get(data, "rating", 0)) {
               ratings = _get(data, "rating", 0);
             }
             totalReviews = _get(data, "total", 0);
