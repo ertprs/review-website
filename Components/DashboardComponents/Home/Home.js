@@ -492,7 +492,6 @@ class Home extends Component {
         let imageLogo = _get(socialObj, "imageLogo", "");
         let URL = _get(item, "url", "");
         let name = _get(socialObj, "name", "");
-        console.log(name, "NAME");
         let likes = "";
         let followers = "";
         let ratings = 0;

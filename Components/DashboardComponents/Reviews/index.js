@@ -6,11 +6,12 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { withStyles } from "@material-ui/styles";
-import GoogleReviews from "./Google";
-import FacebookReviews from "./Facebook";
-import TrustpilotReviews from "./Trustpilot";
-import TrustedshopReviews from "./Trustedshop";
-import Paper from '@material-ui/core/Paper/Paper';
+import Paper from "@material-ui/core/Paper/Paper";
+import dynamic from "next/dynamic";
+const GoogleReviews = dynamic(() => import("./Google"));
+const FacebookReviews = dynamic(() => import("./Facebook"));
+const TrustpilotReviews = dynamic(() => import("./Trustpilot"));
+const TrustedshopReviews = dynamic(() => import("./Trustedshop"));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -47,7 +48,7 @@ const styles = theme => ({
     flexGrow: 1,
     width: "100%",
     background: "#fff",
-    marginTop:"-12px"
+    marginTop: "-12px"
     // backgroundColor: theme.palette.background.paper
   }
 });
@@ -61,9 +62,9 @@ class ReviewsContainer extends React.Component {
     this.setState({ selectedTab: newValue });
   };
 
-  scrollToTop = ()=>{
-    window.scrollTo(0,0);
-  }
+  scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
 
   render() {
     const { classes } = this.props;
@@ -96,7 +97,7 @@ class ReviewsContainer extends React.Component {
           <TrustedshopReviews />
         </TabPanel>
         <TabPanel value={selectedTab} index={3}>
-          <TrustpilotReviews scrollToTop={this.scrollToTop}/>
+          <TrustpilotReviews scrollToTop={this.scrollToTop} />
         </TabPanel>
       </div>
     );
