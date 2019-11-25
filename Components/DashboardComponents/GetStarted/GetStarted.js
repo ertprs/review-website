@@ -169,6 +169,7 @@ class GetStarted extends Component {
               directReviewUrl: formData[item].value
             }
           };
+          clearReviewsData();
         }
       } else {
         if (formData[item].valid && formData[item].touched) {
@@ -188,7 +189,6 @@ class GetStarted extends Component {
       setReviewsPusherConnect(true);
       setReviewsObjectWithPusher(reviewsObject);
       //! we don't want to clear google reviews data as they will be already updating.
-      // clearReviewsData();
     }
   };
 
