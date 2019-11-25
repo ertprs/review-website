@@ -310,12 +310,14 @@ function Dashboard(props) {
         const stepQuery = props.queryStep.v;
         const stepKey = _findKey(dashboardSteps, { name: stepQuery });
         // console.log(Number(stepKey));
-        if (!menuItemsDisabled && !homeDisabled && !getStartedDisabled) {
-          // Current URL is "/"
-          const href = `/dashboard?v=${stepQuery}`;
-          const as = `/dashboard/${stepQuery}`;
-          Router.push(href, as, { shallow: true });
-          setStepToRender(Number(stepKey));
+        if (stepKey) {
+          if (!menuItemsDisabled && !homeDisabled && !getStartedDisabled) {
+            // Current URL is "/"
+            const href = `/dashboard?v=${stepQuery}`;
+            const as = `/dashboard/${stepQuery}`;
+            Router.push(href, as, { shallow: true });
+            setStepToRender(Number(stepKey));
+          }
         }
       }
     }
