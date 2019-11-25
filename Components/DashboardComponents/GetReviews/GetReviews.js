@@ -1,29 +1,181 @@
 import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
 import CustomSteppers from "../../MaterialComponents/CustomSteppers";
 import EditableTable from "../../MaterialComponents/EditableTable";
-import AddInvitesForm from "../../DashboardComponents/GetReviewsForms/AddInvitesForm";
 import validate from "../../../utility/validate";
-import SendInvitations from "../GetReviewsForms/SendInvitations";
-import SelectTemplateForm from "../GetReviewsForms/SelectTemplateForm";
-import SenderInfo from "../GetReviewsForms/SenderInfo/SenderInfo";
-import InvitationWays from "../GetReviewsForms/InvitationWays";
-import Done from "../GetReviewsForms/Done";
 import Papa from "papaparse";
 import { getEmailTemplateData } from "../../../utility/emailTemplates/emailTemplates";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
-import CopyPasteForm from "../GetReviewsForms/CopyPasteForm";
-import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
-import CreateCampaign from "../GetReviewsForms/CreateCampaign";
+import dynamic from "next/dynamic";
+const CreateCampaign = dynamic(
+  () => import("../GetReviewsForms/CreateCampaign"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const InvitationWays = dynamic(
+  () => import("../GetReviewsForms/InvitationWays"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const Done = dynamic(() => import("../GetReviewsForms/Done"), {
+  loading: () => (
+    <div
+      style={{
+        width: "100%",
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <p>Loading.....</p>
+    </div>
+  )
+});
+const CopyPasteForm = dynamic(
+  () => import("../GetReviewsForms/CopyPasteForm"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const UploadCSVForm = dynamic(
+  () => import("../GetReviewsForms/UploadCSVForm"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const SenderInfo = dynamic(
+  () => import("../GetReviewsForms/SenderInfo/SenderInfo"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const SelectTemplateForm = dynamic(
+  () => import("../GetReviewsForms/SelectTemplateForm"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const SendInvitations = dynamic(
+  () => import("../GetReviewsForms/SendInvitations"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+const AddInvitesForm = dynamic(
+  () => import("../../DashboardComponents/GetReviewsForms/AddInvitesForm"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const columns = [
   { title: "Email", field: "email" },
   { title: "Name", field: "name" },
   { title: "Reference number", field: "referenceNumber", type: "text" }
 ];
+
 import {
   createCampaign,
   fetchEmailTemplate,
