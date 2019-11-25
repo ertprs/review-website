@@ -21,7 +21,7 @@ const widgetsObj = [
     title: "Trust carousel",
     tagLine: "Boost customer confidence with an honest TrustBox",
     minHeight: 238,
-    imgURL: "/static/images/carouselWidget.png",
+    imgURL: "/static/images/review_for_page.svg",
     listItems: [
       "Show off your 15 latest reviews",
       "Focuses on overall trust score"
@@ -65,7 +65,11 @@ const widgetsObj = [
     listItems: ["Show off your total number of reviews"],
     description:
       "In short, the TrustBoxes are great starters that communicate You can trust us.",
-    suggestedPlacement: ["Header or footer", "Suggested placement min-width: 380px", "Suggested placement min-height : 360px"],
+    suggestedPlacement: [
+      "Header or footer",
+      "Suggested placement min-width: 380px",
+      "Suggested placement min-height : 360px"
+    ],
     support: ["Responsive (max. 100% x 24)"],
     dataTempID: "TextReviewsWithScores"
   }
