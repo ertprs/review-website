@@ -242,7 +242,6 @@ const mapStateToProps = state => {
   if (!googlePlaceId) {
     googlePlaceId = _get(auth, "logIn.userProfile.business_profile.google_places.placeId", "");
   }
-  console.log(googlePlaceId, "GOOGLE_PLACE_ID");
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const areGoogleReviewsFetching = _get(
     dashboardData,
