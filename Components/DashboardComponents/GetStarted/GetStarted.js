@@ -438,11 +438,14 @@ class GetStarted extends Component {
         } else if (this.props.home) {
           this.props.changeEditMode();
         }
-        setGoogleDirectReviewUrl(
-          directReviewUrl,
-          address,
-          _get(selectedAddress, "placeId", "")
-        );
+        if (_get(formData, "directReviewUrl.touched", false)) {
+          // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
+          setGoogleDirectReviewUrl(
+            directReviewUrl,
+            address,
+            _get(selectedAddress, "placeId", "")
+          );
+        }
       } else if (isLoading === false && !success) {
         this.setState({
           showSnackbar: true,
