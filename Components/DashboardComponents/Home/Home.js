@@ -269,7 +269,7 @@ class Home extends Component {
   };
 
   renderRecentReviewsCard = () => {
-    const { reviewsData, reviewsObject } = this.props;
+    const { reviewsData, reviewsObject, isReviewsPusherConnected } = this.props;
     const reviews = _get(reviewsData, "reviews", []);
     const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
@@ -297,7 +297,8 @@ class Home extends Component {
             <div>
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
-              ) : reviewsObject["google"] === true ? (
+              ) : reviewsObject["google"] === true ||
+                isReviewsPusherConnected === true ? (
                 <>
                   <div style={{ marginTop: "30px" }}>
                     <h6 style={{ marginBottom: "50px", color: "green" }}>
@@ -770,6 +771,11 @@ const mapStateToProps = state => {
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
   const reviewsObject = _get(dashboardData, "reviewsObject", {});
   const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
   return {
     reviewsData,
     quotaDetails,
@@ -793,7 +799,8 @@ const mapStateToProps = state => {
     reviewsObject,
     googlePlaceId,
     socialArray,
-    dashboardData
+    dashboardData,
+    isReviewsPusherConnected
   };
 };
 
