@@ -7,16 +7,17 @@ import countrieslist from "../../../utility/newCountryList.json";
 import validate from "../../../utility/validate";
 import UpdateIcon from "@material-ui/icons/PhotoCamera";
 import Button from "@material-ui/core/Button";
-import Modal from "../../Widgets/CustomModal/CustomModal";
-import ImageUpload from "./imageUpload";
-import ShowCompany from "./company/showCompany";
-import EditCompany from "./company/editCompany";
-import ShowUser from "./user/showUser";
-import EditUser from "./user/editUser";
-import EditDomain from "./domain/editDomain";
-import ShowDomain from "./domain/showDomain";
+import dynamic from "next/dynamic";
+const Modal = dynamic(() => import("../../Widgets/CustomModal/CustomModal"));
 import Snackbar from "../../Widgets/Snackbar";
 import Languages from "../../../utility/languages";
+const ImageUpload = dynamic(() => import("./imageUpload"));
+const ShowCompany = dynamic(() => import("./company/showCompany"));
+const EditCompany = dynamic(() => import("./company/editCompany"));
+const ShowUser = dynamic(() => import("./user/showUser"));
+const EditUser = dynamic(() => import("./user/editUser"));
+const EditDomain = dynamic(() => import("./domain/editDomain"));
+const ShowDomain = dynamic(() => import("./domain/showDomain"));
 
 class UserProfile extends Component {
   state = {
