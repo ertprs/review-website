@@ -123,9 +123,7 @@ class GoogleReviewsDs extends Component {
         `}</style>
         {/* We are using areGoogleReviewsFetching to update the reviews from pusher */}
         <div className="reviewsContainer">
-          {isReviewsPusherConnected === false ? (
-            <NoReviewsFound />
-          ) : isFetching === true || areGoogleReviewsFetching === true ? (
+          {isFetching === true || areGoogleReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>

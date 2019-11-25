@@ -170,9 +170,7 @@ class TrustedShops extends Component {
         {/* We are using areTrustedShopsReviewsFetching to update the reviews from pusher */}
 
         <div className="reviewsContainer">
-          {isReviewsPusherConnected === false ? (
-            <NoReviewsFound />
-          ) : isLoading === true || areTrustedShopsReviewsFetching === true ? (
+          {isLoading === true || areTrustedShopsReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>

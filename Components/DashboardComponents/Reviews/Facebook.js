@@ -170,9 +170,7 @@ class Facebook extends Component {
         {/* We are using areFacebookReviewsFetching to update the reviews from pusher */}
 
         <div className="reviewsContainer">
-          {isReviewsPusherConnected === false ? (
-            <NoReviewsFound />
-          ) : isLoading === true || areFacebookReviewsFetching === true ? (
+          {isLoading === true || areFacebookReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
