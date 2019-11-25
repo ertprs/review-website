@@ -132,7 +132,21 @@ class GoogleReviewsDs extends Component {
               <NoReviewsFound />
             ) : (
               <>
-                {googleReviewUrl === "" ? (
+                {googleReviewUrl ? (
+                  <>
+                    <div style={{ display: "flex", marginBottom: "30px" }}>
+                      <div>
+                        <b>Google Review Url: &nbsp;</b>
+                      </div>
+                      <div
+                        style={{ color: "blue", cursor: "pointer" }}
+                        onClick={() => window.open(googleReviewUrl)}
+                      >
+                        {businessAdd}
+                      </div>
+                    </div>
+                  </>
+                ) : (
                   <>
                     <Typography>
                       <b>Invitation url: &nbsp;</b>
@@ -147,20 +161,6 @@ class GoogleReviewsDs extends Component {
                         {businessAdd}
                       </span>
                     </Typography>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ display: "flex", marginBottom:"30px" }}>
-                      <div>
-                        <b>Google Review Url: &nbsp;</b>
-                      </div>
-                      <div
-                        style={{ color: "blue", cursor: "pointer" }}
-                        onClick={() => window.open(googleReviewUrl)}
-                      >
-                        {businessAdd}
-                      </div>
-                    </div>
                   </>
                 )}
 
@@ -238,7 +238,11 @@ const mapStateToProps = state => {
     ""
   );
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
-  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  let googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  if (!googlePlaceId) {
+    googlePlaceId = _get(auth, "logIn.userProfile.business_profile.google_places.placeId", "");
+  }
+  console.log(googlePlaceId, "GOOGLE_PLACE_ID");
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const areGoogleReviewsFetching = _get(
     dashboardData,
