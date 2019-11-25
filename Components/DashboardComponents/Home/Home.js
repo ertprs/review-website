@@ -525,56 +525,68 @@ class Home extends Component {
                 </div>
                 {name === "facebookReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
-                    <div className="col-md-6">
-                      <span style={{ fontWeight: "bold" }}>
-                        Likes : {likes}
-                      </span>{" "}
-                    </div>
-                    <div className="col-md-6">
-                      {" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        Followers : {followers}
-                      </span>{" "}
-                    </div>
+                    {likes ? (
+                      <div className="col-md-6">
+                        <span style={{ fontWeight: "bold" }}>
+                          Likes : {likes}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                    {followers ? (
+                      <div className="col-md-6">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Followers : {followers}
+                        </span>{" "}
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
                 <div className="reviewBoxRatingContainer">
                   {name === "trustedshopsReviews" ? (
-                    <div style={{ marginLeft: "-4px" }}>
-                      <StarRatings
-                        rating={Number(ratings)}
-                        starRatedColor="#FFDC0F"
-                        starDimension="20px"
-                        starSpacing="0.5px"
-                        numberOfStars={5}
-                        name="rating"
-                      />
-                    </div>
+                    ratings ? (
+                      <div style={{ marginLeft: "-4px" }}>
+                        <StarRatings
+                          rating={Number(ratings)}
+                          starRatedColor="#FFDC0F"
+                          starDimension="20px"
+                          starSpacing="0.5px"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      </div>
+                    ) : null
                   ) : name === "trustpilotReviews" ? (
-                    <div className="trustPilotImageContainer">
-                      <img
-                        src={`http://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-${Math.round(
-                          Number(ratings)
-                        ) || 0}.svg`}
-                        alt=""
-                      />
-                    </div>
+                    ratings ? (
+                      <div className="trustPilotImageContainer">
+                        <img
+                          src={`http://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-${Math.round(
+                            Number(ratings)
+                          ) || 0}.svg`}
+                          alt=""
+                        />
+                      </div>
+                    ) : null
                   ) : null}
                 </div>
                 {name === "trustpilotReviews" ||
                 name === "trustedshopsReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
-                    <div className="col-md-6">
-                      <span style={{ fontWeight: "bold" }}>
-                        Ratings : {ratings}
-                      </span>{" "}
-                    </div>
-                    <div className="col-md-6">
-                      {" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        Total reviews : {totalReviews}
-                      </span>{" "}
-                    </div>
+                    {ratings ? (
+                      <div className="col-md-6">
+                        <span style={{ fontWeight: "bold" }}>
+                          Ratings : {ratings}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                    {totalReviews ? (
+                      <div className="col-md-6">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Total reviews : {totalReviews}
+                        </span>{" "}
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
               </div>
