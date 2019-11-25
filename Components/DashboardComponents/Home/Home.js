@@ -297,8 +297,8 @@ class Home extends Component {
             <div>
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
-              ) : reviewsObject["google"] === true ||
-                isReviewsPusherConnected === true ? (
+              ) : isReviewsPusherConnected === true &&
+                reviewsObject["google"] === true ? (
                 <>
                   <div style={{ marginTop: "30px" }}>
                     <h6 style={{ marginBottom: "50px", color: "green" }}>
