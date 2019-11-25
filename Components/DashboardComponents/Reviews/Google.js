@@ -123,7 +123,9 @@ class GoogleReviewsDs extends Component {
         `}</style>
         {/* We are using areGoogleReviewsFetching to update the reviews from pusher */}
         <div className="reviewsContainer">
-          {isFetching === true || areGoogleReviewsFetching === true ? (
+          {isReviewsPusherConnected === false ? (
+            <NoReviewsFound />
+          ) : isFetching === true || areGoogleReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -150,7 +152,7 @@ class GoogleReviewsDs extends Component {
                   </>
                 ) : (
                   <>
-                    <div style={{ display: "flex", marginBottom:"30px" }}>
+                    <div style={{ display: "flex", marginBottom: "30px" }}>
                       <div>
                         <b>Google Review Url: &nbsp;</b>
                       </div>
@@ -173,7 +175,7 @@ class GoogleReviewsDs extends Component {
         </div>
         <div
           className={`${
-            isFetching || success == false
+            isFetching || success == false || isReviewsPusherConnected === false
               ? "hiddenPagination"
               : "paginationContainer"
           }`}
@@ -248,7 +250,7 @@ const mapStateToProps = state => {
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
-    false
+    undefined
   );
   return {
     token,
