@@ -318,6 +318,8 @@ function Dashboard(props) {
             Router.push(href, as, { shallow: true });
             setStepToRender(Number(stepKey));
           }
+        } else {
+          window.location.href = "/dashboard/home";
         }
       }
     }
