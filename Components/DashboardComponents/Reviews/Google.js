@@ -175,7 +175,7 @@ class GoogleReviewsDs extends Component {
         </div>
         <div
           className={`${
-            isFetching || success == false || isReviewsPusherConnected === false
+            isFetching || success == false || total === 0
               ? "hiddenPagination"
               : "paginationContainer"
           }`}
