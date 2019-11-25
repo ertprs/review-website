@@ -170,7 +170,9 @@ class TrustedShops extends Component {
         {/* We are using areTrustedShopsReviewsFetching to update the reviews from pusher */}
 
         <div className="reviewsContainer">
-          {isLoading === true || areTrustedShopsReviewsFetching === true ? (
+          {isReviewsPusherConnected === false ? (
+            <NoReviewsFound />
+          ) : isLoading === true || areTrustedShopsReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -252,7 +254,7 @@ const mapStateToProps = state => {
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
-    false
+    undefined
   );
   return {
     totalReviews,

@@ -123,7 +123,9 @@ class GoogleReviewsDs extends Component {
         `}</style>
         {/* We are using areGoogleReviewsFetching to update the reviews from pusher */}
         <div className="reviewsContainer">
-          {isFetching === true || areGoogleReviewsFetching === true ? (
+          {isReviewsPusherConnected === false ? (
+            <NoReviewsFound />
+          ) : isFetching === true || areGoogleReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -173,7 +175,7 @@ class GoogleReviewsDs extends Component {
         </div>
         <div
           className={`${
-            isFetching || success == false
+            isFetching || success == false || total === 0
               ? "hiddenPagination"
               : "paginationContainer"
           }`}
@@ -240,7 +242,11 @@ const mapStateToProps = state => {
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
   let googlePlaceId = _get(dashboardData, "googlePlaceId", "");
   if (!googlePlaceId) {
-    googlePlaceId = _get(auth, "logIn.userProfile.business_profile.google_places.placeId", "");
+    googlePlaceId = _get(
+      auth,
+      "logIn.userProfile.business_profile.google_places.placeId",
+      ""
+    );
   }
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const areGoogleReviewsFetching = _get(
@@ -251,7 +257,7 @@ const mapStateToProps = state => {
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
-    false
+    undefined
   );
   return {
     token,

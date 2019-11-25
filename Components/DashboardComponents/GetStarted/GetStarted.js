@@ -169,6 +169,7 @@ class GetStarted extends Component {
               directReviewUrl: formData[item].value
             }
           };
+          clearReviewsData();
         }
       } else {
         if (formData[item].valid && formData[item].touched) {
@@ -188,7 +189,6 @@ class GetStarted extends Component {
       setReviewsPusherConnect(true);
       setReviewsObjectWithPusher(reviewsObject);
       //! we don't want to clear google reviews data as they will be already updating.
-      // clearReviewsData();
     }
   };
 
@@ -438,11 +438,14 @@ class GetStarted extends Component {
         } else if (this.props.home) {
           this.props.changeEditMode();
         }
-        setGoogleDirectReviewUrl(
-          directReviewUrl,
-          address,
-          _get(selectedAddress, "placeId", "")
-        );
+        if (_get(formData, "directReviewUrl.touched", false)) {
+          // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
+          setGoogleDirectReviewUrl(
+            directReviewUrl,
+            address,
+            _get(selectedAddress, "placeId", "")
+          );
+        }
       } else if (isLoading === false && !success) {
         this.setState({
           showSnackbar: true,

@@ -96,10 +96,10 @@ export const fetchReviews = (token, page, perPage) => {
       });
       let success = false;
       let reviews = _get(result, "data.reviews", []);
+      reviewsObject["google"] = false;
+      dispatch(setReviewsObjectWithPusher(reviewsObject));
       if (!_isEmpty(reviews) && Array.isArray(reviews)) {
         success = true;
-        reviewsObject["google"] = false;
-        dispatch(setReviewsObjectWithPusher(reviewsObject));
       }
       dispatch({
         type: FETCH_REVIEWS_DATA_SUCCESS,
@@ -111,7 +111,8 @@ export const fetchReviews = (token, page, perPage) => {
         }
       });
     } catch (err) {
-      console.log(err, "error");
+      reviewsObject["google"] = false;
+      dispatch(setReviewsObjectWithPusher(reviewsObject));
       const success = _get(err, "response.data.success", false);
       const error = _get(err, "response.data.error", "Some Error Occured.");
       dispatch({

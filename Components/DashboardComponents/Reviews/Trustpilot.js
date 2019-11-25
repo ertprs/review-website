@@ -163,7 +163,9 @@ class Trustpilot extends Component {
         {/* We are using areTrustpilotReviewsFetching to update the reviews from pusher */}
 
         <div className="reviewsContainer">
-          {isLoading === true || areTrustpilotReviewsFetching === true ? (
+          {isReviewsPusherConnected === false ? (
+            <NoReviewsFound />
+          ) : isLoading === true || areTrustpilotReviewsFetching === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -244,7 +246,7 @@ const mapStateToProps = state => {
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
-    false
+    undefined
   );
   return {
     totalReviews,

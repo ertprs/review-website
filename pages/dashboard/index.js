@@ -318,6 +318,8 @@ function Dashboard(props) {
             Router.push(href, as, { shallow: true });
             setStepToRender(Number(stepKey));
           }
+        } else {
+          window.location.href = "/dashboard/home";
         }
       }
     }
@@ -446,7 +448,8 @@ function Dashboard(props) {
           onChildStateChange={newState => {
             setParentState({ ...parentState, ...newState });
             const fetchSuccess = _get(newState, "response.success", false);
-            if (fetchSuccess) {
+            const reviewsCount = _get(newState, "response.reviewCount", 0);
+            if (reviewsCount > 0 && fetchSuccess) {
               fetchReviews(token);
             }
           }}

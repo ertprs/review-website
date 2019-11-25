@@ -269,7 +269,7 @@ class Home extends Component {
   };
 
   renderRecentReviewsCard = () => {
-    const { reviewsData, reviewsObject } = this.props;
+    const { reviewsData, reviewsObject, isReviewsPusherConnected } = this.props;
     const reviews = _get(reviewsData, "reviews", []);
     const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
@@ -297,7 +297,8 @@ class Home extends Component {
             <div>
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
-              ) : reviewsObject["google"] === true ? (
+              ) : isReviewsPusherConnected === true &&
+                reviewsObject["google"] === true ? (
                 <>
                   <div style={{ marginTop: "30px" }}>
                     <h6 style={{ marginBottom: "50px", color: "green" }}>
@@ -525,56 +526,68 @@ class Home extends Component {
                 </div>
                 {name === "facebookReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
-                    <div className="col-md-6">
-                      <span style={{ fontWeight: "bold" }}>
-                        Likes : {likes}
-                      </span>{" "}
-                    </div>
-                    <div className="col-md-6">
-                      {" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        Followers : {followers}
-                      </span>{" "}
-                    </div>
+                    {likes ? (
+                      <div className="col-md-6">
+                        <span style={{ fontWeight: "bold" }}>
+                          Likes : {likes}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                    {followers ? (
+                      <div className="col-md-6">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Followers : {followers}
+                        </span>{" "}
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
                 <div className="reviewBoxRatingContainer">
                   {name === "trustedshopsReviews" ? (
-                    <div style={{ marginLeft: "-4px" }}>
-                      <StarRatings
-                        rating={Number(ratings)}
-                        starRatedColor="#FFDC0F"
-                        starDimension="20px"
-                        starSpacing="0.5px"
-                        numberOfStars={5}
-                        name="rating"
-                      />
-                    </div>
+                    ratings ? (
+                      <div style={{ marginLeft: "-4px" }}>
+                        <StarRatings
+                          rating={Number(ratings)}
+                          starRatedColor="#FFDC0F"
+                          starDimension="20px"
+                          starSpacing="0.5px"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      </div>
+                    ) : null
                   ) : name === "trustpilotReviews" ? (
-                    <div className="trustPilotImageContainer">
-                      <img
-                        src={`http://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-${Math.round(
-                          Number(ratings)
-                        ) || 0}.svg`}
-                        alt=""
-                      />
-                    </div>
+                    ratings ? (
+                      <div className="trustPilotImageContainer">
+                        <img
+                          src={`http://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-${Math.round(
+                            Number(ratings)
+                          ) || 0}.svg`}
+                          alt=""
+                        />
+                      </div>
+                    ) : null
                   ) : null}
                 </div>
                 {name === "trustpilotReviews" ||
                 name === "trustedshopsReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
-                    <div className="col-md-6">
-                      <span style={{ fontWeight: "bold" }}>
-                        Ratings : {ratings}
-                      </span>{" "}
-                    </div>
-                    <div className="col-md-6">
-                      {" "}
-                      <span style={{ fontWeight: "bold" }}>
-                        Total reviews : {totalReviews}
-                      </span>{" "}
-                    </div>
+                    {ratings ? (
+                      <div className="col-md-6">
+                        <span style={{ fontWeight: "bold" }}>
+                          Ratings : {ratings}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                    {totalReviews ? (
+                      <div className="col-md-6">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Total reviews : {totalReviews}
+                        </span>{" "}
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
               </div>
@@ -758,6 +771,11 @@ const mapStateToProps = state => {
   const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
   const reviewsObject = _get(dashboardData, "reviewsObject", {});
   const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    false
+  );
   return {
     reviewsData,
     quotaDetails,
@@ -781,7 +799,8 @@ const mapStateToProps = state => {
     reviewsObject,
     googlePlaceId,
     socialArray,
-    dashboardData
+    dashboardData,
+    isReviewsPusherConnected
   };
 };
 
