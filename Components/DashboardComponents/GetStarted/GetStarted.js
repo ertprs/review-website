@@ -5,7 +5,10 @@ import Container from "@material-ui/core/Container";
 import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
-import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
+import {
+  locatePlaceByPlaceId,
+  setGetStartedShow
+} from "../../../store/actions/dashboardActions";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
 import { connect } from "react-redux";
@@ -157,7 +160,6 @@ class GetStarted extends Component {
     };
 
     for (let item in formData) {
-      console.log(item, "item");
       if (item === "directReviewUrl") {
         if (Object.keys(selectedAddress).length > 0) {
           reviewsObject.google = true;
@@ -436,7 +438,7 @@ class GetStarted extends Component {
             }
           );
         } else if (this.props.home) {
-          this.props.changeEditMode();
+          this.props.setGetStartedShow(false, "");
         }
         if (_get(formData, "directReviewUrl.touched", false)) {
           // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
@@ -523,7 +525,6 @@ class GetStarted extends Component {
   };
 
   renderSpecificReviewURLBox = reviewURLToEdit => {
-    console.log(reviewURLToEdit);
     const { formData } = this.state;
     return (
       <Grid item xs={6} md={6} lg={6}>
@@ -584,7 +585,7 @@ class GetStarted extends Component {
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid>
           <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {this.props.editMode ? (
+            {this.props.showGetStarted ? (
               <div style={{ marginRight: "50px", marginLeft: "10px" }}>
                 <Button
                   variant="contained"
@@ -592,7 +593,7 @@ class GetStarted extends Component {
                   size="large"
                   startIcon={<ArrowBackIcon />}
                   onClick={() => {
-                    this.props.handleEditModeClose();
+                    this.props.setGetStartedShow(false, "");
                   }}
                 >
                   Back
@@ -633,6 +634,8 @@ const mapStateToProps = state => {
     "locatePlaceTemp.errorMsg",
     "Some Error Occured!"
   );
+  const showGetStarted = _get(dashboardData, "showGetStarted", false);
+  const reviewURLToEdit = _get(dashboardData, "reviewURLToEdit", "");
   return {
     success,
     businessProfile,
@@ -643,7 +646,9 @@ const mapStateToProps = state => {
     userProfile,
     isLoading,
     errorMsg,
-    socialArray
+    socialArray,
+    showGetStarted,
+    reviewURLToEdit
   };
 };
 
@@ -652,5 +657,6 @@ export default connect(mapStateToProps, {
   setGoogleDirectReviewUrl,
   setReviewsPusherConnect,
   setReviewsObjectWithPusher,
-  clearReviewsData
+  clearReviewsData,
+  setGetStartedShow
 })(GetStarted);

@@ -43,7 +43,8 @@ import {
   FETCH_THIRD_PARTY_REVIEWS_INIT,
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
   FETCH_THIRD_PARTY_REVIEWS_FAILURE,
-  SET_REVIEWS_OBJECT_WITH_PUSHER
+  SET_REVIEWS_OBJECT_WITH_PUSHER,
+  SHOW_GET_STARTED
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -721,4 +722,12 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
       }
     };
   }
+};
+
+export const setGetStartedShow = (show, reviewURLToEdit) => {
+  return {
+    type: SHOW_GET_STARTED,
+    showGetStarted: show,
+    reviewURLToEdit
+  };
 };
