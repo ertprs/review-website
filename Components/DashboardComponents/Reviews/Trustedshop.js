@@ -184,11 +184,13 @@ class TrustedShops extends Component {
             ) : !showDelay ? (
               <>
                 {_map(reviews, review => {
-                  let name = _get(review, "user", "");
+                  let name =
+                    _get(review, "user", "") || _get(review, "name", "");
                   let reviewToSend = {
                     name: name === "N/A" ? "" : name,
                     text: _get(review, "review", ""),
-                    rating: _get(review, "rating", 0)
+                    rating: _get(review, "rating", 0),
+                    date: _get(review, "date", "")
                   };
                   return (
                     <ReviewCard review={reviewToSend} provider="trustedshops" />

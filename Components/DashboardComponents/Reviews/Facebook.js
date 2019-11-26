@@ -185,9 +185,11 @@ class Facebook extends Component {
               <>
                 {_map(reviews, review => {
                   let reviewToSend = {
-                    name: _get(review, "user", ""),
-                    text: _get(review, "text", ""),
-                    rating: _get(review, "rating", 0)
+                    name: _get(review, "user", "") || _get(review, "name", ""),
+                    text:
+                      _get(review, "text", "") || _get(review, "review", ""),
+                    rating: _get(review, "rating", 0),
+                    date: _get(review, "date", "")
                   };
                   return (
                     <ReviewCard review={reviewToSend} provider="facebook" />

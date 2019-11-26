@@ -130,18 +130,29 @@ class GoogleReviewsDs extends Component {
             ) : (
               <>
                 {businessAddress ? (
-                  <>
-                    <div className="bold">Google Direct Review url :</div>
-                    <div>
-                      <a href={googleReviewUrl} target="_blank">
-                        {businessAddress}
-                      </a>
-                    </div>
-                  </>
+                  <div className="bold">
+                    Google Direct Review url :
+                    <a
+                      style={{ marginLeft: "10px" }}
+                      href={googleReviewUrl}
+                      target="_blank"
+                    >
+                      {businessAddress}
+                    </a>
+                  </div>
                 ) : null}
 
                 {_map(reviews, review => {
-                  return <GoogleReviewCard review={review} provider="google" />;
+                  let reviewToSend = {
+                    name: _get(review, "user", "") || _get(review, "name", ""),
+                    text:
+                      _get(review, "text", "") || _get(review, "review", ""),
+                    rating: _get(review, "rating", 0),
+                    date: _get(review, "date", "")
+                  };
+                  return (
+                    <GoogleReviewCard review={reviewToSend} provider="google" />
+                  );
                 })}
               </>
             )
