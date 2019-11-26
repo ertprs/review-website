@@ -19,7 +19,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormField from "../../Widgets/FormField/FormField";
 import validate from "../../../utility/validate";
 import {
-  setGoogleDirectReviewUrl,
+  setGooglePlaces,
   setReviewsPusherConnect,
   setReviewsObjectWithPusher,
   clearReviewsData
@@ -437,7 +437,7 @@ class GetStarted extends Component {
       changeStepToRender,
       isLoading,
       errorMsg,
-      setGoogleDirectReviewUrl
+      setGooglePlaces
     } = this.props;
     const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
@@ -460,11 +460,12 @@ class GetStarted extends Component {
 
           if (_get(formData, "directReviewUrl.touched", false)) {
             // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
-            setGoogleDirectReviewUrl(
-              directReviewUrl,
-              address,
-              _get(selectedAddress, "placeId", "")
-            );
+            let googlePlaces = {
+              directReviewUrl: directReviewUrl || "",
+              address: address || "",
+              placeId: _get(selectedAddress, "placeId", "")
+            };
+            setGooglePlaces(googlePlaces);
           }
         } else if (isLoading === false && !success) {
           this.setState({
@@ -673,7 +674,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
-  setGoogleDirectReviewUrl,
+  setGooglePlaces,
   setReviewsPusherConnect,
   setReviewsObjectWithPusher,
   clearReviewsData,

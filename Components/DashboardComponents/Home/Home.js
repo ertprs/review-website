@@ -299,16 +299,19 @@ class Home extends Component {
             <div>
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
-              ) : isReviewsPusherConnected === true &&
-                reviewsObject["google"] === true ? (
-                <>
-                  <div style={{ marginTop: "30px" }}>
-                    <h6 style={{ marginBottom: "50px", color: "green" }}>
-                      <b>Fetching reviews</b>
-                    </h6>
-                    <LinearProgress color="secondary" />
-                  </div>
-                </>
+              ) : reviewsObject["google"] === true ? (
+                isReviewsPusherConnected === false ? (
+                  "Reviews will be updated soon!"
+                ) : (
+                  <>
+                    <div style={{ marginTop: "30px" }}>
+                      <h6 style={{ marginBottom: "50px", color: "green" }}>
+                        <b>Fetching reviews</b>
+                      </h6>
+                      <LinearProgress color="secondary" />
+                    </div>
+                  </>
+                )
               ) : (
                 "Reviews will be updated soon!"
               )}
@@ -371,9 +374,7 @@ class Home extends Component {
       businessProfile,
       userProfile,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime,
       businessAddress,
-      businessAddressFirstTime,
       googlePlaceId,
       setGetStartedShow,
       showGetStarted
@@ -383,14 +384,9 @@ class Home extends Component {
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
     const expiresAt = _get(userProfile, "subscription.expires_at", "");
     const googleReviewUrl =
-      googleDirectReviewUrl === ""
-        ? googleDirectReviewUrlFirstTime
-        : googleDirectReviewUrl;
-    const businessAdd =
-      // businessAddress === "" ? businessAddressFirstTime : businessAddress;
-      businessAddressFirstTime !== ""
-        ? businessAddressFirstTime
-        : businessAddress;
+      googleDirectReviewUrl ||
+      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
+
     return (
       <div className="businessDetailsContainer">
         <div className="editBtnContainer">
@@ -450,28 +446,16 @@ class Home extends Component {
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          {googleReviewUrl === "" ? (
+          {businessAddress ? (
             <>
-              {/* <div className="bold">Invitation url :</div>
-              <div>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
-                  target="_blank"
-                >
-                  {businessAdd}
-                </a>
-              </div> */}
-            </>
-          ) : (
-            <>
-              <div className="bold">Google direct review url :</div>
+              <div className="bold">Google Direct Review url :</div>
               <div>
                 <a href={googleReviewUrl} target="_blank">
-                  {businessAdd}
+                  {businessAddress}
                 </a>
               </div>
             </>
-          )}
+          ) : null}
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
@@ -504,6 +488,7 @@ class Home extends Component {
           if (name === "facebookReviews") {
             likes = _get(data, "likes", "");
             followers = _get(data, "followers", "");
+            ratings = _get(data, "rating", 0);
           } else {
             if (_get(data, "rating", 0)) {
               ratings = _get(data, "rating", 0);
@@ -573,6 +558,7 @@ class Home extends Component {
                   ) : null}
                 </div>
                 {name === "trustpilotReviews" ||
+                name === "facebookReviews" ||
                 name === "trustedshopsReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
                     {ratings ? (
@@ -674,7 +660,7 @@ class Home extends Component {
             </Grid>
             {(this.props.socialArray || []).length > 0 ? (
               <Grid item xs={12} md={12} lg={12}>
-                <h4 style={{ marginLeft: "5px" }}>Review URL Links : </h4>
+                <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
               </Grid>
             ) : null}
             {this.renderReviewURLBoxes()}
@@ -741,19 +727,17 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.google_places.directReviewUrl",
     ""
   );
-  const googleDirectReviewUrlFirstTime = _get(
-    dashboardData,
-    "googleDirectReviewUrl",
-    ""
-  );
   const businessAddress = _get(
     auth,
     "logIn.userProfile.business_profile.google_places.address",
     ""
   );
-  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const googlePlaceId = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.placeId",
+    ""
+  );
   const reviewsObject = _get(dashboardData, "reviewsObject", {});
-  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
@@ -776,10 +760,8 @@ const mapStateToProps = state => {
     userPhone,
     upgradeToPremiumIsLoading,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime,
     userActivated,
     businessAddress,
-    businessAddressFirstTime,
     reviewsObject,
     googlePlaceId,
     socialArray,

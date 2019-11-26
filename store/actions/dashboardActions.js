@@ -26,7 +26,7 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_DIRECT_REVIEW_URL,
+  SET_GOOGLE_PLACES,
   UPDATE_COMPANY_DETAILS_INIT,
   UPDATE_COMPANY_DETAILS_SUCCESS,
   UPDATE_COMPANY_DETAILS_ERROR,
@@ -452,16 +452,10 @@ export const fetchEmailTemplate = templateId => {
   };
 };
 
-export const setGoogleDirectReviewUrl = (
-  googleDirectReviewUrl,
-  businessAddress,
-  googlePlaceId
-) => {
+export const setGooglePlaces = data => {
   return {
-    type: SET_GOOGLE_DIRECT_REVIEW_URL,
-    googleDirectReviewUrl,
-    businessAddress,
-    googlePlaceId
+    type: SET_GOOGLE_PLACES,
+    googlePlaces: { ...data }
   };
 };
 

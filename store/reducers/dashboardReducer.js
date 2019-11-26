@@ -26,7 +26,6 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_DIRECT_REVIEW_URL,
   SET_REVIEWS_PUSHER_CONNECT,
   UPDATE_COMPANY_DETAILS_INIT,
   UPDATE_COMPANY_DETAILS_SUCCESS,
@@ -243,15 +242,6 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         emailTemplate
-      };
-    }
-    case SET_GOOGLE_DIRECT_REVIEW_URL: {
-      return {
-        ...state,
-        type,
-        googleDirectReviewUrl,
-        businessAddress,
-        googlePlaceId
       };
     }
     case SET_REVIEWS_PUSHER_CONNECT: {
