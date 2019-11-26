@@ -33,7 +33,6 @@ import {
   UPDATE_AUTH_SOCIAL_ARRAY
 } from "./actionTypes";
 import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
 import { loginApiOAuth } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
@@ -47,6 +46,7 @@ import cookie from "js-cookie";
 import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 import { reportDomain } from "./domainProfileActions";
 import _find from "lodash/find";
+import _isEmpty from "lodash/isEmpty";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -648,17 +648,21 @@ export const setSubscription = isSubscriptionExpired => {
   };
 };
 
+//updating social in auth/logIn/userProfile/business_profile/social with the new url user has changed in getstarted to show cards on home page. currently we are pushing google as well but not displaying it.
+
 export const updateAuthSocialArray = data => {
   console.log(data, "updateAuthSocialArray");
   return async (dispatch, getState) => {
     const state = getState();
     const socialArray = _get(
       state,
-      "auth.logIn.userProfile.business_profile.social"
+      "auth.logIn.userProfile.business_profile.social",
+      []
     );
-    let newSocialArray = [];
+    let arrayOfChangedFields = [];
+    let mergeArrayOfChangedFieldsWithSocialArray = [];
     if (data) {
-      newSocialArray = Object.keys(data).map(key => {
+      arrayOfChangedFields = Object.keys(data).map(key => {
         let foundItem = _find(socialArray, ["social_media_app_id", key]);
         if (foundItem) {
           return { ...foundItem, url: data[key] };
@@ -666,27 +670,24 @@ export const updateAuthSocialArray = data => {
           return { social_media_app_id: Number(key), url: data[key] };
         }
       });
-    }
-    let oneMoreSocialArray = socialArray.filter(item => {
-      let foundItem = _find(newSocialArray, [
-        "social_media_app_id",
-        item.social_media_app_id
-      ]);
-      if (!foundItem) {
-        return { ...item };
+      if (socialArray && Array.isArray(socialArray) && !_isEmpty(socialArray)) {
+        mergeArrayOfChangedFieldsWithSocialArray = socialArray.filter(item => {
+          let foundItem = _find(arrayOfChangedFields, [
+            "social_media_app_id",
+            _get(item, "social_media_app_id", 0)
+          ]);
+          if (!foundItem) {
+            return { ...item };
+          }
+        });
       }
-    });
-    console.log(newSocialArray, "newSocialArray");
-    console.log(oneMoreSocialArray, "oneMoreSocialArray");
-    // const newSocialArray = socialArray.map(item => {
-    //   let socialId = _get(item, "social_media_app_id", 0);
-    //   if (data[socialId] !== undefined) {
-    //     return { ...item, url: data[socialId] };
-    //   } else return { ...item };
-    // });
+    }
     dispatch({
       type: UPDATE_AUTH_SOCIAL_ARRAY,
-      socialArray: [...newSocialArray, ...oneMoreSocialArray]
+      socialArray: [
+        ...arrayOfChangedFields,
+        ...mergeArrayOfChangedFieldsWithSocialArray
+      ]
     });
   };
 };
