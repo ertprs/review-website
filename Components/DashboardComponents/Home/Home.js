@@ -452,7 +452,7 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           {googleReviewUrl === "" ? (
             <>
-              <div className="bold">Invitation url :</div>
+              {/* <div className="bold">Invitation url :</div>
               <div>
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
@@ -460,13 +460,13 @@ class Home extends Component {
                 >
                   {businessAdd}
                 </a>
-              </div>
+              </div> */}
             </>
           ) : (
             <>
               <div className="bold">Google direct review url :</div>
               <div>
-              <a href={googleReviewUrl} target="_blank">
+                <a href={googleReviewUrl} target="_blank">
                   {businessAdd}
                 </a>
               </div>
@@ -522,7 +522,7 @@ class Home extends Component {
               </div>
               <div className="reviewBoxItemTextBoxContainer">
                 <div>
-                <a href={URL} target="_blank">
+                  <a href={URL} target="_blank">
                     {URL}
                   </a>
                 </div>
