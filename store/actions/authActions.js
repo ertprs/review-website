@@ -46,6 +46,7 @@ import {
 import cookie from "js-cookie";
 import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 import { reportDomain } from "./domainProfileActions";
+import _find from "lodash/find";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -648,21 +649,44 @@ export const setSubscription = isSubscriptionExpired => {
 };
 
 export const updateAuthSocialArray = data => {
+  console.log(data, "updateAuthSocialArray");
   return async (dispatch, getState) => {
     const state = getState();
     const socialArray = _get(
       state,
       "auth.logIn.userProfile.business_profile.social"
     );
-    const newSocialArray = socialArray.map(item => {
-      let socialId = _get(item, "social_media_app_id", 0);
-      if (data[socialId] !== undefined) {
-        return { ...item, url: data[socialId] };
-      } else return { ...item };
+    let newSocialArray = [];
+    if (data) {
+      newSocialArray = Object.keys(data).map(key => {
+        let foundItem = _find(socialArray, ["social_media_app_id", key]);
+        if (foundItem) {
+          return { ...foundItem, url: data[key] };
+        } else {
+          return { social_media_app_id: Number(key), url: data[key] };
+        }
+      });
+    }
+    let oneMoreSocialArray = socialArray.filter(item => {
+      let foundItem = _find(newSocialArray, [
+        "social_media_app_id",
+        item.social_media_app_id
+      ]);
+      if (!foundItem) {
+        return { ...item };
+      }
     });
+    console.log(newSocialArray, "newSocialArray");
+    console.log(oneMoreSocialArray, "oneMoreSocialArray");
+    // const newSocialArray = socialArray.map(item => {
+    //   let socialId = _get(item, "social_media_app_id", 0);
+    //   if (data[socialId] !== undefined) {
+    //     return { ...item, url: data[socialId] };
+    //   } else return { ...item };
+    // });
     dispatch({
       type: UPDATE_AUTH_SOCIAL_ARRAY,
-      socialArray: [...newSocialArray]
+      socialArray: [...newSocialArray, ...oneMoreSocialArray]
     });
   };
 };

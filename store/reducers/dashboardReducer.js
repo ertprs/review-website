@@ -43,7 +43,8 @@ import {
   FETCH_THIRD_PARTY_REVIEWS_INIT,
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
   FETCH_THIRD_PARTY_REVIEWS_FAILURE,
-  SET_REVIEWS_OBJECT_WITH_PUSHER
+  SET_REVIEWS_OBJECT_WITH_PUSHER,
+  SHOW_GET_STARTED
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -69,7 +70,9 @@ const dashboardReducer = (state = {}, action) => {
     companyDetails,
     userDetails,
     domainDetails,
-    thirdPartyReviews
+    thirdPartyReviews,
+    showGetStarted,
+    reviewURLToEdit
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -355,6 +358,9 @@ const dashboardReducer = (state = {}, action) => {
       return { ...state, type, ...thirdPartyReviews };
     case FETCH_THIRD_PARTY_REVIEWS_FAILURE:
       return { ...state, type, ...thirdPartyReviews };
+    case SHOW_GET_STARTED: {
+      return { ...state, type, showGetStarted, reviewURLToEdit };
+    }
     default:
       return state;
   }

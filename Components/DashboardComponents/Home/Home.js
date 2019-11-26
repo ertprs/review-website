@@ -12,7 +12,10 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { resendActivationLink } from "../../../store/actions/authActions";
 import { resendActivationLinkApi } from "../../../utility/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { upgradeToPremium } from "../../../store/actions/dashboardActions";
+import {
+  upgradeToPremium,
+  setGetStartedShow
+} from "../../../store/actions/dashboardActions";
 import withStyles from "@material-ui/styles/withStyles";
 import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
@@ -23,7 +26,8 @@ import Moment from "react-moment";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
-import Paper from "@material-ui/core/Paper/Paper";
+import Link from "next/link";
+
 const styles = theme => ({
   button: {
     width: "150px"
@@ -34,9 +38,7 @@ class Home extends Component {
   state = {
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: "",
-    editMode: false,
-    reviewURLToEdit: ""
+    snackbarMsg: ""
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -372,7 +374,9 @@ class Home extends Component {
       googleDirectReviewUrlFirstTime,
       businessAddress,
       businessAddressFirstTime,
-      googlePlaceId
+      googlePlaceId,
+      setGetStartedShow,
+      showGetStarted
     } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
@@ -396,9 +400,7 @@ class Home extends Component {
             size="small"
             startIcon={<EditIcon />}
             onClick={() => {
-              this.setState(prevState => {
-                return { editMode: !prevState.editMode };
-              });
+              setGetStartedShow(!showGetStarted);
             }}
           >
             Edit
@@ -434,9 +436,9 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           <div className="bold">Domain :</div>
           <div>
-            <a href={`https://www.${domain}`} target="_blank">
-              {domain}
-            </a>
+            <Link href={`https://www.${domain}`}>
+              <a target="_blank">{domain}</a>
+            </Link>
           </div>
         </div>
         <div className="businessDetailsFlexItem">
@@ -450,7 +452,7 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           {googleReviewUrl === "" ? (
             <>
-              <div className="bold">Invitation url :</div>
+              {/* <div className="bold">Invitation url :</div>
               <div>
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
@@ -458,7 +460,7 @@ class Home extends Component {
                 >
                   {businessAdd}
                 </a>
-              </div>
+              </div> */}
             </>
           ) : (
             <>
@@ -597,12 +599,10 @@ class Home extends Component {
                   aria-label="edit"
                   color="inherit"
                   onClick={() => {
-                    this.setState(prevState => {
-                      return {
-                        editMode: !prevState.editMode,
-                        reviewURLToEdit: editURL
-                      };
-                    });
+                    this.props.setGetStartedShow(
+                      !this.props.showGetStarted,
+                      editURL
+                    );
                   }}
                 >
                   <EditIcon />
@@ -620,9 +620,9 @@ class Home extends Component {
       classes,
       isSubscriptionExpired,
       userActivated,
-      changeStepToRender
+      changeStepToRender,
+      showGetStarted
     } = this.props;
-    const { editMode, reviewURLToEdit } = this.state;
     return (
       <>
         <style jsx>
@@ -650,7 +650,7 @@ class Home extends Component {
             }
           `}
         </style>
-        {!editMode ? (
+        {!showGetStarted ? (
           <Grid container spacing={3}>
             {isSubscriptionExpired === true
               ? this.renderSubscriptionInfo(classes)
@@ -681,24 +681,7 @@ class Home extends Component {
           </Grid>
         ) : (
           <div>
-            <GetStarted
-              changeStepToRender={data => {}}
-              home={true}
-              changeEditMode={() => {
-                this.setState({
-                  editMode: false,
-                  reviewURLToEdit: ""
-                });
-              }}
-              editMode={this.state.editMode}
-              handleEditModeClose={() => {
-                this.setState({
-                  editMode: false,
-                  reviewURLToEdit: ""
-                });
-              }}
-              reviewURLToEdit={reviewURLToEdit}
-            />
+            <GetStarted changeStepToRender={data => {}} />
             {/* <div style={{ marginLeft: "30px" }}>
               <Button
                 variant="contained"
@@ -776,6 +759,7 @@ const mapStateToProps = state => {
     "isReviewsPusherConnected",
     false
   );
+  const showGetStarted = _get(dashboardData, "showGetStarted", false);
   return {
     reviewsData,
     quotaDetails,
@@ -800,11 +784,13 @@ const mapStateToProps = state => {
     googlePlaceId,
     socialArray,
     dashboardData,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    showGetStarted
   };
 };
 
 export default connect(mapStateToProps, {
   resendActivationLink,
-  upgradeToPremium
+  upgradeToPremium,
+  setGetStartedShow
 })(withStyles(styles)(Home));

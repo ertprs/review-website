@@ -5,7 +5,10 @@ import Container from "@material-ui/core/Container";
 import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
-import { locatePlaceByPlaceId } from "../../../store/actions/dashboardActions";
+import {
+  locatePlaceByPlaceId,
+  setGetStartedShow
+} from "../../../store/actions/dashboardActions";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
 import { connect } from "react-redux";
@@ -134,7 +137,8 @@ class GetStarted extends Component {
       //     logo: "googlePlayStoreLogo.png",
       //     title: "Google play store reviews"
       //   }
-    }
+    },
+    disabledSave: true
   };
 
   handleContinueClick = () => {
@@ -157,7 +161,6 @@ class GetStarted extends Component {
     };
 
     for (let item in formData) {
-      console.log(item, "item");
       if (item === "directReviewUrl") {
         if (Object.keys(selectedAddress).length > 0) {
           reviewsObject.google = true;
@@ -181,6 +184,7 @@ class GetStarted extends Component {
       }
     }
     if (Object.keys(reqBody).length > 0) {
+      this.setState({ disabledSave: true });
       locatePlaceByPlaceId(
         reqBody,
         this.props.token,
@@ -197,7 +201,8 @@ class GetStarted extends Component {
     const name = _get(userProfile, "company.name", "");
     this.setState({
       selectedAddress: { ...reqBody, name },
-      address: address
+      address: address,
+      disabledSave: false
     });
   };
 
@@ -250,7 +255,7 @@ class GetStarted extends Component {
   };
 
   renderContinueBtn = () => {
-    const { selectedAddress, formData } = this.state;
+    const { selectedAddress, formData, disabledSave } = this.state;
     const { type, isLoading } = this.props;
     return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
       <div style={{ textAlign: "right" }}>
@@ -259,15 +264,30 @@ class GetStarted extends Component {
             <CircularProgress size={25} />
           </Button>
         ) : (
-          <Button
-            endIcon={<ArrowRight />}
-            onClick={this.handleContinueClick}
-            variant="contained"
-            color="primary"
-            size="large"
-          >
-            Claim &amp; continue
-          </Button>
+          <>
+            <Button
+              disabled={disabledSave}
+              style={{ marginRight: "10px" }}
+              // endIcon={<ArrowRight />}
+              onClick={this.handleContinueClick}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Save Changes
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              // startIcon={<ArrowBackIcon />}
+              onClick={() => {
+                this.props.setGetStartedShow(false, "");
+              }}
+            >
+              Close
+            </Button>
+          </>
         )}
       </div>
     ) : null;
@@ -286,7 +306,8 @@ class GetStarted extends Component {
           ),
           touched: true
         }
-      }
+      },
+      disabledSave: false
     });
   };
 
@@ -422,9 +443,10 @@ class GetStarted extends Component {
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
     const socialArrayPrev = _get(prevProps, "socialArray", []);
     const socialArray = _get(this.props, "socialArray", []);
+
     if (this.props !== prevProps) {
-      if (isLoading === false && success) {
-        if (!this.props.home) {
+      if (isLoading !== prevProps.isLoading && success !== prevProps.success) {
+        if (isLoading === false && success) {
           this.setState(
             {
               showSnackbar: true,
@@ -435,23 +457,22 @@ class GetStarted extends Component {
               changeStepToRender(1);
             }
           );
-        } else if (this.props.home) {
-          this.props.changeEditMode();
+
+          if (_get(formData, "directReviewUrl.touched", false)) {
+            // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
+            setGoogleDirectReviewUrl(
+              directReviewUrl,
+              address,
+              _get(selectedAddress, "placeId", "")
+            );
+          }
+        } else if (isLoading === false && !success) {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: errorMsg
+          });
         }
-        if (_get(formData, "directReviewUrl.touched", false)) {
-          // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
-          setGoogleDirectReviewUrl(
-            directReviewUrl,
-            address,
-            _get(selectedAddress, "placeId", "")
-          );
-        }
-      } else if (isLoading === false && !success) {
-        this.setState({
-          showSnackbar: true,
-          variant: "error",
-          snackbarMsg: errorMsg
-        });
       }
     }
   }
@@ -523,7 +544,6 @@ class GetStarted extends Component {
   };
 
   renderSpecificReviewURLBox = reviewURLToEdit => {
-    console.log(reviewURLToEdit);
     const { formData } = this.state;
     return (
       <Grid item xs={6} md={6} lg={6}>
@@ -584,7 +604,7 @@ class GetStarted extends Component {
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid>
           <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {this.props.editMode ? (
+            {/* {this.props.showGetStarted ? (
               <div style={{ marginRight: "50px", marginLeft: "10px" }}>
                 <Button
                   variant="contained"
@@ -592,13 +612,13 @@ class GetStarted extends Component {
                   size="large"
                   startIcon={<ArrowBackIcon />}
                   onClick={() => {
-                    this.props.handleEditModeClose();
+                    this.props.setGetStartedShow(false, "");
                   }}
                 >
                   Back
                 </Button>
               </div>
-            ) : null}
+            ) : null} */}
             {this.renderContinueBtn()}
           </Grid>
         </Container>
@@ -633,6 +653,8 @@ const mapStateToProps = state => {
     "locatePlaceTemp.errorMsg",
     "Some Error Occured!"
   );
+  const showGetStarted = _get(dashboardData, "showGetStarted", false);
+  const reviewURLToEdit = _get(dashboardData, "reviewURLToEdit", "");
   return {
     success,
     businessProfile,
@@ -643,7 +665,9 @@ const mapStateToProps = state => {
     userProfile,
     isLoading,
     errorMsg,
-    socialArray
+    socialArray,
+    showGetStarted,
+    reviewURLToEdit
   };
 };
 
@@ -652,5 +676,6 @@ export default connect(mapStateToProps, {
   setGoogleDirectReviewUrl,
   setReviewsPusherConnect,
   setReviewsObjectWithPusher,
-  clearReviewsData
+  clearReviewsData,
+  setGetStartedShow
 })(GetStarted);
