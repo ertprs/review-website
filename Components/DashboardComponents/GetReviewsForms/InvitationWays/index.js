@@ -3,7 +3,6 @@ import { Button } from "@material-ui/core";
 import { KeyboardArrowRight, KeyboardArrowLeft } from "@material-ui/icons";
 import ManualInvitation from "./ManualInvitation";
 import AutomaticInvitation from "./AutomaticInvitation";
-import NeedDeveloperSupport from "../../../Widgets/NeedDeveloperSupport/NeedDeveloperSupport";
 
 export default class InvitationWays extends Component {
   render() {
@@ -22,11 +21,8 @@ export default class InvitationWays extends Component {
         <div className="row">
           {invitationWayToRender === "automatic" ? (
             <>
-              <div className="col-md-6">
+              <div className="col-md-12">
                 <AutomaticInvitation {...this.props} />
-              </div>
-              <div className="col-md-6">
-                <NeedDeveloperSupport />
               </div>
             </>
           ) : (
