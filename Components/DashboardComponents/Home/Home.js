@@ -488,6 +488,7 @@ class Home extends Component {
           if (name === "facebookReviews") {
             likes = _get(data, "likes", "");
             followers = _get(data, "followers", "");
+            ratings = _get(data, "rating", 0);
           } else {
             if (_get(data, "rating", 0)) {
               ratings = _get(data, "rating", 0);
@@ -557,6 +558,7 @@ class Home extends Component {
                   ) : null}
                 </div>
                 {name === "trustpilotReviews" ||
+                name === "facebookReviews" ||
                 name === "trustedshopsReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
                     {ratings ? (
@@ -658,7 +660,7 @@ class Home extends Component {
             </Grid>
             {(this.props.socialArray || []).length > 0 ? (
               <Grid item xs={12} md={12} lg={12}>
-                <h4 style={{ marginLeft: "5px" }}>Review URL Links : </h4>
+                <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
               </Grid>
             ) : null}
             {this.renderReviewURLBoxes()}
