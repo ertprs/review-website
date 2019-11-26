@@ -374,9 +374,7 @@ class Home extends Component {
       businessProfile,
       userProfile,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime,
       businessAddress,
-      businessAddressFirstTime,
       googlePlaceId,
       setGetStartedShow,
       showGetStarted
@@ -386,13 +384,9 @@ class Home extends Component {
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
     const expiresAt = _get(userProfile, "subscription.expires_at", "");
     const googleReviewUrl =
-      googleDirectReviewUrl === ""
-        ? googleDirectReviewUrlFirstTime
-        : googleDirectReviewUrl;
-    const businessAdd =
-      businessAddressFirstTime === ""
-        ? businessAddress
-        : businessAddressFirstTime;
+      googleDirectReviewUrl ||
+      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
+
     return (
       <div className="businessDetailsContainer">
         <div className="editBtnContainer">
@@ -452,32 +446,16 @@ class Home extends Component {
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          {googleReviewUrl === "" ? (
+          {businessAddress ? (
             <>
-              {businessAdd ? (
-                <>
-                  <div className="bold">Invitation url :</div>
-                  <div>
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
-                      target="_blank"
-                    >
-                      {businessAdd}
-                    </a>
-                  </div>
-                </>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <div className="bold">Google direct review url :</div>
+              <div className="bold">Google Direct Review url :</div>
               <div>
                 <a href={googleReviewUrl} target="_blank">
-                  {businessAdd}
+                  {businessAddress}
                 </a>
               </div>
             </>
-          )}
+          ) : null}
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
@@ -747,19 +725,17 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.google_places.directReviewUrl",
     ""
   );
-  const googleDirectReviewUrlFirstTime = _get(
-    dashboardData,
-    "googleDirectReviewUrl",
-    ""
-  );
   const businessAddress = _get(
     auth,
     "logIn.userProfile.business_profile.google_places.address",
     ""
   );
-  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const googlePlaceId = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.placeId",
+    ""
+  );
   const reviewsObject = _get(dashboardData, "reviewsObject", {});
-  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
@@ -782,10 +758,8 @@ const mapStateToProps = state => {
     userPhone,
     upgradeToPremiumIsLoading,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime,
     userActivated,
     businessAddress,
-    businessAddressFirstTime,
     reviewsObject,
     googlePlaceId,
     socialArray,

@@ -43,23 +43,16 @@ class GoogleReviewsDs extends Component {
       isFetching,
       success,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime,
       businessAddress,
-      businessAddressFirstTime,
       domain,
       googlePlaceId,
       areGoogleReviewsFetching,
       isReviewsPusherConnected
     } = this.props;
     const { perPage } = this.state;
-    let googleReviewUrl =
-      googleDirectReviewUrl === ""
-        ? googleDirectReviewUrlFirstTime
-        : googleDirectReviewUrl;
-    const businessAdd =
-      businessAddressFirstTime !== ""
-        ? businessAddressFirstTime
-        : businessAddress;
+    const googleReviewUrl =
+      googleDirectReviewUrl ||
+      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
 
     return (
       <>
@@ -136,39 +129,16 @@ class GoogleReviewsDs extends Component {
               <NoReviewsFound />
             ) : (
               <>
-                {googleReviewUrl ? (
+                {businessAddress ? (
                   <>
-                    <div style={{ display: "flex", marginBottom: "30px" }}>
-                      <div>
-                        <b>Google Review Url: &nbsp;</b>
-                      </div>
-                      <div
-                        style={{ color: "blue", cursor: "pointer" }}
-                        onClick={() => window.open(googleReviewUrl)}
-                      >
-                        {businessAdd}
-                      </div>
+                    <div className="bold">Google Direct Review url :</div>
+                    <div>
+                      <a href={googleReviewUrl} target="_blank">
+                        {businessAddress}
+                      </a>
                     </div>
                   </>
-                ) : (
-                  <>
-                    {businessAdd ? (
-                      <Typography>
-                        <b>Invitation url: &nbsp;</b>
-                        <span
-                          className="invitation_link"
-                          onClick={() =>
-                            window.open(
-                              `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
-                            )
-                          }
-                        >
-                          {businessAdd}
-                        </span>
-                      </Typography>
-                    ) : null}
-                  </>
-                )}
+                ) : null}
 
                 {_map(reviews, review => {
                   return <GoogleReviewCard review={review} provider="google" />;
@@ -233,25 +203,16 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.google_places.directReviewUrl",
     ""
   );
-  const googleDirectReviewUrlFirstTime = _get(
-    dashboardData,
-    "googleDirectReviewUrl",
-    ""
-  );
   const businessAddress = _get(
     auth,
     "logIn.userProfile.business_profile.google_places.address",
     ""
   );
-  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
-  let googlePlaceId = _get(dashboardData, "googlePlaceId", "");
-  if (!googlePlaceId) {
-    googlePlaceId = _get(
-      auth,
-      "logIn.userProfile.business_profile.google_places.placeId",
-      ""
-    );
-  }
+  let googlePlaceId = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.placeId",
+    ""
+  );
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const areGoogleReviewsFetching = _get(
     dashboardData,
@@ -275,9 +236,7 @@ const mapStateToProps = state => {
     error,
     success,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime,
     businessAddress,
-    businessAddressFirstTime,
     googlePlaceId,
     domain,
     areGoogleReviewsFetching,
