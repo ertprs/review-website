@@ -137,7 +137,8 @@ class GetStarted extends Component {
       //     logo: "googlePlayStoreLogo.png",
       //     title: "Google play store reviews"
       //   }
-    }
+    },
+    disabledSave: true
   };
 
   handleContinueClick = () => {
@@ -183,6 +184,7 @@ class GetStarted extends Component {
       }
     }
     if (Object.keys(reqBody).length > 0) {
+      this.setState({ disabledSave: true });
       locatePlaceByPlaceId(
         reqBody,
         this.props.token,
@@ -199,7 +201,8 @@ class GetStarted extends Component {
     const name = _get(userProfile, "company.name", "");
     this.setState({
       selectedAddress: { ...reqBody, name },
-      address: address
+      address: address,
+      disabledSave: false
     });
   };
 
@@ -252,7 +255,7 @@ class GetStarted extends Component {
   };
 
   renderContinueBtn = () => {
-    const { selectedAddress, formData } = this.state;
+    const { selectedAddress, formData, disabledSave } = this.state;
     const { type, isLoading } = this.props;
     return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
       <div style={{ textAlign: "right" }}>
@@ -261,15 +264,30 @@ class GetStarted extends Component {
             <CircularProgress size={25} />
           </Button>
         ) : (
-          <Button
-            endIcon={<ArrowRight />}
-            onClick={this.handleContinueClick}
-            variant="contained"
-            color="primary"
-            size="large"
-          >
-            Claim &amp; continue
-          </Button>
+          <>
+            <Button
+              disabled={disabledSave}
+              style={{ marginRight: "10px" }}
+              // endIcon={<ArrowRight />}
+              onClick={this.handleContinueClick}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Save Changes
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              // startIcon={<ArrowBackIcon />}
+              onClick={() => {
+                this.props.setGetStartedShow(false, "");
+              }}
+            >
+              Close
+            </Button>
+          </>
         )}
       </div>
     ) : null;
@@ -288,7 +306,8 @@ class GetStarted extends Component {
           ),
           touched: true
         }
-      }
+      },
+      disabledSave: false
     });
   };
 
@@ -424,9 +443,10 @@ class GetStarted extends Component {
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
     const socialArrayPrev = _get(prevProps, "socialArray", []);
     const socialArray = _get(this.props, "socialArray", []);
+
     if (this.props !== prevProps) {
-      if (isLoading === false && success) {
-        if (!this.props.home) {
+      if (isLoading !== prevProps.isLoading && success !== prevProps.success) {
+        if (isLoading === false && success) {
           this.setState(
             {
               showSnackbar: true,
@@ -437,23 +457,22 @@ class GetStarted extends Component {
               changeStepToRender(1);
             }
           );
-        } else if (this.props.home) {
-          this.props.setGetStartedShow(false, "");
+
+          if (_get(formData, "directReviewUrl.touched", false)) {
+            // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
+            setGoogleDirectReviewUrl(
+              directReviewUrl,
+              address,
+              _get(selectedAddress, "placeId", "")
+            );
+          }
+        } else if (isLoading === false && !success) {
+          this.setState({
+            showSnackbar: true,
+            variant: "error",
+            snackbarMsg: errorMsg
+          });
         }
-        if (_get(formData, "directReviewUrl.touched", false)) {
-          // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
-          setGoogleDirectReviewUrl(
-            directReviewUrl,
-            address,
-            _get(selectedAddress, "placeId", "")
-          );
-        }
-      } else if (isLoading === false && !success) {
-        this.setState({
-          showSnackbar: true,
-          variant: "error",
-          snackbarMsg: errorMsg
-        });
       }
     }
   }
@@ -585,7 +604,7 @@ class GetStarted extends Component {
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid>
           <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {this.props.showGetStarted ? (
+            {/* {this.props.showGetStarted ? (
               <div style={{ marginRight: "50px", marginLeft: "10px" }}>
                 <Button
                   variant="contained"
@@ -599,7 +618,7 @@ class GetStarted extends Component {
                   Back
                 </Button>
               </div>
-            ) : null}
+            ) : null} */}
             {this.renderContinueBtn()}
           </Grid>
         </Container>
