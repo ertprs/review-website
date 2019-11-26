@@ -32,7 +32,8 @@ import {
   UPDATE_COMPANY_DETAILS_SUCCESS,
   UPDATE_USER_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_SUCCESS,
-  UPDATE_AUTH_SOCIAL_ARRAY
+  UPDATE_AUTH_SOCIAL_ARRAY,
+  SET_GOOGLE_PLACES
 } from "../actions/actionTypes";
 
 const authReducer = (state = {}, action) => {
@@ -54,7 +55,8 @@ const authReducer = (state = {}, action) => {
     companyDetails,
     userDetails,
     domainDetails,
-    socialArray
+    socialArray,
+    googlePlaces
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -287,6 +289,24 @@ const authReducer = (state = {}, action) => {
           }
         },
         type
+      };
+    }
+    case SET_GOOGLE_PLACES: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              google_places: {
+                ...state.logIn.userProfile.business_profile.google_places,
+                ...googlePlaces
+              }
+            }
+          }
+        }
       };
     }
     case LOGOUT:
