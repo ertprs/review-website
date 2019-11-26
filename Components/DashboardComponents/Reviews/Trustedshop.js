@@ -171,9 +171,13 @@ class TrustedShops extends Component {
 
         <div className="reviewsContainer">
           {isLoading === true || areTrustedShopsReviewsFetching === true ? (
-            <div className="loaderContainer">
-              <CircularProgress color="secondary" />
-            </div>
+            isReviewsPusherConnected === false ? (
+              <NoReviewsFound />
+            ) : (
+              <div className="loaderContainer">
+                <CircularProgress color="secondary" />
+              </div>
+            )
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound />

@@ -164,9 +164,13 @@ class Trustpilot extends Component {
 
         <div className="reviewsContainer">
           {isLoading === true || areTrustpilotReviewsFetching === true ? (
-            <div className="loaderContainer">
-              <CircularProgress color="secondary" />
-            </div>
+            isReviewsPusherConnected === false ? (
+              <NoReviewsFound />
+            ) : (
+              <div className="loaderContainer">
+                <CircularProgress color="secondary" />
+              </div>
+            )
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound />
