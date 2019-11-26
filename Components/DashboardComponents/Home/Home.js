@@ -387,10 +387,9 @@ class Home extends Component {
         ? googleDirectReviewUrlFirstTime
         : googleDirectReviewUrl;
     const businessAdd =
-      // businessAddress === "" ? businessAddressFirstTime : businessAddress;
-      businessAddressFirstTime !== ""
-        ? businessAddressFirstTime
-        : businessAddress;
+      businessAddressFirstTime === ""
+        ? businessAddress
+        : businessAddressFirstTime;
     return (
       <div className="businessDetailsContainer">
         <div className="editBtnContainer">
@@ -452,15 +451,19 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           {googleReviewUrl === "" ? (
             <>
-              {/* <div className="bold">Invitation url :</div>
-              <div>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
-                  target="_blank"
-                >
-                  {businessAdd}
-                </a>
-              </div> */}
+              {businessAdd ? (
+                <>
+                  <div className="bold">Invitation url :</div>
+                  <div>
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
+                      target="_blank"
+                    >
+                      {businessAdd}
+                    </a>
+                  </div>
+                </>
+              ) : null}
             </>
           ) : (
             <>

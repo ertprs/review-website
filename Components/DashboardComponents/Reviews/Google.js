@@ -148,19 +148,21 @@ class GoogleReviewsDs extends Component {
                   </>
                 ) : (
                   <>
-                    <Typography>
-                      <b>Invitation url: &nbsp;</b>
-                      <span
-                        className="invitation_link"
-                        onClick={() =>
-                          window.open(
-                            `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
-                          )
-                        }
-                      >
-                        {businessAdd}
-                      </span>
-                    </Typography>
+                    {businessAdd ? (
+                      <Typography>
+                        <b>Invitation url: &nbsp;</b>
+                        <span
+                          className="invitation_link"
+                          onClick={() =>
+                            window.open(
+                              `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
+                            )
+                          }
+                        >
+                          {businessAdd}
+                        </span>
+                      </Typography>
+                    ) : null}
                   </>
                 )}
 
