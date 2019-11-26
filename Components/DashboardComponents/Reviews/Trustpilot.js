@@ -164,9 +164,13 @@ class Trustpilot extends Component {
 
         <div className="reviewsContainer">
           {isLoading === true || areTrustpilotReviewsFetching === true ? (
-            <div className="loaderContainer">
-              <CircularProgress color="secondary" />
-            </div>
+            isReviewsPusherConnected === false ? (
+              <NoReviewsFound />
+            ) : (
+              <div className="loaderContainer">
+                <CircularProgress color="secondary" />
+              </div>
+            )
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound />
@@ -174,9 +178,10 @@ class Trustpilot extends Component {
               <>
                 {_map(reviews, review => {
                   let reviewToSend = {
-                    name: _get(review, "user", ""),
+                    name: _get(review, "user", "") || _get(review, "name", ""),
                     text: _get(review, "review", ""),
-                    rating: _get(review, "rating", 0)
+                    rating: _get(review, "rating", 0),
+                    date: _get(review, "date", "")
                   };
                   return (
                     <ReviewCard review={reviewToSend} provider="trustpilot" />

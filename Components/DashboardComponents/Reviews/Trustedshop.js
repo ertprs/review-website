@@ -171,20 +171,26 @@ class TrustedShops extends Component {
 
         <div className="reviewsContainer">
           {isLoading === true || areTrustedShopsReviewsFetching === true ? (
-            <div className="loaderContainer">
-              <CircularProgress color="secondary" />
-            </div>
+            isReviewsPusherConnected === false ? (
+              <NoReviewsFound />
+            ) : (
+              <div className="loaderContainer">
+                <CircularProgress color="secondary" />
+              </div>
+            )
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound />
             ) : !showDelay ? (
               <>
                 {_map(reviews, review => {
-                  let name = _get(review, "user", "");
+                  let name =
+                    _get(review, "user", "") || _get(review, "name", "");
                   let reviewToSend = {
                     name: name === "N/A" ? "" : name,
                     text: _get(review, "review", ""),
-                    rating: _get(review, "rating", 0)
+                    rating: _get(review, "rating", 0),
+                    date: _get(review, "date", "")
                   };
                   return (
                     <ReviewCard review={reviewToSend} provider="trustedshops" />
