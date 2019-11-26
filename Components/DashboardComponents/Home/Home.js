@@ -26,6 +26,7 @@ import Moment from "react-moment";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
+import Link from "next/link";
 
 const styles = theme => ({
   button: {
@@ -465,7 +466,7 @@ class Home extends Component {
             <>
               <div className="bold">Google direct review url :</div>
               <div>
-                <a href={googleReviewUrl} target="_blank">
+              <a href={googleReviewUrl} target="_blank">
                   {businessAdd}
                 </a>
               </div>
@@ -521,7 +522,7 @@ class Home extends Component {
               </div>
               <div className="reviewBoxItemTextBoxContainer">
                 <div>
-                  <a href={URL} target="_blank">
+                <a href={URL} target="_blank">
                     {URL}
                   </a>
                 </div>
@@ -680,7 +681,7 @@ class Home extends Component {
           </Grid>
         ) : (
           <div>
-            <GetStarted changeStepToRender={data => {}} home={true} />
+            <GetStarted changeStepToRender={data => {}} />
             {/* <div style={{ marginLeft: "30px" }}>
               <Button
                 variant="contained"
