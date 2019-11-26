@@ -299,16 +299,19 @@ class Home extends Component {
             <div>
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
-              ) : isReviewsPusherConnected === true &&
-                reviewsObject["google"] === true ? (
-                <>
-                  <div style={{ marginTop: "30px" }}>
-                    <h6 style={{ marginBottom: "50px", color: "green" }}>
-                      <b>Fetching reviews</b>
-                    </h6>
-                    <LinearProgress color="secondary" />
-                  </div>
-                </>
+              ) : reviewsObject["google"] === true ? (
+                isReviewsPusherConnected === false ? (
+                  "Reviews will be updated soon!"
+                ) : (
+                  <>
+                    <div style={{ marginTop: "30px" }}>
+                      <h6 style={{ marginBottom: "50px", color: "green" }}>
+                        <b>Fetching reviews</b>
+                      </h6>
+                      <LinearProgress color="secondary" />
+                    </div>
+                  </>
+                )
               ) : (
                 "Reviews will be updated soon!"
               )}
