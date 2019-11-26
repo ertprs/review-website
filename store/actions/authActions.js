@@ -411,7 +411,6 @@ export const oAuthSigninginEnd = () => {
 };
 
 export const businessSignUp = (signupData, api) => {
-  console.log(signupData, "signupData");
   return async (dispatch, getState) => {
     dispatch({
       type: BUSINESS_SIGNUP_INIT,
@@ -541,7 +540,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
               }
             });
             // fetch all thirdy party reviews
-            // console.log(socialArray)
             if (socialArray) {
               if (socialArray.length > 0) {
                 socialArray.map(item => {
@@ -600,7 +598,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
 };
 
 export const resendActivationLink = (token, api) => {
-  console.log(token, "token");
   return async dispatch => {
     dispatch({
       type: RESEND_ACTIVATION_LINK_INIT,
@@ -651,7 +648,6 @@ export const setSubscription = isSubscriptionExpired => {
 //updating social in auth/logIn/userProfile/business_profile/social with the new url user has changed in getstarted to show cards on home page. currently we are pushing google as well but not displaying it.
 
 export const updateAuthSocialArray = data => {
-  console.log(data, "updateAuthSocialArray");
   return async (dispatch, getState) => {
     const state = getState();
     const socialArray = _get(
