@@ -39,7 +39,11 @@ class GetStarted extends Component {
       directReviewUrl: {
         element: "input",
         type: "text",
-        value: "",
+        value: _get(
+          this.props,
+          "businessProfile.google_places.directReviewUrl",
+          ""
+        ),
         valid: false,
         touched: false,
         errorMessage: "Enter valid review URL",
@@ -49,6 +53,10 @@ class GetStarted extends Component {
           isDomain: true
         },
         label: "Google review URL: ",
+        name: "google",
+        logo: "googleIcon.png",
+        title: "Google reviews",
+        key: 0,
         name: "google"
       },
       facebookReviewUrl: {
@@ -147,7 +155,8 @@ class GetStarted extends Component {
       setReviewsPusherConnect,
       setReviewsObjectWithPusher,
       locatePlaceByPlaceId,
-      clearReviewsData
+      clearReviewsData,
+      googlePlaces
     } = this.props;
     let reqBody = {};
 
@@ -173,6 +182,21 @@ class GetStarted extends Component {
             }
           };
           clearReviewsData();
+        } else if (
+          Object.keys(selectedAddress).length === 0 &&
+          formData[item].touched
+        ) {
+          reviewsObject.google = true;
+          reqBody = {
+            ...reqBody,
+            google: {
+              address: _get(googlePlaces, "address", ""),
+              directReviewUrl: formData[item].value,
+              name: _get(googlePlaces, "name", ""),
+              placeId: _get(googlePlaces, "placeId", "")
+            }
+          };
+          clearReviewsData();
         }
       } else {
         if (formData[item].valid && formData[item].touched) {
@@ -183,6 +207,7 @@ class GetStarted extends Component {
         }
       }
     }
+    console.log(reqBody);
     if (Object.keys(reqBody).length > 0) {
       this.setState({ disabledSave: true });
       locatePlaceByPlaceId(
@@ -197,25 +222,46 @@ class GetStarted extends Component {
   };
 
   handleAddressSelect = (reqBody, address) => {
-    const { userProfile } = this.props;
+    const { userProfile, businessProfile } = this.props;
     const name = _get(userProfile, "company.name", "");
+    const googlePlaceId = _get(reqBody, "placeId", "");
+    const domain = _get(businessProfile, "domain", "");
+    const googleReviewUrl = `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
+    console.log(googleReviewUrl, "Google Review URL");
     this.setState({
       selectedAddress: { ...reqBody, name },
       address: address,
-      disabledSave: false
+      disabledSave: false,
+      formData: {
+        ...this.state.formData,
+        directReviewUrl: {
+          ...this.state.formData["directReviewUrl"],
+          value: googleReviewUrl,
+          valid: true,
+          touched: true
+        }
+      }
     });
   };
 
   renderSelectedAddress = () => {
     const { selectedAddress } = this.state;
+    const addressSelected = _get(this.props, "addressSelected", "");
     return Object.keys(selectedAddress).length > 0 ? (
-      <div style={{ marginTop: "30px" }}>
+      <div style={{ marginTop: "15px" }}>
         <p>
           <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
           {this.state.address}
         </p>
       </div>
-    ) : null;
+    ) : (
+      <div style={{ marginTop: "15px" }}>
+        <p>
+          <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
+          {addressSelected}
+        </p>
+      </div>
+    );
   };
 
   renderGetStartedHeader = () => {
@@ -266,17 +312,6 @@ class GetStarted extends Component {
         ) : (
           <>
             <Button
-              disabled={disabledSave}
-              style={{ marginRight: "10px" }}
-              // endIcon={<ArrowRight />}
-              onClick={this.handleContinueClick}
-              variant="contained"
-              color="primary"
-              size="large"
-            >
-              Save Changes
-            </Button>
-            <Button
               variant="contained"
               color="primary"
               size="large"
@@ -286,6 +321,17 @@ class GetStarted extends Component {
               }}
             >
               Close
+            </Button>
+            <Button
+              disabled={disabledSave}
+              style={{ marginLeft: "20px" }}
+              // endIcon={<ArrowRight />}
+              onClick={this.handleContinueClick}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Save Changes
             </Button>
           </>
         )}
@@ -313,7 +359,7 @@ class GetStarted extends Component {
 
   renderDirectReviewUrl = () => {
     const { formData, selectedAddress } = this.state;
-    return Object.keys(selectedAddress).length > 0 ? (
+    return (
       <div className="row">
         <div
           className="col-md-7"
@@ -350,7 +396,7 @@ class GetStarted extends Component {
           </a>
         </div>
       </div>
-    ) : null;
+    );
   };
 
   renderGetStartedBox = () => {
@@ -396,7 +442,7 @@ class GetStarted extends Component {
         </style>
         <div className="getStartedBox">
           <div className="getStartedBoxHeader">
-            <h4>Google Reviews</h4>
+            <h4>Locate your business</h4>
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxImgContainer">
@@ -419,7 +465,7 @@ class GetStarted extends Component {
   };
 
   componentDidMount() {
-    const { placeId, locatePlace } = this.props;
+    const { placeId, locatePlace, businessProfile } = this.props;
     if (placeId !== "" || locatePlace) {
       this.props.changeStepToRender(1);
     }
@@ -437,7 +483,8 @@ class GetStarted extends Component {
       changeStepToRender,
       isLoading,
       errorMsg,
-      setGooglePlaces
+      setGooglePlaces,
+      googlePlaces
     } = this.props;
     const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
@@ -458,14 +505,20 @@ class GetStarted extends Component {
             }
           );
 
-          if (_get(formData, "directReviewUrl.touched", false)) {
-            // used to show updated direct review url on home, google reviews, send invitations, dispatching this action only when gooogle review url is changed
-            let googlePlaces = {
-              directReviewUrl: directReviewUrl || "",
-              address: address || "",
-              placeId: _get(selectedAddress, "placeId", "")
+          if (
+            _get(formData, "directReviewUrl.touched", false) ||
+            selectedAddress
+          ) {
+            // this action is used to update google_places in login/userProfile/business_profile whenever we change directReviewURL or business address
+            let newGooglePlaces = {
+              directReviewUrl:
+                directReviewUrl || _get(googlePlaces, "directReviewUrl", ""),
+              address: address || _get(googlePlaces, "address", ""),
+              placeId:
+                _get(selectedAddress, "placeId", "") ||
+                _get(googlePlaces, "placeId", "")
             };
-            setGooglePlaces(googlePlaces);
+            setGooglePlaces(newGooglePlaces);
           }
         } else if (isLoading === false && !success) {
           this.setState({
@@ -546,39 +599,45 @@ class GetStarted extends Component {
 
   renderSpecificReviewURLBox = reviewURLToEdit => {
     const { formData } = this.state;
-    return (
-      <Grid item xs={6} md={6} lg={6}>
-        <Paper>
-          <style jsx>{reviewURLBoxStyles}</style>
-          <div className="reviewURLBox">
-            <div className="reviewURLBoxHeader">
-              <h4>{formData[reviewURLToEdit].title}</h4>
-            </div>
-            <div className="reviewURLBoxContainerInner">
-              <div className="reviewURLBoxImgContainer">
-                <img src={`/static/images/${formData[reviewURLToEdit].logo}`} />
+    if (reviewURLToEdit === "getStartedBox") {
+      return this.renderGetStartedBox();
+    } else {
+      return (
+        <Grid item xs={6} md={6} lg={6}>
+          <Paper>
+            <style jsx>{reviewURLBoxStyles}</style>
+            <div className="reviewURLBox">
+              <div className="reviewURLBoxHeader">
+                <h4>{formData[reviewURLToEdit].title}</h4>
               </div>
-              <div className="reviewURLBoxAutoComplete">
-                <>
-                  <FormField
-                    {...formData[reviewURLToEdit]}
-                    id={reviewURLToEdit}
-                    handleChange={this.handleChange}
-                    styles={{
-                      border: "0",
-                      borderBottom: "1px solid #999",
-                      borderRadius: "0",
-                      marginLeft: 0,
-                      paddingLeft: 0
-                    }}
+              <div className="reviewURLBoxContainerInner">
+                <div className="reviewURLBoxImgContainer">
+                  <img
+                    src={`/static/images/${formData[reviewURLToEdit].logo}`}
                   />
-                </>
+                </div>
+                <div className="reviewURLBoxAutoComplete">
+                  <>
+                    <FormField
+                      {...formData[reviewURLToEdit]}
+                      id={reviewURLToEdit}
+                      handleChange={this.handleChange}
+                      styles={{
+                        border: "0",
+                        borderBottom: "1px solid #999",
+                        borderRadius: "0",
+                        marginLeft: 0,
+                        paddingLeft: 0
+                      }}
+                    />
+                  </>
+                </div>
               </div>
             </div>
-          </div>
-        </Paper>
-      </Grid>
-    );
+          </Paper>
+        </Grid>
+      );
+    }
   };
 
   render() {
@@ -639,6 +698,8 @@ const mapStateToProps = state => {
   const token = _get(auth, "logIn.token", "");
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const addressSelected = _get(businessProfile, "google_places.address", "");
+  const googlePlaces = _get(businessProfile, "google_places", {});
   const socialArray = _get(businessProfile, "social", []);
   const isLoading = _get(
     dashboardData,
@@ -668,7 +729,9 @@ const mapStateToProps = state => {
     errorMsg,
     socialArray,
     showGetStarted,
-    reviewURLToEdit
+    reviewURLToEdit,
+    addressSelected,
+    googlePlaces
   };
 };
 
