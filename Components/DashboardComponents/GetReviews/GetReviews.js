@@ -1233,7 +1233,6 @@ class GetReviews extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
-    console.log(activeStep, success, "COMPONENT_DID_UPDATE");
     if (this.props !== prevProps) {
       if (activeStep === 2) {
         if (success === true) {
