@@ -454,6 +454,8 @@ class Home extends Component {
   renderReviewURLBoxes = () => {
     const socialArray = _get(this.props, "socialArray", []);
     const dashboardData = _get(this.props, "dashboardData", {});
+    const businessProfile = _get(this.props, "businessProfile", {});
+    const address = _get(businessProfile, "google_places.address", "");
     let output = [];
     output = socialArray.map(item => {
       if (reviewURLObjects[item.social_media_app_id]) {
@@ -586,7 +588,7 @@ class Home extends Component {
       ...output,
       <Grid item xs={12} md={6} lg={6}>
         {" "}
-        {this.renderGoogleReviewURLBox()}
+        {address ? this.renderGoogleReviewURLBox() : null}
       </Grid>
     ];
   };
