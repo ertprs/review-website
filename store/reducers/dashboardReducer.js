@@ -43,7 +43,13 @@ import {
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
   FETCH_THIRD_PARTY_REVIEWS_FAILURE,
   SET_REVIEWS_OBJECT_WITH_PUSHER,
-  SHOW_GET_STARTED
+  SHOW_GET_STARTED,
+  POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+  POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+  GET_AVAILABLE_PLATFORMS_INIT,
+  GET_AVAILABLE_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_PLATFORMS_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -61,17 +67,16 @@ const dashboardReducer = (state = {}, action) => {
     campaignLanguage,
     parsedCampaignLanguage,
     emailTemplate,
-    googleDirectReviewUrl,
-    businessAddress,
     isReviewsPusherConnected,
     reviewsObject,
-    googlePlaceId,
     companyDetails,
     userDetails,
     domainDetails,
     thirdPartyReviews,
     showGetStarted,
-    reviewURLToEdit
+    reviewURLToEdit,
+    configDetails,
+    availablePlatforms
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -350,6 +355,24 @@ const dashboardReducer = (state = {}, action) => {
       return { ...state, type, ...thirdPartyReviews };
     case SHOW_GET_STARTED: {
       return { ...state, type, showGetStarted, reviewURLToEdit };
+    }
+    case POST_AUTOMATIC_INVITATION_CONFIG_INIT: {
+      return { ...state, type, configDetails };
+    }
+    case POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS: {
+      return { ...state, type, configDetails };
+    }
+    case POST_AUTOMATIC_INVITATION_CONFIG_FAILURE: {
+      return { ...state, type, configDetails };
+    }
+    case GET_AVAILABLE_PLATFORMS_INIT: {
+      return { ...state, type, availablePlatforms };
+    }
+    case GET_AVAILABLE_PLATFORMS_SUCCESS: {
+      return { ...state, type, availablePlatforms };
+    }
+    case GET_AVAILABLE_PLATFORMS_FAILURE: {
+      return { ...state, type, availablePlatforms };
     }
     default:
       return state;

@@ -44,7 +44,10 @@ import {
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
   FETCH_THIRD_PARTY_REVIEWS_FAILURE,
   SET_REVIEWS_OBJECT_WITH_PUSHER,
-  SHOW_GET_STARTED
+  SHOW_GET_STARTED,
+  POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+  POST_AUTOMATIC_INVITATION_CONFIG_FAILURE
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -61,7 +64,8 @@ import {
   updateCompanyDetailsApi,
   updateUserDetailsApi,
   updateDomainDetailsApi,
-  thirdPartyDataApi
+  thirdPartyDataApi,
+  eCommerceIntegrationApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 
@@ -723,5 +727,52 @@ export const setGetStartedShow = (show, reviewURLToEdit) => {
     type: SHOW_GET_STARTED,
     showGetStarted: show,
     reviewURLToEdit
+  };
+};
+
+export const sendConfigData = data => {
+  console.log(data, "sendconfigdata");
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+      configDetails: {
+        isLoading: true,
+        success: undefined,
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${eCommerceIntegrationApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      dispatch({
+        type: POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+        configDetails: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          data: _get(result, "response.data", ""),
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+        domainDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please choose another method of invitation."
+          )
+        }
+      });
+    }
   };
 };

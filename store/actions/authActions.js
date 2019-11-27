@@ -30,10 +30,13 @@ import {
   RESEND_ACTIVATION_LINK_FAILURE,
   SET_USER_ACTIVATED,
   SET_BUSINESS_SUBSCRIPTION,
-  UPDATE_AUTH_SOCIAL_ARRAY
+  UPDATE_AUTH_SOCIAL_ARRAY,
+  GET_AVAILABLE_PLATFORMS_INIT,
+  GET_AVAILABLE_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_PLATFORMS_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
-import { loginApiOAuth } from "../../utility/config";
+import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
@@ -522,6 +525,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             dispatch(fetchTransactionHistory(token));
             dispatch(setSubscription(subscriptionExpired));
             dispatch(fetchCampaignLanguage(token));
+            dispatch(getAvailablePlatforms(token));
             localStorage.setItem("token", token);
             dispatch({
               type: BUSINESS_LOGIN_SUCCESS,
@@ -685,5 +689,58 @@ export const updateAuthSocialArray = data => {
         ...mergeArrayOfChangedFieldsWithSocialArray
       ]
     });
+  };
+};
+
+export const getAvailablePlatforms = token => {
+  return async dispatch => {
+    dispatch({
+      type: GET_AVAILABLE_PLATFORMS_INIT,
+      availablePlatforms: {
+        isLoading: true,
+        success: undefined,
+        data: [],
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "GET",
+        url: `${process.env.BASE_URL}${getAvailablePlatformsApi}`,
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      let response = _get(result, "data.shops", []);
+      let shops = [];
+      let success = false;
+      if (response) {
+        if (Array.isArray(response) && !_isEmpty(response)) {
+          shops = response;
+          success = true;
+        }
+      }
+      dispatch({
+        type: GET_AVAILABLE_PLATFORMS_SUCCESS,
+        availablePlatforms: {
+          isLoading: false,
+          success,
+          data: shops,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_AVAILABLE_PLATFORMS_FAILURE,
+        availablePlatforms: {
+          isLoading: false,
+          success: false,
+          data: [],
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occurred while fetching available platforms."
+          )
+        }
+      });
+    }
   };
 };
