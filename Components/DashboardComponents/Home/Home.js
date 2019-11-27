@@ -373,9 +373,6 @@ class Home extends Component {
     const {
       businessProfile,
       userProfile,
-      googleDirectReviewUrl,
-      businessAddress,
-      googlePlaceId,
       setGetStartedShow,
       showGetStarted
     } = this.props;
@@ -383,9 +380,6 @@ class Home extends Component {
     const companyName = _get(userProfile, "company.name", "");
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
     const expiresAt = _get(userProfile, "subscription.expires_at", "");
-    const googleReviewUrl =
-      googleDirectReviewUrl ||
-      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
 
     return (
       <div className="businessDetailsContainer">
@@ -446,18 +440,6 @@ class Home extends Component {
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          {businessAddress ? (
-            <>
-              <div className="bold">Google Direct Review url :</div>
-              <div>
-                <a href={googleReviewUrl} target="_blank">
-                  {businessAddress}
-                </a>
-              </div>
-            </>
-          ) : null}
-        </div>
-        <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
           <div>
             <Moment format="DD/MM/YYYY HH:mm">
@@ -472,7 +454,8 @@ class Home extends Component {
   renderReviewURLBoxes = () => {
     const socialArray = _get(this.props, "socialArray", []);
     const dashboardData = _get(this.props, "dashboardData", {});
-    return socialArray.map(item => {
+    let output = [];
+    output = socialArray.map(item => {
       if (reviewURLObjects[item.social_media_app_id]) {
         let socialObj = reviewURLObjects[item.social_media_app_id] || {};
         let editURL = _get(socialObj, "editURL", "");
@@ -599,6 +582,94 @@ class Home extends Component {
         );
       }
     });
+    return [
+      ...output,
+      <Grid item xs={12} md={6} lg={6}>
+        {" "}
+        {this.renderGoogleReviewURLBox()}
+      </Grid>
+    ];
+  };
+
+  renderGoogleReviewURLBox = () => {
+    const reviewsData = _get(this.props, "reviewsData", {});
+    const businessProfile = _get(this.props, "businessProfile", {});
+    const ratings = _get(reviewsData, "rating", "");
+    const totalReviews = _get(reviewsData, "total", 0);
+    const directReviewUrl = _get(
+      businessProfile,
+      "google_places.directReviewUrl",
+      ""
+    );
+    const address = _get(businessProfile, "google_places.address", "");
+    const googlePlaceId = _get(businessProfile, "google_places.placeId", "");
+
+    const domain = _get(businessProfile, "domain", "");
+
+    const googleReviewUrl =
+      directReviewUrl ||
+      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
+    return (
+      <div className="reviewBoxItemContainer">
+        <style jsx>{reviewChannelBoxStyles}</style>
+        <div>
+          <div className="reviewBoxItemLogoContainer">
+            <img src={`/static/images/googleIcon.png`} />
+          </div>
+        </div>
+        <div className="reviewBoxItemTextBoxContainer">
+          <div>
+            <a href={googleReviewUrl} target="_blank">
+              {address}
+            </a>
+          </div>
+          <div className="reviewBoxRatingContainer">
+            {ratings ? (
+              <div style={{ marginLeft: "-4px" }}>
+                <StarRatings
+                  rating={Number(ratings)}
+                  starRatedColor="#FFDC0F"
+                  starDimension="20px"
+                  starSpacing="0.5px"
+                  numberOfStars={5}
+                  name="rating"
+                />
+              </div>
+            ) : null}
+          </div>
+          <div className="row" style={{ marginTop: "15px" }}>
+            {ratings ? (
+              <div className="col-md-6">
+                <span style={{ fontWeight: "bold" }}>Ratings : {ratings}</span>{" "}
+              </div>
+            ) : null}
+            {totalReviews ? (
+              <div className="col-md-6">
+                {" "}
+                <span style={{ fontWeight: "bold" }}>
+                  Total reviews : {totalReviews}
+                </span>{" "}
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div>
+          <IconButton
+            key="edit"
+            aria-label="edit"
+            color="inherit"
+            onClick={() => {
+              this.props.setGetStartedShow(
+                !this.props.showGetStarted,
+                "getStartedBox"
+              );
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -607,8 +678,12 @@ class Home extends Component {
       isSubscriptionExpired,
       userActivated,
       changeStepToRender,
-      showGetStarted
+      showGetStarted,
+      businessProfile
     } = this.props;
+    const domain = _get(businessProfile, "domain", "");
+    let parsed_domain_name = domain.replace(/https:\/\//gim, "");
+    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
     return (
       <>
         <style jsx>
@@ -650,7 +725,11 @@ class Home extends Component {
               <SimpleCard>
                 <div className="businessDetailsContainer">
                   <div className="businessDetailsImgContainer">
-                    <img src="/static/images/googleMyBusiness.jpg" />
+                    <img
+                      src={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+                        Math.random() * 10 + 1
+                      )}`}
+                    />
                   </div>
                   <div className="businessDetailsTextContainer">
                     {this.renderBusinessDetails()}

@@ -8,10 +8,66 @@ import Box from "@material-ui/core/Box";
 import { withStyles } from "@material-ui/styles";
 import Paper from "@material-ui/core/Paper/Paper";
 import dynamic from "next/dynamic";
-const GoogleReviews = dynamic(() => import("./Google"));
-const FacebookReviews = dynamic(() => import("./Facebook"));
-const TrustpilotReviews = dynamic(() => import("./Trustpilot"));
-const TrustedshopReviews = dynamic(() => import("./Trustedshop"));
+const GoogleReviews = dynamic(() => import("./Google"), {
+  loading: () => (
+    <div
+      style={{
+        width: "100%",
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <p>Loading.....</p>
+    </div>
+  )
+});
+const FacebookReviews = dynamic(() => import("./Facebook"), {
+  loading: () => (
+    <div
+      style={{
+        width: "100%",
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <p>Loading.....</p>
+    </div>
+  )
+});
+const TrustpilotReviews = dynamic(() => import("./Trustpilot"), {
+  loading: () => (
+    <div
+      style={{
+        width: "100%",
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <p>Loading.....</p>
+    </div>
+  )
+});
+const TrustedshopReviews = dynamic(() => import("./Trustedshop"), {
+  loading: () => (
+    <div
+      style={{
+        width: "100%",
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <p>Loading.....</p>
+    </div>
+  )
+});
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
