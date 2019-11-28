@@ -50,7 +50,7 @@ import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 import { reportDomain } from "./domainProfileActions";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
-import _omit from 'lodash/omit';
+import _omit from "lodash/omit";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {

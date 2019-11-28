@@ -47,7 +47,8 @@ import {
   SHOW_GET_STARTED,
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
   POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
-  POST_AUTOMATIC_INVITATION_CONFIG_FAILURE
+  POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -68,6 +69,7 @@ import {
   eCommerceIntegrationApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
+import _findIndex from "lodash/findIndex";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -731,9 +733,14 @@ export const setGetStartedShow = (show, reviewURLToEdit) => {
 };
 
 export const sendConfigData = data => {
-  console.log(data, "sendconfigdata");
   let token = localStorage.getItem("token");
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const { auth } = getState();
+    const ecommerceIntegrations = _get(
+      auth,
+      "logIn.userProfile.business_profile.integrations.ecommerce",
+      []
+    );
     dispatch({
       type: POST_AUTOMATIC_INVITATION_CONFIG_INIT,
       configDetails: {
@@ -750,19 +757,44 @@ export const sendConfigData = data => {
         headers: { Authorization: `Bearer ${token}` },
         data
       });
+      let resultData = _get(result, "data.shop", "");
+      if (resultData) {
+        if (ecommerceIntegrations) {
+          if (
+            Array.isArray(ecommerceIntegrations) &&
+            !_isEmpty(ecommerceIntegrations)
+          ) {
+            let indexOfPlatformInIntegrations = _findIndex(
+              ecommerceIntegrations,
+              ["type", _get(resultData, "type", "")]
+            );
+            if (indexOfPlatformInIntegrations !== -1) {
+              ecommerceIntegrations[indexOfPlatformInIntegrations] = {
+                ...resultData
+              };
+            } else {
+              ecommerceIntegrations.push(resultData);
+            }
+            dispatch({
+              type: UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
+              ecommerceIntegrations
+            });
+          }
+        }
+      }
       dispatch({
         type: POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
         configDetails: {
           isLoading: false,
           success: _get(result, "data.success", false),
-          data: _get(result, "response.data", ""),
+          resultData,
           errorMsg: ""
         }
       });
     } catch (error) {
       dispatch({
         type: POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
-        domainDetails: {
+        configDetails: {
           isLoading: false,
           success: false,
           data: {},

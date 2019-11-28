@@ -5,7 +5,7 @@ import ArrowRight from "@material-ui/icons/ArrowRight";
 import { CircularProgress } from "@material-ui/core";
 import _get from "lodash/get";
 
-class WoocommerceForm extends Component {
+class Magento extends Component {
   renderFormFields = () => {
     let output = [];
     const { formData, handleFormDataChange } = this.props;
@@ -29,7 +29,7 @@ class WoocommerceForm extends Component {
             <FormField
               {...formData[item]}
               handleChange={(e, id) => {
-                handleFormDataChange(e, id, "WooCommerce");
+                handleFormDataChange(e, id, "Magento");
               }}
               styles={{
                 height: "38px"
@@ -44,14 +44,10 @@ class WoocommerceForm extends Component {
 
   render() {
     const { handleSaveAndContinue, isLoading, formData } = this.props;
-    let disabled = true;
-    disabled =
-      !_get(formData, "consumer_secret.value", "") &&
-      !_get(formData, "consumer_keys.value", "");
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
-          <h4>Integrate Woocommerce api form :</h4>
+          <h4>Integrate generic api form :</h4>
         </div>
         {this.renderFormFields()}
         <div className="form-group" style={{ textAlign: "right" }}>
@@ -61,7 +57,6 @@ class WoocommerceForm extends Component {
             </Button>
           ) : (
             <Button
-              disabled={disabled}
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
@@ -76,4 +71,4 @@ class WoocommerceForm extends Component {
   }
 }
 
-export default WoocommerceForm;
+export default Magento;

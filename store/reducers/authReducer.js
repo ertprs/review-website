@@ -33,8 +33,11 @@ import {
   UPDATE_USER_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_AUTH_SOCIAL_ARRAY,
-  SET_GOOGLE_PLACES
+  SET_GOOGLE_PLACES,
+  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS
 } from "../actions/actionTypes";
+import { stat } from "fs";
 
 const authReducer = (state = {}, action) => {
   const {
@@ -56,7 +59,8 @@ const authReducer = (state = {}, action) => {
     userDetails,
     domainDetails,
     socialArray,
-    googlePlaces
+    googlePlaces,
+    ecommerceIntegrations
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -303,6 +307,24 @@ const authReducer = (state = {}, action) => {
               google_places: {
                 ...state.logIn.userProfile.business_profile.google_places,
                 ...googlePlaces
+              }
+            }
+          }
+        }
+      };
+    }
+    case UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              integrations: {
+                ...state.logIn.userProfile.business_profile.integrations,
+                ecommerce: [...ecommerceIntegrations]
               }
             }
           }
