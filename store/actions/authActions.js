@@ -50,6 +50,7 @@ import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 import { reportDomain } from "./domainProfileActions";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
+import _omit from 'lodash/omit';
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -652,6 +653,7 @@ export const setSubscription = isSubscriptionExpired => {
 //updating social in auth/logIn/userProfile/business_profile/social with the new url user has changed in getstarted to show cards on home page. currently we are pushing google as well but not displaying it.
 
 export const updateAuthSocialArray = data => {
+  let omittedData = _omit(data, ["google"]);
   return async (dispatch, getState) => {
     const state = getState();
     const socialArray = _get(
@@ -661,13 +663,13 @@ export const updateAuthSocialArray = data => {
     );
     let arrayOfChangedFields = [];
     let mergeArrayOfChangedFieldsWithSocialArray = [];
-    if (data) {
-      arrayOfChangedFields = Object.keys(data).map(key => {
+    if (omittedData) {
+      arrayOfChangedFields = Object.keys(omittedData).map(key => {
         let foundItem = _find(socialArray, ["social_media_app_id", key]);
         if (foundItem) {
-          return { ...foundItem, url: data[key] };
+          return { ...foundItem, url: omittedData[key] };
         } else {
-          return { social_media_app_id: Number(key), url: data[key] };
+          return { social_media_app_id: Number(key), url: omittedData[key] };
         }
       });
       if (socialArray && Array.isArray(socialArray) && !_isEmpty(socialArray)) {
