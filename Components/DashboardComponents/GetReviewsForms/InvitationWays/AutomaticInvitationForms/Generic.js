@@ -44,6 +44,10 @@ class Generic extends Component {
 
   render() {
     const { handleSaveAndContinue, isLoading, formData } = this.props;
+    let disabled = true;
+    disabled =
+      !_get(formData, "consumer_secret.value", "") &&
+      !_get(formData, "consumer_keys.value", "");
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
@@ -59,6 +63,7 @@ class Generic extends Component {
             <Button
               variant="contained"
               color="primary"
+              disabled={disabled}
               endIcon={<ArrowRight />}
               onClick={handleSaveAndContinue}
             >

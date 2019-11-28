@@ -44,10 +44,14 @@ class Magento extends Component {
 
   render() {
     const { handleSaveAndContinue, isLoading, formData } = this.props;
+    let disabled = true;
+    disabled =
+      !_get(formData, "consumer_secret.value", "") &&
+      !_get(formData, "consumer_keys.value", "");
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
-          <h4>Integrate generic api form :</h4>
+          <h4>Integrate Magento api form :</h4>
         </div>
         {this.renderFormFields()}
         <div className="form-group" style={{ textAlign: "right" }}>
@@ -61,6 +65,7 @@ class Magento extends Component {
               color="primary"
               endIcon={<ArrowRight />}
               onClick={handleSaveAndContinue}
+              disabled={disabled}
             >
               Save &amp; Continue
             </Button>
