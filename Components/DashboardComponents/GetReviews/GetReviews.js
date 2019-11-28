@@ -10,6 +10,8 @@ import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
 import dynamic from "next/dynamic";
+import _find from "lodash/find";
+import _isEmpty from "lodash/isEmpty";
 const CreateCampaign = dynamic(
   () => import("../GetReviewsForms/CreateCampaign"),
   {
@@ -409,7 +411,8 @@ class GetReviews extends Component {
         //     // isEmail: true
         //   }
         // }
-      }
+      },
+      selectedPlatform: ""
     };
 
     this.steps = {
@@ -600,8 +603,8 @@ class GetReviews extends Component {
   };
 
   createCampaignHandler = sendTest => {
-    const { createCampaign } = this.props;
-    const { selectTemplateData, tableData } = this.state;
+    const { createCampaign, ecommerceIntegrations } = this.props;
+    const { selectTemplateData, tableData, selectedPlatform } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
@@ -611,10 +614,24 @@ class GetReviews extends Component {
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
     // const subject = _get(selectTemplateData, "subject.value", "");
-
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
     });
+    let shopId = "";
+    if (ecommerceIntegrations) {
+      if (
+        Array.isArray(ecommerceIntegrations) &&
+        !_isEmpty(ecommerceIntegrations)
+      ) {
+        let foundPlatform = _find(ecommerceIntegrations, [
+          "type_id",
+          selectedPlatform
+        ]);
+        if (foundPlatform) {
+          shopId = _get(foundPlatform, "type_id", "");
+        }
+      }
+    }
     let data = {
       campaign: {
         name: campaignName,
@@ -637,6 +654,12 @@ class GetReviews extends Component {
         }
       }
     };
+    if (_get(campaign, "campaignInvitationMethod.value", "") === "automatic") {
+      data = {
+        ...data,
+        shop: shopId
+      };
+    }
     if (sendTest === "sendTest") {
       data = {
         ...data,
@@ -913,6 +936,9 @@ class GetReviews extends Component {
             invitationWayToRender={
               this.state.createCampaign.campaignInvitationMethod.value
             }
+            setSelectedPlatform={selectedPlatform => {
+              this.setState({ selectedPlatform });
+            }}
           />
         );
       } else if (getReviewsActiveSubStep === 1) {
@@ -1233,7 +1259,6 @@ class GetReviews extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
-    console.log(activeStep, success, "COMPONENT_DID_UPDATE");
     if (this.props !== prevProps) {
       if (activeStep === 2) {
         if (success === true) {
@@ -1303,13 +1328,19 @@ const mapStateToProps = state => {
     { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
   ];
   const createCampaignData = _get(dashboardData, "createCampaign", {});
+  const ecommerceIntegrations = _get(
+    auth,
+    "logIn.userProfile.business_profile.integrations.ecommerce",
+    []
+  );
   return {
     success,
     campaignLanguage,
     companyName,
     dashboardData,
     selectedEmailLanguage,
-    createCampaignData
+    createCampaignData,
+    ecommerceIntegrations
   };
 };
 

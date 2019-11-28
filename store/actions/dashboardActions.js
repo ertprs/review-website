@@ -44,7 +44,11 @@ import {
   FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
   FETCH_THIRD_PARTY_REVIEWS_FAILURE,
   SET_REVIEWS_OBJECT_WITH_PUSHER,
-  SHOW_GET_STARTED
+  SHOW_GET_STARTED,
+  POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+  POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -61,9 +65,11 @@ import {
   updateCompanyDetailsApi,
   updateUserDetailsApi,
   updateDomainDetailsApi,
-  thirdPartyDataApi
+  thirdPartyDataApi,
+  eCommerceIntegrationApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
+import _findIndex from "lodash/findIndex";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -723,5 +729,82 @@ export const setGetStartedShow = (show, reviewURLToEdit) => {
     type: SHOW_GET_STARTED,
     showGetStarted: show,
     reviewURLToEdit
+  };
+};
+
+export const sendConfigData = data => {
+  let token = localStorage.getItem("token");
+  return async (dispatch, getState) => {
+    const { auth } = getState();
+    const ecommerceIntegrations = _get(
+      auth,
+      "logIn.userProfile.business_profile.integrations.ecommerce",
+      []
+    );
+    dispatch({
+      type: POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+      configDetails: {
+        isLoading: true,
+        success: undefined,
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${eCommerceIntegrationApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      let resultData = _get(result, "data.shop", "");
+      if (resultData) {
+        if (ecommerceIntegrations) {
+          if (
+            Array.isArray(ecommerceIntegrations) &&
+            !_isEmpty(ecommerceIntegrations)
+          ) {
+            let indexOfPlatformInIntegrations = _findIndex(
+              ecommerceIntegrations,
+              ["type", _get(resultData, "type", "")]
+            );
+            if (indexOfPlatformInIntegrations !== -1) {
+              ecommerceIntegrations[indexOfPlatformInIntegrations] = {
+                ...resultData
+              };
+            } else {
+              ecommerceIntegrations.push(resultData);
+            }
+            dispatch({
+              type: UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
+              ecommerceIntegrations
+            });
+          }
+        }
+      }
+      dispatch({
+        type: POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+        configDetails: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          resultData,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+        configDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please choose another method of invitation."
+          )
+        }
+      });
+    }
   };
 };

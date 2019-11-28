@@ -50,7 +50,9 @@ export const fetchGoogleReviewsApi = "/api/reviews/domain";
 export const updateCompanyDetailsApi = "/api/my-business/profile/company";
 export const updateUserDetailsApi = "/api/profiles/update-profile";
 export const updateDomainDetailsApi = "/api/my-business/profile/domain";
-
+export const getAvailablePlatformsApi = "/api/master/ecommerce-integrations";
+export const eCommerceIntegrationApi =
+  "/api/my-business/profile/ecommerce-integrations";
 //How to create review short link
 export const getStartedVideoUrl =
   "https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708";

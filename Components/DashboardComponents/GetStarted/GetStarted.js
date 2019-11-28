@@ -227,7 +227,6 @@ class GetStarted extends Component {
     const googlePlaceId = _get(reqBody, "placeId", "");
     const domain = _get(businessProfile, "domain", "");
     const googleReviewUrl = `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
-    console.log(googleReviewUrl, "Google Review URL");
     this.setState({
       selectedAddress: { ...reqBody, name },
       address: address,
