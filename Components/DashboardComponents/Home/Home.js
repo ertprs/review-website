@@ -485,11 +485,6 @@ class Home extends Component {
         }
         return (
           <Grid item xs={12} md={6} lg={6}>
-            {reviewsObject[reviewPlatformName] ? (
-              <div>
-                <CircularProgress size={20} />
-              </div>
-            ) : null}
             <div className="reviewBoxItemContainer">
               <style jsx>{reviewChannelBoxStyles}</style>
               <div>
@@ -586,6 +581,11 @@ class Home extends Component {
                   <EditIcon />
                 </IconButton>
               </div>
+              {reviewsObject[reviewPlatformName] ? (
+                <div style={{ bottom: 0, right: 0 }}>
+                  <CircularProgress size={20} />
+                </div>
+              ) : null}{" "}
             </div>
           </Grid>
         );
@@ -621,7 +621,6 @@ class Home extends Component {
     return (
       <div className="reviewBoxItemContainer">
         <style jsx>{reviewChannelBoxStyles}</style>
-        {reviewsObject["google"] ? <CircularProgress size={20} /> : null}
         <div>
           <div className="reviewBoxItemLogoContainer">
             <img src={`/static/images/googleIcon.png`} />
@@ -678,6 +677,7 @@ class Home extends Component {
             <EditIcon />
           </IconButton>
         </div>
+        {reviewsObject["google"] ? <CircularProgress size={20} /> : null}
       </div>
     );
   };
