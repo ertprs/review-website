@@ -180,7 +180,7 @@ class Facebook extends Component {
             )
           ) : isLoading === false ? (
             !success ? (
-              <NoReviewsFound />
+              <NoReviewsFound noreviewsFound={true} />
             ) : !showDelay ? (
               <>
                 {_map(reviews, review => {

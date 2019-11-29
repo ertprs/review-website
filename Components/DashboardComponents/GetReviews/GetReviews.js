@@ -933,12 +933,15 @@ class GetReviews extends Component {
             onContinueClick={() => {
               this.setState({ getReviewsActiveSubStep: 3 });
             }}
-            invitationWayToRender={
-              this.state.createCampaign.campaignInvitationMethod.value
-            }
+            invitationWayToRender={_get(
+              this.state,
+              "createCampaign.campaignInvitationMethod.value",
+              ""
+            )}
             setSelectedPlatform={selectedPlatform => {
               this.setState({ selectedPlatform });
             }}
+            selectedPlatform={_get(this.state, "selectedPlatform", "")}
           />
         );
       } else if (getReviewsActiveSubStep === 1) {

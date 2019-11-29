@@ -15,11 +15,10 @@ import * as Forms from "./AutomaticInvitationForms";
 import { connect } from "react-redux";
 import _isEmpty from "lodash/isEmpty";
 
-//! we'll get the values to prefill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
+//! we'll get the values to pre-fill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
 
 class AutomaticInvitation extends Component {
   state = {
-    selectedOption: "",
     formName: "",
     showSnackbar: false,
     variant: "success",
@@ -48,7 +47,7 @@ class AutomaticInvitation extends Component {
           type: "text",
           value: _get(
             this.props,
-            "availablePlatformsData.auth_details.consumer_keys",
+            "availablePlatformsData.WooCommerce.auth_details.consumer_keys",
             ""
           ),
           placeholder: "Consumer keys",
@@ -64,7 +63,7 @@ class AutomaticInvitation extends Component {
           type: "text",
           value: _get(
             this.props,
-            "availablePlatformsData.auth_details.consumer_secret",
+            "availablePlatformsData.WooCommerce.auth_details.consumer_secret",
             ""
           ),
           placeholder: "Consumer Secret",
@@ -105,30 +104,6 @@ class AutomaticInvitation extends Component {
           id: "shopName",
           labelText: "Enter shop name"
         },
-        consumer_keys: {
-          element: "input",
-          type: "text",
-          value: "",
-          placeholder: "Consumer keys",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "consumer_keys",
-          id: "consumer_keys",
-          labelText: "Enter key"
-        },
-        consumer_secret: {
-          element: "input",
-          type: "text",
-          value: "",
-          placeholder: "Consumer Secret",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "consumer_secret",
-          id: "consumer_secret",
-          labelText: "Enter secret"
-        },
         locale: {
           element: "select",
           name: "locale",
@@ -154,30 +129,6 @@ class AutomaticInvitation extends Component {
           name: "name",
           id: "shopName",
           labelText: "Enter shop name"
-        },
-        consumer_keys: {
-          element: "input",
-          type: "text",
-          value: "",
-          placeholder: "Consumer keys",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "consumer_keys",
-          id: "consumer_keys",
-          labelText: "Enter key"
-        },
-        consumer_secret: {
-          element: "input",
-          type: "text",
-          value: "",
-          placeholder: "Consumer Secret",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "consumer_secret",
-          id: "consumer_secret",
-          labelText: "Enter secret"
         },
         locale: {
           element: "select",
@@ -215,26 +166,9 @@ class AutomaticInvitation extends Component {
     });
   };
 
-  //this is currently only for woocommerce make this generic when others are availble.
-  handleSaveAndContinue = () => {
-    const { WooCommerce } = this.state.formData;
-    const { sendConfigData } = this.props;
-    let reqBody = {
-      type: 1,
-      name: _get(WooCommerce, "shopName.value", ""),
-      locale: "en",
-      authDetails: {
-        consumer_keys: _get(WooCommerce, "consumer_keys.value", ""),
-        consumer_secret: _get(WooCommerce, "consumer_secret.value", "")
-      }
-    };
-    sendConfigData(reqBody);
-  };
-
-  getFormName = () => {
+  getFormName = selectedPlatform => {
     const { availablePlatforms } = this.props;
-    const { selectedOption } = this.state;
-    let selectedOptionObj = _find(availablePlatforms, ["id", selectedOption]);
+    let selectedOptionObj = _find(availablePlatforms, ["id", selectedPlatform]);
     if (selectedOptionObj) {
       this.setState({
         formName: _get(selectedOptionObj, "name", "")
@@ -245,20 +179,13 @@ class AutomaticInvitation extends Component {
   handleRadioChange = event => {
     const { value } = event.target;
     const { setSelectedPlatform } = this.props;
-    this.setState(
-      {
-        selectedOption: Number(value)
-      },
-      () => {
-        this.getFormName();
-        setSelectedPlatform(Number(value));
-      }
-    );
+    setSelectedPlatform(Number(value));
+    this.getFormName(Number(value));
   };
 
   renderForm = () => {
     const { formName, formData } = this.state;
-    const { isLoading } = this.props;
+    const { isLoading, sendConfigData, selectedPlatform } = this.props;
     let form = <div />;
     if (formName) {
       const FormComponent = Forms[formName];
@@ -266,10 +193,13 @@ class AutomaticInvitation extends Component {
         form = (
           <div style={{ width: "100%" }}>
             <FormComponent
+              type={selectedPlatform}
               isLoading={isLoading}
               formData={{ ...formData[formName] }}
               handleFormDataChange={this.handleFormDataChange}
-              handleSaveAndContinue={this.handleSaveAndContinue}
+              handleSaveAndContinue={reqBody => {
+                sendConfigData(reqBody);
+              }}
             />
           </div>
         );
@@ -279,17 +209,18 @@ class AutomaticInvitation extends Component {
   };
 
   renderExpansionPanels = () => {
-    const { availablePlatforms, setSelectedPlatform } = this.props;
-    const { selectedOption } = this.state;
+    const {
+      availablePlatforms,
+      setSelectedPlatform,
+      selectedPlatform
+    } = this.props;
     const output = (availablePlatforms || []).map((item, index) => {
       return (
         <ExpansionPanel
-          expanded={item.id === selectedOption}
+          expanded={item.id === selectedPlatform}
           onChange={e => {
-            this.setState({ selectedOption: item.id }, () => {
-              this.getFormName();
-              setSelectedPlatform(item.id);
-            });
+            this.getFormName(item.id);
+            setSelectedPlatform(item.id);
           }}
         >
           <ExpansionPanelSummary
@@ -308,9 +239,7 @@ class AutomaticInvitation extends Component {
               label={item.name}
               value={item.id}
               onClick={e => {
-                this.setState({ selectedOption: item.id }, () => {
-                  this.getFormName();
-                });
+                this.getFormName(item.id);
               }}
             />
           </ExpansionPanelSummary>
@@ -324,7 +253,13 @@ class AutomaticInvitation extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { success, errorMsg, isLoading, sendToSelectTemplate } = this.props;
+    const {
+      success,
+      errorMsg,
+      isLoading,
+      sendToSelectTemplate,
+      selectedPlatform
+    } = this.props;
     if (success !== prevProps.success) {
       if (success && !isLoading) {
         let variant = success ? "success" : "error";
@@ -341,11 +276,21 @@ class AutomaticInvitation extends Component {
         );
       }
     }
+    if (selectedPlatform !== prevProps.selectedPlatform) {
+    }
+  }
+
+  componentDidMount() {
+    const { selectedPlatform } = this.props;
+    if (selectedPlatform) {
+      this.renderExpansionPanels();
+      this.getFormName(selectedPlatform);
+    }
   }
 
   render() {
-    const { selectedOption, showSnackbar, snackbarMsg, variant } = this.state;
-    const { availablePlatforms } = this.props;
+    const { showSnackbar, snackbarMsg, variant } = this.state;
+    const { availablePlatforms, selectedPlatform } = this.props;
     return (
       <div className="container">
         <div className="row" style={{ marginBottom: "20px" }}>
@@ -370,7 +315,7 @@ class AutomaticInvitation extends Component {
             <RadioGroup
               aria-label="typesOfinvitation"
               name="typesOfinvitation"
-              value={selectedOption}
+              value={selectedPlatform}
               onChange={this.handleRadioChange}
             >
               {this.renderExpansionPanels()}

@@ -42,12 +42,21 @@ class Generic extends Component {
     return output;
   };
 
+  handleSave = () => {
+    const { handleSaveAndContinue, type, formData } = this.props;
+    let reqBody = {
+      type,
+      name: _get(formData, "shopName.value", ""),
+      locale: _get(formData, "locale.value", "")
+    };
+    handleSaveAndContinue(reqBody);
+  };
+
   render() {
-    const { handleSaveAndContinue, isLoading, formData } = this.props;
-    let disabled = true;
+    const { isLoading, formData } = this.props;
+    let disabled = false;
     disabled =
-      !_get(formData, "consumer_secret.value", "") &&
-      !_get(formData, "consumer_keys.value", "");
+      !_get(formData, "name.value", "") && !_get(formData, "locale.value", "");
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
@@ -65,7 +74,7 @@ class Generic extends Component {
               color="primary"
               disabled={disabled}
               endIcon={<ArrowRight />}
-              onClick={handleSaveAndContinue}
+              onClick={this.handleSave}
             >
               Save &amp; Continue
             </Button>
