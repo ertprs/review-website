@@ -358,7 +358,12 @@ class Home extends Component {
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Invitations Left :{" "}
               </p>
-              <h1>{remaining}</h1>
+              <span
+                style={{ fontWeight: "bold", fontSize: "20px", color: "green" }}
+              >
+                Unlimited
+              </span>
+              {/* <h1>{remaining}</h1> */}
             </div>
           </div>
         </SimpleCard>
