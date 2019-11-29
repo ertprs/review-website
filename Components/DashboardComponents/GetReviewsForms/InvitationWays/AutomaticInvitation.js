@@ -95,7 +95,7 @@ class AutomaticInvitation extends Component {
         shopName: {
           element: "input",
           type: "text",
-          value: "",
+          value: _get(this.props, "availablePlatformsData.Generic.name", ""),
           placeholder: "Shop Name",
           touched: false,
           valid: false,
@@ -107,7 +107,7 @@ class AutomaticInvitation extends Component {
         locale: {
           element: "select",
           name: "locale",
-          value: "",
+          value: _get(this.props, "availablePlatformsData.Generic.locale", ""),
           options: [...Languages],
           placeholder: "Select your language",
           valid: false,
@@ -121,7 +121,7 @@ class AutomaticInvitation extends Component {
         shopName: {
           element: "input",
           type: "text",
-          value: "",
+          value: _get(this.props, "availablePlatformsData.Magento.name", ""),
           placeholder: "Shop Name",
           touched: false,
           valid: false,
@@ -133,7 +133,7 @@ class AutomaticInvitation extends Component {
         locale: {
           element: "select",
           name: "locale",
-          value: "",
+          value: _get(this.props, "availablePlatformsData.Magento.locale", ""),
           options: [...Languages],
           placeholder: "Select your language",
           valid: false,
