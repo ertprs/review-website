@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import { CircularProgress } from "@material-ui/core";
 import _get from "lodash/get";
+import { areFieldsTouched } from "../../../../../utility/commonFunctions";
 
 class Generic extends Component {
   renderFormFields = () => {
@@ -53,7 +54,7 @@ class Generic extends Component {
   };
 
   render() {
-    const { isLoading, formData } = this.props;
+    const { isLoading, formData, sendToSelectTemplate } = this.props;
     let disabled = false;
     disabled =
       !_get(formData, "name.value", "") && !_get(formData, "locale.value", "");
@@ -64,19 +65,30 @@ class Generic extends Component {
         </div>
         {this.renderFormFields()}
         <div className="form-group" style={{ textAlign: "right" }}>
-          {isLoading ? (
-            <Button variant="contained" color="primary">
-              <CircularProgress style={{ color: "white" }} size={25} />
-            </Button>
+          {areFieldsTouched(formData) ? (
+            isLoading ? (
+              <Button variant="contained" color="primary">
+                <CircularProgress style={{ color: "white" }} size={25} />
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={disabled}
+                onClick={this.handleSave}
+              >
+                Save
+              </Button>
+            )
           ) : (
             <Button
+              disabled={disabled}
               variant="contained"
               color="primary"
-              disabled={disabled}
               endIcon={<ArrowRight />}
-              onClick={this.handleSave}
+              onClick={sendToSelectTemplate}
             >
-              Save &amp; Continue
+              Continue
             </Button>
           )}
         </div>

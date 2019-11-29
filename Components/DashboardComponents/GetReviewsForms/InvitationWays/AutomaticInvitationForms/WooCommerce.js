@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import { CircularProgress } from "@material-ui/core";
 import _get from "lodash/get";
+import { areFieldsTouched } from "../../../../../utility/commonFunctions";
 
 class WoocommerceForm extends Component {
   renderFormFields = () => {
@@ -56,8 +57,17 @@ class WoocommerceForm extends Component {
     handleSaveAndContinue(reqBody);
   };
 
+  // areFieldsTouched = () => {
+  //   const { formData } = this.props;
+  //   let touched = false;
+  //   for (let formField in formData) {
+  //     touched = touched || formData[formField].touched;
+  //   }
+  //   return touched;
+  // };
+
   render() {
-    const { isLoading, formData } = this.props;
+    const { isLoading, formData, sendToSelectTemplate } = this.props;
     let disabled = true;
     disabled =
       !_get(formData, "consumer_secret.value", "") &&
@@ -69,19 +79,30 @@ class WoocommerceForm extends Component {
         </div>
         {this.renderFormFields()}
         <div className="form-group" style={{ textAlign: "right" }}>
-          {isLoading ? (
-            <Button variant="contained" color="primary">
-              <CircularProgress style={{ color: "white" }} size={25} />
-            </Button>
+          {areFieldsTouched(formData) ? (
+            isLoading ? (
+              <Button variant="contained" color="primary">
+                <CircularProgress style={{ color: "white" }} size={25} />
+              </Button>
+            ) : (
+              <Button
+                disabled={disabled}
+                variant="contained"
+                color="primary"
+                onClick={this.handleSave}
+              >
+                Save
+              </Button>
+            )
           ) : (
             <Button
               disabled={disabled}
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
-              onClick={this.handleSave}
+              onClick={sendToSelectTemplate}
             >
-              Save &amp; Continue
+              Continue
             </Button>
           )}
         </div>

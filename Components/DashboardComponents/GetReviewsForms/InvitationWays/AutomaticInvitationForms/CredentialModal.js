@@ -28,7 +28,7 @@ const DialogTitle = withStyles(styles)(props => {
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
-      {onClose ? (
+      {/* {onClose ? (
         <IconButton
           aria-label="close"
           className={classes.closeButton}
@@ -36,7 +36,7 @@ const DialogTitle = withStyles(styles)(props => {
         >
           <CloseIcon />
         </IconButton>
-      ) : null}
+      ) : null} */}
     </MuiDialogTitle>
   );
 });
@@ -66,16 +66,15 @@ export default function CustomizedDialogs(props) {
         disableBackdropClick={true}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleModalClose}>
-          <div style={{margin:"20px"}}>
-          Please note down the following data before continuing to gain access to your account :
+          <div style={{ margin: "20px" }}>
+            Please note down the following data before continuing to gain access
+            to your account :
           </div>
         </DialogTitle>
         <DialogContent>
-          <Typography gutterBottom>
-            {props.children}
-          </Typography>
+          <Typography gutterBottom>{props.children}</Typography>
         </DialogContent>
-        <DialogActions style={{margin:"15px 0 15px 0"}}>
+        <DialogActions style={{ margin: "15px 0 15px 0" }}>
           <Button
             variant="contained"
             color="primary"
@@ -84,7 +83,7 @@ export default function CustomizedDialogs(props) {
             onClick={saveAndContinue}
             autoFocus
           >
-            Click here to continue
+            Continue
           </Button>
         </DialogActions>
       </Dialog>
