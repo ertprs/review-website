@@ -78,7 +78,4 @@ class OAuthButtons extends Component {
   }
 }
 
-export default connect(
-  null,
-  { signUp, oAuthSigninginInit }
-)(OAuthButtons);
+export default connect(null, { signUp, oAuthSigninginInit })(OAuthButtons);

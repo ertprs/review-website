@@ -42,8 +42,22 @@ class WoocommerceForm extends Component {
     return output;
   };
 
+  handleSave = () => {
+    const { handleSaveAndContinue, type, formData } = this.props;
+    let reqBody = {
+      type,
+      name: _get(formData, "shopName.value", ""),
+      locale: _get(formData, "locale.value", ""),
+      authDetails: {
+        consumer_keys: _get(formData, "consumer_keys.value", ""),
+        consumer_secret: _get(formData, "consumer_secret.value", "")
+      }
+    };
+    handleSaveAndContinue(reqBody);
+  };
+
   render() {
-    const { handleSaveAndContinue, isLoading, formData } = this.props;
+    const { isLoading, formData } = this.props;
     let disabled = true;
     disabled =
       !_get(formData, "consumer_secret.value", "") &&
@@ -65,7 +79,7 @@ class WoocommerceForm extends Component {
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
-              onClick={handleSaveAndContinue}
+              onClick={this.handleSave}
             >
               Save &amp; Continue
             </Button>

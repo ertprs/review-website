@@ -22,7 +22,7 @@ class CreateCampaign extends Component {
     });
   }
   render() {
-    const { formData } = this.props;
+    const { formData, handleChange } = this.props;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
@@ -46,7 +46,7 @@ class CreateCampaign extends Component {
               <FormField
                 {...formData.campaignName}
                 handleChange={e => {
-                  this.props.handleChange(e, "campaignName", "createCampaign");
+                  handleChange(e, "campaignName", "createCampaign");
                 }}
                 id="campaignName"
                 rows="5"
@@ -55,11 +55,7 @@ class CreateCampaign extends Component {
               <FormField
                 {...formData.campaignLanguage}
                 handleChange={e => {
-                  this.props.handleChange(
-                    e,
-                    "campaignLanguage",
-                    "createCampaign"
-                  );
+                  handleChange(e, "campaignLanguage", "createCampaign");
                 }}
                 id="campaignLanguage"
                 rows="5"
@@ -69,7 +65,7 @@ class CreateCampaign extends Component {
               <FormField
                 {...formData.senderName}
                 handleChange={e => {
-                  this.props.handleChange(e, "senderName", "createCampaign");
+                  handleChange(e, "senderName", "createCampaign");
                 }}
                 id="senderName"
                 rows="5"
@@ -82,7 +78,7 @@ class CreateCampaign extends Component {
                 <FormField
                   {...formData.senderEmail}
                   handleChange={e => {
-                    this.props.handleChange(e, "senderEmail", "createCampaign");
+                    handleChange(e, "senderEmail", "createCampaign");
                   }}
                   id="senderEmail"
                   rows="5"
@@ -106,7 +102,7 @@ class CreateCampaign extends Component {
                   name="campaignInvitationMethod"
                   value={formData.campaignInvitationMethod.value}
                   onChange={e => {
-                    this.props.handleChange(
+                    handleChange(
                       e,
                       "campaignInvitationMethod",
                       "createCampaign"
