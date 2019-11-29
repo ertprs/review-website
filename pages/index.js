@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { indexPageStyles } from "../Components/Styles/indexPageStyles";
-import SearchBox from "../Components/Widgets/SearchBox/SearchBox";
-import WebStats from "../Components/Widgets/WebStats/WebStats";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import MenuIcon from "@material-ui/icons/Menu";
 import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Button from "@material-ui/core/Button";
-import Head from "next/head";
 import Router from "next/router";
 import uuid from "uuid/v1";
-import { CircularProgress } from "@material-ui/core";
-import Layout from "../hoc/layout/layout";
 import SearchInput from "../Components/MaterialComponents/SearchInput";
 import SearchBoxSuggestion from "../Components/Widgets/SuggestionBox";
 import { connect } from "react-redux";
@@ -25,11 +17,9 @@ import SubscriptionPlanCard from "../Components/Widgets/SubscriptionPlanCard/Sub
 import cookie from "js-cookie";
 import {
   Link,
-  DirectLink,
   Element,
   Events,
   animateScroll as scroll,
-  scrollSpy,
   scroller
 } from "react-scroll";
 import _get from "lodash/get";
@@ -130,23 +120,6 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
-
-const renderWebStats = () => {
-  let statsData = [
-    { header: "1,800,000,000", caption: "Active website worldwide" },
-    { header: "42,000,000", caption: "Business websites on the Internet" },
-    { header: "4,383,810,342", caption: "Internet users" }
-  ];
-
-  return statsData.map(dataItem => {
-    return (
-      <div className="homeWebStatItem" key={uuid()}>
-        <style jsx>{indexPageStyles}</style>
-        <WebStats {...dataItem} />
-      </div>
-    );
-  });
-};
 
 const Home = props => {
   const [showSnackbar, setShowSnacbar] = useState(false);
