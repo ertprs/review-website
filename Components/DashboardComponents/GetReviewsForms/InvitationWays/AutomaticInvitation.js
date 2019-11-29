@@ -14,137 +14,153 @@ import _find from "lodash/find";
 import * as Forms from "./AutomaticInvitationForms";
 import { connect } from "react-redux";
 import _isEmpty from "lodash/isEmpty";
-
+import CredentialModal from "./AutomaticInvitationForms/CredentialModal";
+import IconButton from "@material-ui/core/IconButton";
+import CopyIcon from "@material-ui/icons/FileCopyOutlined";
+import Tooltip from "@material-ui/core/Tooltip";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 //! we'll get the values to pre-fill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
 
 class AutomaticInvitation extends Component {
-  state = {
-    formName: "",
-    showSnackbar: false,
-    variant: "success",
-    snackbarMsg: "",
-    disabledSaveButton: false,
-    formData: {
-      WooCommerce: {
-        shopName: {
-          element: "input",
-          type: "text",
-          value: _get(
-            this.props,
-            "availablePlatformsData.WooCommerce.name",
-            ""
-          ),
-          placeholder: "Shop Name",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "name",
-          id: "shopName",
-          labelText: "Enter shop name"
+  constructor(props) {
+    super(props);
+    this.state = {
+      formName: "",
+      showSnackbar: false,
+      variant: "success",
+      snackbarMsg: "",
+      disabledSaveButton: false,
+      formData: {
+        WooCommerce: {
+          shopName: {
+            element: "input",
+            type: "text",
+            value: _get(
+              this.props,
+              "availablePlatformsData.WooCommerce.name",
+              ""
+            ),
+            placeholder: "Shop Name",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "name",
+            id: "shopName",
+            labelText: "Enter shop name"
+          },
+          consumer_keys: {
+            element: "input",
+            type: "text",
+            value: _get(
+              this.props,
+              "availablePlatformsData.WooCommerce.auth_details.consumer_keys",
+              ""
+            ),
+            placeholder: "Consumer keys",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "consumer_keys",
+            id: "consumer_keys",
+            labelText: "Enter key"
+          },
+          consumer_secret: {
+            element: "input",
+            type: "text",
+            value: _get(
+              this.props,
+              "availablePlatformsData.WooCommerce.auth_details.consumer_secret",
+              ""
+            ),
+            placeholder: "Consumer Secret",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "consumer_secret",
+            id: "consumer_secret",
+            labelText: "Enter secret"
+          },
+          locale: {
+            element: "select",
+            name: "locale",
+            value: _get(
+              this.props,
+              "availablePlatformsData.WooCommerce.locale",
+              ""
+            ),
+            options: [...Languages],
+            placeholder: "Select your language",
+            valid: false,
+            touched: false,
+            errorMessage: "",
+            id: "locale",
+            labelText: "Select your locale"
+          }
         },
-        consumer_keys: {
-          element: "input",
-          type: "text",
-          value: _get(
-            this.props,
-            "availablePlatformsData.WooCommerce.auth_details.consumer_keys",
-            ""
-          ),
-          placeholder: "Consumer keys",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "consumer_keys",
-          id: "consumer_keys",
-          labelText: "Enter key"
+        Generic: {
+          shopName: {
+            element: "input",
+            type: "text",
+            value: _get(this.props, "availablePlatformsData.Generic.name", ""),
+            placeholder: "Shop Name",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "name",
+            id: "shopName",
+            labelText: "Enter shop name"
+          },
+          locale: {
+            element: "select",
+            name: "locale",
+            value: _get(
+              this.props,
+              "availablePlatformsData.Generic.locale",
+              ""
+            ),
+            options: [...Languages],
+            placeholder: "Select your language",
+            valid: false,
+            touched: false,
+            errorMessage: "",
+            id: "locale",
+            labelText: "Select your locale"
+          }
         },
-        consumer_secret: {
-          element: "input",
-          type: "text",
-          value: _get(
-            this.props,
-            "availablePlatformsData.WooCommerce.auth_details.consumer_secret",
-            ""
-          ),
-          placeholder: "Consumer Secret",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "consumer_secret",
-          id: "consumer_secret",
-          labelText: "Enter secret"
+        Magento: {
+          shopName: {
+            element: "input",
+            type: "text",
+            value: _get(this.props, "availablePlatformsData.Magento.name", ""),
+            placeholder: "Shop Name",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "name",
+            id: "shopName",
+            labelText: "Enter shop name"
+          },
+          locale: {
+            element: "select",
+            name: "locale",
+            value: _get(
+              this.props,
+              "availablePlatformsData.Magento.locale",
+              ""
+            ),
+            options: [...Languages],
+            placeholder: "Select your language",
+            valid: false,
+            touched: false,
+            errorMessage: "",
+            id: "locale",
+            labelText: "Select your locale"
+          }
         },
-        locale: {
-          element: "select",
-          name: "locale",
-          value: _get(
-            this.props,
-            "availablePlatformsData.WooCommerce.locale",
-            ""
-          ),
-          options: [...Languages],
-          placeholder: "Select your language",
-          valid: false,
-          touched: false,
-          errorMessage: "",
-          id: "locale",
-          labelText: "Select your locale"
-        }
-      },
-      Generic: {
-        shopName: {
-          element: "input",
-          type: "text",
-          value: _get(this.props, "availablePlatformsData.Generic.name", ""),
-          placeholder: "Shop Name",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "name",
-          id: "shopName",
-          labelText: "Enter shop name"
-        },
-        locale: {
-          element: "select",
-          name: "locale",
-          value: _get(this.props, "availablePlatformsData.Generic.locale", ""),
-          options: [...Languages],
-          placeholder: "Select your language",
-          valid: false,
-          touched: false,
-          errorMessage: "",
-          id: "locale",
-          labelText: "Select your locale"
-        }
-      },
-      Magento: {
-        shopName: {
-          element: "input",
-          type: "text",
-          value: _get(this.props, "availablePlatformsData.Magento.name", ""),
-          placeholder: "Shop Name",
-          touched: false,
-          valid: false,
-          errorMessage: "",
-          name: "name",
-          id: "shopName",
-          labelText: "Enter shop name"
-        },
-        locale: {
-          element: "select",
-          name: "locale",
-          value: _get(this.props, "availablePlatformsData.Magento.locale", ""),
-          options: [...Languages],
-          placeholder: "Select your language",
-          valid: false,
-          touched: false,
-          errorMessage: "",
-          id: "locale",
-          labelText: "Select your locale"
-        }
+        showCredentialModal: false
       }
-    }
-  };
+    };
+  }
 
   handleFormDataChange = (e, id, formName) => {
     const { formData } = this.state;
@@ -181,6 +197,12 @@ class AutomaticInvitation extends Component {
     const { setSelectedPlatform } = this.props;
     setSelectedPlatform(Number(value));
     this.getFormName(Number(value));
+  };
+
+  handleCredentialModalVisibilityToggle = () => {
+    this.setState(prevState => {
+      return { showCredentialModal: !prevState.showCredentialModal };
+    });
   };
 
   renderForm = () => {
@@ -268,11 +290,12 @@ class AutomaticInvitation extends Component {
           {
             showSnackbar: true,
             variant,
-            snackbarMsg
-          },
-          () => {
-            sendToSelectTemplate();
+            snackbarMsg,
+            showCredentialModal: true
           }
+          // () => {
+          //   sendToSelectTemplate();
+          // }
         );
       }
     }
@@ -289,8 +312,19 @@ class AutomaticInvitation extends Component {
   }
 
   render() {
-    const { showSnackbar, snackbarMsg, variant } = this.state;
-    const { availablePlatforms, selectedPlatform } = this.props;
+    const { showSnackbar, snackbarMsg, variant, formName } = this.state;
+    const {
+      availablePlatforms,
+      availablePlatformsData,
+      selectedPlatform
+    } = this.props;
+    const particularPlatformData = _get(availablePlatformsData, formName, {});
+    const secretKey = _get(particularPlatformData, "secret_key", "");
+    const systemIdentifier = _get(
+      particularPlatformData,
+      "system_identifier",
+      ""
+    );
     return (
       <div className="container">
         <div className="row" style={{ marginBottom: "20px" }}>
@@ -331,6 +365,80 @@ class AutomaticInvitation extends Component {
           handleClose={() => this.setState({ showSnackbar: false })}
           message={snackbarMsg}
         />
+        <CredentialModal
+          showModal={this.state.showCredentialModal}
+          handleModalClose={this.handleCredentialModalVisibilityToggle}
+          saveAndContinue={() => {
+            this.props.sendToSelectTemplate();
+          }}
+        >
+          <div>
+            <div className="container">
+              <div className="row" style={{ marginTop: "15px" }}>
+                <div className="col-md-4" style={{ margin: "8px 0 8px 0" }}>
+                  <div style={{ fontWeight: "bold" }}>Secret key :</div>
+                </div>
+                <div className="col-md-6">
+                  <div
+                    style={{
+                      wordBreak: "break-all",
+                      border: "1px solid #d8d8d8",
+                      padding: "5px"
+                    }}
+                  >
+                    {secretKey}
+                  </div>
+                </div>
+                <div className="col-md-2">
+                  <Tooltip title="Copy to clipboard">
+                    <CopyToClipboard
+                      text={secretKey}
+                      onCopy={() =>
+                        this.setState({
+                          showSnackbar: true,
+                          variant:"success",
+                          snackbarMsg:"Secret key Copied to clipboard"
+                        })
+                      }
+                    >
+                      <IconButton aria-label="copy">
+                        <CopyIcon />
+                      </IconButton>
+                    </CopyToClipboard>
+                  </Tooltip>
+                </div>
+              </div>
+              <div className="row" style={{ marginTop: "15px" }}>
+                <div className="col-md-4">
+                  <div style={{ fontWeight: "bold" }}>System Identifier :</div>
+                </div>
+                <div className="col-md-6">
+                  <div style={{ border: "1px solid #d8d8d8", padding: "5px" }}>
+                    {systemIdentifier}
+                  </div>
+                </div>
+                <div className="col-md-2">
+                  <Tooltip title="Copy to clipboard">
+                    <CopyToClipboard
+                      text={systemIdentifier}
+                      onCopy={() =>
+                        this.setState({
+                          showSnackbar: true,
+                          variant:"success",
+                          snackbarMsg:"System identifier Copied to clipboard"
+                        })
+                      }
+                    >
+                      <IconButton aria-label="copy">
+                        <CopyIcon />
+                      </IconButton>
+                    </CopyToClipboard>
+                  </Tooltip>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CredentialModal>
       </div>
     );
   }
