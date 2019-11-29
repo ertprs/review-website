@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import RatingsBadge from "../RatingsBadge/RatingsBadge";
 import RatingIndicators from "../RatingIndicators/RatingIndicators";
 import uuid from "uuid/v1";
@@ -50,22 +49,11 @@ const renderReviewCard = (
           <style jsx>{reviewCardStyles}</style>
           <div className="reviewProfilePic">
             <div className="reviewPicContainer">
-              <AmpImgWrapper
+              <img
                 src={avatar}
-                alt="avatar"
-                style={{
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "50%"
-                }}
-                layout="responsive"
-                height={ampImgHeight}
-                width={ampImgWidth}
-                ampImgStyles={{
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "50%"
-                }}
+                alt="trustsearchlogo"
+                classes="footerTopLogo"
+                style={{ maxWidth: "100%", height: "auto", borderRadius: "50%" }}
               />
             </div>
           </div>

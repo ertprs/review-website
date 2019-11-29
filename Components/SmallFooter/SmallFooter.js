@@ -1,6 +1,5 @@
 import React from "react";
 import smallFooterStyles from "./smallFooterStyles";
-import AmpImgWrapper from "../AmpWrappers/AmpImgWrapper";
 import { layoutStyles } from "../../style";
 const renderFooterTopSection = () => {
   return (
@@ -8,15 +7,12 @@ const renderFooterTopSection = () => {
       <style jsx>{smallFooterStyles}</style>
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
-          <AmpImgWrapper
-            src="/static/images/logo_white.png"
+          <img
+            src="/static/images/logo_footer.png"
             alt="trustsearchlogo"
             classes="footerTopLogo"
-            width="176.04"
-            height="45.99"
-            layout="responsive"
-            imgContainerStyles={{ width: "176.04px", height: "45.99px" }}
-          ></AmpImgWrapper>
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
         </div>
 
         <div className="footerTopSocialLinksContainer">
@@ -179,8 +175,17 @@ const renderFooterBottomSection = () => {
       <style jsx>{layoutStyles}</style>
       <style jsx>{smallFooterStyles}</style>
       <div className="row">
-        <div className="col-md-4" style={{textAlign:"center",color:"#fff"}}>
-            <a href="https://thetrustsearch.com/termsAndConditions" target="_blank" style={{color:"#fff", textDecoration:"none"}}>Terms of use</a>
+        <div
+          className="col-md-4"
+          style={{ textAlign: "center", color: "#fff" }}
+        >
+          <a
+            href="https://thetrustsearch.com/termsAndConditions"
+            target="_blank"
+            style={{ color: "#fff", textDecoration: "none" }}
+          >
+            Terms of use
+          </a>
         </div>
         <div className="col-md-4">
           <div style={{ textAlign: "center" }}>
@@ -191,8 +196,17 @@ const renderFooterBottomSection = () => {
             All Rights Reserved.
           </div>
         </div>
-        <div className="col-md-4" style={{textAlign:"center", color:"#fff"}}>
-        <a href="https://thetrustsearch.com/termsAndConditions" target="_blank" style={{color:"#fff", textDecoration:"none"}}>Privacy policy</a>
+        <div
+          className="col-md-4"
+          style={{ textAlign: "center", color: "#fff" }}
+        >
+          <a
+            href="https://thetrustsearch.com/termsAndConditions"
+            target="_blank"
+            style={{ color: "#fff", textDecoration: "none" }}
+          >
+            Privacy policy
+          </a>
         </div>
       </div>
     </div>
