@@ -25,14 +25,28 @@ class ReviewPlatforms extends Component {
     return count;
   };
 
-  // updateArrayValues = arr => {
-  //   return arr.map((platform, index) => {
-  //     arr[index] = {
-  //       ...platform,
-  //       value: 100 / this.countNoOfPlatformsSelected(arr)
-  //     };
-  //   });
-  // };
+  updateArrayValues = arr => {
+    let updatedArray = [];
+    arr.forEach((platform, index) => {
+      let temp = { ...platform };
+      temp.value = (100 / this.countNoOfPlatformsSelected(arr)).toFixed(2);
+      updatedArray.push(temp);
+    });
+    return updatedArray;
+  };
+
+  setAllValuesToZero = () => {
+    const { reviewPlatforms } = this.state;
+    let updatedArray = [];
+    reviewPlatforms.forEach((platform, index) => {
+      let temp = { ...platform };
+      temp.value = (
+        100 / this.countNoOfPlatformsSelected(reviewPlatforms)
+      ).toFixed(2);
+      updatedArray.push(temp);
+    });
+    this.setState({ reviewPlatforms: updatedArray });
+  };
 
   onCheckChange = event => {
     const { name, checked } = event.target;
@@ -52,12 +66,13 @@ class ReviewPlatforms extends Component {
         checked
       };
     }
-    this.setState({ platformSplit, reviewPlatforms: reviewPlatformsCopy });
+    let newArray = this.updateArrayValues(reviewPlatformsCopy);
+    console.log(newArray, "newArray");
+    this.setState({ platformSplit, reviewPlatforms: newArray });
   };
 
   handlePercentageChange = event => {
     const { name, value } = event.target;
-    console.log(name, value, "name, value");
     let { reviewPlatforms } = this.state;
     let reviewPlatformsCopy = [...reviewPlatforms];
 
@@ -65,14 +80,12 @@ class ReviewPlatforms extends Component {
       "socialAppId",
       Number(name)
     ]);
-    console.log(platformIndex, "platformIndex");
     if (platformIndex !== -1) {
       reviewPlatformsCopy[platformIndex] = {
         ...reviewPlatformsCopy[platformIndex],
         value
       };
     }
-    console.log(reviewPlatformsCopy, "reviewPlatformsCopy");
     this.setState({ reviewPlatforms: reviewPlatformsCopy });
   };
 
@@ -93,17 +106,22 @@ class ReviewPlatforms extends Component {
               />
               {platform.name}
               {platform.checked ? (
-                <InputBase
-                  name={socialAppId}
-                  type="number"
-                  onChange={this.handlePercentageChange}
-                  value={platform.value}
-                />
+                <>
+                  <InputBase
+                    name={socialAppId}
+                    type="number"
+                    onChange={this.handlePercentageChange}
+                    value={platform.value}
+                  />
+                  %
+                </>
               ) : null}
-              %
             </div>
           );
         })}
+        <button onClick={this.setAllValuesToZero}>
+          I want to divide on my own
+        </button>
       </div>
     );
   }
