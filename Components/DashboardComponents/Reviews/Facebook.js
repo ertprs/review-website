@@ -171,13 +171,9 @@ class Facebook extends Component {
 
         <div className="reviewsContainer">
           {isLoading === true || areFacebookReviewsFetching === true ? (
-            isReviewsPusherConnected === false ? (
-              <NoReviewsFound />
-            ) : (
-              <div className="loaderContainer">
-                <CircularProgress color="secondary" />
-              </div>
-            )
+            <div className="loaderContainer">
+              <CircularProgress color="secondary" />
+            </div>
           ) : isLoading === false ? (
             !success ? (
               <NoReviewsFound noreviewsFound={true} />

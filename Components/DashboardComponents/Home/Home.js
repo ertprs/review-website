@@ -27,6 +27,7 @@ import { ratingColor } from "../../../utility/ratingTypeColor";
 import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import Link from "next/link";
+import { iconNames } from "../../../utility/constants/socialMediaConstants";
 
 const styles = theme => ({
   button: {
@@ -300,18 +301,14 @@ class Home extends Component {
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
               ) : reviewsObject["google"] === true ? (
-                isReviewsPusherConnected === false ? (
-                  "Reviews will be updated soon!"
-                ) : (
-                  <>
-                    <div style={{ marginTop: "30px" }}>
-                      <h6 style={{ marginBottom: "50px", color: "green" }}>
-                        <b>Fetching reviews</b>
-                      </h6>
-                      <LinearProgress color="secondary" />
-                    </div>
-                  </>
-                )
+                <>
+                  <div style={{ marginTop: "30px" }}>
+                    <h6 style={{ marginBottom: "50px", color: "green" }}>
+                      <b>Fetching reviews</b>
+                    </h6>
+                    <LinearProgress color="secondary" />
+                  </div>
+                </>
               ) : (
                 "Reviews will be updated soon!"
               )}
@@ -361,7 +358,12 @@ class Home extends Component {
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Invitations Left :{" "}
               </p>
-              <h1>{remaining}</h1>
+              <span
+                style={{ fontWeight: "bold", fontSize: "20px", color: "green" }}
+              >
+                Unlimited
+              </span>
+              {/* <h1>{remaining}</h1> */}
             </div>
           </div>
         </SimpleCard>
@@ -452,18 +454,23 @@ class Home extends Component {
   };
 
   renderReviewURLBoxes = () => {
+    const { reviewsObject } = this.props;
     const socialArray = _get(this.props, "socialArray", []);
     const dashboardData = _get(this.props, "dashboardData", {});
     const businessProfile = _get(this.props, "businessProfile", {});
     const address = _get(businessProfile, "google_places.address", "");
     let output = [];
     output = socialArray.map(item => {
-      if (reviewURLObjects[item.social_media_app_id]) {
-        let socialObj = reviewURLObjects[item.social_media_app_id] || {};
+      let social_media_app_id = _get(item, "social_media_app_id", "");
+      if (reviewURLObjects[social_media_app_id]) {
+        let socialObj = reviewURLObjects[social_media_app_id] || {};
         let editURL = _get(socialObj, "editURL", "");
         let imageLogo = _get(socialObj, "imageLogo", "");
         let URL = _get(item, "url", "");
         let name = _get(socialObj, "name", "");
+
+        let reviewPlatformObject = iconNames[social_media_app_id];
+        let reviewPlatformName = _get(reviewPlatformObject, "name", "");
         let likes = "";
         let followers = "";
         let ratings = 0;
@@ -579,6 +586,11 @@ class Home extends Component {
                   <EditIcon />
                 </IconButton>
               </div>
+              {reviewsObject[reviewPlatformName] ? (
+                <div style={{ bottom: 0, right: 0 }}>
+                  <CircularProgress size={20} />
+                </div>
+              ) : null}{" "}
             </div>
           </Grid>
         );
@@ -607,7 +619,7 @@ class Home extends Component {
     const googlePlaceId = _get(businessProfile, "google_places.placeId", "");
 
     const domain = _get(businessProfile, "domain", "");
-
+    const reviewsObject = _get(this.props, "reviewsObject", {});
     const googleReviewUrl =
       directReviewUrl ||
       `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
@@ -670,6 +682,7 @@ class Home extends Component {
             <EditIcon />
           </IconButton>
         </div>
+        {reviewsObject["google"] ? <CircularProgress size={20} /> : null}
       </div>
     );
   };

@@ -222,6 +222,7 @@ class AutomaticInvitation extends Component {
               handleSaveAndContinue={reqBody => {
                 sendConfigData(reqBody);
               }}
+              {...this.props}
             />
           </div>
         );
@@ -275,28 +276,17 @@ class AutomaticInvitation extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const {
-      success,
-      errorMsg,
-      isLoading,
-      sendToSelectTemplate,
-      selectedPlatform
-    } = this.props;
+    const { success, errorMsg, isLoading, selectedPlatform } = this.props;
     if (success !== prevProps.success) {
       if (success && !isLoading) {
         let variant = success ? "success" : "error";
         let snackbarMsg = success ? "Configured Successfully!" : errorMsg;
-        this.setState(
-          {
-            showSnackbar: true,
-            variant,
-            snackbarMsg,
-            showCredentialModal: true
-          }
-          // () => {
-          //   sendToSelectTemplate();
-          // }
-        );
+        this.setState({
+          showSnackbar: true,
+          variant,
+          snackbarMsg,
+          showCredentialModal: true
+        });
       }
     }
     if (selectedPlatform !== prevProps.selectedPlatform) {
@@ -383,58 +373,62 @@ class AutomaticInvitation extends Component {
                     style={{
                       wordBreak: "break-all",
                       border: "1px solid #d8d8d8",
-                      padding: "5px"
+                      padding: "15px"
                     }}
                   >
-                    {secretKey}
+                    {secretKey || "No Key Found"}
                   </div>
                 </div>
-                <div className="col-md-2">
-                  <Tooltip title="Copy to clipboard">
-                    <CopyToClipboard
-                      text={secretKey}
-                      onCopy={() =>
-                        this.setState({
-                          showSnackbar: true,
-                          variant:"success",
-                          snackbarMsg:"Secret key Copied to clipboard"
-                        })
-                      }
-                    >
-                      <IconButton aria-label="copy">
-                        <CopyIcon />
-                      </IconButton>
-                    </CopyToClipboard>
-                  </Tooltip>
-                </div>
+                {!secretKey ? null : (
+                  <div className="col-md-2">
+                    <Tooltip title="Copy to clipboard">
+                      <CopyToClipboard
+                        text={secretKey}
+                        onCopy={() =>
+                          this.setState({
+                            showSnackbar: true,
+                            variant: "success",
+                            snackbarMsg: "Secret key Copied to clipboard"
+                          })
+                        }
+                      >
+                        <IconButton aria-label="copy">
+                          <CopyIcon />
+                        </IconButton>
+                      </CopyToClipboard>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
               <div className="row" style={{ marginTop: "15px" }}>
                 <div className="col-md-4">
                   <div style={{ fontWeight: "bold" }}>System Identifier :</div>
                 </div>
                 <div className="col-md-6">
-                  <div style={{ border: "1px solid #d8d8d8", padding: "5px" }}>
-                    {systemIdentifier}
+                  <div style={{ border: "1px solid #d8d8d8", padding: "15px" }}>
+                    {systemIdentifier || "No Key Found"}
                   </div>
                 </div>
-                <div className="col-md-2">
-                  <Tooltip title="Copy to clipboard">
-                    <CopyToClipboard
-                      text={systemIdentifier}
-                      onCopy={() =>
-                        this.setState({
-                          showSnackbar: true,
-                          variant:"success",
-                          snackbarMsg:"System identifier Copied to clipboard"
-                        })
-                      }
-                    >
-                      <IconButton aria-label="copy">
-                        <CopyIcon />
-                      </IconButton>
-                    </CopyToClipboard>
-                  </Tooltip>
-                </div>
+                {!systemIdentifier ? null : (
+                  <div className="col-md-2">
+                    <Tooltip title="Copy to clipboard">
+                      <CopyToClipboard
+                        text={systemIdentifier}
+                        onCopy={() =>
+                          this.setState({
+                            showSnackbar: true,
+                            variant: "success",
+                            snackbarMsg: "System identifier Copied to clipboard"
+                          })
+                        }
+                      >
+                        <IconButton aria-label="copy">
+                          <CopyIcon />
+                        </IconButton>
+                      </CopyToClipboard>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
             </div>
           </div>

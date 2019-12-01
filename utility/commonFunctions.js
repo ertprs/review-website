@@ -30,25 +30,24 @@ const handleFormDataChange = (e, id) => {
 
 //If you have separate keys inside formData for eg: formData: {woocoomerce: {}} then you can use this one, you need to pass your key name as third argument.
 
-const handleFormDataChange = (e, id, formName) => {
-  const { formData } = this.state;
-  const { value } = e.target;
-  const specificFormData = formData[formName];
-  this.setState({
-    formData: {
-      ...formData,
-      [formName]: {
-        ...specificFormData,
-        [id]: {
-          ...specificFormData[id],
-          value: value,
-          touched: true,
-          valid: validate(value, specificFormData[id].validationRules)
-        }
-      }
-    }
-  });
-};
+// const handleFormDataChange = (e, id, formData, formName) => {
+//   const { value } = e.target;
+//   const specificFormData = formData[formName];
+//   this.setState({
+//     formData: {
+//       ...formData,
+//       [formName]: {
+//         ...specificFormData,
+//         [id]: {
+//           ...specificFormData[id],
+//           value: value,
+//           touched: true,
+//           valid: validate(value, specificFormData[id].validationRules)
+//         }
+//       }
+//     }
+//   });
+// };
 
 //! This method can be ysed to render form fields if you pass form data object make sure to import <FormField />
 
@@ -85,4 +84,12 @@ const renderFormFields = (formData, handleFormDataChange) => {
     ];
   }
   return output;
+};
+
+export const areFieldsTouched = formData => {
+  let touched = false;
+  for (let formField in formData) {
+    touched = touched || formData[formField].touched;
+  }
+  return touched;
 };
