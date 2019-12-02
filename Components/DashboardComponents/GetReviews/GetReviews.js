@@ -172,6 +172,25 @@ const AddInvitesForm = dynamic(
   }
 );
 
+const ReviewInvitationPlatforms = dynamic(
+  () => import("../GetReviewsForms/ReviewInvitationPlatforms"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const columns = [
   { title: "Email", field: "email" },
   { title: "Name", field: "name" },
@@ -923,8 +942,8 @@ class GetReviews extends Component {
       } else if (getReviewsActiveSubStep === 0) {
         return (
           <InvitationWays
-            sendToSelectTemplate={() => {
-              this.setState({ activeStep: 1 });
+            sendToSelectPlatformSplit={() => {
+              this.setState({ getReviewsActiveSubStep: 4 });
             }}
             handleListItemClick={this.handleListItemClick}
             onBackClick={() => {
@@ -974,6 +993,13 @@ class GetReviews extends Component {
               tableData={_get(this.state, "tableData", [])}
               handleListItemBackClick={this.handleListItemBackClick}
             />
+          </>
+        );
+      }
+      else if (getReviewsActiveSubStep === 4) {
+        return (
+          <>
+            <ReviewInvitationPlatforms />
           </>
         );
       }

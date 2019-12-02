@@ -67,7 +67,7 @@ class WoocommerceForm extends Component {
   // };
 
   render() {
-    const { isLoading, formData, sendToSelectTemplate } = this.props;
+    const { isLoading, formData, sendToSelectPlatformSplit } = this.props;
     let disabled = true;
     disabled =
       !_get(formData, "consumer_secret.value", "") &&
@@ -100,7 +100,7 @@ class WoocommerceForm extends Component {
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
-              onClick={sendToSelectTemplate}
+              onClick={sendToSelectPlatformSplit}
             >
               Continue
             </Button>

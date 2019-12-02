@@ -54,7 +54,7 @@ class Generic extends Component {
   };
 
   render() {
-    const { isLoading, formData, sendToSelectTemplate } = this.props;
+    const { isLoading, formData, sendToSelectPlatformSplit } = this.props;
     let disabled = false;
     disabled =
       !_get(formData, "name.value", "") && !_get(formData, "locale.value", "");
@@ -86,7 +86,7 @@ class Generic extends Component {
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
-              onClick={sendToSelectTemplate}
+              onClick={sendToSelectPlatformSplit}
             >
               Continue
             </Button>

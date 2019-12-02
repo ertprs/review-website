@@ -359,7 +359,7 @@ class AutomaticInvitation extends Component {
           showModal={this.state.showCredentialModal}
           handleModalClose={this.handleCredentialModalVisibilityToggle}
           saveAndContinue={() => {
-            this.props.sendToSelectTemplate();
+            this.props.sendToSelectPlatformSplit();
           }}
         >
           <div>
