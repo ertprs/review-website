@@ -54,7 +54,7 @@ class Magento extends Component {
   };
 
   render() {
-    const { isLoading, formData, sendToSelectTemplate } = this.props;
+    const { isLoading, formData, sendToSelectPlatformSplit } = this.props;
     let disabled = false;
     disabled =
       !_get(formData, "shopName.value", "") &&
@@ -87,7 +87,7 @@ class Magento extends Component {
               variant="contained"
               color="primary"
               endIcon={<ArrowRight />}
-              onClick={sendToSelectTemplate}
+              onClick={sendToSelectPlatformSplit}
             >
               Continue
             </Button>
