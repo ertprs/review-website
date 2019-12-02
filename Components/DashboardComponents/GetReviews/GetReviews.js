@@ -12,6 +12,7 @@ import _get from "lodash/get";
 import dynamic from "next/dynamic";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
+import { iconNames } from "../../../utility/constants/socialMediaConstants";
 const CreateCampaign = dynamic(
   () => import("../GetReviewsForms/CreateCampaign"),
   {
@@ -220,6 +221,10 @@ class GetReviews extends Component {
       activeStep: 0,
       getReviewsActiveSubStep: -1,
       tableData: [],
+      reviewInvitationPlatformsData: {
+        platforms: {},
+        sumOfAllSplits: 0
+      },
       addInvitesData: {
         email: {
           element: "input",
@@ -621,9 +626,26 @@ class GetReviews extends Component {
     }
   };
 
+  generatePercentageSplitData = (platforms)=>{
+    let percentageSplit = [];
+    for(let item in platforms){
+      let data = platforms[item];
+      let percentShare = _get(data,"value","");
+      let socialAppId = item;
+      let link = _get(data, "url", "");
+      percentageSplit = [...percentageSplit, {socialAppId, percentShare, link}]
+    }
+    return percentageSplit;
+  }
+
   createCampaignHandler = sendTest => {
     const { createCampaign, ecommerceIntegrations } = this.props;
-    const { selectTemplateData, tableData, selectedPlatform } = this.state;
+    const {
+      selectTemplateData,
+      tableData,
+      selectedPlatform,
+      reviewInvitationPlatformsData
+    } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
@@ -632,6 +654,8 @@ class GetReviews extends Component {
     const Entity = _get(selectTemplateData, "entity.value", "");
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
+    const platforms = _get(reviewInvitationPlatformsData, "platforms", {});
+    const percentageSplit = this.generatePercentageSplitData(platforms);
     // const subject = _get(selectTemplateData, "subject.value", "");
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
@@ -658,6 +682,7 @@ class GetReviews extends Component {
         senderEmail: senderEmail
       },
       invites: [...omittedTableData],
+      percentageSplit: [...percentageSplit],
       template: {
         id: _get(
           this.state,
@@ -911,7 +936,8 @@ class GetReviews extends Component {
   handleContinueClick = () => {
     const { tableData } = this.state;
     if (tableData.length > 0) {
-      this.handleNext();
+      // this.handleNext();
+      this.setState({ getReviewsActiveSubStep: 4 });
     }
   };
 
@@ -995,44 +1021,25 @@ class GetReviews extends Component {
             />
           </>
         );
-      }
-      else if (getReviewsActiveSubStep === 4) {
-        return (
+      } else if (getReviewsActiveSubStep === 4) {
+        return Object.keys(this.state.reviewInvitationPlatformsData.platforms)
+          .length > 0 ? (
           <>
-            <ReviewInvitationPlatforms />
+            <ReviewInvitationPlatforms
+              platforms={this.state.reviewInvitationPlatformsData.platforms}
+              sumOfAllSplits={
+                this.state.reviewInvitationPlatformsData.sumOfAllSplits
+              }
+              handleSliderChange={this.handleSliderChange}
+              sendToSelectTemplate={() => {
+                this.setState({ activeStep: 1 });
+              }}
+              handleListItemBackClick={this.handleListItemBackClick}
+            />
           </>
-        );
+        ) : null;
       }
-      // return (
-      //   <div>
-      //     {/* {this.renderInvitesInfo()}
-      //     <AddInvitesForm
-      //       formData={this.state.addInvitesData}
-      //       handleChange={this.handleChange}
-      //       onAddClick={this.onRowAdd}
-      //       onContinueClick={this.handleContinueClick}
-      //       tableData={_get(this.state, "tableData", [])}
-      //     /> */}
-      //     {/* <CopyPasteForm
-      //       formData={this.state.copyPasteFormData}
-      //       handleChange={this.handleChange}
-      //       handleParseBtnClick={this.handleParseBtnClick}
-      //     /> */}
-      //     <GetReviewsHome />
-      //   </div>
-      // );
     }
-    // if (activeStep === 1) {
-    //   return (
-    //     <SenderInfo
-    //       formData={this.state.senderInfoData}
-    //       handleChange={this.handleChange}
-    //       handleRadioChange={this.handleRadioChange}
-    //       handleNext={this.handleNext}
-    //       handleBack={this.handleBack}
-    //     />
-    //   );
-    // }
     if (activeStep === 1) {
       return (
         <SelectTemplateForm
@@ -1285,6 +1292,57 @@ class GetReviews extends Component {
       );
     }
   };
+
+  componentDidMount() {
+    //Setting dynamic state on MOUNTING for ReviewInvitationPlatform
+    const social = _get(this.props, "social", []);
+    const googleDirectReviewURL = _get(this.props, "googleDirectReviewURL", "");
+    const { reviewInvitationPlatformsData } = this.state;
+    let platforms = {};
+    if (social && Array.isArray(social)) {
+      if (social.length > 0) {
+        social.forEach(item => {
+          const social_media_app_id = _get(item, "social_media_app_id", "");
+          const url = _get(item, "url", "");
+          if (social_media_app_id) {
+            platforms = {
+              ...platforms,
+              [Number(social_media_app_id)]: {
+                name: iconNames[Number(social_media_app_id)].name,
+                social_media_app_id,
+                url,
+                value: 0,
+                hasError: false,
+                min: 0,
+                max: 100
+              }
+            };
+          }
+        });
+      }
+    }
+    if (googleDirectReviewURL) {
+      platforms = {
+        ...platforms,
+        0: {
+          name: iconNames[0].name,
+          social_media_app_id: 0,
+          url: googleDirectReviewURL,
+          value: 0,
+          hasError: false,
+          min: 0,
+          max: 100
+        }
+      };
+    }
+    this.setState({
+      reviewInvitationPlatformsData: {
+        ...reviewInvitationPlatformsData,
+        platforms
+      }
+    });
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
@@ -1301,6 +1359,57 @@ class GetReviews extends Component {
       }
     }
   }
+
+  //Fired on ReviewInvitationPlatforms Slider change event
+  handleSliderChange = (e, val, id) => {
+    const { reviewInvitationPlatformsData } = this.state;
+    const { platforms } = reviewInvitationPlatformsData;
+    this.setState(
+      {
+        reviewInvitationPlatformsData: {
+          ...reviewInvitationPlatformsData,
+          platforms: {
+            ...platforms,
+            [id]: { ...platforms[id], value: val }
+          }
+        }
+      },
+      () => {
+        let sumOfAllSplits = 0;
+        const platforms = _get(
+          this.state,
+          "reviewInvitationPlatformsData.platforms",
+          {}
+        );
+        let platformsCopy = { ...platforms };
+        for (let item in platforms) {
+          if (platforms[item].value !== "") {
+            sumOfAllSplits = sumOfAllSplits + platforms[item].value;
+            if (sumOfAllSplits > 100) {
+              if (platforms[item].value) {
+                platformsCopy = {
+                  ...platformsCopy,
+                  [item]: { ...platformsCopy[item], hasError: true }
+                };
+              }
+            } else if (sumOfAllSplits <= 100) {
+              platformsCopy = {
+                ...platformsCopy,
+                [item]: { ...platformsCopy[item], hasError: false }
+              };
+            }
+          }
+          this.setState({
+            reviewInvitationPlatformsData: {
+              ...reviewInvitationPlatformsData,
+              sumOfAllSplits,
+              platforms: { ...platformsCopy }
+            }
+          });
+        }
+      }
+    );
+  };
 
   render() {
     const { activeStep } = this.state;
@@ -1362,6 +1471,16 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.integrations.ecommerce",
     []
   );
+  const social = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.social",
+    []
+  );
+  const googleDirectReviewURL = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.google_places.directReviewUrl",
+    ""
+  );
   return {
     success,
     campaignLanguage,
@@ -1369,7 +1488,9 @@ const mapStateToProps = state => {
     dashboardData,
     selectedEmailLanguage,
     createCampaignData,
-    ecommerceIntegrations
+    ecommerceIntegrations,
+    social,
+    googleDirectReviewURL
   };
 };
 
