@@ -540,7 +540,7 @@ class Home extends Component {
                     ratings ? (
                       <div className="trustPilotImageContainer">
                         <img
-                          src={`http://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-${Math.round(
+                          src={`/static/images/tpstars-${Math.round(
                             Number(ratings)
                           ) || 0}.svg`}
                           alt=""
