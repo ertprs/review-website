@@ -80,6 +80,25 @@ class AutomaticInvitation extends Component {
             id: "consumer_secret",
             labelText: "Enter secret"
           },
+          url: {
+            element: "input",
+            type: "text",
+            value: _get(
+              this.props,
+              "availablePlatformsData.WooCommerce.url",
+              ""
+            ),
+            validationRules: {
+              required: true
+            },
+            placeholder: "your platform url",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "url",
+            id: "url",
+            labelText: "Your platform url"
+          },
           locale: {
             element: "select",
             name: "locale",
