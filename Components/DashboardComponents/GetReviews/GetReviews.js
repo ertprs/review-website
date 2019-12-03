@@ -207,7 +207,13 @@ class GetReviews extends Component {
       tableData: [],
       reviewInvitationPlatformsData: {
         platforms: {},
-        sumOfAllSplits: 0
+        sumOfAllSplits: 0,
+        selectionWays: [
+          { id: 0, label: "Use only one review platform" },
+          { id: 1, label: "Use multiple review platforms" }
+        ],
+        selectedWay: -1,
+        selectedSinglePlatform: ""
       },
       addInvitesData: {
         email: {
@@ -610,26 +616,45 @@ class GetReviews extends Component {
     }
   };
 
-  generatePercentageSplitData = (platforms)=>{
+  generatePercentageSplitData = () => {
+    const { reviewInvitationPlatformsData } = this.state;
+    const platforms = _get(reviewInvitationPlatformsData, "platforms", {});
+    const selectedWay = _get(reviewInvitationPlatformsData, "selectedWay", {});
+    const selectedSinglePlatform = _get(
+      reviewInvitationPlatformsData,
+      "selectedSinglePlatform",
+      ""
+    );
     let percentageSplit = [];
-    for(let item in platforms){
-      let data = platforms[item];
-      let percentShare = _get(data,"value","");
-      let socialAppId = item;
-      let link = _get(data, "url", "");
-      percentageSplit = [...percentageSplit, {socialAppId, percentShare, link}]
+    if (selectedWay === 0) {
+      const selectedSinglePlatformData = platforms[selectedSinglePlatform];
+      let percentShare = 100;
+      let socialAppId = selectedSinglePlatform;
+      let link = _get(selectedSinglePlatformData, "url", "");
+      percentageSplit = [
+        ...percentageSplit,
+        { socialAppId, percentShare, link }
+      ];
+      return percentageSplit;
+    } else if (selectedWay === 1) {
+      for (let item in platforms) {
+        let data = platforms[item];
+        let percentShare = _get(data, "value", "");
+        let socialAppId = item;
+        let link = _get(data, "url", "");
+        percentageSplit = [
+          ...percentageSplit,
+          { socialAppId, percentShare, link }
+        ];
+      }
+      return percentageSplit;
     }
-    return percentageSplit;
-  }
+    return [];
+  };
 
   createCampaignHandler = sendTest => {
     const { createCampaign, ecommerceIntegrations } = this.props;
-    const {
-      selectTemplateData,
-      tableData,
-      selectedPlatform,
-      reviewInvitationPlatformsData
-    } = this.state;
+    const { selectTemplateData, tableData, selectedPlatform } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
@@ -638,8 +663,7 @@ class GetReviews extends Component {
     const Entity = _get(selectTemplateData, "entity.value", "");
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
-    const platforms = _get(reviewInvitationPlatformsData, "platforms", {});
-    const percentageSplit = this.generatePercentageSplitData(platforms);
+    const percentageSplit = this.generatePercentageSplitData();
     // const subject = _get(selectTemplateData, "subject.value", "");
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
@@ -935,6 +959,28 @@ class GetReviews extends Component {
     this.setState({ getReviewsActiveSubStep: 0 });
   };
 
+  //to handle ReviewInvitationPlatform change
+  handleReviewPlatformsExpansionChange = selectedItemId => {
+    const { reviewInvitationPlatformsData } = this.state;
+    this.setState({
+      reviewInvitationPlatformsData: {
+        ...reviewInvitationPlatformsData,
+        selectedWay: selectedItemId
+      }
+    });
+  };
+
+  //to handle ReviewInvitationPlatformRadioBtn change
+  handleReviewPlatformRadioBtnChange = e => {
+    const { reviewInvitationPlatformsData } = this.state;
+    this.setState({
+      reviewInvitationPlatformsData: {
+        ...reviewInvitationPlatformsData,
+        selectedSinglePlatform: Number(e.target.value)
+      }
+    });
+  };
+
   renderAppropriateStep = () => {
     const { activeStep, getReviewsActiveSubStep } = this.state;
     if (activeStep === 0) {
@@ -1011,6 +1057,9 @@ class GetReviews extends Component {
           <>
             <ReviewInvitationPlatforms
               platforms={this.state.reviewInvitationPlatformsData.platforms}
+              reviewInvitationPlatformsData={
+                this.state.reviewInvitationPlatformsData
+              }
               sumOfAllSplits={
                 this.state.reviewInvitationPlatformsData.sumOfAllSplits
               }
@@ -1019,6 +1068,12 @@ class GetReviews extends Component {
                 this.setState({ activeStep: 1 });
               }}
               handleListItemBackClick={this.handleListItemBackClick}
+              handleReviewPlatformsExpansionChange={
+                this.handleReviewPlatformsExpansionChange
+              }
+              handleReviewPlatformRadioBtnChange={
+                this.handleReviewPlatformRadioBtnChange
+              }
             />
           </>
         ) : null;
@@ -1282,9 +1337,17 @@ class GetReviews extends Component {
     const social = _get(this.props, "social", []);
     const googleDirectReviewURL = _get(this.props, "googleDirectReviewURL", "");
     const { reviewInvitationPlatformsData } = this.state;
+    let initValueForSliders = 0;
+    let countOfPlatforms = 0;
+    if (googleDirectReviewURL) {
+      countOfPlatforms += 1;
+    }
     let platforms = {};
     if (social && Array.isArray(social)) {
       if (social.length > 0) {
+        initValueForSliders = Math.floor(
+          100 / (countOfPlatforms + social.length)
+        );
         social.forEach(item => {
           const social_media_app_id = _get(item, "social_media_app_id", "");
           const url = _get(item, "url", "");
@@ -1295,7 +1358,7 @@ class GetReviews extends Component {
                 name: iconNames[Number(social_media_app_id)].name,
                 social_media_app_id,
                 url,
-                value: 0,
+                value: initValueForSliders,
                 hasError: false,
                 min: 0,
                 max: 100
@@ -1312,7 +1375,7 @@ class GetReviews extends Component {
           name: iconNames[0].name,
           social_media_app_id: 0,
           url: googleDirectReviewURL,
-          value: 0,
+          value: initValueForSliders,
           hasError: false,
           min: 0,
           max: 100
@@ -1322,7 +1385,8 @@ class GetReviews extends Component {
     this.setState({
       reviewInvitationPlatformsData: {
         ...reviewInvitationPlatformsData,
-        platforms
+        platforms,
+        sumOfAllSplits: (countOfPlatforms + social.length) * initValueForSliders
       }
     });
   }
@@ -1348,51 +1412,54 @@ class GetReviews extends Component {
   handleSliderChange = (e, val, id) => {
     const { reviewInvitationPlatformsData } = this.state;
     const { platforms } = reviewInvitationPlatformsData;
-    this.setState(
-      {
-        reviewInvitationPlatformsData: {
-          ...reviewInvitationPlatformsData,
-          platforms: {
-            ...platforms,
-            [id]: { ...platforms[id], value: val }
+    if (Number(val) || val==="" || val==="0" || val===0) {
+      val = val !=="" ? Number(val) : 0;
+      this.setState(
+        {
+          reviewInvitationPlatformsData: {
+            ...reviewInvitationPlatformsData,
+            platforms: {
+              ...platforms,
+              [id]: { ...platforms[id], value: val }
+            }
           }
-        }
-      },
-      () => {
-        let sumOfAllSplits = 0;
-        const platforms = _get(
-          this.state,
-          "reviewInvitationPlatformsData.platforms",
-          {}
-        );
-        let platformsCopy = { ...platforms };
-        for (let item in platforms) {
-          if (platforms[item].value !== "") {
-            sumOfAllSplits = sumOfAllSplits + platforms[item].value;
-            if (sumOfAllSplits > 100) {
-              if (platforms[item].value) {
+        },
+        () => {
+          let sumOfAllSplits = 0;
+          const platforms = _get(
+            this.state,
+            "reviewInvitationPlatformsData.platforms",
+            {}
+          );
+          let platformsCopy = { ...platforms };
+          for (let item in platforms) {
+            if (platforms[item].value !== "") {
+              sumOfAllSplits = sumOfAllSplits + platforms[item].value;
+              if (sumOfAllSplits > 100) {
+                if (platforms[item].value) {
+                  platformsCopy = {
+                    ...platformsCopy,
+                    [item]: { ...platformsCopy[item], hasError: true }
+                  };
+                }
+              } else if (sumOfAllSplits <= 100) {
                 platformsCopy = {
                   ...platformsCopy,
-                  [item]: { ...platformsCopy[item], hasError: true }
+                  [item]: { ...platformsCopy[item], hasError: false }
                 };
               }
-            } else if (sumOfAllSplits <= 100) {
-              platformsCopy = {
-                ...platformsCopy,
-                [item]: { ...platformsCopy[item], hasError: false }
-              };
             }
+            this.setState({
+              reviewInvitationPlatformsData: {
+                ...reviewInvitationPlatformsData,
+                sumOfAllSplits,
+                platforms: { ...platformsCopy }
+              }
+            });
           }
-          this.setState({
-            reviewInvitationPlatformsData: {
-              ...reviewInvitationPlatformsData,
-              sumOfAllSplits,
-              platforms: { ...platformsCopy }
-            }
-          });
         }
-      }
-    );
+      );
+    }
   };
 
   render() {
