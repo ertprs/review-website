@@ -504,6 +504,46 @@ class Home extends Component {
                     {URL}
                   </a>
                 </div>
+                <div className="reviewBoxRatingContainer">
+                  {name === "trustedshopsReviews" ? (
+                    ratings ? (
+                      <div style={{ marginLeft: "-4px" }}>
+                        <StarRatings
+                          rating={Number(ratings)}
+                          starRatedColor="#FFDC0F"
+                          starDimension="20px"
+                          starSpacing="0.5px"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      </div>
+                    ) : null
+                  ) : name === "trustpilotReviews" ? (
+                    ratings ? (
+                      <div className="trustPilotImageContainer">
+                        <img
+                          src={`/static/images/tpstars-${Math.round(
+                            Number(ratings)
+                          ) || 0}.svg`}
+                          alt=""
+                        />
+                      </div>
+                    ) : null
+                  ) : name === "facebookReviews" ? (
+                    ratings ? (
+                      <div style={{ marginLeft: "-4px" }}>
+                        <StarRatings
+                          rating={Number(ratings)}
+                          starRatedColor="#3A559F"
+                          starDimension="20px"
+                          starSpacing="0.5px"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      </div>
+                    ) : null
+                  ) : null}
+                </div>
                 {name === "facebookReviews" ? (
                   <div className="row" style={{ marginTop: "15px" }}>
                     {likes ? (
@@ -523,33 +563,6 @@ class Home extends Component {
                     ) : null}
                   </div>
                 ) : null}
-                <div className="reviewBoxRatingContainer">
-                  {name === "trustedshopsReviews" ? (
-                    ratings ? (
-                      <div style={{ marginLeft: "-4px" }}>
-                        <StarRatings
-                          rating={Number(ratings)}
-                          starRatedColor="#FFDC0F"
-                          starDimension="20px"
-                          starSpacing="0.5px"
-                          numberOfStars={5}
-                          name="rating"
-                        />
-                      </div>
-                    ) : null
-                  ) : name === "trustpilotReviews" ? (
-                    ratings ? (
-                      <div className="trustPilotImageContainer">
-                        <img
-                          src={`http://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-${Math.round(
-                            Number(ratings)
-                          ) || 0}.svg`}
-                          alt=""
-                        />
-                      </div>
-                    ) : null
-                  ) : null}
-                </div>
                 {name === "trustpilotReviews" ||
                 name === "facebookReviews" ||
                 name === "trustedshopsReviews" ? (
