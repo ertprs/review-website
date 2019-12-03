@@ -61,7 +61,8 @@ class Generic extends Component {
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
-          <h4>Integrate generic api form :</h4>
+          <h4>Integrate TrustSearch api form : </h4>
+          <a href="/">Documentation</a>
         </div>
         {this.renderFormFields()}
         <div className="form-group" style={{ textAlign: "right" }}>
