@@ -9,6 +9,8 @@ import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
 import ReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
+import _find from "lodash/find";
+import _isEmpty from "lodash/isEmpty";
 
 class Facebook extends Component {
   state = {
@@ -103,7 +105,8 @@ class Facebook extends Component {
       isLoading,
       success,
       areFacebookReviewsFetching,
-      isReviewsPusherConnected
+      isReviewsPusherConnected,
+      facebookReviewUrl
     } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
@@ -179,6 +182,18 @@ class Facebook extends Component {
               <NoReviewsFound noreviewsFound={true} />
             ) : !showDelay ? (
               <>
+                {facebookReviewUrl ? (
+                  <div className="bold">
+                    Facebook Review url :
+                    <a
+                      style={{ marginLeft: "10px" }}
+                      href={facebookReviewUrl}
+                      target="_blank"
+                    >
+                      {facebookReviewUrl}
+                    </a>
+                  </div>
+                ) : null}
                 {_map(reviews, review => {
                   let reviewToSend = {
                     name: _get(review, "user", "") || _get(review, "name", ""),
@@ -242,7 +257,7 @@ class Facebook extends Component {
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { auth, dashboardData } = state;
   const totalReviews = _get(dashboardData, "facebookReviews.data.reviews", []);
   const success = _get(dashboardData, "facebookReviews.success", undefined);
   const isLoading = _get(dashboardData, "facebookReviews.isLoading", false);
@@ -257,13 +272,26 @@ const mapStateToProps = state => {
     "isReviewsPusherConnected",
     undefined
   );
+  const socialArray = _get(
+    auth,
+    "logIn.userProfile.business_profile.social",
+    []
+  );
+  let facebookReviewUrl = "";
+  if (Array.isArray(socialArray) && !_isEmpty(socialArray)) {
+    const facebookObj = _find(socialArray, ["social_media_app_id", 1]);
+    if (facebookObj) {
+      facebookReviewUrl = _get(facebookObj, "url", "");
+    }
+  }
   return {
     totalReviews,
     success,
     isLoading,
     errorMsg,
     areFacebookReviewsFetching,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    facebookReviewUrl
   };
 };
 

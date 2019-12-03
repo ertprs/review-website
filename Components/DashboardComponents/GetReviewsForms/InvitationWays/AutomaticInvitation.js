@@ -80,6 +80,25 @@ class AutomaticInvitation extends Component {
             id: "consumer_secret",
             labelText: "Enter secret"
           },
+          url: {
+            element: "input",
+            type: "text",
+            value: _get(
+              this.props,
+              "availablePlatformsData.WooCommerce.url",
+              ""
+            ),
+            validationRules: {
+              required: true
+            },
+            placeholder: "your platform url",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "url",
+            id: "url",
+            labelText: "Your platform url"
+          },
           locale: {
             element: "select",
             name: "locale",
@@ -97,11 +116,15 @@ class AutomaticInvitation extends Component {
             labelText: "Select your locale"
           }
         },
-        Generic: {
+        TrustSearch_API: {
           shopName: {
             element: "input",
             type: "text",
-            value: _get(this.props, "availablePlatformsData.Generic.name", ""),
+            value: _get(
+              this.props,
+              "availablePlatformsData.TrustSearch API.name",
+              ""
+            ),
             placeholder: "Shop Name",
             touched: false,
             valid: false,
@@ -115,7 +138,7 @@ class AutomaticInvitation extends Component {
             name: "locale",
             value: _get(
               this.props,
-              "availablePlatformsData.Generic.locale",
+              "availablePlatformsData.TrustSearch API.locale",
               ""
             ),
             options: [...Languages],
@@ -138,7 +161,10 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "name",
             id: "shopName",
-            labelText: "Enter shop name"
+            labelText: "Enter shop name",
+            validationRules: {
+              required: true
+            }
           },
           locale: {
             element: "select",
@@ -154,7 +180,10 @@ class AutomaticInvitation extends Component {
             touched: false,
             errorMessage: "",
             id: "locale",
-            labelText: "Select your locale"
+            labelText: "Select your locale",
+            validationRules: {
+              required: true
+            }
           }
         },
         showCredentialModal: false
@@ -173,7 +202,7 @@ class AutomaticInvitation extends Component {
           ...specificFormData,
           [id]: {
             ...specificFormData[id],
-            value: value,
+            value,
             touched: true,
             valid: validate(value, specificFormData[id].validationRules)
           }
@@ -186,8 +215,12 @@ class AutomaticInvitation extends Component {
     const { availablePlatforms } = this.props;
     let selectedOptionObj = _find(availablePlatforms, ["id", selectedPlatform]);
     if (selectedOptionObj) {
+      let name = _get(selectedOptionObj, "name", "");
+      if (name == "TrustSearch API") {
+        name = name.replace(/\s+/, "_");
+      }
       this.setState({
-        formName: _get(selectedOptionObj, "name", "")
+        formName: name
       });
     }
   };
@@ -276,17 +309,33 @@ class AutomaticInvitation extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { success, errorMsg, isLoading, selectedPlatform } = this.props;
+    const {
+      success,
+      errorMsg,
+      isLoading,
+      selectedPlatform,
+      sendToSelectPlatformSplit
+    } = this.props;
+    const { formName } = this.state;
     if (success !== prevProps.success) {
       if (success && !isLoading) {
         let variant = success ? "success" : "error";
         let snackbarMsg = success ? "Configured Successfully!" : errorMsg;
-        this.setState({
-          showSnackbar: true,
-          variant,
-          snackbarMsg,
-          showCredentialModal: true
-        });
+        this.setState(
+          {
+            showSnackbar: true,
+            variant,
+            snackbarMsg
+          },
+          () => {
+            if (formName === "WooCommerce") {
+              sendToSelectPlatformSplit();
+            }
+          }
+        );
+        if (formName !== "WooCommerce") {
+          this.setState({ showCredentialModal: true });
+        }
       }
     }
     if (selectedPlatform !== prevProps.selectedPlatform) {

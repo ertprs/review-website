@@ -49,6 +49,7 @@ class WoocommerceForm extends Component {
       type,
       name: _get(formData, "shopName.value", ""),
       locale: _get(formData, "locale.value", ""),
+      url: _get(formData, "url.value", ""),
       authDetails: {
         consumer_keys: _get(formData, "consumer_keys.value", ""),
         consumer_secret: _get(formData, "consumer_secret.value", "")
@@ -57,21 +58,13 @@ class WoocommerceForm extends Component {
     handleSaveAndContinue(reqBody);
   };
 
-  // areFieldsTouched = () => {
-  //   const { formData } = this.props;
-  //   let touched = false;
-  //   for (let formField in formData) {
-  //     touched = touched || formData[formField].touched;
-  //   }
-  //   return touched;
-  // };
-
   render() {
     const { isLoading, formData, sendToSelectPlatformSplit } = this.props;
     let disabled = true;
     disabled =
-      !_get(formData, "consumer_secret.value", "") &&
-      !_get(formData, "consumer_keys.value", "");
+      (!_get(formData, "consumer_secret.value", "") &&
+        !_get(formData, "consumer_keys.value", "")) ||
+      !_get(formData, "url.value", "");
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>

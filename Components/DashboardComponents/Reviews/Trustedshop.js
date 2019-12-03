@@ -9,6 +9,8 @@ import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
 import ReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
+import _find from "lodash/find";
+import _isEmpty from "lodash/isEmpty";
 
 class TrustedShops extends Component {
   state = {
@@ -103,7 +105,8 @@ class TrustedShops extends Component {
       isLoading,
       success,
       areTrustedShopsReviewsFetching,
-      isReviewsPusherConnected
+      isReviewsPusherConnected,
+      trustedshopsReviewUrl
     } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
@@ -179,6 +182,18 @@ class TrustedShops extends Component {
               <NoReviewsFound />
             ) : !showDelay ? (
               <>
+                {trustedshopsReviewUrl ? (
+                  <div className="bold">
+                    TrustedShops Review url :
+                    <a
+                      style={{ marginLeft: "10px" }}
+                      href={trustedshopsReviewUrl}
+                      target="_blank"
+                    >
+                      {trustedshopsReviewUrl}
+                    </a>
+                  </div>
+                ) : null}
                 {_map(reviews, review => {
                   let name =
                     _get(review, "user", "") || _get(review, "name", "");
@@ -237,7 +252,7 @@ class TrustedShops extends Component {
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { dashboardData, auth } = state;
   const totalReviews = _get(
     dashboardData,
     "trustedshopsReviews.data.reviews",
@@ -256,13 +271,26 @@ const mapStateToProps = state => {
     "isReviewsPusherConnected",
     undefined
   );
+  const socialArray = _get(
+    auth,
+    "logIn.userProfile.business_profile.social",
+    []
+  );
+  let trustedshopsReviewUrl = "";
+  if (Array.isArray(socialArray) && !_isEmpty(socialArray)) {
+    const trustedshopsObj = _find(socialArray, ["social_media_app_id", 19]);
+    if (trustedshopsObj) {
+      trustedshopsReviewUrl = _get(trustedshopsObj, "url", "");
+    }
+  }
   return {
     totalReviews,
     success,
     isLoading,
     errorMsg,
     areTrustedShopsReviewsFetching,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    trustedshopsReviewUrl
   };
 };
 

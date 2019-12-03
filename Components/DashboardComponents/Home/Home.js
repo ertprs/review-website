@@ -23,7 +23,7 @@ import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import Moment from "react-moment";
-import { ratingColor } from "../../../utility/ratingTypeColor";
+import { ratingColor, ratingType } from "../../../utility/ratingTypeColor";
 import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import Link from "next/link";
@@ -155,9 +155,7 @@ class Home extends Component {
   };
 
   renderOverviewCard = () => {
-    const { reviewsData } = this.props;
-    const rating = _get(reviewsData, "rating", 0);
-    const total = _get(reviewsData, "total", 0);
+    const { totalReviewsOfAllPlatforms, overallRating } = this.props;
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
@@ -193,12 +191,14 @@ class Home extends Component {
           </div>
           <div className="body">
             <div className="bodyHeader">
-              <h4>Average</h4>
+              <h4>{ratingType[Math.round(overallRating)]}</h4>
             </div>
             <div className="ratingsContainer">
               <StarRatings
-                rating={Number(rating)}
-                starRatedColor={ratingColor[Math.round(Number(rating)) || 0]}
+                rating={Number(overallRating)}
+                starRatedColor={
+                  ratingColor[Math.round(Number(overallRating)) || 0]
+                }
                 starDimension="30px"
                 starSpacing="0.5px"
                 numberOfStars={5}
@@ -206,13 +206,14 @@ class Home extends Component {
               />
             </div>
             <div className="bodyFooter">
-              <div>Based on {total} reviews</div>
+              <div>Based on {totalReviewsOfAllPlatforms} reviews</div>
             </div>
           </div>
           <div className="footer">
             <div>Trustsearch score</div>
             <div className="trustScore">
-              <span style={{ fontWeight: "400" }}>{rating}</span> out of 5
+              <span style={{ fontWeight: "400" }}>{overallRating}</span> out of
+              5
             </div>
           </div>
         </SimpleCard>
@@ -851,6 +852,32 @@ const mapStateToProps = state => {
     false
   );
   const showGetStarted = _get(dashboardData, "showGetStarted", false);
+  const totalReviewsOfAllPlatforms =
+    _get(dashboardData, "reviews.data.total", 0) +
+    _get(dashboardData, "trustedshopsReviews.data.total", 0) +
+    _get(dashboardData, "trustpilotReviews.data.total", 0) +
+    _get(dashboardData, "facebookReviews.data.total", 0);
+  const googleRating = _get(dashboardData, "reviews.data.rating", 0);
+  const facebookRating = _get(dashboardData, "facebookReviews.data.rating", 0);
+  const trustpilotRating = _get(
+    dashboardData,
+    "trustpilotReviews.data.rating",
+    0
+  );
+  const trustedshopsRating = _get(
+    dashboardData,
+    "trustedshopsReviews.data.rating",
+    0
+  );
+  const totalRatingOfAllPlatforms =
+    (googleRating ? Number(googleRating) : 0) +
+    (facebookRating ? Number(facebookRating) : 0) +
+    (trustpilotRating ? Number(trustpilotRating) : 0) +
+    (trustedshopsRating ? Number(trustedshopsRating) : 0);
+  const noOfPlatforms = 4;
+  const max_rating = 5;
+  //! this rating is calculated for max_rating 5
+  const overallRating = (totalRatingOfAllPlatforms / noOfPlatforms).toFixed(2);
   return {
     reviewsData,
     quotaDetails,
@@ -874,7 +901,10 @@ const mapStateToProps = state => {
     socialArray,
     dashboardData,
     isReviewsPusherConnected,
-    showGetStarted
+    showGetStarted,
+    totalReviewsOfAllPlatforms,
+    totalRatingOfAllPlatforms,
+    overallRating
   };
 };
 
