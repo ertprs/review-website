@@ -30,7 +30,7 @@ class Generic extends Component {
             <FormField
               {...formData[item]}
               handleChange={(e, id) => {
-                handleFormDataChange(e, id, "Generic");
+                handleFormDataChange(e, id, "TrustSearch_API");
               }}
               styles={{
                 height: "38px"
