@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import _map from "lodash/map";
+import _find from "lodash/find";
+import _isEmpty from "lodash/isEmpty";
 import { getThirdPartyReviews } from "../../../store/actions/dashboardActions";
 import ReactPaginate from "react-paginate";
 import Head from "next/head";
@@ -96,7 +98,8 @@ class Trustpilot extends Component {
       isLoading,
       success,
       areTrustpilotReviewsFetching,
-      isReviewsPusherConnected
+      isReviewsPusherConnected,
+      trustpilotReviewUrl
     } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
@@ -172,6 +175,18 @@ class Trustpilot extends Component {
               <NoReviewsFound />
             ) : !showDelay ? (
               <>
+                {trustpilotReviewUrl ? (
+                  <div className="bold">
+                    Trustpilot Review url :
+                    <a
+                      style={{ marginLeft: "10px" }}
+                      href={trustpilotReviewUrl}
+                      target="_blank"
+                    >
+                      {trustpilotReviewUrl}
+                    </a>
+                  </div>
+                ) : null}
                 {_map(reviews, review => {
                   let reviewToSend = {
                     name: _get(review, "user", "") || _get(review, "name", ""),
@@ -228,7 +243,7 @@ class Trustpilot extends Component {
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { dashboardData, auth } = state;
   const totalReviews = _get(
     dashboardData,
     "trustpilotReviews.data.reviews",
@@ -247,13 +262,26 @@ const mapStateToProps = state => {
     "isReviewsPusherConnected",
     undefined
   );
+  const socialArray = _get(
+    auth,
+    "logIn.userProfile.business_profile.social",
+    []
+  );
+  let trustpilotReviewUrl = "";
+  if (Array.isArray(socialArray) && !_isEmpty(socialArray)) {
+    const trustpilotObj = _find(socialArray, ["social_media_app_id", 18]);
+    if (trustpilotObj) {
+      trustpilotReviewUrl = _get(trustpilotObj, "url", "");
+    }
+  }
   return {
     totalReviews,
     success,
     isLoading,
     errorMsg,
     areTrustpilotReviewsFetching,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    trustpilotReviewUrl
   };
 };
 
