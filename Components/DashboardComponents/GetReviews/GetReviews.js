@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
+import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
 const CreateCampaign = dynamic(
   () => import("../GetReviewsForms/CreateCampaign"),
   {
@@ -82,24 +83,7 @@ const CopyPasteForm = dynamic(
     )
   }
 );
-const UploadCSVForm = dynamic(
-  () => import("../GetReviewsForms/UploadCSVForm"),
-  {
-    loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <p>Loading.....</p>
-      </div>
-    )
-  }
-);
+
 const SenderInfo = dynamic(
   () => import("../GetReviewsForms/SenderInfo/SenderInfo"),
   {
