@@ -49,7 +49,10 @@ import {
   POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
   GET_AVAILABLE_PLATFORMS_INIT,
   GET_AVAILABLE_PLATFORMS_SUCCESS,
-  GET_AVAILABLE_PLATFORMS_FAILURE
+  GET_AVAILABLE_PLATFORMS_FAILURE,
+  REQUEST_INSTALLATION_INIT,
+  REQUEST_INSTALLATION_SUCCESS,
+  REQUEST_INSTALLATION_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -76,7 +79,8 @@ const dashboardReducer = (state = {}, action) => {
     showGetStarted,
     reviewURLToEdit,
     configDetails,
-    availablePlatforms
+    availablePlatforms,
+    requestInstallation
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -374,6 +378,24 @@ const dashboardReducer = (state = {}, action) => {
     case GET_AVAILABLE_PLATFORMS_FAILURE: {
       return { ...state, type, availablePlatforms };
     }
+    case REQUEST_INSTALLATION_INIT:
+      return {
+        ...state,
+        type,
+        requestInstallation
+      };
+    case REQUEST_INSTALLATION_SUCCESS:
+      return {
+        ...state,
+        type,
+        requestInstallation
+      };
+    case REQUEST_INSTALLATION_FAILURE:
+      return {
+        ...state,
+        type,
+        requestInstallation
+      };
     default:
       return state;
   }

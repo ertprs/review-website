@@ -48,7 +48,10 @@ import {
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
   POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
   POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
-  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
+  REQUEST_INSTALLATION_INIT,
+  REQUEST_INSTALLATION_SUCCESS,
+  REQUEST_INSTALLATION_FAILURE
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -803,6 +806,44 @@ export const sendConfigData = data => {
             "response.data.error.message",
             "Some error occured. Please choose another method of invitation."
           )
+        }
+      });
+    }
+  };
+};
+
+export const requestInstallation = data => {
+  return async (dispatch, getState) => {
+    const { auth } = getState() | {};
+    let token = _get(auth, "logIn.token", "");
+    dispatch({
+      type: REQUEST_INSTALLATION_INIT,
+      requestInstallation: {
+        success: undefined,
+        isLoading: true
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url: `${process.env.BASE_URL}${upgradePremiumApi}`
+      });
+      const success = await _get(result, "data.success", false);
+      dispatch({
+        type: REQUEST_INSTALLATION_SUCCESS,
+        requestInstallation: {
+          success,
+          isLoading: false
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: REQUEST_INSTALLATION_FAILURE,
+        requestInstallation: {
+          success: false,
+          isLoading: false
         }
       });
     }
