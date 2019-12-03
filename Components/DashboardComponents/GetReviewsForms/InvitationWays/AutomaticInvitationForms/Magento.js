@@ -57,7 +57,7 @@ class Magento extends Component {
     const { isLoading, formData, sendToSelectPlatformSplit } = this.props;
     let disabled = false;
     disabled =
-      !_get(formData, "shopName.value", "") &&
+      !_get(formData, "shopName.value", "") ||
       !_get(formData, "locale.value", "");
     return (
       <div>
