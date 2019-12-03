@@ -503,25 +503,6 @@ class Home extends Component {
                     {URL}
                   </a>
                 </div>
-                {name === "facebookReviews" ? (
-                  <div className="row" style={{ marginTop: "15px" }}>
-                    {likes ? (
-                      <div className="col-md-6">
-                        <span style={{ fontWeight: "bold" }}>
-                          Likes : {likes}
-                        </span>{" "}
-                      </div>
-                    ) : null}
-                    {followers ? (
-                      <div className="col-md-6">
-                        {" "}
-                        <span style={{ fontWeight: "bold" }}>
-                          Followers : {followers}
-                        </span>{" "}
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
                 <div className="reviewBoxRatingContainer">
                   {name === "trustedshopsReviews" ? (
                     ratings ? (
@@ -547,8 +528,40 @@ class Home extends Component {
                         />
                       </div>
                     ) : null
+                  ) : name === "facebookReviews" ? (
+                    ratings ? (
+                      <div style={{ marginLeft: "-4px" }}>
+                        <StarRatings
+                          rating={Number(ratings)}
+                          starRatedColor="#3A559F"
+                          starDimension="20px"
+                          starSpacing="0.5px"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      </div>
+                    ) : null
                   ) : null}
                 </div>
+                {name === "facebookReviews" ? (
+                  <div className="row" style={{ marginTop: "15px" }}>
+                    {likes ? (
+                      <div className="col-md-6">
+                        <span style={{ fontWeight: "bold" }}>
+                          Likes : {likes}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                    {followers ? (
+                      <div className="col-md-6">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Followers : {followers}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
                 {name === "trustpilotReviews" ||
                 name === "facebookReviews" ||
                 name === "trustedshopsReviews" ? (
