@@ -303,6 +303,28 @@ function Dashboard(props) {
     }
   }
 
+  const changePageWithUrl = () => {
+    let url = window.location.href;
+    let urlSplit = url.split("/");
+    let stepQuery = urlSplit[urlSplit.length - 1];
+    if (stepQuery) {
+      const stepKey = _findKey(dashboardSteps, { name: stepQuery });
+      if (stepKey) {
+        if (!menuItemsDisabled && !homeDisabled && !getStartedDisabled) {
+          // Current URL is "/"
+          const href = `/dashboard?v=${stepQuery}`;
+          const as = `/dashboard/${stepQuery}`;
+          Router.push(href, as, { shallow: true });
+          setStepToRender(Number(stepKey));
+        }
+      } else {
+        window.location.href = "/dashboard/home";
+      }
+    } else {
+      window.location.href = "/dashboard/home";
+    }
+  };
+
   useEffect(() => {
     if (props.queryStep) {
       if (props.queryStep.v) {
@@ -331,6 +353,13 @@ function Dashboard(props) {
       setSnackbarMsg("Request Sent Successfully!");
     }
   }, [upgradeToPremiumRes]);
+
+  useEffect(() => {
+    window.addEventListener("popstate", changePageWithUrl);
+    return () => {
+      window.removeEventListener("popstate", changePageWithUrl);
+    };
+  }, []);
 
   const handleMenuItemClicked = index => {
     const step = dashboardSteps[index].name;
