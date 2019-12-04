@@ -51,13 +51,14 @@ const renderFooterTopSection = () => {
           </button>
         </div> */}
         <div className="footerTopLocalizationContainer">
-          <a
-            href="https://thetrustsearch.com/termsAndConditions"
-            target="_blank"
-            style={{ color: "#fff", textDecoration: "none" }}
-          >
-            Terms and Conditions
-          </a>
+          <Link href="https://thetrustsearch.com/termsAndConditions">
+            <a
+              target="_blank"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              Terms and Conditions
+            </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -78,12 +79,9 @@ const renderFooterMiddleSection = () => {
                 </div>
                 <div className="footerMiddleSectionLinks">
                   <div>
-                    <a
-                      href="https://thetrustsearch.com/registration#business"
-                      target="_blank"
-                    >
-                      Claim your ownership
-                    </a>
+                    <Link href="https://thetrustsearch.com/registration#business">
+                      <a target="_blank">Claim your ownership</a>
+                    </Link>
                   </div>
                   {/* <div>
                   <a href="/">Engage your community</a>
@@ -92,12 +90,9 @@ const renderFooterMiddleSection = () => {
                   <a href="/">Receive alerts</a>
                 </div> */}
                   <div>
-                    <a
-                      href="https://thetrustsearch.com/business"
-                      target="_blank"
-                    >
-                      Plans &amp; Pricing
-                    </a>
+                    <Link href="https://thetrustsearch.com/business">
+                      <a target="_blank">Plans &amp; Pricing</a>
+                    </Link>
                   </div>
                 </div>
               </div>

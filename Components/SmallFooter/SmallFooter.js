@@ -215,13 +215,14 @@ const renderFooterBottomSection = () => {
           className="col-md-4"
           style={{ textAlign: "center", color: "#fff" }}
         >
-          <a
-            href="https://thetrustsearch.com/termsAndConditions"
-            target="_blank"
-            style={{ color: "#fff", textDecoration: "none" }}
-          >
-            Terms of use
-          </a>
+          <Link href="https://thetrustsearch.com/termsAndConditions">
+            <a
+              target="_blank"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              Terms of use
+            </a>
+          </Link>
         </div>
         <div className="col-md-4">
           <div style={{ textAlign: "center" }}>
@@ -236,13 +237,14 @@ const renderFooterBottomSection = () => {
           className="col-md-4"
           style={{ textAlign: "center", color: "#fff" }}
         >
-          <a
-            href="https://thetrustsearch.com/termsAndConditions"
-            target="_blank"
-            style={{ color: "#fff", textDecoration: "none" }}
-          >
-            Privacy policy
-          </a>
+          <Link href="https://thetrustsearch.com/termsAndConditions">
+            <a
+              target="_blank"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              Privacy policy
+            </a>
+          </Link>
         </div>
       </div>
     </div>

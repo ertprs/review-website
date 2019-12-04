@@ -11,6 +11,7 @@ import ReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
+import Link from "next/link";
 
 class TrustedShops extends Component {
   state = {
@@ -185,13 +186,11 @@ class TrustedShops extends Component {
                 {trustedshopsReviewUrl ? (
                   <div className="bold">
                     TrustedShops Review url :
-                    <a
-                      style={{ marginLeft: "10px" }}
-                      href={trustedshopsReviewUrl}
-                      target="_blank"
-                    >
-                      {trustedshopsReviewUrl}
-                    </a>
+                    <Link href={trustedshopsReviewUrl}>
+                      <a style={{ marginLeft: "10px" }} target="_blank">
+                        {trustedshopsReviewUrl}
+                      </a>
+                    </Link>
                   </div>
                 ) : null}
                 {_map(reviews, review => {

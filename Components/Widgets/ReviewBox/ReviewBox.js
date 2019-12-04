@@ -6,6 +6,8 @@ import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import StarRatings from "react-star-ratings";
 import { googleMapsURL } from "../../../utility/config";
+import Link from "next/link";
+
 const renderTextualReviewBox = (
   review,
   reviewRatingStyles,
@@ -20,20 +22,19 @@ const renderTextualReviewBox = (
           {/* {review.name.length > 7
             ? review.name.substring(0, 7) + ".."
             : review.name} */}
-          <a
-            href={`${googleMapsURL}/${domain}`}
-            target="_blank"
-          >
-            <img
-              src="/static/images/googleIcon.png"
-              style={{
-                height: "10px",
-                width: "10px",
-                marginRight: "10px",
-                display: "inline-block"
-              }}
-            />
-          </a>
+          <Link href={`${googleMapsURL}/${domain}`}>
+            <a target="_blank">
+              <img
+                src="/static/images/googleIcon.png"
+                style={{
+                  height: "10px",
+                  width: "10px",
+                  marginRight: "10px",
+                  display: "inline-block"
+                }}
+              />
+            </a>
+          </Link>
           {review.name.replace(/\s+/gim, " ")}
         </div>
         {/* <div className="reviewHeaderDate">
@@ -56,17 +57,18 @@ const renderTextualReviewBox = (
       </div>
       <div className="reviewText">
         <p>
-          <a
-            href={`${googleMapsURL}/${domain}`}
-            target="_blank"
-            style={{ textDecoration: "none", color: "#000" }}
-          >
-            {review.text !== null && review.text
-              ? review.text.length <= 95
-                ? review.text.replace(/\s\s+/g, " ")
-                : review.text.substring(0, 93).replace(/\s\s+/g, " ") + "..."
-              : "no textual review"}
-          </a>
+          <Link href={`${googleMapsURL}/${domain}`}>
+            <a
+              target="_blank"
+              style={{ textDecoration: "none", color: "#000" }}
+            >
+              {review.text !== null && review.text
+                ? review.text.length <= 95
+                  ? review.text.replace(/\s\s+/g, " ")
+                  : review.text.substring(0, 93).replace(/\s\s+/g, " ") + "..."
+                : "no textual review"}
+            </a>
+          </Link>
         </p>
       </div>
     </div>

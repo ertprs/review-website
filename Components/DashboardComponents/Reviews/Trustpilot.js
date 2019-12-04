@@ -11,6 +11,7 @@ import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
 import ReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
+import Link from "next/link";
 
 class Trustpilot extends Component {
   state = {
@@ -178,13 +179,11 @@ class Trustpilot extends Component {
                 {trustpilotReviewUrl ? (
                   <div className="bold">
                     Trustpilot Review url :
-                    <a
-                      style={{ marginLeft: "10px" }}
-                      href={trustpilotReviewUrl}
-                      target="_blank"
-                    >
-                      {trustpilotReviewUrl}
-                    </a>
+                    <Link href={trustpilotReviewUrl}>
+                      <a style={{ marginLeft: "10px" }} target="_blank">
+                        {trustpilotReviewUrl}
+                      </a>
+                    </Link>
                   </div>
                 ) : null}
                 {_map(reviews, review => {

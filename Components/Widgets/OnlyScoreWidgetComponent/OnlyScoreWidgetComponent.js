@@ -75,13 +75,11 @@ const renderStandAloneWidget = requiredData => {
           reviews.
         </div>
         <div>
-          <a
-            href="https://thetrustsearch.com"
-            className="learnMoreLink"
-            target="_blank"
-          >
-            Learn More
-          </a>
+          <Link href="https://thetrustsearch.com">
+            <a className="learnMoreLink" target="_blank">
+              Learn More
+            </a>
+          </Link>
         </div>
       </div>
 

@@ -168,9 +168,9 @@ class BusinessUserLogin extends Component {
             rows="5"
             col="5"
           />
-          <a className="forgotPasswordLink" href="/forgot-password">
-            Forgot password?
-          </a>
+          <Link href="/forgot-password">
+            <a className="forgotPasswordLink">Forgot password?</a>
+          </Link>
           {isLoading ? (
             <div style={{ textAlign: "center" }}>
               <CircularProgress size={30} color="secondary" />
@@ -215,7 +215,4 @@ const mapStateToProps = state => {
   return { auth };
 };
 
-export default connect(
-  mapStateToProps,
-  { businessLogIn }
-)(BusinessUserLogin);
+export default connect(mapStateToProps, { businessLogIn })(BusinessUserLogin);

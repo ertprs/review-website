@@ -319,20 +319,18 @@ const Home = props => {
                   TrustSearch, Ltd
                 </div>
                 <div className="col-md-4 col-lg-4 col-xl-4 second">
-                  <a
-                    href="tel:+37128632492"
-                    style={{ color: "#000", textDecoration: "none" }}
-                  >
-                    +371 28632492
-                  </a>
+                  <NextLink href="tel:+37128632492">
+                    <a style={{ color: "#000", textDecoration: "none" }}>
+                      +371 28632492
+                    </a>
+                  </NextLink>
                 </div>
                 <div className="col-md-4 col-lg-4 col-xl-4 third">
-                  <a
-                    href="mailto:info@thetrustsearch.com"
-                    style={{ color: "#000", textDecoration: "none" }}
-                  >
-                    info@thetrustsearch.com
-                  </a>
+                  <NextLink href="mailto:info@thetrustsearch.com">
+                    <a style={{ color: "#000", textDecoration: "none" }}>
+                      info@thetrustsearch.com
+                    </a>
+                  </NextLink>
                 </div>
               </div>
             </div>
@@ -1236,23 +1234,18 @@ const Home = props => {
               <a className="mobileLink">About us</a>
             </MenuItem>
           </NextLink>
-          <a
-            href="https://b2b.thetrustsearch.com/en/"
-            target="_blank"
-            className="mobileLink"
-          >
-            <MenuItem onClick={handleMobileMenuLeftClose}>Business</MenuItem>
-          </a>
-
-          <a
-            href="https://thetrustsearch.com/termsAndConditions"
-            target="_blank"
-            className="mobileLink"
-          >
-            <MenuItem onClick={handleMobileMenuLeftClose}>
-              Terms &amp; Conditions
-            </MenuItem>
-          </a>
+          <NextLink href="https://b2b.thetrustsearch.com/en/">
+            <a target="_blank" className="mobileLink">
+              <MenuItem onClick={handleMobileMenuLeftClose}>Business</MenuItem>
+            </a>
+          </NextLink>
+          <NextLink href="https://thetrustsearch.com/termsAndConditions">
+            <a target="_blank" className="mobileLink">
+              <MenuItem onClick={handleMobileMenuLeftClose}>
+                Terms &amp; Conditions
+              </MenuItem>
+            </a>
+          </NextLink>
           <div>
             {!authorized || cookie.get("token") !== undefined ? (
               <>
@@ -1637,22 +1630,18 @@ const Home = props => {
             </NextLink>
           </div>
           <div className="hide-sm">
-            <a
-              className={classes.navLinkMobile}
-              href="https://b2b.thetrustsearch.com/en/"
-              target="_blank"
-            >
-              Business
-            </a>
+            <NextLink href="https://b2b.thetrustsearch.com/en/">
+              <a className={classes.navLinkMobile} target="_blank">
+                Business
+              </a>
+            </NextLink>
           </div>
           <div className="hide-sm">
-            <a
-              className={classes.navLinkMobile}
-              href="https://thetrustsearch.com/termsAndConditions"
-              target="_blank"
-            >
-              Terms &amp; Conditions
-            </a>
+            <NextLink href="https://thetrustsearch.com/termsAndConditions">
+              <a className={classes.navLinkMobile} target="_blank">
+                Terms &amp; Conditions
+              </a>
+            </NextLink>
           </div>
           {!authorized || cookie.get("token") === undefined ? (
             <>

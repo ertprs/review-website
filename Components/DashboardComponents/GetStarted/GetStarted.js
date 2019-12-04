@@ -27,6 +27,7 @@ import {
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
+import Link from "next/link";
 
 class GetStarted extends Component {
   state = {
@@ -380,19 +381,18 @@ class GetStarted extends Component {
           </div>
         </div>
         <div className="col-md-5">
-          <a
-            href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708"
-            target="_blank"
-          >
-            {" "}
-            <p>How to create review short link - Watch Video</p>{" "}
-            <div style={{ maxWidth: "300px", height: "auto" }}>
-              <img
-                style={{ maxWidth: "100%", height: "auto" }}
-                src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
-              />
-            </div>
-          </a>
+          <Link href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708">
+            <a target="_blank">
+              {" "}
+              <p>How to create review short link - Watch Video</p>{" "}
+              <div style={{ maxWidth: "300px", height: "auto" }}>
+                <img
+                  style={{ maxWidth: "100%", height: "auto" }}
+                  src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
+                />
+              </div>
+            </a>
+          </Link>
         </div>
       </div>
     );
