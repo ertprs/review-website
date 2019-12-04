@@ -306,10 +306,8 @@ function Dashboard(props) {
   useEffect(() => {
     if (props.queryStep) {
       if (props.queryStep.v) {
-        // console.log(props.queryStep.v, "QUERY_STEP");
         const stepQuery = props.queryStep.v;
         const stepKey = _findKey(dashboardSteps, { name: stepQuery });
-        // console.log(Number(stepKey));
         if (stepKey) {
           if (!menuItemsDisabled && !homeDisabled && !getStartedDisabled) {
             // Current URL is "/"
@@ -357,7 +355,6 @@ function Dashboard(props) {
     const href = `/dashboard?v=${step}`;
     const as = `/dashboard/${step}`;
     Router.push(href, as, { shallow: true });
-    console.log(step, "step");
     setStepToRender(index);
   };
 
