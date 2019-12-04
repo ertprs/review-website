@@ -500,9 +500,9 @@ class Home extends Component {
               </div>
               <div className="reviewBoxItemTextBoxContainer">
                 <div>
-                  <a href={URL} target="_blank">
-                    {URL}
-                  </a>
+                  <Link href={URL}>
+                    <a target="_blank">{URL}</a>
+                  </Link>
                 </div>
                 <div className="reviewBoxRatingContainer">
                   {name === "trustedshopsReviews" ? (
@@ -647,9 +647,9 @@ class Home extends Component {
         </div>
         <div className="reviewBoxItemTextBoxContainer">
           <div>
-            <a href={googleReviewUrl} target="_blank">
-              {address}
-            </a>
+            <Link href={googleReviewUrl}>
+              <a target="_blank">{address}</a>
+            </Link>
           </div>
           <div className="reviewBoxRatingContainer">
             {ratings ? (
@@ -708,11 +708,17 @@ class Home extends Component {
       userActivated,
       changeStepToRender,
       showGetStarted,
-      businessProfile
+      businessProfile,
+      screenshot
     } = this.props;
     const domain = _get(businessProfile, "domain", "");
     let parsed_domain_name = domain.replace(/https:\/\//gim, "");
     parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    const domainScreenshot = screenshot
+      ? screenshot
+      : `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+          Math.random() * 10 + 1
+        )}`;
     return (
       <>
         <style jsx>
@@ -754,11 +760,7 @@ class Home extends Component {
               <SimpleCard>
                 <div className="businessDetailsContainer">
                   <div className="businessDetailsImgContainer">
-                    <img
-                      src={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
-                        Math.random() * 10 + 1
-                      )}`}
-                    />
+                    <img src={domainScreenshot} />
                   </div>
                   <div className="businessDetailsTextContainer">
                     {this.renderBusinessDetails()}
@@ -852,6 +854,11 @@ const mapStateToProps = state => {
     false
   );
   const showGetStarted = _get(dashboardData, "showGetStarted", false);
+  const screenshot = _get(
+    auth,
+    "logIn.userProfile.business_profile.screenshot",
+    ""
+  );
   const totalReviewsOfAllPlatforms =
     _get(dashboardData, "reviews.data.total", 0) +
     _get(dashboardData, "trustedshopsReviews.data.total", 0) +
@@ -904,7 +911,8 @@ const mapStateToProps = state => {
     showGetStarted,
     totalReviewsOfAllPlatforms,
     totalRatingOfAllPlatforms,
-    overallRating
+    overallRating,
+    screenshot
   };
 };
 

@@ -9,6 +9,7 @@ import Snackbar from "../../Widgets/Snackbar";
 import { CircularProgress, Typography } from "@material-ui/core";
 import GoogleReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
+import Link from "next/link";
 
 class GoogleReviewsDs extends Component {
   state = {
@@ -128,13 +129,11 @@ class GoogleReviewsDs extends Component {
                 {businessAddress ? (
                   <div className="bold">
                     Google Direct Review url :
-                    <a
-                      style={{ marginLeft: "10px" }}
-                      href={googleReviewUrl}
-                      target="_blank"
-                    >
-                      {businessAddress}
-                    </a>
+                    <Link href={googleReviewUrl}>
+                      <a style={{ marginLeft: "10px" }} target="_blank">
+                        {businessAddress}
+                      </a>
+                    </Link>
                   </div>
                 ) : null}
 

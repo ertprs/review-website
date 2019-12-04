@@ -27,7 +27,9 @@ const EmailSentForgotPassword = () => {
               <div style={{ display: "flex" }}>
                 <p>
                   Didn't receive the email?&nbsp;
-                  <a href="#">support@thetrustsearch.com</a>
+                  <Link href="#">
+                    <a>support@thetrustsearch.com</a>
+                  </Link>
                 </p>
               </div>
               {loading ? (

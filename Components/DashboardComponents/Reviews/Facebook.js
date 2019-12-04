@@ -185,13 +185,11 @@ class Facebook extends Component {
                 {facebookReviewUrl ? (
                   <div className="bold">
                     Facebook Review url :
-                    <a
-                      style={{ marginLeft: "10px" }}
-                      href={facebookReviewUrl}
-                      target="_blank"
-                    >
-                      {facebookReviewUrl}
-                    </a>
+                    <Link href={facebookReviewUrl}>
+                      <a style={{ marginLeft: "10px" }} target="_blank">
+                        {facebookReviewUrl}
+                      </a>
+                    </Link>
                   </div>
                 ) : null}
                 {_map(reviews, review => {

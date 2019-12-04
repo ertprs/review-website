@@ -6,8 +6,9 @@ import FormField from "../../Widgets/FormField/FormField";
 import Ratings from "react-ratings-declarative";
 import VideoUploadForm from "../../Widgets/VideoUploadForm/VideoUploadForm";
 import UniversalLoader from "../../Widgets/UniversalLoader/UniversalLoader";
-
 import uuid from "uuid/v1";
+import Link from "next/link";
+
 class ProductReviewStepTwo extends React.Component {
   componentDidMount() {
     window.scrollTo(0, 0);
@@ -160,8 +161,14 @@ class ProductReviewStepTwo extends React.Component {
           />{" "}
           {id === "agreement" ? (
             <span>
-              I accept the <a href="/">Terms &amp; conditions</a> and{" "}
-              <a href="/">Privacy Policy.</a>
+              I accept the{" "}
+              <Link href="/">
+                <a>Terms &amp; conditions</a>
+              </Link>{" "}
+              and{" "}
+              <Link href="/">
+                <a>Privacy Policy.</a>
+              </Link>
             </span>
           ) : (
             text
@@ -498,9 +505,9 @@ class ProductReviewStepTwo extends React.Component {
         {/* {this.renderMajorSections()} */}
         {this.checkAlreadyTagged(productsAlreadyTagged, productToRate.id) ===
           undefined ||
-        (reviewSent !== "no" ||
-          videoDataSent !== "no" ||
-          videoUploaded !== "no") ? (
+        reviewSent !== "no" ||
+        videoDataSent !== "no" ||
+        videoUploaded !== "no" ? (
           this.renderMajorSections()
         ) : (
           <div>

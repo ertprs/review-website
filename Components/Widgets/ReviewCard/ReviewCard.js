@@ -6,6 +6,7 @@ import { reviewCardStyles } from "./reviewCardStyles";
 import Img from "react-image";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ImagePlaceholder from "./imagePlaceholder";
+import Link from "next/link";
 
 const getColorImg = image => {
   const imagePath = image.substring(0, image.lastIndexOf("/"));
@@ -53,7 +54,11 @@ const renderReviewCard = (
                 src={avatar}
                 alt="trustsearchlogo"
                 classes="footerTopLogo"
-                style={{ maxWidth: "100%", height: "auto", borderRadius: "50%" }}
+                style={{
+                  maxWidth: "100%",
+                  height: "auto",
+                  borderRadius: "50%"
+                }}
               />
             </div>
           </div>
@@ -249,13 +254,14 @@ const renderReviewCard = (
           </div>
           <div className="productCardDetails">
             <div className="productCardTitle">
-              <a
-                href={`https://${title}`}
-                style={{ color: "black", textDecoration: "none" }}
-                target="_blank"
-              >
-                <h4 style={{ textTransform: "lowercase" }}>{title}</h4>
-              </a>
+              <Link href={`https://${title}`}>
+                <a
+                  style={{ color: "black", textDecoration: "none" }}
+                  target="_blank"
+                >
+                  <h4 style={{ textTransform: "lowercase" }}>{title}</h4>
+                </a>
+              </Link>
             </div>
             <div className="productSubTitle  profileHeaderText">
               <div style={{ ...subTitleStyles }}>{subTitle}</div>

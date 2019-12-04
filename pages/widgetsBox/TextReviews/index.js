@@ -49,9 +49,11 @@ const renderReviewBoxFooter = requiredData => {
             {_get(requiredData, "totalReviews", 0)}
           </span>{" "}
           reviews at{" "}
-          <a href="https://thetrustsearch.com" target="_blank">
-            <img src="/static/images/small_logo.png" alt="logoImg" />
-          </a>
+          <Link href="https://thetrustsearch.com">
+            <a target="_blank">
+              <img src="/static/images/small_logo.png" alt="logoImg" />
+            </a>
+          </Link>
         </div>
         {/* <div className="flexImgContainer">
           

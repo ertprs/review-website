@@ -679,7 +679,7 @@ class GetReviews extends Component {
           selectedPlatform
         ]);
         if (foundPlatform) {
-          shopId = _get(foundPlatform, "type_id", "");
+          shopId = _get(foundPlatform, "id", "");
         }
       }
     }
@@ -1412,8 +1412,8 @@ class GetReviews extends Component {
   handleSliderChange = (e, val, id) => {
     const { reviewInvitationPlatformsData } = this.state;
     const { platforms } = reviewInvitationPlatformsData;
-    if (Number(val) || val==="" || val==="0" || val===0) {
-      val = val !=="" ? Number(val) : 0;
+    if (Number(val) || val === "" || val === "0" || val === 0) {
+      val = val !== "" ? Number(val) : 0;
       this.setState(
         {
           reviewInvitationPlatformsData: {

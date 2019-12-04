@@ -9,6 +9,7 @@ import VerifyEmailModal from "./VerifyEmailModal";
 import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import Link from "next/link";
 
 class SenderInfoForm extends Component {
   state = {
@@ -89,7 +90,9 @@ class SenderInfoForm extends Component {
                 Reply-to Email is the address you’d like your customers to use
                 when replying to your email.{" "}
                 <span>
-                  <a href="#">Need more info?</a>
+                  <Link href="#">
+                    <a>Need more info?</a>
+                  </Link>
                 </span>
               </span>
               <p className="formText">
