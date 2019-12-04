@@ -183,6 +183,11 @@ export default function TrustSearc_API_integrationDocumentation() {
           font-weight: 400;
           letter-spacing: 1px;
         }
+        .flexBoxContainer {
+          display: flex;
+          justify-content: space-between;
+          margin: 10px 0 10px 0;
+        }
         .bold {
           font-weight: bold;
         }
@@ -213,23 +218,51 @@ export default function TrustSearc_API_integrationDocumentation() {
         </span>
       </p>
       <p>
-        <span className="bold heading_text underline">Test Credentials</span>
-        <span className="normal_text">
-          <div>System Identifier: TO BE FILLED </div>
-          <div>Key: TO BE FILLED </div>
-          <div>Base URL:https://api.thetrustsearch.com Endpoint List</div>
-        </span>
+        <div className="bold heading_text underline">Test Credentials</div>
+        <div className="normal_text">
+          <div>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="flexBoxContainer">
+                  <div>System Identifier: </div>
+                  <div>
+                    <b>TO BE FILLED</b>
+                  </div>
+                </div>
+                <div className="flexBoxContainer">
+                  <div>Key:</div>
+                  <div>
+                    <b>TO BE FILLED</b>
+                  </div>
+                </div>
+                <div className="flexBoxContainer">
+                  <div>Base URL:</div>
+                  <div>
+                    <b>https://api.thetrustsearch.com</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </p>
       <MaterialTable
         title="Endpoint List"
         columns={EndpointListTableColumns}
         data={EndpointListTableData}
       />
-      <span>
+      <div
+        style={{
+          marginTop: "15px",
+          color: "blue",
+          fontStyle: "italic",
+          fontSize: "16px"
+        }}
+      >
         * Requests are authorized using a short lived JWT token as received in
         response to authentication request, send it as the header
         ‘Authorization: Bearer {token} in other requests.
-      </span>
+      </div>
       <div className="mt_20">
         <p className="heading_text">
           Plugin should have the following configurable:
@@ -246,11 +279,11 @@ export default function TrustSearc_API_integrationDocumentation() {
         </p>
         <p className="normal_text">
           1. Authenticate (Necessary before every API call to get token)
-          Endpoint: Authentication (POST) Response: token
+          <br /> Endpoint: Authentication (POST) <br /> Response: token
         </p>
         <p className="normal_text">
-          2. Push Order to TrustSearch after checkout process. Endpoint: Push
-          Order (POST)
+          2. Push Order to TrustSearch after checkout process. <br /> Endpoint:
+          Push Order (POST)
         </p>
       </div>
       <p className="heading_text">Sample Request:</p>
