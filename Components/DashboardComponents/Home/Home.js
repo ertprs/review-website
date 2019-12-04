@@ -500,9 +500,9 @@ class Home extends Component {
               </div>
               <div className="reviewBoxItemTextBoxContainer">
                 <div>
-                  <a href={URL} target="_blank">
-                    {URL}
-                  </a>
+                  <Link href={URL}>
+                    <a target="_blank">{URL}</a>
+                  </Link>
                 </div>
                 <div className="reviewBoxRatingContainer">
                   {name === "trustedshopsReviews" ? (
@@ -647,9 +647,9 @@ class Home extends Component {
         </div>
         <div className="reviewBoxItemTextBoxContainer">
           <div>
-            <a href={googleReviewUrl} target="_blank">
-              {address}
-            </a>
+            <Link href={googleReviewUrl}>
+              <a target="_blank">{address}</a>
+            </Link>
           </div>
           <div className="reviewBoxRatingContainer">
             {ratings ? (

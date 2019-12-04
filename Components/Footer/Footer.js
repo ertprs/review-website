@@ -20,17 +20,18 @@ const renderFooterTopSection = () => {
 
         <div className="footerTopSocialLinksContainer">
           <div className="footerTopSocialLink">
-            <a href="https://www.facebook.com/CryptoPolicecom/" target="_blank">
-              <i className="fa fa-facebook" />
-            </a>
+            <Link href="https://www.facebook.com/CryptoPolicecom/">
+              <a target="_blank">
+                <i className="fa fa-facebook" />
+              </a>
+            </Link>
           </div>
           <div className="footerTopSocialLink">
-            <a
-              href="https://www.linkedin.com/company/trustsearch/"
-              target="_blank"
-            >
-              <i className="fa fa-linkedin" />
-            </a>
+            <Link href="https://www.linkedin.com/company/trustsearch/">
+              <a target="_blank">
+                <i className="fa fa-linkedin" />
+              </a>
+            </Link>
           </div>
           {/* <div className="footerTopSocialLink">
             <a href="/">
@@ -110,9 +111,9 @@ const renderFooterMiddleSection = () => {
                 </div>
                 <div className="footerMiddleSectionLinks">
                   <div>
-                    <a href="https://thetrustsearch.com" target="_blank">
-                      Check website reputation
-                    </a>
+                    <Link href="https://thetrustsearch.com">
+                      <a target="_blank">Check website reputation</a>
+                    </Link>
                   </div>
                   {/* <div>
                   <a href="/">Get rewards</a>
@@ -133,9 +134,9 @@ const renderFooterMiddleSection = () => {
                 </div>
                 <div className="footerMiddleSectionLinks">
                   <div>
-                    <a href="https://thetrustsearch.com/about" target="_blank">
-                      Contact
-                    </a>
+                    <Link href="https://thetrustsearch.com/about">
+                      <a target="_blank">Contact</a>
+                    </Link>
                   </div>
                   <div>
                     <Link href="/termsAndConditions">

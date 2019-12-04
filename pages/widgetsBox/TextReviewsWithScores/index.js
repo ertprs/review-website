@@ -165,18 +165,20 @@ const renderWidget = (reviewData, settings, domain) => {
       </style>
       {/* <div className="widgetBox"> */}
       <div className="widgetImgContainer">
-        <a href="https://thetrustsearch.com" target="_blank">
-          <img
-            src="/static/business/index/images/gradientLogo.png"
-            alt="logo"
-            style={{
-              maxWidth: "100%",
-              height: "57%",
-              margin: "0 auto",
-              display: "block"
-            }}
-          />
-        </a>
+        <Link href="https://thetrustsearch.com">
+          <a target="_blank">
+            <img
+              src="/static/business/index/images/gradientLogo.png"
+              alt="logo"
+              style={{
+                maxWidth: "100%",
+                height: "57%",
+                margin: "0 auto",
+                display: "block"
+              }}
+            />
+          </a>
+        </Link>
       </div>
       {requiredData.totalReviews !== "" && requiredData.totalReviews > 0 ? (
         <div className="reviewHeader">

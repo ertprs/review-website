@@ -4,6 +4,7 @@ import { onlyScoreWidgetComponentStyles } from "./onlyScoreWidgetComponentStyles
 import StarRatings from "react-star-ratings";
 import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { ratingColor } from "../../../utility/ratingTypeColor";
+import Link from "next/link";
 
 const renderStandAloneWidget = requiredData => {
   return (
@@ -86,13 +87,15 @@ const renderStandAloneWidget = requiredData => {
 
       <div>
         <div className="widgetImgContainer">
-          <a href="https://thetrustsearch.com" target="_blank">
-            <img
-              src="/static/business/index/images/gradientLogo.png"
-              alt="logo"
-              className="widgetImg"
-            />
-          </a>
+          <Link href="https://thetrustsearch.com">
+            <a target="_blank">
+              <img
+                src="/static/business/index/images/gradientLogo.png"
+                alt="logo"
+                className="widgetImg"
+              />
+            </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -195,16 +198,18 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
               : "carouselWidgetImgContainerV"
           }`}
         >
-          <a href="https://thetrustsearch.com" target="_blank">
-            <img
-              src="/static/business/index/images/gradientLogo.png"
-              alt="logo"
-              style={{
-                maxWidth: "100%",
-                height: "100%"
-              }}
-            />
-          </a>
+          <Link href="https://thetrustsearch.com">
+            <a target="_blank">
+              <img
+                src="/static/business/index/images/gradientLogo.png"
+                alt="logo"
+                style={{
+                  maxWidth: "100%",
+                  height: "100%"
+                }}
+              />
+            </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Snackbar from "../../Widgets/Snackbar";
 import sendgridTemaplateIds from "../../../utility/constants/sendgridTemaplateIds";
 import _filter from "lodash/get";
+import Link from "next/link";
 
 class SendInvitations extends Component {
   state = {
@@ -72,9 +73,9 @@ class SendInvitations extends Component {
             <div className="col-md-6">
               {item.key ===
               "Send your customers to this website to write their review" ? (
-                <a href={item.value} target="_blank">
-                  {businessAddress}
-                </a>
+                <Link href={item.value}>
+                  <a target="_blank">{businessAddress}</a>
+                </Link>
               ) : (
                 item.value
               )}
