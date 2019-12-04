@@ -5,6 +5,7 @@ import ArrowRight from "@material-ui/icons/ArrowRight";
 import { CircularProgress } from "@material-ui/core";
 import _get from "lodash/get";
 import { areFieldsTouched } from "../../../../../utility/commonFunctions";
+import Link from "next/link";
 
 class Generic extends Component {
   renderFormFields = () => {
@@ -62,7 +63,9 @@ class Generic extends Component {
       <div>
         <div style={{ marginBottom: "25px" }}>
           <h4>Integrate TrustSearch api form : </h4>
-          <a href="/">Documentation</a>
+          <Link href="/TrustSearc_API_integrationDocumentation">
+            <a target="_blank">Documentation</a>
+          </Link>
         </div>
         {this.renderFormFields()}
         <div className="form-group" style={{ textAlign: "right" }}>
