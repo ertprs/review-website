@@ -216,7 +216,7 @@ class TrustedShops extends Component {
           className={`${
             isLoading ||
             success == false ||
-            total === 0 ||
+            total < 11 ||
             reviews === 0 ||
             areTrustedShopsReviewsFetching ||
             showDelay
