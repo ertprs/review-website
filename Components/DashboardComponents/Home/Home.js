@@ -43,9 +43,8 @@ class Home extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props !== prevProps) {
-      const { success, socialArray } = this.props;
-      const socialArrayPrev = _get(prevProps, "socialArray", []);
+    const { success, socialArray } = this.props;
+    if (success !== prevProps.success) {
       let snackbarMsg = "";
       if (success === true) {
         snackbarMsg = "Mail sent successfully, Please verify your email.";
