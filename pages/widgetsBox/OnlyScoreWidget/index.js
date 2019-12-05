@@ -34,44 +34,78 @@ const renderOnlyScoreWidgetComponent = (reviewData, props) => {
   }
 };
 
-const OnlyScoreWidget = props => {
-  let initState = {};
-  const [parentState, setParentState] = useState(initState);
-  const [reviewData, setReviewData] = useState({});
+class OnlyScoreWidget extends React.Component {
+  state = {
+    reviewData: {}
+  };
 
-  useEffect(() => {
-    if (props.domain !== undefined) {
-      axios
-        .get(
-          `${process.env.BASE_URL}/api/reviews/domain?perPage=17&page=1&domain=${props.domain}`
-        )
-        .then(res => {
-          if (!isEmpty(res.data)) setReviewData({ ...res.data });
-        })
-        .catch(error => {
-          // console.log(err);
-          let success = _get(error, "response.data.success", false);
-          if (!success) {
-            setReviewData({ rating: "0", reviews: [], total: 0, next: "" });
-          }
-        });
+  componentDidMount() {
+    const platformId = _get(this.props, "platformId", 0);
+    let requestURL = "";
+    if (platformId === "0") {
+      requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}`;
+    } else {
+      requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}&platform=${platformId}`;
     }
-  }, []);
-  return (
-    <>
-      {props.variant !== "carousel" ? <></> : <></>}
-      {renderOnlyScoreWidgetComponent(reviewData, props)}
-    </>
-  );
-};
+    axios
+      .get(requestURL)
+      .then(res => {
+        if (platformId === 0 || platformId === "0") {
+          if (!isEmpty(res.data)) {
+            const reviews = _get(res, "data.reviews", []);
+            if (reviews && Array.isArray(reviews)) {
+              if (reviews.length > 0) {
+                this.setState({ reviewData: { ...res.data } });
+              } else {
+                this.setState({ reviewData: { noReviewFound: true } });
+              }
+            }
+          }
+        } else {
+          if (!isEmpty(res.data)) {
+            if (!isEmpty(res.data.data)) {
+              const reviews = _get(res, "data.data.reviews", []);
+              if (reviews && Array.isArray(reviews)) {
+                if (reviews.length > 0) {
+                  this.setState({
+                    reviewData: { ...res.data.data, url: res.data.url }
+                  });
+                } else {
+                  this.setState({ reviewData: { noReviewFound: true } });
+                }
+              }
+            }
+          }
+        }
+      })
+      .catch(error => {
+        this.setState({ reviewData: { success: false } });
+        let success = _get(error, "response.data.success", false);
+        if (!success) {
+          this.setState({
+            reviewData: { rating: "0", reviews: [], total: 0, next: "" }
+          });
+        }
+      });
+  }
+
+  render() {
+    return (
+      <>
+        {this.props.variant !== "carousel" ? <></> : <></>}
+        {renderOnlyScoreWidgetComponent(this.state.reviewData, this.props)}
+      </>
+    );
+  }
+}
 
 OnlyScoreWidget.getInitialProps = async ({ query }) => {
   if (query) {
     const searchURL = query.businessunitId
       ? `${query.businessunitId}`
       : "google.com";
-    console.log(searchURL, "searchURL");
-    return { domain: searchURL };
+    const platformId = (await query.platformId) ? `${query.platformId}` : 0;
+    return { domain: searchURL, platformId };
   }
 };
 

@@ -186,6 +186,48 @@ class AutomaticInvitation extends Component {
             }
           }
         },
+        BCC: {
+          name: {
+            element: "input",
+            type: "text",
+            value: _get(this.props, "availablePlatformsData.BCC.name", ""),
+            placeholder: "Name",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "name",
+            id: "name",
+            labelText: "Enter name"
+          },
+          bccSender: {
+            element: "input",
+            type: "email",
+            value: _get(this.props, "availablePlatformsData.BCC.bccSender", ""),
+            placeholder: "Bcc email",
+            touched: false,
+            valid: false,
+            errorMessage: "",
+            name: "bccSender",
+            id: "bccSender",
+            labelText:
+              "Add BCC to your customer's email (test@bcctest.thetrustsearch.com)"
+          },
+          locale: {
+            element: "select",
+            name: "locale",
+            value: _get(this.props, "availablePlatformsData.BCC.locale", ""),
+            options: [...Languages],
+            placeholder: "Select your language",
+            valid: false,
+            touched: false,
+            errorMessage: "",
+            id: "locale",
+            labelText: "Select your locale",
+            validationRules: {
+              required: true
+            }
+          }
+        },
         showCredentialModal: false
       }
     };

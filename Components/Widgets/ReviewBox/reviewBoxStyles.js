@@ -22,7 +22,8 @@ export const reviewBoxStyles = css`
   }
   .reviewHeader .reviewHeaderDate {
     text-align: right;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
+    flex:1;
   }
 
   .reviewHeaderTitle {

@@ -35,7 +35,8 @@
       dataBusinessUnitId: container.getAttribute("data-businessunit-id"),
       dataStyleHeight: container.getAttribute("data-style-height") || "200px",
       dataStyleWidth: container.getAttribute("data-style-width") || "500px",
-      dataTheme: container.getAttribute("data-theme") || "default"
+      dataTheme: container.getAttribute("data-theme") || "default",
+      platformId: container.getAttribute("data-platform-id") || "0"
     });
   }
 
@@ -50,7 +51,7 @@
       widgetProps.dataLocale
     }&styleHeight=${widgetProps.dataStyleHeight}&styleWidth=${
       widgetProps.dataStyleWidth
-    }&stars=${5}`;
+    }&stars=${5}&platformId=${widgetProps.platformId}`;
 
     trustFrame.style.cssText = `position:relative;height:${widgetProps.dataStyleHeight}; width:${widgetProps.dataStyleWidth};borderStyle:none;display:block;overflow:hidden`;
     // trustFrame.onload = function() {

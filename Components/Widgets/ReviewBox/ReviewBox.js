@@ -5,42 +5,62 @@ import ReviewCard from "../ReviewCard/ReviewCard";
 import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import StarRatings from "react-star-ratings";
-import { googleMapsURL } from "../../../utility/config";
+import moment from "moment";
+import {widgetsLogoConstants} from "../../../utility/constants/widgetsLogoConstants";
+import _get from 'lodash/get';
 import Link from "next/link";
 
 const renderTextualReviewBox = (
   review,
   reviewRatingStyles,
   reviewHeaderStyles,
-  domain
+  domain,
+  platformId,
+  redirectURL
 ) => {
+  let name = review.name.replace(/\s+/gim, " ");
+  let text = _get(review, "text", "") || _get(review, "review", "");
+  let date = _get(review, "date", "");
+  let logo = "";
+  let logoTitle = "";
+  if(widgetsLogoConstants[Number(platformId)]){
+    logo = widgetsLogoConstants[Number(platformId)].imageLogo;
+    logoTitle = widgetsLogoConstants[Number(platformId)].name;
+  }
+  if (name) {
+    let parsedName = name.split(" ");
+    if (parsedName[0]) {
+      name = parsedName[0];
+      if (parsedName[1]) {
+        name = name + " " + parsedName[1][0] + ".";
+      }
+    }
+  }
   return (
     <div>
       <style jsx>{reviewBoxStyles}</style>
       <div className="reviewHeader" style={{ ...reviewHeaderStyles }}>
         <div className="reviewHeaderTitle">
-          {/* {review.name.length > 7
-            ? review.name.substring(0, 7) + ".."
-            : review.name} */}
-          <Link href={`${googleMapsURL}/${domain}`}>
+          <Link href={redirectURL}>
             <a target="_blank">
               <img
-                src="/static/images/googleIcon.png"
+                src={`/static/images/${logo}`}
                 style={{
                   height: "10px",
                   width: "10px",
                   marginRight: "10px",
                   display: "inline-block"
                 }}
+                title={logoTitle}
               />
             </a>
           </Link>
-          {review.name.replace(/\s+/gim, " ")}
+          {name}
         </div>
-        {/* <div className="reviewHeaderDate">
-          {stringHelpers("shortenMonths", review.date)}
-          In the css change flex-basis to 50%
-        </div> */}
+        <div className="reviewHeaderDate" style={{textAlign:"right"}}>
+          {/* {stringHelpers("shortenMonths", review.date)} */}
+          {date ? moment(date).format("DD/MM/YYYY") : null}
+        </div>
       </div>
       <div className="reviewRatings" style={{ ...reviewRatingStyles }}>
         <div>
@@ -57,15 +77,15 @@ const renderTextualReviewBox = (
       </div>
       <div className="reviewText">
         <p>
-          <Link href={`${googleMapsURL}/${domain}`}>
+          <Link href={redirectURL}>
             <a
               target="_blank"
               style={{ textDecoration: "none", color: "#000" }}
             >
-              {review.text !== null && review.text
-                ? review.text.length <= 95
-                  ? review.text.replace(/\s\s+/g, " ")
-                  : review.text.substring(0, 93).replace(/\s\s+/g, " ") + "..."
+              {text.replace(/\s+/gim, " ") !== null && text
+                ? text.length <= 95
+                  ? text.replace(/\s\s+/g, " ")
+                  : text.substring(0, 80).replace(/\s\s+/g, " ") + "..."
                 : "no textual review"}
             </a>
           </Link>
@@ -188,7 +208,9 @@ const ReviewBox = props => {
         props.review,
         props.reviewRatingStyles,
         props.reviewHeaderStyles,
-        props.domain
+        props.domain,
+        props.platformId,
+        props.redirectURL
       )}
     </div>
   );
