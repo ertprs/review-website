@@ -193,6 +193,7 @@ class GetWidgetsCode extends Component {
                     data-theme="light"
                     style="position: relative;
                     overflow: hidden;"
+                    data-platform-id="0"
                     ></div> 
                 `}</code>
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
