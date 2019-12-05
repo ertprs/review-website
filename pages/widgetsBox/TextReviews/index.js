@@ -10,6 +10,7 @@ import { layoutStyles } from "../../../style";
 import Head from "next/head";
 import _get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
+import Link from "next/link";
 
 const retrieveRequiredData = reviewData => {
   const ratings = Number(_get(reviewData, "rating", 0));

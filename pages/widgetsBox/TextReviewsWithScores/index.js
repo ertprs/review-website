@@ -9,7 +9,7 @@ import Head from "next/head";
 import uuid from "uuid/v1";
 import { layoutStyles } from "../../../style";
 import axios from "axios";
-
+import Link from "next/link";
 import _get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { googleMapsURL } from "../../../utility/config";
