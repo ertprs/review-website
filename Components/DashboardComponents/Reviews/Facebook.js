@@ -11,6 +11,7 @@ import ReviewCard from "../../Widgets/CommonReviewCard";
 import NoReviewsFound from "./noReviewsFound";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
+import Link from "next/link";
 
 class Facebook extends Component {
   state = {
