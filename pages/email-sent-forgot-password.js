@@ -3,6 +3,7 @@ import { authenticationPageStyles } from "../Components/Styles/authenticationPag
 import Layout from "../hoc/layout/layout";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Router from "next/router";
+import Link from "next/link";
 
 const redirectToLogin = setLoading => {
   setLoading(true);
