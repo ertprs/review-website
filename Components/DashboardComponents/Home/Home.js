@@ -884,7 +884,7 @@ const mapStateToProps = state => {
   const noOfPlatforms = 4;
   const max_rating = 5;
   //! this rating is calculated for max_rating 5
-  const overallRating = (totalRatingOfAllPlatforms / noOfPlatforms).toFixed(2);
+  const overallRating = (totalRatingOfAllPlatforms / noOfPlatforms).toFixed(1);
   return {
     reviewsData,
     quotaDetails,
