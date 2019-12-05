@@ -373,12 +373,7 @@ class Home extends Component {
   };
 
   renderBusinessDetails = () => {
-    const {
-      businessProfile,
-      userProfile,
-      setGetStartedShow,
-      showGetStarted
-    } = this.props;
+    const { businessProfile, userProfile, showGetStarted } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
@@ -386,19 +381,6 @@ class Home extends Component {
 
     return (
       <div className="businessDetailsContainer">
-        <div className="editBtnContainer">
-          <Button
-            color="primary"
-            variant="contained"
-            size="small"
-            startIcon={<EditIcon />}
-            onClick={() => {
-              setGetStartedShow(!showGetStarted);
-            }}
-          >
-            Edit
-          </Button>
-        </div>
         <style jsx>
           {`
             .bold {
@@ -769,9 +751,26 @@ class Home extends Component {
               </SimpleCard>
             </Grid>
             {(this.props.socialArray || []).length > 0 ? (
-              <Grid item xs={12} md={12} lg={12}>
-                <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
-              </Grid>
+              <>
+                <Grid item xs={6} md={6} lg={6}>
+                  <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
+                </Grid>
+                <Grid item xs={6} md={6} lg={6}>
+                  <div style={{ textAlign: "right" }}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      startIcon={<EditIcon />}
+                      onClick={() => {
+                        this.props.setGetStartedShow(!showGetStarted);
+                      }}
+                    >
+                      Edit All
+                    </Button>
+                  </div>
+                </Grid>
+              </>
             ) : null}
             {this.renderReviewURLBoxes()}
           </Grid>
