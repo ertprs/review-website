@@ -4,11 +4,11 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Home from "@material-ui/icons/Home";
-import AllInbox from "@material-ui/icons/AllInbox";
-import FormatQuote from "@material-ui/icons/FormatQuote";
+import RateReview from "@material-ui/icons/RateReview";
+import InsertInvitation from "@material-ui/icons/InsertInvitation";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import UserProfileIcon from "@material-ui/icons/AccountCircleSharp";
-import LayersIcon from "@material-ui/icons/Layers";
+import WidgetsOutlined from "@material-ui/icons/WidgetsOutlined";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import HistoryIcon from "@material-ui/icons/History";
@@ -74,7 +74,7 @@ export const MainListItems = ({
       >
         <Tooltip title="Reviews" placement="right">
           <ListItemIcon>
-            <AllInbox />
+            <RateReview />
           </ListItemIcon>
         </Tooltip>
         <ListItemText primary="Reviews" />
@@ -89,7 +89,7 @@ export const MainListItems = ({
       >
         <Tooltip title="Get Reviews" placement="right">
           <ListItemIcon>
-            <FormatQuote />
+            <InsertInvitation />
           </ListItemIcon>
         </Tooltip>
         <ListItemText primary="Get Reviews" />
@@ -119,7 +119,7 @@ export const MainListItems = ({
       >
         <Tooltip title="Widgets" placement="right">
           <ListItemIcon>
-            <LayersIcon />
+            <WidgetsOutlined />
           </ListItemIcon>
         </Tooltip>
         <ListItemText primary="Widgets" />
