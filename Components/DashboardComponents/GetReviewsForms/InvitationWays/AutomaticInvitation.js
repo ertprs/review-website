@@ -210,7 +210,7 @@ class AutomaticInvitation extends Component {
             name: "bccSender",
             id: "bccSender",
             labelText:
-              "Add BCC to your customer's email (test@bcctest.thetrustsearch.com)"
+              `Add BCC to your customer's email (${process.env.BCC_EMAIL})`
           },
           locale: {
             element: "select",
