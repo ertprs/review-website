@@ -8,7 +8,7 @@ const renderFooterTopSection = () => {
       <style jsx>{footerStyles}</style>
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
-          <div style={{ width: "176.04px", height: "45.99px" }}>
+          <div style={{ width: "176.04px"}}>
             <img
               src="/static/images/logo_footer.png"
               alt="trustsearchlogo"
