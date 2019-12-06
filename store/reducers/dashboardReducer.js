@@ -26,8 +26,33 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_DIRECT_REVIEW_URL,
-  SET_REVIEWS_PUSHER_CONNECT
+  SET_REVIEWS_PUSHER_CONNECT,
+  UPDATE_COMPANY_DETAILS_INIT,
+  UPDATE_COMPANY_DETAILS_SUCCESS,
+  UPDATE_COMPANY_DETAILS_ERROR,
+  EMPTY_COMPANY_DETAILS,
+  UPDATE_USER_DETAILS_INIT,
+  UPDATE_USER_DETAILS_SUCCESS,
+  UPDATE_USER_DETAILS_ERROR,
+  EMPTY_USER_DETAILS,
+  UPDATE_DOMAIN_DETAILS_INIT,
+  UPDATE_DOMAIN_DETAILS_SUCCESS,
+  UPDATE_DOMAIN_DETAILS_ERROR,
+  EMPTY_DOMAIN_DETAILS,
+  FETCH_THIRD_PARTY_REVIEWS_INIT,
+  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+  SET_REVIEWS_OBJECT_WITH_PUSHER,
+  SHOW_GET_STARTED,
+  POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+  POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+  GET_AVAILABLE_PLATFORMS_INIT,
+  GET_AVAILABLE_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_PLATFORMS_FAILURE,
+  REQUEST_INSTALLATION_INIT,
+  REQUEST_INSTALLATION_SUCCESS,
+  REQUEST_INSTALLATION_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -45,10 +70,17 @@ const dashboardReducer = (state = {}, action) => {
     campaignLanguage,
     parsedCampaignLanguage,
     emailTemplate,
-    googleDirectReviewUrl,
-    businessAddress,
     isReviewsPusherConnected,
-    googlePlaceId
+    reviewsObject,
+    companyDetails,
+    userDetails,
+    domainDetails,
+    thirdPartyReviews,
+    showGetStarted,
+    reviewURLToEdit,
+    configDetails,
+    availablePlatforms,
+    requestInstallation
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -221,15 +253,6 @@ const dashboardReducer = (state = {}, action) => {
         emailTemplate
       };
     }
-    case SET_GOOGLE_DIRECT_REVIEW_URL: {
-      return {
-        ...state,
-        type,
-        googleDirectReviewUrl,
-        businessAddress,
-        googlePlaceId
-      };
-    }
     case SET_REVIEWS_PUSHER_CONNECT: {
       return {
         ...state,
@@ -237,6 +260,142 @@ const dashboardReducer = (state = {}, action) => {
         isReviewsPusherConnected
       };
     }
+    case SET_REVIEWS_OBJECT_WITH_PUSHER: {
+      return {
+        ...state,
+        type,
+        reviewsObject: { ...state.reviewsObject, ...reviewsObject }
+      };
+    }
+    case UPDATE_COMPANY_DETAILS_INIT: {
+      return {
+        ...state,
+        type,
+        companyDetails
+      };
+    }
+    case UPDATE_COMPANY_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        type,
+        companyDetails
+      };
+    }
+    case UPDATE_COMPANY_DETAILS_ERROR: {
+      return {
+        ...state,
+        type,
+        companyDetails
+      };
+    }
+    case EMPTY_COMPANY_DETAILS: {
+      return {
+        ...state,
+        type,
+        companyDetails: {}
+      };
+    }
+    case UPDATE_USER_DETAILS_INIT: {
+      return {
+        ...state,
+        type,
+        userDetails
+      };
+    }
+    case UPDATE_USER_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        type,
+        userDetails
+      };
+    }
+    case UPDATE_USER_DETAILS_ERROR: {
+      return {
+        ...state,
+        type,
+        userDetails
+      };
+    }
+    case EMPTY_USER_DETAILS: {
+      return {
+        ...state,
+        type,
+        userDetails: {}
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_INIT: {
+      return {
+        ...state,
+        type,
+        domainDetails
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        type,
+        domainDetails
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_ERROR: {
+      return {
+        ...state,
+        type,
+        domainDetails
+      };
+    }
+    case EMPTY_DOMAIN_DETAILS: {
+      return {
+        ...state,
+        type,
+        domainDetails: {}
+      };
+    }
+    case FETCH_THIRD_PARTY_REVIEWS_INIT:
+      return { ...state, type, ...thirdPartyReviews };
+    case FETCH_THIRD_PARTY_REVIEWS_SUCCESS:
+      return { ...state, type, ...thirdPartyReviews };
+    case FETCH_THIRD_PARTY_REVIEWS_FAILURE:
+      return { ...state, type, ...thirdPartyReviews };
+    case SHOW_GET_STARTED: {
+      return { ...state, type, showGetStarted, reviewURLToEdit };
+    }
+    case POST_AUTOMATIC_INVITATION_CONFIG_INIT: {
+      return { ...state, type, configDetails };
+    }
+    case POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS: {
+      return { ...state, type, configDetails };
+    }
+    case POST_AUTOMATIC_INVITATION_CONFIG_FAILURE: {
+      return { ...state, type, configDetails };
+    }
+    case GET_AVAILABLE_PLATFORMS_INIT: {
+      return { ...state, type, availablePlatforms };
+    }
+    case GET_AVAILABLE_PLATFORMS_SUCCESS: {
+      return { ...state, type, availablePlatforms };
+    }
+    case GET_AVAILABLE_PLATFORMS_FAILURE: {
+      return { ...state, type, availablePlatforms };
+    }
+    case REQUEST_INSTALLATION_INIT:
+      return {
+        ...state,
+        type,
+        requestInstallation
+      };
+    case REQUEST_INSTALLATION_SUCCESS:
+      return {
+        ...state,
+        type,
+        requestInstallation
+      };
+    case REQUEST_INSTALLATION_FAILURE:
+      return {
+        ...state,
+        type,
+        requestInstallation
+      };
     default:
       return state;
   }

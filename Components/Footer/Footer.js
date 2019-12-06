@@ -1,6 +1,5 @@
 import React from "react";
 import footerStyles from "./footerStyles";
-import AmpImgWrapper from "../AmpWrappers/AmpImgWrapper";
 import Link from "next/link";
 
 const renderFooterTopSection = () => {
@@ -9,30 +8,30 @@ const renderFooterTopSection = () => {
       <style jsx>{footerStyles}</style>
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
-          <AmpImgWrapper
-            src="/static/images/logo_footer.png"
-            alt="trustsearchlogo"
-            classes="footerTopLogo"
-            width="176.04"
-            height="45.99"
-            layout="responsive"
-            imgContainerStyles={{ width: "176.04px", height: "45.99px" }}
-          ></AmpImgWrapper>
+          <div style={{ width: "176.04px"}}>
+            <img
+              src="/static/images/logo_footer.png"
+              alt="trustsearchlogo"
+              classes="footerTopLogo"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          </div>
         </div>
 
         <div className="footerTopSocialLinksContainer">
           <div className="footerTopSocialLink">
-            <a href="https://www.facebook.com/CryptoPolicecom/" target="_blank">
-              <i className="fa fa-facebook" />
-            </a>
+            <Link href="https://www.facebook.com/CryptoPolicecom/">
+              <a target="_blank">
+                <i className="fa fa-facebook" />
+              </a>
+            </Link>
           </div>
           <div className="footerTopSocialLink">
-            <a
-              href="https://www.linkedin.com/company/trustsearch/"
-              target="_blank"
-            >
-              <i className="fa fa-linkedin" />
-            </a>
+            <Link href="https://www.linkedin.com/company/trustsearch/">
+              <a target="_blank">
+                <i className="fa fa-linkedin" />
+              </a>
+            </Link>
           </div>
           {/* <div className="footerTopSocialLink">
             <a href="/">
@@ -52,13 +51,14 @@ const renderFooterTopSection = () => {
           </button>
         </div> */}
         <div className="footerTopLocalizationContainer">
-          <a
-            href="https://thetrustsearch.com/termsAndConditions"
-            target="_blank"
-            style={{ color: "#fff", textDecoration: "none" }}
-          >
-            Terms and Conditions
-          </a>
+          <Link href="https://thetrustsearch.com/termsAndConditions">
+            <a
+              target="_blank"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              Terms and Conditions
+            </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -71,40 +71,46 @@ const renderFooterMiddleSection = () => {
       <style jsx>{footerStyles}</style>
       <div className="footerContainerInner">
         <div className="container">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="footerMiddleLinksSection">
-              <div>
-                <h3 className="footerMiddleSectionHeading">For Business</h3>
-              </div>
-              <div className="footerMiddleSectionLinks">
+          <div className="row">
+            <div className="col-md-3">
+              <div className="footerMiddleLinksSection">
                 <div>
-                  <a href="https://thetrustsearch.com/registration#business" target="_blank">Claim your ownership</a>
+                  <h3 className="footerMiddleSectionHeading">For Business</h3>
                 </div>
-                {/* <div>
+                <div className="footerMiddleSectionLinks">
+                  <div>
+                    <Link href="https://thetrustsearch.com/registration#business">
+                      <a target="_blank">Claim your ownership</a>
+                    </Link>
+                  </div>
+                  {/* <div>
                   <a href="/">Engage your community</a>
                 </div> */}
-                {/* <div>
+                  {/* <div>
                   <a href="/">Receive alerts</a>
                 </div> */}
-                <div>
-                  <a href="https://thetrustsearch.com/business" target="_blank">Plans &amp; Pricing</a>
+                  <div>
+                    <Link href="https://thetrustsearch.com/business">
+                      <a target="_blank">Plans &amp; Pricing</a>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="footerMiddleLinksSection">
-              <div>
-                <h3 className="footerMiddleSectionHeading">
-                  For Internet users
-                </h3>
-              </div>
-              <div className="footerMiddleSectionLinks">
+            <div className="col-md-3">
+              <div className="footerMiddleLinksSection">
                 <div>
-                  <a href="https://thetrustsearch.com" target="_blank">Check website reputation</a>
+                  <h3 className="footerMiddleSectionHeading">
+                    For Internet users
+                  </h3>
                 </div>
-                {/* <div>
+                <div className="footerMiddleSectionLinks">
+                  <div>
+                    <Link href="https://thetrustsearch.com">
+                      <a target="_blank">Check website reputation</a>
+                    </Link>
+                  </div>
+                  {/* <div>
                   <a href="/">Get rewards</a>
                 </div>
                 <div>
@@ -113,49 +119,51 @@ const renderFooterMiddleSection = () => {
                 <div>
                   <a href="/">Referral program</a>
                 </div> */}
-              </div>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="footerMiddleLinksSection">
-              <div>
-                <h3 className="footerMiddleSectionHeading">Helpful Links</h3>
-              </div>
-              <div className="footerMiddleSectionLinks">
-                <div>
-                  <a href="https://thetrustsearch.com/about" target="_blank">Contact</a>
-                </div>
-                <div>
-                  <Link href="/termsAndConditions">
-                    <a>Privacy policy</a>
-                  </Link>
-                </div>
-                <div>
-                  <Link href="/termsAndConditions">
-                    <a>Terms of use</a>
-                  </Link>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="footerMiddleLinksSection">
-              <div>
-                <h3 className="footerMiddleSectionHeading">Account</h3>
+            <div className="col-md-3">
+              <div className="footerMiddleLinksSection">
+                <div>
+                  <h3 className="footerMiddleSectionHeading">Helpful Links</h3>
+                </div>
+                <div className="footerMiddleSectionLinks">
+                  <div>
+                    <Link href="https://thetrustsearch.com/about">
+                      <a target="_blank">Contact</a>
+                    </Link>
+                  </div>
+                  <div>
+                    <Link href="/termsAndConditions">
+                      <a>Privacy policy</a>
+                    </Link>
+                  </div>
+                  <div>
+                    <Link href="/termsAndConditions">
+                      <a>Terms of use</a>
+                    </Link>
+                  </div>
+                </div>
               </div>
-              <div className="footerMiddleSectionLinks">
-              <Link href="/login">
+            </div>
+            <div className="col-md-3">
+              <div className="footerMiddleLinksSection">
+                <div>
+                  <h3 className="footerMiddleSectionHeading">Account</h3>
+                </div>
+                <div className="footerMiddleSectionLinks">
+                  <Link href="/login">
                     <a>Login</a>
-              </Link>
-                <div>
-                <Link href="/registration">
-                    <a>Register</a>
                   </Link>
+                  <div>
+                    <Link href="/registration">
+                      <a>Register</a>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         </div>
         {/* {renderNewsLetter()} */}
       </div>

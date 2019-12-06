@@ -28,8 +28,16 @@ import {
   RESEND_ACTIVATION_LINK_SUCCESS,
   RESEND_ACTIVATION_LINK_FAILURE,
   SET_USER_ACTIVATED,
-  SET_BUSINESS_SUBSCRIPTION
+  SET_BUSINESS_SUBSCRIPTION,
+  UPDATE_COMPANY_DETAILS_SUCCESS,
+  UPDATE_USER_DETAILS_SUCCESS,
+  UPDATE_DOMAIN_DETAILS_SUCCESS,
+  UPDATE_AUTH_SOCIAL_ARRAY,
+  SET_GOOGLE_PLACES,
+  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS
 } from "../actions/actionTypes";
+import { stat } from "fs";
 
 const authReducer = (state = {}, action) => {
   const {
@@ -46,7 +54,13 @@ const authReducer = (state = {}, action) => {
     businessSignUpTemp,
     resendActivation,
     userActivated,
-    isSubscriptionExpired
+    isSubscriptionExpired,
+    companyDetails,
+    userDetails,
+    domainDetails,
+    socialArray,
+    googlePlaces,
+    ecommerceIntegrations
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -215,6 +229,106 @@ const authReducer = (state = {}, action) => {
         ...state,
         type,
         isSubscriptionExpired: isSubscriptionExpired || false
+      };
+    }
+    case UPDATE_COMPANY_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            company: {
+              ...state.logIn.userProfile.company,
+              ...companyDetails.data
+            }
+          }
+        },
+        type
+      };
+    }
+    case UPDATE_USER_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            ...userDetails.data,
+            company: {
+              ...state.logIn.userProfile.company
+            }
+          }
+        },
+        type
+      };
+    }
+    case UPDATE_DOMAIN_DETAILS_SUCCESS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              ...domainDetails.data
+            }
+          }
+        },
+        type
+      };
+    }
+    case UPDATE_AUTH_SOCIAL_ARRAY: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              social: [...socialArray]
+            }
+          }
+        },
+        type
+      };
+    }
+    case SET_GOOGLE_PLACES: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              google_places: {
+                ...state.logIn.userProfile.business_profile.google_places,
+                ...googlePlaces
+              }
+            }
+          }
+        }
+      };
+    }
+    case UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              integrations: {
+                ...state.logIn.userProfile.business_profile.integrations,
+                ecommerce: [...ecommerceIntegrations]
+              }
+            }
+          }
+        }
       };
     }
     case LOGOUT:

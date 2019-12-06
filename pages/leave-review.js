@@ -550,8 +550,14 @@ class LeaveReview extends React.Component {
           />{" "}
           {id === "agreement" ? (
             <span>
-              I accept the <a href="/">Terms &amp; conditions</a> and{" "}
-              <a href="/">Privacy Policy.</a>
+              I accept the{" "}
+              <Link href="/">
+                <a>Terms &amp; conditions</a>
+              </Link>{" "}
+              and{" "}
+              <Link href="/">
+                <a>Privacy Policy.</a>
+              </Link>
             </span>
           ) : (
             text

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import AmpImgWrapper from "../../AmpWrappers/AmpImgWrapper";
 import RatingsBadge from "../RatingsBadge/RatingsBadge";
 import RatingIndicators from "../RatingIndicators/RatingIndicators";
 import uuid from "uuid/v1";
@@ -7,6 +6,7 @@ import { reviewCardStyles } from "./reviewCardStyles";
 import Img from "react-image";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ImagePlaceholder from "./imagePlaceholder";
+import Link from "next/link";
 
 const getColorImg = image => {
   const imagePath = image.substring(0, image.lastIndexOf("/"));
@@ -50,18 +50,11 @@ const renderReviewCard = (
           <style jsx>{reviewCardStyles}</style>
           <div className="reviewProfilePic">
             <div className="reviewPicContainer">
-              <AmpImgWrapper
+              <img
                 src={avatar}
-                alt="avatar"
+                alt="trustsearchlogo"
+                classes="footerTopLogo"
                 style={{
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "50%"
-                }}
-                layout="responsive"
-                height={ampImgHeight}
-                width={ampImgWidth}
-                ampImgStyles={{
                   maxWidth: "100%",
                   height: "auto",
                   borderRadius: "50%"
@@ -261,13 +254,14 @@ const renderReviewCard = (
           </div>
           <div className="productCardDetails">
             <div className="productCardTitle">
-              <a
-                href={`https://${title}`}
-                style={{ color: "black", textDecoration: "none" }}
-                target="_blank"
-              >
-                <h4 style={{ textTransform: "lowercase" }}>{title}</h4>
-              </a>
+              <Link href={`https://${title}`}>
+                <a
+                  style={{ color: "black", textDecoration: "none" }}
+                  target="_blank"
+                >
+                  <h4 style={{ textTransform: "lowercase" }}>{title}</h4>
+                </a>
+              </Link>
             </div>
             <div className="productSubTitle  profileHeaderText">
               <div style={{ ...subTitleStyles }}>{subTitle}</div>

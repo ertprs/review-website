@@ -3,6 +3,7 @@ import { authenticationPageStyles } from "../Components/Styles/authenticationPag
 import Layout from "../hoc/layout/layout";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Router from "next/router";
+import Link from "next/link";
 
 const redirectToLogin = setLoading => {
   setLoading(true);
@@ -27,7 +28,9 @@ const EmailSentForgotPassword = () => {
               <div style={{ display: "flex" }}>
                 <p>
                   Didn't receive the email?&nbsp;
-                  <a href="#">support@thetrustsearch.com</a>
+                  <Link href="#">
+                    <a>support@thetrustsearch.com</a>
+                  </Link>
                 </p>
               </div>
               {loading ? (

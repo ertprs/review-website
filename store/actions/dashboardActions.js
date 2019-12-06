@@ -26,21 +26,53 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_DIRECT_REVIEW_URL,
-  SET_REVIEWS_PUSHER_CONNECT
+  SET_GOOGLE_PLACES,
+  UPDATE_COMPANY_DETAILS_INIT,
+  UPDATE_COMPANY_DETAILS_SUCCESS,
+  UPDATE_COMPANY_DETAILS_ERROR,
+  EMPTY_COMPANY_DETAILS,
+  UPDATE_USER_DETAILS_INIT,
+  UPDATE_USER_DETAILS_SUCCESS,
+  UPDATE_USER_DETAILS_ERROR,
+  EMPTY_USER_DETAILS,
+  UPDATE_DOMAIN_DETAILS_INIT,
+  UPDATE_DOMAIN_DETAILS_SUCCESS,
+  UPDATE_DOMAIN_DETAILS_ERROR,
+  EMPTY_DOMAIN_DETAILS,
+  SET_REVIEWS_PUSHER_CONNECT,
+  FETCH_THIRD_PARTY_REVIEWS_INIT,
+  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+  SET_REVIEWS_OBJECT_WITH_PUSHER,
+  SHOW_GET_STARTED,
+  POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+  POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
+  REQUEST_INSTALLATION_INIT,
+  REQUEST_INSTALLATION_SUCCESS,
+  REQUEST_INSTALLATION_FAILURE
 } from "./actionTypes";
+import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
 import cookie from "js-cookie";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import { iconNames } from "../../utility/constants/socialMediaConstants";
 import {
   upgradePremiumApi,
   transactionHistoryApi,
   createCampaignApi,
   fetchCampaignLanguageApi,
-  fetchEmailTemplateApi
+  fetchEmailTemplateApi,
+  updateCompanyDetailsApi,
+  updateUserDetailsApi,
+  updateDomainDetailsApi,
+  thirdPartyDataApi,
+  eCommerceIntegrationApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
+import _findIndex from "lodash/findIndex";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -49,10 +81,14 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
+//! It is used to fetch only google reviews, don't get confused by it's name
+
 export const fetchReviews = (token, page, perPage) => {
   const pageNo = page || 1;
   const perPageLimit = perPage || 10;
   return async (dispatch, getState) => {
+    let { dashboardData } = getState();
+    let reviewsObject = _get(dashboardData, "reviewsObject", {});
     dispatch({
       type: FETCH_REVIEWS_DATA_INIT,
       reviews: {
@@ -70,19 +106,23 @@ export const fetchReviews = (token, page, perPage) => {
       });
       let success = false;
       let reviews = _get(result, "data.reviews", []);
+      reviewsObject["google"] = false;
+      dispatch(setReviewsObjectWithPusher(reviewsObject));
       if (!_isEmpty(reviews) && Array.isArray(reviews)) {
         success = true;
       }
       dispatch({
         type: FETCH_REVIEWS_DATA_SUCCESS,
         reviews: {
-          data: { ...result.data },
+          data: _get(result, "data", {}),
           isFetching: false,
           error: "",
           success
         }
       });
     } catch (err) {
+      reviewsObject["google"] = false;
+      dispatch(setReviewsObjectWithPusher(reviewsObject));
       const success = _get(err, "response.data.success", false);
       const error = _get(err, "response.data.error", "Some Error Occured.");
       dispatch({
@@ -160,7 +200,8 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       });
       if (success) {
         // dispatch(fetchReviews(token));
-        cookie.set("placeLocated", true);
+        cookie.set("placeLocated", true, { expires: 7 });
+        dispatch(updateAuthSocialArray(data));
       }
     } catch (error) {
       dispatch({
@@ -178,7 +219,6 @@ export const locatePlaceByPlaceId = (data, token, url) => {
 };
 
 export const upgradeToPremium = data => {
-  console.log(data, "data");
   return async (dispatch, getState) => {
     const { auth } = getState() | {};
     let token = _get(auth, "logIn.token", "");
@@ -266,7 +306,6 @@ export const clearCampaignData = data => {
 };
 
 export const createCampaign = data => {
-  console.log(data, "craete campaign data");
   const token = localStorage.getItem("token");
   return async dispatch => {
     dispatch({
@@ -333,9 +372,7 @@ export const fetchCampaignLanguage = token => {
       });
       let locales = _get(result, "data.locales", {});
       if (!_isEmpty(locales)) {
-        console.log(locales, "locales");
         const data = createCampaignLanguage(locales);
-        console.log(data, "data is here");
         dispatch(setCampaignLanguage(data));
       }
       dispatch({
@@ -406,15 +443,80 @@ export const fetchEmailTemplate = templateId => {
           errorMsg: ""
         }
       });
-      console.log(result.data, "result");
     } catch (error) {
-      console.log(error.response.data, "error");
       dispatch({
         type: FETCH_EMAIL_TEMPLATE_FAILURE,
         emailTemplate: {
           isLoading: false,
           success: "false",
           template: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occurred. Please try again later."
+          )
+        }
+      });
+    }
+  };
+};
+
+export const setGooglePlaces = data => {
+  return {
+    type: SET_GOOGLE_PLACES,
+    googlePlaces: { ...data }
+  };
+};
+
+export const setReviewsPusherConnect = isReviewsPusherConnected => {
+  return {
+    type: SET_REVIEWS_PUSHER_CONNECT,
+    isReviewsPusherConnected
+  };
+};
+
+export const setReviewsObjectWithPusher = reviewsObject => {
+  return {
+    type: SET_REVIEWS_OBJECT_WITH_PUSHER,
+    reviewsObject: { ...reviewsObject }
+  };
+};
+
+export const updateCompanyDetails = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: UPDATE_COMPANY_DETAILS_INIT,
+      companyDetails: {
+        isLoading: true,
+        success: "undefined",
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${updateCompanyDetailsApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      dispatch({
+        type: UPDATE_COMPANY_DETAILS_SUCCESS,
+        companyDetails: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          data: _get(result, "data.data", {}),
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: UPDATE_COMPANY_DETAILS_ERROR,
+        companyDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
           errorMsg: _get(
             error,
             "response.data.error.message",
@@ -426,22 +528,324 @@ export const fetchEmailTemplate = templateId => {
   };
 };
 
-export const setGoogleDirectReviewUrl = (
-  googleDirectReviewUrl,
-  businessAddress,
-  googlePlaceId
-) => {
+export const emptyCompanyDetails = () => {
   return {
-    type: SET_GOOGLE_DIRECT_REVIEW_URL,
-    googleDirectReviewUrl,
-    businessAddress,
-    googlePlaceId
+    type: EMPTY_COMPANY_DETAILS
   };
 };
 
-export const setReviewsPusherConnect = isReviewsPusherConnected => {
+export const updateUserDetails = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: UPDATE_USER_DETAILS_INIT,
+      userDetails: {
+        isLoading: true,
+        success: "undefined",
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${updateUserDetailsApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      let success = _get(result, "data.success", false);
+      if (success) {
+        dispatch({
+          type: UPDATE_USER_DETAILS_SUCCESS,
+          userDetails: {
+            isLoading: false,
+            success: _get(result, "data.success", false),
+            data,
+            errorMsg: ""
+          }
+        });
+      } else {
+        dispatch({
+          type: UPDATE_USER_DETAILS_ERROR,
+          userDetails: {
+            isLoading: false,
+            success: false,
+            data: {},
+            errorMsg: "Some error occured. Please try again later."
+          }
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: UPDATE_USER_DETAILS_ERROR,
+        userDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please try again later."
+          )
+        }
+      });
+    }
+  };
+};
+
+export const emptyUserDetails = () => {
   return {
-    type: SET_REVIEWS_PUSHER_CONNECT,
-    isReviewsPusherConnected
+    type: EMPTY_USER_DETAILS
+  };
+};
+
+export const updateDomainDetails = data => {
+  let token = localStorage.getItem("token");
+  return async dispatch => {
+    dispatch({
+      type: UPDATE_DOMAIN_DETAILS_INIT,
+      domainDetails: {
+        isLoading: true,
+        success: "undefined",
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${updateDomainDetailsApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      const response = {
+        domain: _get(result, "data.data.fullName", "")
+      };
+      dispatch({
+        type: UPDATE_DOMAIN_DETAILS_SUCCESS,
+        domainDetails: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          data: response,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: UPDATE_USER_DETAILS_ERROR,
+        domainDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please try again later."
+          )
+        }
+      });
+    }
+  };
+};
+
+export const emptyDomainDetails = () => {
+  return {
+    type: EMPTY_DOMAIN_DETAILS
+  };
+};
+
+export const getThirdPartyReviews = (socialAppId, domainId) => {
+  //! here appName is used to set the value to trus for doamins whose reviews are successfully fetched to stop the loader in rviews sections
+
+  if (socialAppId && domainId) {
+    let appName = "";
+    if (iconNames.hasOwnProperty(socialAppId)) {
+      if (iconNames) {
+        appName = iconNames[socialAppId].name;
+      }
+    }
+    return async (dispatch, getState) => {
+      let socialAppName = `${iconNames[socialAppId].name}Reviews`;
+      let { dashboardData } = getState();
+      let reviewsObject = _get(dashboardData, "reviewsObject", {});
+
+      dispatch({
+        type: FETCH_THIRD_PARTY_REVIEWS_INIT,
+        thirdPartyReviews: {
+          [socialAppName]: {
+            isLoading: true,
+            success: undefined,
+            errorMsg: "",
+            data: {}
+          }
+        }
+      });
+      try {
+        const result = await axios.get(
+          `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
+        );
+        let success = false;
+        let reviews = _get(result, "data.data.reviews", []);
+        if (reviews) {
+          if (!_isEmpty(reviews) && Array.isArray(reviews)) {
+            success = true;
+          }
+        }
+        reviewsObject[appName] = false;
+        dispatch(setReviewsObjectWithPusher(reviewsObject));
+        dispatch({
+          type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+          thirdPartyReviews: {
+            [socialAppName]: {
+              isLoading: false,
+              success,
+              errorMsg: "",
+              data: _get(result, "data.data", {})
+            }
+          }
+        });
+      } catch (error) {
+        reviewsObject[appName] = false;
+        dispatch(setReviewsObjectWithPusher(reviewsObject));
+        dispatch({
+          type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+          thirdPartyReviews: {
+            [socialAppName]: {
+              isLoading: false,
+              success: false,
+              errorMsg: _get(
+                error,
+                "response.data.message",
+                "Unable to fetch reviews!"
+              ),
+              data: {}
+            }
+          }
+        });
+      }
+    };
+  }
+};
+
+export const setGetStartedShow = (show, reviewURLToEdit) => {
+  return {
+    type: SHOW_GET_STARTED,
+    showGetStarted: show,
+    reviewURLToEdit
+  };
+};
+
+export const sendConfigData = data => {
+  let token = localStorage.getItem("token");
+  return async (dispatch, getState) => {
+    const { auth } = getState();
+    const ecommerceIntegrations = _get(
+      auth,
+      "logIn.userProfile.business_profile.integrations.ecommerce",
+      []
+    );
+    dispatch({
+      type: POST_AUTOMATIC_INVITATION_CONFIG_INIT,
+      configDetails: {
+        isLoading: true,
+        success: undefined,
+        data: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      let result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${eCommerceIntegrationApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data
+      });
+      let resultData = _get(result, "data.shop", "");
+      if (resultData) {
+        if (ecommerceIntegrations) {
+          if (
+            Array.isArray(ecommerceIntegrations) &&
+            !_isEmpty(ecommerceIntegrations)
+          ) {
+            let indexOfPlatformInIntegrations = _findIndex(
+              ecommerceIntegrations,
+              ["type", _get(resultData, "type", "")]
+            );
+            if (indexOfPlatformInIntegrations !== -1) {
+              ecommerceIntegrations[indexOfPlatformInIntegrations] = {
+                ...resultData
+              };
+            } else {
+              ecommerceIntegrations.push(resultData);
+            }
+            dispatch({
+              type: UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
+              ecommerceIntegrations
+            });
+          }
+        }
+      }
+      dispatch({
+        type: POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
+        configDetails: {
+          isLoading: false,
+          success: _get(result, "data.success", false),
+          resultData,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
+        configDetails: {
+          isLoading: false,
+          success: false,
+          data: {},
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occured. Please choose another method of invitation."
+          )
+        }
+      });
+    }
+  };
+};
+
+export const requestInstallation = data => {
+  return async (dispatch, getState) => {
+    const { auth } = getState() | {};
+    let token = _get(auth, "logIn.token", "");
+    dispatch({
+      type: REQUEST_INSTALLATION_INIT,
+      requestInstallation: {
+        success: undefined,
+        isLoading: true
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url: `${process.env.BASE_URL}${upgradePremiumApi}`
+      });
+      const success = await _get(result, "data.success", false);
+      dispatch({
+        type: REQUEST_INSTALLATION_SUCCESS,
+        requestInstallation: {
+          success,
+          isLoading: false
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: REQUEST_INSTALLATION_FAILURE,
+        requestInstallation: {
+          success: false,
+          isLoading: false
+        }
+      });
+    }
   };
 };

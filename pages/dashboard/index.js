@@ -27,7 +27,8 @@ import {
 import { logOut } from "../../store/actions/authActions";
 import {
   upgradeToPremium,
-  fetchReviews
+  fetchReviews,
+  getThirdPartyReviews
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -139,24 +140,24 @@ const WidgetsShowCase = dynamic(
   }
 );
 
-// const UserProfile = dynamic(
-//   () => import("../../Components/DashboardComponents/UserProfile"),
-//   {
-//     loading: () => (
-//       <div
-//         style={{
-//           width: "100%",
-//           height: "80vh",
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center"
-//         }}
-//       >
-//         <p>Loading.....</p>
-//       </div>
-//     )
-//   }
-// );
+const UserProfile = dynamic(
+  () => import("../../Components/DashboardComponents/UserProfile"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
 
 const drawerWidth = 240;
 
@@ -260,10 +261,12 @@ function Dashboard(props) {
   const [parentState, setParentState] = useState(initState);
 
   let userName = "";
-  if (_get(props, "userName", "").length > 0) {
-    let nameAfterSplit = _get(props, "userName", "").split(" ");
-    if (nameAfterSplit.length > 0) {
-      userName = nameAfterSplit[0];
+  if (_get(props, "userName", "")) {
+    if (_get(props, "userName", "").length > 0) {
+      let nameAfterSplit = _get(props, "userName", "").split(" ");
+      if (nameAfterSplit.length > 0) {
+        userName = nameAfterSplit[0];
+      }
     }
   }
   let getStartedHide = false;
@@ -300,19 +303,43 @@ function Dashboard(props) {
     }
   }
 
-  useEffect(() => {
-    if (props.queryStep) {
-      if (props.queryStep.v) {
-        // console.log(props.queryStep.v, "QUERY_STEP");
-        const stepQuery = props.queryStep.v;
-        const stepKey = _findKey(dashboardSteps, { name: stepQuery });
-        // console.log(Number(stepKey));
+  const changePageWithUrl = () => {
+    let url = window.location.href;
+    let urlSplit = url.split("/");
+    let stepQuery = urlSplit[urlSplit.length - 1];
+    if (stepQuery) {
+      const stepKey = _findKey(dashboardSteps, { name: stepQuery });
+      if (stepKey) {
         if (!menuItemsDisabled && !homeDisabled && !getStartedDisabled) {
           // Current URL is "/"
           const href = `/dashboard?v=${stepQuery}`;
           const as = `/dashboard/${stepQuery}`;
           Router.push(href, as, { shallow: true });
           setStepToRender(Number(stepKey));
+        }
+      } else {
+        window.location.href = "/dashboard/home";
+      }
+    } else {
+      window.location.href = "/dashboard/home";
+    }
+  };
+
+  useEffect(() => {
+    if (props.queryStep) {
+      if (props.queryStep.v) {
+        const stepQuery = props.queryStep.v;
+        const stepKey = _findKey(dashboardSteps, { name: stepQuery });
+        if (stepKey) {
+          if (!menuItemsDisabled && !homeDisabled && !getStartedDisabled) {
+            // Current URL is "/"
+            const href = `/dashboard?v=${stepQuery}`;
+            const as = `/dashboard/${stepQuery}`;
+            Router.push(href, as, { shallow: true });
+            setStepToRender(Number(stepKey));
+          }
+        } else {
+          window.location.href = "/dashboard/home";
         }
       }
     }
@@ -326,6 +353,13 @@ function Dashboard(props) {
       setSnackbarMsg("Request Sent Successfully!");
     }
   }, [upgradeToPremiumRes]);
+
+  useEffect(() => {
+    window.addEventListener("popstate", changePageWithUrl);
+    return () => {
+      window.removeEventListener("popstate", changePageWithUrl);
+    };
+  }, []);
 
   const handleMenuItemClicked = index => {
     const step = dashboardSteps[index].name;
@@ -350,7 +384,6 @@ function Dashboard(props) {
     const href = `/dashboard?v=${step}`;
     const as = `/dashboard/${step}`;
     Router.push(href, as, { shallow: true });
-    console.log(step, "step");
     setStepToRender(index);
   };
 
@@ -378,11 +411,11 @@ function Dashboard(props) {
     5: {
       name: "widgets",
       componentToRender: <WidgetsShowCase />
+    },
+    6: {
+      name: "userProfile",
+      componentToRender: <UserProfile />
     }
-    // 6: {
-    //   name: "userProfile",
-    //   componentToRender: <UserProfile />
-    // }
   };
 
   const renderAppropriateComponent = pId => {
@@ -407,8 +440,8 @@ function Dashboard(props) {
     setShowSnackbar(true);
     setSnackbarVariant("success");
     setSnackbarMsg("Logout Successfully!");
+    // Router.push("/");
     props.logOut();
-    Router.push("/");
   };
 
   const clickToUpgradeHandler = () => {
@@ -428,22 +461,27 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
+  const { domainId, getThirdPartyReviews } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
-      {placeLocated &&
+      {/* {placeLocated &&
       props.domain !== "" &&
-      props.reviews.length === 0 &&
-      props.isReviewsPusherConnected === true ? (
+      props.reviews.length === 0 && */}
+      {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
           onChildStateChange={newState => {
             setParentState({ ...parentState, ...newState });
             const fetchSuccess = _get(newState, "response.success", false);
-            console.log(fetchSuccess, "fetchSuccess");
-            if (fetchSuccess) {
+            const reviewsCount = _get(newState, "response.reviewCount", 0);
+            if (reviewsCount > 0 && fetchSuccess) {
               fetchReviews(token);
             }
+          }}
+          onAggregatorDataChange={data => {
+            let socialAppId = _get(data, "response.socialAppId", 0);
+            getThirdPartyReviews(socialAppId, domainId);
           }}
         />
       ) : null}
@@ -559,6 +597,7 @@ const mapStateToProps = state => {
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const reviews = _get(dashboardData, "reviews.data.reviews", []);
   const token = _get(auth, "logIn.token", "");
+  const domainId = _get(auth, "logIn.userProfile.business_profile.domainId", 0);
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",
@@ -606,12 +645,14 @@ const mapStateToProps = state => {
     reviews,
     token,
     isSubscriptionExpired,
-    isReviewsPusherConnected
+    isReviewsPusherConnected,
+    domainId
   };
 };
 
 export default connect(mapStateToProps, {
   logOut,
   upgradeToPremium,
-  fetchReviews
+  fetchReviews,
+  getThirdPartyReviews
 })(Dashboard);

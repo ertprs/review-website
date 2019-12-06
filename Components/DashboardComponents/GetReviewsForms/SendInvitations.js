@@ -9,6 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Snackbar from "../../Widgets/Snackbar";
 import sendgridTemaplateIds from "../../../utility/constants/sendgridTemaplateIds";
 import _filter from "lodash/get";
+import Link from "next/link";
 
 class SendInvitations extends Component {
   state = {
@@ -48,9 +49,7 @@ class SendInvitations extends Component {
   };
 
   renderInfoCards = data => {
-    const { businessAddress, businessAddressFirstTime } = this.props;
-    const businessAdd =
-    businessAddressFirstTime !=="" ? businessAddressFirstTime : businessAddress;
+    const { businessAddress } = this.props;
     return data.map(item => {
       return (
         <div className="renderInfoContainer" key={uuid()}>
@@ -74,9 +73,9 @@ class SendInvitations extends Component {
             <div className="col-md-6">
               {item.key ===
               "Send your customers to this website to write their review" ? (
-                <a href={item.value} target="_blank">
-                  {businessAdd}
-                </a>
+                <Link href={item.value}>
+                  <a target="_blank">{businessAddress}</a>
+                </Link>
               ) : (
                 item.value
               )}
@@ -97,14 +96,12 @@ class SendInvitations extends Component {
       entity,
       emailSubject,
       googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime,
       googlePlaceId,
       domain
     } = this.props;
     const googleReviewUrl =
-      googleDirectReviewUrl === ""
-        ? googleDirectReviewUrlFirstTime
-        : googleDirectReviewUrl;
+      googleDirectReviewUrl ||
+      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
     let campaignLanguageArr = sendgridTemaplateIds.filter(template => {
       return template.value === campaignLanguage;
     });
@@ -266,18 +263,16 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.google_places.directReviewUrl",
     ""
   );
-  const googleDirectReviewUrlFirstTime = _get(
-    dashboardData,
-    "googleDirectReviewUrl",
-    ""
-  );
   const businessAddress = _get(
     auth,
     "logIn.userProfile.business_profile.google_places.address",
     ""
   );
-  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
-  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  let googlePlaceId = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.placeId",
+    ""
+  );
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   return {
     campaignName,
@@ -291,9 +286,7 @@ const mapStateToProps = state => {
     success,
     errorMsg,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime,
     businessAddress,
-    businessAddressFirstTime,
     googlePlaceId,
     domain
   };

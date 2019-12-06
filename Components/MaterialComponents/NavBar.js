@@ -22,7 +22,9 @@ import { GoogleLogout } from "react-google-login";
 import { connect } from "react-redux";
 import { logOut } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
+import SearchBoxSuggestion from "../../Components/Widgets/SuggestionBox";
 import _get from "lodash/get";
+import cookie from "js-cookie";
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -68,11 +70,6 @@ const useStyles = makeStyles(theme => ({
       textDecoration: "none"
     }
   },
-  // navLink:{
-  //   color:"#fff",
-  //   textDecoration:"none",
-  //   padding:"25px"
-  // },
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
@@ -151,10 +148,12 @@ function PrimarySearchAppBar(props) {
   let userName = "";
   if (userProfile) {
     if (userProfile.hasOwnProperty("name")) {
-      if (userProfile.name.length > 0) {
-        let nameAfterSplit = userProfile.name.split(" ");
-        if (nameAfterSplit.length > 0) {
-          userName = nameAfterSplit[0];
+      if (userProfile.name) {
+        if (userProfile.name.length > 0) {
+          let nameAfterSplit = userProfile.name.split(" ");
+          if (nameAfterSplit.length > 0) {
+            userName = nameAfterSplit[0];
+          }
         }
       }
     }
@@ -237,12 +236,13 @@ function PrimarySearchAppBar(props) {
       open={isProfileMenuOpen}
       onClose={handleProfileMenuClose}
     >
-      {authorized && loginType === 4 ? (
+      {authorized && loginType === 4 && cookie.get("token") !== undefined ? (
         <Link href="/dashboard">
           <MenuItem onClick={handleMenuClose}>Dashboard</MenuItem>
         </Link>
       ) : null}
-      {loginType === 1 || loginType === 2 ? (
+      {(loginType === 1 || loginType === 2) &&
+      cookie.get("token") !== undefined ? (
         <Link href="">
           <MenuItem>
             <a onClick={() => handleLogout()}>Logout</a>
@@ -251,7 +251,7 @@ function PrimarySearchAppBar(props) {
       ) : (
         ""
       )}
-      {loginType === 3 ? (
+      {loginType === 3 && cookie.get("token") !== undefined ? (
         <GoogleLogout
           clientId={process.env.GOOGLE_CLIENT_ID}
           buttonText="Logout"
@@ -267,7 +267,7 @@ function PrimarySearchAppBar(props) {
       ) : (
         ""
       )}
-      {loginType === 4 ? (
+      {loginType === 4 && cookie.get("token") !== undefined ? (
         <Link href="">
           <MenuItem>
             <a onClick={() => handleLogout()}>Logout</a>
@@ -313,16 +313,13 @@ function PrimarySearchAppBar(props) {
       </Link>
 
       <div>
-        <MenuItem>
-          <a
-            href="https://b2b.thetrustsearch.com/en/"
-            className={classes.navLinkMobile}
-          >
-            Business
-          </a>
-        </MenuItem>
+        <Link href="https://b2b.thetrustsearch.com/en/">
+          <MenuItem>
+            <a className={classes.navLinkMobile}>Business</a>
+          </MenuItem>
+        </Link>
       </div>
-      {!authorized ? (
+      {!authorized || cookie.get("token") === undefined ? (
         <>
           <Link href="/login">
             <MenuItem>
@@ -342,14 +339,15 @@ function PrimarySearchAppBar(props) {
               <a className={classes.navLinkMobile}>Dashboard</a>
             </MenuItem>
           </Link>
-          {loginType === 1 || loginType === 2 ? (
+          {(loginType === 1 || loginType === 2) &&
+          cookie.get("token") !== undefined ? (
             <Link href="/">
               <MenuItem onClick={() => handleLogout()}>
                 <a className={classes.navLinkMobile}>Logout</a>
               </MenuItem>
             </Link>
           ) : null}
-          {loginType === 3 ? (
+          {loginType === 3 && cookie.get("token") !== undefined ? (
             <Link href="/">
               <MenuItem>
                 <a onClick={() => handleLogout()} className={classes.navLink}>
@@ -358,7 +356,7 @@ function PrimarySearchAppBar(props) {
               </MenuItem>
             </Link>
           ) : null}
-          {loginType === 4 ? (
+          {loginType === 4 && cookie.get("token") !== undefined ? (
             <Link href="/">
               <MenuItem>
                 <a onClick={() => handleLogout()} className={classes.navLink}>
@@ -430,7 +428,7 @@ function PrimarySearchAppBar(props) {
             <Link href="https://b2b.thetrustsearch.com/en/">
               <a className={classes.navLink}>Business</a>
             </Link>
-            {!authorized ? (
+            {!authorized || cookie.get("token") === undefined ? (
               <>
                 <Link href="/login">
                   <a className={classes.navLink}>Login</a>
@@ -449,7 +447,7 @@ function PrimarySearchAppBar(props) {
                       handleProfileMenuOpen(e);
                     }}
                   >
-                    <span>{userName}</span>
+                    <span>{userName ? `Hello, ${userName}` : ""}</span>
                   </span>
                 </Link>
                 {renderProfileMenu}
@@ -471,6 +469,12 @@ function PrimarySearchAppBar(props) {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {searchBoxValue.length > 0 ? (
+        <SearchBoxSuggestion
+          searchBoxVal={searchBoxValue}
+          handleSearchSuggestionClick={hitDomainApi}
+        />
+      ) : null}
       <Snackbar
         open={showSnackbar}
         variant="success"

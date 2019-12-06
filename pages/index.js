@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { indexPageStyles } from "../Components/Styles/indexPageStyles";
-import SearchBox from "../Components/Widgets/SearchBox/SearchBox";
-import WebStats from "../Components/Widgets/WebStats/WebStats";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import MenuIcon from "@material-ui/icons/Menu";
 import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Button from "@material-ui/core/Button";
-import Head from "next/head";
 import Router from "next/router";
 import uuid from "uuid/v1";
-import { CircularProgress } from "@material-ui/core";
-import Layout from "../hoc/layout/layout";
 import SearchInput from "../Components/MaterialComponents/SearchInput";
 import SearchBoxSuggestion from "../Components/Widgets/SuggestionBox";
 import { connect } from "react-redux";
@@ -22,13 +14,12 @@ import { startLoading } from "../store/actions/loaderAction";
 import { GoogleLogout } from "react-google-login";
 import { logOut } from "../store/actions/authActions";
 import SubscriptionPlanCard from "../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
+import cookie from "js-cookie";
 import {
   Link,
-  DirectLink,
   Element,
   Events,
   animateScroll as scroll,
-  scrollSpy,
   scroller
 } from "react-scroll";
 import _get from "lodash/get";
@@ -129,23 +120,6 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
-
-const renderWebStats = () => {
-  let statsData = [
-    { header: "1,800,000,000", caption: "Active website worldwide" },
-    { header: "42,000,000", caption: "Business websites on the Internet" },
-    { header: "4,383,810,342", caption: "Internet users" }
-  ];
-
-  return statsData.map(dataItem => {
-    return (
-      <div className="homeWebStatItem" key={uuid()}>
-        <style jsx>{indexPageStyles}</style>
-        <WebStats {...dataItem} />
-      </div>
-    );
-  });
-};
 
 const Home = props => {
   const [showSnackbar, setShowSnacbar] = useState(false);
@@ -250,7 +224,7 @@ const Home = props => {
                 margin-bottom: 30px;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .logoImgContainer {
                 max-width: 330px;
               }
@@ -316,7 +290,7 @@ const Home = props => {
               margin-bottom:5%;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .footer{
               font-size: 1.2em;
             }
@@ -345,20 +319,18 @@ const Home = props => {
                   TrustSearch, Ltd
                 </div>
                 <div className="col-md-4 col-lg-4 col-xl-4 second">
-                  <a
-                    href="tel:+37128632492"
-                    style={{ color: "#000", textDecoration: "none" }}
-                  >
-                    +371 28632492
-                  </a>
+                  <NextLink href="tel:+37128632492">
+                    <a style={{ color: "#000", textDecoration: "none" }}>
+                      +371 28632492
+                    </a>
+                  </NextLink>
                 </div>
                 <div className="col-md-4 col-lg-4 col-xl-4 third">
-                  <a
-                    href="mailto:info@thetrustsearch.com"
-                    style={{ color: "#000", textDecoration: "none" }}
-                  >
-                    info@thetrustsearch.com
-                  </a>
+                  <NextLink href="mailto:info@thetrustsearch.com">
+                    <a style={{ color: "#000", textDecoration: "none" }}>
+                      info@thetrustsearch.com
+                    </a>
+                  </NextLink>
                 </div>
               </div>
             </div>
@@ -445,7 +417,7 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .reviewSteptext {
                 font-size: 1.2em;
               }
@@ -645,7 +617,7 @@ const Home = props => {
               padding: 4% 12% 4% 12%;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .arrangeMeetingBtn {
               font-size: 1.2em;
             }
@@ -800,7 +772,7 @@ const Home = props => {
                 font-size: 0.85rem;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .arrangeMeetingBtn {
                 font-size: 1.3em;
               }
@@ -826,20 +798,20 @@ const Home = props => {
           <div className="widgetImageContainer">
             <div>
               <img
-                src="/static/images/7.png"
+                src="/static/images/review_for_page.svg"
                 style={{ maxWidth: "100%", height: "auto" }}
               />
             </div>
           </div>
-          <div className="widgetSmallImageContainerUpper">
+          {/* <div className="widgetSmallImageContainerUpper">
             <img
               src="/static/images/small_9b.png"
               style={{ maxWidth: "100%", height: "auto" }}
             />
-          </div>
+          </div> */}
           <div className="widgetSmallImageContainerLower">
             <img
-              src="/static/images/small_9c.png"
+              src="/static/images/review_for_page_mob.svg"
               style={{ maxWidth: "100%", height: "auto" }}
             />
           </div>
@@ -909,7 +881,7 @@ const Home = props => {
               text-align: center;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .widgetAddStepText {
               font-size: 1.3em;
             }
@@ -1079,7 +1051,7 @@ const Home = props => {
                 text-align: right;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .whyToText {
                 font-size: 1.3em;
               }
@@ -1262,25 +1234,20 @@ const Home = props => {
               <a className="mobileLink">About us</a>
             </MenuItem>
           </NextLink>
-          <a
-            href="https://b2b.thetrustsearch.com/en/"
-            target="_blank"
-            className="mobileLink"
-          >
-            <MenuItem onClick={handleMobileMenuLeftClose}>Business</MenuItem>
-          </a>
-
-          <a
-            href="https://thetrustsearch.com/termsAndConditions"
-            target="_blank"
-            className="mobileLink"
-          >
-            <MenuItem onClick={handleMobileMenuLeftClose}>
-              Terms &amp; Conditions
-            </MenuItem>
-          </a>
+          <NextLink href="https://b2b.thetrustsearch.com/en/">
+            <a target="_blank" className="mobileLink">
+              <MenuItem onClick={handleMobileMenuLeftClose}>Business</MenuItem>
+            </a>
+          </NextLink>
+          <NextLink href="https://thetrustsearch.com/termsAndConditions">
+            <a target="_blank" className="mobileLink">
+              <MenuItem onClick={handleMobileMenuLeftClose}>
+                Terms &amp; Conditions
+              </MenuItem>
+            </a>
+          </NextLink>
           <div>
-            {!authorized ? (
+            {!authorized || cookie.get("token") !== undefined ? (
               <>
                 <NextLink href="/login">
                   <MenuItem className="hide-sm">
@@ -1297,7 +1264,9 @@ const Home = props => {
               </>
             ) : (
               <>
-                {authorized && loginType === 4 ? (
+                {authorized &&
+                loginType === 4 &&
+                cookie.get("token") !== undefined ? (
                   <NextLink href="/dashboard">
                     <MenuItem onClick={handleMenuClose}>
                       <a style={{ textDecoration: "none", color: "#000" }}>
@@ -1306,7 +1275,8 @@ const Home = props => {
                     </MenuItem>
                   </NextLink>
                 ) : null}
-                {loginType === 1 || loginType === 2 ? (
+                {(loginType === 1 || loginType === 2) &&
+                cookie.get("token") !== undefined ? (
                   <NextLink href="">
                     <MenuItem>
                       <a
@@ -1323,7 +1293,7 @@ const Home = props => {
                 ) : (
                   ""
                 )}
-                {loginType === 3 ? (
+                {loginType === 3 && cookie.get("token") !== undefined ? (
                   <GoogleLogout
                     clientId={process.env.GOOGLE_CLIENT_ID}
                     buttonText="Logout"
@@ -1347,7 +1317,7 @@ const Home = props => {
                 ) : (
                   ""
                 )}
-                {loginType === 4 ? (
+                {loginType === 4 && cookie.get("token") !== undefined ? (
                   <NextLink href="">
                     <MenuItem>
                       <a
@@ -1379,10 +1349,12 @@ const Home = props => {
   let userName = "";
   if (userProfile) {
     if (userProfile.hasOwnProperty("name")) {
-      if (userProfile.name.length > 0) {
-        let nameAfterSplit = userProfile.name.split(" ");
-        if (nameAfterSplit.length > 0) {
-          userName = nameAfterSplit[0];
+      if (userProfile.name) {
+        if (userProfile.name.length > 0) {
+          let nameAfterSplit = userProfile.name.split(" ");
+          if (nameAfterSplit.length > 0) {
+            userName = nameAfterSplit[0];
+          }
         }
       }
     }
@@ -1397,14 +1369,14 @@ const Home = props => {
   const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
 
   const handleLogout = () => {
-    if (loginType === 2) {
+    if (loginType === 2 && cookie.get("token") !== undefined) {
       if (window) {
         if (window.hasOwnProperty("FB")) {
           window.FB.logout();
         }
       }
     }
-    if (loginType === 3) {
+    if (loginType === 3 && cookie.get("token") !== undefined) {
       const auth2 = window.gapi.auth2.getAuthInstance();
       if (auth2 != null) {
         auth2
@@ -1454,12 +1426,13 @@ const Home = props => {
       open={isProfileMenuOpen}
       onClose={handleProfileMenuClose}
     >
-      {authorized && loginType === 4 ? (
+      {authorized && loginType === 4 && cookie.get("token") !== undefined ? (
         <NextLink href="/dashboard">
           <MenuItem onClick={handleMenuClose}>Dashboard</MenuItem>
         </NextLink>
       ) : null}
-      {loginType === 1 || loginType === 2 ? (
+      {(loginType === 1 || loginType === 2) &&
+      cookie.get("token") !== undefined ? (
         <NextLink href="">
           <MenuItem onClick={() => handleLogout()}>
             <a>Logout</a>
@@ -1468,7 +1441,7 @@ const Home = props => {
       ) : (
         ""
       )}
-      {loginType === 3 ? (
+      {loginType === 3 && cookie.get("token") !== undefined ? (
         <GoogleLogout
           clientId={process.env.GOOGLE_CLIENT_ID}
           buttonText="Logout"
@@ -1484,7 +1457,7 @@ const Home = props => {
       ) : (
         ""
       )}
-      {loginType === 4 ? (
+      {loginType === 4 && cookie.get("token") !== undefined ? (
         <NextLink href="">
           <MenuItem onClick={() => handleLogout()}>
             <a>Logout</a>
@@ -1625,7 +1598,7 @@ const Home = props => {
                 display: flex;
               }
             }
-            @media screen and (min-width: 1366px) {
+            @media screen and (min-width: 1367px) {
               .topRightLinksContainer {
               }
               .topRightLinksItem {
@@ -1657,24 +1630,20 @@ const Home = props => {
             </NextLink>
           </div>
           <div className="hide-sm">
-            <a
-              className={classes.navLinkMobile}
-              href="https://b2b.thetrustsearch.com/en/"
-              target="_blank"
-            >
-              Business
-            </a>
+            <NextLink href="https://b2b.thetrustsearch.com/en/">
+              <a className={classes.navLinkMobile} target="_blank">
+                Business
+              </a>
+            </NextLink>
           </div>
           <div className="hide-sm">
-            <a
-              className={classes.navLinkMobile}
-              href="https://thetrustsearch.com/termsAndConditions"
-              target="_blank"
-            >
-              Terms &amp; Conditions
-            </a>
+            <NextLink href="https://thetrustsearch.com/termsAndConditions">
+              <a className={classes.navLinkMobile} target="_blank">
+                Terms &amp; Conditions
+              </a>
+            </NextLink>
           </div>
-          {!authorized ? (
+          {!authorized || cookie.get("token") === undefined ? (
             <>
               <div className="hide-sm">
                 <NextLink href="/login">
@@ -1749,7 +1718,7 @@ const Home = props => {
               letter-spacing: 0px;
             }
           }
-          @media screen and (min-width: 1366px) {
+          @media screen and (min-width: 1367px) {
             .taglineHeader {
               font-size: 1.3em;
             }

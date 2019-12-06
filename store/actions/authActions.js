@@ -30,20 +30,27 @@ import {
   RESEND_ACTIVATION_LINK_FAILURE,
   SET_USER_ACTIVATED,
   SET_BUSINESS_SUBSCRIPTION,
-  UPDATE_USER_DETAILS_DATA_INIT,
-  UPDATE_USER_DETAILS_DATA_SUCCESS,
-  UPDATE_USER_DETAILS_DATA_ERROR
+  UPDATE_AUTH_SOCIAL_ARRAY,
+  GET_AVAILABLE_PLATFORMS_INIT,
+  GET_AVAILABLE_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_PLATFORMS_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
-import { loginApiOAuth } from "../../utility/config";
+import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
-import { fetchReviews, fetchTransactionHistory } from "./dashboardActions";
+import {
+  fetchReviews,
+  fetchTransactionHistory,
+  getThirdPartyReviews
+} from "./dashboardActions";
 import cookie from "js-cookie";
 import { setInvitationQuota, fetchCampaignLanguage } from "./dashboardActions";
 import { reportDomain } from "./domainProfileActions";
+import _find from "lodash/find";
+import _isEmpty from "lodash/isEmpty";
+import _omit from "lodash/omit";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -176,8 +183,8 @@ export const logIn = (loginData, loginApi, loginType) => {
       let token = _get(res, "data.token", "");
       if (success) {
         localStorage.setItem("token", token);
-        cookie.set("loginType", loginType);
-        cookie.set("token", token);
+        cookie.set("loginType", loginType, { expires: 7 });
+        cookie.set("token", token, { expires: 7 });
       }
       dispatch({
         type: LOGIN_SUCCESS,
@@ -408,7 +415,6 @@ export const oAuthSigninginEnd = () => {
 };
 
 export const businessSignUp = (signupData, api) => {
-  console.log(signupData, "signupData");
   return async (dispatch, getState) => {
     dispatch({
       type: BUSINESS_SIGNUP_INIT,
@@ -463,7 +469,7 @@ export const businessSignUp = (signupData, api) => {
 };
 
 export const businessLogIn = (loginData, api, directLogin) => {
-  return async (dispatch, getState) => {
+  return async dispatch => {
     dispatch({
       type: BUSINESS_LOGIN_INIT,
       logIn: {
@@ -492,6 +498,9 @@ export const businessLogIn = (loginData, api, directLogin) => {
         ""
       );
       let loginType = 0;
+      const businessProfile = _get(res, "data.user.business_profile", {});
+      const domainId = _get(businessProfile, "domainId", 0);
+      const socialArray = _get(businessProfile, "social", []);
       if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
           if (
@@ -510,13 +519,14 @@ export const businessLogIn = (loginData, api, directLogin) => {
               "subscription.expired",
               false
             );
-            cookie.set("loginType", loginType);
-            cookie.set("token", token);
-            cookie.set("placeId", placeId);
+            cookie.set("loginType", loginType, { expires: 7 });
+            cookie.set("token", token, { expires: 7 });
+            cookie.set("placeId", placeId, { expires: 7 });
             dispatch(fetchReviews(token));
             dispatch(fetchTransactionHistory(token));
             dispatch(setSubscription(subscriptionExpired));
             dispatch(fetchCampaignLanguage(token));
+            dispatch(getAvailablePlatforms(token));
             localStorage.setItem("token", token);
             dispatch({
               type: BUSINESS_LOGIN_SUCCESS,
@@ -534,6 +544,18 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 error: ""
               }
             });
+            // fetch all thirdy party reviews
+            if (socialArray) {
+              if (socialArray.length > 0) {
+                socialArray.map(item => {
+                  let hasData = _get(item, "hasData", 0);
+                  let socialAppId = _get(item, "social_media_app_id", "");
+                  if (hasData === 1) {
+                    dispatch(getThirdPartyReviews(socialAppId, domainId));
+                  }
+                });
+              }
+            }
           }
         }
       } else {
@@ -581,7 +603,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
 };
 
 export const resendActivationLink = (token, api) => {
-  console.log(token, "token");
   return async dispatch => {
     dispatch({
       type: RESEND_ACTIVATION_LINK_INIT,
@@ -629,43 +650,97 @@ export const setSubscription = isSubscriptionExpired => {
   };
 };
 
-export const updateUserDetailsData = (data, url) => {
-  let token = localStorage.getItem("token");
+//updating social in auth/logIn/userProfile/business_profile/social with the new url user has changed in getstarted to show cards on home page. currently we are pushing google as well but not displaying it.
+
+export const updateAuthSocialArray = data => {
+  let omittedData = _omit(data, ["google"]);
   return async (dispatch, getState) => {
+    const state = getState();
+    const socialArray = _get(
+      state,
+      "auth.logIn.userProfile.business_profile.social",
+      []
+    );
+    let arrayOfChangedFields = [];
+    let mergeArrayOfChangedFieldsWithSocialArray = [];
+    if (omittedData) {
+      arrayOfChangedFields = Object.keys(omittedData).map(key => {
+        let foundItem = _find(socialArray, ["social_media_app_id", key]);
+        if (foundItem) {
+          return { ...foundItem, url: omittedData[key] };
+        } else {
+          return { social_media_app_id: Number(key), url: omittedData[key] };
+        }
+      });
+      if (socialArray && Array.isArray(socialArray) && !_isEmpty(socialArray)) {
+        mergeArrayOfChangedFieldsWithSocialArray = socialArray.filter(item => {
+          let foundItem = _find(arrayOfChangedFields, [
+            "social_media_app_id",
+            _get(item, "social_media_app_id", 0)
+          ]);
+          if (!foundItem) {
+            return { ...item };
+          }
+        });
+      }
+    }
     dispatch({
-      type: UPDATE_USER_DETAILS_DATA_INIT,
-      updateUserDetails: {
-        success: undefined,
+      type: UPDATE_AUTH_SOCIAL_ARRAY,
+      socialArray: [
+        ...arrayOfChangedFields,
+        ...mergeArrayOfChangedFieldsWithSocialArray
+      ]
+    });
+  };
+};
+
+export const getAvailablePlatforms = token => {
+  return async dispatch => {
+    dispatch({
+      type: GET_AVAILABLE_PLATFORMS_INIT,
+      availablePlatforms: {
         isLoading: true,
-        data: {}
+        success: undefined,
+        data: [],
+        errorMsg: ""
       }
     });
     try {
-      const result = await axios({
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        data,
-        url
+      let result = await axios({
+        method: "GET",
+        url: `${process.env.BASE_URL}${getAvailablePlatformsApi}`,
+        headers: { Authorization: `Bearer ${token}` }
       });
-      const success = await _get(result, "data.success", false);
+      let response = _get(result, "data.shops", []);
+      let shops = [];
+      let success = false;
+      if (response) {
+        if (Array.isArray(response) && !_isEmpty(response)) {
+          shops = response;
+          success = true;
+        }
+      }
       dispatch({
-        type: UPDATE_USER_DETAILS_DATA_SUCCESS,
-        updateUserDetails: {
-          success: true,
+        type: GET_AVAILABLE_PLATFORMS_SUCCESS,
+        availablePlatforms: {
           isLoading: false,
-          data: {}
+          success,
+          data: shops,
+          errorMsg: ""
         }
       });
-      if (success) {
-        cookie.set("placeLocated", true);
-      }
     } catch (error) {
       dispatch({
-        type: UPDATE_USER_DETAILS_DATA_ERROR,
-        updateUserDetails: {
-          success: false,
+        type: GET_AVAILABLE_PLATFORMS_FAILURE,
+        availablePlatforms: {
           isLoading: false,
-          data: {}
+          success: false,
+          data: [],
+          errorMsg: _get(
+            error,
+            "response.data.error.message",
+            "Some error occurred while fetching available platforms."
+          )
         }
       });
     }

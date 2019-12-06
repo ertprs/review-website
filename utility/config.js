@@ -36,7 +36,7 @@ export const forgotPasswordApi = "/api/forgot-password";
 export const resetPasswordApi = "/api/reset-password";
 export const activateUserApi = "/register/activate";
 export const businessRegisterApi = "/api/register-business";
-export const locatePlaceApi = "/api/my-business/profile/google-place";
+export const locatePlaceApi = "/api/my-business/profile/direct-platform-urls";
 export const resendActivationLinkApi = "/api/me/resend-activation";
 export const upgradePremiumApi = "/api/leads";
 export const transactionHistoryApi =
@@ -47,6 +47,12 @@ export const fetchEmailTemplateApi = "/api/my-business/invitation-template";
 export const reportDomainApi = "/api/applications/fraud";
 export const thirdPartyDataApi = "/api/third-party-data";
 export const fetchGoogleReviewsApi = "/api/reviews/domain";
+export const updateCompanyDetailsApi = "/api/my-business/profile/company";
+export const updateUserDetailsApi = "/api/profiles/update-profile";
+export const updateDomainDetailsApi = "/api/my-business/profile/domain";
+export const getAvailablePlatformsApi = "/api/master/ecommerce-integrations";
+export const eCommerceIntegrationApi =
+  "/api/my-business/profile/ecommerce-integrations";
 //How to create review short link
 export const getStartedVideoUrl =
   "https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708";

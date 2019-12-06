@@ -3,6 +3,7 @@ import Card from "@material-ui/core/Card";
 import { domainSuggestions } from "../../../utility/domainSuggestions";
 import { searchBoxStyles } from "./styles";
 import { withStyles } from "@material-ui/core/styles";
+import SearchIcon from "@material-ui/icons/SearchOutlined";
 
 const styles = theme => ({
   cardStyle: {
@@ -35,7 +36,10 @@ class SearchBoxSuggestion extends Component {
                       `${parsedSearchBoxVal}${value}`
                     );
                   }}
-                >{`${parsedSearchBoxVal}${value}`}</div>
+                >
+                  <SearchIcon style={{ marginRight: "10px" }} />
+                  {`${parsedSearchBoxVal}${value}`}
+                </div>
               );
             })}
           </Card>

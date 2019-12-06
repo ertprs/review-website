@@ -1,4 +1,5 @@
 export const iconNames = {
+    0: { name: "google", color: "#3C5A99" },
     1: { name: "facebook", color: "#3C5A99" },
     2: { name: "youtube", color: "#ff0000" },
     3: { name: "instagram", color: "#F77737" },

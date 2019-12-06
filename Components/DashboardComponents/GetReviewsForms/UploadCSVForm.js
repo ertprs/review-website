@@ -3,6 +3,7 @@ import Button from "@material-ui/core/Button/Button";
 import _get from "lodash/get";
 import uuid from "uuid/v1";
 import validate from "../../../utility/validate";
+import Link from "next/link";
 
 class UploadCSVForm extends Component {
   renderHeader = () => {
@@ -16,7 +17,9 @@ class UploadCSVForm extends Component {
           invite. The columns in the CSV file should contain: customer email,
           customer name and reference number.
         </h5>
-        <a href="/static/user_invite_sample.csv">Download Sample File</a>
+        <Link href="/static/user_invite_sample.csv">
+          <a>Download Sample File</a>
+        </Link>
       </div>
     );
   };

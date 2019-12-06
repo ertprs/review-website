@@ -12,14 +12,22 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { resendActivationLink } from "../../../store/actions/authActions";
 import { resendActivationLinkApi } from "../../../utility/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { upgradeToPremium } from "../../../store/actions/dashboardActions";
+import {
+  upgradeToPremium,
+  setGetStartedShow
+} from "../../../store/actions/dashboardActions";
 import withStyles from "@material-ui/styles/withStyles";
 import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton/IconButton";
 import Moment from "react-moment";
-import { ratingColor } from "../../../utility/ratingTypeColor";
+import { ratingColor, ratingType } from "../../../utility/ratingTypeColor";
+import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
+import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
+import Link from "next/link";
+import { iconNames } from "../../../utility/constants/socialMediaConstants";
 
 const styles = theme => ({
   button: {
@@ -31,13 +39,12 @@ class Home extends Component {
   state = {
     showSnackbar: false,
     variant: "success",
-    snackbarMsg: "",
-    editMode: false
+    snackbarMsg: ""
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props !== prevProps) {
-      const { success } = this.props;
+    const { success, socialArray } = this.props;
+    if (success !== prevProps.success) {
       let snackbarMsg = "";
       if (success === true) {
         snackbarMsg = "Mail sent successfully, Please verify your email.";
@@ -147,9 +154,7 @@ class Home extends Component {
   };
 
   renderOverviewCard = () => {
-    const { reviewsData } = this.props;
-    const rating = _get(reviewsData, "rating", 0);
-    const total = _get(reviewsData, "total", 0);
+    const { totalReviewsOfAllPlatforms, overallRating } = this.props;
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
@@ -185,12 +190,14 @@ class Home extends Component {
           </div>
           <div className="body">
             <div className="bodyHeader">
-              <h4>Average</h4>
+              <h4>{ratingType[Math.round(overallRating)]}</h4>
             </div>
             <div className="ratingsContainer">
               <StarRatings
-                rating={Number(rating)}
-                starRatedColor={ratingColor[Math.round(Number(rating)) || 0]}
+                rating={Number(overallRating)}
+                starRatedColor={
+                  ratingColor[Math.round(Number(overallRating)) || 0]
+                }
                 starDimension="30px"
                 starSpacing="0.5px"
                 numberOfStars={5}
@@ -198,13 +205,14 @@ class Home extends Component {
               />
             </div>
             <div className="bodyFooter">
-              <div>Based on {total} reviews</div>
+              <div>Based on {totalReviewsOfAllPlatforms} reviews</div>
             </div>
           </div>
           <div className="footer">
             <div>Trustsearch score</div>
             <div className="trustScore">
-              <span style={{ fontWeight: "400" }}>{rating}</span> out of 5
+              <span style={{ fontWeight: "400" }}>{overallRating}</span> out of
+              5
             </div>
           </div>
         </SimpleCard>
@@ -264,7 +272,7 @@ class Home extends Component {
   };
 
   renderRecentReviewsCard = () => {
-    const { reviewsData, isReviewsPusherConnected } = this.props;
+    const { reviewsData, reviewsObject, isReviewsPusherConnected } = this.props;
     const reviews = _get(reviewsData, "reviews", []);
     const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
     return (
@@ -288,10 +296,11 @@ class Home extends Component {
             <div className="fadedHeader">(Top 3 )</div>
           </div>
           <div className="body">
+            {/* reviewsObject for google means fetching reviews for google from pusher  */}
             <div>
               {topThreeReviews.length > 0 ? (
                 this.renderReviewSnippets(topThreeReviews)
-              ) : isReviewsPusherConnected === true ? (
+              ) : reviewsObject["google"] === true ? (
                 <>
                   <div style={{ marginTop: "30px" }}>
                     <h6 style={{ marginBottom: "50px", color: "green" }}>
@@ -349,7 +358,12 @@ class Home extends Component {
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Invitations Left :{" "}
               </p>
-              <h1>{remaining}</h1>
+              <span
+                style={{ fontWeight: "bold", fontSize: "20px", color: "green" }}
+              >
+                Unlimited
+              </span>
+              {/* <h1>{remaining}</h1> */}
             </div>
           </div>
         </SimpleCard>
@@ -358,45 +372,14 @@ class Home extends Component {
   };
 
   renderBusinessDetails = () => {
-    const {
-      businessProfile,
-      userProfile,
-      googleDirectReviewUrl,
-      googleDirectReviewUrlFirstTime,
-      businessAddress,
-      businessAddressFirstTime,
-      googlePlaceId
-    } = this.props;
+    const { businessProfile, userProfile, showGetStarted } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
     const expiresAt = _get(userProfile, "subscription.expires_at", "");
-    const googleReviewUrl =
-      googleDirectReviewUrl === ""
-        ? googleDirectReviewUrlFirstTime
-        : googleDirectReviewUrl;
-    const businessAdd =
-      // businessAddress === "" ? businessAddressFirstTime : businessAddress;
-      businessAddressFirstTime !== ""
-        ? businessAddressFirstTime
-        : businessAddress;
+
     return (
       <div className="businessDetailsContainer">
-        <div className="editBtnContainer">
-          <Button
-            color="primary"
-            variant="contained"
-            size="small"
-            startIcon={<EditIcon />}
-            onClick={() => {
-              this.setState(prevState => {
-                return { editMode: !prevState.editMode };
-              });
-            }}
-          >
-            Edit
-          </Button>
-        </div>
         <style jsx>
           {`
             .bold {
@@ -427,9 +410,9 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           <div className="bold">Domain :</div>
           <div>
-            <a href={`https://www.${domain}`} target="_blank">
-              {domain}
-            </a>
+            <Link href={`https://www.${domain}`}>
+              <a target="_blank">{domain}</a>
+            </Link>
           </div>
         </div>
         <div className="businessDetailsFlexItem">
@@ -439,30 +422,6 @@ class Home extends Component {
         <div className="businessDetailsFlexItem">
           <div className="bold">Subscription plan :</div>
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
-        </div>
-        <div className="businessDetailsFlexItem">
-          {googleReviewUrl === "" ? (
-            <>
-              <div className="bold">Invitation url :</div>
-              <div>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`}
-                  target="_blank"
-                >
-                  {businessAdd}
-                </a>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="bold">Google direct review url :</div>
-              <div>
-                <a href={googleReviewUrl} target="_blank">
-                  {businessAdd}
-                </a>
-              </div>
-            </>
-          )}
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Expires At :</div>
@@ -476,14 +435,271 @@ class Home extends Component {
     );
   };
 
+  renderReviewURLBoxes = () => {
+    const { reviewsObject } = this.props;
+    const socialArray = _get(this.props, "socialArray", []);
+    const dashboardData = _get(this.props, "dashboardData", {});
+    const businessProfile = _get(this.props, "businessProfile", {});
+    const address = _get(businessProfile, "google_places.address", "");
+    let output = [];
+    output = socialArray.map(item => {
+      let social_media_app_id = _get(item, "social_media_app_id", "");
+      if (reviewURLObjects[social_media_app_id]) {
+        let socialObj = reviewURLObjects[social_media_app_id] || {};
+        let editURL = _get(socialObj, "editURL", "");
+        let imageLogo = _get(socialObj, "imageLogo", "");
+        let URL = _get(item, "url", "");
+        let name = _get(socialObj, "name", "");
+
+        let reviewPlatformObject = iconNames[social_media_app_id];
+        let reviewPlatformName = _get(reviewPlatformObject, "name", "");
+        let likes = "";
+        let followers = "";
+        let ratings = 0;
+        let totalReviews = "";
+        if (dashboardData[name]) {
+          let data = _get(dashboardData[name], "data", {});
+          if (name === "facebookReviews") {
+            likes = _get(data, "likes", "");
+            followers = _get(data, "followers", "");
+            ratings = _get(data, "rating", 0);
+          } else {
+            if (_get(data, "rating", 0)) {
+              ratings = _get(data, "rating", 0);
+            }
+            totalReviews = _get(data, "total", 0);
+          }
+        }
+        return (
+          <Grid item xs={12} md={6} lg={6}>
+            <div className="reviewBoxItemContainer">
+              <style jsx>{reviewChannelBoxStyles}</style>
+              <div>
+                <div className="reviewBoxItemLogoContainer">
+                  <img src={`/static/images/${imageLogo}`} />
+                </div>
+              </div>
+              <div className="reviewBoxItemTextBoxContainer">
+                <div>
+                  <Link href={URL}>
+                    <a target="_blank">{URL}</a>
+                  </Link>
+                </div>
+                <div className="reviewBoxRatingContainer">
+                  {name === "trustedshopsReviews" ? (
+                    ratings ? (
+                      <div style={{ marginLeft: "-4px" }}>
+                        <StarRatings
+                          rating={Number(ratings)}
+                          starRatedColor="#FFDC0F"
+                          starDimension="20px"
+                          starSpacing="0.5px"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      </div>
+                    ) : null
+                  ) : name === "trustpilotReviews" ? (
+                    ratings ? (
+                      <div className="trustPilotImageContainer">
+                        <img
+                          src={`/static/images/tpstars-${Math.round(
+                            Number(ratings)
+                          ) || 0}.svg`}
+                          alt=""
+                        />
+                      </div>
+                    ) : null
+                  ) : name === "facebookReviews" ? (
+                    ratings ? (
+                      <div style={{ marginLeft: "-4px" }}>
+                        <StarRatings
+                          rating={Number(ratings)}
+                          starRatedColor="#3A559F"
+                          starDimension="20px"
+                          starSpacing="0.5px"
+                          numberOfStars={5}
+                          name="rating"
+                        />
+                      </div>
+                    ) : null
+                  ) : null}
+                </div>
+                {name === "facebookReviews" ? (
+                  <div className="row" style={{ marginTop: "15px" }}>
+                    {likes ? (
+                      <div className="col-md-6">
+                        <span style={{ fontWeight: "bold" }}>
+                          Likes : {likes}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                    {followers ? (
+                      <div className="col-md-6">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Followers : {followers}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+                {name === "trustpilotReviews" ||
+                name === "facebookReviews" ||
+                name === "trustedshopsReviews" ? (
+                  <div className="row" style={{ marginTop: "15px" }}>
+                    {ratings ? (
+                      <div className="col-md-6">
+                        <span style={{ fontWeight: "bold" }}>
+                          Ratings : {ratings}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                    {totalReviews ? (
+                      <div className="col-md-6">
+                        {" "}
+                        <span style={{ fontWeight: "bold" }}>
+                          Total reviews : {totalReviews}
+                        </span>{" "}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+              <div>
+                <IconButton
+                  key="edit"
+                  aria-label="edit"
+                  color="inherit"
+                  onClick={() => {
+                    this.props.setGetStartedShow(
+                      !this.props.showGetStarted,
+                      editURL
+                    );
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
+              </div>
+              {reviewsObject[reviewPlatformName] ? (
+                <div style={{ bottom: 0, right: 0 }}>
+                  <CircularProgress size={20} />
+                </div>
+              ) : null}{" "}
+            </div>
+          </Grid>
+        );
+      }
+    });
+    return [
+      ...output,
+      <Grid item xs={12} md={6} lg={6}>
+        {" "}
+        {address ? this.renderGoogleReviewURLBox() : null}
+      </Grid>
+    ];
+  };
+
+  renderGoogleReviewURLBox = () => {
+    const reviewsData = _get(this.props, "reviewsData", {});
+    const businessProfile = _get(this.props, "businessProfile", {});
+    const ratings = _get(reviewsData, "rating", "");
+    const totalReviews = _get(reviewsData, "total", 0);
+    const directReviewUrl = _get(
+      businessProfile,
+      "google_places.directReviewUrl",
+      ""
+    );
+    const address = _get(businessProfile, "google_places.address", "");
+    const googlePlaceId = _get(businessProfile, "google_places.placeId", "");
+
+    const domain = _get(businessProfile, "domain", "");
+    const reviewsObject = _get(this.props, "reviewsObject", {});
+    const googleReviewUrl =
+      directReviewUrl ||
+      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
+    return (
+      <div className="reviewBoxItemContainer">
+        <style jsx>{reviewChannelBoxStyles}</style>
+        <div>
+          <div className="reviewBoxItemLogoContainer">
+            <img src={`/static/images/googleIcon.png`} />
+          </div>
+        </div>
+        <div className="reviewBoxItemTextBoxContainer">
+          <div>
+            <Link href={googleReviewUrl}>
+              <a target="_blank">{address}</a>
+            </Link>
+          </div>
+          <div className="reviewBoxRatingContainer">
+            {ratings ? (
+              <div style={{ marginLeft: "-4px" }}>
+                <StarRatings
+                  rating={Number(ratings)}
+                  starRatedColor="#FFDC0F"
+                  starDimension="20px"
+                  starSpacing="0.5px"
+                  numberOfStars={5}
+                  name="rating"
+                />
+              </div>
+            ) : null}
+          </div>
+          <div className="row" style={{ marginTop: "15px" }}>
+            {ratings ? (
+              <div className="col-md-6">
+                <span style={{ fontWeight: "bold" }}>Ratings : {ratings}</span>{" "}
+              </div>
+            ) : null}
+            {totalReviews ? (
+              <div className="col-md-6">
+                {" "}
+                <span style={{ fontWeight: "bold" }}>
+                  Total reviews : {totalReviews}
+                </span>{" "}
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div>
+          <IconButton
+            key="edit"
+            aria-label="edit"
+            color="inherit"
+            onClick={() => {
+              this.props.setGetStartedShow(
+                !this.props.showGetStarted,
+                "getStartedBox"
+              );
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </div>
+        {reviewsObject["google"] ? <CircularProgress size={20} /> : null}
+      </div>
+    );
+  };
+
   render() {
     const {
       classes,
       isSubscriptionExpired,
       userActivated,
-      changeStepToRender
+      changeStepToRender,
+      showGetStarted,
+      businessProfile,
+      screenshot
     } = this.props;
-    const { editMode } = this.state;
+    const domain = _get(businessProfile, "domain", "");
+    let parsed_domain_name = domain.replace(/https:\/\//gim, "");
+    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    const domainScreenshot = screenshot
+      ? screenshot
+      : `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+          Math.random() * 10 + 1
+        )}`;
     return (
       <>
         <style jsx>
@@ -511,7 +727,7 @@ class Home extends Component {
             }
           `}
         </style>
-        {!editMode ? (
+        {!showGetStarted ? (
           <Grid container spacing={3}>
             {isSubscriptionExpired === true
               ? this.renderSubscriptionInfo(classes)
@@ -525,7 +741,7 @@ class Home extends Component {
               <SimpleCard>
                 <div className="businessDetailsContainer">
                   <div className="businessDetailsImgContainer">
-                    <img src="/static/images/googleMyBusiness.jpg" />
+                    <img src={domainScreenshot} />
                   </div>
                   <div className="businessDetailsTextContainer">
                     {this.renderBusinessDetails()}
@@ -533,19 +749,34 @@ class Home extends Component {
                 </div>
               </SimpleCard>
             </Grid>
+            {(this.props.socialArray || []).length > 0 ? (
+              <>
+                <Grid item xs={6} md={6} lg={6}>
+                  <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
+                </Grid>
+                <Grid item xs={6} md={6} lg={6}>
+                  <div style={{ textAlign: "right" }}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      startIcon={<EditIcon />}
+                      onClick={() => {
+                        this.props.setGetStartedShow(!showGetStarted);
+                      }}
+                    >
+                      Edit All
+                    </Button>
+                  </div>
+                </Grid>
+              </>
+            ) : null}
+            {this.renderReviewURLBoxes()}
           </Grid>
         ) : (
           <div>
-            <GetStarted
-              changeStepToRender={data => {}}
-              home={true}
-              changeEditMode={() => {
-                this.setState({
-                  editMode: false
-                });
-              }}
-            />
-            <div style={{ marginLeft: "30px" }}>
+            <GetStarted changeStepToRender={data => {}} />
+            {/* <div style={{ marginLeft: "30px" }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -559,7 +790,7 @@ class Home extends Component {
               >
                 Back
               </Button>
-            </div>
+            </div> */}
           </div>
         )}
         <Snackbar
@@ -588,6 +819,7 @@ const mapStateToProps = state => {
   const isLoading = _get(auth, "resendActivation.isLoading", false);
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
+  const socialArray = _get(businessProfile, "social", []);
   const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
   const userName = _get(auth, "logIn.userProfile.name", "");
   const userEmail = _get(auth, "logIn.userProfile.email", "");
@@ -603,23 +835,54 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.google_places.directReviewUrl",
     ""
   );
-  const googleDirectReviewUrlFirstTime = _get(
-    dashboardData,
-    "googleDirectReviewUrl",
-    ""
-  );
   const businessAddress = _get(
     auth,
     "logIn.userProfile.business_profile.google_places.address",
     ""
   );
-  const businessAddressFirstTime = _get(dashboardData, "businessAddress", "");
+  const googlePlaceId = _get(
+    auth,
+    "logIn.userProfile.business_profile.google_places.placeId",
+    ""
+  );
+  const reviewsObject = _get(dashboardData, "reviewsObject", {});
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
     false
   );
-  const googlePlaceId = _get(dashboardData, "googlePlaceId", "");
+  const showGetStarted = _get(dashboardData, "showGetStarted", false);
+  const screenshot = _get(
+    auth,
+    "logIn.userProfile.business_profile.screenshot",
+    ""
+  );
+  const totalReviewsOfAllPlatforms =
+    _get(dashboardData, "reviews.data.total", 0) +
+    _get(dashboardData, "trustedshopsReviews.data.total", 0) +
+    _get(dashboardData, "trustpilotReviews.data.total", 0) +
+    _get(dashboardData, "facebookReviews.data.total", 0);
+  const googleRating = _get(dashboardData, "reviews.data.rating", 0);
+  const facebookRating = _get(dashboardData, "facebookReviews.data.rating", 0);
+  const trustpilotRating = _get(
+    dashboardData,
+    "trustpilotReviews.data.rating",
+    0
+  );
+  const trustedshopsRating = _get(
+    dashboardData,
+    "trustedshopsReviews.data.rating",
+    0
+  );
+  const totalRatingOfAllPlatforms =
+    (googleRating ? Number(googleRating) : 0) +
+    (facebookRating ? Number(facebookRating) : 0) +
+    (trustpilotRating ? Number(trustpilotRating) : 0) +
+    (trustedshopsRating ? Number(trustedshopsRating) : 0);
+  const noOfPlatforms = 4;
+  const max_rating = 5;
+  //! this rating is calculated for max_rating 5
+  const overallRating = (totalRatingOfAllPlatforms / noOfPlatforms).toFixed(1);
   return {
     reviewsData,
     quotaDetails,
@@ -636,16 +899,23 @@ const mapStateToProps = state => {
     userPhone,
     upgradeToPremiumIsLoading,
     googleDirectReviewUrl,
-    googleDirectReviewUrlFirstTime,
     userActivated,
     businessAddress,
-    businessAddressFirstTime,
+    reviewsObject,
+    googlePlaceId,
+    socialArray,
+    dashboardData,
     isReviewsPusherConnected,
-    googlePlaceId
+    showGetStarted,
+    totalReviewsOfAllPlatforms,
+    totalRatingOfAllPlatforms,
+    overallRating,
+    screenshot
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { resendActivationLink, upgradeToPremium }
-)(withStyles(styles)(Home));
+export default connect(mapStateToProps, {
+  resendActivationLink,
+  upgradeToPremium,
+  setGetStartedShow
+})(withStyles(styles)(Home));

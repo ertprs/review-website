@@ -38,6 +38,9 @@ class InvitationHistory extends Component {
       <MaterialTable
         title="Invitation History"
         columns={columns}
+        options={{
+          search: false
+        }}
         data={query =>
           new Promise((resolve, reject) => {
             let url = `${process.env.BASE_URL}/api/my-business/invitations/history?`;

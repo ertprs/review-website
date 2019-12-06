@@ -1,44 +1,50 @@
 import React from "react";
 import smallFooterStyles from "./smallFooterStyles";
-import AmpImgWrapper from "../AmpWrappers/AmpImgWrapper";
 import { layoutStyles } from "../../style";
+import Link from "next/link";
+
 const renderFooterTopSection = () => {
   return (
     <div className="footerTopSection">
       <style jsx>{smallFooterStyles}</style>
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
-          <AmpImgWrapper
-            src="/static/images/logo_white.png"
+          <img
+            src="/static/images/logo_footer.png"
             alt="trustsearchlogo"
             classes="footerTopLogo"
-            width="176.04"
-            height="45.99"
-            layout="responsive"
-            imgContainerStyles={{ width: "176.04px", height: "45.99px" }}
-          ></AmpImgWrapper>
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
         </div>
 
         <div className="footerTopSocialLinksContainer">
           <div className="footerTopSocialLink">
-            <a href="/">
-              <i className="fa fa-facebook" />
-            </a>
+            <Link href="/">
+              <a>
+                <i className="fa fa-facebook" />
+              </a>
+            </Link>
           </div>
           <div className="footerTopSocialLink">
-            <a href="/">
-              <i className="fa fa-twitter" />
-            </a>
+            <Link href="/">
+              <a>
+                <i className="fa fa-twitter" />
+              </a>
+            </Link>
           </div>
           <div className="footerTopSocialLink">
-            <a href="/">
-              <i className="fa fa-google-plus" />
-            </a>
+            <Link href="/">
+              <a>
+                <i className="fa fa-google-plus" />
+              </a>
+            </Link>
           </div>
           <div className="footerTopSocialLink">
-            <a href="/">
-              <i className="fa fa-linkedin" />
-            </a>
+            <Link href="/">
+              <a>
+                <i className="fa fa-linkedin" />
+              </a>
+            </Link>
           </div>
         </div>
 
@@ -63,16 +69,24 @@ const renderFooterMiddleSection = () => {
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
-                  <a href="/">Claim your ownership</a>
+                  <Link href="/">
+                    <a>Claim your ownership</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Engage your community</a>
+                  <Link href="/">
+                    <a>Engage your community</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Receive alerts</a>
+                  <Link href="/">
+                    <a>Receive alerts</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Plans &amp; Pricing</a>
+                  <Link href="/">
+                    <a>Plans &amp; Pricing</a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -86,16 +100,24 @@ const renderFooterMiddleSection = () => {
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
-                  <a href="/">Check website reputation</a>
+                  <Link href="/">
+                    <a>Check website reputation</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Get rewards</a>
+                  <Link href="/">
+                    <a>Get rewards</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Be safe online</a>
+                  <Link href="/">
+                    <a>Be safe online</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Referral program</a>
+                  <Link href="/">
+                    <a>Referral program</a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -107,13 +129,19 @@ const renderFooterMiddleSection = () => {
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
-                  <a href="/">Contact</a>
+                  <Link href="/">
+                    <a>Contact</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Privacy policy</a>
+                  <Link href="/">
+                    <a>Privacy policy</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">Terms of use</a>
+                  <Link href="/">
+                    <a>Terms of use</a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -125,10 +153,14 @@ const renderFooterMiddleSection = () => {
               </div>
               <div className="footerMiddleSectionLinks">
                 <div>
-                  <a href="/">Login</a>
+                  <Link href="/">
+                    <a>Login</a>
+                  </Link>
                 </div>
                 <div>
-                  <a href="/">My Account</a>
+                  <Link href="/">
+                    <a>My Account</a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -179,8 +211,18 @@ const renderFooterBottomSection = () => {
       <style jsx>{layoutStyles}</style>
       <style jsx>{smallFooterStyles}</style>
       <div className="row">
-        <div className="col-md-4" style={{textAlign:"center",color:"#fff"}}>
-            <a href="https://thetrustsearch.com/termsAndConditions" target="_blank" style={{color:"#fff", textDecoration:"none"}}>Terms of use</a>
+        <div
+          className="col-md-4"
+          style={{ textAlign: "center", color: "#fff" }}
+        >
+          <Link href="https://thetrustsearch.com/termsAndConditions">
+            <a
+              target="_blank"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              Terms of use
+            </a>
+          </Link>
         </div>
         <div className="col-md-4">
           <div style={{ textAlign: "center" }}>
@@ -191,8 +233,18 @@ const renderFooterBottomSection = () => {
             All Rights Reserved.
           </div>
         </div>
-        <div className="col-md-4" style={{textAlign:"center", color:"#fff"}}>
-        <a href="https://thetrustsearch.com/termsAndConditions" target="_blank" style={{color:"#fff", textDecoration:"none"}}>Privacy policy</a>
+        <div
+          className="col-md-4"
+          style={{ textAlign: "center", color: "#fff" }}
+        >
+          <Link href="https://thetrustsearch.com/termsAndConditions">
+            <a
+              target="_blank"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              Privacy policy
+            </a>
+          </Link>
         </div>
       </div>
     </div>
