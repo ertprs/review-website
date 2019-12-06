@@ -92,7 +92,7 @@ class TextReviews extends React.Component {
     if (this.props.domain) {
       const platformId = _get(this.props, "platformId", 0);
       let requestURL = "";
-      if (platformId === "0") {
+      if (platformId === "0" || platformId === 0) {
         requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}`;
       } else {
         requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}&platform=${platformId}`;
