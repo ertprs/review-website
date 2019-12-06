@@ -309,6 +309,7 @@ class GetWidgetsCode extends Component {
           data-style-height={`${_get(this.state, "widgetHeight", "")}px`}
           data-style-width="100%"
           data-theme="light"
+          data-platform-id={_get(this.state, "platforms.value", "0")}
           style={{ position: "relative", overflow: "hidden" }}
         ></div>
         <div className="row">

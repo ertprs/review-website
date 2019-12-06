@@ -6,7 +6,7 @@ import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import Link from "next/link";
 
-const renderStandAloneWidget = requiredData => {
+const renderStandAloneWidget = (requiredData, domain) => {
   return (
     <div className="widgetBox">
       <style jsx>{layoutStyles}</style>
@@ -75,11 +75,13 @@ const renderStandAloneWidget = requiredData => {
           reviews.
         </div>
         <div>
-          <Link href="https://thetrustsearch.com">
-            <a className="learnMoreLink" target="_blank">
-              Learn More
-            </a>
-          </Link>
+          <a
+            className="learnMoreLink"
+            href={`https://thetrustsearch.com/reviews/${domain}`}
+            target="_blank"
+          >
+            Learn More
+          </a>
         </div>
       </div>
 
