@@ -148,7 +148,13 @@ class GetWidgetsCode extends Component {
         />
         (in px)
         <div>
-          <div style={{ fontWeight: "bold", marginBottom: "10px", marginTop:"15px" }}>
+          <div
+            style={{
+              fontWeight: "bold",
+              marginBottom: "10px",
+              marginTop: "15px"
+            }}
+          >
             Select your review platform:{" "}
           </div>
           <FormField
@@ -280,7 +286,7 @@ class GetWidgetsCode extends Component {
         <Head>
           <script
             type="text/javascript"
-            src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
+            src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v1/ts.widget.js"
             async
           ></script>
         </Head>
