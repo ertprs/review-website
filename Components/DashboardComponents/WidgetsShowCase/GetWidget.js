@@ -4,12 +4,44 @@ import Title from "../../MaterialComponents/Title";
 import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input/Input";
 import uuid from "uuid/v1";
+import FormField from "../../Widgets/FormField/FormField";
+
+const platforms = [
+  {
+    value: "0",
+    name: "Google"
+  },
+  {
+    value: "1",
+    name: "Facebook"
+  },
+  {
+    value: "18",
+    name: "Trustpilot"
+  },
+  {
+    value: "19",
+    name: "TrustedShops"
+  }
+];
 
 export default class GetWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      widgetHeight: this.props.widget.minHeight
+      widgetHeight: this.props.widget.minHeight,
+      platforms: {
+        element: "select",
+        name: "platforms",
+        value: platforms[0].value,
+        options: [...platforms],
+        placeholder: "Select your platform",
+        valid: false,
+        touched: false,
+        errorMessage: "",
+        id: "platforms",
+        labelText: "Select a review platform"
+      }
     };
   }
 
@@ -59,7 +91,7 @@ export default class GetWidget extends Component {
             <img src={widget.imgURL} />
           </div>
         </div>
-        <h6 style={{marginTop:"25px"}}>Suggested placement: </h6>
+        <h6 style={{ marginTop: "25px" }}>Suggested placement: </h6>
         {this.renderContent(widget.suggestedPlacement)}
         <h6>Supported devices/sizes: </h6>
         {this.renderContent(widget.support)}
@@ -79,6 +111,12 @@ export default class GetWidget extends Component {
     );
   };
 
+  handleFormDataChange = (e, id) => {
+    this.setState({
+      platforms: { ...this.state.platforms, value: e.target.value }
+    });
+  };
+
   renderInput = () => {
     const { widgetHeight } = this.state;
     return (
@@ -93,6 +131,20 @@ export default class GetWidget extends Component {
           }}
         />
         (in px)
+        <div>
+          <div style={{ fontWeight: "bold", marginBottom: "10px", marginTop:"15px" }}>
+            Select your review platform:{" "}
+          </div>
+          <FormField
+            {...this.state.platforms}
+            handleChange={e => {
+              this.handleFormDataChange(e, "platforms");
+            }}
+            styles={{
+              height: "38px"
+            }}
+          />
+        </div>
       </>
     );
   };
@@ -166,7 +218,7 @@ export default class GetWidget extends Component {
                     data-theme="light"
                     style="position: relative;
                     overflow: hidden;"
-                    data-platform-id="0"
+                    data-platform-id="${this.state.platforms.value}"
                     ></div> 
                 `}</code>
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>

@@ -8,12 +8,44 @@ import Head from "next/head";
 import BackArrowIcon from "@material-ui/icons/KeyboardBackspace";
 import _get from "lodash/get";
 import Router from "next/router";
+import FormField from "../Widgets/FormField/FormField";
+
+const platforms = [
+  {
+    value: "0",
+    name: "Google"
+  },
+  {
+    value: "1",
+    name: "Facebook"
+  },
+  {
+    value: "18",
+    name: "Trustpilot"
+  },
+  {
+    value: "19",
+    name: "TrustedShops"
+  }
+];
 
 class GetWidgetsCode extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      widgetHeight: _get(this.props, "widget.minHeight", 0)
+      widgetHeight: _get(this.props, "widget.minHeight", 0),
+      platforms: {
+        element: "select",
+        name: "platforms",
+        value: platforms[0].value,
+        options: [...platforms],
+        placeholder: "Select your platform",
+        valid: false,
+        touched: false,
+        errorMessage: "",
+        id: "platforms",
+        labelText: "Select a review platform"
+      }
     };
   }
 
@@ -28,6 +60,12 @@ class GetWidgetsCode extends Component {
           {item}
         </p>
       );
+    });
+  };
+
+  handleFormDataChange = (e, id) => {
+    this.setState({
+      platforms: { ...this.state.platforms, value: e.target.value }
     });
   };
 
@@ -109,6 +147,20 @@ class GetWidgetsCode extends Component {
           }}
         />
         (in px)
+        <div>
+          <div style={{ fontWeight: "bold", marginBottom: "10px", marginTop:"15px" }}>
+            Select your review platform:{" "}
+          </div>
+          <FormField
+            {...this.state.platforms}
+            handleChange={e => {
+              this.handleFormDataChange(e, "platforms");
+            }}
+            styles={{
+              height: "38px"
+            }}
+          />
+        </div>
       </>
     );
   };
@@ -193,7 +245,7 @@ class GetWidgetsCode extends Component {
                     data-theme="light"
                     style="position: relative;
                     overflow: hidden;"
-                    data-platform-id="0"
+                    data-platform-id="${this.state.platforms.value}"
                     ></div> 
                 `}</code>
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>

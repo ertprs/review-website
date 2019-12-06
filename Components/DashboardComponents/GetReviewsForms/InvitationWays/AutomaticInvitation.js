@@ -48,20 +48,20 @@ class AutomaticInvitation extends Component {
             id: "shopName",
             labelText: "Enter shop name"
           },
-          consumer_keys: {
+          consumer_key: {
             element: "input",
             type: "text",
             value: _get(
               this.props,
-              "availablePlatformsData.WooCommerce.auth_details.consumer_keys",
+              "availablePlatformsData.WooCommerce.auth_details.consumer_key",
               ""
             ),
             placeholder: "Consumer keys",
             touched: false,
             valid: false,
             errorMessage: "",
-            name: "consumer_keys",
-            id: "consumer_keys",
+            name: "consumer_key",
+            id: "consumer_key",
             labelText: "Enter key"
           },
           consumer_secret: {

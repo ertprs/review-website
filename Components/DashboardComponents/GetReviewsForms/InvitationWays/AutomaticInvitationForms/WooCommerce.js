@@ -51,7 +51,7 @@ class WoocommerceForm extends Component {
       locale: _get(formData, "locale.value", ""),
       url: _get(formData, "url.value", ""),
       authDetails: {
-        consumer_keys: _get(formData, "consumer_keys.value", ""),
+        consumer_key: _get(formData, "consumer_key.value", ""),
         consumer_secret: _get(formData, "consumer_secret.value", "")
       }
     };
@@ -63,7 +63,7 @@ class WoocommerceForm extends Component {
     let disabled = true;
     disabled =
       (!_get(formData, "consumer_secret.value", "") &&
-        !_get(formData, "consumer_keys.value", "")) ||
+        !_get(formData, "consumer_key.value", "")) ||
       !_get(formData, "url.value", "");
     return (
       <div>
