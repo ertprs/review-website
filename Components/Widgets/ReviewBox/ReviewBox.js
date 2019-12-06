@@ -6,8 +6,8 @@ import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import StarRatings from "react-star-ratings";
 import moment from "moment";
-import {widgetsLogoConstants} from "../../../utility/constants/widgetsLogoConstants";
-import _get from 'lodash/get';
+import { widgetsLogoConstants } from "../../../utility/constants/widgetsLogoConstants";
+import _get from "lodash/get";
 import Link from "next/link";
 
 const renderTextualReviewBox = (
@@ -16,80 +16,130 @@ const renderTextualReviewBox = (
   reviewHeaderStyles,
   domain,
   platformId,
-  redirectURL
+  redirectURL,
+  readMoreBox
 ) => {
-  let name = review.name.replace(/\s+/gim, " ");
-  let text = _get(review, "text", "") || _get(review, "review", "");
-  let date = _get(review, "date", "");
-  let logo = "";
-  let logoTitle = "";
-  if(widgetsLogoConstants[Number(platformId)]){
-    logo = widgetsLogoConstants[Number(platformId)].imageLogo;
-    logoTitle = widgetsLogoConstants[Number(platformId)].name;
-  }
-  if (name) {
-    let parsedName = name.split(" ");
-    if (parsedName[0]) {
-      name = parsedName[0];
-      if (parsedName[1]) {
-        name = name + " " + parsedName[1][0] + ".";
+  if (!readMoreBox) {
+    let name = review.name.replace(/\s+/gim, " ");
+    let text = _get(review, "text", "") || _get(review, "review", "");
+    let date = _get(review, "date", "");
+    let logo = "";
+    let logoTitle = "";
+    if (widgetsLogoConstants[Number(platformId)]) {
+      logo = widgetsLogoConstants[Number(platformId)].imageLogo;
+      logoTitle = widgetsLogoConstants[Number(platformId)].name;
+    }
+    if (name) {
+      let parsedName = name.split(" ");
+      if (parsedName[0]) {
+        name = parsedName[0];
+        if (parsedName[1]) {
+          name = name + " " + parsedName[1][0] + ".";
+        }
       }
     }
+    return (
+      <div>
+        <style jsx>{reviewBoxStyles}</style>
+        <div className="reviewHeader" style={{ ...reviewHeaderStyles }}>
+          <div className="reviewHeaderTitle">
+            <Link href={redirectURL}>
+              <a target="_blank">
+                <img
+                  src={`/static/images/${logo}`}
+                  style={{
+                    height: "10px",
+                    width: "10px",
+                    marginRight: "10px",
+                    display: "inline-block"
+                  }}
+                  title={logoTitle}
+                />
+              </a>
+            </Link>
+            {name}
+          </div>
+          <div className="reviewHeaderDate" style={{ textAlign: "right" }}>
+            {/* {stringHelpers("shortenMonths", review.date)} */}
+            {date ? moment(date).format("DD/MM/YYYY") : null}
+          </div>
+        </div>
+        <div className="reviewRatings" style={{ ...reviewRatingStyles }}>
+          <div>
+            <RatingIndicators
+              rating={Number((review || {}).rating) || 0}
+              typeOfWidget="star"
+              widgetRatedColors={
+                ratingColor[Math.round(Number(review.rating)) || 0]
+              }
+              widgetDimensions="20px"
+              widgetSpacings="1px"
+            />
+          </div>
+        </div>
+        <div className="reviewText">
+          <p>
+            <Link href={redirectURL}>
+              <a
+                target="_blank"
+                style={{ textDecoration: "none", color: "#000" }}
+              >
+                {text.replace(/\s+/gim, " ") !== null && text
+                  ? text.length <= 95
+                    ? text.replace(/\s\s+/g, " ")
+                    : text.substring(0, 80).replace(/\s\s+/g, " ") + "..."
+                  : "no textual review"}
+              </a>
+            </Link>
+          </p>
+        </div>
+      </div>
+    );
+  } else {
+    return renderReadMoreBox(domain);
   }
+};
+
+const renderReadMoreBox = domain => {
   return (
     <div>
       <style jsx>{reviewBoxStyles}</style>
-      <div className="reviewHeader" style={{ ...reviewHeaderStyles }}>
-        <div className="reviewHeaderTitle">
-          <Link href={redirectURL}>
-            <a target="_blank">
-              <img
-                src={`/static/images/${logo}`}
-                style={{
-                  height: "10px",
-                  width: "10px",
-                  marginRight: "10px",
-                  display: "inline-block"
-                }}
-                title={logoTitle}
-              />
-            </a>
-          </Link>
-          {name}
-        </div>
-        <div className="reviewHeaderDate" style={{textAlign:"right"}}>
-          {/* {stringHelpers("shortenMonths", review.date)} */}
-          {date ? moment(date).format("DD/MM/YYYY") : null}
-        </div>
+      <style jsx>{`
+        .text {
+          font-style: italic;
+          margin-top:5px
+        }
+        .readAllBtn {
+          background: #21bc61;
+          border: 1px solid #21bc61;
+          transition: all 0.4s;
+          padding: 4px;
+          color: #fff;
+          text-decoration: none;
+        }
+        .readAllBtn:hover {
+          background: #26d970;
+          border: 1px solid #26d970;
+          text-decoration: none;
+        }
+        .readMoreBtnContainer {
+          margin-top: 15px;
+        }
+      `}</style>
+      <div>
+        <span className="text">
+          " There is more. Read all reviews on TrustSearch platform! "
+        </span>
       </div>
-      <div className="reviewRatings" style={{ ...reviewRatingStyles }}>
-        <div>
-          <RatingIndicators
-            rating={Number((review || {}).rating) || 0}
-            typeOfWidget="star"
-            widgetRatedColors={
-              ratingColor[Math.round(Number(review.rating)) || 0]
-            }
-            widgetDimensions="20px"
-            widgetSpacings="1px"
-          />
-        </div>
-      </div>
-      <div className="reviewText">
-        <p>
-          <Link href={redirectURL}>
-            <a
-              target="_blank"
-              style={{ textDecoration: "none", color: "#000" }}
-            >
-              {text.replace(/\s+/gim, " ") !== null && text
-                ? text.length <= 95
-                  ? text.replace(/\s\s+/g, " ")
-                  : text.substring(0, 80).replace(/\s\s+/g, " ") + "..."
-                : "no textual review"}
-            </a>
-          </Link>
-        </p>
+      <div className="readMoreBtnContainer">
+        <a
+          href={`https://thetrustsearch.com/reviews/${domain}`}
+          className="readAllBtn"
+          target="_blank"
+        >
+          Read all reviews{" "}
+          <i className="fa fa-arrow-right" style={{ marginLeft: "5px" }}></i>
+        </a>
       </div>
     </div>
   );
@@ -210,7 +260,8 @@ const ReviewBox = props => {
         props.reviewHeaderStyles,
         props.domain,
         props.platformId,
-        props.redirectURL
+        props.redirectURL,
+        props.readMoreBox || false
       )}
     </div>
   );
