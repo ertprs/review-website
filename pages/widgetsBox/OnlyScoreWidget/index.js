@@ -7,7 +7,8 @@ import axios from "axios";
 const retrieveRequiredData = reviewData => {
   const ratings = Number(_get(reviewData, "rating", 0));
 
-  const totalReviews = _get(reviewData, "total", 0);
+  const totalReviews =
+    _get(reviewData, "googleTotal") || _get(reviewData, "total", 0);
 
   return { ratings, totalReviews };
 };
@@ -40,53 +41,55 @@ class OnlyScoreWidget extends React.Component {
   };
 
   componentDidMount() {
-    const platformId = _get(this.props, "platformId", 0);
-    let requestURL = "";
-    if (platformId === "0") {
-      requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}`;
-    } else {
-      requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}&platform=${platformId}`;
-    }
-    axios
-      .get(requestURL)
-      .then(res => {
-        if (platformId === 0 || platformId === "0") {
-          if (!isEmpty(res.data)) {
-            const reviews = _get(res, "data.reviews", []);
-            if (reviews && Array.isArray(reviews)) {
-              if (reviews.length > 0) {
-                this.setState({ reviewData: { ...res.data } });
-              } else {
-                this.setState({ reviewData: { noReviewFound: true } });
-              }
-            }
-          }
-        } else {
-          if (!isEmpty(res.data)) {
-            if (!isEmpty(res.data.data)) {
-              const reviews = _get(res, "data.data.reviews", []);
+    if (this.props.domain) {
+      const platformId = _get(this.props, "platformId", 0);
+      let requestURL = "";
+      if (platformId === "0") {
+        requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}`;
+      } else {
+        requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}&platform=${platformId}`;
+      }
+      axios
+        .get(requestURL)
+        .then(res => {
+          if (platformId === 0 || platformId === "0") {
+            if (!isEmpty(res.data)) {
+              const reviews = _get(res, "data.reviews", []);
               if (reviews && Array.isArray(reviews)) {
                 if (reviews.length > 0) {
-                  this.setState({
-                    reviewData: { ...res.data.data, url: res.data.url }
-                  });
+                  this.setState({ reviewData: { ...res.data } });
                 } else {
                   this.setState({ reviewData: { noReviewFound: true } });
                 }
               }
             }
+          } else {
+            if (!isEmpty(res.data)) {
+              if (!isEmpty(res.data.data)) {
+                const reviews = _get(res, "data.data.reviews", []);
+                if (reviews && Array.isArray(reviews)) {
+                  if (reviews.length > 0) {
+                    this.setState({
+                      reviewData: { ...res.data.data, url: res.data.url }
+                    });
+                  } else {
+                    this.setState({ reviewData: { noReviewFound: true } });
+                  }
+                }
+              }
+            }
           }
-        }
-      })
-      .catch(error => {
-        this.setState({ reviewData: { success: false } });
-        let success = _get(error, "response.data.success", false);
-        if (!success) {
-          this.setState({
-            reviewData: { rating: "0", reviews: [], total: 0, next: "" }
-          });
-        }
-      });
+        })
+        .catch(error => {
+          this.setState({ reviewData: { success: false } });
+          let success = _get(error, "response.data.success", false);
+          if (!success) {
+            this.setState({
+              reviewData: { rating: "0", reviews: [], total: 0, next: "" }
+            });
+          }
+        });
+    }
   }
 
   render() {

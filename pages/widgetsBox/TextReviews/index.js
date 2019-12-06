@@ -89,54 +89,89 @@ class TextReviews extends React.Component {
   };
 
   componentDidMount() {
-    const platformId = _get(this.props, "platformId", 0);
-    let requestURL = "";
-    if (platformId === "0") {
-      requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}`;
-    } else {
-      requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}&platform=${platformId}`;
-    }
-    axios
-      .get(requestURL)
-      .then(res => {
-        if (platformId === 0 || platformId === "0") {
-          if (!isEmpty(res.data)) {
-            const reviews = _get(res, "data.reviews", []);
-            if (reviews && Array.isArray(reviews)) {
-              if (reviews.length > 0) {
-                this.setState({ reviewData: { ...res.data } });
-              } else {
-                this.setState({ reviewData: { noReviewFound: true } });
-              }
-            }
-          }
-        } else {
-          if (!isEmpty(res.data)) {
-            if (!isEmpty(res.data.data)) {
-              const reviews = _get(res, "data.data.reviews", []);
+    if (this.props.domain) {
+      const platformId = _get(this.props, "platformId", 0);
+      let requestURL = "";
+      if (platformId === "0") {
+        requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}`;
+      } else {
+        requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}&platform=${platformId}`;
+      }
+      axios
+        .get(requestURL)
+        .then(res => {
+          if (platformId === 0 || platformId === "0") {
+            if (!isEmpty(res.data)) {
+              const reviews = _get(res, "data.reviews", []);
               if (reviews && Array.isArray(reviews)) {
                 if (reviews.length > 0) {
-                  this.setState({
-                    reviewData: { ...res.data.data, url: res.data.url }
-                  });
+                  this.setState({ reviewData: { ...res.data } });
                 } else {
                   this.setState({ reviewData: { noReviewFound: true } });
                 }
               }
             }
+          } else {
+            if (!isEmpty(res.data)) {
+              if (!isEmpty(res.data.data)) {
+                const reviews = _get(res, "data.data.reviews", []);
+                if (reviews && Array.isArray(reviews)) {
+                  if (reviews.length > 0) {
+                    this.setState({
+                      reviewData: { ...res.data.data, url: res.data.url }
+                    });
+                  } else {
+                    this.setState({ reviewData: { noReviewFound: true } });
+                  }
+                }
+              }
+            }
           }
-        }
-      })
-      .catch(error => {
-        this.setState({ reviewData: { success: false } });
-        let success = _get(error, "response.data.success", false);
-        if (!success) {
-          this.setState({
-            reviewData: { rating: "0", reviews: [], total: 0, next: "" }
-          });
-        }
-      });
+        })
+        .catch(error => {
+          this.setState({ reviewData: { success: false } });
+          let success = _get(error, "response.data.success", false);
+          if (!success) {
+            this.setState({
+              reviewData: { rating: "0", reviews: [], total: 0, next: "" }
+            });
+          }
+        });
+    }
   }
+
+  renderSliderBoxes = requiredData => {
+    let totalReviews = _get(requiredData, "totalReviews", 0);
+    let output = requiredData.reviews.map(item => {
+      return (item || {}).text || (item || {}).review ? (
+        <div key={uuid()}>
+          <ReviewBox
+            review={item}
+            styles={{ height: "170px" }}
+            reviewRatingStyles={{ margin: "8px 0 8px 0" }}
+            reviewHeaderStyles={{ marginTop: "0px" }}
+            domain={this.props.domain}
+            platformId={this.props.platformId}
+            redirectURL={requiredData.redirectURL}
+          />
+        </div>
+      ) : null;
+    });
+
+    return totalReviews > 26
+      ? [
+          output,
+          <div key={uuid()}>
+            <ReviewBox
+              readMoreBox={true}
+              styles={{ height: "170px" }}
+              domain={this.props.domain}
+              platformId={this.props.platformId}
+            />
+          </div>
+        ]
+      : output;
+  };
 
   renderTextReviewsWidget = (reviewData, settings, props) => {
     const requiredData = this.retrieveRequiredData(reviewData);
@@ -247,21 +282,7 @@ class TextReviews extends React.Component {
           <div className="reviewBoxSlider">
             {requiredData.success !== false && requiredData.totalReviews > 0 ? (
               <Slider {...settings}>
-                {requiredData.reviews.map(item => {
-                  return (item || {}).text || (item || {}).review ? (
-                    <div key={uuid()}>
-                      <ReviewBox
-                        review={item}
-                        styles={{ height: "170px" }}
-                        reviewRatingStyles={{ margin: "8px 0 8px 0" }}
-                        reviewHeaderStyles={{ marginTop: "0px" }}
-                        domain={this.props.domain}
-                        platformId={this.props.platformId}
-                        redirectURL={requiredData.redirectURL}
-                      />
-                    </div>
-                  ) : null;
-                })}
+                {this.renderSliderBoxes(requiredData)}
               </Slider>
             ) : requiredData.noReviewFound ? (
               <div className="noReviewBox">
@@ -325,7 +346,8 @@ class TextReviews extends React.Component {
   retrieveRequiredData = reviewData => {
     const ratings = Number(_get(reviewData, "rating", 0));
 
-    const totalReviews = _get(reviewData, "total", "");
+    const totalReviews =
+      _get(reviewData, "googleTotal") || _get(reviewData, "total", "");
 
     const reviews = _get(reviewData, "reviews", []);
 
