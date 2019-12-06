@@ -18,7 +18,7 @@
   function addCSSLoader(container, widgetProps) {
     if (widgetProps.dataTemplateId !== "TextReviewsWithScores") {
       container.style.cssText =
-        "background:url('https://thetrustsearch.com/static/images/preloader.gif'); background-repeat:no-repeat; background-position:center";
+        "background:url('https://thetrustsearch-dev.cryptopolice.com/static/images/preloader.gif'); background-repeat:no-repeat; background-position:center";
     }
   }
 
@@ -45,7 +45,7 @@
     trustFrame.frameBorder = "0";
     trustFrame.scrolling = "no";
     trustFrame.title = "Cutomer reviews powered by The Trustsearch";
-    trustFrame.src = `https://thetrustsearch.com/widgetsBox/${
+    trustFrame.src = `https://thetrustsearch-dev.cryptopolice.com/widgetsBox/${
       widgetProps.dataTemplateId
     }?businessunitId=${widgetProps.dataBusinessUnitId}&locale=${
       widgetProps.dataLocale
