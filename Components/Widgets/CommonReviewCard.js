@@ -71,14 +71,14 @@ const ReviewCard = ({ review, provider }) => {
         }
       `}</style>
       <div>
-        {provider === "wot" ? (
+        {/* {provider === "wot" ? (
           <div className="dateContainer">
             <span className="fullDate">
               {moment(date).format("DD/MM/YYYY")}
             </span>
             <span className="smallDate">{moment(date).format("YYYY")}</span>
           </div>
-        ) : null}
+        ) : null} */}
       </div>
       <div className="row topBox">
         <div className="col-md-6 ratingBox">
