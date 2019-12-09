@@ -729,14 +729,6 @@ class Home extends Component {
         </style>
         {!showGetStarted ? (
           <Grid container spacing={3}>
-            {isSubscriptionExpired === true
-              ? this.renderSubscriptionInfo(classes)
-              : userActivated === false
-              ? this.renderActivationInfo(classes)
-              : ""}
-            {this.renderOverviewCard()}
-            {this.renderRecentReviewsCard()}
-            {this.renderInvitationsCard()}
             <Grid item xs={12} md={12} lg={12}>
               <SimpleCard>
                 <div className="businessDetailsContainer">
@@ -749,6 +741,15 @@ class Home extends Component {
                 </div>
               </SimpleCard>
             </Grid>
+            {isSubscriptionExpired === true
+              ? this.renderSubscriptionInfo(classes)
+              : userActivated === false
+              ? this.renderActivationInfo(classes)
+              : ""}
+            {this.renderOverviewCard()}
+            {this.renderRecentReviewsCard()}
+            {this.renderInvitationsCard()}
+
             {(this.props.socialArray || []).length > 0 ? (
               <>
                 <Grid item xs={6} md={6} lg={6}>
