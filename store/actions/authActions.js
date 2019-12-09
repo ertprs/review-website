@@ -452,7 +452,7 @@ export const businessSignUp = (signupData, api) => {
     } catch (err) {
       let success = _get(err, "response.data.success", false);
       let status = _get(err, "response.status", 0);
-      let error = _get(err, "response.data.error", "");
+      let error = _get(err, "response.data.error", "Some Error Occured!");
       dispatch({
         type: BUSINESS_SIGNUP_FAILURE,
         businessSignUp: {},
