@@ -734,9 +734,6 @@ class Home extends Component {
               : userActivated === false
               ? this.renderActivationInfo(classes)
               : ""}
-            {this.renderOverviewCard()}
-            {this.renderRecentReviewsCard()}
-            {this.renderInvitationsCard()}
             <Grid item xs={12} md={12} lg={12}>
               <SimpleCard>
                 <div className="businessDetailsContainer">
@@ -749,28 +746,30 @@ class Home extends Component {
                 </div>
               </SimpleCard>
             </Grid>
-            {(this.props.socialArray || []).length > 0 ? (
-              <>
-                <Grid item xs={6} md={6} lg={6}>
-                  <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
-                </Grid>
-                <Grid item xs={6} md={6} lg={6}>
-                  <div style={{ textAlign: "right" }}>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      size="small"
-                      startIcon={<EditIcon />}
-                      onClick={() => {
-                        this.props.setGetStartedShow(!showGetStarted);
-                      }}
-                    >
-                      Edit All
-                    </Button>
-                  </div>
-                </Grid>
-              </>
-            ) : null}
+            {this.renderOverviewCard()}
+            {this.renderRecentReviewsCard()}
+            {this.renderInvitationsCard()}
+
+            <>
+              <Grid item xs={6} md={6} lg={6}>
+                <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
+              </Grid>
+              <Grid item xs={6} md={6} lg={6}>
+                <div style={{ textAlign: "right" }}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    startIcon={<EditIcon />}
+                    onClick={() => {
+                      this.props.setGetStartedShow(!showGetStarted);
+                    }}
+                  >
+                    Edit All
+                  </Button>
+                </div>
+              </Grid>
+            </>
             {this.renderReviewURLBoxes()}
           </Grid>
         ) : (
