@@ -463,6 +463,7 @@ class Home extends Component {
             likes = _get(data, "likes", "");
             followers = _get(data, "followers", "");
             ratings = _get(data, "rating", 0);
+            totalReviews = _get(data, "total", 0);
           } else {
             if (_get(data, "rating", 0)) {
               ratings = _get(data, "rating", 0);

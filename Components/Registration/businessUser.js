@@ -22,7 +22,7 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "https://www.yourdomain.com",
-        errorMessage: "",
+        errorMessage: "Please enter a valid domain (http://yourdomain.com)",
         valid: false,
         touched: false,
         validationRules: {
@@ -61,7 +61,7 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "email@yourdomain.com",
-        errorMessage: "",
+        errorMessage: "Please enter a valid email",
         valid: false,
         touched: false,
         validationRules: {
@@ -100,11 +100,12 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "Enter your phone no.",
-        errorMessage: "",
+        errorMessage: "Please enter a valid phone no.",
         valid: false,
         touched: false,
         validationRules: {
-          required: true
+          required: true,
+          isPhoneNumber:true
         },
         name: "phone"
       },
