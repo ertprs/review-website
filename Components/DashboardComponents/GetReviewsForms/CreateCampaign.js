@@ -86,10 +86,10 @@ class CreateCampaign extends Component {
                   disabled={true}
                 />
               </Tooltip>
-              <p className="textnote">
+              {/* <p className="textnote">
                 * Upgrade to premium to send invitations using your own email
                 domain.
-              </p>
+              </p> */}
               <FormControl
                 component="fieldset"
                 style={{ marginBottom: "15px", marginTop: "12px" }}
