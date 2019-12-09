@@ -208,33 +208,25 @@ export default function TrustSearc_API_integrationDocumentation() {
         }
       `}</style>
       <h2 className="heading">
-        TrustSearch Business Magento Plugin Requirements:
+        TrustSearch Business API
       </h2>
       <p>
-        <span className="bold heading_text">Magento Plugin: </span>
         <span className="normal_text">
-          The plugin should be able to connect to TrustSearch client API with
-          authorization and pushing orders, along with handling errors.
+         If you are a business customer looking to integrate your e-commerce systems with TrustSearch, this API enables you to streamline your reputation building process. Continue reading to get started.
+        </span>
+        <span className="normal_text">
+          TrustSearch API follows the REST design. This document will be continually updated to reflect the latest changes in the API. If you encounter any problem during set up or need developer support, feel free to get in touch.
         </span>
       </p>
       <p>
-        <div className="bold heading_text underline">Test Credentials</div>
+        <div className="bold heading_text underline">Setup</div>
         <div className="normal_text">
+          <div className="normal_text">
+            You will get a pair of system identifier and key when you set up your automatic invite to use TrustSearch API. (Head to Get Invites -> Select Automatic Invitations -> Click next and set up TrustSearch API)
+          </div>
           <div>
             <div className="row">
               <div className="col-md-6">
-                <div className="flexBoxContainer">
-                  <div>System Identifier: </div>
-                  <div>
-                    <b>TO BE FILLED</b>
-                  </div>
-                </div>
-                <div className="flexBoxContainer">
-                  <div>Key:</div>
-                  <div>
-                    <b>TO BE FILLED</b>
-                  </div>
-                </div>
                 <div className="flexBoxContainer">
                   <div>Base URL:</div>
                   <div>
