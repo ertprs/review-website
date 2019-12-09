@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import Title from "../../MaterialComponents/Title";
 import Button from "@material-ui/core/Button/Button";
+import BackArrowIcon from "@material-ui/icons/ArrowBack";
 import Input from "@material-ui/core/Input/Input";
 import uuid from "uuid/v1";
 import FormField from "../../Widgets/FormField/FormField";
+import Head from "next/head";
+import _get from 'lodash/get';
 
 const platforms = [
   {
@@ -132,7 +135,13 @@ export default class GetWidget extends Component {
         />
         (in px)
         <div>
-          <div style={{ fontWeight: "bold", marginBottom: "10px", marginTop:"15px" }}>
+          <div
+            style={{
+              fontWeight: "bold",
+              marginBottom: "10px",
+              marginTop: "15px"
+            }}
+          >
             Select your review platform:{" "}
           </div>
           <FormField
@@ -245,9 +254,40 @@ export default class GetWidget extends Component {
   render() {
     return (
       <div className="container">
+        <Head>
+          <script
+            type="text/javascript"
+            src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v1/ts.widget.js"
+            async
+          ></script>
+        </Head>
+        <div style={{ marginBottom: "50px" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<BackArrowIcon />}
+            onClick={() => {
+              this.props.getMoreWidgets()
+            }}
+          >
+            Back
+          </Button>
+        </div>
+        <div
+          className="trustsearch-widget"
+          data-locale="en-US"
+          data-template-id={_get(this.props, "widget.dataTempID", "")}
+          data-businessunit-id={_get(this.props, "domainName", "")}
+          data-style-height={`${_get(this.state, "widgetHeight", "")}px`}
+          data-style-width="100%"
+          data-theme="light"
+          data-platform-id={_get(this.state, "platforms.value", "0")}
+          style={{ position: "relative", overflow: "hidden" }}
+        ></div>
         <div className="row">
-          <div className="col-md-6">{this.renderWidgetInfo()}</div>
-          <div className="col-md-6">{this.getYourWidgetBox()}</div>
+          {/* <div className="col-md-6">{this.renderWidgetInfo()}</div> */}
+          <div className="col-md-12">{this.getYourWidgetBox()}</div>
         </div>
       </div>
     );
