@@ -487,8 +487,6 @@ class GetStarted extends Component {
     } = this.props;
     const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
-    const socialArrayPrev = _get(prevProps, "socialArray", []);
-    const socialArray = _get(this.props, "socialArray", []);
 
     if (this.props !== prevProps) {
       if (isLoading !== prevProps.isLoading && success !== prevProps.success) {
@@ -497,7 +495,7 @@ class GetStarted extends Component {
             {
               showSnackbar: true,
               variant: "success",
-              snackbarMsg: "Data located successfully!"
+              snackbarMsg: "Reviews Url Updated Successfully!"
             },
             () => {
               changeStepToRender(1);
