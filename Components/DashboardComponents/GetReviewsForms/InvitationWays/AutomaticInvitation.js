@@ -209,8 +209,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "bccSender",
             id: "bccSender",
-            labelText:
-              `Add BCC to your customer's email (${process.env.BCC_EMAIL})`
+            labelText: `Add BCC to your customer's email (${process.env.BCC_EMAIL})`
           },
           locale: {
             element: "select",
@@ -363,6 +362,7 @@ class AutomaticInvitation extends Component {
       if (success && !isLoading) {
         let variant = success ? "success" : "error";
         let snackbarMsg = success ? "Configured Successfully!" : errorMsg;
+        //! we are disabling modal for woocommerce and bcc and sending them directly to select platform
         this.setState(
           {
             showSnackbar: true,
@@ -370,12 +370,12 @@ class AutomaticInvitation extends Component {
             snackbarMsg
           },
           () => {
-            if (formName === "WooCommerce") {
+            if (formName === "WooCommerce" || formName === "BCC") {
               sendToSelectPlatformSplit();
             }
           }
         );
-        if (formName !== "WooCommerce") {
+        if (formName !== "WooCommerce" || formName !== "BCC") {
           this.setState({ showCredentialModal: true });
         }
       }
