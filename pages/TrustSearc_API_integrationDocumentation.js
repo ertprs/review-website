@@ -257,17 +257,7 @@ export default function TrustSearc_API_integrationDocumentation() {
       </div>
       <div className="mt_20">
         <p className="heading_text">
-          Plugin should have the following configurable:
-        </p>
-        <p className="normal_text">
-          1. Authentication - System Identifier and Key along with a 'Test
-          Connection' button. Messages: Connection successful, Connection
-          failed, Invalid credentials.
-        </p>
-      </div>
-      <div className="mt_20">
-        <p className="heading_text">
-          Plugin should be able to perform the following tasks:
+          Steps:
         </p>
         <p className="normal_text">
           1. Authenticate (Necessary before every API call to get token)
@@ -286,7 +276,7 @@ export default function TrustSearc_API_integrationDocumentation() {
         <p className="heading_text">Response:</p>
         <p className="normal_text">
           JSON with a key ‘message’ or ‘error’ depending upon the result.
-          Relying on error codes is possible but not recommended.
+          Relying on error codes is possible but not recommended. In case of success, email will be sent out to the customer adhering to the latest invite configuration present in TrustSearch for your e-commerce system.
         </p>
       </div>
     </div>
