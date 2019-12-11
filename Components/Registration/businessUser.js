@@ -21,13 +21,12 @@ class BusinessUserRegistration extends Component {
       website: {
         element: "input",
         value: "",
-        placeholder: "https://www.yourdomain.com",
-        errorMessage: "Please enter a valid domain (http://yourdomain.com)",
+        placeholder: "yourdomain.com",
+        errorMessage: "Please enter a valid domain (for eg: thetrustsearch.com)",
         valid: false,
         touched: false,
         validationRules: {
-          required: true,
-          isDomain: true
+          required: true
         },
         name: "website name"
       },
@@ -35,7 +34,7 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "Enter your company name",
-        errorMessage: "",
+        errorMessage: "Enter valid company name (atleast 3 characters)",
         valid: false,
         touched: false,
         validationRules: {
@@ -48,7 +47,7 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "Enter your full name",
-        errorMessage: "",
+        errorMessage: "Enter valid name (atleast 5 characters)",
         valid: false,
         touched: false,
         validationRules: {
@@ -74,7 +73,7 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "Enter your password",
-        errorMessage: "",
+        errorMessage: "Required (At least 8 character)",
         valid: false,
         touched: false,
         validationRules: {
@@ -87,7 +86,7 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "Please confirm your password",
-        errorMessage: "",
+        errorMessage: "Password and confirm password must match",
         valid: false,
         touched: false,
         type: "number",
