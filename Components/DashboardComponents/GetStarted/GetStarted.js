@@ -208,7 +208,6 @@ class GetStarted extends Component {
         }
       }
     }
-    console.log(reqBody);
     if (Object.keys(reqBody).length > 0) {
       this.setState({ disabledSave: true });
       locatePlaceByPlaceId(
@@ -284,8 +283,9 @@ class GetStarted extends Component {
           {name}
         </h3>
         <h6 className="getStartedSubHeader">
-          This is your personal setup guide. Let’s get you up and running so you
-          can get more reviews and build trust.
+          Please choose any one of the platforms to get started. You need to
+          enter the URL of your business page for the platform that you choose,
+          so that we can fetch information about your business.
         </h6>
       </div>
     );
@@ -306,8 +306,8 @@ class GetStarted extends Component {
     return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
       <div style={{ textAlign: "right" }}>
         {isLoading === true ? (
-          <Button>
-            <CircularProgress size={25} />
+          <Button variant="contained" color="primary" size="large">
+            <CircularProgress size={25} style={{ color: "white" }} />
           </Button>
         ) : (
           <>
@@ -661,21 +661,6 @@ class GetStarted extends Component {
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid>
           <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {/* {this.props.showGetStarted ? (
-              <div style={{ marginRight: "50px", marginLeft: "10px" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  startIcon={<ArrowBackIcon />}
-                  onClick={() => {
-                    this.props.setGetStartedShow(false, "");
-                  }}
-                >
-                  Back
-                </Button>
-              </div>
-            ) : null} */}
             {this.renderContinueBtn()}
           </Grid>
         </Container>
