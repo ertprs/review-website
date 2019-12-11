@@ -1111,6 +1111,16 @@ class GetReviews extends Component {
               activeStep: 0,
               getReviewsActiveSubStep: -1,
               tableData: [],
+              reviewInvitationPlatformsData: {
+                platforms: {},
+                sumOfAllSplits: 0,
+                selectionWays: [
+                  { id: 0, label: "Use only one review platform" },
+                  { id: 1, label: "Use multiple review platforms" }
+                ],
+                selectedWay: -1,
+                selectedSinglePlatform: ""
+              },
               addInvitesData: {
                 email: {
                   element: "input",

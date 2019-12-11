@@ -4,7 +4,6 @@ import _get from "lodash/get";
 import _map from "lodash/map";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
-import { getThirdPartyReviews } from "../../../store/actions/dashboardActions";
 import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
@@ -285,4 +284,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { getThirdPartyReviews })(Trustpilot);
+export default connect(mapStateToProps)(Trustpilot);

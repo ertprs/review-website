@@ -75,16 +75,7 @@ const ReviewCard = ({ review, provider }) => {
           padding: 14px;
         }
       `}</style>
-      <div>
-        {/* {provider === "wot" ? (
-          <div className="dateContainer">
-            <span className="fullDate">
-              {moment(date).format("DD/MM/YYYY")}
-            </span>
-            <span className="smallDate">{moment(date).format("YYYY")}</span>
-          </div>
-        ) : null} */}
-      </div>
+      <div></div>
       <div className="row topBox">
         <div className="col-md-6 ratingBox">
           <div className="row">
