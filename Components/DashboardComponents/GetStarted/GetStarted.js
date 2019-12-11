@@ -302,7 +302,7 @@ class GetStarted extends Component {
 
   renderContinueBtn = () => {
     const { selectedAddress, formData, disabledSave } = this.state;
-    const { type, isLoading } = this.props;
+    const { type, isLoading, showGetStarted } = this.props;
     return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
       <div style={{ textAlign: "right" }}>
         {isLoading === true ? (
@@ -311,17 +311,19 @@ class GetStarted extends Component {
           </Button>
         ) : (
           <>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              // startIcon={<ArrowBackIcon />}
-              onClick={() => {
-                this.props.setGetStartedShow(false, "");
-              }}
-            >
-              Close
-            </Button>
+            {showGetStarted ? (
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                // startIcon={<ArrowBackIcon />}
+                onClick={() => {
+                  this.props.setGetStartedShow(false, "");
+                }}
+              >
+                Close
+              </Button>
+            ) : null}
             <Button
               disabled={disabledSave}
               style={{ marginLeft: "20px" }}
