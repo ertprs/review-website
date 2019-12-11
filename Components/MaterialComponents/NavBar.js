@@ -243,11 +243,9 @@ function PrimarySearchAppBar(props) {
       ) : null}
       {(loginType === 1 || loginType === 2) &&
       cookie.get("token") !== undefined ? (
-        <Link href="">
-          <MenuItem>
-            <a onClick={() => handleLogout()}>Logout</a>
-          </MenuItem>
-        </Link>
+        <MenuItem>
+          <a onClick={() => handleLogout()}>Logout</a>
+        </MenuItem>
       ) : (
         ""
       )}
@@ -256,11 +254,9 @@ function PrimarySearchAppBar(props) {
           clientId={process.env.GOOGLE_CLIENT_ID}
           buttonText="Logout"
           render={renderProps => (
-            <Link href="">
-              <MenuItem>
-                <a onClick={() => handleLogout()}>Logout</a>
-              </MenuItem>
-            </Link>
+            <MenuItem>
+              <a onClick={() => handleLogout()}>Logout</a>
+            </MenuItem>
           )}
           // onLogoutSuccess={logout}
         ></GoogleLogout>
@@ -268,11 +264,9 @@ function PrimarySearchAppBar(props) {
         ""
       )}
       {loginType === 4 && cookie.get("token") !== undefined ? (
-        <Link href="">
-          <MenuItem>
-            <a onClick={() => handleLogout()}>Logout</a>
-          </MenuItem>
-        </Link>
+        <MenuItem>
+          <a onClick={() => handleLogout()}>Logout</a>
+        </MenuItem>
       ) : (
         ""
       )}
@@ -313,11 +307,14 @@ function PrimarySearchAppBar(props) {
       </Link>
 
       <div>
-        <Link href="https://b2b.thetrustsearch.com/en/">
-          <MenuItem>
-            <a className={classes.navLinkMobile}>Business</a>
-          </MenuItem>
-        </Link>
+        <MenuItem>
+          <a
+            className={classes.navLinkMobile}
+            href="https://b2b.thetrustsearch.com/en/"
+          >
+            Business
+          </a>
+        </MenuItem>
       </div>
       {!authorized || cookie.get("token") === undefined ? (
         <>
@@ -425,9 +422,12 @@ function PrimarySearchAppBar(props) {
             <Link href="/about">
               <a className={classes.navLink}>About Us</a>
             </Link>
-            <Link href="https://b2b.thetrustsearch.com/en/">
-              <a className={classes.navLink}>Business</a>
-            </Link>
+            <a
+              href="https://b2b.thetrustsearch.com/en/"
+              className={classes.navLink}
+            >
+              Business
+            </a>
             {!authorized || cookie.get("token") === undefined ? (
               <>
                 <Link href="/login">
@@ -439,17 +439,15 @@ function PrimarySearchAppBar(props) {
               </>
             ) : (
               <>
-                <Link>
-                  <span
-                    className={classes.navLink}
-                    onClick={e => {
-                      e.preventDefault();
-                      handleProfileMenuOpen(e);
-                    }}
-                  >
-                    <span>{userName ? `Hello, ${userName}` : ""}</span>
-                  </span>
-                </Link>
+                <span
+                  className={classes.navLink}
+                  onClick={e => {
+                    e.preventDefault();
+                    handleProfileMenuOpen(e);
+                  }}
+                >
+                  <span>{userName ? `Hello, ${userName}` : ""}</span>
+                </span>
                 {renderProfileMenu}
               </>
             )}

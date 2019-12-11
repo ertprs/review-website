@@ -275,6 +275,7 @@ class GetStarted extends Component {
           }
           .getStartedSubHeader {
             margin-bottom: 25px;
+            line-height: 2rem;
           }
         `}</style>
         <h3 className="getStartedHeader">
@@ -284,8 +285,9 @@ class GetStarted extends Component {
           {name}
         </h3>
         <h6 className="getStartedSubHeader">
-          This is your personal setup guide. Let’s get you up and running so you
-          can get more reviews and build trust.
+          Please enter the URL's of your business pages in the respective
+          platform boxes (atleast one platform) below to get started, so that we
+          can fetch information about your business on the respective platforms.
         </h6>
       </div>
     );
@@ -300,7 +302,7 @@ class GetStarted extends Component {
     return valid;
   };
 
-  renderContinueBtn = () => {
+  renderContinueBtn = reviewURLToEdit => {
     const { selectedAddress, formData, disabledSave } = this.state;
     const { type, isLoading } = this.props;
     return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
@@ -647,7 +649,7 @@ class GetStarted extends Component {
               {this.renderGetStartedHeader()}
             </Grid>
             <Grid item xs={12} md={4} lg={4}>
-              {this.renderContinueBtn()}
+              {this.renderContinueBtn(reviewURLToEdit)}
             </Grid>
           </Grid>
           <Grid container spacing={3}>
