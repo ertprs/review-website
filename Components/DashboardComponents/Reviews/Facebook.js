@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import _map from "lodash/map";
-import { getThirdPartyReviews } from "../../../store/actions/dashboardActions";
 import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
@@ -294,4 +293,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { getThirdPartyReviews })(Facebook);
+export default connect(mapStateToProps)(Facebook);
