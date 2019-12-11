@@ -424,7 +424,7 @@ class Home extends Component {
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          <div className="bold">Expires At :</div>
+          <div className="bold">Subscription Expiry Date :</div>
           <div>
             <Moment format="DD/MM/YYYY HH:mm">
               {expiresAt || new Date().getDate()}
