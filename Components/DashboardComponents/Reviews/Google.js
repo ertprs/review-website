@@ -143,7 +143,8 @@ class GoogleReviewsDs extends Component {
                     text:
                       _get(review, "text", "") || _get(review, "review", ""),
                     rating: _get(review, "rating", 0),
-                    date: _get(review, "date", "")
+                    date: _get(review, "date", ""),
+                    replyURL:_get(review, "review_url", "")
                   };
                   return (
                     <GoogleReviewCard review={reviewToSend} provider="google" />
