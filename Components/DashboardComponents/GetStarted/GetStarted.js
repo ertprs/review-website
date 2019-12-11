@@ -244,21 +244,25 @@ class GetStarted extends Component {
   };
 
   renderSelectedAddress = () => {
-    const { selectedAddress } = this.state;
+    const { selectedAddress, address } = this.state;
     const addressSelected = _get(this.props, "addressSelected", "");
     return Object.keys(selectedAddress).length > 0 ? (
       <div style={{ marginTop: "15px" }}>
-        <p>
-          <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-          {this.state.address}
-        </p>
+        {address ? (
+          <p>
+            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
+            {address}
+          </p>
+        ) : null}
       </div>
     ) : (
       <div style={{ marginTop: "15px" }}>
-        <p>
-          <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-          {addressSelected}
-        </p>
+        {addressSelected ? (
+          <p>
+            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
+            {addressSelected}
+          </p>
+        ) : null}
       </div>
     );
   };
