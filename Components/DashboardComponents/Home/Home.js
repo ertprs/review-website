@@ -8,6 +8,7 @@ import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import FetchedIcon from "@material-ui/icons/CheckCircleRounded";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { resendActivationLink } from "../../../store/actions/authActions";
 import { resendActivationLinkApi } from "../../../utility/config";
@@ -313,6 +314,144 @@ class Home extends Component {
                 "Reviews will be updated soon!"
               )}
             </div>
+          </div>
+        </SimpleCard>
+      </Grid>
+    );
+  };
+
+  renderReviewsFetchStatusCard = () => {
+    const socialArray = _get(this.props, "socialArray", []);
+    const reviewsObject = _get(this.props, "reviewsObject", {});
+    const googlePlaceAddress = _get(
+      this.props,
+      "businessProfile.google_places.address",
+      ""
+    );
+    const dashboardData = _get(this.props, "dashboardData", {});
+    const isGoogleReviewsFetching = reviewsObject["google"];
+    return (
+      <Grid item xs={12} md={4} lg={4}>
+        <style jsx>{`
+          .body {
+            margin-top: 30px;
+          }
+          .p_10 {
+            padding: 10px 0px;
+          }
+          .platform_name {
+            font-size: 18px;
+            font-weight: bold;
+          }
+          .link {
+            color: #008dec;
+          }
+          .link:hover {
+            cursor: pointer;
+            text-decoration: underline;
+          }
+          .text_right {
+            text-align: right;
+          }
+          .ml_10 {
+            margin-left: 10px;
+          }
+        `}</style>
+        <SimpleCard style={{ height: "298px" }}>
+          <div className="header">
+            <Title>
+              <h5>Reviews Fetch Status</h5>
+            </Title>
+          </div>
+          <div className="body">
+            {googlePlaceAddress ? (
+              <div className="row p_10">
+                <div className="col-md-6 platform_name">Google</div>
+                <div className="col-md-6 text_right">
+                  {isGoogleReviewsFetching ||
+                  _get(dashboardData, "reviews.isFetching", false) ? (
+                    <div>
+                      <span>Fetching Reviews...</span>
+                      <CircularProgress size={15} />
+                    </div>
+                  ) : (
+                    <>
+                      <FetchedIcon
+                        size={15}
+                        style={{ color: "green", height: "16px" }}
+                      />
+                      <span
+                        className="link ml_10"
+                        onClick={() => this.props.navigateToReviews(0)}
+                      >
+                        See Reviews
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+            ) : null}
+            {(socialArray || []).map(item => {
+              let reviewsTabIndexObj = {
+                1: "1",
+                18: "3",
+                19: "2"
+              };
+              let app_id = _get(item, "social_media_app_id", "`");
+              let reviewObj = reviewURLObjects[app_id];
+              let platformDisplayName = "";
+              let platformName = "";
+              let platformKeyName = "";
+              let socialMediaObj = iconNames[app_id];
+              if (socialMediaObj) {
+                platformName = _get(socialMediaObj, "name", "");
+              }
+              if (reviewObj) {
+                platformDisplayName = _get(reviewObj, "displayName", "");
+                platformKeyName = _get(reviewObj, "name", "");
+              }
+              let isFetching = false;
+              if (reviewsObject.hasOwnProperty(platformName)) {
+                isFetching = reviewsObject[platformName];
+              }
+              let isFetchingFromApi = false;
+              if (dashboardData.hasOwnProperty(platformKeyName)) {
+                let platformData = _get(dashboardData, platformKeyName, {});
+                isFetchingFromApi = _get(platformData, "isLoading", false);
+              }
+              let reviewsTabIndex = reviewsTabIndexObj[app_id];
+              return (
+                <div className="row p_10">
+                  <div className="col-md-6 platform_name">
+                    {platformDisplayName}
+                  </div>
+                  <div className="col-md-6 text_right">
+                    {isFetching || isFetchingFromApi ? (
+                      <div>
+                        <span>Fetching Reviews...</span>
+                        <CircularProgress size={15} />
+                      </div>
+                    ) : (
+                      <>
+                        <FetchedIcon
+                          style={{ color: "green", height: "16px" }}
+                        />
+                        <span
+                          className="link ml_10"
+                          onClick={() =>
+                            this.props.navigateToReviews(
+                              Number(reviewsTabIndex)
+                            )
+                          }
+                        >
+                          See Reviews
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </SimpleCard>
       </Grid>
@@ -748,7 +887,7 @@ class Home extends Component {
               </SimpleCard>
             </Grid>
             {this.renderOverviewCard()}
-            {this.renderRecentReviewsCard()}
+            {this.renderReviewsFetchStatusCard()}
             {this.renderInvitationsCard()}
 
             <>
@@ -886,7 +1025,9 @@ const mapStateToProps = state => {
     (trustedshopsRating ? 1 : 0);
   const max_rating = 5;
   //! this rating is calculated for max_rating 5
-  const overallRating = (totalRatingOfAllPlatforms / noOfPlatforms).toFixed(1);
+  const overallRating = (
+    totalRatingOfAllPlatforms / (noOfPlatforms || 1)
+  ).toFixed(1);
   return {
     reviewsData,
     quotaDetails,

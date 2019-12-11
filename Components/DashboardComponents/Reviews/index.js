@@ -6,6 +6,7 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { withStyles } from "@material-ui/styles";
+import _get from "lodash/get";
 import Paper from "@material-ui/core/Paper/Paper";
 import dynamic from "next/dynamic";
 const GoogleReviews = dynamic(() => import("./Google"), {
@@ -111,7 +112,7 @@ const styles = theme => ({
 
 class ReviewsContainer extends React.Component {
   state = {
-    selectedTab: 0
+    selectedTab: _get(this.props, "selectedTab", 0)
   };
 
   handleChange = (event, newValue) => {
