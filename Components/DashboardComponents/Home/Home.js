@@ -879,7 +879,11 @@ const mapStateToProps = state => {
     (facebookRating ? Number(facebookRating) : 0) +
     (trustpilotRating ? Number(trustpilotRating) : 0) +
     (trustedshopsRating ? Number(trustedshopsRating) : 0);
-  const noOfPlatforms = 4;
+  const noOfPlatforms =
+    (googleRating ? 1 : 0) +
+    (facebookRating ? 1 : 0) +
+    (trustpilotRating ? 1 : 0) +
+    (trustedshopsRating ? 1 : 0);
   const max_rating = 5;
   //! this rating is calculated for max_rating 5
   const overallRating = (totalRatingOfAllPlatforms / noOfPlatforms).toFixed(1);
