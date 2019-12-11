@@ -462,6 +462,8 @@ class Home extends Component {
     const { quotaDetails } = this.props;
     const total = _get(quotaDetails, "invitations.total", 0);
     const remaining = _get(quotaDetails, "invitations.remaining", 0);
+    const created = _get(quotaDetails, "invitations.created", 0);
+    const sent = _get(quotaDetails, "invitations.sent", 0);
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
@@ -485,24 +487,25 @@ class Home extends Component {
             <Title>
               <h5>Invitations Summary</h5>
             </Title>
+            <span>You can send unlimited invitations to your customers.</span>
           </div>
           <div className="body">
             <div className="container">
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Total Invitations :
+                Total Invitations Created:
               </p>
-              <h1>{total}</h1>
+              <h1>{created}</h1>
             </div>
             <div className="container">
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Invitations Left :{" "}
+                Total Invitations Sent :{" "}
               </p>
-              <span
-                style={{ fontWeight: "bold", fontSize: "20px", color: "green" }}
+              {/* <span
+              style={{ fontWeight: "bold", fontSize: "20px", color: "green" }}
               >
-                Unlimited
-              </span>
-              {/* <h1>{remaining}</h1> */}
+                {sent}
+              </span> */}
+              <h1>{sent}</h1>
             </div>
           </div>
         </SimpleCard>
