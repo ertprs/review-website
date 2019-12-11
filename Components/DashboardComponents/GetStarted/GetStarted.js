@@ -495,7 +495,7 @@ class GetStarted extends Component {
             {
               showSnackbar: true,
               variant: "success",
-              snackbarMsg: "Reviews Url Updated Successfully!"
+              snackbarMsg: "Review URL Updated Successfully!"
             },
             () => {
               changeStepToRender(1);
