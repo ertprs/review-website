@@ -199,7 +199,9 @@ class TrustedShops extends Component {
                     name: name === "N/A" ? "" : name,
                     text: _get(review, "review", ""),
                     rating: _get(review, "rating", 0),
-                    date: _get(review, "date", "")
+                    date: _get(review, "date", ""),
+                    replyURL:_get(review, "review_url", "")
+
                   };
                   return (
                     <ReviewCard review={reviewToSend} provider="trustedshops" />
