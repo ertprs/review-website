@@ -842,11 +842,15 @@ class Home extends Component {
     const domain = _get(businessProfile, "domain", "");
     let parsed_domain_name = domain.replace(/https:\/\//gim, "");
     parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    const screenshotLayer = `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+      Math.random() * 10 + 1
+    )}`;
+    const noImgFound = "/static/images/noimageavailable.jpg";
     const domainScreenshot = screenshot
       ? screenshot
-      : `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
-          Math.random() * 10 + 1
-        )}`;
+      : screenshotLayer
+      ? screenshotLayer
+      : noImgFound;
     return (
       <>
         <style jsx>
