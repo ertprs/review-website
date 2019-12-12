@@ -36,6 +36,26 @@ const widgetsObj = [
     dataTempID: "TextReviews"
   },
   {
+    id: 0,
+    title: "Combined Reviews carousel",
+    tagLine: "Boost customer confidence with honest reviews from different platforms",
+    minHeight: 400,
+    imgURL: "/static/images/combinedCarousel.png",
+    listItems: [
+      "Show off your upto 40 latest reviews per platform",
+      "Focuses on overall trust score"
+    ],
+    description:
+      "In short, the TrustBoxes are great starters that communicate You can trust us.",
+    suggestedPlacement: ["Header or footer"],
+    support: [
+      // "Responsive (max. 100% x 24)",
+      "Suggested minimum height: 400px"
+    ],
+    dataTempID: "CombinedReviewsWidget",
+    widgetType: "combined_carousel"
+  },
+  {
     id: 2,
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
@@ -83,7 +103,7 @@ class WidgetsShowCase extends Component {
   renderWidgetBox = (item, index) => {
     return (
       <div
-        className={item.id === 1 ? "col-md-12" : "col-md-6"}
+        className={item.id === 1 || item.id===0 ? "col-md-12" : "col-md-6"}
         style={{ alignSelf: "stretch" }}
       >
         <style jsx>
@@ -117,7 +137,7 @@ class WidgetsShowCase extends Component {
             <p>{item.tagLine}</p>
             <div
               className={`${
-                item.id === 1 ? "widgetImgContainer" : "widgetImgContainerSm"
+                item.id === 1 || item.id===0 ? "widgetImgContainer" : "widgetImgContainerSm"
               }`}
             >
               <img src={item.imgURL} />

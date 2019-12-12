@@ -99,6 +99,7 @@ class TextReviewsWithScores extends React.Component {
   renderSliderBoxes = requiredData => {
     let totalReviews = _get(requiredData, "totalReviews", 0);
     let output = requiredData.reviews.map(item => {
+      const review_url = _get(item, "review_url", "");
       return (item || {}).text || (item || {}).review ? (
         <div key={uuid()}>
           <ReviewBox
@@ -108,7 +109,7 @@ class TextReviewsWithScores extends React.Component {
             reviewHeaderStyles={{ marginTop: "0px" }}
             domain={this.props.domain}
             platformId={this.props.platformId}
-            redirectURL={requiredData.redirectURL}
+            redirectURL={review_url ? review_url : requiredData.redirectURL}
           />
         </div>
       ) : null;

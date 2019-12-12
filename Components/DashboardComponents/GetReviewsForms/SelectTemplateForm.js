@@ -163,7 +163,7 @@ class SelectTemplateForm extends Component {
               rows={2}
               parentStyles={{
                 display: "inline-block",
-                width: "100%",
+                width: "91%",
                 margin: "0px 10px",
                 padding: "0"
               }}
@@ -203,7 +203,7 @@ class SelectTemplateForm extends Component {
               }}
               parentStyles={{
                 display: "inline-block",
-                width: "100%",
+                width: "91%",
                 margin: "0px 10px",
                 padding: "0"
               }}
