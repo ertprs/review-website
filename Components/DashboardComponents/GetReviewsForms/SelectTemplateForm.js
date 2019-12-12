@@ -132,11 +132,11 @@ class SelectTemplateForm extends Component {
               parentStyles={{
                 display: "inline-block",
                 width: "80%",
-                margin: "0",
+                margin: "0px 10px",
                 padding: "0"
               }}
               styles={{
-                border: "none"
+                border: "1px dotted grey"
               }}
             />
           </div>
@@ -164,11 +164,11 @@ class SelectTemplateForm extends Component {
               parentStyles={{
                 display: "inline-block",
                 width: "100%",
-                margin: "0",
+                margin: "0px 10px",
                 padding: "0"
               }}
               styles={{
-                border: "none",
+                border: "1px dotted grey",
                 lineHeight: "1.2"
               }}
             />
@@ -204,11 +204,11 @@ class SelectTemplateForm extends Component {
               parentStyles={{
                 display: "inline-block",
                 width: "100%",
-                margin: "0",
+                margin: "0px 10px",
                 padding: "0"
               }}
               styles={{
-                border: "none"
+                border: "1px dotted grey"
               }}
             />
             {/* {formData.leaveReviewText.value.length > 0
@@ -243,18 +243,18 @@ class SelectTemplateForm extends Component {
                     }}
                     parentStyles={{
                       display: "inline-block",
-                      width: "80%",
-                      margin: "0",
+                      width: "25%",
+                      margin: "0px 10px",
                       padding: "0"
                     }}
                     styles={{
-                      border: "none",
-                      padding: "1px"
+                      border: "1px dotted grey",
+                      padding: "0px 10px"
                     }}
                   />
                 </>
               ) : (
-                <>
+                <div>
                   <FormField
                     {...formData["entity"]}
                     id="entity"
@@ -267,17 +267,17 @@ class SelectTemplateForm extends Component {
                     }}
                     parentStyles={{
                       display: "inline-block",
-                      width: "80%",
-                      margin: "0",
+                      width: "25%",
+                      marginRight: "10px",
                       padding: "0"
                     }}
                     styles={{
-                      border: "none",
-                      padding: "1px"
+                      border: "1px dotted grey",
+                      padding: "0px 10px"
                     }}
                   />
-                  ) {regards[1]}
-                </>
+                  {regards[1]}
+                </div>
               )}
             </div>
             <div>{regards[2] || ""}</div>
