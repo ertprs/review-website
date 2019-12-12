@@ -22,7 +22,8 @@ class BusinessUserRegistration extends Component {
         element: "input",
         value: "",
         placeholder: "yourdomain.com",
-        errorMessage: "Please enter a valid domain (for eg: thetrustsearch.com)",
+        errorMessage:
+          "Please enter a valid domain (for eg: thetrustsearch.com)",
         valid: false,
         touched: false,
         validationRules: {
@@ -103,8 +104,7 @@ class BusinessUserRegistration extends Component {
         valid: false,
         touched: false,
         validationRules: {
-          required: true,
-          isPhoneNumber:true
+          required: true
         },
         name: "phone"
       },
@@ -486,7 +486,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { businessSignUp, redirectWithDomain }
-)(BusinessUserRegistration);
+export default connect(mapStateToProps, { businessSignUp, redirectWithDomain })(
+  BusinessUserRegistration
+);
