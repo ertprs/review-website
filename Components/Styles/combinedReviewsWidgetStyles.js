@@ -138,7 +138,7 @@ export const combinedReviewsWidgetStyles = css`
     }
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 1085px) {
     .totalReviewsTextContainer h4 {
       font-size: 1.1rem;
     }
@@ -146,6 +146,7 @@ export const combinedReviewsWidgetStyles = css`
       font-size: 1.1rem;
     }
   }
+
   @media screen and (max-width: 1054px) {
     .ratingContainer {
       display: none;
@@ -169,6 +170,15 @@ export const combinedReviewsWidgetStyles = css`
     .smallFooterImageContainer img {
       max-width: 100%;
       height: auto;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .totalReviewsTextContainer h4 {
+      font-size: 1.1rem;
+    }
+    .textContainer {
+      font-size: 1.1rem;
     }
   }
 
