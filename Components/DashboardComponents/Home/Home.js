@@ -392,16 +392,17 @@ class Home extends Component {
               </div>
             ) : null}
             {(socialArray || []).map(item => {
+              //this will map the review platforms with their tabs in reviews section
               let reviewsTabIndexObj = {
                 1: "1",
                 18: "3",
                 19: "2"
               };
-              let app_id = _get(item, "social_media_app_id", "`");
-              let reviewObj = reviewURLObjects[app_id];
               let platformDisplayName = "";
               let platformName = "";
               let platformKeyName = "";
+              let app_id = _get(item, "social_media_app_id", "`");
+              let reviewObj = reviewURLObjects[app_id];
               let socialMediaObj = iconNames[app_id];
               if (socialMediaObj) {
                 platformName = _get(socialMediaObj, "name", "");
@@ -419,7 +420,10 @@ class Home extends Component {
                 let platformData = _get(dashboardData, platformKeyName, {});
                 isFetchingFromApi = _get(platformData, "isLoading", false);
               }
-              let reviewsTabIndex = reviewsTabIndexObj[app_id];
+              let reviewsTabIndex = 0;
+              if (reviewsTabIndexObj.hasOwnProperty(app_id)) {
+                reviewsTabIndex = reviewsTabIndexObj[app_id];
+              }
               return (
                 <div className="row p_10">
                   <div className="col-md-6 platform_name">
@@ -838,11 +842,15 @@ class Home extends Component {
     const domain = _get(businessProfile, "domain", "");
     let parsed_domain_name = domain.replace(/https:\/\//gim, "");
     parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    const screenshotLayer = `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+      Math.random() * 10 + 1
+    )}`;
+    const noImgFound = "/static/images/noimageavailable.jpg";
     const domainScreenshot = screenshot
       ? screenshot
-      : `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
-          Math.random() * 10 + 1
-        )}`;
+      : screenshotLayer
+      ? screenshotLayer
+      : noImgFound;
     return (
       <>
         <style jsx>
@@ -903,12 +911,12 @@ class Home extends Component {
                     color="primary"
                     variant="contained"
                     size="small"
-                    startIcon={<EditIcon />}
+                    // startIcon={<EditIcon />}
                     onClick={() => {
                       this.props.setGetStartedShow(!showGetStarted);
                     }}
                   >
-                    Edit All
+                    Add/Edit Review Platforms
                   </Button>
                 </div>
               </Grid>

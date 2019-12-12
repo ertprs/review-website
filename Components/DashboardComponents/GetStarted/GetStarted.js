@@ -209,7 +209,6 @@ class GetStarted extends Component {
       }
     }
     if (Object.keys(reqBody).length > 0) {
-      this.setState({ disabledSave: true });
       locatePlaceByPlaceId(
         reqBody,
         this.props.token,
@@ -308,7 +307,7 @@ class GetStarted extends Component {
   renderContinueBtn = reviewURLToEdit => {
     const { selectedAddress, formData, disabledSave } = this.state;
     const { type, isLoading, showGetStarted } = this.props;
-    return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
+    return (
       <div style={{ textAlign: "right" }}>
         {isLoading === true ? (
           <Button variant="contained" color="primary" size="large">
@@ -321,7 +320,6 @@ class GetStarted extends Component {
                 variant="contained"
                 color="primary"
                 size="large"
-                // startIcon={<ArrowBackIcon />}
                 onClick={() => {
                   this.props.setGetStartedShow(false, "");
                 }}
@@ -330,9 +328,14 @@ class GetStarted extends Component {
               </Button>
             ) : null}
             <Button
-              disabled={disabledSave}
+              disabled={
+                disabledSave ||
+                !(
+                  Object.keys(selectedAddress).length > 0 ||
+                  this.anyURLSelected()
+                )
+              }
               style={{ marginLeft: "20px" }}
-              // endIcon={<ArrowRight />}
               onClick={this.handleContinueClick}
               variant="contained"
               color="primary"
@@ -343,7 +346,7 @@ class GetStarted extends Component {
           </>
         )}
       </div>
-    ) : null;
+    );
   };
 
   handleChange = (e, id) => {
