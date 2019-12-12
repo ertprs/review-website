@@ -7,7 +7,7 @@ import Head from "next/head";
 import _get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import { widgetsLogoConstants } from "../../../utility/constants/widgetsLogoConstants";
-import { combinedReviewsWidgetStyles } from "./combinedReviewsWidgetStyles";
+import { combinedReviewsWidgetStyles } from "../../../Components/Styles/combinedReviewsWidgetStyles";
 import ReviewBox from "../../../Components/Widgets/ReviewBox/ReviewBox";
 import { ratingColor } from "../../../utility/ratingTypeColor";
 import dynamic from "next/dynamic";
