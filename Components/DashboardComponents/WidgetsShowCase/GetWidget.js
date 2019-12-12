@@ -7,7 +7,7 @@ import Input from "@material-ui/core/Input/Input";
 import uuid from "uuid/v1";
 import FormField from "../../Widgets/FormField/FormField";
 import Head from "next/head";
-import _get from 'lodash/get';
+import _get from "lodash/get";
 
 const platforms = [
   {
@@ -88,7 +88,9 @@ export default class GetWidget extends Component {
         <div>
           <div
             className={`${
-              widget.id === 1 ? "widgetImgContainer" : "widgetImgContainerSm"
+              widget.id === 1 || widget.id === 0
+                ? "widgetImgContainer"
+                : "widgetImgContainerSm"
             }`}
           >
             <img src={widget.imgURL} />
@@ -159,6 +161,8 @@ export default class GetWidget extends Component {
   };
 
   getYourWidgetBox = () => {
+    const { domainName, widget } = this.props;
+    const widgetId = _get(widget, "id", "");
     return (
       <>
         <style jsx>
@@ -201,10 +205,17 @@ export default class GetWidget extends Component {
               </p>
               <div className="codeBlock">
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
-                <code className="blue">{`
-                    <script type="text/javascript" src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
+                {widgetId === 0 ? (
+                  <code className="blue">{`
+                    <script type="text/javascript" src="https://thetrustsearch.com/static/tsWidget/v2/ts.widget.2.js"
                     async></script>
                 `}</code>
+                ) : (
+                  <code className="blue">{`
+                <script type="text/javascript" src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
+                async></script>
+            `}</code>
+                )}
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
               </div>
             </div>
@@ -216,7 +227,8 @@ export default class GetWidget extends Component {
               </p>
               <div className="codeBlock">
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
-                <code className="blue">{`
+                {widgetId === 0 ? (
+                  <code className="blue">{`
                     <div class="trustsearch-widget" 
                     data-locale="en-US"
                     data-template-id="${this.props.widget.dataTempID}" 
@@ -228,8 +240,26 @@ export default class GetWidget extends Component {
                     style="position: relative;
                     overflow: hidden;"
                     data-platform-id="${this.state.platforms.value}"
+                    data-max-reviews="25"
+                    data-newer-than-months="2"
+                    data-rating="1"
                     ></div> 
                 `}</code>
+                ) : (
+                  <code className="blue">{`
+                <div class="trustsearch-widget" 
+                data-locale="en-US"
+                data-template-id="${this.props.widget.dataTempID}" 
+                data-businessunit-id="${this.props.domainName || "google.com"}"
+                data-style-height="${this.state.widgetHeight}px"
+                data-style-width="100%"
+                data-theme="light"
+                style="position: relative;
+                overflow: hidden;"
+                data-platform-id="${this.state.platforms.value}"
+                ></div> 
+            `}</code>
+                )}
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
               </div>
             </div>
@@ -252,14 +282,24 @@ export default class GetWidget extends Component {
   };
 
   render() {
+    const { domainName, widget } = this.props;
+    const widgetId = _get(widget, "id", "");
     return (
       <div className="container">
         <Head>
-          <script
-            type="text/javascript"
-            src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v1/ts.widget.js"
-            async
-          ></script>
+          {widgetId === 0 ? (
+            <script
+              type="text/javascript"
+              src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v2/ts.widget.2.js"
+              async
+            ></script>
+          ) : (
+            <script
+              type="text/javascript"
+              src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v1/ts.widget.js"
+              async
+            ></script>
+          )}
         </Head>
         <div style={{ marginBottom: "50px" }}>
           <Button
@@ -268,7 +308,7 @@ export default class GetWidget extends Component {
             size="small"
             startIcon={<BackArrowIcon />}
             onClick={() => {
-              this.props.getMoreWidgets()
+              this.props.getMoreWidgets();
             }}
           >
             Back
@@ -284,6 +324,9 @@ export default class GetWidget extends Component {
           data-theme="light"
           data-platform-id={_get(this.state, "platforms.value", "0")}
           style={{ position: "relative", overflow: "hidden" }}
+          data-max-reviews="25"
+          data-newer-than-months="2"
+          data-rating="1"
         ></div>
         <div className="row">
           {/* <div className="col-md-6">{this.renderWidgetInfo()}</div> */}
