@@ -392,16 +392,17 @@ class Home extends Component {
               </div>
             ) : null}
             {(socialArray || []).map(item => {
+              //this will map the review platforms with their tabs in reviews section
               let reviewsTabIndexObj = {
                 1: "1",
                 18: "3",
                 19: "2"
               };
-              let app_id = _get(item, "social_media_app_id", "`");
-              let reviewObj = reviewURLObjects[app_id];
               let platformDisplayName = "";
               let platformName = "";
               let platformKeyName = "";
+              let app_id = _get(item, "social_media_app_id", "`");
+              let reviewObj = reviewURLObjects[app_id];
               let socialMediaObj = iconNames[app_id];
               if (socialMediaObj) {
                 platformName = _get(socialMediaObj, "name", "");
@@ -419,7 +420,10 @@ class Home extends Component {
                 let platformData = _get(dashboardData, platformKeyName, {});
                 isFetchingFromApi = _get(platformData, "isLoading", false);
               }
-              let reviewsTabIndex = reviewsTabIndexObj[app_id];
+              let reviewsTabIndex = 0;
+              if (reviewsTabIndexObj.hasOwnProperty(app_id)) {
+                reviewsTabIndex = reviewsTabIndexObj[app_id];
+              }
               return (
                 <div className="row p_10">
                   <div className="col-md-6 platform_name">
