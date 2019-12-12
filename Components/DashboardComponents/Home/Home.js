@@ -911,12 +911,12 @@ class Home extends Component {
                     color="primary"
                     variant="contained"
                     size="small"
-                    startIcon={<EditIcon />}
+                    // startIcon={<EditIcon />}
                     onClick={() => {
                       this.props.setGetStartedShow(!showGetStarted);
                     }}
                   >
-                    Edit All
+                    Add/Edit Review Platforms
                   </Button>
                 </div>
               </Grid>
