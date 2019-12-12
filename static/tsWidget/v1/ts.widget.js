@@ -36,7 +36,10 @@
       dataStyleHeight: container.getAttribute("data-style-height") || "200px",
       dataStyleWidth: container.getAttribute("data-style-width") || "500px",
       dataTheme: container.getAttribute("data-theme") || "default",
-      platformId: container.getAttribute("data-platform-id") || "0"
+      platformId: container.getAttribute("data-platform-id") || "0",
+      maxReviews: container.getAttribute("data-max-reviews") || "",
+      newerThanMonths: container.getAttribute("data-newer-than-months") || "",
+      rating: container.getAttribute("data-rating") || ""
     });
   }
 
@@ -45,13 +48,17 @@
     trustFrame.frameBorder = "0";
     trustFrame.scrolling = "no";
     trustFrame.title = "Cutomer reviews powered by The Trustsearch";
-    trustFrame.src = `https://thetrustsearch-dev.cryptopolice.com/widgetsBox/${
+    trustFrame.src = `http://localhost:3000/widgetsBox/${
       widgetProps.dataTemplateId
     }?businessunitId=${widgetProps.dataBusinessUnitId}&locale=${
       widgetProps.dataLocale
     }&styleHeight=${widgetProps.dataStyleHeight}&styleWidth=${
       widgetProps.dataStyleWidth
-    }&stars=${5}&platformId=${widgetProps.platformId}`;
+    }&stars=${1}&platformId=${widgetProps.platformId}&maxReviews=${
+      widgetProps.maxReviews
+    }&newerThanMonths=${widgetProps.newerThanMonths}&rating=${
+      widgetProps.rating
+    }`;
 
     trustFrame.style.cssText = `position:relative;height:${widgetProps.dataStyleHeight}; width:${widgetProps.dataStyleWidth};borderStyle:none;display:block;overflow:hidden`;
     // trustFrame.onload = function() {
