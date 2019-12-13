@@ -317,13 +317,13 @@ class GetWidgetsCode extends Component {
           {widgetId === 0 ? (
             <script
               type="text/javascript"
-              src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v2/ts.widget.2.js"
+              src="https://thetrustsearch.com/static/tsWidget/v2/ts.widget.2.js"
               async
             ></script>
           ) : (
             <script
               type="text/javascript"
-              src="https://thetrustsearch-dev.cryptopolice.com/static/tsWidget/v1/ts.widget.js"
+              src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
               async
             ></script>
           )}
