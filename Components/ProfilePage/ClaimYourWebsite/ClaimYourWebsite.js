@@ -21,7 +21,6 @@ class ClaimYourWebsite extends Component {
           // className="claimBtn"
           onClick={() => {
             Router.push(`/get-widgets/${parsed_domain_name}`);
-            // redirectWithDomain("/get-widgets", domain_name);
           }}
         >
           Click if this is your website

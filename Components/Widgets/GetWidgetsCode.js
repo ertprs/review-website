@@ -356,7 +356,7 @@ class GetWidgetsCode extends Component {
           data-platform-id={_get(this.state, "platforms.value", "0")}
           style={{ position: "relative", overflow: "hidden" }}
           data-max-reviews="25"
-          data-newer-than-months="2"
+          data-newer-than-months="10"
           data-rating="1"
         ></div>
         <div className="row">

@@ -90,7 +90,6 @@ class ProfilePageFooter extends Component {
                 endIcon={<ArrowIconRight />}
                 onClick={() => {
                   Router.push(`/get-widgets/${parsed_domain_name}`);
-                  // redirectWithDomain("/get-widgets", domainName);
                 }}
               >
                 Click here to proceed
