@@ -1,18 +1,23 @@
 export const widgetsLogoConstants = {
   0: {
     imageLogo: "googleIcon.png",
-    name: "Google review"
+    name: "Google",
+    subTitle:"The opinion of ? people"
   },
   1: {
     imageLogo: "facebookLogo.png",
-    name: "Facebook review"
+    name: "Facebook",
+    subTitle:"The opinion of ? people"
   },
   18: {
     imageLogo: "trustpiloticon.png",
-    name: "Trustpilot review"
+    name: "Trustpilot",
+    subTitle:"Based on ? reviews"
   },
   19: {
     imageLogo: "trustedShopLogo.jpg",
-    name: "Trustedshops review"
+    name: "Trustedshops",
+    subTitle:"Based on ? reviews"
+
   }
 };

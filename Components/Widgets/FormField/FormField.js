@@ -20,12 +20,13 @@ const FormField = ({
   type,
   labelText,
   onkeyDown,
-  disabled
+  disabled,
+  parentStyles
 }) => {
   switch (element) {
     case "textarea":
       return (
-        <div className="formFieldGroup">
+        <div className="formFieldGroup" style={{ ...parentStyles }}>
           <style jsx>{formFieldStyles}</style>
           <textarea
             readOnly={readOnly || false}
@@ -49,7 +50,7 @@ const FormField = ({
 
     case "input":
       return (
-        <div className="formFieldGroup">
+        <div className="formFieldGroup" style={{ ...parentStyles }}>
           <style jsx>{formFieldStyles}</style>
           <input
             disabled={disabled || false}
@@ -72,7 +73,7 @@ const FormField = ({
 
     case "select":
       return (
-        <div className="formFieldGroup">
+        <div className="formFieldGroup" style={{ ...parentStyles }}>
           <style jsx>{formFieldStyles}</style>
           <select
             value={value}

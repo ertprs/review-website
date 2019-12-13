@@ -20,7 +20,10 @@ const renderTextualReviewBox = (
   readMoreBox
 ) => {
   if (!readMoreBox) {
-    let name = review.name.replace(/\s+/gim, " ");
+    let name = _get(review,"name", "").replace(/\s+/gim, " ");
+    if (name === "N/A") {
+      name = "Anonymous";
+    }
     let text = _get(review, "text", "") || _get(review, "review", "");
     let date = _get(review, "date", "");
     let logo = "";
@@ -43,20 +46,18 @@ const renderTextualReviewBox = (
         <style jsx>{reviewBoxStyles}</style>
         <div className="reviewHeader" style={{ ...reviewHeaderStyles }}>
           <div className="reviewHeaderTitle">
-            <Link href={redirectURL}>
-              <a target="_blank">
-                <img
-                  src={`/static/images/${logo}`}
-                  style={{
-                    height: "10px",
-                    width: "10px",
-                    marginRight: "10px",
-                    display: "inline-block"
-                  }}
-                  title={logoTitle}
-                />
-              </a>
-            </Link>
+            <a target={"_blank"} href={redirectURL}>
+              <img
+                src={`/static/images/${logo}`}
+                style={{
+                  height: "10px",
+                  width: "10px",
+                  marginRight: "10px",
+                  display: "inline-block"
+                }}
+                title={logoTitle}
+              />
+            </a>
             {name}
           </div>
           <div className="reviewHeaderDate" style={{ textAlign: "right" }}>
@@ -79,18 +80,17 @@ const renderTextualReviewBox = (
         </div>
         <div className="reviewText">
           <p>
-            <Link href={redirectURL}>
-              <a
-                target="_blank"
-                style={{ textDecoration: "none", color: "#000" }}
-              >
-                {text.replace(/\s+/gim, " ") !== null && text
-                  ? text.length <= 95
-                    ? text.replace(/\s\s+/g, " ")
-                    : text.substring(0, 80).replace(/\s\s+/g, " ") + "..."
-                  : "no textual review"}
-              </a>
-            </Link>
+            <a
+              target={"_blank"}
+              style={{ textDecoration: "none", color: "#000" }}
+              href={redirectURL}
+            >
+              {text.replace(/\s+/gim, " ") !== null && text
+                ? text.length <= 95
+                  ? text.replace(/\s\s+/g, " ")
+                  : text.substring(0, 80).replace(/\s\s+/g, " ") + "..."
+                : "no textual review"}
+            </a>
           </p>
         </div>
       </div>
@@ -107,7 +107,7 @@ const renderReadMoreBox = domain => {
       <style jsx>{`
         .text {
           font-style: italic;
-          margin-top:5px
+          margin-top: 5px;
         }
         .readAllBtn {
           background: #21bc61;
@@ -268,3 +268,4 @@ const ReviewBox = props => {
 };
 
 export default ReviewBox;
+

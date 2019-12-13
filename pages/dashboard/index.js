@@ -256,6 +256,7 @@ function Dashboard(props) {
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
+  const [reviewsSelectedTab, setReviewsSelectedTab] = React.useState(0);
   const { upgradeToPremiumRes, placeLocated, fetchReviews, token } = props;
   const initState = {};
   const [parentState, setParentState] = useState(initState);
@@ -394,11 +395,19 @@ function Dashboard(props) {
     },
     1: {
       name: "home",
-      componentToRender: <Home changeStepToRender={changeStepToRender} />
+      componentToRender: (
+        <Home
+          changeStepToRender={changeStepToRender}
+          navigateToReviews={tabIndex => {
+            setReviewsSelectedTab(tabIndex);
+            handleMenuItemClicked(2);
+          }}
+        />
+      )
     },
     2: {
       name: "reviews",
-      componentToRender: <Reviews />
+      componentToRender: <Reviews selectedTab={reviewsSelectedTab} />
     },
     3: {
       name: "getReviews",

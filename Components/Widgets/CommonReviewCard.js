@@ -2,6 +2,8 @@ import React from "react";
 import { reviewListStyles } from "../Widgets/MyReviewsUser/myReviewsStyles";
 import RatingIndicators from "../Widgets/RatingIndicators/RatingIndicators";
 import { ratingColor } from "../../utility/ratingTypeColor";
+import Button from "@material-ui/core/Button";
+import ReplyIcon from "@material-ui/icons/Reply";
 import _get from "lodash/get";
 import moment from "moment";
 import Avatar from "react-avatar";
@@ -44,7 +46,7 @@ const renderIcon = provider => {
 };
 
 const ReviewCard = ({ review, provider }) => {
-  const { name, text, rating, date } = review;
+  const { name, text, rating, date, replyURL } = review;
   return (
     <div className="reviewCard">
       <style jsx> {reviewListStyles}</style>
@@ -69,17 +71,11 @@ const ReviewCard = ({ review, provider }) => {
         .mr-10 {
           margin-right: 10px;
         }
+        .replyBtnContainer {
+          padding: 14px;
+        }
       `}</style>
-      <div>
-        {provider === "wot" ? (
-          <div className="dateContainer">
-            <span className="fullDate">
-              {moment(date).format("DD/MM/YYYY")}
-            </span>
-            <span className="smallDate">{moment(date).format("YYYY")}</span>
-          </div>
-        ) : null}
-      </div>
+      <div></div>
       <div className="row topBox">
         <div className="col-md-6 ratingBox">
           <div className="row">
@@ -126,6 +122,23 @@ const ReviewCard = ({ review, provider }) => {
           </div>
         </div>
       </div>
+      {replyURL ? (
+        <div className="row">
+          <div className="col-md-6 offset-md-6">
+            <div className="replyBtnContainer">
+              <Button
+                color="primary"
+                startIcon={<ReplyIcon />}
+                onClick={() => {
+                  window.open(replyURL, "_blank");
+                }}
+              >
+                Reply
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };

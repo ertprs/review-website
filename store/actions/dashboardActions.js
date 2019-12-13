@@ -655,7 +655,7 @@ export const emptyDomainDetails = () => {
 };
 
 export const getThirdPartyReviews = (socialAppId, domainId) => {
-  //! here appName is used to set the value to trus for doamins whose reviews are successfully fetched to stop the loader in rviews sections
+  //! here appName is used to set the value to trust for domains whose reviews are successfully fetched to stop the loader in reviews sections
 
   if (socialAppId && domainId) {
     let appName = "";

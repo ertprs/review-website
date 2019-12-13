@@ -33,7 +33,7 @@ class TextReviewsWithScores extends React.Component {
     if (this.props.domain) {
       const platformId = _get(this.props, "platformId", 0);
       let requestURL = "";
-      if (platformId === "0") {
+      if (platformId === "0" || platformId === 0) {
         requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}`;
       } else {
         requestURL = `${process.env.BASE_URL}/api/reviews/domain?perPage=24&page=1&domain=${this.props.domain}&platform=${platformId}`;
@@ -99,6 +99,7 @@ class TextReviewsWithScores extends React.Component {
   renderSliderBoxes = requiredData => {
     let totalReviews = _get(requiredData, "totalReviews", 0);
     let output = requiredData.reviews.map(item => {
+      const review_url = _get(item, "review_url", "");
       return (item || {}).text || (item || {}).review ? (
         <div key={uuid()}>
           <ReviewBox
@@ -108,7 +109,7 @@ class TextReviewsWithScores extends React.Component {
             reviewHeaderStyles={{ marginTop: "0px" }}
             domain={this.props.domain}
             platformId={this.props.platformId}
-            redirectURL={requiredData.redirectURL}
+            redirectURL={review_url ? review_url : requiredData.redirectURL}
           />
         </div>
       ) : null;

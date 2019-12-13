@@ -12,21 +12,21 @@ const isFormValid = formDataObject => {
 
 // If you have no nesting inside formdata you may use this method.
 
-const handleFormDataChange = (e, id) => {
-  const { formData } = this.state;
-  const { value } = e.target;
-  this.setState({
-    formData: {
-      ...formData,
-      [id]: {
-        ...formData[id],
-        value: value,
-        touched: true,
-        valid: validate(value, specificFormData[id].validationRules)
-      }
-    }
-  });
-};
+// const handleFormDataChange = (e, id) => {
+//   const { formData } = this.state;
+//   const { value } = e.target;
+//   this.setState({
+//     formData: {
+//       ...formData,
+//       [id]: {
+//         ...formData[id],
+//         value: value,
+//         touched: true,
+//         valid: validate(value, specificFormData[id].validationRules)
+//       }
+//     }
+//   });
+// };
 
 //If you have separate keys inside formData for eg: formData: {woocoomerce: {}} then you can use this one, you need to pass your key name as third argument.
 
@@ -92,4 +92,11 @@ export const areFieldsTouched = formData => {
     touched = touched || formData[formField].touched;
   }
   return touched;
+};
+
+//remove https and www from domain names
+export const removeSubDomain = domain => {
+  let parsed_domain_name = domain.replace(/https:\/\//gim, "");
+  parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+  return parsed_domain_name;
 };

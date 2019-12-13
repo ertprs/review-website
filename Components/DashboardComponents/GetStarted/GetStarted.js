@@ -208,9 +208,7 @@ class GetStarted extends Component {
         }
       }
     }
-    console.log(reqBody);
     if (Object.keys(reqBody).length > 0) {
-      this.setState({ disabledSave: true });
       locatePlaceByPlaceId(
         reqBody,
         this.props.token,
@@ -245,21 +243,25 @@ class GetStarted extends Component {
   };
 
   renderSelectedAddress = () => {
-    const { selectedAddress } = this.state;
+    const { selectedAddress, address } = this.state;
     const addressSelected = _get(this.props, "addressSelected", "");
     return Object.keys(selectedAddress).length > 0 ? (
       <div style={{ marginTop: "15px" }}>
-        <p>
-          <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-          {this.state.address}
-        </p>
+        {address ? (
+          <p>
+            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
+            {address}
+          </p>
+        ) : null}
       </div>
     ) : (
       <div style={{ marginTop: "15px" }}>
-        <p>
-          <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-          {addressSelected}
-        </p>
+        {addressSelected ? (
+          <p>
+            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
+            {addressSelected}
+          </p>
+        ) : null}
       </div>
     );
   };
@@ -275,6 +277,7 @@ class GetStarted extends Component {
           }
           .getStartedSubHeader {
             margin-bottom: 25px;
+            line-height: 2rem;
           }
         `}</style>
         <h3 className="getStartedHeader">
@@ -284,8 +287,9 @@ class GetStarted extends Component {
           {name}
         </h3>
         <h6 className="getStartedSubHeader">
-          This is your personal setup guide. Let’s get you up and running so you
-          can get more reviews and build trust.
+          Please choose any one of the platforms to get started. You need to
+          enter the URL of your business page for the platform that you choose,
+          so that we can fetch information about your business.
         </h6>
       </div>
     );
@@ -300,32 +304,38 @@ class GetStarted extends Component {
     return valid;
   };
 
-  renderContinueBtn = () => {
+  renderContinueBtn = reviewURLToEdit => {
     const { selectedAddress, formData, disabledSave } = this.state;
-    const { type, isLoading } = this.props;
-    return Object.keys(selectedAddress).length > 0 || this.anyURLSelected() ? (
+    const { type, isLoading, showGetStarted } = this.props;
+    return (
       <div style={{ textAlign: "right" }}>
         {isLoading === true ? (
-          <Button>
-            <CircularProgress size={25} />
+          <Button variant="contained" color="primary" size="large">
+            <CircularProgress size={25} style={{ color: "white" }} />
           </Button>
         ) : (
           <>
+            {showGetStarted ? (
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => {
+                  this.props.setGetStartedShow(false, "");
+                }}
+              >
+                Close
+              </Button>
+            ) : null}
             <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              // startIcon={<ArrowBackIcon />}
-              onClick={() => {
-                this.props.setGetStartedShow(false, "");
-              }}
-            >
-              Close
-            </Button>
-            <Button
-              disabled={disabledSave}
+              disabled={
+                disabledSave ||
+                !(
+                  Object.keys(selectedAddress).length > 0 ||
+                  this.anyURLSelected()
+                )
+              }
               style={{ marginLeft: "20px" }}
-              // endIcon={<ArrowRight />}
               onClick={this.handleContinueClick}
               variant="contained"
               color="primary"
@@ -336,7 +346,7 @@ class GetStarted extends Component {
           </>
         )}
       </div>
-    ) : null;
+    );
   };
 
   handleChange = (e, id) => {
@@ -487,8 +497,6 @@ class GetStarted extends Component {
     } = this.props;
     const { formData, address, selectedAddress } = this.state;
     const directReviewUrl = _get(formData, "directReviewUrl.value", "");
-    const socialArrayPrev = _get(prevProps, "socialArray", []);
-    const socialArray = _get(this.props, "socialArray", []);
 
     if (this.props !== prevProps) {
       if (isLoading !== prevProps.isLoading && success !== prevProps.success) {
@@ -497,7 +505,7 @@ class GetStarted extends Component {
             {
               showSnackbar: true,
               variant: "success",
-              snackbarMsg: "Data located successfully!"
+              snackbarMsg: "Review URL Updated Successfully!"
             },
             () => {
               changeStepToRender(1);
@@ -649,7 +657,7 @@ class GetStarted extends Component {
               {this.renderGetStartedHeader()}
             </Grid>
             <Grid item xs={12} md={4} lg={4}>
-              {this.renderContinueBtn()}
+              {this.renderContinueBtn(reviewURLToEdit)}
             </Grid>
           </Grid>
           <Grid container spacing={3}>
@@ -663,21 +671,6 @@ class GetStarted extends Component {
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid>
           <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {/* {this.props.showGetStarted ? (
-              <div style={{ marginRight: "50px", marginLeft: "10px" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  startIcon={<ArrowBackIcon />}
-                  onClick={() => {
-                    this.props.setGetStartedShow(false, "");
-                  }}
-                >
-                  Back
-                </Button>
-              </div>
-            ) : null} */}
             {this.renderContinueBtn()}
           </Grid>
         </Container>

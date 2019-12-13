@@ -57,8 +57,8 @@ class SelectTemplateForm extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-md-4">{this.renderFormFields()}</div>
-          <div className="col-md-8">{this.renderTemplate()}</div>
+          {/* <div className="col-md-4">{this.renderFormFields()}</div> */}
+          <div className="col-md-12">{this.renderTemplate()}</div>
         </div>
       </div>
     );
@@ -73,6 +73,7 @@ class SelectTemplateForm extends Component {
     const leaveReviewText = _get(templateObj, "leaveReviewText", "");
     const regards = _get(templateObj, "regards", []);
     const footer = _get(templateObj, "footer", "");
+
     return (
       <div>
         <style jsx>
@@ -80,6 +81,9 @@ class SelectTemplateForm extends Component {
             .header {
               // margin-bottom: 30px;
               text-decoration: underline;
+              display: block;
+              font-weight: bold;
+              font-size: 16px;
             }
             .subject {
               padding: 10px;
@@ -118,22 +122,29 @@ class SelectTemplateForm extends Component {
         </style>
         <div className="subject">
           <div className="header">
-            <h6>
-              Email Subject:{" "}
-              {formData.subject.value !== ""
-                ? formData.subject.value + " "
-                : "Leave a review on Entity and get a gift!"}
-            </h6>
+            Email Subject:{" "}
+            <FormField
+              {...formData["subject"]}
+              id="subject"
+              handleChange={e => {
+                this.props.handleChange(e, "subject", "selectTemplateData");
+              }}
+              parentStyles={{
+                display: "inline-block",
+                width: "80%",
+                margin: "0px 10px",
+                padding: "0"
+              }}
+              styles={{
+                border: "1px dotted grey"
+              }}
+            />
           </div>
+          {/* {formData.subject.value !== ""
+                ? formData.subject.value + " "
+                : "Leave a review on Entity and get a gift!"} */}
         </div>
         <div className="templateContainer">
-          {/* <div className="header">
-            <h6>
-              {formData.subject.value !== ""
-                ? formData.subject.value
-                : "Leave a review on Entity and get a gift!"}
-            </h6>
-          </div> */}
           <p>
             {salutation}{" "}
             <span className="bold">
@@ -142,8 +153,26 @@ class SelectTemplateForm extends Component {
                 : "customerName"}
             </span>
           </p>
-          <p>
-            {exampleText[0] !== undefined
+          <span>
+            <FormField
+              {...formData["exampleText"]}
+              id="exampleText"
+              handleChange={e => {
+                this.props.handleChange(e, "exampleText", "selectTemplateData");
+              }}
+              rows={2}
+              parentStyles={{
+                display: "inline-block",
+                width: "91%",
+                margin: "0px 10px",
+                padding: "0"
+              }}
+              styles={{
+                border: "1px dotted grey",
+                lineHeight: "1.2"
+              }}
+            />
+            {/* {exampleText[0] !== undefined
               ? formData.exampleText.value.length > 0
                 ? formData.exampleText.value
                 : exampleText[0] || ""
@@ -159,13 +188,33 @@ class SelectTemplateForm extends Component {
               ? formData.exampleText.value.length > 0 || ""
                 ? ""
                 : exampleText[1] || ""
-              : ""}
-          </p>
-          <p>
-            {formData.leaveReviewText.value.length > 0
+              : ""} */}
+          </span>
+          <span>
+            <FormField
+              {...formData["leaveReviewText"]}
+              id="leaveReviewText"
+              handleChange={e => {
+                this.props.handleChange(
+                  e,
+                  "leaveReviewText",
+                  "selectTemplateData"
+                );
+              }}
+              parentStyles={{
+                display: "inline-block",
+                width: "91%",
+                margin: "0px 10px",
+                padding: "0"
+              }}
+              styles={{
+                border: "1px dotted grey"
+              }}
+            />
+            {/* {formData.leaveReviewText.value.length > 0
               ? formData.leaveReviewText.value
-              : leaveReviewText}
-          </p>
+              : leaveReviewText} */}
+          </span>
           <p className="ratings">
             <StarRatings
               rating={0}
@@ -179,9 +228,57 @@ class SelectTemplateForm extends Component {
           <p className="salutation">
             <div>{regards[0] || ""}</div>
             <div>
-              {templateLang !== "latvian"
-                ? regards[1] + " " + formData.entity.value || ""
-                : formData.entity.value + " " + regards[1]}
+              {templateLang !== "latvian" ? (
+                <>
+                  {regards[1]}
+                  <FormField
+                    {...formData["entity"]}
+                    id="entity"
+                    handleChange={e => {
+                      this.props.handleChange(
+                        e,
+                        "entity",
+                        "selectTemplateData"
+                      );
+                    }}
+                    parentStyles={{
+                      display: "inline-block",
+                      width: "25%",
+                      margin: "0px 10px",
+                      padding: "0"
+                    }}
+                    styles={{
+                      border: "1px dotted grey",
+                      padding: "0px 10px"
+                    }}
+                  />
+                </>
+              ) : (
+                <div>
+                  <FormField
+                    {...formData["entity"]}
+                    id="entity"
+                    handleChange={e => {
+                      this.props.handleChange(
+                        e,
+                        "entity",
+                        "selectTemplateData"
+                      );
+                    }}
+                    parentStyles={{
+                      display: "inline-block",
+                      width: "25%",
+                      marginRight: "10px",
+                      padding: "0"
+                    }}
+                    styles={{
+                      border: "1px dotted grey",
+                      padding: "0px 10px"
+                    }}
+                  />
+                  {regards[1]}
+                </div>
+              )}
             </div>
             <div>{regards[2] || ""}</div>
           </p>
@@ -347,7 +444,6 @@ const mapStateToProps = state => {
   return { isLoading, success, errorMsg, createCampaignData };
 };
 
-export default connect(
-  mapStateToProps,
-  { clearCampaignData }
-)(SelectTemplateForm);
+export default connect(mapStateToProps, { clearCampaignData })(
+  SelectTemplateForm
+);

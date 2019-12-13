@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import _map from "lodash/map";
-import { getThirdPartyReviews } from "../../../store/actions/dashboardActions";
 import ReactPaginate from "react-paginate";
 import Head from "next/head";
 import Snackbar from "../../Widgets/Snackbar";
@@ -199,7 +198,8 @@ class Facebook extends Component {
                     text:
                       _get(review, "text", "") || _get(review, "review", ""),
                     rating: _get(review, "rating", 0),
-                    date: _get(review, "date", "")
+                    date: _get(review, "date", ""),
+                    replyURL:_get(review, "review_url", "")
                   };
                   return (
                     <ReviewCard review={reviewToSend} provider="facebook" />
@@ -294,4 +294,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { getThirdPartyReviews })(Facebook);
+export default connect(mapStateToProps)(Facebook);

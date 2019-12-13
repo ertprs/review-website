@@ -12,12 +12,15 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import { removeSubDomain } from "../../../../utility/commonFunctions";
 
 class editDomain extends Component {
   handleSaveClick = () => {
     const { domainDetails, updateDomainDetails } = this.props;
+    let domain = _get(domainDetails, "domain.value", "");
+    let parsedDomain = removeSubDomain(domain);
     const reqBody = {
-      fullName: _get(domainDetails, "domain.value", "")
+      fullName: parsedDomain
     };
     updateDomainDetails(reqBody);
   };

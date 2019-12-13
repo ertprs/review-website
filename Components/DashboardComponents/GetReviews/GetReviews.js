@@ -262,11 +262,11 @@ class GetReviews extends Component {
           element: "input",
           labelText: "Subject",
           type: "text",
-          value: "Email Subject: Leave a review on Entity",
+          value: "Leave a review on Entity",
           valid: true,
           touched: true,
-          errorMessage: "Enter valid subject",
-          placeholder: "",
+          // errorMessage: "Enter valid subject",
+          placeholder: "Enter subject",
           validationRules: {
             required: true
           }
@@ -278,7 +278,7 @@ class GetReviews extends Component {
           value: "Name",
           valid: true,
           touched: true,
-          errorMessage: "Enter valid name",
+          // errorMessage: "Enter valid name",
           placeholder: "Enter client name",
           validationRules: {
             required: true
@@ -291,7 +291,7 @@ class GetReviews extends Component {
           value: this.props.companyName + " " || " ",
           valid: true,
           touched: false,
-          errorMessage: "Required",
+          // errorMessage: "Required",
           placeholder: "Enter entity domain",
           validationRules: {
             required: true
@@ -303,8 +303,8 @@ class GetReviews extends Component {
           value: "",
           valid: true,
           touched: false,
-          errorMessage: "Required",
-          placeholder: "some text",
+          // errorMessage: "Required",
+          placeholder: "Enter template body",
           validationRules: {
             required: true
           },
@@ -318,8 +318,8 @@ class GetReviews extends Component {
           value: "",
           valid: true,
           touched: false,
-          errorMessage: "Required",
-          placeholder: "Please leave a review here",
+          // errorMessage: "Required",
+          placeholder: "Enter leave review text",
           validationRules: {
             required: true
           }
@@ -1111,6 +1111,16 @@ class GetReviews extends Component {
               activeStep: 0,
               getReviewsActiveSubStep: -1,
               tableData: [],
+              reviewInvitationPlatformsData: {
+                platforms: {},
+                sumOfAllSplits: 0,
+                selectionWays: [
+                  { id: 0, label: "Use only one review platform" },
+                  { id: 1, label: "Use multiple review platforms" }
+                ],
+                selectedWay: -1,
+                selectedSinglePlatform: ""
+              },
               addInvitesData: {
                 email: {
                   element: "input",
@@ -1158,7 +1168,7 @@ class GetReviews extends Component {
                   element: "input",
                   labelText: "Subject",
                   type: "text",
-                  value: "Email Subject: Leave a review on Entity",
+                  value: "Leave a review on Entity ",
                   valid: true,
                   touched: true,
                   errorMessage: "Enter valid subject",

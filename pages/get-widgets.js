@@ -39,6 +39,26 @@ const widgetsObj = [
     widgetType: "carousel"
   },
   {
+    id: 0,
+    title: "Combined Reviews carousel",
+    tagLine: "Boost customer confidence with honest reviews from different platforms",
+    minHeight: 400,
+    imgURL: "/static/images/combinedCarousel.png",
+    listItems: [
+      "Show off your upto 40 latest reviews per platform",
+      "Focuses on overall trust score"
+    ],
+    description:
+      "In short, the TrustBoxes are great starters that communicate You can trust us.",
+    suggestedPlacement: ["Header or footer"],
+    support: [
+      // "Responsive (max. 100% x 24)",
+      "Suggested minimum height: 400px"
+    ],
+    dataTempID: "CombinedReviewsWidget",
+    widgetType: "combined_carousel"
+  },
+  {
     id: 2,
     title: "Trust card",
     tagLine: "Boost customer confidence with an honest TrustBox",
@@ -94,7 +114,7 @@ class GetWidgets extends Component {
     const { domain } = this.props;
     return (
       <div
-        className={item.id === 1 ? "col-md-12" : "col-md-6"}
+        className={item.id === 1 || item.id===0 ? "col-md-12" : "col-md-6"}
         style={{ alignSelf: "stretch" }}
       >
         <style jsx>
@@ -128,7 +148,7 @@ class GetWidgets extends Component {
             <p>{item.tagLine}</p>
             <div
               className={`${
-                item.id === 1 ? "widgetImgContainer" : "widgetImgContainerSm"
+                item.id === 1 || item.id===0 ? "widgetImgContainer" : "widgetImgContainerSm"
               }`}
             >
               <img src={item.imgURL} />
@@ -183,7 +203,7 @@ class GetWidgets extends Component {
 
   toggleViewWithUrl = () => {
     const { domain } = this.props;
-    const widgetTypes = ["carousel", "card", "card_with_reviews"];
+    const widgetTypes = ["carousel", "card", "card_with_reviews", "combined_carousel"];
     let url = window.location.href;
     let urlSplit = url.split("#");
     if (urlSplit.length > 1) {
