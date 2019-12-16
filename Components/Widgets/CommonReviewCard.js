@@ -34,6 +34,7 @@ const renderIcon = provider => {
   }
   return (
     <img
+      title={provider}
       src={src}
       alt="icon"
       style={{
@@ -116,7 +117,7 @@ const ReviewCard = ({ review, provider }) => {
                   provider === "wot" ? "reviewText wordBreak" : "reviewText"
                 }`}
               >
-                {text || ""}
+                {text || _get(review,"review", "") || ""}
               </span>
             </div>
           </div>

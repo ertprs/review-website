@@ -12,6 +12,8 @@ class ReviewCardContainer extends Component {
   state = {
     googleReviewsToShow: [],
     wotReviewsToShow: [],
+    trustPilotReviewsToShow: [],
+    trustedShopReviewsData: [],
     showNoReviewsFound: false
   };
 
@@ -19,7 +21,12 @@ class ReviewCardContainer extends Component {
     setTimeout(() => {
       this.setState({ showNoReviewsFound: true });
     }, 40000);
-    const { googleReviewsData, wotReviewsData } = this.props;
+    const {
+      googleReviewsData,
+      wotReviewsData,
+      trustPilotReviewsData,
+      trustedShopReviewsData
+    } = this.props;
     const calGoogleReviewsToShow = () => {
       let googleReviewsToShow = [];
       if (googleReviewsData.length > 8) {
@@ -40,15 +47,42 @@ class ReviewCardContainer extends Component {
       return wotReviewsToShow;
     };
 
+    const calTrustpilotReviewsToShow = () => {
+      let trustPilotReviewsToShow = [];
+      if (trustPilotReviewsData.length > 8) {
+        trustPilotReviewsToShow = trustPilotReviewsData.slice(0, 8);
+      } else {
+        trustPilotReviewsToShow = trustPilotReviewsData;
+      }
+      return trustPilotReviewsToShow;
+    };
+
+    const calTrustedShopReviewsToShow = () => {
+      let trustedShopReviewsToShow = [];
+      if (trustedShopReviewsData.length > 8) {
+        trustedShopReviewsToShow = trustPilotReviewsData.slice(0, 8);
+      } else {
+        trustedShopReviewsToShow = trustedShopReviewsData;
+      }
+      return trustedShopReviewsToShow;
+    };
+
     this.setState({
       googleReviewsToShow: calGoogleReviewsToShow(),
-      wotReviewsToShow: calWotReviewsToShow()
+      wotReviewsToShow: calWotReviewsToShow(),
+      trustPilotReviewsToShow: calTrustpilotReviewsToShow(),
+      trustedShopReviewsToShow: calTrustedShopReviewsToShow()
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps) {
-      const { googleReviewsData, wotReviewsData } = this.props;
+      const {
+        googleReviewsData,
+        wotReviewsData,
+        trustPilotReviewsData,
+        trustedShopReviewsData
+      } = this.props;
       const calGoogleReviewsToShow = () => {
         let googleReviewsToShow = [];
         if (googleReviewsData.length > 8) {
@@ -69,9 +103,31 @@ class ReviewCardContainer extends Component {
         return wotReviewsToShow;
       };
 
+      const calTrustpilotReviewsToShow = () => {
+        let trustPilotReviewsToShow = [];
+        if (trustPilotReviewsData.length > 8) {
+          trustPilotReviewsToShow = trustPilotReviewsData.slice(0, 8);
+        } else {
+          trustPilotReviewsToShow = trustPilotReviewsData;
+        }
+        return trustPilotReviewsToShow;
+      };
+
+      const calTrustedShopReviewsToShow = () => {
+        let trustedShopReviewsToShow = [];
+        if (trustedShopReviewsData.length > 8) {
+          trustedShopReviewsToShow = trustedShopReviewsData.slice(0, 8);
+        } else {
+          trustedShopReviewsToShow = trustedShopReviewsData;
+        }
+        return trustedShopReviewsToShow;
+      };
+
       this.setState({
         googleReviewsToShow: calGoogleReviewsToShow(),
-        wotReviewsToShow: calWotReviewsToShow()
+        wotReviewsToShow: calWotReviewsToShow(),
+        trustPilotReviewsToShow: calTrustpilotReviewsToShow(),
+        trustedShopReviewsToShow: calTrustedShopReviewsToShow()
       });
     }
   }
@@ -84,6 +140,34 @@ class ReviewCardContainer extends Component {
           googleReviewsToShow &&
           googleReviewsToShow.map(review => {
             return <ReviewCard review={review} provider="google" />;
+          })
+        );
+      }
+    }
+  };
+
+  renderTrustPilotReviews = () => {
+    const { trustPilotReviewsToShow } = this.state;
+    if (trustPilotReviewsToShow) {
+      if (trustPilotReviewsToShow.length > 0) {
+        return (
+          trustPilotReviewsToShow &&
+          trustPilotReviewsToShow.map(review => {
+            return <ReviewCard review={review} provider="trustpilot" />;
+          })
+        );
+      }
+    }
+  };
+
+  renderTrustedShopReviews = () => {
+    const { trustedShopReviewsToShow } = this.state;
+    if (trustedShopReviewsToShow) {
+      if (trustedShopReviewsToShow.length > 0) {
+        return (
+          trustedShopReviewsToShow &&
+          trustedShopReviewsToShow.map(review => {
+            return <ReviewCard review={review} provider="trustedshops" />;
           })
         );
       }
@@ -186,12 +270,110 @@ class ReviewCardContainer extends Component {
     }
   };
 
+  handletrustedShopShowMoreClick = () => {
+    const { trustedShopReviewsToShow } = this.state;
+    const { trustedShopReviewsData } = this.props;
+    if (trustedShopReviewsData.length <= trustedShopReviewsToShow.length) {
+    }
+    if (trustedShopReviewsToShow.length === 8) {
+      this.setState({
+        trustedShopReviewsToShow: [
+          ...trustedShopReviewsToShow,
+          ...trustedShopReviewsData.slice(
+            trustedShopReviewsToShow.length,
+            trustedShopReviewsData.length < 8
+              ? trustedShopReviewsData.length
+              : trustedShopReviewsToShow.length + 8
+          )
+        ]
+      });
+    } else if (trustedShopReviewsToShow.length > 8) {
+      this.setState({
+        trustedShopReviewsToShow: [
+          ...trustedShopReviewsToShow,
+          ...trustedShopReviewsData.slice(
+            trustedShopReviewsToShow.length,
+            trustedShopReviewsData.length < trustedShopReviewsToShow.length + 8
+              ? trustedShopReviewsData.length
+              : trustedShopReviewsToShow.length + 8
+          )
+        ]
+      });
+    }
+  };
+
+  handleTrustPilotShowMoreClick = () => {
+    const { trustPilotReviewsToShow } = this.state;
+    const { trustPilotReviewsData } = this.props;
+    if (trustPilotReviewsData.length <= trustPilotReviewsToShow.length) {
+    }
+    if (trustPilotReviewsToShow.length === 8) {
+      this.setState({
+        trustPilotReviewsToShow: [
+          ...trustPilotReviewsToShow,
+          ...trustPilotReviewsData.slice(
+            trustPilotReviewsToShow.length,
+            trustPilotReviewsData.length < 8
+              ? trustPilotReviewsData.length
+              : trustPilotReviewsToShow.length + 8
+          )
+        ]
+      });
+    } else if (trustPilotReviewsToShow.length > 8) {
+      this.setState({
+        trustPilotReviewsToShow: [
+          ...trustPilotReviewsToShow,
+          ...trustPilotReviewsData.slice(
+            trustPilotReviewsToShow.length,
+            trustPilotReviewsData.length < trustPilotReviewsToShow.length + 8
+              ? trustPilotReviewsData.length
+              : trustPilotReviewsToShow.length + 8
+          )
+        ]
+      });
+    }
+  };
+
+  handleTrustedShopShowMoreClick = () => {
+    const { trustedShopReviewsToShow } = this.state;
+    const { trustedShopReviewsData } = this.props;
+    if (trustedShopReviewsData.length <= trustedShopReviewsToShow.length) {
+    }
+    if (trustedShopReviewsToShow.length === 8) {
+      this.setState({
+        trustedShopReviewsToShow: [
+          ...trustedShopReviewsToShow,
+          ...trustedShopReviewsData.slice(
+            trustedShopReviewsToShow.length,
+            trustedShopReviewsData.length < 8
+              ? trustedShopReviewsData.length
+              : trustedShopReviewsToShow.length + 8
+          )
+        ]
+      });
+    } else if (trustedShopReviewsToShow.length > 8) {
+      this.setState({
+        trustedShopReviewsToShow: [
+          ...trustedShopReviewsToShow,
+          ...trustedShopReviewsData.slice(
+            trustedShopReviewsToShow.length,
+            trustedShopReviewsData.length < trustedShopReviewsToShow.length + 8
+              ? trustedShopReviewsData.length
+              : trustedShopReviewsToShow.length + 8
+          )
+        ]
+      });
+    }
+  };
+
   render() {
     const {
       domainProfileData,
       isLoading,
       googleReviewsData,
-      wotReviewsData
+      wotReviewsData,
+      trustPilotReviewsData,
+      trustedShopReviewsData
     } = this.props;
     const domainReviewsData =
       ((domainProfileData || {}).domainReviews || {}).data || [];
@@ -202,7 +384,12 @@ class ReviewCardContainer extends Component {
       "headerData.data.is_verified",
       false
     );
-    const { googleReviewsToShow, wotReviewsToShow } = this.state;
+    const {
+      googleReviewsToShow,
+      wotReviewsToShow,
+      trustPilotReviewsToShow,
+      trustedShopReviewsToShow
+    } = this.state;
     return (
       <div>
         <style jsx>{`
@@ -222,12 +409,18 @@ class ReviewCardContainer extends Component {
 
           .showMoreContainer:hover {
             text-decoration: underline;
-            color: #21bc61;
+            color: #4285F4;
           }
 
           .showMore {
-            color: #21bc61;
+            color: #4285F4;
             cursor: pointer;
+            font-weight:bold;
+            font-size:1.0rem;
+          }
+
+          .violet{
+            color:#4285F4;
           }
 
           .showmore: hover {
@@ -252,7 +445,41 @@ class ReviewCardContainer extends Component {
                   googleReviewsData.length ? null : (
                   <div className="showMoreContainer">
                     <span className="showMore" onClick={this.handleShowMore}>
-                      Show more
+                      Show more <span className="violet">Google</span> reviews
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : null}
+            {trustPilotReviewsData.length > 0 ? (
+              <>
+                {this.renderTrustPilotReviews()}
+                {trustPilotReviewsData.length <= 8 ||
+                wotReviewsToShow.length ===
+                  trustPilotReviewsData.length ? null : (
+                  <div className="showMoreContainer">
+                    <span
+                      className="showMore"
+                      onClick={this.handleTrustPilotShowMoreClick}
+                    >
+                      Show more <span className="violet">Trustpilot</span> reviews
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : null}
+            {trustedShopReviewsData.length > 0 ? (
+              <>
+                {this.renderTrustedShopReviews()}
+                {trustedShopReviewsData.length <= 8 ||
+                wotReviewsToShow.length ===
+                  trustedShopReviewsData.length ? null : (
+                  <div className="showMoreContainer">
+                    <span
+                      className="showMore"
+                      onClick={this.handletrustedShopShowMoreClick}
+                    >
+                      Show more <span className="violet">TrustedShop</span> reviews
                     </span>
                   </div>
                 )}
@@ -268,7 +495,7 @@ class ReviewCardContainer extends Component {
                       className="showMore"
                       onClick={this.handleWotShowMoreClick}
                     >
-                      Show more
+                      Show more <span className="violet">WOT</span> reviews
                     </span>
                   </div>
                 )}
@@ -294,7 +521,7 @@ class ReviewCardContainer extends Component {
 }
 
 const mapStateToProps = state => {
-  const { profileData, googleReviews } = state;
+  const { profileData, googleReviews, aggregateData } = state;
   const { domainProfileData, isLoading } = profileData;
   const googleReviewsFromRedux = _get(
     googleReviews,
@@ -320,11 +547,37 @@ const mapStateToProps = state => {
     wotReviewsData = [...wotReviewsFromRedux];
   }
 
+  const trustPilotReviewsFromRedux = _get(aggregateData, "18.data.reviews", []);
+  let trustPilotReviewsData = [];
+  if (
+    Array.isArray(trustPilotReviewsFromRedux) &&
+    !_isEmpty(trustPilotReviewsFromRedux) &&
+    trustPilotReviewsFromRedux
+  ) {
+    trustPilotReviewsData = [...trustPilotReviewsFromRedux];
+  }
+
+  const trustedShopReviewsFromRedux = _get(
+    aggregateData,
+    "18.data.reviews",
+    []
+  );
+  let trustedShopReviewsData = [];
+  if (
+    Array.isArray(trustedShopReviewsFromRedux) &&
+    !_isEmpty(trustedShopReviewsFromRedux) &&
+    trustedShopReviewsFromRedux
+  ) {
+    trustedShopReviewsData = [...trustedShopReviewsFromRedux];
+  }
+
   return {
     domainProfileData,
     isLoading,
     googleReviewsData,
-    wotReviewsData
+    wotReviewsData,
+    trustPilotReviewsData,
+    trustedShopReviewsData
   };
 };
 
