@@ -97,7 +97,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "url",
             id: "url",
-            labelText: "Your platform url"
+            labelText: "Your platform url *"
           },
           locale: {
             element: "select",
@@ -131,7 +131,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "name",
             id: "shopName",
-            labelText: "Enter shop name"
+            labelText: "Enter shop name *"
           },
           locale: {
             element: "select",
@@ -147,7 +147,7 @@ class AutomaticInvitation extends Component {
             touched: false,
             errorMessage: "",
             id: "locale",
-            labelText: "Select your locale"
+            labelText: "Select your locale *"
           }
         },
         Magento: {
@@ -161,7 +161,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "name",
             id: "shopName",
-            labelText: "Enter shop name",
+            labelText: "Enter shop name *",
             validationRules: {
               required: true
             }
@@ -180,7 +180,7 @@ class AutomaticInvitation extends Component {
             touched: false,
             errorMessage: "",
             id: "locale",
-            labelText: "Select your locale",
+            labelText: "Select your locale *",
             validationRules: {
               required: true
             }
@@ -197,7 +197,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "name",
             id: "name",
-            labelText: "Enter name"
+            labelText: "Enter name *"
           },
           bccSender: {
             element: "input",
@@ -209,7 +209,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "bccSender",
             id: "bccSender",
-            labelText: `Add BCC to your customer's email (${process.env.BCC_EMAIL})`
+            labelText: `Add BCC to your customer's email (${process.env.BCC_EMAIL}) *`
           },
           locale: {
             element: "select",
@@ -221,7 +221,7 @@ class AutomaticInvitation extends Component {
             touched: false,
             errorMessage: "",
             id: "locale",
-            labelText: "Select your locale",
+            labelText: "Select your locale *",
             validationRules: {
               required: true
             }

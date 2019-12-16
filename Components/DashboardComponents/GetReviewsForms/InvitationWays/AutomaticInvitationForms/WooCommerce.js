@@ -69,6 +69,10 @@ class WoocommerceForm extends Component {
       <div>
         <div style={{ marginBottom: "25px" }}>
           <h4>Integrate Woocommerce api form :</h4>
+          <span>
+            *You need to enter any one of consumer key or consumer secret to
+            continue.
+          </span>
         </div>
         {this.renderFormFields()}
         <div className="form-group" style={{ textAlign: "right" }}>
