@@ -917,7 +917,8 @@ class ProfilePageBodyRight extends Component {
     if (aggregateData.hasOwnProperty("13")) {
       if (
         _get(aggregateData, "13.data", null) !== null &&
-        !_isEmpty(_get(aggregateData, "13.data", {}))
+        !_isEmpty(_get(aggregateData, "13.data", {})) &&
+        _get(aggregateData, "followers", "")
       ) {
         showLinkedInCard = true;
       } else {
