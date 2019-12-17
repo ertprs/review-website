@@ -559,7 +559,7 @@ const mapStateToProps = state => {
 
   const trustedShopReviewsFromRedux = _get(
     aggregateData,
-    "18.data.reviews",
+    "19.data.reviews",
     []
   );
   let trustedShopReviewsData = [];
