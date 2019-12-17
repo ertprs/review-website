@@ -47,7 +47,8 @@ const renderIcon = provider => {
 };
 
 const ReviewCard = ({ review, provider }) => {
-  const { name, text, rating, date, replyURL } = review;
+  let { name, text, rating, date, replyURL } = review;
+  name = name==="N/A" ? "Anonymous" : name;
   return (
     <div className="reviewCard">
       <style jsx> {reviewListStyles}</style>
