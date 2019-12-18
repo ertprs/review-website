@@ -602,7 +602,7 @@ class Home extends Component {
         let likes = "";
         let followers = "";
         let ratings = 0;
-        let totalReviews = "";
+        let totalReviews = 0;
         if (dashboardData[name]) {
           let data = _get(dashboardData[name], "data", {});
           if (name === "facebookReviews") {
@@ -702,14 +702,14 @@ class Home extends Component {
                         </span>{" "}
                       </div>
                     ) : null}
-                    {totalReviews ? (
-                      <div className="col-md-6">
-                        {" "}
-                        <span style={{ fontWeight: "bold" }}>
-                          Total reviews : {totalReviews}
-                        </span>{" "}
-                      </div>
-                    ) : null}
+                    {/* {totalReviews ? ( */}
+                    <div className="col-md-6">
+                      {" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        Total reviews : {totalReviews}
+                      </span>{" "}
+                    </div>
+                    {/* ) : null} */}
                   </div>
                 ) : null}
               </div>
