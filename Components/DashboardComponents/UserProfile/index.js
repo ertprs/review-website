@@ -214,7 +214,7 @@ class UserProfile extends Component {
         touched: false,
         validationRules: {
           required: true,
-          minLength: 5
+          isDomain: true
         },
         name: "domain"
       }

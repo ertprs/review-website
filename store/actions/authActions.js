@@ -452,7 +452,30 @@ export const businessSignUp = (signupData, api) => {
     } catch (err) {
       let success = _get(err, "response.data.success", false);
       let status = _get(err, "response.status", 0);
-      let error = _get(err, "response.data.error", "Some Error Occured!");
+      let error = _get(err, "response.data.error", "");
+      let errorMsg = "";
+      switch (error) {
+        case "invalid_locale":
+          errorMsg = "Please, select a valid language.";
+          break;
+        case "invalid_url":
+          errorMsg =
+            "Sorry, we cannot verify that domain. Please, check if it is correct and try again.";
+          break;
+        case "already_claimed":
+          errorMsg =
+            "Sorry, this domain is already claimed. If you are the owner, please contact support for further assistance.";
+          break;
+        case "business_account_exists":
+          errorMsg =
+            "Sorry, this email already has a registered business account.";
+          break;
+        case "subscription_exists":
+          errorMsg = "Sorry, this company is already registered with us.";
+          break;
+        default:
+          errorMsg = "Some Error Occurred while Registration!";
+      }
       dispatch({
         type: BUSINESS_SIGNUP_FAILURE,
         businessSignUp: {},
@@ -461,7 +484,7 @@ export const businessSignUp = (signupData, api) => {
           signUpSuccess: success,
           isSigningUp: false,
           isSignupFailed: true,
-          error
+          error: errorMsg
         }
       });
     }
