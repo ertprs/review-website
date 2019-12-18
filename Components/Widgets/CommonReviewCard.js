@@ -34,6 +34,7 @@ const renderIcon = provider => {
   }
   return (
     <img
+      title={provider}
       src={src}
       alt="icon"
       style={{
@@ -46,7 +47,8 @@ const renderIcon = provider => {
 };
 
 const ReviewCard = ({ review, provider }) => {
-  const { name, text, rating, date, replyURL } = review;
+  let { name, text, rating, date, replyURL } = review;
+  name = name==="N/A" ? "Anonymous" : name;
   return (
     <div className="reviewCard">
       <style jsx> {reviewListStyles}</style>
@@ -116,7 +118,7 @@ const ReviewCard = ({ review, provider }) => {
                   provider === "wot" ? "reviewText wordBreak" : "reviewText"
                 }`}
               >
-                {text || ""}
+                {text || _get(review,"review", "") || ""}
               </span>
             </div>
           </div>
