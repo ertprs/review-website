@@ -32,8 +32,8 @@ class BusinessUserRegistration extends Component {
         valid: false,
         touched: false,
         validationRules: {
-          required: true
-          // isDomain: true
+          required: true,
+          isDomain: true
         },
         name: "website name"
       },
@@ -408,7 +408,6 @@ class BusinessUserRegistration extends Component {
             autoPlaceholder={true}
             defaultCountry="lv"
             onPhoneNumberChange={(isValid, value, countryData) => {
-              console.log(value, countryData, "value, countryData");
               const dialCode = _get(countryData, "dialCode", "0");
               this.setState({
                 formData: {
