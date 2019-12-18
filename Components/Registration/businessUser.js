@@ -13,11 +13,10 @@ import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import Link from "next/link";
 import { redirectWithDomain } from "../../store/actions/domainProfileActions";
-import dynamic from 'next/dynamic'
-const IntlTelInput = dynamic(
-  () => import("react-intl-tel-input"),
-  { ssr: false }
-)
+import dynamic from "next/dynamic";
+const IntlTelInput = dynamic(() => import("react-intl-tel-input"), {
+  ssr: false
+});
 import Head from "next/head";
 
 class BusinessUserRegistration extends Component {
@@ -34,6 +33,7 @@ class BusinessUserRegistration extends Component {
         touched: false,
         validationRules: {
           required: true
+          // isDomain: true
         },
         name: "website name"
       },
@@ -118,7 +118,7 @@ class BusinessUserRegistration extends Component {
         element: "select",
         name: "country",
         value: "",
-        dialCode:"",
+        dialCode: "",
         options: [...countrieslist],
         placeholder: "Select your country",
         valid: false,
@@ -250,7 +250,13 @@ class BusinessUserRegistration extends Component {
       if (!_isEmpty(ObjectKeysArray) && Array.isArray(ObjectKeysArray)) {
         ObjectKeysArray.map(key => {
           if (formData.hasOwnProperty([key])) {
-            reqBody[key] = formData[key].value;
+            if (key === "phone") {
+              reqBody[
+                key
+              ] = `+${formData[key].dialCode}-${formData[key].value}`;
+            } else {
+              reqBody[key] = formData[key].value;
+            }
           }
         });
       }
@@ -390,9 +396,10 @@ class BusinessUserRegistration extends Component {
             col="5"
           />
           <IntlTelInput
+            style={{ width: "100%" }}
             containerClassName="intl-tel-input"
-            value={formData.phone.value}
-            numberType='MOBILE'
+            value={_get(formData, "phone.value", "")}
+            numberType="MOBILE"
             inputClassName={
               formData.phone.valid
                 ? "formField"
@@ -401,7 +408,7 @@ class BusinessUserRegistration extends Component {
             autoPlaceholder={true}
             defaultCountry="lv"
             onPhoneNumberChange={(isValid, value, countryData) => {
-              // console.log(isValid, value, countryData)
+              console.log(value, countryData, "value, countryData");
               const dialCode = _get(countryData, "dialCode", "0");
               this.setState({
                 formData: {
@@ -417,7 +424,7 @@ class BusinessUserRegistration extends Component {
               });
             }}
             onSelectFlag={(value, countryData) => {
-              const dialCode = _get(countryData, "dialCode","");
+              const dialCode = _get(countryData, "dialCode", "");
               this.setState({
                 formData: {
                   ...formData,
@@ -433,7 +440,9 @@ class BusinessUserRegistration extends Component {
             }}
           />
           <div className="errorMsg">
-            {!formData.phone.valid && formData.phone.touched ? formData.phone.errorMessage : ""}
+            {!formData.phone.valid && formData.phone.touched
+              ? formData.phone.errorMessage
+              : ""}
           </div>
           <FormField
             {...formData.country}
