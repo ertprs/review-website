@@ -12,9 +12,14 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowLeft from "@material-ui/icons/ArrowLeft";
-
 import { connect } from "react-redux";
 import _get from "lodash/get";
+
+const styles = theme => ({
+  label: {
+    textTransform: "capitalize"
+  }
+});
 
 const PrettoSlider = withStyles({
   root: {
@@ -139,7 +144,8 @@ class ReviewInvitationPlatforms extends Component {
     const {
       platforms,
       handleReviewPlatformRadioBtnChange,
-      reviewInvitationPlatformsData
+      reviewInvitationPlatformsData,
+      classes
     } = this.props;
     const selectedSinglePlatform = _get(
       reviewInvitationPlatformsData,
@@ -152,6 +158,9 @@ class ReviewInvitationPlatforms extends Component {
       output = [
         ...output,
         <FormControlLabel
+          classes={{
+            label: classes.label
+          }}
           value={Number(socialId)}
           control={<Radio style={{ color: "#3a559f" }} />}
           label={data.name}
@@ -317,4 +326,6 @@ const mapStateToProps = state => {
   return {};
 };
 
-export default connect(mapStateToProps)(ReviewInvitationPlatforms);
+export default connect(mapStateToProps)(
+  withStyles(styles)(ReviewInvitationPlatforms)
+);
