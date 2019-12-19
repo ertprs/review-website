@@ -19,6 +19,9 @@ import IconButton from "@material-ui/core/IconButton";
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import Chip from "@material-ui/core/Chip";
+import TagFacesIcon from "@material-ui/icons/TagFaces";
+import AccessTime from "@material-ui/icons/AccessTime";
 //! we'll get the values to pre-fill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
 
 class AutomaticInvitation extends Component {
@@ -333,7 +336,37 @@ class AutomaticInvitation extends Component {
               // onClick={event => event.stopPropagation()}
               // onFocus={event => event.stopPropagation()}
               control={<Radio />}
-              label={item.name}
+              label={
+                item.name === "BCC" ? (
+                  <>
+                   <span style={{fontWeight:"bold"}}> {item.name} </span> -
+                    <span style={{ fontSize: "0.89rem", marginLeft: "5px" }}>
+                      Start inviting your customers using email connection with
+                      TrustSearch. Put TrustSearch email in your "Thank you
+                      email" template in BCC section.{" "}
+                      <span style={{ fontWeight: "bold", marginRight:"6px"}}>Hardness level</span>{" "}
+                      -{" "}
+                      <Chip
+                        icon={<TagFacesIcon style={{color:"#fff"}}/>}
+                        label={"Easy"}
+                        size="small"
+                        style={{background:"#43A047", color:"#fff"}}
+                      />
+                      <span style={{ fontWeight: "bold", margin:"0 6px 0 6px" }}>
+                        Time to investigate -
+                      </span>
+                      <Chip
+                        icon={<AccessTime style={{color:"#fff"}}/>}
+                        label={" < 5 min"}
+                        size="small"
+                        style={{background:"#43A047", color:"#fff"}}
+                      />
+                    </span>
+                  </>
+                ) : (
+                <span style={{fontWeight:"bold"}}>{item.name}</span>
+                )
+              }
               value={item.id}
               onClick={e => {
                 this.getFormName(item.id);
