@@ -67,10 +67,31 @@ class BCC extends Component {
     let disabled = !_get(formData, "bccSender.value", "");
     return (
       <div>
+        <style jsx>{`
+          .stepsText {
+            font-weight: bold;
+            font-size: 18px;
+          }
+          .firstStep {
+            margin: 10px 0px;
+            font-size: 15px;
+            font-weight: bold;
+          }
+        `}</style>
         <div style={{ marginBottom: "25px" }}>
           <h4>Integrate BCC form :</h4>
         </div>
-        {this.renderFormFields()}
+        <div>
+          <span className="stepsText">Steps:</span>
+          <div className="firstStep">
+            <span>1. </span>
+            <span>Add BCC email to your template: {process.env.BCC_EMAIL}</span>
+          </div>
+          <div>
+            <span> {this.renderFormFields()}</span>
+          </div>
+        </div>
+
         <div className="form-group" style={{ textAlign: "right" }}>
           {areFieldsTouched(formData) ? (
             isLoading ? (

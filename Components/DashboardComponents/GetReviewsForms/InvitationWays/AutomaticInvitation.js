@@ -209,7 +209,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "bccSender",
             id: "bccSender",
-            labelText: `Add BCC to your customer's email (${process.env.BCC_EMAIL}) *`
+            labelText: "2. Enter your platform email *"
           },
           locale: {
             element: "select",
