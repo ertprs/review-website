@@ -242,7 +242,7 @@ export default class GetWidget extends Component {
                     data-platform-id="${this.state.platforms.value}"
                     data-max-reviews="25"
                     data-newer-than-months="2"
-                    data-rating="1"
+                    data-rating="3"
                     ></div> 
                 `}</code>
                 ) : (
@@ -326,7 +326,7 @@ export default class GetWidget extends Component {
           style={{ position: "relative", overflow: "hidden" }}
           data-max-reviews="25"
           data-newer-than-months="2"
-          data-rating="1"
+          data-rating="3"
         ></div>
         <div className="row">
           {/* <div className="col-md-6">{this.renderWidgetInfo()}</div> */}
