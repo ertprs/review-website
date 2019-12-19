@@ -12,6 +12,7 @@ import _get from "lodash/get";
 import dynamic from "next/dynamic";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
+import _filter from "lodash/filter";
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
 import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
 const CreateCampaign = dynamic(
@@ -368,9 +369,8 @@ class GetReviews extends Component {
         campaignLanguage: {
           element: "select",
           value: "",
-          options: _get(this.props, "campaignLanguage", [
-            { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
-          ]),
+          code: "",
+          options: _get(this.props, "campaignLanguage", []),
           placeholder: "Select your campaign language",
           errorMessage: "",
           valid: false,
@@ -769,13 +769,19 @@ class GetReviews extends Component {
       }
     } else if (id === "campaignLanguage") {
       fetchEmailTemplate(value);
+      const selectedCampaignLang = _filter(
+        _get(this.props, "campaignLanguage", []),
+        ["value", value]
+      );
+      const selectedCampaignLangCode = selectedCampaignLang.code || "";
       this.setState(
         {
           [dataType]: {
             ...formData,
             [id]: {
               ...formData[id],
-              value: value,
+              value,
+              code: selectedCampaignLangCode,
               valid:
                 id !== "referenceNumber"
                   ? validate(value, formData[id].validationRules)
@@ -792,22 +798,22 @@ class GetReviews extends Component {
               exampleText: {
                 ...this.state.selectTemplateData.exampleText,
                 value: getEmailTemplateData(
-                  this.state.createCampaign.campaignLanguage.value,
+                  _get(this.state, "createCampaign.campaignLanguage.value", ""),
                   "exampleText",
                   _get(this.props, "companyName", "")
                 )
               },
               leaveReviewText: {
-                ...this.state.selectTemplateData.leaveReviewText,
+                ..._get(this.state, "selectTemplateData.leaveReviewText", ""),
                 value: getEmailTemplateData(
-                  this.state.createCampaign.campaignLanguage.value,
+                  _get(this.state, "createCampaign.campaignLanguage.value", ""),
                   "leaveReviewText",
                   _get(this.props, "companyName", "")
                 )
               }
             }
           });
-        } //new callback end
+        }
       );
     } else {
       this.setState({
@@ -1017,6 +1023,11 @@ class GetReviews extends Component {
               this.setState({ selectedPlatform });
             }}
             selectedPlatform={_get(this.state, "selectedPlatform", "")}
+            campaignLanguage={_get(
+              this.state,
+              "createCampaign.campaignLanguage.code",
+              "en"
+            )}
           />
         );
       } else if (getReviewsActiveSubStep === 1) {
@@ -1510,6 +1521,13 @@ class GetReviews extends Component {
 
 const mapStateToProps = state => {
   const { dashboardData, auth } = state;
+  const campaignLanguage = _get(dashboardData, "parsedCampaignLanguage", [
+    {
+      name: "English",
+      value: "d-be60fd9faf074996b23625429aa1dffd",
+      code: "en"
+    }
+  ]);
   const companyName = _get(
     auth,
     "logIn.userProfile.company.name",
@@ -1522,10 +1540,6 @@ const mapStateToProps = state => {
     ""
   );
   const success = _get(createCampaign, "success", "undefined");
-  const { parsedCampaignLanguage } = state.dashboardData;
-  let campaignLanguage = parsedCampaignLanguage || [
-    { name: "English", value: "d-be60fd9faf074996b23625429aa1dffd" }
-  ];
   const createCampaignData = _get(dashboardData, "createCampaign", {});
   const ecommerceIntegrations = _get(
     auth,

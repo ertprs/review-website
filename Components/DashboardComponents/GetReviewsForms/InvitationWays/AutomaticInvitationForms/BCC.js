@@ -11,56 +11,60 @@ class BCC extends Component {
     let output = [];
     const { formData, handleFormDataChange } = this.props;
     for (let item in formData) {
-      output = [
-        ...output,
-        <div>
-          <style jsx>
-            {`
-              .label {
-                font-weight: bold;
-                margin-bottom: 5px;
-                font-size: 15px;
-              }
-            `}
-          </style>
-          <div className="form-group">
-            <div className="label">
-              <label>{formData[item].labelText}</label>
+      if (item === "bccSender") {
+        output = [
+          ...output,
+          <div>
+            <style jsx>
+              {`
+                .label {
+                  font-weight: bold;
+                  margin-bottom: 5px;
+                  font-size: 15px;
+                }
+              `}
+            </style>
+            <div className="form-group">
+              <div className="label">
+                <label>{formData[item].labelText}</label>
+              </div>
+              <FormField
+                {...formData[item]}
+                handleChange={(e, id) => {
+                  handleFormDataChange(e, id, "BCC");
+                }}
+                styles={{
+                  height: "38px"
+                }}
+              />
             </div>
-            <FormField
-              {...formData[item]}
-              handleChange={(e, id) => {
-                handleFormDataChange(e, id, "BCC");
-              }}
-              styles={{
-                height: "38px"
-              }}
-            />
           </div>
-        </div>
-      ];
+        ];
+      }
     }
     return output;
   };
 
   handleSave = () => {
-    const { handleSaveAndContinue, type, formData } = this.props;
+    const {
+      handleSaveAndContinue,
+      type,
+      formData,
+      campaignLanguage,
+      domainName
+    } = this.props;
     let reqBody = {
       type,
-      name: _get(formData, "name.value", ""),
+      name: `${domainName}-${type}`,
       bccSender: _get(formData, "bccSender.value", ""),
-      locale: _get(formData, "locale.value", "")
+      locale: campaignLanguage || "en"
     };
     handleSaveAndContinue(reqBody);
   };
 
   render() {
     const { isLoading, formData, sendToSelectPlatformSplit } = this.props;
-    let disabled = false;
-    disabled =
-      !_get(formData, "name.value", "") ||
-      !_get(formData, "bccSender.value", "") ||
-      !_get(formData, "locale.value", "");
+    let disabled = !_get(formData, "bccSender.value", "");
     return (
       <div>
         <div style={{ marginBottom: "25px" }}>
