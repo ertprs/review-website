@@ -69,7 +69,7 @@ class ReviewInvitationPlatforms extends Component {
           <div className="row" style={{ marginBottom: "30px" }}>
             <div className="col-md-3">
               <TextField
-                id="standard-read-only-input"
+                // id="standard-read-only-input"
                 label="Review platform"
                 defaultValue={platforms[socialId].name}
                 fullWidth

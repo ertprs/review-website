@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import uuid from "uuid/v1";
 import { Button } from "@material-ui/core";
+import StarRatings from "react-star-ratings";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import { connect } from "react-redux";
@@ -10,6 +11,8 @@ import Snackbar from "../../Widgets/Snackbar";
 import sendgridTemaplateIds from "../../../utility/constants/sendgridTemaplateIds";
 import _filter from "lodash/get";
 import Link from "next/link";
+import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
+import { emailTemplates } from "../../../utility/emailTemplates/emailTemplates";
 
 class SendInvitations extends Component {
   state = {
@@ -49,36 +52,81 @@ class SendInvitations extends Component {
   };
 
   renderInfoCards = data => {
-    const { businessAddress } = this.props;
     return data.map(item => {
       return (
-        <div className="renderInfoContainer" key={uuid()}>
+        <div className="rowStyle" key={uuid()}>
           <style jsx>
             {`
-              .renderInfoContainer {
+              .rowStyle {
                 margin-bottom: 15px;
                 font-size: 1.05rem;
               }
+
+              .boldFont {
+                font-weight: bold;
+              }
               @media screen and (max-width: 405px) {
-                .renderInfoContainer {
+                .rowStyle {
                   font-size: 0.9rem;
                 }
               }
             `}
           </style>
           <div className="row">
-            <div style={{ fontWeight: "bold" }} className="col-md-6">
-              {item.key}
-            </div>
+            <div className="col-md-6 boldFont">{item.key}</div>
+            <div className="col-md-6">{item.value}</div>
+          </div>
+        </div>
+      );
+    });
+  };
+
+  renderReviewUrls = () => {
+    const { socialArray } = this.props;
+    return (socialArray || []).map(platform => {
+      let platformName = "";
+      if (
+        reviewURLObjects.hasOwnProperty(
+          _get(platform, "social_media_app_id", "")
+        )
+      ) {
+        let social_media_app_id = _get(platform, "social_media_app_id", "");
+        platformName = reviewURLObjects[social_media_app_id].displayName;
+      }
+
+      return (
+        <div className="rowStyle">
+          <style jsx>
+            {`
+              .rowStyle {
+                margin-bottom: 15px;
+                font-size: 1.05rem;
+              }
+
+              .boldFont {
+                font-weight: bold;
+              }
+              @media screen and (max-width: 405px) {
+                .rowStyle {
+                  font-size: 0.9rem;
+                }
+              }
+
+              .wordBreak {
+                word-break: break-all;
+              }
+            `}
+          </style>
+          <div className="row" key={uuid()}>
+            <div className="col-md-6 boldFont">{`${platformName} Review Url`}</div>
             <div className="col-md-6">
-              {item.key ===
-              "Send your customers to this website to write their review" ? (
-                <Link href={item.value}>
-                  <a target="_blank">{businessAddress}</a>
-                </Link>
-              ) : (
-                item.value
-              )}
+              <a
+                className="wordBreak"
+                href={_get(platform, "url", "")}
+                target="_blank"
+              >
+                {_get(platform, "url", "")}
+              </a>
             </div>
           </div>
         </div>
@@ -97,7 +145,8 @@ class SendInvitations extends Component {
       emailSubject,
       googleDirectReviewUrl,
       googlePlaceId,
-      domain
+      domain,
+      businessAddress
     } = this.props;
     const googleReviewUrl =
       googleDirectReviewUrl ||
@@ -114,22 +163,47 @@ class SendInvitations extends Component {
       { key: "Campaign Language", value: campLangName },
       { key: "Sender Name", value: senderName },
       { key: "Sender Email", value: senderEmail },
-      { key: "Entity", value: entity },
-      { key: "Email Subject", value: emailSubject },
-      {
-        key: "Send your customers to this website to write their review",
-        value:
-          googleReviewUrl === ""
-            ? `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`
-            : googleReviewUrl
-      }
+      { key: "Email Subject", value: emailSubject }
       // { key: "Client Name", value: clientName },
       // { key: "Reply-to Email", value: "art@cunami.lv" },
       // { key: "Number of valid lines that will be processed", value: "1" }
     ];
+
     return (
       <div className="container">
-        <div>{this.renderInfoCards(data)}</div>
+        <style jsx>
+          {`
+            .rowStyle {
+              margin-bottom: 15px;
+              font-size: 1.05rem;
+            }
+
+            .boldFont {
+              font-weight: bold;
+            }
+            @media screen and (max-width: 405px) {
+              .rowStyle {
+                font-size: 0.9rem;
+              }
+            }
+          `}
+        </style>
+
+        {this.renderInfoCards(data)}
+        <>
+          <div className="rowStyle">
+            <div className="row">
+              <div className="col-md-6 boldFont">Google Review Url</div>
+              <div className="col-md-6">
+                <a href={googleReviewUrl} target="_blank">
+                  {businessAddress}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {this.renderReviewUrls()}
+        </>
       </div>
     );
   };
@@ -180,12 +254,150 @@ class SendInvitations extends Component {
     }
   }
 
+  renderTemplate = () => {
+    const { formData, templateId } = this.props;
+    const templateObj = emailTemplates[templateId] || {};
+    const templateLang = _get(templateObj, "templateLanguage", "");
+    const salutation = _get(templateObj, "salutation", "");
+    const exampleText = _get(templateObj, "exampleText", []);
+    const leaveReviewText = _get(templateObj, "leaveReviewText", "");
+    const regards = _get(templateObj, "regards", []);
+    const footer = _get(templateObj, "footer", "");
+    return (
+      <div className="container">
+        <style jsx>
+          {`
+            .mainContainer {
+              border: 1px solid #f5f5f5;
+              padding: 30px;
+            }
+            .headerText {
+              font-size: 18px;
+              font-weight: bold;
+              margin-bottom: 20px;
+            }
+            .header {
+              // margin-bottom: 30px;
+              text-decoration: underline;
+            }
+            .subject {
+              padding: 10px;
+              border: 1px solid #d8d8d8;
+              margin-bottom: 11px;
+            }
+
+            .header h6 {
+              padding: 0;
+              margin: 0;
+            }
+
+            .logoContainer {
+              width: 150px;
+            }
+            .logoContainer img {
+              max-width: 100%;
+              height: auto;
+            }
+            .bold {
+              font-weight: bold;
+            }
+            .ratings {
+              margin-bottom: 50px;
+            }
+            .templateContainer {
+              border: 1px solid #d8d8d8;
+              padding: 15px;
+            }
+            @media screen and (max-width: 335px) {
+              .templateContainer {
+                font-size: 0.8rem;
+              }
+            }
+          `}
+        </style>
+        <div className="headerText">Email template preview:</div>
+        <div className="mainContainer">
+          <div className="subject">
+            <div className="header">
+              <h6>
+                Email Subject:{" "}
+                {formData.subject.value !== ""
+                  ? formData.subject.value + " "
+                  : "Leave a review on Entity and get a gift!"}
+              </h6>
+            </div>
+          </div>
+          <div className="templateContainer">
+            <p>
+              {salutation}{" "}
+              <span className="bold">
+                {formData.clientName.value !== ""
+                  ? formData.clientName.value + " "
+                  : "customerName"}
+              </span>
+            </p>
+            <p>
+              {exampleText[0] !== undefined
+                ? formData.exampleText.value.length > 0
+                  ? formData.exampleText.value
+                  : exampleText[0] || ""
+                : ""}{" "}
+              <span className="bold">
+                {formData.exampleText.value.length > 0
+                  ? ""
+                  : formData.entity.value !== ""
+                  ? formData.entity.value + " "
+                  : "entity domain "}
+              </span>
+              {exampleText[1] !== undefined
+                ? formData.exampleText.value.length > 0 || ""
+                  ? ""
+                  : exampleText[1] || ""
+                : ""}
+            </p>
+            <p>
+              {formData.leaveReviewText.value.length > 0
+                ? formData.leaveReviewText.value
+                : leaveReviewText}
+            </p>
+            <p className="ratings">
+              <StarRatings
+                rating={0}
+                starRatedColor="#21bc61"
+                starDimension="24px"
+                starSpacing="0.5px"
+                numberOfStars={5}
+                name="rating"
+              />
+            </p>
+            <p className="salutation">
+              <div>{regards[0] || ""}</div>
+              <div>
+                {templateLang !== "latvian"
+                  ? regards[1] + " " + formData.entity.value || ""
+                  : formData.entity.value + " " + regards[1]}
+              </div>
+              <div>{regards[2] || ""}</div>
+            </p>
+            <p>
+              <div className="logoContainer">
+                <img src="/static/business/index/images/gradientLogo.png" />
+              </div>
+            </p>
+            <div>{footer}</div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const { isLoading } = this.props;
     return (
       <>
         {this.renderSendInvitationsHeader()}
         {this.renderSendInvitationsBody()}
+        {this.renderTemplate()}
         {this.renderSendInvitationsFooter()}
         <div className="container">
           <div className="row" style={{ marginTop: "20px" }}>
@@ -274,6 +486,11 @@ const mapStateToProps = state => {
     ""
   );
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
+  const socialArray = _get(
+    auth,
+    "logIn.userProfile.business_profile.social",
+    []
+  );
   return {
     campaignName,
     campaignLanguage,
@@ -288,7 +505,8 @@ const mapStateToProps = state => {
     googleDirectReviewUrl,
     businessAddress,
     googlePlaceId,
-    domain
+    domain,
+    socialArray
   };
 };
 

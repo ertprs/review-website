@@ -461,7 +461,16 @@ class GetReviews extends Component {
         />
       ),
 
-      4: <SendInvitations />,
+      4: (
+        <SendInvitations
+          formData={this.state.selectTemplateData}
+          templateId={_get(
+            this.state,
+            "createCampaign.campaignLanguage.value",
+            ""
+          )}
+        />
+      ),
       5: <Done changeStepToRender={this.props.changeStepToRender} />
     };
   }
@@ -1108,6 +1117,12 @@ class GetReviews extends Component {
     if (activeStep === 2) {
       return (
         <SendInvitations
+          formData={this.state.selectTemplateData}
+          templateId={_get(
+            this.state,
+            "createCampaign.campaignLanguage.value",
+            ""
+          )}
           handleNext={this.handleNext}
           handleBack={this.handleBack}
         />
