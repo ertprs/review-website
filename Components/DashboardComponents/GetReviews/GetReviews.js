@@ -1403,11 +1403,23 @@ class GetReviews extends Component {
         }
       };
     }
+    let sumOfValueOfAllPlatforms = 0;
+    for (let platform in platforms) {
+      sumOfValueOfAllPlatforms += platforms[platform].value;
+    }
+    if (sumOfValueOfAllPlatforms < 100) {
+      if (platforms && !_isEmpty(platforms)) {
+        let keysArrayOfPlatforms = Object.keys(platforms);
+        let firstItem = platforms[keysArrayOfPlatforms[0]];
+        firstItem.value += 100 - Number(sumOfValueOfAllPlatforms || 0);
+      }
+    }
     this.setState({
       reviewInvitationPlatformsData: {
         ...reviewInvitationPlatformsData,
         platforms,
-        sumOfAllSplits: (countOfPlatforms + social.length) * initValueForSliders
+        sumOfAllSplits: 100
+        // sumOfAllSplits: (countOfPlatforms + social.length) * initValueForSliders
       }
     });
   }
