@@ -19,6 +19,9 @@ import IconButton from "@material-ui/core/IconButton";
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import Chip from "@material-ui/core/Chip";
+import TagFacesIcon from "@material-ui/icons/TagFaces";
+import AccessTime from "@material-ui/icons/AccessTime";
 //! we'll get the values to pre-fill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
 
 class AutomaticInvitation extends Component {
@@ -97,7 +100,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "url",
             id: "url",
-            labelText: "Your platform url"
+            labelText: "Your platform url *"
           },
           locale: {
             element: "select",
@@ -131,7 +134,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "name",
             id: "shopName",
-            labelText: "Enter shop name"
+            labelText: "Enter shop name *"
           },
           locale: {
             element: "select",
@@ -147,7 +150,7 @@ class AutomaticInvitation extends Component {
             touched: false,
             errorMessage: "",
             id: "locale",
-            labelText: "Select your locale"
+            labelText: "Select your locale *"
           }
         },
         Magento: {
@@ -161,7 +164,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "name",
             id: "shopName",
-            labelText: "Enter shop name",
+            labelText: "Enter shop name *",
             validationRules: {
               required: true
             }
@@ -180,7 +183,7 @@ class AutomaticInvitation extends Component {
             touched: false,
             errorMessage: "",
             id: "locale",
-            labelText: "Select your locale",
+            labelText: "Select your locale *",
             validationRules: {
               required: true
             }
@@ -197,7 +200,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "name",
             id: "name",
-            labelText: "Enter name"
+            labelText: "Enter name *"
           },
           bccSender: {
             element: "input",
@@ -209,7 +212,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "bccSender",
             id: "bccSender",
-            labelText: `Add BCC to your customer's email (${process.env.BCC_EMAIL})`
+            labelText: "2. Enter your platform email *"
           },
           locale: {
             element: "select",
@@ -221,7 +224,7 @@ class AutomaticInvitation extends Component {
             touched: false,
             errorMessage: "",
             id: "locale",
-            labelText: "Select your locale",
+            labelText: "Select your locale *",
             validationRules: {
               required: true
             }
@@ -333,7 +336,37 @@ class AutomaticInvitation extends Component {
               // onClick={event => event.stopPropagation()}
               // onFocus={event => event.stopPropagation()}
               control={<Radio />}
-              label={item.name}
+              label={
+                item.name === "BCC" ? (
+                  <>
+                   <span style={{fontWeight:"bold"}}> {item.name} </span> -
+                    <span style={{ fontSize: "0.89rem", marginLeft: "5px" }}>
+                      Start inviting your customers using email connection with
+                      TrustSearch. Put TrustSearch email in your "Thank you
+                      email" template in BCC section.{" "}
+                      <span style={{ fontWeight: "bold", marginRight:"6px"}}>Hardness level</span>{" "}
+                      -{" "}
+                      <Chip
+                        icon={<TagFacesIcon style={{color:"#fff"}}/>}
+                        label={"Easy"}
+                        size="small"
+                        style={{background:"#43A047", color:"#fff"}}
+                      />
+                      <span style={{ fontWeight: "bold", margin:"0 6px 0 6px" }}>
+                        Time to investigate -
+                      </span>
+                      <Chip
+                        icon={<AccessTime style={{color:"#fff"}}/>}
+                        label={" < 5 min"}
+                        size="small"
+                        style={{background:"#43A047", color:"#fff"}}
+                      />
+                    </span>
+                  </>
+                ) : (
+                <span style={{fontWeight:"bold"}}>{item.name}</span>
+                )
+              }
               value={item.id}
               onClick={e => {
                 this.getFormName(item.id);
@@ -541,6 +574,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.integrations.ecommerce",
     []
   );
+  const domainName = _get(auth, "logIn.userProfile.company.name", "");
   let availablePlatformsData = {};
 
   //! we are looping over the array of integration/ecommerce and creating a object with they key(type in array) that matches with our form key in formdata state. So that we can prefill it.
@@ -557,7 +591,8 @@ const mapStateToProps = state => {
     shopId,
     isLoading,
     errorMsg,
-    success
+    success,
+    domainName
   };
 };
 

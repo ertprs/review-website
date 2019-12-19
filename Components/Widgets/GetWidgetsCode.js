@@ -230,12 +230,12 @@ class GetWidgetsCode extends Component {
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 {widgetId === 0 ? (
                   <code className="blue">{`
-                    <script type="text/javascript" src="https://thetrustsearch.com/static/tsWidget/v2/ts.widget.2.js"
+                    <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                     async></script>
                 `}</code>
                 ) : (
                   <code className="blue">{`
-                <script type="text/javascript" src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
+                <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                 async></script>
             `}</code>
                 )}
@@ -265,7 +265,7 @@ class GetWidgetsCode extends Component {
                     data-platform-id="${this.state.platforms.value}"
                     data-max-reviews="25"
                     data-newer-than-months="2"
-                    data-rating="1"
+                    data-rating="3"
                     ></div> 
                 `}</code>
                 ) : (
@@ -317,13 +317,13 @@ class GetWidgetsCode extends Component {
           {widgetId === 0 ? (
             <script
               type="text/javascript"
-              src="https://thetrustsearch.com/static/tsWidget/v2/ts.widget.2.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           ) : (
             <script
               type="text/javascript"
-              src="https://thetrustsearch.com/static/tsWidget/v1/ts.widget.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           )}
@@ -356,8 +356,8 @@ class GetWidgetsCode extends Component {
           data-platform-id={_get(this.state, "platforms.value", "0")}
           style={{ position: "relative", overflow: "hidden" }}
           data-max-reviews="25"
-          data-newer-than-months="2"
-          data-rating="1"
+          data-newer-than-months="10"
+          data-rating="3"
         ></div>
         <div className="row">
           {/* <div className="col-md-6">{this.renderWidgetInfo()}</div> */}

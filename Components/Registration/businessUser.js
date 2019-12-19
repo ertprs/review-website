@@ -13,6 +13,11 @@ import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import Link from "next/link";
 import { redirectWithDomain } from "../../store/actions/domainProfileActions";
+import dynamic from "next/dynamic";
+const IntlTelInput = dynamic(() => import("react-intl-tel-input"), {
+  ssr: false
+});
+import Head from "next/head";
 
 class BusinessUserRegistration extends Component {
   state = {
@@ -27,7 +32,8 @@ class BusinessUserRegistration extends Component {
         valid: false,
         touched: false,
         validationRules: {
-          required: true
+          required: true,
+          isDomain: true
         },
         name: "website name"
       },
@@ -112,6 +118,7 @@ class BusinessUserRegistration extends Component {
         element: "select",
         name: "country",
         value: "",
+        dialCode: "",
         options: [...countrieslist],
         placeholder: "Select your country",
         valid: false,
@@ -243,7 +250,13 @@ class BusinessUserRegistration extends Component {
       if (!_isEmpty(ObjectKeysArray) && Array.isArray(ObjectKeysArray)) {
         ObjectKeysArray.map(key => {
           if (formData.hasOwnProperty([key])) {
-            reqBody[key] = formData[key].value;
+            if (key === "phone") {
+              reqBody[
+                key
+              ] = `+${formData[key].dialCode}-${formData[key].value}`;
+            } else {
+              reqBody[key] = formData[key].value;
+            }
           }
         });
       }
@@ -325,6 +338,13 @@ class BusinessUserRegistration extends Component {
     const { formData, isLoading, agreement } = this.state;
     return (
       <>
+        <Head>
+          <link
+            href="/static/css/react-intl-tel-input/react-intl-tel-input.css"
+            type="text/css"
+            rel="stylesheet"
+          />
+        </Head>
         <style jsx> {authenticationPageStyles} </style>{" "}
         <div className="card">
           <div className="cardHeading">
@@ -375,14 +395,54 @@ class BusinessUserRegistration extends Component {
             rows="5"
             col="5"
           />
-          <FormField
-            {...formData.phone}
-            handleChange={this.handleChange}
-            onkeyDown={this.handleKeyDown}
-            id="phone"
-            rows="5"
-            col="5"
+          <IntlTelInput
+            style={{ width: "100%" }}
+            containerClassName="intl-tel-input"
+            value={_get(formData, "phone.value", "")}
+            numberType="MOBILE"
+            inputClassName={
+              formData.phone.valid
+                ? "formField"
+                : `formField ${formData.phone.touched ? "invalidField" : ""}`
+            }
+            autoPlaceholder={true}
+            defaultCountry="lv"
+            onPhoneNumberChange={(isValid, value, countryData) => {
+              const dialCode = _get(countryData, "dialCode", "0");
+              this.setState({
+                formData: {
+                  ...formData,
+                  phone: {
+                    ...formData.phone,
+                    valid: isValid,
+                    value: value,
+                    dialCode: dialCode,
+                    touched: true
+                  }
+                }
+              });
+            }}
+            onSelectFlag={(value, countryData) => {
+              const dialCode = _get(countryData, "dialCode", "");
+              this.setState({
+                formData: {
+                  ...formData,
+                  phone: {
+                    ...formData.phone,
+                    valid: false,
+                    value: "",
+                    dialCode: dialCode,
+                    touched: true
+                  }
+                }
+              });
+            }}
           />
+          <div className="errorMsg">
+            {!formData.phone.valid && formData.phone.touched
+              ? formData.phone.errorMessage
+              : ""}
+          </div>
           <FormField
             {...formData.country}
             handleChange={this.handleChange}

@@ -19,6 +19,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ReviewsPusher from "../../Components/ReviewsPusher/ReviewsPusher";
+import NotificationPusher from "../../Components/NotificationPusherComponent/NotificationPusherComponent";
 import {
   MainListItems,
   SecondaryListItems,
@@ -28,7 +29,8 @@ import { logOut } from "../../store/actions/authActions";
 import {
   upgradeToPremium,
   fetchReviews,
-  getThirdPartyReviews
+  getThirdPartyReviews,
+  setInvitationQuota
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -470,13 +472,23 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
-  const { domainId, getThirdPartyReviews } = props;
+  const {
+    domainId,
+    getThirdPartyReviews,
+    subscriptionId,
+    setInvitationQuota
+  } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
-      {/* {placeLocated &&
-      props.domain !== "" &&
-      props.reviews.length === 0 && */}
+      {subscriptionId ? (
+        <NotificationPusher
+          subscriptionId={subscriptionId}
+          onCampaignInvitesDataChange={data => {
+            setInvitationQuota({ ...data });
+          }}
+        />
+      ) : null}
       {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
@@ -637,6 +649,7 @@ const mapStateToProps = state => {
     "isReviewsPusherConnected",
     "undefined"
   );
+  const subscriptionId = _get(auth, "logIn.userProfile.subscription.id", "");
   return {
     authorized,
     loginType,
@@ -655,7 +668,8 @@ const mapStateToProps = state => {
     token,
     isSubscriptionExpired,
     isReviewsPusherConnected,
-    domainId
+    domainId,
+    subscriptionId
   };
 };
 
@@ -663,5 +677,6 @@ export default connect(mapStateToProps, {
   logOut,
   upgradeToPremium,
   fetchReviews,
-  getThirdPartyReviews
+  getThirdPartyReviews,
+  setInvitationQuota
 })(Dashboard);
