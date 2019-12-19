@@ -21,7 +21,7 @@ class NotificationPusherComponent extends Component {
   }
   bindToKey = (pusher, channel) => {
     channel.bind("invite_stats", data => {
-    //   this.props.onGoogleReviewsChange(data);
+      this.props.onCampaignInvitesDataChange(data);
       console.log(data, "Response from invites notification");
     });
 
