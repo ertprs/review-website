@@ -209,7 +209,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "bccSender",
             id: "bccSender",
-            labelText: `Add BCC to your customer's email (${process.env.BCC_EMAIL}) *`
+            labelText: "2. Enter your platform email *"
           },
           locale: {
             element: "select",
@@ -541,6 +541,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.integrations.ecommerce",
     []
   );
+  const domainName = _get(auth, "logIn.userProfile.company.name", "");
   let availablePlatformsData = {};
 
   //! we are looping over the array of integration/ecommerce and creating a object with they key(type in array) that matches with our form key in formdata state. So that we can prefill it.
@@ -557,7 +558,8 @@ const mapStateToProps = state => {
     shopId,
     isLoading,
     errorMsg,
-    success
+    success,
+    domainName
   };
 };
 
