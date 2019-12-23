@@ -198,6 +198,7 @@ class WidgetsShowCase extends Component {
             getMoreWidgets={() => {
               this.setState({ getWidget: false });
             }}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         )}
       </div>

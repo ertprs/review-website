@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -390,6 +390,12 @@ function Dashboard(props) {
     setStepToRender(index);
   };
 
+  const mainContainer = useRef(null);
+
+  const scrollToTopOfThePage = () => {
+    mainContainer.current.scrollTop = 0;
+  };
+
   const dashboardSteps = {
     0: {
       name: "getStarted",
@@ -421,7 +427,9 @@ function Dashboard(props) {
     },
     5: {
       name: "widgets",
-      componentToRender: <WidgetsShowCase />
+      componentToRender: (
+        <WidgetsShowCase scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
     },
     6: {
       name: "userProfile",
@@ -584,7 +592,7 @@ function Dashboard(props) {
           <DashboardLogo />
         </List>
       </Drawer>
-      <main className={classes.content}>
+      <main className={classes.content} ref={mainContainer}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           {renderAppropriateComponent(props.pId)}
