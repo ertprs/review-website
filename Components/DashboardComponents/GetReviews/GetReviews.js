@@ -15,6 +15,8 @@ import _isEmpty from "lodash/isEmpty";
 import _filter from "lodash/filter";
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
 import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
+import { isFifteenMinuteDiff } from "../../../utility/commonFunctions";
+import moment from "moment";
 const CreateCampaign = dynamic(
   () => import("../GetReviewsForms/CreateCampaign"),
   {
@@ -160,6 +162,25 @@ const AddInvitesForm = dynamic(
 
 const ReviewInvitationPlatforms = dynamic(
   () => import("../GetReviewsForms/ReviewInvitationPlatforms"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
+const CampaignSchedule = dynamic(
+  () => import("../GetReviewsForms/CampaignSchedule"),
   {
     loading: () => (
       <div
@@ -426,6 +447,14 @@ class GetReviews extends Component {
         //   }
         // }
       },
+      campaignSchedule: {
+        selectedDate: null,
+        formattedDate: "",
+        isValid: false,
+        touched: false,
+        errorMessage:
+          "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
+      },
       selectedPlatform: ""
     };
 
@@ -474,6 +503,32 @@ class GetReviews extends Component {
       5: <Done changeStepToRender={this.props.changeStepToRender} />
     };
   }
+
+  handleCampaignScheduleDateChange = (date, init = false) => {
+    const valid = isFifteenMinuteDiff(date);
+    if (init) {
+      this.setState({
+        campaignSchedule: {
+          ...this.state.campaignSchedule,
+          selectedDate: date,
+          formattedDate: "",
+          isValid: valid,
+          touched: false
+        }
+      });
+    } else {
+      this.setState({
+        campaignSchedule: {
+          ...this.state.campaignSchedule,
+          selectedDate: date,
+          formattedDate: moment(new Date(date)).format("DD-MM-YYYY, HH:mm:ss"),
+          isValid: valid,
+          touched: true
+        }
+      });
+    }
+    console.log(isFifteenMinuteDiff(date), "valid");
+  };
 
   parseFileData = async () => {
     const { uploadCSVFormData } = this.state;
@@ -610,7 +665,7 @@ class GetReviews extends Component {
   handleNext = isTestEmail => {
     const { activeStep } = this.state;
     const { success } = this.props;
-    if (activeStep === 2) {
+    if (activeStep === 3) {
       this.createCampaignHandler();
     } else if (isTestEmail === "isTestEmail") {
       this.createCampaignHandler("sendTest");
@@ -663,7 +718,12 @@ class GetReviews extends Component {
 
   createCampaignHandler = sendTest => {
     const { createCampaign, ecommerceIntegrations } = this.props;
-    const { selectTemplateData, tableData, selectedPlatform } = this.state;
+    const {
+      selectTemplateData,
+      tableData,
+      selectedPlatform,
+      campaignSchedule
+    } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
@@ -673,6 +733,8 @@ class GetReviews extends Component {
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
     const percentageSplit = this.generatePercentageSplitData();
+    const selectedDate = _get(campaignSchedule, "selectedDate", "");
+    const formattedDate = _get(campaignSchedule, "formattedDate", "");
     // const subject = _get(selectTemplateData, "subject.value", "");
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
@@ -715,6 +777,12 @@ class GetReviews extends Component {
         }
       }
     };
+    if (selectedDate && formattedDate) {
+      data = {
+        ...data,
+        campaign: { ...data.campaign, startAt: formattedDate }
+      };
+    }
     if (_get(campaign, "campaignInvitationMethod.value", "") === "automatic") {
       data = {
         ...data,
@@ -731,11 +799,22 @@ class GetReviews extends Component {
   };
 
   handleBack = () => {
-    const { activeStep } = this.state;
+    const { activeStep, createCampaign } = this.state;
+    const selectedInvitationWay = _get(
+      createCampaign,
+      "campaignInvitationMethod.value",
+      ""
+    );
     if (activeStep > 0) {
-      this.setState(prevState => {
-        return { activeStep: prevState.activeStep - 1 };
-      });
+      if (selectedInvitationWay === "automatic" && activeStep === 3) {
+        this.setState(prevState => {
+          return { activeStep: prevState.activeStep - 2 };
+        });
+      } else {
+        this.setState(prevState => {
+          return { activeStep: prevState.activeStep - 1 };
+        });
+      }
     }
   };
 
@@ -997,7 +1076,12 @@ class GetReviews extends Component {
   };
 
   renderAppropriateStep = () => {
-    const { activeStep, getReviewsActiveSubStep } = this.state;
+    const { activeStep, getReviewsActiveSubStep, createCampaign } = this.state;
+    const selectedInvitationMethod = _get(
+      createCampaign,
+      "campaignInvitationMethod.value",
+      ""
+    );
     if (activeStep === 0) {
       if (getReviewsActiveSubStep === -1) {
         return (
@@ -1115,6 +1199,25 @@ class GetReviews extends Component {
       );
     }
     if (activeStep === 2) {
+      if (selectedInvitationMethod === "automatic") {
+        this.handleNext();
+      } else {
+        return (
+          <CampaignSchedule
+            selectedDate={this.state.campaignSchedule.selectedDate}
+            handleCampaignScheduleDateChange={
+              this.handleCampaignScheduleDateChange
+            }
+            handleNext={this.handleNext}
+            handleBack={this.handleBack}
+            isValid={this.state.campaignSchedule.isValid}
+            errorMessage={this.state.campaignSchedule.errorMessage}
+            touched={this.state.campaignSchedule.touched}
+          />
+        );
+      }
+    }
+    if (activeStep === 3) {
       return (
         <SendInvitations
           formData={this.state.selectTemplateData}
@@ -1128,7 +1231,7 @@ class GetReviews extends Component {
         />
       );
     }
-    if (activeStep === 3) {
+    if (activeStep === 4) {
       return (
         <Done
           changeStepToRender={this.props.changeStepToRender}
@@ -1137,16 +1240,6 @@ class GetReviews extends Component {
               activeStep: 0,
               getReviewsActiveSubStep: -1,
               tableData: [],
-              // reviewInvitationPlatformsData: {
-              //   platforms: {},
-              //   sumOfAllSplits: 0,
-              //   selectionWays: [
-              //     { id: 0, label: "Use only one review platform" },
-              //     { id: 1, label: "Use multiple review platforms" }
-              //   ],
-              //   selectedWay: -1,
-              //   selectedSinglePlatform: ""
-              // },
               addInvitesData: {
                 email: {
                   element: "input",
@@ -1443,7 +1536,7 @@ class GetReviews extends Component {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
     if (this.props !== prevProps) {
-      if (activeStep === 2) {
+      if (activeStep === 3) {
         if (success === true) {
           if (activeStep <= columns.length) {
             setGetReviewsData({});
