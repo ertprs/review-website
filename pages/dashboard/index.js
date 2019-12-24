@@ -161,6 +161,25 @@ const UserProfile = dynamic(
   }
 );
 
+const CampaignManagement = dynamic(
+  () => import("../../Components/DashboardComponents/CampaignManagement"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -422,16 +441,24 @@ function Dashboard(props) {
       componentToRender: <GetReviews changeStepToRender={changeStepToRender} />
     },
     4: {
+      name: "campaignManagement",
+      componentToRender: (
+        <CampaignManagement
+          navigateToCreateCampaign={() => handleMenuItemClicked(3)}
+        />
+      )
+    },
+    5: {
       name: "invitationHistory",
       componentToRender: <InvitationHistory />
     },
-    5: {
+    6: {
       name: "widgets",
       componentToRender: (
         <WidgetsShowCase scrollToTopOfThePage={scrollToTopOfThePage} />
       )
     },
-    6: {
+    7: {
       name: "userProfile",
       componentToRender: <UserProfile />
     }
