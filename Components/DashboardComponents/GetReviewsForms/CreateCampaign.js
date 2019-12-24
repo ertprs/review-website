@@ -22,7 +22,7 @@ class CreateCampaign extends Component {
     });
   }
   render() {
-    const { formData, handleChange } = this.props;
+    const { formData, handleChange, isCampaignEditMode } = this.props;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
@@ -109,12 +109,14 @@ class CreateCampaign extends Component {
                     );
                   }}
                 >
-                  <FormControlLabel
-                    value="manual"
-                    control={<Radio />}
-                    label="Manual invitations (by uploading a csv/xls file, copy/pasting, or by entering customers data manually)"
-                    style={{ marginBottom: "25px" }}
-                  />
+                  {isCampaignEditMode ? null : (
+                    <FormControlLabel
+                      value="manual"
+                      control={<Radio />}
+                      label="Manual invitations (by uploading a csv/xls file, copy/pasting, or by entering customers data manually)"
+                      style={{ marginBottom: "25px" }}
+                    />
+                  )}
                   <FormControlLabel
                     value="automatic"
                     control={<Radio />}

@@ -102,6 +102,21 @@ export const MainListItems = ({
         className={stepToRender === 4 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
+        <Tooltip title="Campaign History" placement="right">
+          <ListItemIcon>
+            <InsertInvitation />
+          </ListItemIcon>
+        </Tooltip>
+        <ListItemText primary="Campaign History" />
+      </ListItem>
+      <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(5);
+        }}
+        className={stepToRender === 5 ? "grayBg" : ""}
+        disabled={menuItemDisabled}
+      >
         <Tooltip title="Invitation History" placement="right">
           <ListItemIcon>
             <HistoryIcon />
@@ -112,10 +127,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(5);
+          handleMainListItemClick(6);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 5 ? "grayBg" : ""}
+        className={stepToRender === 6 ? "grayBg" : ""}
       >
         <Tooltip title="Widgets" placement="right">
           <ListItemIcon>
@@ -127,10 +142,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(6);
+          handleMainListItemClick(7);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 6 ? "grayBg" : ""}
+        className={stepToRender === 7 ? "grayBg" : ""}
       >
         <Tooltip title="User Profile" placement="right">
           <ListItemIcon>

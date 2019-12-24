@@ -51,7 +51,14 @@ import {
   UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
   REQUEST_INSTALLATION_INIT,
   REQUEST_INSTALLATION_SUCCESS,
-  REQUEST_INSTALLATION_FAILURE
+  REQUEST_INSTALLATION_FAILURE,
+  FETCH_CAMPAIGNS_INIT,
+  FETCH_CAMPAIGNS_SUCCESS,
+  FETCH_CAMPAIGNS_FAILURE,
+  CHANGE_CAMPAIGN_STATUS_INIT,
+  CHANGE_CAMPAIGN_STATUS_SUCCESS,
+  CHANGE_CAMPAIGN_STATUS_FAILURE,
+  SET_CAMPAIGN_EDIT_MODE
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -69,7 +76,9 @@ import {
   updateUserDetailsApi,
   updateDomainDetailsApi,
   thirdPartyDataApi,
-  eCommerceIntegrationApi
+  eCommerceIntegrationApi,
+  campaignHistoryApi,
+  deactivateCampaignApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import _findIndex from "lodash/findIndex";
@@ -632,7 +641,7 @@ export const updateDomainDetails = data => {
       });
     } catch (error) {
       dispatch({
-        type: UPDATE_USER_DETAILS_ERROR,
+        type: UPDATE_DOMAIN_DETAILS_ERROR,
         domainDetails: {
           isLoading: false,
           success: false,
@@ -847,5 +856,117 @@ export const requestInstallation = data => {
         }
       });
     }
+  };
+};
+
+export const fetchCampaignsList = token => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: FETCH_CAMPAIGNS_INIT,
+      campaignsData: {
+        data: [],
+        isLoading: true
+      }
+    });
+    try {
+      const res = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${campaignHistoryApi}`
+      });
+      let campaignsList = _get(res, "data.campaigns", []);
+      let data = [];
+      if (Array.isArray(campaignsList) && !_isEmpty(campaignsList)) {
+        data = campaignsList.map(campaign => {
+          let parsedCampaignStructure = JSON.parse(
+            _get(campaign, "campaign_structure", {})
+          );
+          return {
+            ...campaign,
+            campaign_structure: { ...parsedCampaignStructure }
+          };
+        });
+      }
+      dispatch({
+        type: FETCH_CAMPAIGNS_SUCCESS,
+        campaignsData: {
+          isLoading: false,
+          data
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_CAMPAIGNS_FAILURE,
+        campaignsData: {
+          isLoading: false,
+          data: []
+        }
+      });
+    }
+  };
+};
+
+export const changeCampaignStatus = id => {
+  let token = localStorage.getItem("token");
+  return async (dispatch, getState) => {
+    const state = getState();
+    const campaignsData = _get(state, "dashboardData.campaignsData.data", []);
+    dispatch({
+      type: CHANGE_CAMPAIGN_STATUS_INIT,
+      changeCampaignStatus: {
+        success: undefined,
+        isLoading: true
+      }
+    });
+    try {
+      const res = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${deactivateCampaignApi}/${id}/deactivate`
+      });
+      let success = _get(res, "data.success", undefined);
+      if (success) {
+        let campaignIndex = _findIndex(campaignsData, ["id", id]);
+        if (campaignIndex >= 0) {
+          campaignsData[campaignIndex] = {
+            ...campaignsData[campaignIndex],
+            status: 2
+          };
+          dispatch({
+            type: FETCH_CAMPAIGNS_SUCCESS,
+            campaignsData: {
+              isLoading: false,
+              data: campaignsData
+            }
+          });
+        }
+      }
+      dispatch({
+        type: CHANGE_CAMPAIGN_STATUS_SUCCESS,
+        changeCampaignStatus: {
+          isLoading: false,
+          success
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: CHANGE_CAMPAIGN_STATUS_FAILURE,
+        changeCampaignStatus: {
+          isLoading: false,
+          success: false
+        }
+      });
+    }
+  };
+};
+
+export const setCampaignEditMode = (
+  selectedCampaignData,
+  isCampaignEditMode
+) => {
+  return {
+    type: SET_CAMPAIGN_EDIT_MODE,
+    isCampaignEditMode,
+    selectedCampaignData
   };
 };

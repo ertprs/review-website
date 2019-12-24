@@ -209,7 +209,8 @@ import {
   fetchEmailTemplate,
   setGetReviewsData,
   sendGetReviews,
-  clearCampaignData
+  clearCampaignData,
+  setCampaignEditMode
 } from "../../../store/actions/dashboardActions";
 import _omit from "lodash/omit";
 
@@ -234,8 +235,8 @@ class GetReviews extends Component {
           { id: 0, label: "Use only one review platform" },
           { id: 1, label: "Use multiple review platforms" }
         ],
-        selectedWay: -1,
-        selectedSinglePlatform: ""
+        selectedWay: _get(this.props, "selectedWay", -1),
+        selectedSinglePlatform: _get(this.props, "selectedSinglePlatform", "")
       },
       addInvitesData: {
         email: {
@@ -297,7 +298,11 @@ class GetReviews extends Component {
           element: "input",
           type: "text",
           labelText: "Client Name",
-          value: "Name",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.template_vars.clientName",
+            "Name"
+          ),
           valid: true,
           touched: true,
           // errorMessage: "Enter valid name",
@@ -310,7 +315,12 @@ class GetReviews extends Component {
           element: "input",
           type: "text",
           labelText: "Entity",
-          value: this.props.companyName + " " || " ",
+          value:
+            _get(
+              this.props,
+              "selectedCampaignData.campaign_structure.template_vars.Entity",
+              ""
+            ) || _get(this.props, "companyName", " ") + " ",
           valid: true,
           touched: false,
           // errorMessage: "Required",
@@ -322,7 +332,11 @@ class GetReviews extends Component {
         exampleText: {
           labelText: "Example Text",
           element: "textarea",
-          value: "",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.template_vars.exampleText",
+            " "
+          ),
           valid: true,
           touched: false,
           // errorMessage: "Required",
@@ -337,7 +351,11 @@ class GetReviews extends Component {
           labelText: "Leave review text",
           element: "input",
           type: "text",
-          value: "",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.template_vars.leaveReviewText",
+            " "
+          ),
           valid: true,
           touched: false,
           // errorMessage: "Required",
@@ -376,11 +394,11 @@ class GetReviews extends Component {
       createCampaign: {
         campaignName: {
           element: "input",
-          value: "",
+          value: _get(this.props, "selectedCampaignData.name", ""),
           placeholder: "Enter campaign name",
           errorMessage: "",
-          valid: false,
-          touched: false,
+          valid: true,
+          touched: true,
           validationRules: {
             required: true,
             minLength: 4
@@ -389,13 +407,13 @@ class GetReviews extends Component {
         },
         campaignLanguage: {
           element: "select",
-          value: "",
+          value: _get(this.props, "selectedCampaignData.template_id", ""),
           code: "",
           options: _get(this.props, "campaignLanguage", []),
           placeholder: "Select your campaign language",
           errorMessage: "",
-          valid: false,
-          touched: false,
+          valid: true,
+          touched: true,
           validationRules: {
             required: true
           },
@@ -403,11 +421,15 @@ class GetReviews extends Component {
         },
         senderName: {
           element: "input",
-          value: "",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.senderName",
+            ""
+          ),
           placeholder: "Enter sender's name",
           errorMessage: "",
-          valid: false,
-          touched: false,
+          valid: true,
+          touched: true,
           validationRules: {
             required: true,
             minLength: 5
@@ -427,8 +449,10 @@ class GetReviews extends Component {
           name: "senderEmail"
         },
         campaignInvitationMethod: {
-          valid: false,
-          value: "",
+          valid: true,
+          value: _get(this.props, "isCampaignEditMode", false)
+            ? "automatic"
+            : "",
           validationRules: {
             required: true
           }
@@ -455,7 +479,7 @@ class GetReviews extends Component {
         errorMessage:
           "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
       },
-      selectedPlatform: ""
+      selectedPlatform: _get(this.props, "selectedCampaignData.type_id", "")
     };
 
     this.steps = {
@@ -1092,6 +1116,7 @@ class GetReviews extends Component {
             onContinueClick={() => {
               this.setState({ getReviewsActiveSubStep: 0 });
             }}
+            isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
           />
         );
       } else if (getReviewsActiveSubStep === 0) {
@@ -1164,9 +1189,11 @@ class GetReviews extends Component {
               reviewInvitationPlatformsData={
                 this.state.reviewInvitationPlatformsData
               }
-              sumOfAllSplits={
-                this.state.reviewInvitationPlatformsData.sumOfAllSplits
-              }
+              sumOfAllSplits={_get(
+                this.state,
+                "reviewInvitationPlatformsData.sumOfAllSplits",
+                0
+              )}
               handleSliderChange={this.handleSliderChange}
               sendToSelectTemplate={() => {
                 this.setState({ activeStep: 1 });
@@ -1472,6 +1499,11 @@ class GetReviews extends Component {
       countOfPlatforms += 1;
     }
     let platforms = {};
+    let percentageSplit = _get(
+      this.props,
+      "selectedCampaignData.campaign_structure.percentageSplit",
+      []
+    );
     if (social && Array.isArray(social)) {
       if (social.length > 0) {
         initValueForSliders = Math.floor(
@@ -1522,6 +1554,22 @@ class GetReviews extends Component {
         firstItem.value += 100 - Number(sumOfValueOfAllPlatforms || 0);
       }
     }
+    if (Array.isArray(percentageSplit) && !_isEmpty(percentageSplit)) {
+      for (let platform in platforms) {
+        let social_app_id = platforms[platform].social_media_app_id || "";
+        let foundPlatform = _find(percentageSplit, [
+          "socialAppId",
+          social_app_id
+        ]);
+        if (foundPlatform) {
+          platforms[platform] = {
+            ...platforms[platform],
+            value: _get(foundPlatform, "percentShare", 0),
+            url: _get(foundPlatform, "link", "")
+          };
+        }
+      }
+    }
     this.setState({
       reviewInvitationPlatformsData: {
         ...reviewInvitationPlatformsData,
@@ -1530,6 +1578,10 @@ class GetReviews extends Component {
         // sumOfAllSplits: (countOfPlatforms + social.length) * initValueForSliders
       }
     });
+  }
+
+  componentWillUnmount() {
+    this.props.setCampaignEditMode({}, false);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -1605,7 +1657,6 @@ class GetReviews extends Component {
 
   render() {
     const { activeStep } = this.state;
-    // console.log(this.props.changeStepToRender, "this.props.changeStepToRender");
     return (
       <>
         <style jsx>
@@ -1666,16 +1717,24 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.integrations.ecommerce",
     []
   );
-  const social = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.social",
-    []
-  );
+  const social = _get(auth, "logIn.userProfile.business_profile.social", []);
   const googleDirectReviewURL = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.google_places.directReviewUrl",
+    auth,
+    "logIn.userProfile.business_profile.google_places.directReviewUrl",
     ""
   );
+  const selectedCampaignData = _get(dashboardData, "selectedCampaignData", {});
+  const isCampaignEditMode = _get(dashboardData, "isCampaignEditMode", false);
+  let percentageSplit = _get(
+    selectedCampaignData,
+    "campaign_structure.percentageSplit",
+    []
+  );
+  const selectedWay = percentageSplit.length > 1 ? 1 : 0;
+  let selectedSinglePlatform = "";
+  if (selectedWay === 0) {
+    selectedSinglePlatform = percentageSplit[0].socialAppId;
+  }
   return {
     success,
     campaignLanguage,
@@ -1685,7 +1744,11 @@ const mapStateToProps = state => {
     createCampaignData,
     ecommerceIntegrations,
     social,
-    googleDirectReviewURL
+    googleDirectReviewURL,
+    selectedCampaignData,
+    isCampaignEditMode,
+    selectedWay,
+    selectedSinglePlatform
   };
 };
 
@@ -1694,5 +1757,6 @@ export default connect(mapStateToProps, {
   sendGetReviews,
   createCampaign,
   fetchEmailTemplate,
-  clearCampaignData
+  clearCampaignData,
+  setCampaignEditMode
 })(withStyles(styles)(GetReviews));
