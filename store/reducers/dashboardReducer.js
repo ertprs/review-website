@@ -52,7 +52,14 @@ import {
   GET_AVAILABLE_PLATFORMS_FAILURE,
   REQUEST_INSTALLATION_INIT,
   REQUEST_INSTALLATION_SUCCESS,
-  REQUEST_INSTALLATION_FAILURE
+  REQUEST_INSTALLATION_FAILURE,
+  FETCH_CAMPAIGNS_INIT,
+  FETCH_CAMPAIGNS_SUCCESS,
+  FETCH_CAMPAIGNS_FAILURE,
+  CHANGE_CAMPAIGN_STATUS_INIT,
+  CHANGE_CAMPAIGN_STATUS_SUCCESS,
+  CHANGE_CAMPAIGN_STATUS_FAILURE,
+  SET_CAMPAIGN_EDIT_MODE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -80,7 +87,11 @@ const dashboardReducer = (state = {}, action) => {
     reviewURLToEdit,
     configDetails,
     availablePlatforms,
-    requestInstallation
+    requestInstallation,
+    campaignsData,
+    changeCampaignStatus,
+    isCampaignEditMode,
+    selectedCampaignData
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -395,6 +406,49 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         requestInstallation
+      };
+    case FETCH_CAMPAIGNS_INIT:
+      return {
+        ...state,
+        type,
+        campaignsData
+      };
+    case FETCH_CAMPAIGNS_SUCCESS:
+      return {
+        ...state,
+        type,
+        campaignsData
+      };
+    case FETCH_CAMPAIGNS_FAILURE:
+      return {
+        ...state,
+        type,
+        campaignsData
+      };
+    case CHANGE_CAMPAIGN_STATUS_INIT:
+      return {
+        ...state,
+        type,
+        changeCampaignStatus
+      };
+    case CHANGE_CAMPAIGN_STATUS_SUCCESS:
+      return {
+        ...state,
+        type,
+        changeCampaignStatus
+      };
+    case CHANGE_CAMPAIGN_STATUS_FAILURE:
+      return {
+        ...state,
+        type,
+        changeCampaignStatus
+      };
+    case SET_CAMPAIGN_EDIT_MODE:
+      return {
+        ...state,
+        type,
+        selectedCampaignData,
+        isCampaignEditMode
       };
     default:
       return state;
