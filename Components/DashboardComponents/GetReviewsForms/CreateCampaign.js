@@ -125,18 +125,20 @@ class CreateCampaign extends Component {
                   />
                 </RadioGroup>
               </FormControl>
-              <div style={{margin:"25px 0 25px 0"}}>
-                <span style={{ marginRight: "35px" }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<ArrowLeft />}
-                    onClick={this.props.onBackClick}
-                  >
-                    Back
-                  </Button>
-                </span>
+              <div style={{ margin: "25px 0 25px 0" }}>
+                {!this.props.isCampaignEditMode ? (
+                  <span style={{ marginRight: "35px" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      startIcon={<ArrowLeft />}
+                      onClick={this.props.onBackClick}
+                    >
+                      Back
+                    </Button>
+                  </span>
+                ) : null}
                 <Button
                   variant="contained"
                   color="primary"

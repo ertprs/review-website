@@ -417,7 +417,7 @@ class GetReviews extends Component {
           value: _get(this.props, "selectedCampaignData.name", ""),
           placeholder: "Enter campaign name",
           errorMessage: "",
-          valid: true,
+          valid: _get(this.props, "selectedCampaignData.name", "") ? true : false,
           touched: false,
           validationRules: {
             required: true,
@@ -432,7 +432,7 @@ class GetReviews extends Component {
           options: _get(this.props, "campaignLanguage", []),
           placeholder: "Select your campaign language",
           errorMessage: "",
-          valid: true,
+          valid: _get(this.props, "selectedCampaignData.template_id", "") ? true : false,
           touched: false,
           validationRules: {
             required: true
@@ -448,7 +448,11 @@ class GetReviews extends Component {
           ),
           placeholder: "Enter sender's name",
           errorMessage: "",
-          valid: true,
+          valid: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.senderName",
+            ""
+          ) ? true : false,
           touched: false,
           validationRules: {
             required: true,
@@ -469,7 +473,9 @@ class GetReviews extends Component {
           name: "senderEmail"
         },
         campaignInvitationMethod: {
-          valid: true,
+          valid: (_get(this.props, "isCampaignEditMode", false)
+          ? "automatic"
+          : "") ? true : false,
           value: _get(this.props, "isCampaignEditMode", false)
             ? "automatic"
             : "",
@@ -1136,6 +1142,7 @@ class GetReviews extends Component {
 
   renderAppropriateStep = () => {
     const { activeStep, getReviewsActiveSubStep, createCampaign } = this.state;
+    const {isCampaignEditMode} = this.props;
     const selectedInvitationMethod = _get(
       createCampaign,
       "campaignInvitationMethod.value",
@@ -1143,6 +1150,9 @@ class GetReviews extends Component {
     );
     if (activeStep === 0) {
       if(getReviewsActiveSubStep === -2){
+        if(isCampaignEditMode){
+          this.setState({getReviewsActiveSubStep:-1})
+        }
         return(
           <CampaignIntro handleCampaignCreationClick = {()=>{
             this.setState({getReviewsActiveSubStep:-1})
@@ -1791,9 +1801,9 @@ const mapStateToProps = state => {
     social,
     googleDirectReviewURL,
     selectedCampaignData,
-    isCampaignEditMode,
     selectedWay,
-    selectedSinglePlatform
+    selectedSinglePlatform,
+    isCampaignEditMode
   };
 };
 
