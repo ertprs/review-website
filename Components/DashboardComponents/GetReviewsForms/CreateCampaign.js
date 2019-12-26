@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import FormField from "../../Widgets/FormField/FormField";
 import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -124,16 +125,31 @@ class CreateCampaign extends Component {
                   />
                 </RadioGroup>
               </FormControl>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                endIcon={<ArrowRight />}
-                onClick={this.props.onContinueClick}
-                disabled={!valid}
-              >
-                Continue
-              </Button>
+              <div style={{ margin: "25px 0 25px 0" }}>
+                {!this.props.isCampaignEditMode ? (
+                  <span style={{ marginRight: "35px" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      startIcon={<ArrowLeft />}
+                      onClick={this.props.onBackClick}
+                    >
+                      Back
+                    </Button>
+                  </span>
+                ) : null}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  endIcon={<ArrowRight />}
+                  onClick={this.props.onContinueClick}
+                  disabled={!valid}
+                >
+                  Continue
+                </Button>
+              </div>
             </div>
           </div>
         </div>

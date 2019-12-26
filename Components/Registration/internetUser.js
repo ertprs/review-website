@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import Select from "react-select";
+
+import select2CountryList from "../../utility/select2CountryList.json";
 import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
 import countrieslist from "../../utility/newCountryList.json";
@@ -350,14 +353,35 @@ class InternetUserRegistration extends Component {
             {" "}
             {_get(errorMsg, "password_confirmation", "")}{" "}
           </span>{" "}
-          <FormField
+          {/* <FormField
             {...formData.country}
             handleChange={this.handleChange}
             id="country"
             rows="5"
             col="5"
             styles={{ height: "38px" }}
-          />
+          /> */}
+          <div style={{marginBottom:"1rem"}}>
+            <Select
+              className="basic-single"
+              classNamePrefix="select"
+              isClearable={true}
+              isSearchable={true}
+              name="countries-list"
+              placeholder="Select your country..."
+              options={select2CountryList}
+              onChange={valObj => {
+                let e = {};
+                e.target = valObj || {};
+                e.target = {
+                  ...e.target,
+                  value: valObj ? valObj.value.toString() : "",
+                  numericCode: valObj ? valObj.value : ""
+                };
+                this.handleChange(e, "country");
+              }}
+            />
+          </div>
           {_get(signUpTemp, "isSigningUp", false) ? (
             <div style={{ textAlign: "center" }}>
               <CircularProgress size={30} color="secondary" />
@@ -419,7 +443,6 @@ const mapStateToProps = state => {
   return { auth };
 };
 
-export default connect(
-  mapStateToProps,
-  { signUp, redirectToLoginWithEmail }
-)(InternetUserRegistration);
+export default connect(mapStateToProps, { signUp, redirectToLoginWithEmail })(
+  InternetUserRegistration
+);

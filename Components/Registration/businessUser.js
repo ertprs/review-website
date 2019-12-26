@@ -1,8 +1,11 @@
 import React, { Component } from "react";
+import Select from "react-select";
+
 import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
-import countrieslist from "../../utility/newCountryList.json";
 import validate from "../../utility/validate";
+import countrieslist from "../../utility/countryList.json";
+import select2CountryList from "../../utility/select2CountryList.json";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { businessRegisterApi } from "../../utility/config";
@@ -443,13 +446,32 @@ class BusinessUserRegistration extends Component {
               ? formData.phone.errorMessage
               : ""}
           </div>
-          <FormField
+          {/* <FormField
             {...formData.country}
             handleChange={this.handleChange}
             id="country"
             rows="5"
             col="5"
             styles={{ height: "38px" }}
+          /> */}
+          <Select
+            className="basic-single"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="countries-list"
+            placeholder="Select your country..."
+            options={select2CountryList}
+            onChange={valObj => {
+              let e = {};
+              e.target = valObj || {};
+              e.target = {
+                ...e.target,
+                value: valObj ? valObj.value.toString() : "",
+                numericCode: valObj ? valObj.value : ""
+              };
+              this.handleChange(e, "country");
+            }}
           />
           <div style={{ margin: "20px 0 20px 0" }}>
             <label style={{ cursor: "pointer" }}>
