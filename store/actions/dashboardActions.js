@@ -266,6 +266,7 @@ export const upgradeToPremium = data => {
   };
 };
 
+//! Not in use as we are doing in table directly
 export const fetchTransactionHistory = token => {
   return async dispatch => {
     dispatch({
@@ -859,6 +860,7 @@ export const requestInstallation = data => {
   };
 };
 
+//! Not in use as we are doing it remotely directly from the table
 export const fetchCampaignsList = token => {
   return async (dispatch, getState) => {
     dispatch({
@@ -872,7 +874,7 @@ export const fetchCampaignsList = token => {
       const res = await axios({
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}${campaignHistoryApi}`
+        url: `${process.env.BASE_URL}${campaignHistoryApi}?perPage=10&page=1`
       });
       let campaignsList = _get(res, "data.campaigns", []);
       let data = [];
@@ -906,7 +908,8 @@ export const fetchCampaignsList = token => {
   };
 };
 
-export const changeCampaignStatus = id => {
+export const changeCampaignStatus = (id, actionOnStatus) => {
+  console.log(id, actionOnStatus, "id, actionOnStatus");
   let token = localStorage.getItem("token");
   return async (dispatch, getState) => {
     const state = getState();
@@ -922,15 +925,22 @@ export const changeCampaignStatus = id => {
       const res = await axios({
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}${deactivateCampaignApi}/${id}/deactivate`
+        url: `${process.env.BASE_URL}${deactivateCampaignApi}/${id}/${actionOnStatus}`
       });
       let success = _get(res, "data.success", undefined);
       if (success) {
         let campaignIndex = _findIndex(campaignsData, ["id", id]);
         if (campaignIndex >= 0) {
+          let campaignToChange = { ...campaignsData[campaignIndex] };
+          let status = _get(campaignToChange, "status", 0);
+          if (status === 1 || status === 3) {
+            status = 2;
+          } else if (status === 2) {
+            status = 1;
+          }
+          campaignToChange = { ...campaignToChange, status };
           campaignsData[campaignIndex] = {
-            ...campaignsData[campaignIndex],
-            status: 2
+            ...campaignToChange
           };
           dispatch({
             type: FETCH_CAMPAIGNS_SUCCESS,
