@@ -418,7 +418,7 @@ class GetReviews extends Component {
           placeholder: "Enter campaign name",
           errorMessage: "",
           valid: true,
-          touched: true,
+          touched: false,
           validationRules: {
             required: true,
             minLength: 4
@@ -433,7 +433,7 @@ class GetReviews extends Component {
           placeholder: "Select your campaign language",
           errorMessage: "",
           valid: true,
-          touched: true,
+          touched: false,
           validationRules: {
             required: true
           },
@@ -449,7 +449,7 @@ class GetReviews extends Component {
           placeholder: "Enter sender's name",
           errorMessage: "",
           valid: true,
-          touched: true,
+          touched: false,
           validationRules: {
             required: true,
             minLength: 5
@@ -761,7 +761,12 @@ class GetReviews extends Component {
   };
 
   createCampaignHandler = sendTest => {
-    const { createCampaign, ecommerceIntegrations } = this.props;
+    const {
+      createCampaign,
+      ecommerceIntegrations,
+      isCampaignEditMode,
+      selectedCampaignData
+    } = this.props;
     const {
       selectTemplateData,
       tableData,
@@ -837,6 +842,16 @@ class GetReviews extends Component {
       data = {
         ...data,
         test: true
+      };
+    }
+    if (isCampaignEditMode) {
+      let id = _get(selectedCampaignData, "id", "");
+      data = {
+        ...data,
+        campaign: {
+          ...data.campaign,
+          id
+        }
       };
     }
     createCampaign(data);
@@ -1761,10 +1776,10 @@ const mapStateToProps = state => {
     []
   );
   const selectedWay = percentageSplit.length > 1 ? 1 : 0;
-  let selectedSinglePlatform = 1;
-  // if (selectedWay === 0) {
-  //   selectedSinglePlatform = percentageSplit[0].socialAppId;
-  // }
+  let selectedSinglePlatform = "";
+  if (percentageSplit.length > 0) {
+    selectedSinglePlatform = percentageSplit[0].socialAppId;
+  }
   return {
     success,
     campaignLanguage,
