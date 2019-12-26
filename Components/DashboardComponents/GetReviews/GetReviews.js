@@ -1731,10 +1731,10 @@ const mapStateToProps = state => {
     []
   );
   const selectedWay = percentageSplit.length > 1 ? 1 : 0;
-  let selectedSinglePlatform = "";
-  if (selectedWay === 0) {
-    selectedSinglePlatform = percentageSplit[0].socialAppId;
-  }
+  let selectedSinglePlatform = 1;
+  // if (selectedWay === 0) {
+  //   selectedSinglePlatform = percentageSplit[0].socialAppId;
+  // }
   return {
     success,
     campaignLanguage,
