@@ -9,6 +9,7 @@ import InsertInvitation from "@material-ui/icons/InsertInvitation";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import UserProfileIcon from "@material-ui/icons/AccountCircleSharp";
 import WidgetsOutlined from "@material-ui/icons/WidgetsOutlined";
+import CampaignHistory from "@material-ui/icons/List";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import HistoryIcon from "@material-ui/icons/History";
@@ -104,7 +105,7 @@ export const MainListItems = ({
       >
         <Tooltip title="Campaign History" placement="right">
           <ListItemIcon>
-            <InsertInvitation />
+            <CampaignHistory />
           </ListItemIcon>
         </Tooltip>
         <ListItemText primary="Campaign History" />
