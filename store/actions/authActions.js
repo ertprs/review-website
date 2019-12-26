@@ -42,15 +42,11 @@ import axios from "axios";
 import { sendTrustVote } from "./trustAction";
 import {
   fetchReviews,
-  fetchTransactionHistory,
-  getThirdPartyReviews
+  getThirdPartyReviews,
+  setInvitationQuota,
+  fetchCampaignLanguage
 } from "./dashboardActions";
 import cookie from "js-cookie";
-import {
-  setInvitationQuota,
-  fetchCampaignLanguage,
-  fetchCampaignsList
-} from "./dashboardActions";
 import { reportDomain } from "./domainProfileActions";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
@@ -551,10 +547,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("placeId", placeId, { expires: 7 });
             localStorage.setItem("token", token);
             dispatch(fetchReviews(token));
-            dispatch(fetchTransactionHistory(token));
             dispatch(setSubscription(subscriptionExpired));
             dispatch(fetchCampaignLanguage(token));
-            dispatch(fetchCampaignsList(token));
             dispatch(getAvailablePlatforms(token));
             dispatch({
               type: BUSINESS_LOGIN_SUCCESS,
