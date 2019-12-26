@@ -212,7 +212,7 @@ class AutomaticInvitation extends Component {
             errorMessage: "",
             name: "bccSender",
             id: "bccSender",
-            labelText: "2. Enter your platform email *"
+            labelText: "2. Enter your ecommcerce system's sender email : *"
           },
           locale: {
             element: "select",
@@ -344,7 +344,7 @@ class AutomaticInvitation extends Component {
                       Start inviting your customers using email connection with
                       TrustSearch. Put TrustSearch email in your "Thank you
                       email" template in BCC section.{" "}
-                      <span style={{ fontWeight: "bold", marginRight:"6px"}}>Hardness level</span>{" "}
+                      <span style={{ fontWeight: "bold", marginRight:"6px"}}>Difficulty level</span>{" "}
                       -{" "}
                       <Chip
                         icon={<TagFacesIcon style={{color:"#fff"}}/>}
@@ -353,7 +353,7 @@ class AutomaticInvitation extends Component {
                         style={{background:"#43A047", color:"#fff"}}
                       />
                       <span style={{ fontWeight: "bold", margin:"0 6px 0 6px" }}>
-                        Time to investigate -
+                        Time to setup -
                       </span>
                       <Chip
                         icon={<AccessTime style={{color:"#fff"}}/>}
