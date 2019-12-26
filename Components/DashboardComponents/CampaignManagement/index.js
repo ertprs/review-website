@@ -13,6 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { campaignHistoryApi } from "../../../utility/config";
 import axios from "axios";
 import EditIcon from "@material-ui/icons/Edit";
+import _find from "lodash/find";
 
 const campaignStatus = {
   1: "Active",
@@ -32,10 +33,24 @@ class CampaignManagement extends Component {
   }
 
   state = {
+    campaignsList: [],
     showSnackbar: false,
     snackbarVariant: "",
     snackbarMessage: "",
     actionType: ""
+  };
+
+  handleEditClick = id => {
+    const { setCampaignEditMode, navigateToCreateCampaign } = this.props;
+    const { campaignsList } = this.state;
+    console.log(campaignsList, "campaignsList");
+    let selectedCampaign = {};
+    if (Array.isArray(campaignsList) && !_isEmpty(campaignsList)) {
+      selectedCampaign = _find(campaignsList, ["id", id]);
+    }
+    console.log(selectedCampaign, "selectedCampaign");
+    setCampaignEditMode(selectedCampaign, true);
+    navigateToCreateCampaign();
   };
 
   tableColumns = [
@@ -91,16 +106,11 @@ class CampaignManagement extends Component {
       title: "Edit",
       field: "is_automatic",
       render: rowData => {
-        const { is_automatic } = rowData;
+        const { is_automatic, id } = rowData;
         return (
           <>
             {is_automatic === 1 ? (
-              <EditIcon
-                onClick={(event, rowData) => {
-                  this.props.setCampaignEditMode(rowData, true);
-                  this.props.navigateToCreateCampaign();
-                }}
-              />
+              <EditIcon onClick={() => this.handleEditClick(id)} />
             ) : null}
           </>
         );
@@ -168,6 +178,7 @@ class CampaignManagement extends Component {
                       campaign_structure: { ...parsedCampaignStructure }
                     };
                   });
+                  this.setState({ campaignsList: parsedCampaignsList });
                   if (
                     Array.isArray(parsedCampaignsList) &&
                     !_isEmpty(parsedCampaignsList)
