@@ -322,6 +322,10 @@ class SelectTemplateForm extends Component {
     return [...output];
   };
 
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
+
   componentDidUpdate(prevProps) {
     const {
       isLoading,

@@ -1156,7 +1156,7 @@ class GetReviews extends Component {
         return(
           <CampaignIntro handleCampaignCreationClick = {()=>{
             this.setState({getReviewsActiveSubStep:-1})
-          }}/>
+          }} scrollToTopOfThePage={this.props.scrollToTopOfThePage}/>
         )
       }
       else if (getReviewsActiveSubStep === -1) {
@@ -1172,6 +1172,7 @@ class GetReviews extends Component {
             onBackClick={()=>{
               this.setState({getReviewsActiveSubStep:-2})
             }}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       } else if (getReviewsActiveSubStep === 0) {
@@ -1201,6 +1202,7 @@ class GetReviews extends Component {
               "createCampaign.campaignLanguage.code",
               "en"
             )}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       } else if (getReviewsActiveSubStep === 1) {
@@ -1210,6 +1212,7 @@ class GetReviews extends Component {
             ref={this.fileInput}
             handleChange={this.handleChange}
             formData={this.state.uploadCSVFormData}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       } else if (getReviewsActiveSubStep === 2) {
@@ -1219,6 +1222,7 @@ class GetReviews extends Component {
             handleChange={this.handleChange}
             handleParseBtnClick={this.handleParseBtnClick}
             handleListItemBackClick={this.handleListItemBackClick}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       } else if (getReviewsActiveSubStep === 3) {
@@ -1232,6 +1236,7 @@ class GetReviews extends Component {
               onContinueClick={this.handleContinueClick}
               tableData={_get(this.state, "tableData", [])}
               handleListItemBackClick={this.handleListItemBackClick}
+              scrollToTopOfThePage={this.props.scrollToTopOfThePage}
             />
           </>
         );
@@ -1260,6 +1265,7 @@ class GetReviews extends Component {
               handleReviewPlatformRadioBtnChange={
                 this.handleReviewPlatformRadioBtnChange
               }
+              scrollToTopOfThePage={this.props.scrollToTopOfThePage}
             />
           </>
         ) : null;
@@ -1277,6 +1283,7 @@ class GetReviews extends Component {
             "createCampaign.campaignLanguage.value",
             ""
           )}
+          scrollToTopOfThePage={this.props.scrollToTopOfThePage}
         />
       );
     }
@@ -1295,6 +1302,7 @@ class GetReviews extends Component {
             isValid={this.state.campaignSchedule.isValid}
             errorMessage={this.state.campaignSchedule.errorMessage}
             touched={this.state.campaignSchedule.touched}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       }
@@ -1310,6 +1318,7 @@ class GetReviews extends Component {
           )}
           handleNext={this.handleNext}
           handleBack={this.handleBack}
+          scrollToTopOfThePage={this.props.scrollToTopOfThePage}
         />
       );
     }
@@ -1317,6 +1326,7 @@ class GetReviews extends Component {
       return (
         <Done
           changeStepToRender={this.props.changeStepToRender}
+          scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           handleInviteMoreClick={() => {
             this.setState({
               activeStep: 0,
@@ -1545,6 +1555,7 @@ class GetReviews extends Component {
 
   componentDidMount() {
     //Setting dynamic state on MOUNTING for ReviewInvitationPlatform
+    this.props.scrollToTopOfThePage();
     const social = _get(this.props, "social", []);
     const googleDirectReviewURL = _get(this.props, "googleDirectReviewURL", "");
     const { reviewInvitationPlatformsData } = this.state;

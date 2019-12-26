@@ -7,6 +7,9 @@ import uuid from "uuid/v1";
 import validate from "../../../utility/validate";
 
 export default class CopyPasteForm extends Component {
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
   renderHeader = () => {
     return (
       <div>

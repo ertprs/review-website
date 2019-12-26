@@ -52,6 +52,9 @@ const PrettoSlider = withStyles({
 })(Slider);
 
 class ReviewInvitationPlatforms extends Component {
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
+  }
   renderReviewPlatformSliders = () => {
     const { platforms, handleSliderChange, sumOfAllSplits } = this.props;
     let output = [];

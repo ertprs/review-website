@@ -418,7 +418,12 @@ function Dashboard(props) {
   const dashboardSteps = {
     0: {
       name: "getStarted",
-      componentToRender: <GetStarted changeStepToRender={changeStepToRender} />
+      componentToRender: (
+        <GetStarted
+          changeStepToRender={changeStepToRender}
+          scrollToTopOfThePage={scrollToTopOfThePage}
+        />
+      )
     },
     1: {
       name: "home",
@@ -429,28 +434,42 @@ function Dashboard(props) {
             setReviewsSelectedTab(tabIndex);
             handleMenuItemClicked(2);
           }}
+          scrollToTopOfThePage={scrollToTopOfThePage}
         />
       )
     },
     2: {
       name: "reviews",
-      componentToRender: <Reviews selectedTab={reviewsSelectedTab} />
+      componentToRender: (
+        <Reviews
+          selectedTab={reviewsSelectedTab}
+          scrollToTopOfThePage={scrollToTopOfThePage}
+        />
+      )
     },
     3: {
       name: "getReviews",
-      componentToRender: <GetReviews changeStepToRender={changeStepToRender} />
+      componentToRender: (
+        <GetReviews
+          changeStepToRender={changeStepToRender}
+          scrollToTopOfThePage={scrollToTopOfThePage}
+        />
+      )
     },
     4: {
       name: "campaignManagement",
       componentToRender: (
         <CampaignManagement
           navigateToCreateCampaign={() => handleMenuItemClicked(3)}
+          scrollToTopOfThePage={scrollToTopOfThePage}
         />
       )
     },
     5: {
       name: "invitationHistory",
-      componentToRender: <InvitationHistory />
+      componentToRender: (
+        <InvitationHistory scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
     },
     6: {
       name: "widgets",
@@ -460,7 +479,9 @@ function Dashboard(props) {
     },
     7: {
       name: "userProfile",
-      componentToRender: <UserProfile />
+      componentToRender: (
+        <UserProfile scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
     }
   };
 

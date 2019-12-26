@@ -40,6 +40,10 @@ class CampaignManagement extends Component {
     actionType: ""
   };
 
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
+
   handleEditClick = id => {
     const { setCampaignEditMode, navigateToCreateCampaign } = this.props;
     const { campaignsList } = this.state;

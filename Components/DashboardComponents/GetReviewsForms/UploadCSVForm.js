@@ -6,6 +6,9 @@ import validate from "../../../utility/validate";
 import Link from "next/link";
 
 class UploadCSVForm extends Component {
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
   renderHeader = () => {
     return (
       <div>

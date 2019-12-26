@@ -49,6 +49,10 @@ export default class GetWidget extends Component {
     };
   }
 
+  componentDidMount(){
+    window.scrollTo(0,0);
+  }
+
   renderContent = data => {
     return data.map(item => {
       return <p key={uuid()}>{item}</p>;
