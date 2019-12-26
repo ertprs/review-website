@@ -35,6 +35,26 @@ const CreateCampaign = dynamic(
     )
   }
 );
+
+const CampaignIntro = dynamic(
+  () => import("../GetReviewsForms/CampaignIntro/CampaignIntro"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const InvitationWays = dynamic(
   () => import("../GetReviewsForms/InvitationWays"),
   {
@@ -226,7 +246,7 @@ class GetReviews extends Component {
     this.fileInput = React.createRef();
     this.state = {
       activeStep: 0,
-      getReviewsActiveSubStep: -1,
+      getReviewsActiveSubStep: -2,
       tableData: [],
       reviewInvitationPlatformsData: {
         platforms: {},
@@ -1107,7 +1127,14 @@ class GetReviews extends Component {
       ""
     );
     if (activeStep === 0) {
-      if (getReviewsActiveSubStep === -1) {
+      if(getReviewsActiveSubStep === -2){
+        return(
+          <CampaignIntro handleCampaignCreationClick = {()=>{
+            this.setState({getReviewsActiveSubStep:-1})
+          }}/>
+        )
+      }
+      else if (getReviewsActiveSubStep === -1) {
         return (
           <CreateCampaign
             handleListItemClick={this.handleListItemClick}
@@ -1117,6 +1144,9 @@ class GetReviews extends Component {
               this.setState({ getReviewsActiveSubStep: 0 });
             }}
             isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
+            onBackClick={()=>{
+              this.setState({getReviewsActiveSubStep:-2})
+            }}
           />
         );
       } else if (getReviewsActiveSubStep === 0) {
