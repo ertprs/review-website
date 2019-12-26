@@ -43,6 +43,10 @@ class Home extends Component {
     snackbarMsg: ""
   };
 
+  componentDidMount(){
+    this.props.scrollToTopOfThePage()
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { success, socialArray } = this.props;
     if (success !== prevProps.success) {

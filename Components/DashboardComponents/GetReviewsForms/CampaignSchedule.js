@@ -188,6 +188,7 @@ class CampaignSchedule extends Component {
   };
 
   componentDidMount() {
+    this.props.scrollToTopOfThePage();
     this.props.handleCampaignScheduleDateChange(null, true);
   }
 

@@ -44,6 +44,9 @@ const AutomaticCampaignIntro = dynamic(
 );
 
 class CampaignIntro extends React.Component {
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
   render() {
     return (
       <Container style={{ background: "#fff" }}>

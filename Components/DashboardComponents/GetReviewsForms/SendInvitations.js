@@ -235,6 +235,10 @@ class SendInvitations extends Component {
     );
   };
 
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { isLoading, success, errorMsg } = this.props;
     if (this.props !== prevProps) {

@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 
 class CreateCampaign extends Component {
   componentDidMount() {
+    this.props.scrollToTopOfThePage();
     this.props.clearCampaignData({
       isLoading: false,
       errorMsg: "",

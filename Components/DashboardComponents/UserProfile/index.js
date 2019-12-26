@@ -310,6 +310,10 @@ class UserProfile extends Component {
     );
   };
 
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const {
       successCompany,

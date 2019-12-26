@@ -32,6 +32,10 @@ const parseTableData = tableData => {
 };
 
 class InvitationHistory extends Component {
+
+  componentDidMount(){
+    this.props.scrollToTopOfThePage()
+  }
   render() {
     const { invitations, errroMsg, isLoading, success, token } = this.props;
     return (
