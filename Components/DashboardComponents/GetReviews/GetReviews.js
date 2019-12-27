@@ -579,13 +579,14 @@ class GetReviews extends Component {
         campaignSchedule: {
           ...this.state.campaignSchedule,
           selectedDate: date,
-          formattedDate: moment(new Date(date)).format("DD-MM-YYYY, HH:mm:ss"),
+          formattedDate: moment(new Date(date)).format(),
           isValid: valid,
           touched: true
         }
       });
     }
     console.log(isFifteenMinuteDiff(date), "valid");
+    console.log(moment(new Date(date)).format(), "date_with_timestamp");
   };
 
   parseFileData = async () => {
