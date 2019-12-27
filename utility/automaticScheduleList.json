@@ -1,0 +1,82 @@
+[
+  {
+    "value": 0,
+    "label": "0 min"
+  },
+  {
+    "value": 5,
+    "label": "5 min"
+  },
+  {
+    "value": 10,
+    "label": "10 min"
+  },
+  {
+    "value": 15,
+    "label": "15 min"
+  },
+  {
+    "value": 20,
+    "label": "20 min"
+  },
+  {
+    "value": 30,
+    "label": "30 min"
+  },
+  {
+    "value": 45,
+    "label": "45 min"
+  },
+  {
+    "value": 60,
+    "label": "1 Hour"
+  },
+  {
+    "value": 120,
+    "label": "2 Hours"
+  },
+  {
+    "value" : 240,
+    "label" : "4 hours"
+  },
+  {
+    "value" : 360,
+    "label" : "6 hours"
+  },
+  {
+    "value" : 1440,
+    "label" : "1 Day"
+  },
+  {
+    "value" : 2880,
+    "label" : "2 Day"
+  },
+  {
+    "value" : 4320,
+    "label" : "3 Day"
+  },
+  {
+    "value" : 10080,
+    "label" : "1 Week (7 days)"
+  },
+  {
+    "value" : 20160,
+    "label" : "2 Weeks (14 days)"
+  },
+  {
+    "value" : 43800,
+    "label" : "1 Month (30 days)"
+  },
+  {
+    "value" : 87600,
+    "label" : "2 months (60 days)"
+  },
+  {
+    "value" : 131400,
+    "label" : "3 months (90 days)"
+  },
+  {
+    "value" : 262800,
+    "label" : "6 months (180 days)"
+  }
+]
