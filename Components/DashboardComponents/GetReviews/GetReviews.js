@@ -55,6 +55,25 @@ const CampaignIntro = dynamic(
   }
 );
 
+const CampaignScheduleAutomatic = dynamic(
+  () => import("../GetReviewsForms/CampaignScheduleAutomatic"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const InvitationWays = dynamic(
   () => import("../GetReviewsForms/InvitationWays"),
   {
@@ -513,6 +532,13 @@ class GetReviews extends Component {
         errorMessage:
           "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
       },
+      campaignScheduleAutomatic: {
+        value: "",
+        valid: false,
+        validationRules: {
+          required: true
+        }
+      },
       selectedPlatform: _get(this.props, "selectedCampaignData.type_id", "")
     };
 
@@ -786,7 +812,8 @@ class GetReviews extends Component {
       selectTemplateData,
       tableData,
       selectedPlatform,
-      campaignSchedule
+      campaignSchedule,
+      campaignScheduleAutomatic
     } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
@@ -799,6 +826,7 @@ class GetReviews extends Component {
     const percentageSplit = this.generatePercentageSplitData();
     const selectedDate = _get(campaignSchedule, "selectedDate", "");
     const formattedDate = _get(campaignSchedule, "formattedDate", "");
+    const sendAfterMinutes = _get(campaignScheduleAutomatic, "value", "");
     // const subject = _get(selectTemplateData, "subject.value", "");
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
@@ -853,6 +881,15 @@ class GetReviews extends Component {
         shop: shopId
       };
     }
+    if (
+      _get(campaign, "campaignInvitationMethod.value", "") === "automatic" &&
+      sendAfterMinutes
+    ) {
+      data = {
+        ...data,
+        campaign: { ...data.campaign, sendAfterMinutes: sendAfterMinutes }
+      };
+    }
     if (sendTest === "sendTest") {
       data = {
         ...data,
@@ -874,21 +911,10 @@ class GetReviews extends Component {
 
   handleBack = () => {
     const { activeStep, createCampaign } = this.state;
-    const selectedInvitationWay = _get(
-      createCampaign,
-      "campaignInvitationMethod.value",
-      ""
-    );
     if (activeStep > 0) {
-      if (selectedInvitationWay === "automatic" && activeStep === 3) {
-        this.setState(prevState => {
-          return { activeStep: prevState.activeStep - 2 };
-        });
-      } else {
-        this.setState(prevState => {
-          return { activeStep: prevState.activeStep - 1 };
-        });
-      }
+      this.setState(prevState => {
+        return { activeStep: prevState.activeStep - 1 };
+      });
     }
   };
 
@@ -1315,7 +1341,26 @@ class GetReviews extends Component {
     }
     if (activeStep === 2) {
       if (selectedInvitationMethod === "automatic") {
-        this.handleNext();
+        return (
+          <CampaignScheduleAutomatic
+            handleNext={this.handleNext}
+            handleBack={this.handleBack}
+            campaignScheduleAutomaticData={this.state.campaignScheduleAutomatic}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+            handleChange={val => {
+              this.setState({
+                campaignScheduleAutomatic: {
+                  ...this.state.campaignScheduleAutomatic,
+                  value: val,
+                  valid: validate(
+                    val,
+                    this.state.campaignScheduleAutomatic.validationRules
+                  )
+                }
+              });
+            }}
+          />
+        );
       } else {
         return (
           <CampaignSchedule
@@ -1575,6 +1620,21 @@ class GetReviews extends Component {
                 //     // isEmail: true
                 //   }
                 // }
+              },
+              campaignSchedule: {
+                selectedDate: null,
+                formattedDate: "",
+                isValid: false,
+                touched: false,
+                errorMessage:
+                  "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
+              },
+              campaignScheduleAutomatic: {
+                value: "",
+                valid: false,
+                validationRules: {
+                  required: true
+                }
               }
             });
           }}
