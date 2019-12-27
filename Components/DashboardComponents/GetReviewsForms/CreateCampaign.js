@@ -12,6 +12,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { clearCampaignData } from "../../../store/actions/dashboardActions";
 import _get from "lodash/get";
 import { connect } from "react-redux";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 class CreateCampaign extends Component {
   componentDidMount() {
@@ -24,7 +25,12 @@ class CreateCampaign extends Component {
     });
   }
   render() {
-    const { formData, handleChange, isCampaignEditMode } = this.props;
+    const {
+      formData,
+      handleChange,
+      isCampaignEditMode,
+      navigateToCampaignManagement
+    } = this.props;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
@@ -41,8 +47,24 @@ class CreateCampaign extends Component {
             .heading {
               margin-bottom: 20px;
             }
+            .goBackButton {
+              float: right;
+            }
           `}</style>
+          {isCampaignEditMode ? (
+            <div className="goBackButton">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<ArrowBackIcon />}
+                onClick={navigateToCampaignManagement}
+              >
+                Go Back To Campaign History
+              </Button>
+            </div>
+          ) : null}
           <h3 className="heading">Create Campaign Wizard</h3>
+
           <div className="row">
             <div className="col-md-7">
               <FormField
