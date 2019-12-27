@@ -5,6 +5,7 @@ import {
   setCampaignEditMode
 } from "../../../store/actions/dashboardActions";
 import Snackbar from "../../../Components/Widgets/Snackbar";
+import ConfirmBox from "../../Widgets/ConfirmDialog";
 //! axios
 import axios from "axios";
 //! Material imports
@@ -45,7 +46,8 @@ class CampaignManagement extends Component {
     showSnackbar: false,
     snackbarVariant: "",
     snackbarMessage: "",
-    actionType: ""
+    actionType: "",
+    showConfirmDialog: false
   };
 
   componentDidMount() {
@@ -70,7 +72,6 @@ class CampaignManagement extends Component {
       field: "actionOnStatus",
       render: rowData => {
         const { id, actionOnStatus, is_automatic } = rowData;
-        const { classes } = this.props;
         let btnColor = "#388e3c";
         if (actionOnStatus === "Deactivate") {
           btnColor = "#c62828";
@@ -88,15 +89,16 @@ class CampaignManagement extends Component {
                   onClick={() => {
                     this.setState(
                       {
+                        showConfirmDialog: true,
                         actionType: rowData.actionOnStatus
-                      },
-                      () => {
-                        this.props.changeCampaignStatus(
-                          id,
-                          actionOnStatus.charAt(0).toLowerCase() +
-                            actionOnStatus.slice(1)
-                        );
                       }
+                      // () => {
+                      //   this.props.changeCampaignStatus(
+                      //     id,
+                      //     actionOnStatus.charAt(0).toLowerCase() +
+                      //       actionOnStatus.slice(1)
+                      //   );
+                      // }
                     );
                   }}
                 >
@@ -178,7 +180,12 @@ class CampaignManagement extends Component {
   }
 
   render() {
-    const { showSnackbar, snackbarMessage, snackbarVariant } = this.state;
+    const {
+      showSnackbar,
+      snackbarMessage,
+      snackbarVariant,
+      showConfirmDialog
+    } = this.state;
     return (
       <>
         <MaterialTable
@@ -288,6 +295,15 @@ class CampaignManagement extends Component {
           open={showSnackbar}
           handleClose={() => {
             this.setState({ showSnackbar: false });
+          }}
+        />
+        <ConfirmBox
+          open={showConfirmDialog}
+          handleClose={() => {
+            this.setState({ showConfirmDialog: false });
+          }}
+          handleSubmit={() => {
+            this.setState({ showConfirmDialog: false });
           }}
         />
       </>
