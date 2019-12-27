@@ -412,7 +412,13 @@ function Dashboard(props) {
   const mainContainer = useRef(null);
 
   const scrollToTopOfThePage = () => {
-    mainContainer.current.scrollTop = 0;
+    if (mainContainer) {
+      if (mainContainer.current) {
+        if (mainContainer.current.scrollTop) {
+          mainContainer.current.scrollTop = 0;
+        }
+      }
+    }
   };
 
   const dashboardSteps = {
