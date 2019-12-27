@@ -417,7 +417,9 @@ class GetReviews extends Component {
           value: _get(this.props, "selectedCampaignData.name", ""),
           placeholder: "Enter campaign name",
           errorMessage: "",
-          valid: _get(this.props, "selectedCampaignData.name", "") ? true : false,
+          valid: _get(this.props, "selectedCampaignData.name", "")
+            ? true
+            : false,
           touched: false,
           validationRules: {
             required: true,
@@ -432,7 +434,9 @@ class GetReviews extends Component {
           options: _get(this.props, "campaignLanguage", []),
           placeholder: "Select your campaign language",
           errorMessage: "",
-          valid: _get(this.props, "selectedCampaignData.template_id", "") ? true : false,
+          valid: _get(this.props, "selectedCampaignData.template_id", "")
+            ? true
+            : false,
           touched: false,
           validationRules: {
             required: true
@@ -452,7 +456,9 @@ class GetReviews extends Component {
             this.props,
             "selectedCampaignData.campaign_structure.senderName",
             ""
-          ) ? true : false,
+          )
+            ? true
+            : false,
           touched: false,
           validationRules: {
             required: true,
@@ -475,7 +481,9 @@ class GetReviews extends Component {
         campaignInvitationMethod: {
           valid: (_get(this.props, "isCampaignEditMode", false)
           ? "automatic"
-          : "") ? true : false,
+          : "")
+            ? true
+            : false,
           value: _get(this.props, "isCampaignEditMode", false)
             ? "automatic"
             : "",
@@ -1142,24 +1150,26 @@ class GetReviews extends Component {
 
   renderAppropriateStep = () => {
     const { activeStep, getReviewsActiveSubStep, createCampaign } = this.state;
-    const {isCampaignEditMode} = this.props;
+    const { isCampaignEditMode } = this.props;
     const selectedInvitationMethod = _get(
       createCampaign,
       "campaignInvitationMethod.value",
       ""
     );
     if (activeStep === 0) {
-      if(getReviewsActiveSubStep === -2){
-        if(isCampaignEditMode){
-          this.setState({getReviewsActiveSubStep:-1})
+      if (getReviewsActiveSubStep === -2) {
+        if (isCampaignEditMode) {
+          this.setState({ getReviewsActiveSubStep: -1 });
         }
-        return(
-          <CampaignIntro handleCampaignCreationClick = {()=>{
-            this.setState({getReviewsActiveSubStep:-1})
-          }} scrollToTopOfThePage={this.props.scrollToTopOfThePage}/>
-        )
-      }
-      else if (getReviewsActiveSubStep === -1) {
+        return (
+          <CampaignIntro
+            handleCampaignCreationClick={() => {
+              this.setState({ getReviewsActiveSubStep: -1 });
+            }}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+          />
+        );
+      } else if (getReviewsActiveSubStep === -1) {
         return (
           <CreateCampaign
             handleListItemClick={this.handleListItemClick}
@@ -1169,8 +1179,8 @@ class GetReviews extends Component {
               this.setState({ getReviewsActiveSubStep: 0 });
             }}
             isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
-            onBackClick={()=>{
-              this.setState({getReviewsActiveSubStep:-2})
+            onBackClick={() => {
+              this.setState({ getReviewsActiveSubStep: -2 });
             }}
             scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
@@ -1330,7 +1340,7 @@ class GetReviews extends Component {
           handleInviteMoreClick={() => {
             this.setState({
               activeStep: 0,
-              getReviewsActiveSubStep: -1,
+              getReviewsActiveSubStep: -2,
               tableData: [],
               addInvitesData: {
                 email: {
