@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { RadioGroup, Radio, FormControlLabel } from "@material-ui/core";
+import { RadioGroup, Radio, FormControlLabel, Button } from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
@@ -23,6 +23,7 @@ import Chip from "@material-ui/core/Chip";
 import TagFacesIcon from "@material-ui/icons/TagFaces";
 import AccessTime from "@material-ui/icons/AccessTime";
 //! we'll get the values to pre-fill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 class AutomaticInvitation extends Component {
   constructor(props) {
@@ -339,32 +340,36 @@ class AutomaticInvitation extends Component {
               label={
                 item.name === "BCC" ? (
                   <>
-                   <span style={{fontWeight:"bold"}}> {item.name} </span> -
+                    <span style={{ fontWeight: "bold" }}> {item.name} </span> -
                     <span style={{ fontSize: "0.89rem", marginLeft: "5px" }}>
                       Start inviting your customers using email connection with
                       TrustSearch. Put TrustSearch email in your "Thank you
                       email" template in BCC section.{" "}
-                      <span style={{ fontWeight: "bold", marginRight:"6px"}}>Difficulty level</span>{" "}
+                      <span style={{ fontWeight: "bold", marginRight: "6px" }}>
+                        Difficulty level
+                      </span>{" "}
                       -{" "}
                       <Chip
-                        icon={<TagFacesIcon style={{color:"#fff"}}/>}
+                        icon={<TagFacesIcon style={{ color: "#fff" }} />}
                         label={"Easy"}
                         size="small"
-                        style={{background:"#43A047", color:"#fff"}}
+                        style={{ background: "#43A047", color: "#fff" }}
                       />
-                      <span style={{ fontWeight: "bold", margin:"0 6px 0 6px" }}>
+                      <span
+                        style={{ fontWeight: "bold", margin: "0 6px 0 6px" }}
+                      >
                         Time to setup -
                       </span>
                       <Chip
-                        icon={<AccessTime style={{color:"#fff"}}/>}
+                        icon={<AccessTime style={{ color: "#fff" }} />}
                         label={" < 5 min"}
                         size="small"
-                        style={{background:"#43A047", color:"#fff"}}
+                        style={{ background: "#43A047", color: "#fff" }}
                       />
                     </span>
                   </>
                 ) : (
-                <span style={{fontWeight:"bold"}}>{item.name}</span>
+                  <span style={{ fontWeight: "bold" }}>{item.name}</span>
                 )
               }
               value={item.id}
@@ -430,7 +435,9 @@ class AutomaticInvitation extends Component {
     const {
       availablePlatforms,
       availablePlatformsData,
-      selectedPlatform
+      selectedPlatform,
+      navigateToCampaignManagement,
+      isCampaignEditMode
     } = this.props;
     const particularPlatformData = _get(availablePlatformsData, formName, {});
     const secretKey = _get(particularPlatformData, "secret_key", "");
@@ -442,7 +449,7 @@ class AutomaticInvitation extends Component {
     return (
       <div className="container">
         <div className="row" style={{ marginBottom: "20px" }}>
-          <div className="col-md-6">
+          <div className="col-md-8">
             <h1>Automatic Invitation</h1>
             {availablePlatforms.length > 0 ? (
               <>
@@ -456,6 +463,20 @@ class AutomaticInvitation extends Component {
             ) : (
               <p>You don't have any platforms available.</p>
             )}
+          </div>
+          <div className="col-md-4">
+            {isCampaignEditMode ? (
+              <div style={{ float: "right" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={navigateToCampaignManagement}
+                  startIcon={<ArrowBackIcon />}
+                >
+                  Go Back To Campaign History
+                </Button>
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="row">

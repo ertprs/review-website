@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import Snackbar from "../../Widgets/Snackbar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { clearCampaignData } from "../../../store/actions/dashboardActions";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 class SelectTemplateForm extends Component {
   state = {
@@ -322,7 +323,7 @@ class SelectTemplateForm extends Component {
     return [...output];
   };
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.scrollToTopOfThePage();
   }
 
@@ -362,13 +363,30 @@ class SelectTemplateForm extends Component {
   }
 
   render() {
-    const { formData, isLoading } = this.props;
+    const {
+      formData,
+      isLoading,
+      navigateToCampaignManagement,
+      isCampaignEditMode
+    } = this.props;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
     }
     return (
       <>
+        {isCampaignEditMode ? (
+          <div style={{ float: "right" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={navigateToCampaignManagement}
+              startIcon={<ArrowBackIcon />}
+            >
+              Go Back To Campaign History
+            </Button>
+          </div>
+        ) : null}
         {this.renderHeader()}
         {this.renderBody()}
         <div className="container">
