@@ -1,19 +1,27 @@
 import React, { Component } from "react";
-import MaterialTable from "material-table";
-import { connect } from "react-redux";
-import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
+//! Own components
 import {
   changeCampaignStatus,
   setCampaignEditMode
 } from "../../../store/actions/dashboardActions";
 import Snackbar from "../../../Components/Widgets/Snackbar";
+//! axios
+import axios from "axios";
+//! Material imports
+import MaterialTable from "material-table";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { campaignHistoryApi } from "../../../utility/config";
-import axios from "axios";
 import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
+//! Lodash imports
+import _isEmpty from "lodash/isEmpty";
+import _get from "lodash/get";
 import _find from "lodash/find";
+//!Api import
+import { campaignHistoryApi } from "../../../utility/config";
+//! Connect import
+import { connect } from "react-redux";
 
 const campaignStatus = {
   1: "Active",
@@ -33,26 +41,19 @@ class CampaignManagement extends Component {
   }
 
   state = {
-    campaignsList: [],
     showSnackbar: false,
     snackbarVariant: "",
     snackbarMessage: "",
     actionType: ""
   };
 
-  componentDidMount(){
-    this.props.scrollToTopOfThePage();
+  componentDidMount() {
+    // this.props.scrollToTopOfThePage();
   }
 
-  handleEditClick = id => {
+  handleEditClick = rowData => {
     const { setCampaignEditMode, navigateToCreateCampaign } = this.props;
-    const { campaignsList } = this.state;
-    console.log(campaignsList, "campaignsList");
-    let selectedCampaign = {};
-    if (Array.isArray(campaignsList) && !_isEmpty(campaignsList)) {
-      selectedCampaign = _find(campaignsList, ["id", id]);
-    }
-    console.log(selectedCampaign, "selectedCampaign");
+    let selectedCampaign = _get(rowData, "originalData", {});
     setCampaignEditMode(selectedCampaign, true);
     navigateToCreateCampaign();
   };
@@ -110,12 +111,19 @@ class CampaignManagement extends Component {
       title: "Edit",
       field: "is_automatic",
       render: rowData => {
-        const { is_automatic, id } = rowData;
+        const { is_automatic } = rowData;
         return (
           <>
-            {is_automatic === 1 ? (
-              <EditIcon onClick={() => this.handleEditClick(id)} />
-            ) : null}
+            <Tooltip
+              title={<span style={{ fontSize: "14px" }}>Edit Campaign</span>}
+            >
+              <IconButton
+                onClick={() => this.handleEditClick(rowData)}
+                disabled={is_automatic !== 1}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
           </>
         );
       }
@@ -123,21 +131,30 @@ class CampaignManagement extends Component {
   ];
 
   componentDidUpdate(prevProps, prevState) {
-    const { campaignStatusSuccess } = this.props;
+    const { campaignStatusSuccess, campaignStatusIsLoading } = this.props;
     const { actionType } = this.state;
     if (campaignStatusSuccess !== prevProps.campaignStatusSuccess) {
-      if (campaignStatusSuccess) {
+      this.tableRef.current.onQueryChange();
+      if (campaignStatusSuccess === true && campaignStatusIsLoading === false) {
         this.setState({
           showSnackbar: true,
           snackbarVariant: "success",
           snackbarMessage: `Campaign ${actionType}d Successfully!`
+        });
+      } else if (
+        campaignStatusSuccess === false &&
+        campaignStatusIsLoading === false
+      ) {
+        this.setState({
+          showSnackbar: true,
+          snackbarVariant: "error",
+          snackbarMessage: `Some Error Occurred!`
         });
       }
     }
   }
 
   render() {
-    const { parsedCampaignList } = this.props;
     const { showSnackbar, snackbarMessage, snackbarVariant } = this.state;
     return (
       <>
@@ -148,7 +165,6 @@ class CampaignManagement extends Component {
           }}
           tableRef={this.tableRef}
           columns={this.tableColumns}
-          data={parsedCampaignList}
           actions={[
             {
               icon: "refresh",
@@ -182,7 +198,6 @@ class CampaignManagement extends Component {
                       campaign_structure: { ...parsedCampaignStructure }
                     };
                   });
-                  this.setState({ campaignsList: parsedCampaignsList });
                   if (
                     Array.isArray(parsedCampaignsList) &&
                     !_isEmpty(parsedCampaignsList)
@@ -229,7 +244,8 @@ class CampaignManagement extends Component {
                         campaign_type,
                         sender_name,
                         actionOnStatus,
-                        is_automatic
+                        is_automatic,
+                        originalData: { ...campaign }
                       };
                     });
                   }
