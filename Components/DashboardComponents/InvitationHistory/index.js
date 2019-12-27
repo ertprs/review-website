@@ -32,12 +32,15 @@ const parseTableData = tableData => {
 };
 
 class InvitationHistory extends Component {
-
-  componentDidMount(){
-    this.props.scrollToTopOfThePage()
+  constructor(props) {
+    super(props);
+    this.tableRef = React.createRef();
+  }
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
   }
   render() {
-    const { invitations, errroMsg, isLoading, success, token } = this.props;
+    const { token } = this.props;
     return (
       <MaterialTable
         title="Invitation History"
@@ -45,6 +48,16 @@ class InvitationHistory extends Component {
         options={{
           search: false
         }}
+        tableRef={this.tableRef}
+        actions={[
+          {
+            icon: "refresh",
+            tooltip: "Refresh Data",
+            isFreeAction: true,
+            onClick: () =>
+              this.tableRef.current && this.tableRef.current.onQueryChange()
+          }
+        ]}
         data={query =>
           new Promise((resolve, reject) => {
             let url = `${process.env.BASE_URL}/api/my-business/invitations/history?`;
@@ -74,20 +87,9 @@ class InvitationHistory extends Component {
 }
 
 const mapStateToProps = state => {
-  const { dashboardData, auth } = state;
-  const invitations = _get(dashboardData, "transactionHistory.invitations", []);
-  const errroMsg = _get(dashboardData, "transactionHistory.errorMsg", "");
-  const isLoading = _get(dashboardData, "transactionHistory.isLoading", false);
-  let success = false;
+  const { auth } = state;
   const token = _get(auth, "logIn.token", "");
-  if (invitations) {
-    if (Array.isArray(invitations) && !_isEmpty(invitations)) {
-      success = true;
-    } else {
-      success = false;
-    }
-  }
-  return { invitations, errroMsg, isLoading, success, token };
+  return { token };
 };
 
 export default connect(mapStateToProps)(InvitationHistory);

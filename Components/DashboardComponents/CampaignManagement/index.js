@@ -9,10 +9,11 @@ import Snackbar from "../../../Components/Widgets/Snackbar";
 import axios from "axios";
 //! Material imports
 import MaterialTable from "material-table";
-import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/CloseRounded";
+import OpenIcon from "@material-ui/icons/CheckRounded";
 import Tooltip from "@material-ui/core/Tooltip";
 //! Lodash imports
 import _isEmpty from "lodash/isEmpty";
@@ -68,20 +69,22 @@ class CampaignManagement extends Component {
       title: "Change Status",
       field: "actionOnStatus",
       render: rowData => {
-        const { id, actionOnStatus } = rowData;
-        let btnColor = "#4CAF50";
+        const { id, actionOnStatus, is_automatic } = rowData;
+        const { classes } = this.props;
+        let btnColor = "#388e3c";
         if (actionOnStatus === "Deactivate") {
-          btnColor = "#FF5722";
+          btnColor = "#c62828";
         }
+        let disabled = is_automatic === 0 && actionOnStatus === "Activate";
         return (
           <>
             {actionOnStatus.length > 2 ? (
               this.props.campaignStatusIsLoading ? (
                 <CircularProgress />
               ) : (
-                <Button
+                <IconButton
+                  disabled={disabled}
                   variant="contained"
-                  style={{ backgroundColor: `${btnColor}` }}
                   onClick={() => {
                     this.setState(
                       {
@@ -97,8 +100,28 @@ class CampaignManagement extends Component {
                     );
                   }}
                 >
-                  {rowData.actionOnStatus}
-                </Button>
+                  {actionOnStatus === "Activate" ? (
+                    <Tooltip
+                      title={
+                        <span style={{ fontSize: "14px" }}>
+                          Mark this campaign as open.
+                        </span>
+                      }
+                    >
+                      <OpenIcon />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip
+                      title={
+                        <span style={{ fontSize: "14px" }}>
+                          Close this campaign.
+                        </span>
+                      }
+                    >
+                      <CloseIcon />
+                    </Tooltip>
+                  )}
+                </IconButton>
               )
             ) : (
               "No Action Found"
