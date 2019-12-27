@@ -5,11 +5,11 @@ import {
   setCampaignEditMode
 } from "../../../store/actions/dashboardActions";
 import Snackbar from "../../../Components/Widgets/Snackbar";
+import ConfirmBox from "../../Widgets/MaterialConfirmDialog";
 //! axios
 import axios from "axios";
 //! Material imports
 import MaterialTable from "material-table";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/CloseRounded";
@@ -45,7 +45,10 @@ class CampaignManagement extends Component {
     showSnackbar: false,
     snackbarVariant: "",
     snackbarMessage: "",
-    actionType: ""
+    actionType: "",
+    showConfirmDialog: false,
+    confirmDialogTitle: "",
+    campaignIdToChangeStatus: ""
   };
 
   componentDidMount() {
@@ -69,60 +72,49 @@ class CampaignManagement extends Component {
       title: "Change Status",
       field: "actionOnStatus",
       render: rowData => {
-        const { id, actionOnStatus, is_automatic } = rowData;
-        const { classes } = this.props;
-        let btnColor = "#388e3c";
-        if (actionOnStatus === "Deactivate") {
-          btnColor = "#c62828";
-        }
+        const { actionOnStatus, is_automatic } = rowData;
         let disabled = is_automatic === 0 && actionOnStatus === "Activate";
+        let confirmDialogTitle =
+          actionOnStatus === "Activate"
+            ? "Are you sure? This action will mark current active campaign as closed."
+            : "Do you want to close this campaign?";
         return (
           <>
             {actionOnStatus.length > 2 ? (
-              this.props.campaignStatusIsLoading ? (
-                <CircularProgress />
-              ) : (
-                <IconButton
-                  disabled={disabled}
-                  variant="contained"
-                  onClick={() => {
-                    this.setState(
-                      {
-                        actionType: rowData.actionOnStatus
-                      },
-                      () => {
-                        this.props.changeCampaignStatus(
-                          id,
-                          actionOnStatus.charAt(0).toLowerCase() +
-                            actionOnStatus.slice(1)
-                        );
-                      }
-                    );
-                  }}
-                >
-                  {actionOnStatus === "Activate" ? (
-                    <Tooltip
-                      title={
-                        <span style={{ fontSize: "14px" }}>
-                          Mark this campaign as open.
-                        </span>
-                      }
-                    >
-                      <OpenIcon />
-                    </Tooltip>
-                  ) : (
-                    <Tooltip
-                      title={
-                        <span style={{ fontSize: "14px" }}>
-                          Close this campaign.
-                        </span>
-                      }
-                    >
-                      <CloseIcon />
-                    </Tooltip>
-                  )}
-                </IconButton>
-              )
+              <IconButton
+                disabled={disabled}
+                variant="contained"
+                onClick={() => {
+                  this.setState({
+                    showConfirmDialog: true,
+                    actionType: _get(rowData, "actionOnStatus", ""),
+                    confirmDialogTitle,
+                    campaignIdToChangeStatus: _get(rowData, "id", "")
+                  });
+                }}
+              >
+                {actionOnStatus === "Activate" ? (
+                  <Tooltip
+                    title={
+                      <span style={{ fontSize: "14px" }}>
+                        Mark this campaign as open.
+                      </span>
+                    }
+                  >
+                    <OpenIcon />
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    title={
+                      <span style={{ fontSize: "14px" }}>
+                        Close this campaign.
+                      </span>
+                    }
+                  >
+                    <CloseIcon />
+                  </Tooltip>
+                )}
+              </IconButton>
             ) : (
               "No Action Found"
             )}
@@ -160,6 +152,7 @@ class CampaignManagement extends Component {
       this.tableRef.current.onQueryChange();
       if (campaignStatusSuccess === true && campaignStatusIsLoading === false) {
         this.setState({
+          showConfirmDialog: false,
           showSnackbar: true,
           snackbarVariant: "success",
           snackbarMessage: `Campaign ${actionType}d Successfully!`
@@ -169,6 +162,7 @@ class CampaignManagement extends Component {
         campaignStatusIsLoading === false
       ) {
         this.setState({
+          showConfirmDialog: false,
           showSnackbar: true,
           snackbarVariant: "error",
           snackbarMessage: `Some Error Occurred!`
@@ -178,7 +172,16 @@ class CampaignManagement extends Component {
   }
 
   render() {
-    const { showSnackbar, snackbarMessage, snackbarVariant } = this.state;
+    const {
+      showSnackbar,
+      snackbarMessage,
+      snackbarVariant,
+      showConfirmDialog,
+      confirmDialogTitle,
+      campaignIdToChangeStatus,
+      actionType
+    } = this.state;
+    const { campaignStatusIsLoading } = this.props;
     return (
       <>
         <MaterialTable
@@ -289,6 +292,20 @@ class CampaignManagement extends Component {
           handleClose={() => {
             this.setState({ showSnackbar: false });
           }}
+        />
+        <ConfirmBox
+          open={showConfirmDialog}
+          handleClose={() => {
+            this.setState({ showConfirmDialog: false });
+          }}
+          handleSubmit={() => {
+            this.props.changeCampaignStatus(
+              campaignIdToChangeStatus,
+              actionType.charAt(0).toLowerCase() + actionType.slice(1)
+            );
+          }}
+          dialogTitle={confirmDialogTitle}
+          isLoading={campaignStatusIsLoading}
         />
       </>
     );

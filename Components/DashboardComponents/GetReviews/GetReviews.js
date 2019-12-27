@@ -1210,6 +1210,9 @@ class GetReviews extends Component {
               this.setState({ getReviewsActiveSubStep: -2 });
             }}
             scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+            navigateToCampaignManagement={() =>
+              this.props.navigateToCampaignManagement()
+            }
           />
         );
       } else if (getReviewsActiveSubStep === 0) {
@@ -1240,6 +1243,10 @@ class GetReviews extends Component {
               "en"
             )}
             scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+            navigateToCampaignManagement={() =>
+              this.props.navigateToCampaignManagement()
+            }
+            isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
           />
         );
       } else if (getReviewsActiveSubStep === 1) {
@@ -1303,6 +1310,10 @@ class GetReviews extends Component {
                 this.handleReviewPlatformRadioBtnChange
               }
               scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+              navigateToCampaignManagement={() =>
+                this.props.navigateToCampaignManagement()
+              }
+              isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
             />
           </>
         ) : null;
@@ -1321,6 +1332,10 @@ class GetReviews extends Component {
             ""
           )}
           scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+          navigateToCampaignManagement={() =>
+            this.props.navigateToCampaignManagement()
+          }
+          isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
         />
       );
     }
@@ -1375,6 +1390,10 @@ class GetReviews extends Component {
           handleNext={this.handleNext}
           handleBack={this.handleBack}
           scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+          navigateToCampaignManagement={() =>
+            this.props.navigateToCampaignManagement()
+          }
+          isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
         />
       );
     }
