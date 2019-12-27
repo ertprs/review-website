@@ -12,6 +12,8 @@ import MaterialTable from "material-table";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import EditIcon from "@material-ui/icons/Edit";
+import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 //! Lodash imports
 import _isEmpty from "lodash/isEmpty";
 import _get from "lodash/get";
@@ -112,9 +114,16 @@ class CampaignManagement extends Component {
         const { is_automatic } = rowData;
         return (
           <>
-            {is_automatic === 1 ? (
-              <EditIcon onClick={() => this.handleEditClick(rowData)} />
-            ) : null}
+            <Tooltip
+              title={<span style={{ fontSize: "14px" }}>Edit Campaign</span>}
+            >
+              <IconButton
+                onClick={() => this.handleEditClick(rowData)}
+                disabled={is_automatic !== 1}
+              >
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
           </>
         );
       }
@@ -122,14 +131,24 @@ class CampaignManagement extends Component {
   ];
 
   componentDidUpdate(prevProps, prevState) {
-    const { campaignStatusSuccess } = this.props;
+    const { campaignStatusSuccess, campaignStatusIsLoading } = this.props;
     const { actionType } = this.state;
     if (campaignStatusSuccess !== prevProps.campaignStatusSuccess) {
-      if (campaignStatusSuccess) {
+      this.tableRef.current.onQueryChange();
+      if (campaignStatusSuccess === true && campaignStatusIsLoading === false) {
         this.setState({
           showSnackbar: true,
           snackbarVariant: "success",
           snackbarMessage: `Campaign ${actionType}d Successfully!`
+        });
+      } else if (
+        campaignStatusSuccess === false &&
+        campaignStatusIsLoading === false
+      ) {
+        this.setState({
+          showSnackbar: true,
+          snackbarVariant: "error",
+          snackbarMessage: `Some Error Occurred!`
         });
       }
     }
