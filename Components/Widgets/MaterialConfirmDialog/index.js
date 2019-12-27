@@ -6,6 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -18,7 +19,8 @@ export default function AlertDialogSlide({
   dialogBodyText,
   cancelText,
   okText,
-  handleSubmit
+  handleSubmit,
+  isLoading
 }) {
   return (
     <div>
@@ -26,23 +28,35 @@ export default function AlertDialogSlide({
         open={open}
         TransitionComponent={Transition}
         keepMounted
+        disableBackdropClick={true}
         onClose={handleClose}
       >
         <DialogTitle id="alert-dialog-slide-title">
           {dialogTitle ? dialogTitle : "Are you sure you want to continue?"}
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            {dialogBodyText ? dialogBodyText : ""}
-          </DialogContentText>
-        </DialogContent>
+        {dialogBodyText ? (
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              {dialogBodyText}
+            </DialogContentText>
+          </DialogContent>
+        ) : null}
+
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            {cancelText ? cancelText : "Cancel"}
-          </Button>
-          <Button onClick={handleSubmit} color="primary">
-            {okText ? okText : "OK"}
-          </Button>
+          {isLoading ? (
+            <div style={{ marginRight: "10px" }}>
+              <CircularProgress size={25} />
+            </div>
+          ) : (
+            <>
+              <Button onClick={handleClose} color="primary">
+                {cancelText ? cancelText : "Cancel"}
+              </Button>
+              <Button onClick={handleSubmit} color="primary">
+                {okText ? okText : "OK"}
+              </Button>{" "}
+            </>
+          )}
         </DialogActions>
       </Dialog>
     </div>
