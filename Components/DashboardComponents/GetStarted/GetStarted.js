@@ -475,7 +475,9 @@ class GetStarted extends Component {
 
   componentDidMount() {
     const { placeId, locatePlace, businessProfile } = this.props;
-    this.props.scrollToTopOfThePage();
+    if(this.props.scrollToTopOfThePage){
+      this.props.scrollToTopOfThePage();
+    }
     if (placeId !== "" || locatePlace) {
       this.props.changeStepToRender(1);
     }
