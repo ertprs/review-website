@@ -43,8 +43,8 @@ class Home extends Component {
     snackbarMsg: ""
   };
 
-  componentDidMount(){
-    this.props.scrollToTopOfThePage()
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -929,7 +929,10 @@ class Home extends Component {
           </Grid>
         ) : (
           <div>
-            <GetStarted changeStepToRender={data => {}} />
+            <GetStarted
+              changeStepToRender={data => {}}
+              scrollToTopOfThePage={this.props.scrollToTopOfThePage()}
+            />
             {/* <div style={{ marginLeft: "30px" }}>
               <Button
                 variant="contained"
