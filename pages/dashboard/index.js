@@ -457,6 +457,7 @@ function Dashboard(props) {
       name: "getReviews",
       componentToRender: (
         <GetReviews
+          navigateToCampaignManagement={() => handleMenuItemClicked(4)}
           changeStepToRender={changeStepToRender}
           scrollToTopOfThePage={scrollToTopOfThePage}
         />
