@@ -956,7 +956,7 @@ class GetReviews extends Component {
         }
       }
     } else if (id === "campaignLanguage") {
-      fetchEmailTemplate(value);
+      // fetchEmailTemplate(value);
       const selectedCampaignLang = _filter(
         _get(this.props, "campaignLanguage", []),
         ["value", value]
