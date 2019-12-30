@@ -805,7 +805,6 @@ export const sendConfigData = data => {
         }
       });
     } catch (error) {
-      console.log(error.response.data, "hello");
       let errorMsg = _get(
         error,
         "response.data.error",
