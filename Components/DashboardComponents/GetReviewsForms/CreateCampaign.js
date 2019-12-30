@@ -96,8 +96,12 @@ class CreateCampaign extends Component {
                 col="5"
               />
               <Tooltip
-                title="Upgrade to premium to send inviatations using your own email
-                domain."
+                title={
+                  <span style={{ fontSize: "14px" }}>
+                    Upgrade to premium to send invitations using your own email
+                    domain.
+                  </span>
+                }
               >
                 <FormField
                   {...formData.senderEmail}

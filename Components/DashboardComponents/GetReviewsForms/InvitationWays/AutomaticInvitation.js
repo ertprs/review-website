@@ -526,7 +526,13 @@ class AutomaticInvitation extends Component {
                 </div>
                 {!secretKey ? null : (
                   <div className="col-md-2">
-                    <Tooltip title="Copy to clipboard">
+                    <Tooltip
+                      title={
+                        <span style={{ fontSize: "14px" }}>
+                          Copy to clipboard
+                        </span>
+                      }
+                    >
                       <CopyToClipboard
                         text={secretKey}
                         onCopy={() =>
