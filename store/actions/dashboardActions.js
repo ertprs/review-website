@@ -805,17 +805,21 @@ export const sendConfigData = data => {
         }
       });
     } catch (error) {
+      let errorMsg = _get(
+        error,
+        "response.data.error",
+        "Some error occured! Please choose another method of invitation."
+      );
+      if (errorMsg === "duplicate_bcc_sender") {
+        errorMsg = "This email is already in use.";
+      }
       dispatch({
         type: POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
         configDetails: {
           isLoading: false,
           success: false,
           data: {},
-          errorMsg: _get(
-            error,
-            "response.data.error",
-            "Some error occured. Please choose another method of invitation."
-          )
+          errorMsg
         }
       });
     }
