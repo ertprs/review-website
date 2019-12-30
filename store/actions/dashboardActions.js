@@ -813,7 +813,7 @@ export const sendConfigData = data => {
           data: {},
           errorMsg: _get(
             error,
-            "response.data.error.message",
+            "response.data.error",
             "Some error occured. Please choose another method of invitation."
           )
         }

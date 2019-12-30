@@ -42,7 +42,10 @@ export const MainListItems = ({
           className={stepToRender === 0 ? "grayBg" : ""}
           disabled={getStartedDisabled}
         >
-          <Tooltip title="Get Started" placement="right">
+          <Tooltip
+            title={<span style={{ fontSize: "14px" }}>Get Started</span>}
+            placement="right"
+          >
             <ListItemIcon>
               <FormatListBulletedIcon />
             </ListItemIcon>
@@ -58,7 +61,10 @@ export const MainListItems = ({
         className={stepToRender === 1 ? "grayBg" : ""}
         disabled={homeDisabled}
       >
-        <Tooltip title="Home" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Home</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <Home />
           </ListItemIcon>
@@ -73,7 +79,10 @@ export const MainListItems = ({
         className={stepToRender === 2 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
-        <Tooltip title="Reviews" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Reviews</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <RateReview />
           </ListItemIcon>
@@ -88,12 +97,15 @@ export const MainListItems = ({
         className={stepToRender === 3 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
-        <Tooltip title="Get Reviews" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Create Campaign</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <InsertInvitation />
           </ListItemIcon>
         </Tooltip>
-        <ListItemText primary="Get Reviews" />
+        <ListItemText primary="Create Campaign" />
       </ListItem>
       <ListItem
         button
@@ -103,7 +115,10 @@ export const MainListItems = ({
         className={stepToRender === 4 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
-        <Tooltip title="Campaign History" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Campaign History</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <CampaignHistory />
           </ListItemIcon>
@@ -118,7 +133,10 @@ export const MainListItems = ({
         className={stepToRender === 5 ? "grayBg" : ""}
         disabled={menuItemDisabled}
       >
-        <Tooltip title="Invitation History" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Invitation History</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <HistoryIcon />
           </ListItemIcon>
@@ -133,7 +151,10 @@ export const MainListItems = ({
         disabled={menuItemDisabled}
         className={stepToRender === 6 ? "grayBg" : ""}
       >
-        <Tooltip title="Widgets" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Widgets</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <WidgetsOutlined />
           </ListItemIcon>
@@ -148,7 +169,10 @@ export const MainListItems = ({
         disabled={menuItemDisabled}
         className={stepToRender === 7 ? "grayBg" : ""}
       >
-        <Tooltip title="User Profile" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>My Profile</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <UserProfileIcon />
           </ListItemIcon>
@@ -182,9 +206,14 @@ export const SecondaryListItems = ({
           <CircularProgress size={30} color={"#f1f1f1"} />
         ) : (
           <>
-            <ListItemIcon onClick={handleClick} style={{ color: "#fff" }}>
-              <VerticalAlignTopIcon />
-            </ListItemIcon>
+            <Tooltip
+              title={<span style={{ fontSize: "14px" }}>Click to Upgrade</span>}
+              placement="right"
+            >
+              <ListItemIcon onClick={handleClick} style={{ color: "#fff" }}>
+                <VerticalAlignTopIcon />
+              </ListItemIcon>
+            </Tooltip>
             <ListItemText onClick={handleClick} primary="Click to upgrade" />
           </>
         )}

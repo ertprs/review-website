@@ -397,25 +397,33 @@ class AutomaticInvitation extends Component {
     } = this.props;
     const { formName } = this.state;
     if (success !== prevProps.success) {
-      if (success && !isLoading) {
-        let variant = success ? "success" : "error";
-        let snackbarMsg = success ? "Configured Successfully!" : errorMsg;
-        //! we are disabling modal for woocommerce and bcc and sending them directly to select platform
-        this.setState(
-          {
-            showSnackbar: true,
-            variant,
-            snackbarMsg
-          },
-          () => {
-            if (formName === "WooCommerce" || formName === "BCC") {
-              sendToSelectPlatformSplit();
-            }
+      let showSnackbar = false;
+      let variant = "";
+      let snackbarMsg = "";
+      if (success === true) {
+        showSnackbar = true;
+        variant = "success";
+        snackbarMsg = "Configured Successfully!";
+      } else if (success === false) {
+        showSnackbar = true;
+        variant = "error";
+        snackbarMsg = errorMsg || "Some error occurred!";
+      }
+      this.setState(
+        {
+          showSnackbar,
+          variant,
+          snackbarMsg
+        },
+        () => {
+          //! we are disabling modal for woocommerce and bcc and sending them directly to select platform
+          if (success && (formName === "WooCommerce" || formName === "BCC")) {
+            sendToSelectPlatformSplit();
           }
-        );
-        if (formName !== "WooCommerce" || formName !== "BCC") {
-          this.setState({ showCredentialModal: true });
         }
+      );
+      if (formName !== "WooCommerce" && formName !== "BCC") {
+        this.setState({ showCredentialModal: true });
       }
     }
     if (selectedPlatform !== prevProps.selectedPlatform) {
@@ -494,12 +502,6 @@ class AutomaticInvitation extends Component {
         <div style={{ marginTop: "50px" }}>
           <NeedDeveloperSupport />
         </div>
-        <Snackbar
-          open={showSnackbar}
-          variant={variant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={snackbarMsg}
-        />
         <CredentialModal
           showModal={this.state.showCredentialModal}
           handleModalClose={this.handleCredentialModalVisibilityToggle}
@@ -526,7 +528,13 @@ class AutomaticInvitation extends Component {
                 </div>
                 {!secretKey ? null : (
                   <div className="col-md-2">
-                    <Tooltip title="Copy to clipboard">
+                    <Tooltip
+                      title={
+                        <span style={{ fontSize: "14px" }}>
+                          Copy to clipboard
+                        </span>
+                      }
+                    >
                       <CopyToClipboard
                         text={secretKey}
                         onCopy={() =>
@@ -578,6 +586,12 @@ class AutomaticInvitation extends Component {
             </div>
           </div>
         </CredentialModal>
+        <Snackbar
+          open={showSnackbar}
+          variant={variant}
+          handleClose={() => this.setState({ showSnackbar: false })}
+          message={snackbarMsg}
+        />
       </div>
     );
   }
