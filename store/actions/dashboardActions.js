@@ -58,7 +58,10 @@ import {
   CHANGE_CAMPAIGN_STATUS_INIT,
   CHANGE_CAMPAIGN_STATUS_SUCCESS,
   CHANGE_CAMPAIGN_STATUS_FAILURE,
-  SET_CAMPAIGN_EDIT_MODE
+  SET_CAMPAIGN_EDIT_MODE,
+  GET_SMART_URL_INIT,
+  GET_SMART_URL_SUCCESS,
+  GET_SMART_URL_ERROR
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -78,7 +81,8 @@ import {
   thirdPartyDataApi,
   eCommerceIntegrationApi,
   campaignHistoryApi,
-  deactivateCampaignApi
+  deactivateCampaignApi,
+  smartUrlApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import _findIndex from "lodash/findIndex";
@@ -982,5 +986,49 @@ export const setCampaignEditMode = (
     type: SET_CAMPAIGN_EDIT_MODE,
     isCampaignEditMode,
     selectedCampaignData
+  };
+};
+
+export const getSmartUrl = platformId => {
+  let token = localStorage.getItem("token");
+  return async (dispatch, getState) => {
+    const state = getState();
+    const domainUrlKey = _get(
+      state,
+      "auth.logIn.userProfile.business_profile.domainUrlKey",
+      ""
+    );
+    dispatch({
+      type: GET_SMART_URL_INIT,
+      smartUrl: {
+        isLoading: true,
+        success: undefined,
+        url: ""
+      }
+    });
+    try {
+      const res = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${platformId}`
+      });
+      dispatch({
+        type: GET_SMART_URL_SUCCESS,
+        smartUrl: {
+          isLoading: false,
+          success: _get(res, "data.success", false),
+          url: _get(res, "data.url", "")
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_SMART_URL_ERROR,
+        smartUrl: {
+          isLoading: false,
+          success: false,
+          url: ""
+        }
+      });
+    }
   };
 };
