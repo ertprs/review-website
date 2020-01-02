@@ -29,6 +29,7 @@ import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import Link from "next/link";
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
+import SmartUrl from "../../../Components/DashboardComponents/SmartUrl";
 
 const styles = theme => ({
   button: {
@@ -950,6 +951,7 @@ class Home extends Component {
             </div> */}
           </div>
         )}
+        <SmartUrl />
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}
