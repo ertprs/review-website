@@ -1010,7 +1010,7 @@ export const getSmartUrl = platformId => {
       const res = await axios({
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?${platformId}`
+        url: `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${platformId}`
       });
       dispatch({
         type: GET_SMART_URL_SUCCESS,
