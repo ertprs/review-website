@@ -951,7 +951,7 @@ class Home extends Component {
             </div> */}
           </div>
         )}
-        <SmartUrl />
+        {/* <SmartUrl /> */}
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}
