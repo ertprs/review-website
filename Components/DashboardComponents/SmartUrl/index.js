@@ -66,8 +66,11 @@ class SmartUrl extends Component {
             onChange={valObj => {
               let platformId = _get(valObj, "value", "");
               this.setState({ selectedPlatform: platformId });
-              if (platformId !== null) {
-                console.log(platformId, "platformId");
+              if (
+                platformId !== null &&
+                platformId !== undefined &&
+                platformId !== ""
+              ) {
                 getSmartUrl(platformId);
               }
             }}
