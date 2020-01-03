@@ -123,7 +123,7 @@ class SmartUrl extends Component {
               </div>
             </Card>
           ) : (
-            <span>Url not found.</span>
+            <span style={{ color: "red" }}>Url not found.</span>
           )
         ) : null}
         <Snackbar
