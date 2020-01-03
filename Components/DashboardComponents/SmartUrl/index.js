@@ -77,7 +77,9 @@ class SmartUrl extends Component {
           />
         </div>
 
-        {selectedPlatform !== null ? (
+        {selectedPlatform !== null &&
+        selectedPlatform !== undefined &&
+        selectedPlatform !== "" ? (
           smartUrlLoading ? (
             <Card
               style={{
