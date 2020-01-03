@@ -49,8 +49,8 @@ export default class GetWidget extends Component {
     };
   }
 
-  componentDidMount(){
-    window.scrollTo(0,0);
+  componentDidMount() {
+    window.scrollTo(0, 0);
   }
 
   renderContent = data => {
@@ -223,12 +223,12 @@ export default class GetWidget extends Component {
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 {widgetId === 0 ? (
                   <code className="blue">{`
-                    <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                    <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                     async></script>
                 `}</code>
                 ) : (
                   <code className="blue">{`
-                <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                 async></script>
             `}</code>
                 )}
@@ -306,13 +306,13 @@ export default class GetWidget extends Component {
           {widgetId === 0 ? (
             <script
               type="text/javascript"
-              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           ) : (
             <script
               type="text/javascript"
-              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           )}
