@@ -13,6 +13,7 @@ import CampaignHistory from "@material-ui/icons/List";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import HistoryIcon from "@material-ui/icons/History";
+import URLIcon from "@material-ui/icons/Link";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CircularProgress } from "@material-ui/core";
 
@@ -168,6 +169,24 @@ export const MainListItems = ({
         }}
         disabled={menuItemDisabled}
         className={stepToRender === 7 ? "grayBg" : ""}
+      >
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Review URL</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <URLIcon />
+          </ListItemIcon>
+        </Tooltip>
+        <ListItemText primary="Review URL" />
+      </ListItem>
+      <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(8);
+        }}
+        disabled={menuItemDisabled}
+        className={stepToRender === 8 ? "grayBg" : ""}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>My Profile</span>}
