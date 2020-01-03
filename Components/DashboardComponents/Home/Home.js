@@ -571,7 +571,7 @@ class Home extends Component {
           <div>{companyName}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          <div className="bold">Subscription plan :</div>
+          <div className="bold">Subscription Plan :</div>
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
         </div>
         <div className="businessDetailsFlexItem">
