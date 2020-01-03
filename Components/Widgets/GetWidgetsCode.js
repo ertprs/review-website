@@ -73,7 +73,7 @@ class GetWidgetsCode extends Component {
       () => {
         setTimeout(() => {
           this.setState({ refreshWidget: false });
-          this.props.scrollToTopOfThePage()
+          this.props.scrollToTopOfThePage();
         }, 1000);
       }
     );
@@ -242,12 +242,12 @@ class GetWidgetsCode extends Component {
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 {widgetId === 0 ? (
                   <code className="blue">{`
-                    <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                    <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                     async></script>
                 `}</code>
                 ) : (
                   <code className="blue">{`
-                <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                 async></script>
             `}</code>
                 )}
@@ -329,13 +329,13 @@ class GetWidgetsCode extends Component {
           {widgetId === 0 ? (
             <script
               type="text/javascript"
-              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           ) : (
             <script
               type="text/javascript"
-              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           )}
