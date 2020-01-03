@@ -675,6 +675,7 @@ export const setSubscription = isSubscriptionExpired => {
 //updating social in auth/logIn/userProfile/business_profile/social with the new url user has changed in getstarted to show cards on home page. currently we are pushing google as well but not displaying it.
 
 export const updateAuthSocialArray = data => {
+  console.log("UPDATEAUTH", data);
   let omittedData = _omit(data, ["google"]);
   return async (dispatch, getState) => {
     const state = getState();

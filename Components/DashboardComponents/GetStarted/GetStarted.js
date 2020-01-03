@@ -17,6 +17,7 @@ import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormField from "../../Widgets/FormField/FormField";
+import AddPlatform from "../GetStarted/AddPlatform/index";
 import validate from "../../../utility/validate";
 import {
   setGooglePlaces,
@@ -225,7 +226,7 @@ class GetStarted extends Component {
     const name = _get(userProfile, "company.name", "");
     const googlePlaceId = _get(reqBody, "placeId", "");
     const domain = _get(businessProfile, "domain", "");
-    const googleReviewUrl = `https://search.google.com/local/writereview?placeid=${googlePlaceId}`;  
+    const googleReviewUrl = `https://search.google.com/local/writereview?placeid=${googlePlaceId}`;
     this.setState({
       selectedAddress: { ...reqBody, name },
       address: address,
@@ -475,7 +476,7 @@ class GetStarted extends Component {
 
   componentDidMount() {
     const { placeId, locatePlace, businessProfile } = this.props;
-    if(this.props.scrollToTopOfThePage){
+    if (this.props.scrollToTopOfThePage) {
       this.props.scrollToTopOfThePage();
     }
     if (placeId !== "" || locatePlace) {
@@ -664,6 +665,9 @@ class GetStarted extends Component {
             </Grid>
           </Grid>
           <Grid container spacing={3}>
+            <Grid xs={12} md={12} lg={12}>
+              <AddPlatform />
+            </Grid>
             {reviewURLToEdit === "" ? (
               <Grid item xs={12} md={6} lg={6}>
                 {this.renderGetStartedBox()}

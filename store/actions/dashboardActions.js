@@ -61,10 +61,15 @@ import {
   SET_CAMPAIGN_EDIT_MODE,
   GET_SMART_URL_INIT,
   GET_SMART_URL_SUCCESS,
-  GET_SMART_URL_ERROR
+  GET_SMART_URL_ERROR,
+  ADD_REVIEW_PLATFORM_INIT,
+  ADD_REVIEW_PLATFORM_SUCCESS,
+  ADD_REVIEW_PLATFORM_ERROR,
+  ADD_NEW_PLATFORM_IN_SOCIAL_ARRAY
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
+import _find from "lodash/find";
 import cookie from "js-cookie";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -82,7 +87,8 @@ import {
   eCommerceIntegrationApi,
   campaignHistoryApi,
   deactivateCampaignApi,
-  smartUrlApi
+  smartUrlApi,
+  addReviewPlatformAPI
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import _findIndex from "lodash/findIndex";
@@ -1037,5 +1043,76 @@ export const getSmartUrl = platformId => {
         }
       });
     }
+  };
+};
+
+export const addReviewPlatform = data => {
+  return async (dispatch, getState) => {
+    const { auth } = getState() || {};
+    let token = _get(auth, "logIn.token", "");
+    dispatch({
+      type: ADD_REVIEW_PLATFORM_INIT,
+      addReviewPlatformData: {
+        success: undefined,
+        isLoading: true,
+        social_media_app: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url: `${process.env.BASE_URL}${addReviewPlatformAPI}`
+      });
+      const success = await _get(result, "data.success", false);
+      const social_media_app = await _get(result, "data.social_media_app", {});
+      if (success) {
+        dispatch(addNewPlatformInSocialArray({ ...social_media_app, url: "" }));
+      }
+      dispatch({
+        type: ADD_REVIEW_PLATFORM_SUCCESS,
+        addReviewPlatformData: {
+          success,
+          isLoading: false,
+          social_media_app,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: ADD_REVIEW_PLATFORM_ERROR,
+        addReviewPlatformData: {
+          success: false,
+          isLoading: false,
+          social_media_app: {},
+          errorMsg: _get(error, "response.data.error", "Some error occurred")
+        }
+      });
+    }
+  };
+};
+
+export const addNewPlatformInSocialArray = data => {
+  return async (dispatch, getState) => {
+    const state = getState() || {};
+    let socialArray = _get(
+      state,
+      "auth.logIn.userProfile.business_profile.social",
+      []
+    );
+    const id = _get(data, "id", "");
+    const name = _get(data, "name", "");
+    const url = _get(data, "url", "");
+    console.log(id, data);
+    const doesPlatformExists = _find(socialArray, ["social_media_app_id", id]);
+    if (!doesPlatformExists) {
+      socialArray = [...socialArray, { social_media_app_id: id, name, url }];
+    }
+    dispatch({
+      type: ADD_NEW_PLATFORM_IN_SOCIAL_ARRAY,
+      updatedSocialArray: socialArray
+    });
   };
 };

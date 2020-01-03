@@ -62,7 +62,10 @@ import {
   SET_CAMPAIGN_EDIT_MODE,
   GET_SMART_URL_INIT,
   GET_SMART_URL_SUCCESS,
-  GET_SMART_URL_ERROR
+  GET_SMART_URL_ERROR,
+  ADD_REVIEW_PLATFORM_INIT,
+  ADD_REVIEW_PLATFORM_SUCCESS,
+  ADD_REVIEW_PLATFORM_ERROR
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -95,7 +98,8 @@ const dashboardReducer = (state = {}, action) => {
     changeCampaignStatus,
     isCampaignEditMode,
     selectedCampaignData,
-    smartUrl
+    smartUrl,
+    addReviewPlatformData
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -471,6 +475,24 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         smartUrl
+      };
+    case ADD_REVIEW_PLATFORM_INIT:
+      return {
+        ...state,
+        type,
+        addReviewPlatformData
+      };
+    case ADD_REVIEW_PLATFORM_SUCCESS:
+      return {
+        ...state,
+        type,
+        addReviewPlatformData
+      };
+    case ADD_REVIEW_PLATFORM_ERROR:
+      return {
+        ...state,
+        type,
+        addReviewPlatformData
       };
     default:
       return state;
