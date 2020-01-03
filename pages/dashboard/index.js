@@ -180,6 +180,25 @@ const CampaignManagement = dynamic(
   }
 );
 
+const ReviewUrl = dynamic(
+  () => import("../../Components/DashboardComponents/SmartUrl"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -485,6 +504,12 @@ function Dashboard(props) {
       )
     },
     7: {
+      name: "reviewUrl",
+      componentToRender: (
+        <ReviewUrl scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
+    },
+    8: {
       name: "userProfile",
       componentToRender: (
         <UserProfile scrollToTopOfThePage={scrollToTopOfThePage} />

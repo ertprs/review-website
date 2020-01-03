@@ -991,6 +991,7 @@ export const setCampaignEditMode = (
 
 export const getSmartUrl = platformId => {
   let token = localStorage.getItem("token");
+
   return async (dispatch, getState) => {
     const state = getState();
     const domainUrlKey = _get(
@@ -998,6 +999,12 @@ export const getSmartUrl = platformId => {
       "auth.logIn.userProfile.business_profile.domainUrlKey",
       ""
     );
+    let url = "";
+    if (platformId === "automatic") {
+      url = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}`;
+    } else {
+      url = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${platformId}`;
+    }
     dispatch({
       type: GET_SMART_URL_INIT,
       smartUrl: {
@@ -1010,7 +1017,7 @@ export const getSmartUrl = platformId => {
       const res = await axios({
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${platformId}`
+        url
       });
       dispatch({
         type: GET_SMART_URL_SUCCESS,
