@@ -46,10 +46,10 @@ const Done = ({ changeStepToRender, handleInviteMoreClick }) => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => changeStepToRender(5)}
+              onClick={() => changeStepToRender(4)}
               className={classes.button}
             >
-              Go to Invitation History
+              Go to Campaign History
             </Button>
             <span className="inviteBtn">
               <Button
