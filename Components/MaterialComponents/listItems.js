@@ -32,6 +32,9 @@ export const MainListItems = ({
           .grayBg{
             background:#e1e1e1;
           }
+          .pb_0{
+            padding-bottom:0px;
+          }
         `}
       </style>
       {getStartedHide ? null : (
@@ -40,8 +43,9 @@ export const MainListItems = ({
           onClick={() => {
             handleMainListItemClick(0);
           }}
-          className={stepToRender === 0 ? "grayBg" : ""}
+          className={stepToRender === 0 ? "grayBg pb_0" : "pb_0"}
           disabled={getStartedDisabled}
+          style={{ paddingBottom: "0px" }}
         >
           <Tooltip
             title={<span style={{ fontSize: "14px" }}>Get Started</span>}
@@ -59,7 +63,7 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(1);
         }}
-        className={stepToRender === 1 ? "grayBg" : ""}
+        className={stepToRender === 1 ? "grayBg pb_0" : "pb_0"}
         disabled={homeDisabled}
       >
         <Tooltip
@@ -77,7 +81,7 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(2);
         }}
-        className={stepToRender === 2 ? "grayBg" : ""}
+        className={stepToRender === 2 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -95,7 +99,7 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(3);
         }}
-        className={stepToRender === 3 ? "grayBg" : ""}
+        className={stepToRender === 3 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -113,7 +117,7 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(4);
         }}
-        className={stepToRender === 4 ? "grayBg" : ""}
+        className={stepToRender === 4 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -131,7 +135,7 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(5);
         }}
-        className={stepToRender === 5 ? "grayBg" : ""}
+        className={stepToRender === 5 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -150,7 +154,7 @@ export const MainListItems = ({
           handleMainListItemClick(6);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 6 ? "grayBg" : ""}
+        className={stepToRender === 6 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>Widgets</span>}
@@ -168,7 +172,7 @@ export const MainListItems = ({
           handleMainListItemClick(7);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 7 ? "grayBg" : ""}
+        className={stepToRender === 7 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>Review URL</span>}
@@ -186,7 +190,7 @@ export const MainListItems = ({
           handleMainListItemClick(8);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 8 ? "grayBg" : ""}
+        className={stepToRender === 8 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>My Profile</span>}
