@@ -66,14 +66,20 @@ class SmartUrl extends Component {
             onChange={valObj => {
               let platformId = _get(valObj, "value", "");
               this.setState({ selectedPlatform: platformId });
-              if (platformId) {
+              if (
+                platformId !== null &&
+                platformId !== undefined &&
+                platformId !== ""
+              ) {
                 getSmartUrl(platformId);
               }
             }}
           />
         </div>
 
-        {selectedPlatform ? (
+        {selectedPlatform !== null &&
+        selectedPlatform !== undefined &&
+        selectedPlatform !== "" ? (
           smartUrlLoading ? (
             <Card
               style={{
@@ -147,6 +153,11 @@ const mapStateToProps = state => {
     "dashboardData.smartUrl.isLoading",
     false
   );
+  const address = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.google_places.address",
+    ""
+  );
   const smartUrl = _get(state, "dashboardData.smartUrl.url", "false");
   let dropdownData = [];
   //# Converted socialplatforms array into dropdowndata that react-select supports
@@ -163,6 +174,9 @@ const mapStateToProps = state => {
       temp.value = social_app_id;
       return temp;
     });
+  }
+  if (address) {
+    dropdownData = [...dropdownData, { value: 0, label: "Google" }];
   }
   dropdownData = [
     ...dropdownData,
