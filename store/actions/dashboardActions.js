@@ -51,7 +51,17 @@ import {
   UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
   REQUEST_INSTALLATION_INIT,
   REQUEST_INSTALLATION_SUCCESS,
-  REQUEST_INSTALLATION_FAILURE
+  REQUEST_INSTALLATION_FAILURE,
+  FETCH_CAMPAIGNS_INIT,
+  FETCH_CAMPAIGNS_SUCCESS,
+  FETCH_CAMPAIGNS_FAILURE,
+  CHANGE_CAMPAIGN_STATUS_INIT,
+  CHANGE_CAMPAIGN_STATUS_SUCCESS,
+  CHANGE_CAMPAIGN_STATUS_FAILURE,
+  SET_CAMPAIGN_EDIT_MODE,
+  GET_SMART_URL_INIT,
+  GET_SMART_URL_SUCCESS,
+  GET_SMART_URL_ERROR
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -69,7 +79,10 @@ import {
   updateUserDetailsApi,
   updateDomainDetailsApi,
   thirdPartyDataApi,
-  eCommerceIntegrationApi
+  eCommerceIntegrationApi,
+  campaignHistoryApi,
+  deactivateCampaignApi,
+  smartUrlApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import _findIndex from "lodash/findIndex";
@@ -257,6 +270,7 @@ export const upgradeToPremium = data => {
   };
 };
 
+//! Not in use as we are doing in table directly
 export const fetchTransactionHistory = token => {
   return async dispatch => {
     dispatch({
@@ -632,7 +646,7 @@ export const updateDomainDetails = data => {
       });
     } catch (error) {
       dispatch({
-        type: UPDATE_USER_DETAILS_ERROR,
+        type: UPDATE_DOMAIN_DETAILS_ERROR,
         domainDetails: {
           isLoading: false,
           success: false,
@@ -795,17 +809,21 @@ export const sendConfigData = data => {
         }
       });
     } catch (error) {
+      let errorMsg = _get(
+        error,
+        "response.data.error",
+        "Some error occured! Please choose another method of invitation."
+      );
+      if (errorMsg === "duplicate_bcc_sender") {
+        errorMsg = "This email is already in use.";
+      }
       dispatch({
         type: POST_AUTOMATIC_INVITATION_CONFIG_FAILURE,
         configDetails: {
           isLoading: false,
           success: false,
           data: {},
-          errorMsg: _get(
-            error,
-            "response.data.error.message",
-            "Some error occured. Please choose another method of invitation."
-          )
+          errorMsg
         }
       });
     }
@@ -844,6 +862,178 @@ export const requestInstallation = data => {
         requestInstallation: {
           success: false,
           isLoading: false
+        }
+      });
+    }
+  };
+};
+
+//! Not in use as we are doing it remotely directly from the table
+export const fetchCampaignsList = token => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: FETCH_CAMPAIGNS_INIT,
+      campaignsData: {
+        data: [],
+        isLoading: true
+      }
+    });
+    try {
+      const res = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${campaignHistoryApi}?perPage=10&page=1`
+      });
+      let campaignsList = _get(res, "data.campaigns", []);
+      let data = [];
+      if (Array.isArray(campaignsList) && !_isEmpty(campaignsList)) {
+        data = campaignsList.map(campaign => {
+          let parsedCampaignStructure = JSON.parse(
+            _get(campaign, "campaign_structure", {})
+          );
+          return {
+            ...campaign,
+            campaign_structure: { ...parsedCampaignStructure }
+          };
+        });
+      }
+      dispatch({
+        type: FETCH_CAMPAIGNS_SUCCESS,
+        campaignsData: {
+          isLoading: false,
+          data
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_CAMPAIGNS_FAILURE,
+        campaignsData: {
+          isLoading: false,
+          data: []
+        }
+      });
+    }
+  };
+};
+
+export const changeCampaignStatus = (id, actionOnStatus) => {
+  console.log(id, actionOnStatus, "id, actionOnStatus");
+  let token = localStorage.getItem("token");
+  return async (dispatch, getState) => {
+    const state = getState();
+    const campaignsData = _get(state, "dashboardData.campaignsData.data", []);
+    dispatch({
+      type: CHANGE_CAMPAIGN_STATUS_INIT,
+      changeCampaignStatus: {
+        success: undefined,
+        isLoading: true
+      }
+    });
+    try {
+      const res = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        url: `${process.env.BASE_URL}${deactivateCampaignApi}/${id}/${actionOnStatus}`
+      });
+      let success = _get(res, "data.success", undefined);
+      if (success) {
+        let campaignIndex = _findIndex(campaignsData, ["id", id]);
+        if (campaignIndex >= 0) {
+          let campaignToChange = { ...campaignsData[campaignIndex] };
+          let status = _get(campaignToChange, "status", 0);
+          if (status === 1 || status === 3) {
+            status = 2;
+          } else if (status === 2) {
+            status = 1;
+          }
+          campaignToChange = { ...campaignToChange, status };
+          campaignsData[campaignIndex] = {
+            ...campaignToChange
+          };
+          dispatch({
+            type: FETCH_CAMPAIGNS_SUCCESS,
+            campaignsData: {
+              isLoading: false,
+              data: campaignsData
+            }
+          });
+        }
+      }
+      dispatch({
+        type: CHANGE_CAMPAIGN_STATUS_SUCCESS,
+        changeCampaignStatus: {
+          isLoading: false,
+          success
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: CHANGE_CAMPAIGN_STATUS_FAILURE,
+        changeCampaignStatus: {
+          isLoading: false,
+          success: false
+        }
+      });
+    }
+  };
+};
+
+export const setCampaignEditMode = (
+  selectedCampaignData,
+  isCampaignEditMode
+) => {
+  return {
+    type: SET_CAMPAIGN_EDIT_MODE,
+    isCampaignEditMode,
+    selectedCampaignData
+  };
+};
+
+export const getSmartUrl = platformId => {
+  let token = localStorage.getItem("token");
+
+  return async (dispatch, getState) => {
+    const state = getState();
+    const domainUrlKey = _get(
+      state,
+      "auth.logIn.userProfile.business_profile.domainUrlKey",
+      ""
+    );
+    let url = "";
+    if (platformId === "automatic") {
+      url = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}`;
+    } else {
+      url = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${platformId}`;
+    }
+    dispatch({
+      type: GET_SMART_URL_INIT,
+      smartUrl: {
+        isLoading: true,
+        success: undefined,
+        url: ""
+      }
+    });
+    try {
+      const res = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url
+      });
+      dispatch({
+        type: GET_SMART_URL_SUCCESS,
+        smartUrl: {
+          isLoading: false,
+          success: _get(res, "data.success", false),
+          url: _get(res, "data.url", "")
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_SMART_URL_ERROR,
+        smartUrl: {
+          isLoading: false,
+          success: false,
+          url: ""
         }
       });
     }

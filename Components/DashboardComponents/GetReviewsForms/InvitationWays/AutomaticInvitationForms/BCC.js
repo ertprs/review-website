@@ -85,7 +85,7 @@ class BCC extends Component {
           <span className="stepsText">Steps:</span>
           <div className="firstStep">
             <span>1. </span>
-            <span>Add BCC email to your template: {process.env.BCC_EMAIL}</span>
+            <span>Add this address to the BCC of your purchase confirmation emails : {process.env.BCC_EMAIL}</span>
           </div>
           <div>
             <span> {this.renderFormFields()}</span>

@@ -33,6 +33,7 @@ export default class GetWidget extends Component {
     super(props);
     this.state = {
       widgetHeight: this.props.widget.minHeight,
+      refreshWidget: false,
       platforms: {
         element: "select",
         name: "platforms",
@@ -46,6 +47,10 @@ export default class GetWidget extends Component {
         labelText: "Select a review platform"
       }
     };
+  }
+
+  componentDidMount() {
+    window.scrollTo(0, 0);
   }
 
   renderContent = data => {
@@ -117,9 +122,18 @@ export default class GetWidget extends Component {
   };
 
   handleFormDataChange = (e, id) => {
-    this.setState({
-      platforms: { ...this.state.platforms, value: e.target.value }
-    });
+    this.setState(
+      {
+        platforms: { ...this.state.platforms, value: e.target.value },
+        refreshWidget: true
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ refreshWidget: false });
+          this.props.scrollToTopOfThePage();
+        }, 1000);
+      }
+    );
   };
 
   renderInput = () => {
@@ -197,7 +211,9 @@ export default class GetWidget extends Component {
             </div>
             <div className="body">
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
-              <div className="inputContainer">{this.renderInput()}</div>
+              <div className="inputContainer">
+                {widgetId !== 0 ? this.renderInput() : null}
+              </div>
               <p className="subHeading">
                 1.2-) Copy-paste this code inside the {`<head></head>`} section
                 of your website’s HTML or as close to the top of the page as
@@ -281,11 +297,11 @@ export default class GetWidget extends Component {
     );
   };
 
-  render() {
+  renderWidget = () => {
     const { domainName, widget } = this.props;
     const widgetId = _get(widget, "id", "");
     return (
-      <div className="container">
+      <>
         <Head>
           {widgetId === 0 ? (
             <script
@@ -301,19 +317,6 @@ export default class GetWidget extends Component {
             ></script>
           )}
         </Head>
-        <div style={{ marginBottom: "50px" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            startIcon={<BackArrowIcon />}
-            onClick={() => {
-              this.props.getMoreWidgets();
-            }}
-          >
-            Back
-          </Button>
-        </div>
         <div
           className="trustsearch-widget"
           data-locale="en-US"
@@ -328,6 +331,29 @@ export default class GetWidget extends Component {
           data-newer-than-months="2"
           data-rating="3"
         ></div>
+      </>
+    );
+  };
+
+  render() {
+    const { domainName, widget } = this.props;
+    const widgetId = _get(widget, "id", "");
+    return (
+      <div className="container">
+        <div style={{ marginBottom: "50px" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<BackArrowIcon />}
+            onClick={() => {
+              this.props.getMoreWidgets();
+            }}
+          >
+            Back
+          </Button>
+        </div>
+        {!this.state.refreshWidget ? this.renderWidget() : null}
         <div className="row">
           {/* <div className="col-md-6">{this.renderWidgetInfo()}</div> */}
           <div className="col-md-12">{this.getYourWidgetBox()}</div>

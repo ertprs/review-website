@@ -29,6 +29,7 @@ import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import Link from "next/link";
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
+import SmartUrl from "../../../Components/DashboardComponents/SmartUrl";
 
 const styles = theme => ({
   button: {
@@ -42,6 +43,10 @@ class Home extends Component {
     variant: "success",
     snackbarMsg: ""
   };
+
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
+  }
 
   componentDidUpdate(prevProps, prevState) {
     const { success, socialArray } = this.props;
@@ -566,7 +571,7 @@ class Home extends Component {
           <div>{companyName}</div>
         </div>
         <div className="businessDetailsFlexItem">
-          <div className="bold">Subscription plan :</div>
+          <div className="bold">Subscription Plan :</div>
           <div>{getSubscriptionPlan(subscriptionPlan)}</div>
         </div>
         <div className="businessDetailsFlexItem">
@@ -925,7 +930,10 @@ class Home extends Component {
           </Grid>
         ) : (
           <div>
-            <GetStarted changeStepToRender={data => {}} />
+            <GetStarted
+              changeStepToRender={data => {}}
+              scrollToTopOfThePage={this.props.scrollToTopOfThePage()}
+            />
             {/* <div style={{ marginLeft: "30px" }}>
               <Button
                 variant="contained"
@@ -943,6 +951,7 @@ class Home extends Component {
             </div> */}
           </div>
         )}
+        {/* <SmartUrl /> */}
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button } from "@material-ui/core";
 import ArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import FormField from "../../Widgets/FormField/FormField";
 import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -11,9 +12,11 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { clearCampaignData } from "../../../store/actions/dashboardActions";
 import _get from "lodash/get";
 import { connect } from "react-redux";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 class CreateCampaign extends Component {
   componentDidMount() {
+    this.props.scrollToTopOfThePage();
     this.props.clearCampaignData({
       isLoading: false,
       errorMsg: "",
@@ -22,7 +25,12 @@ class CreateCampaign extends Component {
     });
   }
   render() {
-    const { formData, handleChange } = this.props;
+    const {
+      formData,
+      handleChange,
+      isCampaignEditMode,
+      navigateToCampaignManagement
+    } = this.props;
     let valid = true;
     for (let item in formData) {
       valid = valid && formData[item].valid;
@@ -39,8 +47,24 @@ class CreateCampaign extends Component {
             .heading {
               margin-bottom: 20px;
             }
+            .goBackButton {
+              float: right;
+            }
           `}</style>
+          {isCampaignEditMode ? (
+            <div className="goBackButton">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<ArrowBackIcon />}
+                onClick={navigateToCampaignManagement}
+              >
+                Go Back To Campaign History
+              </Button>
+            </div>
+          ) : null}
           <h3 className="heading">Create Campaign Wizard</h3>
+
           <div className="row">
             <div className="col-md-7">
               <FormField
@@ -72,8 +96,12 @@ class CreateCampaign extends Component {
                 col="5"
               />
               <Tooltip
-                title="Upgrade to premium to send inviatations using your own email
-                domain."
+                title={
+                  <span style={{ fontSize: "14px" }}>
+                    Upgrade to premium to send invitations using your own email
+                    domain.
+                  </span>
+                }
               >
                 <FormField
                   {...formData.senderEmail}
@@ -109,12 +137,14 @@ class CreateCampaign extends Component {
                     );
                   }}
                 >
-                  <FormControlLabel
-                    value="manual"
-                    control={<Radio />}
-                    label="Manual invitations (by uploading a csv/xls file, copy/pasting, or by entering customers data manually)"
-                    style={{ marginBottom: "25px" }}
-                  />
+                  {isCampaignEditMode ? null : (
+                    <FormControlLabel
+                      value="manual"
+                      control={<Radio />}
+                      label="Manual invitations (by uploading a csv/xls file, copy/pasting, or by entering customers data manually)"
+                      style={{ marginBottom: "25px" }}
+                    />
+                  )}
                   <FormControlLabel
                     value="automatic"
                     control={<Radio />}
@@ -122,16 +152,31 @@ class CreateCampaign extends Component {
                   />
                 </RadioGroup>
               </FormControl>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                endIcon={<ArrowRight />}
-                onClick={this.props.onContinueClick}
-                disabled={!valid}
-              >
-                Continue
-              </Button>
+              <div style={{ margin: "25px 0 25px 0" }}>
+                {!this.props.isCampaignEditMode ? (
+                  <span style={{ marginRight: "35px" }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      startIcon={<ArrowLeft />}
+                      onClick={this.props.onBackClick}
+                    >
+                      Back
+                    </Button>
+                  </span>
+                ) : null}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  endIcon={<ArrowRight />}
+                  onClick={this.props.onContinueClick}
+                  disabled={!valid}
+                >
+                  Continue
+                </Button>
+              </div>
             </div>
           </div>
         </div>

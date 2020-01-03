@@ -13,6 +13,7 @@ import _filter from "lodash/get";
 import Link from "next/link";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import { emailTemplates } from "../../../utility/emailTemplates/emailTemplates";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 class SendInvitations extends Component {
   state = {
@@ -235,6 +236,10 @@ class SendInvitations extends Component {
     );
   };
 
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { isLoading, success, errorMsg } = this.props;
     if (this.props !== prevProps) {
@@ -392,9 +397,25 @@ class SendInvitations extends Component {
   };
 
   render() {
-    const { isLoading } = this.props;
+    const {
+      isLoading,
+      isCampaignEditMode,
+      navigateToCampaignManagement
+    } = this.props;
     return (
       <>
+        {isCampaignEditMode ? (
+          <div style={{ float: "right" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={navigateToCampaignManagement}
+              startIcon={<ArrowBackIcon />}
+            >
+              Go Back To Campaign History
+            </Button>
+          </div>
+        ) : null}
         {this.renderSendInvitationsHeader()}
         {this.renderSendInvitationsBody()}
         {this.renderTemplate()}

@@ -9,9 +9,11 @@ import InsertInvitation from "@material-ui/icons/InsertInvitation";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import UserProfileIcon from "@material-ui/icons/AccountCircleSharp";
 import WidgetsOutlined from "@material-ui/icons/WidgetsOutlined";
+import CampaignHistory from "@material-ui/icons/List";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import HistoryIcon from "@material-ui/icons/History";
+import URLIcon from "@material-ui/icons/Link";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CircularProgress } from "@material-ui/core";
 
@@ -30,6 +32,9 @@ export const MainListItems = ({
           .grayBg{
             background:#e1e1e1;
           }
+          .pb_0{
+            padding-bottom:0px;
+          }
         `}
       </style>
       {getStartedHide ? null : (
@@ -38,10 +43,14 @@ export const MainListItems = ({
           onClick={() => {
             handleMainListItemClick(0);
           }}
-          className={stepToRender === 0 ? "grayBg" : ""}
+          className={stepToRender === 0 ? "grayBg pb_0" : "pb_0"}
           disabled={getStartedDisabled}
+          style={{ paddingBottom: "0px" }}
         >
-          <Tooltip title="Get Started" placement="right">
+          <Tooltip
+            title={<span style={{ fontSize: "14px" }}>Get Started</span>}
+            placement="right"
+          >
             <ListItemIcon>
               <FormatListBulletedIcon />
             </ListItemIcon>
@@ -54,10 +63,13 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(1);
         }}
-        className={stepToRender === 1 ? "grayBg" : ""}
+        className={stepToRender === 1 ? "grayBg pb_0" : "pb_0"}
         disabled={homeDisabled}
       >
-        <Tooltip title="Home" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Home</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <Home />
           </ListItemIcon>
@@ -69,10 +81,13 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(2);
         }}
-        className={stepToRender === 2 ? "grayBg" : ""}
+        className={stepToRender === 2 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
-        <Tooltip title="Reviews" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Reviews</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <RateReview />
           </ListItemIcon>
@@ -84,25 +99,49 @@ export const MainListItems = ({
         onClick={() => {
           handleMainListItemClick(3);
         }}
-        className={stepToRender === 3 ? "grayBg" : ""}
+        className={stepToRender === 3 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
-        <Tooltip title="Get Reviews" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Create Campaign</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <InsertInvitation />
           </ListItemIcon>
         </Tooltip>
-        <ListItemText primary="Get Reviews" />
+        <ListItemText primary="Create Campaign" />
       </ListItem>
       <ListItem
         button
         onClick={() => {
           handleMainListItemClick(4);
         }}
-        className={stepToRender === 4 ? "grayBg" : ""}
+        className={stepToRender === 4 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
-        <Tooltip title="Invitation History" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Campaign History</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <CampaignHistory />
+          </ListItemIcon>
+        </Tooltip>
+        <ListItemText primary="Campaign History" />
+      </ListItem>
+      <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(5);
+        }}
+        className={stepToRender === 5 ? "grayBg pb_0" : "pb_0"}
+        disabled={menuItemDisabled}
+      >
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Invitation History</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <HistoryIcon />
           </ListItemIcon>
@@ -112,12 +151,15 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(5);
+          handleMainListItemClick(6);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 5 ? "grayBg" : ""}
+        className={stepToRender === 6 ? "grayBg pb_0" : "pb_0"}
       >
-        <Tooltip title="Widgets" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Widgets</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <WidgetsOutlined />
           </ListItemIcon>
@@ -127,12 +169,33 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(6);
+          handleMainListItemClick(7);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 6 ? "grayBg" : ""}
+        className={stepToRender === 7 ? "grayBg pb_0" : "pb_0"}
       >
-        <Tooltip title="User Profile" placement="right">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Review URL</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <URLIcon />
+          </ListItemIcon>
+        </Tooltip>
+        <ListItemText primary="Review URL" />
+      </ListItem>
+      <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(8);
+        }}
+        disabled={menuItemDisabled}
+        className={stepToRender === 8 ? "grayBg pb_0" : "pb_0"}
+      >
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>My Profile</span>}
+          placement="right"
+        >
           <ListItemIcon>
             <UserProfileIcon />
           </ListItemIcon>
@@ -166,9 +229,14 @@ export const SecondaryListItems = ({
           <CircularProgress size={30} color={"#f1f1f1"} />
         ) : (
           <>
-            <ListItemIcon onClick={handleClick} style={{ color: "#fff" }}>
-              <VerticalAlignTopIcon />
-            </ListItemIcon>
+            <Tooltip
+              title={<span style={{ fontSize: "14px" }}>Click to Upgrade</span>}
+              placement="right"
+            >
+              <ListItemIcon onClick={handleClick} style={{ color: "#fff" }}>
+                <VerticalAlignTopIcon />
+              </ListItemIcon>
+            </Tooltip>
             <ListItemText onClick={handleClick} primary="Click to upgrade" />
           </>
         )}

@@ -53,6 +53,9 @@ export const updateDomainDetailsApi = "/api/my-business/profile/domain";
 export const getAvailablePlatformsApi = "/api/master/ecommerce-integrations";
 export const eCommerceIntegrationApi =
   "/api/my-business/profile/ecommerce-integrations";
+export const campaignHistoryApi = "/api/my-business/campaigns";
+export const deactivateCampaignApi = "/api/my-business/campaigns";
+export const smartUrlApi = "/api/review-platform-navigate";
 //How to create review short link
 export const getStartedVideoUrl =
   "https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708";

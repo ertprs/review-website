@@ -15,6 +15,8 @@ import _isEmpty from "lodash/isEmpty";
 import _filter from "lodash/filter";
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
 import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
+import { isFifteenMinuteDiff } from "../../../utility/commonFunctions";
+import moment from "moment";
 const CreateCampaign = dynamic(
   () => import("../GetReviewsForms/CreateCampaign"),
   {
@@ -33,6 +35,45 @@ const CreateCampaign = dynamic(
     )
   }
 );
+
+const CampaignIntro = dynamic(
+  () => import("../GetReviewsForms/CampaignIntro/CampaignIntro"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
+const CampaignScheduleAutomatic = dynamic(
+  () => import("../GetReviewsForms/CampaignScheduleAutomatic"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const InvitationWays = dynamic(
   () => import("../GetReviewsForms/InvitationWays"),
   {
@@ -177,6 +218,25 @@ const ReviewInvitationPlatforms = dynamic(
   }
 );
 
+const CampaignSchedule = dynamic(
+  () => import("../GetReviewsForms/CampaignSchedule"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const columns = [
   { title: "Email", field: "email" },
   { title: "Name", field: "name" },
@@ -188,7 +248,8 @@ import {
   fetchEmailTemplate,
   setGetReviewsData,
   sendGetReviews,
-  clearCampaignData
+  clearCampaignData,
+  setCampaignEditMode
 } from "../../../store/actions/dashboardActions";
 import _omit from "lodash/omit";
 
@@ -204,7 +265,7 @@ class GetReviews extends Component {
     this.fileInput = React.createRef();
     this.state = {
       activeStep: 0,
-      getReviewsActiveSubStep: -1,
+      getReviewsActiveSubStep: -2,
       tableData: [],
       reviewInvitationPlatformsData: {
         platforms: {},
@@ -213,8 +274,8 @@ class GetReviews extends Component {
           { id: 0, label: "Use only one review platform" },
           { id: 1, label: "Use multiple review platforms" }
         ],
-        selectedWay: -1,
-        selectedSinglePlatform: ""
+        selectedWay: _get(this.props, "selectedWay", -1),
+        selectedSinglePlatform: _get(this.props, "selectedSinglePlatform", "")
       },
       addInvitesData: {
         email: {
@@ -276,7 +337,11 @@ class GetReviews extends Component {
           element: "input",
           type: "text",
           labelText: "Client Name",
-          value: "Name",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.template_vars.clientName",
+            "Name"
+          ),
           valid: true,
           touched: true,
           // errorMessage: "Enter valid name",
@@ -289,7 +354,12 @@ class GetReviews extends Component {
           element: "input",
           type: "text",
           labelText: "Entity",
-          value: this.props.companyName + " " || " ",
+          value:
+            _get(
+              this.props,
+              "selectedCampaignData.campaign_structure.template_vars.Entity",
+              ""
+            ) || _get(this.props, "companyName", " ") + " ",
           valid: true,
           touched: false,
           // errorMessage: "Required",
@@ -301,7 +371,11 @@ class GetReviews extends Component {
         exampleText: {
           labelText: "Example Text",
           element: "textarea",
-          value: "",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.template_vars.exampleText",
+            " "
+          ),
           valid: true,
           touched: false,
           // errorMessage: "Required",
@@ -316,7 +390,11 @@ class GetReviews extends Component {
           labelText: "Leave review text",
           element: "input",
           type: "text",
-          value: "",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.template_vars.leaveReviewText",
+            " "
+          ),
           valid: true,
           touched: false,
           // errorMessage: "Required",
@@ -355,10 +433,12 @@ class GetReviews extends Component {
       createCampaign: {
         campaignName: {
           element: "input",
-          value: "",
+          value: _get(this.props, "selectedCampaignData.name", ""),
           placeholder: "Enter campaign name",
           errorMessage: "",
-          valid: false,
+          valid: _get(this.props, "selectedCampaignData.name", "")
+            ? true
+            : false,
           touched: false,
           validationRules: {
             required: true,
@@ -368,12 +448,14 @@ class GetReviews extends Component {
         },
         campaignLanguage: {
           element: "select",
-          value: "",
+          value: _get(this.props, "selectedCampaignData.template_id", ""),
           code: "",
           options: _get(this.props, "campaignLanguage", []),
           placeholder: "Select your campaign language",
           errorMessage: "",
-          valid: false,
+          valid: _get(this.props, "selectedCampaignData.template_id", "")
+            ? true
+            : false,
           touched: false,
           validationRules: {
             required: true
@@ -382,10 +464,20 @@ class GetReviews extends Component {
         },
         senderName: {
           element: "input",
-          value: "",
+          value: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.senderName",
+            ""
+          ),
           placeholder: "Enter sender's name",
           errorMessage: "",
-          valid: false,
+          valid: _get(
+            this.props,
+            "selectedCampaignData.campaign_structure.senderName",
+            ""
+          )
+            ? true
+            : false,
           touched: false,
           validationRules: {
             required: true,
@@ -406,8 +498,14 @@ class GetReviews extends Component {
           name: "senderEmail"
         },
         campaignInvitationMethod: {
-          valid: false,
-          value: "",
+          valid: (_get(this.props, "isCampaignEditMode", false)
+          ? "automatic"
+          : "")
+            ? true
+            : false,
+          value: _get(this.props, "isCampaignEditMode", false)
+            ? "automatic"
+            : "",
           validationRules: {
             required: true
           }
@@ -426,7 +524,22 @@ class GetReviews extends Component {
         //   }
         // }
       },
-      selectedPlatform: ""
+      campaignSchedule: {
+        selectedDate: null,
+        formattedDate: "",
+        isValid: false,
+        touched: false,
+        errorMessage:
+          "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
+      },
+      campaignScheduleAutomatic: {
+        value: "",
+        valid: false,
+        validationRules: {
+          required: true
+        }
+      },
+      selectedPlatform: _get(this.props, "selectedCampaignData.type_id", "")
     };
 
     this.steps = {
@@ -474,6 +587,33 @@ class GetReviews extends Component {
       5: <Done changeStepToRender={this.props.changeStepToRender} />
     };
   }
+
+  handleCampaignScheduleDateChange = (date, init = false) => {
+    const valid = isFifteenMinuteDiff(date);
+    if (init) {
+      this.setState({
+        campaignSchedule: {
+          ...this.state.campaignSchedule,
+          selectedDate: date,
+          formattedDate: "",
+          isValid: valid,
+          touched: false
+        }
+      });
+    } else {
+      this.setState({
+        campaignSchedule: {
+          ...this.state.campaignSchedule,
+          selectedDate: date,
+          formattedDate: moment(new Date(date)).format(),
+          isValid: valid,
+          touched: true
+        }
+      });
+    }
+    console.log(isFifteenMinuteDiff(date), "valid");
+    console.log(moment(new Date(date)).format(), "date_with_timestamp");
+  };
 
   parseFileData = async () => {
     const { uploadCSVFormData } = this.state;
@@ -610,7 +750,7 @@ class GetReviews extends Component {
   handleNext = isTestEmail => {
     const { activeStep } = this.state;
     const { success } = this.props;
-    if (activeStep === 2) {
+    if (activeStep === 3) {
       this.createCampaignHandler();
     } else if (isTestEmail === "isTestEmail") {
       this.createCampaignHandler("sendTest");
@@ -662,8 +802,19 @@ class GetReviews extends Component {
   };
 
   createCampaignHandler = sendTest => {
-    const { createCampaign, ecommerceIntegrations } = this.props;
-    const { selectTemplateData, tableData, selectedPlatform } = this.state;
+    const {
+      createCampaign,
+      ecommerceIntegrations,
+      isCampaignEditMode,
+      selectedCampaignData
+    } = this.props;
+    const {
+      selectTemplateData,
+      tableData,
+      selectedPlatform,
+      campaignSchedule,
+      campaignScheduleAutomatic
+    } = this.state;
     const campaign = _get(this.state, "createCampaign", {});
     const campaignName = _get(campaign, "campaignName.value", "");
     const senderName = _get(campaign, "senderName.value", "");
@@ -673,6 +824,9 @@ class GetReviews extends Component {
     const exampleText = _get(selectTemplateData, "exampleText.value");
     const leaveReviewText = _get(selectTemplateData, "leaveReviewText.value");
     const percentageSplit = this.generatePercentageSplitData();
+    const selectedDate = _get(campaignSchedule, "selectedDate", "");
+    const formattedDate = _get(campaignSchedule, "formattedDate", "");
+    const sendAfterMinutes = _get(campaignScheduleAutomatic, "value", "");
     // const subject = _get(selectTemplateData, "subject.value", "");
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
@@ -715,10 +869,25 @@ class GetReviews extends Component {
         }
       }
     };
+    if (selectedDate && formattedDate) {
+      data = {
+        ...data,
+        campaign: { ...data.campaign, startAt: formattedDate }
+      };
+    }
     if (_get(campaign, "campaignInvitationMethod.value", "") === "automatic") {
       data = {
         ...data,
         shop: shopId
+      };
+    }
+    if (
+      _get(campaign, "campaignInvitationMethod.value", "") === "automatic" &&
+      sendAfterMinutes
+    ) {
+      data = {
+        ...data,
+        campaign: { ...data.campaign, sendAfterMinutes: sendAfterMinutes }
       };
     }
     if (sendTest === "sendTest") {
@@ -727,11 +896,21 @@ class GetReviews extends Component {
         test: true
       };
     }
+    if (isCampaignEditMode) {
+      let id = _get(selectedCampaignData, "id", "");
+      data = {
+        ...data,
+        campaign: {
+          ...data.campaign,
+          id
+        }
+      };
+    }
     createCampaign(data);
   };
 
   handleBack = () => {
-    const { activeStep } = this.state;
+    const { activeStep, createCampaign } = this.state;
     if (activeStep > 0) {
       this.setState(prevState => {
         return { activeStep: prevState.activeStep - 1 };
@@ -777,7 +956,7 @@ class GetReviews extends Component {
         }
       }
     } else if (id === "campaignLanguage") {
-      fetchEmailTemplate(value);
+      // fetchEmailTemplate(value);
       const selectedCampaignLang = _filter(
         _get(this.props, "campaignLanguage", []),
         ["value", value]
@@ -997,9 +1176,27 @@ class GetReviews extends Component {
   };
 
   renderAppropriateStep = () => {
-    const { activeStep, getReviewsActiveSubStep } = this.state;
+    const { activeStep, getReviewsActiveSubStep, createCampaign } = this.state;
+    const { isCampaignEditMode } = this.props;
+    const selectedInvitationMethod = _get(
+      createCampaign,
+      "campaignInvitationMethod.value",
+      ""
+    );
     if (activeStep === 0) {
-      if (getReviewsActiveSubStep === -1) {
+      if (getReviewsActiveSubStep === -2) {
+        if (isCampaignEditMode) {
+          this.setState({ getReviewsActiveSubStep: -1 });
+        }
+        return (
+          <CampaignIntro
+            handleCampaignCreationClick={() => {
+              this.setState({ getReviewsActiveSubStep: -1 });
+            }}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+          />
+        );
+      } else if (getReviewsActiveSubStep === -1) {
         return (
           <CreateCampaign
             handleListItemClick={this.handleListItemClick}
@@ -1008,6 +1205,14 @@ class GetReviews extends Component {
             onContinueClick={() => {
               this.setState({ getReviewsActiveSubStep: 0 });
             }}
+            isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
+            onBackClick={() => {
+              this.setState({ getReviewsActiveSubStep: -2 });
+            }}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+            navigateToCampaignManagement={() =>
+              this.props.navigateToCampaignManagement()
+            }
           />
         );
       } else if (getReviewsActiveSubStep === 0) {
@@ -1037,6 +1242,11 @@ class GetReviews extends Component {
               "createCampaign.campaignLanguage.code",
               "en"
             )}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+            navigateToCampaignManagement={() =>
+              this.props.navigateToCampaignManagement()
+            }
+            isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
           />
         );
       } else if (getReviewsActiveSubStep === 1) {
@@ -1046,6 +1256,7 @@ class GetReviews extends Component {
             ref={this.fileInput}
             handleChange={this.handleChange}
             formData={this.state.uploadCSVFormData}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       } else if (getReviewsActiveSubStep === 2) {
@@ -1055,6 +1266,7 @@ class GetReviews extends Component {
             handleChange={this.handleChange}
             handleParseBtnClick={this.handleParseBtnClick}
             handleListItemBackClick={this.handleListItemBackClick}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       } else if (getReviewsActiveSubStep === 3) {
@@ -1068,6 +1280,7 @@ class GetReviews extends Component {
               onContinueClick={this.handleContinueClick}
               tableData={_get(this.state, "tableData", [])}
               handleListItemBackClick={this.handleListItemBackClick}
+              scrollToTopOfThePage={this.props.scrollToTopOfThePage}
             />
           </>
         );
@@ -1080,9 +1293,11 @@ class GetReviews extends Component {
               reviewInvitationPlatformsData={
                 this.state.reviewInvitationPlatformsData
               }
-              sumOfAllSplits={
-                this.state.reviewInvitationPlatformsData.sumOfAllSplits
-              }
+              sumOfAllSplits={_get(
+                this.state,
+                "reviewInvitationPlatformsData.sumOfAllSplits",
+                0
+              )}
               handleSliderChange={this.handleSliderChange}
               sendToSelectTemplate={() => {
                 this.setState({ activeStep: 1 });
@@ -1094,6 +1309,11 @@ class GetReviews extends Component {
               handleReviewPlatformRadioBtnChange={
                 this.handleReviewPlatformRadioBtnChange
               }
+              scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+              navigateToCampaignManagement={() =>
+                this.props.navigateToCampaignManagement()
+              }
+              isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
             />
           </>
         ) : null;
@@ -1111,10 +1331,54 @@ class GetReviews extends Component {
             "createCampaign.campaignLanguage.value",
             ""
           )}
+          scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+          navigateToCampaignManagement={() =>
+            this.props.navigateToCampaignManagement()
+          }
+          isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
         />
       );
     }
     if (activeStep === 2) {
+      if (selectedInvitationMethod === "automatic") {
+        return (
+          <CampaignScheduleAutomatic
+            handleNext={this.handleNext}
+            handleBack={this.handleBack}
+            campaignScheduleAutomaticData={this.state.campaignScheduleAutomatic}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+            handleChange={val => {
+              this.setState({
+                campaignScheduleAutomatic: {
+                  ...this.state.campaignScheduleAutomatic,
+                  value: val,
+                  valid: validate(
+                    val,
+                    this.state.campaignScheduleAutomatic.validationRules
+                  )
+                }
+              });
+            }}
+          />
+        );
+      } else {
+        return (
+          <CampaignSchedule
+            selectedDate={this.state.campaignSchedule.selectedDate}
+            handleCampaignScheduleDateChange={
+              this.handleCampaignScheduleDateChange
+            }
+            handleNext={this.handleNext}
+            handleBack={this.handleBack}
+            isValid={this.state.campaignSchedule.isValid}
+            errorMessage={this.state.campaignSchedule.errorMessage}
+            touched={this.state.campaignSchedule.touched}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+          />
+        );
+      }
+    }
+    if (activeStep === 3) {
       return (
         <SendInvitations
           formData={this.state.selectTemplateData}
@@ -1125,28 +1389,24 @@ class GetReviews extends Component {
           )}
           handleNext={this.handleNext}
           handleBack={this.handleBack}
+          scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+          navigateToCampaignManagement={() =>
+            this.props.navigateToCampaignManagement()
+          }
+          isCampaignEditMode={_get(this.props, "isCampaignEditMode", false)}
         />
       );
     }
-    if (activeStep === 3) {
+    if (activeStep === 4) {
       return (
         <Done
           changeStepToRender={this.props.changeStepToRender}
+          scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           handleInviteMoreClick={() => {
             this.setState({
               activeStep: 0,
-              getReviewsActiveSubStep: -1,
+              getReviewsActiveSubStep: -2,
               tableData: [],
-              // reviewInvitationPlatformsData: {
-              //   platforms: {},
-              //   sumOfAllSplits: 0,
-              //   selectionWays: [
-              //     { id: 0, label: "Use only one review platform" },
-              //     { id: 1, label: "Use multiple review platforms" }
-              //   ],
-              //   selectedWay: -1,
-              //   selectedSinglePlatform: ""
-              // },
               addInvitesData: {
                 email: {
                   element: "input",
@@ -1360,6 +1620,21 @@ class GetReviews extends Component {
                 //     // isEmail: true
                 //   }
                 // }
+              },
+              campaignSchedule: {
+                selectedDate: null,
+                formattedDate: "",
+                isValid: false,
+                touched: false,
+                errorMessage:
+                  "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
+              },
+              campaignScheduleAutomatic: {
+                value: "",
+                valid: false,
+                validationRules: {
+                  required: true
+                }
               }
             });
           }}
@@ -1370,6 +1645,7 @@ class GetReviews extends Component {
 
   componentDidMount() {
     //Setting dynamic state on MOUNTING for ReviewInvitationPlatform
+    this.props.scrollToTopOfThePage();
     const social = _get(this.props, "social", []);
     const googleDirectReviewURL = _get(this.props, "googleDirectReviewURL", "");
     const { reviewInvitationPlatformsData } = this.state;
@@ -1379,6 +1655,11 @@ class GetReviews extends Component {
       countOfPlatforms += 1;
     }
     let platforms = {};
+    let percentageSplit = _get(
+      this.props,
+      "selectedCampaignData.campaign_structure.percentageSplit",
+      []
+    );
     if (social && Array.isArray(social)) {
       if (social.length > 0) {
         initValueForSliders = Math.floor(
@@ -1429,6 +1710,22 @@ class GetReviews extends Component {
         firstItem.value += 100 - Number(sumOfValueOfAllPlatforms || 0);
       }
     }
+    if (Array.isArray(percentageSplit) && !_isEmpty(percentageSplit)) {
+      for (let platform in platforms) {
+        let social_app_id = platforms[platform].social_media_app_id || "";
+        let foundPlatform = _find(percentageSplit, [
+          "socialAppId",
+          social_app_id
+        ]);
+        if (foundPlatform) {
+          platforms[platform] = {
+            ...platforms[platform],
+            value: _get(foundPlatform, "percentShare", 0),
+            url: _get(foundPlatform, "link", "")
+          };
+        }
+      }
+    }
     this.setState({
       reviewInvitationPlatformsData: {
         ...reviewInvitationPlatformsData,
@@ -1439,11 +1736,15 @@ class GetReviews extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.setCampaignEditMode({}, false);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { activeStep } = this.state;
     const { success, setGetReviewsData } = this.props;
     if (this.props !== prevProps) {
-      if (activeStep === 2) {
+      if (activeStep === 3) {
         if (success === true) {
           if (activeStep <= columns.length) {
             setGetReviewsData({});
@@ -1512,7 +1813,6 @@ class GetReviews extends Component {
 
   render() {
     const { activeStep } = this.state;
-    // console.log(this.props.changeStepToRender, "this.props.changeStepToRender");
     return (
       <>
         <style jsx>
@@ -1573,16 +1873,24 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.integrations.ecommerce",
     []
   );
-  const social = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.social",
-    []
-  );
+  const social = _get(auth, "logIn.userProfile.business_profile.social", []);
   const googleDirectReviewURL = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.google_places.directReviewUrl",
+    auth,
+    "logIn.userProfile.business_profile.google_places.directReviewUrl",
     ""
   );
+  const selectedCampaignData = _get(dashboardData, "selectedCampaignData", {});
+  const isCampaignEditMode = _get(dashboardData, "isCampaignEditMode", false);
+  let percentageSplit = _get(
+    selectedCampaignData,
+    "campaign_structure.percentageSplit",
+    []
+  );
+  const selectedWay = percentageSplit.length > 1 ? 1 : 0;
+  let selectedSinglePlatform = "";
+  if (percentageSplit.length > 0) {
+    selectedSinglePlatform = percentageSplit[0].socialAppId;
+  }
   return {
     success,
     campaignLanguage,
@@ -1592,7 +1900,11 @@ const mapStateToProps = state => {
     createCampaignData,
     ecommerceIntegrations,
     social,
-    googleDirectReviewURL
+    googleDirectReviewURL,
+    selectedCampaignData,
+    selectedWay,
+    selectedSinglePlatform,
+    isCampaignEditMode
   };
 };
 
@@ -1601,5 +1913,6 @@ export default connect(mapStateToProps, {
   sendGetReviews,
   createCampaign,
   fetchEmailTemplate,
-  clearCampaignData
+  clearCampaignData,
+  setCampaignEditMode
 })(withStyles(styles)(GetReviews));

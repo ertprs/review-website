@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Slider from "@material-ui/core/Slider";
-import { RadioGroup, Radio, FormControlLabel } from "@material-ui/core";
+import { RadioGroup, Radio, FormControlLabel, Button } from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
@@ -9,11 +9,11 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowLeft from "@material-ui/icons/ArrowLeft";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const styles = theme => ({
   label: {
@@ -52,6 +52,9 @@ const PrettoSlider = withStyles({
 })(Slider);
 
 class ReviewInvitationPlatforms extends Component {
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
+  }
   renderReviewPlatformSliders = () => {
     const { platforms, handleSliderChange, sumOfAllSplits } = this.props;
     let output = [];
@@ -286,38 +289,61 @@ class ReviewInvitationPlatforms extends Component {
       handleSliderChange,
       sumOfAllSplits,
       reviewInvitationPlatformsData,
-      handleReviewPlatformsExpansionChange
+      handleReviewPlatformsExpansionChange,
+      navigateToCampaignManagement,
+      isCampaignEditMode
     } = this.props;
     const selectedWay = _get(reviewInvitationPlatformsData, "selectedWay", "");
     return (
-      <div className="container">
-        <h5 style={{ marginBottom: "50px" }}>
-          Please select the split range for different review platforms, where
-          you would like to send your customers to leave reviews :
-        </h5>
-        <RadioGroup
-          aria-label="typesOfinvitation"
-          name="typesOfinvitation"
-          value={selectedWay}
-          onChange={e => {
-            let value = _get(e, "target.value", -1);
-            handleReviewPlatformsExpansionChange(Number(value));
-          }}
-        >
-          {this.renderExpansionPanels()}
-        </RadioGroup>
-        <div style={{ marginTop: "50px" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            startIcon={<ArrowLeft />}
-            onClick={this.props.handleListItemBackClick}
+      <>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-8">
+              <h5 style={{ marginBottom: "50px" }}>
+                Please select the split range for different review platforms,
+                where you would like to send your customers to leave reviews :
+              </h5>
+            </div>
+            <div className="col-md-4">
+              {isCampaignEditMode ? (
+                <div style={{ float: "right" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={navigateToCampaignManagement}
+                    startIcon={<ArrowBackIcon />}
+                  >
+                    Go Back To Campaign History
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <RadioGroup
+            aria-label="typesOfinvitation"
+            name="typesOfinvitation"
+            value={selectedWay}
+            onChange={e => {
+              let value = _get(e, "target.value", -1);
+              handleReviewPlatformsExpansionChange(Number(value));
+            }}
           >
-            Back
-          </Button>
+            {this.renderExpansionPanels()}
+          </RadioGroup>
+          <div style={{ marginTop: "50px" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="medium"
+              startIcon={<ArrowLeft />}
+              onClick={this.props.handleListItemBackClick}
+            >
+              Back
+            </Button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }

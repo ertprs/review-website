@@ -100,3 +100,32 @@ export const removeSubDomain = domain => {
   parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
   return parsed_domain_name;
 };
+
+export const isFifteenMinuteDiff = date => {
+  const selectedHour = new Date(date).getHours();
+  const selectedMinutes = new Date(date).getMinutes();
+  const selectedDay = new Date(date).getDate();
+  const currentHour = new Date().getHours();
+  const currentMinute = new Date().getMinutes();
+  const currentDay = new Date().getDate();
+  let valid = true;
+  if (selectedDay === currentDay) {
+    if (currentHour > selectedHour) {
+      valid = false;
+      console.log("current hour is greater than selected hour");
+    } else if (currentHour === selectedHour) {
+      if (currentMinute >= selectedMinutes) {
+        valid = false;
+        console.log("current minute is greater than selected minutes");
+      }
+      else if (selectedMinutes - currentMinute < 15) {
+        valid = false;
+        console.log("selected minutes diff < 15");
+      }
+    }
+  }
+  if (date === null) {
+    valid = false;
+  }
+  return valid;
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -144,6 +144,44 @@ const WidgetsShowCase = dynamic(
 
 const UserProfile = dynamic(
   () => import("../../Components/DashboardComponents/UserProfile"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
+const CampaignManagement = dynamic(
+  () => import("../../Components/DashboardComponents/CampaignManagement"),
+  {
+    loading: () => (
+      <div
+        style={{
+          width: "100%",
+          height: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
+const ReviewUrl = dynamic(
+  () => import("../../Components/DashboardComponents/SmartUrl"),
   {
     loading: () => (
       <div
@@ -390,10 +428,27 @@ function Dashboard(props) {
     setStepToRender(index);
   };
 
+  const mainContainer = useRef(null);
+
+  const scrollToTopOfThePage = () => {
+    if (mainContainer) {
+      if (mainContainer.current) {
+        if (mainContainer.current.scrollTop) {
+          mainContainer.current.scrollTop = 0;
+        }
+      }
+    }
+  };
+
   const dashboardSteps = {
     0: {
       name: "getStarted",
-      componentToRender: <GetStarted changeStepToRender={changeStepToRender} />
+      componentToRender: (
+        <GetStarted
+          changeStepToRender={changeStepToRender}
+          scrollToTopOfThePage={scrollToTopOfThePage}
+        />
+      )
     },
     1: {
       name: "home",
@@ -404,28 +459,61 @@ function Dashboard(props) {
             setReviewsSelectedTab(tabIndex);
             handleMenuItemClicked(2);
           }}
+          scrollToTopOfThePage={scrollToTopOfThePage}
         />
       )
     },
     2: {
       name: "reviews",
-      componentToRender: <Reviews selectedTab={reviewsSelectedTab} />
+      componentToRender: (
+        <Reviews
+          selectedTab={reviewsSelectedTab}
+          scrollToTopOfThePage={scrollToTopOfThePage}
+        />
+      )
     },
     3: {
       name: "getReviews",
-      componentToRender: <GetReviews changeStepToRender={changeStepToRender} />
+      componentToRender: (
+        <GetReviews
+          navigateToCampaignManagement={() => handleMenuItemClicked(4)}
+          changeStepToRender={changeStepToRender}
+          scrollToTopOfThePage={scrollToTopOfThePage}
+        />
+      )
     },
     4: {
-      name: "invitationHistory",
-      componentToRender: <InvitationHistory />
+      name: "campaignManagement",
+      componentToRender: (
+        <CampaignManagement
+          navigateToCreateCampaign={() => handleMenuItemClicked(3)}
+          scrollToTopOfThePage={scrollToTopOfThePage}
+        />
+      )
     },
     5: {
-      name: "widgets",
-      componentToRender: <WidgetsShowCase />
+      name: "invitationHistory",
+      componentToRender: (
+        <InvitationHistory scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
     },
     6: {
+      name: "widgets",
+      componentToRender: (
+        <WidgetsShowCase scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
+    },
+    7: {
+      name: "reviewUrl",
+      componentToRender: (
+        <ReviewUrl scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
+    },
+    8: {
       name: "userProfile",
-      componentToRender: <UserProfile />
+      componentToRender: (
+        <UserProfile scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
     }
   };
 
@@ -584,7 +672,7 @@ function Dashboard(props) {
           <DashboardLogo />
         </List>
       </Drawer>
-      <main className={classes.content}>
+      <main className={classes.content} ref={mainContainer}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           {renderAppropriateComponent(props.pId)}

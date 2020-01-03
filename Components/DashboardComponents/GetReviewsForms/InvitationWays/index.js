@@ -5,6 +5,9 @@ import ManualInvitation from "./ManualInvitation";
 import AutomaticInvitation from "./AutomaticInvitation";
 
 export default class InvitationWays extends Component {
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
   render() {
     const { invitationWayToRender } = this.props;
     return (

@@ -229,6 +229,10 @@ class GetWidgets extends Component {
     }
   };
 
+  scrollToTopOfThePage = ()=>{
+    window.scrollTo(0,0);
+  }
+
   componentDidMount() {
     window.addEventListener("popstate", this.onBackButtonEvent);
     window.scrollTo(0, 0);
@@ -264,6 +268,7 @@ class GetWidgets extends Component {
               getMoreWidgets={() => {
                 this.setState({ getWidget: false });
               }}
+              scrollToTopOfThePage={this.scrollToTopOfThePage}
             />
           )}
         </div>

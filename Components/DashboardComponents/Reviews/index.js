@@ -123,6 +123,10 @@ class ReviewsContainer extends React.Component {
     window.scrollTo(0, 0);
   };
 
+  componentDidMount(){
+    this.props.scrollToTopOfThePage()
+  }
+
   render() {
     const { classes } = this.props;
     const { selectedTab } = this.state;

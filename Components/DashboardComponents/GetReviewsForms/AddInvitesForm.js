@@ -7,6 +7,9 @@ import _isEmpty from "lodash/isEmpty";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 export default class AddInvitesForm extends Component {
+  componentDidMount(){
+    this.props.scrollToTopOfThePage();
+  }
   renderButtons = valid => {
     return (
       <div className="col-md-12">

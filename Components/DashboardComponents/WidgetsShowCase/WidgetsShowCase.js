@@ -100,6 +100,10 @@ class WidgetsShowCase extends Component {
     getWidget: false,
     selectedWidgetIndex: 0
   };
+
+  componentDidMount(){
+    this.props.scrollToTopOfThePage()
+  }
   renderWidgetBox = (item, index) => {
     return (
       <div
@@ -198,6 +202,7 @@ class WidgetsShowCase extends Component {
             getMoreWidgets={() => {
               this.setState({ getWidget: false });
             }}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         )}
       </div>

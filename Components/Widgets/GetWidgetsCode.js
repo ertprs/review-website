@@ -34,6 +34,7 @@ class GetWidgetsCode extends Component {
     super(props);
     this.state = {
       widgetHeight: _get(this.props, "widget.minHeight", 0),
+      refreshWidget: false,
       platforms: {
         element: "select",
         name: "platforms",
@@ -64,9 +65,18 @@ class GetWidgetsCode extends Component {
   };
 
   handleFormDataChange = (e, id) => {
-    this.setState({
-      platforms: { ...this.state.platforms, value: e.target.value }
-    });
+    this.setState(
+      {
+        platforms: { ...this.state.platforms, value: e.target.value },
+        refreshWidget: true
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ refreshWidget: false });
+          this.props.scrollToTopOfThePage();
+        }, 1000);
+      }
+    );
   };
 
   renderWidgetInfo = () => {
@@ -220,7 +230,9 @@ class GetWidgetsCode extends Component {
 
             <div className="body">
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
-              <div className="inputContainer">{this.renderInput()}</div>
+              {widgetId !== 0 ? (
+                <div className="inputContainer">{this.renderInput()}</div>
+              ) : null}
               <p className="subHeading">
                 1.2-) Copy-paste this code inside the {`<head></head>`} section
                 of your website’s HTML or as close to the top of the page as
@@ -308,11 +320,11 @@ class GetWidgetsCode extends Component {
     );
   };
 
-  render() {
+  renderWidget = () => {
     const { domainName, widget } = this.props;
     const widgetId = _get(widget, "id", "");
     return (
-      <div className="container">
+      <>
         <Head>
           {widgetId === 0 ? (
             <script
@@ -328,6 +340,29 @@ class GetWidgetsCode extends Component {
             ></script>
           )}
         </Head>
+        <div
+          className="trustsearch-widget"
+          data-locale="en-US"
+          data-template-id={_get(this.props, "widget.dataTempID", "")}
+          data-businessunit-id={_get(this.props, "domainName", "")}
+          data-style-height={`${_get(this.state, "widgetHeight", "")}px`}
+          data-style-width="100%"
+          data-theme="light"
+          data-platform-id={_get(this.state, "platforms.value", "0")}
+          style={{ position: "relative", overflow: "hidden" }}
+          data-max-reviews="25"
+          data-newer-than-months="2"
+          data-rating="3"
+        ></div>
+      </>
+    );
+  };
+
+  render() {
+    const { domainName, widget } = this.props;
+    const widgetId = _get(widget, "id", "");
+    return (
+      <div className="container">
         <div style={{ marginBottom: "50px" }}>
           <Button
             variant="contained"
@@ -345,20 +380,7 @@ class GetWidgetsCode extends Component {
             Back
           </Button>
         </div>
-        <div
-          className="trustsearch-widget"
-          data-locale="en-US"
-          data-template-id={_get(this.props, "widget.dataTempID", "")}
-          data-businessunit-id={_get(this.props, "domainName", "")}
-          data-style-height={`${_get(this.state, "widgetHeight", "")}px`}
-          data-style-width="100%"
-          data-theme="light"
-          data-platform-id={_get(this.state, "platforms.value", "0")}
-          style={{ position: "relative", overflow: "hidden" }}
-          data-max-reviews="25"
-          data-newer-than-months="10"
-          data-rating="3"
-        ></div>
+        {!this.state.refreshWidget ? this.renderWidget() : null}
         <div className="row">
           {/* <div className="col-md-6">{this.renderWidgetInfo()}</div> */}
           <div className="col-md-12">{this.getYourWidgetBox()}</div>
