@@ -65,7 +65,11 @@ import {
   GET_SMART_URL_ERROR,
   ADD_REVIEW_PLATFORM_INIT,
   ADD_REVIEW_PLATFORM_SUCCESS,
-  ADD_REVIEW_PLATFORM_ERROR
+  ADD_REVIEW_PLATFORM_ERROR,
+  GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
+  GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
+  ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -99,7 +103,9 @@ const dashboardReducer = (state = {}, action) => {
     isCampaignEditMode,
     selectedCampaignData,
     smartUrl,
-    addReviewPlatformData
+    addReviewPlatformData,
+    review_platforms,
+    updatedReviewPlatforms
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -493,6 +499,21 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         addReviewPlatformData
+      };
+    case GET_AVAILABLE_REVIEW_PLATFORMS_INIT:
+      return { ...state, type, review_platforms };
+    case GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS:
+      return { ...state, type, review_platforms };
+    case GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE:
+      return { ...state, type, review_platforms };
+    case ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS:
+      return {
+        ...state,
+        type,
+        review_platforms: {
+          ...state.review_platforms,
+          data: { ...updatedReviewPlatforms }
+        }
       };
     default:
       return state;

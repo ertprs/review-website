@@ -151,6 +151,44 @@ class GetStarted extends Component {
     disabledSave: true
   };
 
+  //! Generate Form fields from socialArray for already configured social profiles and from review_platforms for rest of the available platforms.
+  generateFormFieldsDynamically = () => {
+    const socialArray = _get(this.props, "socialArray", []);
+    let formData = {};
+    socialArray.forEach(item => {
+      let name = _get(item, "name", "");
+      let url = _get(item, "url", "");
+      let social_media_app_id = _get(item, "social_media_app_id", "");
+      if (name && social_media_app_id) {
+        let formFieldKey =
+          name.charAt(0).toLowerCase() + name.slice(1) + "ReviewUrl";
+        formData = {
+          ...formData,
+          [formFieldKey]: {
+            element: "input",
+            type: "text",
+            value: "",
+            valid: false,
+            touched: false,
+            errorMessage: "Enter valid URL",
+            placeholder: `Enter ${name} page URL (optional)`,
+            validationRules: {
+              required: false,
+              isDomain: true
+            },
+            label: `${name} Page URL: `,
+            logo: `${name}Logo.png`,
+            title: `${name} reviews`,
+            key: social_media_app_id,
+            name: name
+          }
+        };
+      }
+    });
+    //setState also
+    console.log(formData, "dynamic formData");
+  };
+
   handleContinueClick = () => {
     const { selectedAddress, address, formData } = this.state;
     const {
@@ -475,14 +513,19 @@ class GetStarted extends Component {
   };
 
   componentDidMount() {
-    const { placeId, locatePlace, businessProfile } = this.props;
+    const { placeId, locatePlace, businessProfile, socialArray } = this.props;
+    if (socialArray) {
+      if (socialArray.length > 0) {
+        //check on update also
+        this.generateFormFieldsDynamically();
+      }
+    }
     if (this.props.scrollToTopOfThePage) {
       this.props.scrollToTopOfThePage();
     }
     if (placeId !== "" || locatePlace) {
       this.props.changeStepToRender(1);
     }
-    const socialArray = _get(this.props, "socialArray", []);
     if (socialArray) {
       if (socialArray.length > 0) {
         this.prefillSocialURLs(socialArray);
@@ -668,6 +711,8 @@ class GetStarted extends Component {
             <Grid xs={12} md={12} lg={12}>
               <AddPlatform />
             </Grid>
+          </Grid>
+          <Grid container spacing={3}>
             {reviewURLToEdit === "" ? (
               <Grid item xs={12} md={6} lg={6}>
                 {this.renderGetStartedBox()}
@@ -716,6 +761,7 @@ const mapStateToProps = state => {
   );
   const showGetStarted = _get(dashboardData, "showGetStarted", false);
   const reviewURLToEdit = _get(dashboardData, "reviewURLToEdit", "");
+  const review_platforms = _get(dashboardData, "review_platforms", {});
   return {
     success,
     businessProfile,
@@ -730,7 +776,8 @@ const mapStateToProps = state => {
     showGetStarted,
     reviewURLToEdit,
     addressSelected,
-    googlePlaces
+    googlePlaces,
+    review_platforms
   };
 };
 

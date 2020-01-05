@@ -44,7 +44,8 @@ import {
   fetchReviews,
   getThirdPartyReviews,
   setInvitationQuota,
-  fetchCampaignLanguage
+  fetchCampaignLanguage,
+  getAvailableReviewPlatforms
 } from "./dashboardActions";
 import cookie from "js-cookie";
 import { reportDomain } from "./domainProfileActions";
@@ -547,6 +548,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("placeId", placeId, { expires: 7 });
             localStorage.setItem("token", token);
             dispatch(fetchReviews(token));
+            dispatch(getAvailableReviewPlatforms(token));
             dispatch(setSubscription(subscriptionExpired));
             dispatch(fetchCampaignLanguage(token));
             dispatch(getAvailablePlatforms(token));

@@ -35,8 +35,7 @@ import {
   UPDATE_AUTH_SOCIAL_ARRAY,
   SET_GOOGLE_PLACES,
   POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
-  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
-  ADD_NEW_PLATFORM_IN_SOCIAL_ARRAY
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS
 } from "../actions/actionTypes";
 import { stat } from "fs";
 
@@ -331,22 +330,6 @@ const authReducer = (state = {}, action) => {
             }
           }
         }
-      };
-    }
-    case ADD_NEW_PLATFORM_IN_SOCIAL_ARRAY: {
-      return {
-        ...state,
-        logIn: {
-          ...state.logIn,
-          userProfile: {
-            ...state.logIn.userProfile,
-            business_profile: {
-              ...state.logIn.userProfile.business_profile,
-              social: [...updatedSocialArray]
-            }
-          }
-        },
-        type
       };
     }
     case LOGOUT:

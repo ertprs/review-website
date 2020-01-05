@@ -65,7 +65,10 @@ import {
   ADD_REVIEW_PLATFORM_INIT,
   ADD_REVIEW_PLATFORM_SUCCESS,
   ADD_REVIEW_PLATFORM_ERROR,
-  ADD_NEW_PLATFORM_IN_SOCIAL_ARRAY
+  ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
+  GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
+  GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
@@ -88,7 +91,8 @@ import {
   campaignHistoryApi,
   deactivateCampaignApi,
   smartUrlApi,
-  addReviewPlatformAPI
+  addReviewPlatformAPI,
+  getAvailableReviewPlatformsApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import _findIndex from "lodash/findIndex";
@@ -1069,7 +1073,7 @@ export const addReviewPlatform = data => {
       const success = await _get(result, "data.success", false);
       const social_media_app = await _get(result, "data.social_media_app", {});
       if (success) {
-        dispatch(addNewPlatformInSocialArray({ ...social_media_app, url: "" }));
+        dispatch(addNewPlatformInReviewPlatforms({ ...social_media_app }));
       }
       dispatch({
         type: ADD_REVIEW_PLATFORM_SUCCESS,
@@ -1094,25 +1098,66 @@ export const addReviewPlatform = data => {
   };
 };
 
-export const addNewPlatformInSocialArray = data => {
+export const addNewPlatformInReviewPlatforms = data => {
   return async (dispatch, getState) => {
     const state = getState() || {};
-    let socialArray = _get(
-      state,
-      "auth.logIn.userProfile.business_profile.social",
-      []
-    );
+    let review_platforms = _get(state, "dashboardData.review_platforms", {});
+    let reviewPlatformsData = _get(review_platforms, "data", {});
     const id = _get(data, "id", "");
     const name = _get(data, "name", "");
-    const url = _get(data, "url", "");
-    console.log(id, data);
-    const doesPlatformExists = _find(socialArray, ["social_media_app_id", id]);
-    if (!doesPlatformExists) {
-      socialArray = [...socialArray, { social_media_app_id: id, name, url }];
+    if ((id || id == "0") && name) {
+      reviewPlatformsData = { ...reviewPlatformsData, [id]: name };
     }
     dispatch({
-      type: ADD_NEW_PLATFORM_IN_SOCIAL_ARRAY,
-      updatedSocialArray: socialArray
+      type: ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
+      updatedReviewPlatforms: reviewPlatformsData
     });
+  };
+};
+
+export const getAvailableReviewPlatforms = token => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
+      review_platforms: {
+        success: false,
+        isLoading: true,
+        errorMsg: "",
+        data: {}
+      }
+    });
+    try {
+      const res = await axios.get(
+        `${process.env.BASE_URL}${getAvailableReviewPlatformsApi}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      let success = _get(res, "data.success", false);
+      let review_platforms = _get(res, "data.review_platforms", {});
+      let errorMsg = "";
+      dispatch({
+        type: GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
+        review_platforms: {
+          data: { ...review_platforms },
+          isLoading: false,
+          success,
+          errorMsg
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      dispatch({
+        type: GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
+        review_platforms: {
+          success: false,
+          isLoading: false,
+          errorMsg: _get(err, "data.response.message", "Some error occurred"),
+          data: {}
+        }
+      });
+    }
   };
 };
