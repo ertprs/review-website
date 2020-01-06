@@ -677,8 +677,8 @@ export const setSubscription = isSubscriptionExpired => {
 //updating social in auth/logIn/userProfile/business_profile/social with the new url user has changed in getstarted to show cards on home page. currently we are pushing google as well but not displaying it.
 
 export const updateAuthSocialArray = data => {
-  console.log("UPDATEAUTH", data);
   let omittedData = _omit(data, ["google"]);
+  console.log(data, "AUTH_UPDATE");
   return async (dispatch, getState) => {
     const state = getState();
     const socialArray = _get(
@@ -686,15 +686,23 @@ export const updateAuthSocialArray = data => {
       "auth.logIn.userProfile.business_profile.social",
       []
     );
+    const review_platforms = _get(state, "dashboardData.review_platforms");
     let arrayOfChangedFields = [];
     let mergeArrayOfChangedFieldsWithSocialArray = [];
     if (omittedData) {
       arrayOfChangedFields = Object.keys(omittedData).map(key => {
-        let foundItem = _find(socialArray, ["social_media_app_id", key]);
+        let foundItem = _find(socialArray, [
+          "social_media_app_id",
+          Number(key)
+        ]);
         if (foundItem) {
           return { ...foundItem, url: omittedData[key] };
         } else {
-          return { social_media_app_id: Number(key), url: omittedData[key] };
+          return {
+            social_media_app_id: Number(key),
+            url: omittedData[key],
+            name: (review_platforms.data || {})[Number(key) || 0] || ""
+          };
         }
       });
       if (socialArray && Array.isArray(socialArray) && !_isEmpty(socialArray)) {

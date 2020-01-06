@@ -6,18 +6,32 @@ export const reviewURLBoxStyles = css`
     height: 163px;
   }
   .reviewURLBoxHeader {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
   }
   .reviewURLBoxContainerInner {
     display: flex;
   }
   .reviewURLBoxContainerInner div:first-child {
     flex-basis: 30%;
+    display: none;
   }
   .reviewURLBoxContainerInner div:last-child {
     flex-basis: 100%;
     align-self: center;
     margin-left: 15px;
+  }
+
+  .reviewBoxHeaderContainer {
+    display: flex;
+  }
+
+  .reviewBoxHeaderContainer div:first-child {
+    flex-basis: 80%;
+  }
+
+  .reviewBoxHeaderContainer div:last-child {
+    flex-basis: 20%;
+    text-align: right;
   }
 
   .reviewURLBoxImgContainer {

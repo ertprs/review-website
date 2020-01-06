@@ -23,11 +23,10 @@ class AddPlatform extends Component {
         valid: false,
         touched: false,
         labelText: "Platform name",
-        errorMessage: "Enter platform name",
-        placeholder: "Enter platform name",
+        errorMessage: "Enter valid platform name",
+        placeholder: "Enter platform name (ex: Trustpilot)",
         validationRules: {
-          required: true,
-          minLength: 3
+          required: true
         },
         id: "platform_name"
       },
@@ -38,8 +37,8 @@ class AddPlatform extends Component {
         valid: false,
         touched: false,
         labelText: "Platform URL",
-        errorMessage: "Enter platform URL",
-        placeholder: "Enter platform URL",
+        errorMessage: "Enter valid platform URL",
+        placeholder: "Enter platform URL (ex: https://trustpilot.com)",
         validationRules: {
           required: true,
           isDomain: true
@@ -49,29 +48,33 @@ class AddPlatform extends Component {
     }
   };
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   const addReviewPlatformData = _get(this.props, "addReviewPlatformData", {});
-  //   const success = _get(addReviewPlatformData, "success", undefined);
-  //   const loading = _get(addReviewPlatformData, "isLoading", false);
-  //   const errorMsg = _get(addReviewPlatformData, "errorMsg", "");
-  //   console.log(loading, prevProps.loading);
-  //   if (loading !== prevProps.loading && success !== prevProps.success) {
-  //     console.log("ander aaaya");
-  //     // if (success === true && loading === false) {
-  //     //   this.setState({
-  //     //     showSnackbar: true,
-  //     //     variant: "success",
-  //     //     snackbarMsg: "Platform added successfully!"
-  //     //   });
-  //     // } else if (success === false && loading === false) {
-  //     //   this.setState({
-  //     //     showSnackbar: true,
-  //     //     variant: "error",
-  //     //     snackbarMsg: errorMsg
-  //     //   });
-  //     // }
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    const addReviewPlatformData = _get(this.props, "addReviewPlatformData", {});
+    const success = _get(addReviewPlatformData, "success", undefined);
+    const loading = _get(addReviewPlatformData, "isLoading", false);
+    const errorMsg = _get(addReviewPlatformData, "errorMsg", "");
+    const prevLoading = _get(
+      prevProps,
+      "addReviewPlatformData.isLoading",
+      false
+    );
+    const prevSuccess = _get(prevProps, "addReviewPlatformData.success", false);
+    if (loading !== prevLoading && success !== prevSuccess) {
+      if (success === true && loading === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "success",
+          snackbarMsg: "Platform added successfully!"
+        });
+      } else if (success === false && loading === false) {
+        this.setState({
+          showSnackbar: true,
+          variant: "error",
+          snackbarMsg: errorMsg
+        });
+      }
+    }
+  }
 
   handleFormDataChange = (e, id) => {
     const { formData } = this.state;
@@ -125,10 +128,54 @@ class AddPlatform extends Component {
     return output;
   };
 
+  validFormData = () => {
+    const { formData } = this.state;
+    let valid = true;
+    for (let item in formData) {
+      valid = valid && formData[item].valid;
+    }
+    return valid;
+  };
+
   handlePlatformAddition = () => {
     const { formData } = this.state;
-    const reqBody = createReqBody(formData);
-    this.props.addReviewPlatform(reqBody);
+    if (this.validFormData()) {
+      const reqBody = createReqBody(formData);
+      this.props.addReviewPlatform(reqBody);
+      this.setState({
+        formData: {
+          platform_name: {
+            element: "input",
+            type: "text",
+            value: "",
+            valid: false,
+            touched: false,
+            labelText: "Platform name",
+            errorMessage: "Enter valid platform name",
+            placeholder: "Enter platform name (ex: Trustpilot)",
+            validationRules: {
+              required: true
+            },
+            id: "platform_name"
+          },
+          url: {
+            element: "input",
+            type: "text",
+            value: "",
+            valid: false,
+            touched: false,
+            labelText: "Platform URL",
+            errorMessage: "Enter valid platform URL",
+            placeholder: "Enter platform URL (ex: https://trustpilot.com)",
+            validationRules: {
+              required: true,
+              isDomain: true
+            },
+            id: "url"
+          }
+        }
+      });
+    }
   };
 
   render() {
@@ -139,24 +186,26 @@ class AddPlatform extends Component {
         {this.renderFormFields()}
         {loading ? (
           <Button color="primary" variant="contained">
-            <CircularProgress />
+            <CircularProgress size={20} color="secondary" />
           </Button>
         ) : (
           <Button
             color="primary"
             variant="contained"
+            size="small"
             endIcon={<Add />}
             onClick={this.handlePlatformAddition}
+            disabled={!this.validFormData()}
           >
             Add
           </Button>
         )}
-        {/* <Snackbar
+        <Snackbar
           open={showSnackbar}
           variant={variant}
           handleClose={() => this.setState({ showSnackbar: false })}
           message={snackbarMsg}
-        /> */}
+        />
       </div>
     );
   }
