@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 //? Own imports
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
-import { getSmartUrl } from "../../../store/actions/dashboardActions";
 import Snackbar from "../../Widgets/Snackbar";
 import Card from "../../MaterialComponents/Card";
 //? Library imports
@@ -9,7 +8,6 @@ import { connect } from "react-redux";
 import Select from "react-select";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import IconButton from "@material-ui/core/IconButton";
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
@@ -19,18 +17,19 @@ class SmartUrl extends Component {
     selectedPlatform: "",
     showSnackbar: false,
     variant: "",
-    snackbarMsg: ""
+    snackbarMsg: "",
+    reviewUrl: ""
   };
 
   render() {
+    const { dropdownData, domainUrlKey } = this.props;
     const {
-      dropdownData,
-      smartUrlSuccess,
-      smartUrlLoading,
-      smartUrl,
-      getSmartUrl
-    } = this.props;
-    const { selectedPlatform, showSnackbar, variant, snackbarMsg } = this.state;
+      selectedPlatform,
+      showSnackbar,
+      variant,
+      snackbarMsg,
+      reviewUrl
+    } = this.state;
     return (
       <div>
         <style jsx>{`
@@ -65,14 +64,8 @@ class SmartUrl extends Component {
             options={dropdownData}
             onChange={valObj => {
               let platformId = _get(valObj, "value", "");
-              this.setState({ selectedPlatform: platformId });
-              if (
-                platformId !== null &&
-                platformId !== undefined &&
-                platformId !== ""
-              ) {
-                getSmartUrl(platformId);
-              }
+              let reviewUrl = `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&p=${platformId}`;
+              this.setState({ selectedPlatform: platformId, reviewUrl });
             }}
           />
         </div>
@@ -80,51 +73,36 @@ class SmartUrl extends Component {
         {selectedPlatform !== null &&
         selectedPlatform !== undefined &&
         selectedPlatform !== "" ? (
-          smartUrlLoading ? (
-            <Card
-              style={{
-                marginTop: "100px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-            >
-              <CircularProgress />
-            </Card>
-          ) : smartUrlSuccess && smartUrl ? (
-            <Card
-              style={{
-                marginTop: "100px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-            >
-              <span className="urlText">
-                Here is your review URL. Please copy and paste this URL in your
-                emails sent to customers to leave reviews.
-              </span>
-              <div className="url">
-                <span>{smartUrl}</span>
-                <CopyToClipboard
-                  text={smartUrl}
-                  onCopy={() =>
-                    this.setState({
-                      showSnackbar: true,
-                      variant: "success",
-                      snackbarMsg: "Url Copied to clipboard"
-                    })
-                  }
-                >
-                  <IconButton aria-label="copy">
-                    <CopyIcon />
-                  </IconButton>
-                </CopyToClipboard>
-              </div>
-            </Card>
-          ) : (
-            <span style={{ color: "red" }}>Url not found.</span>
-          )
+          <Card
+            style={{
+              marginTop: "100px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <span className="urlText">
+              Here is your review URL. Please copy and paste this URL in your
+              emails sent to customers to leave reviews.
+            </span>
+            <div className="url">
+              <span>{reviewUrl}</span>
+              <CopyToClipboard
+                text={reviewUrl}
+                onCopy={() =>
+                  this.setState({
+                    showSnackbar: true,
+                    variant: "success",
+                    snackbarMsg: "Url Copied to clipboard"
+                  })
+                }
+              >
+                <IconButton aria-label="copy">
+                  <CopyIcon />
+                </IconButton>
+              </CopyToClipboard>
+            </div>
+          </Card>
         ) : null}
         <Snackbar
           open={showSnackbar}
@@ -143,22 +121,16 @@ const mapStateToProps = state => {
     "auth.logIn.userProfile.business_profile.social",
     []
   );
-  const smartUrlSuccess = _get(
-    state,
-    "dashboardData.smartUrl.success",
-    undefined
-  );
-  const smartUrlLoading = _get(
-    state,
-    "dashboardData.smartUrl.isLoading",
-    false
-  );
   const address = _get(
     state,
     "auth.logIn.userProfile.business_profile.google_places.address",
     ""
   );
-  const smartUrl = _get(state, "dashboardData.smartUrl.url", "false");
+  const domainUrlKey = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.domainUrlKey",
+    ""
+  );
   let dropdownData = [];
   //# Converted socialplatforms array into dropdowndata that react-select supports
   if (!_isEmpty(socialPlatforms) && Array.isArray(socialPlatforms)) {
@@ -182,7 +154,10 @@ const mapStateToProps = state => {
     ...dropdownData,
     { value: "automatic", label: "Select automatically" }
   ];
-  return { dropdownData, smartUrlSuccess, smartUrlLoading, smartUrl };
+  return {
+    dropdownData,
+    domainUrlKey
+  };
 };
 
-export default connect(mapStateToProps, { getSmartUrl })(SmartUrl);
+export default connect(mapStateToProps)(SmartUrl);
