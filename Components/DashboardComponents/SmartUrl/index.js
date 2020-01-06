@@ -64,7 +64,7 @@ class SmartUrl extends Component {
             options={dropdownData}
             onChange={valObj => {
               let platformId = _get(valObj, "value", "");
-              let reviewUrl = `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&p=${platformId}`;
+              let reviewUrl = `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&p=${platformId}`;
               this.setState({ selectedPlatform: platformId, reviewUrl });
             }}
           />
