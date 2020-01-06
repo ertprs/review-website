@@ -73,7 +73,7 @@ class GetWidgetsCode extends Component {
       () => {
         setTimeout(() => {
           this.setState({ refreshWidget: false });
-          this.props.scrollToTopOfThePage()
+          this.props.scrollToTopOfThePage();
         }, 1000);
       }
     );
