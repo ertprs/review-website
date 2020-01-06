@@ -59,10 +59,7 @@ import {
   CHANGE_CAMPAIGN_STATUS_INIT,
   CHANGE_CAMPAIGN_STATUS_SUCCESS,
   CHANGE_CAMPAIGN_STATUS_FAILURE,
-  SET_CAMPAIGN_EDIT_MODE,
-  GET_SMART_URL_INIT,
-  GET_SMART_URL_SUCCESS,
-  GET_SMART_URL_ERROR
+  SET_CAMPAIGN_EDIT_MODE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -94,8 +91,7 @@ const dashboardReducer = (state = {}, action) => {
     campaignsData,
     changeCampaignStatus,
     isCampaignEditMode,
-    selectedCampaignData,
-    smartUrl
+    selectedCampaignData
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -453,24 +449,6 @@ const dashboardReducer = (state = {}, action) => {
         type,
         selectedCampaignData,
         isCampaignEditMode
-      };
-    case GET_SMART_URL_INIT:
-      return {
-        ...state,
-        type,
-        smartUrl
-      };
-    case GET_SMART_URL_SUCCESS:
-      return {
-        ...state,
-        type,
-        smartUrl
-      };
-    case GET_SMART_URL_ERROR:
-      return {
-        ...state,
-        type,
-        smartUrl
       };
     default:
       return state;
