@@ -8,9 +8,11 @@ import { connect } from "react-redux";
 import Select from "react-select";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import _sumBy from "lodash/sumBy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import IconButton from "@material-ui/core/IconButton";
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
+import PlatformSplit from "./PlatformSplit";
 
 class SmartUrl extends Component {
   state = {
@@ -18,11 +20,36 @@ class SmartUrl extends Component {
     showSnackbar: false,
     variant: "",
     snackbarMsg: "",
-    reviewUrl: ""
+    reviewUrl: "",
+    reviewPlatforms: _get(this.props, "reviewPlatforms", []),
+    sumOfAllSplits: 0
+  };
+
+  handleSplitValueChange = (value, index) => {
+    const { reviewPlatforms } = this.state;
+    if (Number(value) || value === "" || value === "0" || value === 0) {
+      value = value !== "" ? Number(value) : 0;
+      let reviewPlatformsCopy = [...reviewPlatforms];
+      reviewPlatformsCopy[index] = { ...reviewPlatformsCopy[index], value };
+      const sumOfAllSplits = _sumBy(reviewPlatformsCopy, "value");
+      if (sumOfAllSplits > 100) {
+        reviewPlatformsCopy[index] = {
+          ...reviewPlatformsCopy[index],
+          hasError: true
+        };
+      } else {
+        reviewPlatformsCopy[index] = {
+          ...reviewPlatformsCopy[index],
+          hasError: false
+        };
+      }
+      this.setState({ reviewPlatforms: reviewPlatformsCopy, sumOfAllSplits });
+    }
   };
 
   render() {
     const { dropdownData, domainUrlKey } = this.props;
+    const { sumOfAllSplits, reviewPlatforms } = this.state;
     const {
       selectedPlatform,
       showSnackbar,
@@ -57,15 +84,20 @@ class SmartUrl extends Component {
         </span>
         <div className="mtb_20">
           <Select
+            className="basic-multi-select"
+            classNamePrefix="select"
             isClearable={true}
             isSearchable={true}
             name="social-platforms"
-            placeholder="Select platform"
+            placeholder="Select review platform"
             options={dropdownData}
             onChange={valObj => {
-              let platformId = _get(valObj, "value", "");
-              let reviewUrl = `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&p=${platformId}`;
-              this.setState({ selectedPlatform: platformId, reviewUrl });
+              let selectedPlatform = _get(valObj, "value", "");
+              let reviewUrl = `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}`;
+              this.setState({
+                selectedPlatform,
+                reviewUrl
+              });
             }}
           />
         </div>
@@ -73,36 +105,44 @@ class SmartUrl extends Component {
         {selectedPlatform !== null &&
         selectedPlatform !== undefined &&
         selectedPlatform !== "" ? (
-          <Card
-            style={{
-              marginTop: "100px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <span className="urlText">
-              Here is your review URL. Please copy and paste this URL in your
-              emails sent to customers to leave reviews.
-            </span>
-            <div className="url">
-              <span>{reviewUrl}</span>
-              <CopyToClipboard
-                text={reviewUrl}
-                onCopy={() =>
-                  this.setState({
-                    showSnackbar: true,
-                    variant: "success",
-                    snackbarMsg: "Url Copied to clipboard"
-                  })
-                }
-              >
-                <IconButton aria-label="copy">
-                  <CopyIcon />
-                </IconButton>
-              </CopyToClipboard>
-            </div>
-          </Card>
+          selectedPlatform === "splitPlatform" ? (
+            <PlatformSplit
+              reviewPlatforms={reviewPlatforms || []}
+              handleSplitValueChange={this.handleSplitValueChange}
+              sumOfAllSplits={sumOfAllSplits || 0}
+            />
+          ) : (
+            <Card
+              style={{
+                marginTop: "100px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <span className="urlText">
+                Here is your review URL. Please copy and paste this URL in your
+                emails sent to customers to leave reviews.
+              </span>
+              <div className="url">
+                <span>{reviewUrl}</span>
+                <CopyToClipboard
+                  text={reviewUrl}
+                  onCopy={() =>
+                    this.setState({
+                      showSnackbar: true,
+                      variant: "success",
+                      snackbarMsg: "Url Copied to clipboard"
+                    })
+                  }
+                >
+                  <IconButton aria-label="copy">
+                    <CopyIcon />
+                  </IconButton>
+                </CopyToClipboard>
+              </div>
+            </Card>
+          )
         ) : null}
         <Snackbar
           open={showSnackbar}
@@ -152,11 +192,64 @@ const mapStateToProps = state => {
   }
   dropdownData = [
     ...dropdownData,
-    { value: "automatic", label: "Select automatically" }
+    { value: "leastRating", label: "Least rating platform" },
+    {
+      value: "showAvailablePlatforms",
+      label: "Let customer will decide the platform"
+    },
+    { value: "splitPlatform", label: "Split Platform" }
   ];
+
+  //? will need to pull this from api
+  let reviewPlatforms = [
+    {
+      social_app_id: 1,
+      name: "Facebook",
+      value: 0,
+      hasError: false,
+      min: 0,
+      max: 100
+    },
+    {
+      social_app_id: 18,
+      name: "Trustpilot",
+      value: 0,
+      hasError: false,
+      min: 0,
+      max: 100
+    },
+    {
+      social_app_id: 19,
+      name: "Trustedshops",
+      value: 0,
+      hasError: false,
+      min: 0,
+      max: 100
+    }
+  ];
+  let updatedReviewPlatforms = [];
+  if (
+    reviewPlatforms &&
+    Array.isArray(reviewPlatforms) &&
+    !_isEmpty(reviewPlatforms)
+  ) {
+    const noOfPlatforms = (reviewPlatforms || []).length;
+    let initValueForSliders = Math.floor(100 / noOfPlatforms);
+    const sumOfAllPlatforms = initValueForSliders * noOfPlatforms;
+    updatedReviewPlatforms = (reviewPlatforms || []).map(platform => {
+      return { ...platform, value: initValueForSliders };
+    });
+    if (sumOfAllPlatforms < 100) {
+      updatedReviewPlatforms[0] = {
+        ...updatedReviewPlatforms[0],
+        value: updatedReviewPlatforms[0].value + (100 - sumOfAllPlatforms)
+      };
+    }
+  }
   return {
     dropdownData,
-    domainUrlKey
+    domainUrlKey,
+    reviewPlatforms: updatedReviewPlatforms
   };
 };
 
