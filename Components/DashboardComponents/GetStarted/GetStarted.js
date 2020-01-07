@@ -39,6 +39,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import IconButton from "@material-ui/core/IconButton";
 import _omit from "lodash/omit";
+import _now from "lodash/now";
 
 class GetStarted extends Component {
   state = {
@@ -61,13 +62,14 @@ class GetStarted extends Component {
     updateMode = false
   ) => {
     let formData = {};
-    fieldsArray.forEach(item => {
+    fieldsArray.forEach((item, index) => {
       let name = _get(item, "name", "");
       let url = _get(item, "url", "");
       let social_media_app_id = _get(item, "social_media_app_id", "");
+      let id = _get(item, "id", "");
       if (name && social_media_app_id) {
         let formFieldKey =
-          name.charAt(0).toLowerCase() + name.slice(1) + "ReviewUrl";
+          social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
         formData = {
           ...formData,
           [formFieldKey]: {
@@ -529,15 +531,16 @@ class GetStarted extends Component {
   //Fix pre-fill social urls to work with dynamic data - DONE
   prefillSocialURLs = socialArray => {
     let formDataLocal = this.state.formData;
-    console.log(formDataLocal, "Form Data Local");
     if (Object.keys(formDataLocal).length > 0) {
-      socialArray.forEach(item => {
+      socialArray.forEach((item, index) => {
         let socialObj = item;
         let name = _get(socialObj, "name", "");
         let URL = _get(socialObj, "url", "");
+        let id = _get(socialObj, "id", "");
+        let social_media_app_id = _get(socialObj, "social_media_app_id", "");
         if (name && name.length > 0) {
           let editURL =
-            name.charAt(0).toLowerCase() + name.slice(1) + "ReviewUrl";
+            social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
           if (formDataLocal[editURL]) {
             formDataLocal = {
               ...formDataLocal,
@@ -628,51 +631,53 @@ class GetStarted extends Component {
 
   renderSpecificReviewURLBox = reviewURLToEdit => {
     const { formData } = this.state;
-    if (Object.keys(formData).length > 0) {
-      if (reviewURLToEdit === "getStartedBox") {
-        return this.renderGetStartedBox();
-      } else {
-        return (
-          <Grid item xs={6} md={6} lg={6}>
-            <Paper>
-              <style jsx>{reviewURLBoxStyles}</style>
-              <div className="reviewURLBox">
-                <div className="reviewURLBoxHeader">
-                  <h4>{formData[reviewURLToEdit].title}</h4>
-                </div>
-                <div className="reviewURLBoxContainerInner">
-                  <div className="reviewURLBoxImgContainer">
-                    <img
-                      src={`/static/images/${formData[reviewURLToEdit].logo}`}
-                    />
-                  </div>
-                  <div className="reviewURLBoxAutoComplete">
-                    <>
-                      <FormField
-                        {...formData[reviewURLToEdit]}
-                        id={reviewURLToEdit}
-                        handleChange={this.handleChange}
-                        styles={{
-                          border: "0",
-                          borderBottom: "1px solid #999",
-                          borderRadius: "0",
-                          marginLeft: 0,
-                          paddingLeft: 0
-                        }}
-                      />
-                    </>
-                  </div>
-                </div>
-              </div>
-            </Paper>
-          </Grid>
-        );
-      }
-    }
+    console.log(reviewURLToEdit);
+    // if (Object.keys(formData).length > 0) {
+    //   if (reviewURLToEdit === "getStartedBox") {
+    //     return this.renderGetStartedBox();
+    //   } else {
+    //     return (
+    //       <Grid item xs={6} md={6} lg={6}>
+    //         <Paper>
+    //           <style jsx>{reviewURLBoxStyles}</style>
+    //           <div className="reviewURLBox">
+    //             <div className="reviewURLBoxHeader">
+    //               <h4>{formData[reviewURLToEdit].name}</h4>
+    //             </div>
+    //             <div className="reviewURLBoxContainerInner">
+    //               <div className="reviewURLBoxImgContainer">
+    //                 <img
+    //                   src={`/static/images/${formData[reviewURLToEdit].logo}`}
+    //                 />
+    //               </div>
+    //               <div className="reviewURLBoxAutoComplete">
+    //                 <>
+    //                   <FormField
+    //                     {...formData[reviewURLToEdit]}
+    //                     id={reviewURLToEdit}
+    //                     handleChange={this.handleChange}
+    //                     styles={{
+    //                       border: "0",
+    //                       borderBottom: "1px solid #999",
+    //                       borderRadius: "0",
+    //                       marginLeft: 0,
+    //                       paddingLeft: 0
+    //                     }}
+    //                   />
+    //                 </>
+    //               </div>
+    //             </div>
+    //           </div>
+    //         </Paper>
+    //       </Grid>
+    //     );
+    //   }
+    // }
   };
 
   handleUseThesePlatformsClick = () => {
-    const { selectedAvailablePlatformItems } = this.state;
+    const { selectedAvailablePlatformItems, formData } = this.state;
+    console.log(selectedAvailablePlatformItems, "use these platforms");
     let parsedArray = [];
     if (
       selectedAvailablePlatformItems &&
@@ -684,6 +689,7 @@ class GetStarted extends Component {
           temp.name = _get(item, "label", "");
           temp.social_media_app_id = Number(_get(item, "value", -1)) || -1;
           temp.url = "";
+          temp.id = _now();
           parsedArray.push(temp);
         });
         this.generateFormFieldsDynamically(parsedArray, false, true);

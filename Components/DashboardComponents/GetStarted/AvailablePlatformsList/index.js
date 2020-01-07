@@ -26,7 +26,7 @@ class AvailablePlatformsList extends Component {
         "social_media_app_id",
         Number(item)
       ]);
-      if (!foundItem) {
+      if (!foundItem || item === "22") {
         options = [...options, { value: item, label: review_platforms[item] }];
       }
     }
