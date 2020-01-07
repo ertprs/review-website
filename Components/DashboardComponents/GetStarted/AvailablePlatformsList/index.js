@@ -26,6 +26,7 @@ class AvailablePlatformsList extends Component {
         "social_media_app_id",
         Number(item)
       ]);
+      //!Add the platform IDs in the OR condition below to allow multiple card support
       if (!foundItem || item === "22") {
         options = [...options, { value: item, label: review_platforms[item] }];
       }

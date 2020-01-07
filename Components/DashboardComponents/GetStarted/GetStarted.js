@@ -689,7 +689,8 @@ class GetStarted extends Component {
           temp.name = _get(item, "label", "");
           temp.social_media_app_id = Number(_get(item, "value", -1)) || -1;
           temp.url = "";
-          temp.id = _now();
+          //!adding a unique ID using timestamps for google only, change the condition below or use for all platforms in case multiple cards are needed.
+          temp.id = (Number(_get(item, "value", -1)) || -1) == 22 ? _now() : "";
           parsedArray.push(temp);
         });
         this.generateFormFieldsDynamically(parsedArray, false, true);
