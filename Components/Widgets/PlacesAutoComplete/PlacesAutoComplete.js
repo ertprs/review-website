@@ -30,9 +30,10 @@ class PlacesAutoComplete extends Component {
         if (Array.isArray(results) && !_isEmpty(results)) {
           let reqBody = {
             placeId: results[0].place_id,
-            name: this.props.domain //domain from redux store
+            address: results[0].formatted_address,
+            url: `https://search.google.com/local/writereview?placeid=${results[0].place_id}`
           };
-          this.props.handleAddressSelect(reqBody, results[0].formatted_address);
+          this.props.handleAddressSelect(reqBody);
         }
       })
       .catch(error => console.error("Error", error));

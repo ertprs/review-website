@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
-import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
 import {
@@ -40,14 +39,13 @@ import dynamic from "next/dynamic";
 import IconButton from "@material-ui/core/IconButton";
 import _omit from "lodash/omit";
 import _now from "lodash/now";
+import GoogleReviewURLBox from "./GoogleReviewURLBox/GoogleReviewURLBox";
 
 class GetStarted extends Component {
   state = {
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
-    address: "",
-    selectedAddress: {},
     formData: {},
     generatedCardsFormData: {},
     selectedAvailablePlatformItems: [],
@@ -56,6 +54,7 @@ class GetStarted extends Component {
   };
 
   //! Generate Form fields from socialArray for already configured social profiles and from review_platforms for rest of the available platforms.
+  //GENERIC_METHOD : generates formFields from fieldsArray parameter.
   generateFormFieldsDynamically = (
     fieldsArray,
     isSocialArray = false,
@@ -81,17 +80,18 @@ class GetStarted extends Component {
             errorMessage: "Enter valid URL",
             placeholder: `Enter ${name} page URL (optional)`,
             validationRules: {
-              required: false,
-              isDomain: true
+              required: true
             },
             label: `${name} Page URL: `,
             logo: `${name}Logo.png`,
             title: `${name} reviews`,
             key: social_media_app_id,
+            social_media_app_id: social_media_app_id,
             name: name,
-            id: formFieldKey,
+            id: id,
             editURL: formFieldKey,
-            isTemporary: !isSocialArray ? true : false
+            isTemporary: !isSocialArray ? true : false,
+            extraPayload: {}
           }
         };
       }
@@ -199,26 +199,29 @@ class GetStarted extends Component {
     }
   };
 
-  handleAddressSelect = (reqBody, address) => {
-    const { userProfile, businessProfile } = this.props;
-    const name = _get(userProfile, "company.name", "");
-    const googlePlaceId = _get(reqBody, "placeId", "");
-    const domain = _get(businessProfile, "domain", "");
-    const googleReviewUrl = `https://search.google.com/local/writereview?placeid=${googlePlaceId}`;
-    this.setState({
-      selectedAddress: { ...reqBody, name },
-      address: address,
-      disabledSave: false,
-      formData: {
-        ...this.state.formData,
-        directReviewUrl: {
-          ...this.state.formData["directReviewUrl"],
-          value: googleReviewUrl,
-          valid: true,
-          touched: true
+  handleAddressSelect = reqBody => {
+    const placeId = _get(reqBody, "placeId", "");
+    const address = _get(reqBody, "address", "");
+    const url = _get(reqBody, "url", "");
+    const formDataItemKey = _get(reqBody, "formDataItemKey", "");
+    const formDataLocal = _get(this.state, "formData", {});
+    this.setState(
+      {
+        formData: {
+          ...formDataLocal,
+          [formDataItemKey]: {
+            ...formDataLocal[formDataItemKey],
+            value: url,
+            extraPayload: { placeId, address },
+            touched: true,
+            valid: validate(url, formDataLocal[formDataItemKey].validationRules)
+          }
         }
+      },
+      () => {
+        console.log("Google review URL state set with latest values");
       }
-    });
+    );
   };
 
   renderSelectedAddress = () => {
@@ -282,51 +285,51 @@ class GetStarted extends Component {
     }
     return valid;
   };
-
-  renderContinueBtn = reviewURLToEdit => {
-    const { selectedAddress, formData, disabledSave } = this.state;
-    const { type, isLoading, showGetStarted } = this.props;
-    return (
-      <div style={{ textAlign: "right" }}>
-        {isLoading === true ? (
-          <Button variant="contained" color="primary" size="large">
-            <CircularProgress size={25} style={{ color: "white" }} />
-          </Button>
-        ) : (
-          <>
-            {showGetStarted ? (
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                onClick={() => {
-                  this.props.setGetStartedShow(false, "");
-                }}
-              >
-                Close
-              </Button>
-            ) : null}
-            <Button
-              disabled={
-                disabledSave ||
-                !(
-                  Object.keys(selectedAddress).length > 0 ||
-                  this.anyURLSelected()
-                )
-              }
-              style={{ marginLeft: "20px" }}
-              onClick={this.handleContinueClick}
-              variant="contained"
-              color="primary"
-              size="large"
-            >
-              Save Changes
-            </Button>
-          </>
-        )}
-      </div>
-    );
-  };
+  // To be FIXED
+  // renderContinueBtn = reviewURLToEdit => {
+  //   const { selectedAddress, formData, disabledSave } = this.state;
+  //   const { type, isLoading, showGetStarted } = this.props;
+  //   return (
+  //     <div style={{ textAlign: "right" }}>
+  //       {isLoading === true ? (
+  //         <Button variant="contained" color="primary" size="large">
+  //           <CircularProgress size={25} style={{ color: "white" }} />
+  //         </Button>
+  //       ) : (
+  //         <>
+  //           {showGetStarted ? (
+  //             <Button
+  //               variant="contained"
+  //               color="primary"
+  //               size="large"
+  //               onClick={() => {
+  //                 this.props.setGetStartedShow(false, "");
+  //               }}
+  //             >
+  //               Close
+  //             </Button>
+  //           ) : null}
+  //           <Button
+  //             disabled={
+  //               disabledSave ||
+  //               !(
+  //                 Object.keys(selectedAddress).length > 0 ||
+  //                 this.anyURLSelected()
+  //               )
+  //             }
+  //             style={{ marginLeft: "20px" }}
+  //             onClick={this.handleContinueClick}
+  //             variant="contained"
+  //             color="primary"
+  //             size="large"
+  //           >
+  //             Save Changes
+  //           </Button>
+  //         </>
+  //       )}
+  //     </div>
+  //   );
+  // };
 
   handleChange = (e, id) => {
     this.setState({
@@ -384,71 +387,6 @@ class GetStarted extends Component {
           </Link>
         </div>
       </div>
-    );
-  };
-
-  renderGetStartedBox = () => {
-    return (
-      <Paper>
-        <style jsx>
-          {`
-            .getStartedBox {
-              padding: 25px;
-            }
-            .getStartedBoxHeader {
-              margin-bottom: 55px;
-            }
-            .getStartedBoxContainerInner {
-              display: flex;
-            }
-            .getStartedBoxContainerInner div:first-child {
-              flex-basis: 25%;
-            }
-            .getStartedBoxContainerInner div:last-child {
-              flex-basis: 75%;
-            }
-
-            .getStartedBoxImgContainer {
-              max-width: 250px;
-              height: auto;
-            }
-            .getStartedBoxImgContainer img {
-              max-width: 100%;
-              height: auto;
-            }
-
-            @media screen and (max-width: 720px) {
-              .getStartedBoxImgContainer {
-                display: none;
-              }
-              .getStartedBoxHeader h4 {
-                font-size: 1.1rem;
-                margin-bottom: 35px;
-              }
-            }
-          `}
-        </style>
-        <div className="getStartedBox">
-          <div className="getStartedBoxHeader">
-            <h4>Locate your business</h4>
-          </div>
-          <div className="getStartedBoxContainerInner">
-            <div className="getStartedBoxImgContainer">
-              <img src="/static/images/locate.png" />
-            </div>
-            <div className="getStartedBoxAutoComplete">
-              <>
-                <PlacesAutoComplete
-                  handleAddressSelect={this.handleAddressSelect}
-                />
-                {this.renderSelectedAddress()}
-                {this.renderDirectReviewUrl()}
-                {/* {this.renderContinueBtn()} */}
-              </>
-            </div>
-          </div>
-        </div>
-      </Paper>
     );
   };
 
@@ -561,7 +499,11 @@ class GetStarted extends Component {
     const { formData } = this.state;
     let output = [];
     for (let item in formData) {
-      if (item !== "directReviewUrl") {
+      //special case for google since the BOX is different from other reviewURL boxes.
+      //check if the item contains platformId as 22
+      let formField = _get(formData, item, {});
+      let platformId = _get(formField, "social_media_app_id", "");
+      if (platformId !== 22) {
         output = [
           ...output,
           <Grid item xs={12} md={6} lg={6}>
@@ -622,6 +564,17 @@ class GetStarted extends Component {
                 </div>
               </div>
             </Paper>
+          </Grid>
+        ];
+      } else if (platformId == 22) {
+        output = [
+          ...output,
+          <Grid item xs={12} md={6} lg={6}>
+            <GoogleReviewURLBox
+              formData={formData}
+              formDataItemKey={item}
+              handleAddressSelect={this.handleAddressSelect}
+            />
           </Grid>
         ];
       }
@@ -730,7 +683,7 @@ class GetStarted extends Component {
               {this.renderGetStartedHeader()}
             </Grid>
             <Grid item xs={12} md={4} lg={4}>
-              {this.renderContinueBtn(reviewURLToEdit)}
+              {/* {this.renderContinueBtn(reviewURLToEdit)} */}
             </Grid>
           </Grid>
           {reviewURLToEdit === "" ? (
@@ -823,7 +776,7 @@ class GetStarted extends Component {
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid> */}
           <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {this.renderContinueBtn()}
+            {/* {this.renderContinueBtn()} */}
           </Grid>
         </Container>
         <AddPlatformDialog
