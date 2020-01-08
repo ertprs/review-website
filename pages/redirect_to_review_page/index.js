@@ -36,15 +36,21 @@ class redirect_to_review_page extends Component {
   };
 
   render() {
-    const { selectedOption, reviewPlatforms } = this.props;
+    const {
+      selectedOption,
+      reviewPlatforms,
+      overallRating,
+      domainName
+    } = this.props;
     return (
       <>
         {selectedOption === "showAvailablePlatforms" ? (
           <div>
-            <h2>Select platform where you want to give review:</h2>
             <ReviewPlatforms
               reviewPlatforms={reviewPlatforms}
               handlePlatformClick={this.handlePlatformClick}
+              domainName={domainName}
+              overallRating={overallRating}
             />
           </div>
         ) : (
@@ -60,6 +66,12 @@ redirect_to_review_page.getInitialProps = async ctx => {
   const fallbackUrl = process.env.DOMAIN_NAME;
   const domainUrlKey = _get(query, "domainUrlKey", "");
   const selectedOption = _get(query, "selectedOption", "");
+  let domainName = "";
+  let overallRating = 0;
+  if (selectedOption === "showAvailablePlatforms") {
+    domainName = _get(query, "domainName", "");
+    overallRating = _get(query, "overallRating", 0);
+  }
   let fetchUrlApi = "";
   let configuredPlatformsApi = `${process.env.BASE_URL}${configuredPlatforms}/${domainUrlKey}`;
   if (selectedOption === "leastRating") {
@@ -120,7 +132,14 @@ redirect_to_review_page.getInitialProps = async ctx => {
       }
     }
   }
-  return { selectedOption, domainUrlKey, fallbackUrl, reviewPlatforms };
+  return {
+    selectedOption,
+    domainUrlKey,
+    fallbackUrl,
+    reviewPlatforms,
+    domainName,
+    overallRating
+  };
 };
 
 export default redirect_to_review_page;
