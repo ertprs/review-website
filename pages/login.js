@@ -38,7 +38,7 @@ const Login = () => {
       isBusiness = splittedLocation[1];
     }
     if (isBusiness === ("business" || "Business")) {
-      setTabValue(1);
+      setTabValue(0);
     }
   }, []);
 
@@ -56,10 +56,10 @@ const Login = () => {
               variant="fullWidth"
               aria-label="Login tabs"
             >
-              <Tab label="User Login" {...a11yProps(0)} />
-              <Tab label="Business Login" {...a11yProps(1)} />
+              <Tab label="Business Login" {...a11yProps(0)} />
+              <Tab label="User Login" {...a11yProps(1)} />
             </Tabs>
-            {tabValue === 0 ? <InternetUSerLogin /> : <BuisnessUserLogin />}
+            {tabValue === 1 ? <InternetUSerLogin /> : <BuisnessUserLogin />}
           </div>
         </div>
       </div>

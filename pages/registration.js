@@ -27,7 +27,9 @@ const Registration = () => {
   };
 
   useEffect(() => {
-    window.scrollTo(0,0);
+    if (window) {
+      window.scrollTo(0, 0);
+    }
     let location = window.location.href;
     let splittedLocation = location.split("#");
     let isBusiness = "";
@@ -35,7 +37,7 @@ const Registration = () => {
       isBusiness = splittedLocation[1];
     }
     if (isBusiness === ("business" || "Business")) {
-      setTabValue(1);
+      setTabValue(0);
     }
   }, []);
 
@@ -57,10 +59,10 @@ const Registration = () => {
               variant="fullWidth"
               aria-label="Registration tabs"
             >
-              <Tab label="User Registration" {...a11yProps(0)} />
-              <Tab label="Business Registration" {...a11yProps(1)} />
+              <Tab label="Business Registration" {...a11yProps(0)} />
+              <Tab label="User Registration" {...a11yProps(1)} />
             </Tabs>
-            {tabValue === 0 ? (
+            {tabValue === 1 ? (
               <InternetUSerRegistration />
             ) : (
               <BuisnessUserRegistration />

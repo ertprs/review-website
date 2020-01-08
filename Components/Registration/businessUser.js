@@ -223,7 +223,6 @@ class BusinessUserRegistration extends Component {
   };
 
   componentWillMount() {
-    window.scrollTo(0, 0);
     const { domainName } = this.props;
     const { formData } = this.state;
     if (domainName) {
