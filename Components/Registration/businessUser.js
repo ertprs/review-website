@@ -253,9 +253,9 @@ class BusinessUserRegistration extends Component {
         ObjectKeysArray.map(key => {
           if (formData.hasOwnProperty([key])) {
             if (key === "phone") {
-              reqBody[
-                key
-              ] = `+${formData[key].dialCode}-${formData[key].value}`;
+              let phoneNo = formData[key].value;
+              phoneNo = phoneNo.replace(/ +?/g, "", "");
+              reqBody[key] = `+${formData[key].dialCode}-${phoneNo}`;
             } else {
               reqBody[key] = formData[key].value;
             }
