@@ -22,7 +22,7 @@ class SmartUrl extends Component {
     snackbarMsg: "",
     reviewUrl: "",
     reviewPlatforms: _get(this.props, "reviewPlatforms", []),
-    sumOfAllSplits: 0
+    sumOfAllSplits: 100
   };
 
   handleSplitValueChange = (value, index) => {
@@ -48,7 +48,12 @@ class SmartUrl extends Component {
   };
 
   render() {
-    const { dropdownData, domainUrlKey } = this.props;
+    const {
+      dropdownData,
+      domainUrlKey,
+      overallRating,
+      domainName
+    } = this.props;
     const { sumOfAllSplits, reviewPlatforms } = this.state;
     const {
       selectedPlatform,
@@ -63,6 +68,9 @@ class SmartUrl extends Component {
           .loader {
             text-align: "center";
           }
+          .mb_10 {
+            margin-bottom: 10px;
+          }
           .mtb_20 {
             margin: 20px 0px;
           }
@@ -70,9 +78,15 @@ class SmartUrl extends Component {
             font-size: 16px;
             font-weight: bold;
             margin: 12px 0px;
+            word-break: break-all;
           }
           .urlText {
             font-size: "14px";
+          }
+          .copyToClipboardIcon {
+            display: flex;
+            justify-content: center;
+            align-content: center;
           }
         `}</style>
         <h3> Generate Review URL</h3>
@@ -93,7 +107,11 @@ class SmartUrl extends Component {
             options={dropdownData}
             onChange={valObj => {
               let selectedPlatform = _get(valObj, "value", "");
-              let reviewUrl = `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}`;
+              //? sending overall rating and domain name in case of "show available platforms" in jumping page
+              let reviewUrl =
+                selectedPlatform === "showAvailablePlatforms"
+                  ? `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
+                  : `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}`;
               this.setState({
                 selectedPlatform,
                 reviewUrl
@@ -120,26 +138,32 @@ class SmartUrl extends Component {
                 alignItems: "center"
               }}
             >
-              <span className="urlText">
-                Here is your review URL. Please copy and paste this URL in your
-                emails sent to customers to leave reviews.
-              </span>
-              <div className="url">
-                <span>{reviewUrl}</span>
-                <CopyToClipboard
-                  text={reviewUrl}
-                  onCopy={() =>
-                    this.setState({
-                      showSnackbar: true,
-                      variant: "success",
-                      snackbarMsg: "Url Copied to clipboard"
-                    })
-                  }
-                >
-                  <IconButton aria-label="copy">
-                    <CopyIcon />
-                  </IconButton>
-                </CopyToClipboard>
+              <div className="row">
+                <div className="col-md-11">
+                  <div className="mb_10">
+                    <span className="urlText">
+                      Here is your review URL. Please copy and paste this URL in
+                      your emails sent to customers to leave reviews:
+                    </span>
+                  </div>
+                  <span className="url">{reviewUrl}</span>
+                </div>
+                <div className="col-md-1 copyToClipboardIcon">
+                  <CopyToClipboard
+                    text={reviewUrl}
+                    onCopy={() =>
+                      this.setState({
+                        showSnackbar: true,
+                        variant: "success",
+                        snackbarMsg: "Url Copied to clipboard"
+                      })
+                    }
+                  >
+                    <IconButton aria-label="copy">
+                      <CopyIcon />
+                    </IconButton>
+                  </CopyToClipboard>
+                </div>
               </div>
             </Card>
           )
@@ -195,7 +219,7 @@ const mapStateToProps = state => {
     { value: "leastRating", label: "Least rating platform" },
     {
       value: "showAvailablePlatforms",
-      label: "Let customer will decide the platform"
+      label: "Let customer choose the platform"
     },
     { value: "splitPlatform", label: "Split Platform" }
   ];
@@ -246,10 +270,48 @@ const mapStateToProps = state => {
       };
     }
   }
+  // Calculating total rating
+  const googleRating = _get(state, "dashboardData.reviews.data.rating", 0);
+  const facebookRating = _get(
+    state,
+    "dashboardData.facebookReviews.data.rating",
+    0
+  );
+  const trustpilotRating = _get(
+    state,
+    "dashboardData.trustpilotReviews.data.rating",
+    0
+  );
+  const trustedshopsRating = _get(
+    state,
+    "dashboardData.trustedshopsReviews.data.rating",
+    0
+  );
+  const totalRatingOfAllPlatforms =
+    (googleRating ? Number(googleRating) : 0) +
+    (facebookRating ? Number(facebookRating) : 0) +
+    (trustpilotRating ? Number(trustpilotRating) : 0) +
+    (trustedshopsRating ? Number(trustedshopsRating) : 0);
+  const noOfPlatforms =
+    (googleRating ? 1 : 0) +
+    (facebookRating ? 1 : 0) +
+    (trustpilotRating ? 1 : 0) +
+    (trustedshopsRating ? 1 : 0);
+  let overallRating = totalRatingOfAllPlatforms / (noOfPlatforms || 1);
+  if (overallRating) {
+    overallRating = overallRating.toFixed(1);
+  }
+  const domainName = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.domain",
+    ""
+  );
   return {
     dropdownData,
     domainUrlKey,
-    reviewPlatforms: updatedReviewPlatforms
+    reviewPlatforms: updatedReviewPlatforms,
+    overallRating,
+    domainName
   };
 };
 

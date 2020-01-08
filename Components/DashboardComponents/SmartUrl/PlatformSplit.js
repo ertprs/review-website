@@ -6,6 +6,7 @@ import Slider from "@material-ui/core/Slider";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
+import Button from "@material-ui/core/Button";
 
 const PrettoSlider = withStyles({
   root: {
@@ -57,7 +58,6 @@ const PlatformSplit = ({
             <div className="row" style={{ marginBottom: "30px" }}>
               <div className="col-md-3">
                 <TextField
-                  label="Review platform"
                   defaultValue={_get(platform, "name", "")}
                   fullWidth
                   margin="normal"
@@ -102,7 +102,7 @@ const PlatformSplit = ({
                     id="filled-weight-helper-text"
                     style={{ width: "100%", marginLeft: "2px" }}
                   >
-                    Split
+                    Split Percentage
                   </FormHelperText>
                 </div>
               </div>
@@ -111,7 +111,16 @@ const PlatformSplit = ({
         );
       })}
       <div className="row">
-        <div className="col-md-3 offset-md-8">
+        <div className="col-md-8">
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={sumOfAllSplits > 100}
+          >
+            Generate Review Url
+          </Button>
+        </div>
+        <div className="col-md-3">
           <div style={{ textAlign: "center" }}>
             <h5>
               Total :{" "}
