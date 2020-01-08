@@ -1,21 +1,88 @@
 import React, { Component } from "react";
 import PlacesAutoComplete from "../../../Widgets/PlacesAutoComplete/PlacesAutoComplete";
 import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
+import CloseIcon from "@material-ui/icons/Close";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 import _get from "lodash/get";
+import IconButton from "@material-ui/core/IconButton";
+import FormField from "../../../Widgets/FormField/FormField";
+import VpnKeyOutlinedIcon from "@material-ui/icons/VpnKeyOutlined";
+import validate from "../../../../utility/validate";
+import Button from "@material-ui/core/Button";
 
 class GoogleReviewURLBox extends Component {
+  state = {
+    placeNameEditMode: false,
+    placeName: {
+      element: "input",
+      type: "text",
+      id: "placeName",
+      value: "",
+      valid: false,
+      touched: false,
+      validationRules: {
+        required: true
+      },
+      placeholder: "Enter place name/identifier",
+      errorMessage: " Please enter a valid place name",
+      name: "placeName"
+    }
+  };
+
   handleAddressSelect = reqBody => {
     const formDataItemKey = _get(this.props, "formDataItemKey", "");
     this.props.handleAddressSelect({ ...reqBody, formDataItemKey });
+  };
+
+  handlePlaceNameChange = () => {
+    const formDataItemKey = _get(this.props, "formDataItemKey", "");
+    const newPlaceName = _get(this.state, "placeName.value", "");
+    if (newPlaceName && formDataItemKey) {
+      this.props.handleGooglePlaceNameChange(newPlaceName, formDataItemKey);
+      this.togglePlaceNameEditMode();
+    }
+  };
+
+  togglePlaceNameEditMode = () => {
+    this.setState(prevState => {
+      return { ...prevState, placeNameEditMode: !prevState.placeNameEditMode };
+    });
+  };
+
+  renderSetPrimaryBtn = () => {
+    const formData = _get(this.props, "formData", {});
+    const formDataItemKey = _get(this.props, "formDataItemKey", "");
+    const formDataItem = _get(formData, formDataItemKey, {});
+    const selectedAddress = _get(formDataItem, "identity_data.address", "");
+    const { handleSetAsPrimaryModalVisibilityToggle } = this.props;
+    return selectedAddress ? (
+      <Button
+        size="small"
+        variant="contained"
+        color="secondary"
+        endIcon={<VpnKeyOutlinedIcon />}
+        onClick={() => {
+          handleSetAsPrimaryModalVisibilityToggle(formDataItemKey);
+        }}
+      >
+        Set as primary location
+      </Button>
+    ) : null;
   };
 
   render() {
     const formData = _get(this.props, "formData", {});
     const formDataItemKey = _get(this.props, "formDataItemKey", "");
     const formDataItem = _get(formData, formDataItemKey, {});
-    const selectedAddress = _get(formDataItem, "extraPayload.address", "");
+    const selectedAddress = _get(formDataItem, "identity_data.address", "");
+    const isPrimary = _get(formDataItem, "primary", "");
     const selectedGoogleReviewUrl = _get(formDataItem, "value", "");
     const title = _get(formDataItem, "title", "");
+    const isTemporary = _get(formDataItem, "isTemporary", false);
+    const name = _get(formDataItem, "name", "");
+    const placeNameEditMode = _get(this.state, "placeNameEditMode", false);
+    const placeName = _get(this.state, "placeName", {});
     return (
       <Paper>
         <style jsx>
@@ -53,6 +120,36 @@ class GoogleReviewURLBox extends Component {
             .selectedGoogleReviewUrl {
               word-break: break-all;
             }
+            .getStartedBoxHeaderContainer {
+              display: flex;
+            }
+
+            .getStartedBoxHeaderContainer div:first-child {
+              flex-basis: 80%;
+            }
+
+            .getStartedBoxHeaderContainer div:last-child {
+              flex-basis: 20%;
+              text-align: right;
+            }
+
+            .changePlaceNameLink {
+              font-size: 12px;
+              color: blue;
+              text-decoration: underline;
+              display: inline-block;
+              margin-left: 10px;
+            }
+
+            .changePlaceNameLink:hover {
+              cursor: pointer;
+            }
+
+            .primaryTextContainer {
+              color: #235d57;
+              margin-top: 18px;
+            }
+
             @media screen and (max-width: 720px) {
               .getStartedBoxImgContainer {
                 display: none;
@@ -65,17 +162,92 @@ class GoogleReviewURLBox extends Component {
           `}
         </style>
         <div className="getStartedBox">
-          <div className="getStartedBoxHeader">
-            <h6>{title}</h6>
+          <div className="getStartedBoxHeaderContainer">
+            <div>
+              <h6>
+                {placeNameEditMode ? (
+                  <FormField
+                    {...placeName}
+                    handleChange={e => {
+                      this.setState({
+                        placeName: {
+                          ...placeName,
+                          value: e.target.value,
+                          touched: true,
+                          valid: validate(
+                            e.target.value,
+                            placeName.validationRules
+                          )
+                        }
+                      });
+                    }}
+                  />
+                ) : name ? (
+                  name
+                ) : (
+                  title
+                )}
+                {placeNameEditMode ? (
+                  <>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                      disabled={!placeName.valid}
+                      onClick={this.handlePlaceNameChange}
+                    >
+                      Save changed name
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                      style={{ marginLeft: "9px" }}
+                      onClick={this.togglePlaceNameEditMode}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <span
+                    className="changePlaceNameLink"
+                    onClick={this.togglePlaceNameEditMode}
+                  >
+                    Change place name
+                  </span>
+                )}
+              </h6>
+            </div>
+            {isTemporary ? (
+              <div>
+                <IconButton
+                  aria-label="delete"
+                  size="small"
+                  onClick={() => {
+                    this.props.handleRemoveTemporaryCard(formDataItemKey);
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
+            ) : (
+              <div>
+                <Tooltip title="This platform is already configured, but you are allowed to edit the platform URL and save changes">
+                  <InfoIcon />
+                </Tooltip>
+              </div>
+            )}
           </div>
           <div className="getStartedBoxContainerInner">
             <div className="getStartedBoxAutoComplete">
               <>
-                <div className="placeAutoCompleteContainer">
-                  <PlacesAutoComplete
-                    handleAddressSelect={this.handleAddressSelect}
-                  />
-                </div>
+                {placeNameEditMode ? null : (
+                  <div className="placeAutoCompleteContainer">
+                    <PlacesAutoComplete
+                      handleAddressSelect={this.handleAddressSelect}
+                    />
+                  </div>
+                )}
                 {selectedAddress ? (
                   <div className="row" style={{ marginBottom: "8px" }}>
                     <div className="col-md-6">
@@ -98,11 +270,22 @@ class GoogleReviewURLBox extends Component {
                     </div>
                   </div>
                 ) : null}
-                {/* {this.renderSelectedAddress()}
-                {this.renderDirectReviewUrl()} */}
-                {/* {this.renderContinueBtn()} */}
               </>
             </div>
+          </div>
+          <div>
+            {isPrimary ? (
+              <div className="primaryTextContainer">
+                <Tooltip title="Primary location">
+                  <VpnKeyOutlinedIcon color="secondary" />
+                </Tooltip>{" "}
+                <span style={{ display: "inline-block", marginLeft: "8px" }}>
+                  You are using this location as primary
+                </span>
+              </div>
+            ) : (
+              this.renderSetPrimaryBtn(isPrimary)
+            )}
           </div>
         </div>
       </Paper>

@@ -57,7 +57,7 @@ class PlacesAutoComplete extends Component {
             /> */}
             <Tooltip title="Please locate your business." placement="top-start">
               <TextField
-                label="Search Places..."
+                label="Search your business location to get your review url..."
                 margin="dense"
                 {...getInputProps({
                   placeholder: "Business name",

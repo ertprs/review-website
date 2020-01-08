@@ -27,9 +27,6 @@ import {
   setReviewsObjectWithPusher,
   clearReviewsData
 } from "../../../store/actions/dashboardActions";
-const SimpleBar = dynamic(() => import("simplebar-react"), {
-  ssr: false
-});
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
@@ -40,6 +37,7 @@ import IconButton from "@material-ui/core/IconButton";
 import _omit from "lodash/omit";
 import _now from "lodash/now";
 import GoogleReviewURLBox from "./GoogleReviewURLBox/GoogleReviewURLBox";
+import SetAsPrimaryModal from "./SetAsPrimaryModal/SetAsPrimaryModal";
 
 class GetStarted extends Component {
   state = {
@@ -50,7 +48,20 @@ class GetStarted extends Component {
     generatedCardsFormData: {},
     selectedAvailablePlatformItems: [],
     disabledSave: true,
-    modelOpen: false
+    modelOpen: false,
+    showSetAsPrimaryModal: false,
+    selectedSetAsPrimaryFormDataObject: {}
+  };
+
+  handleRemoveTemporaryCard = formDataItemKey => {
+    let key = formDataItemKey;
+    const { formData } = this.state;
+    if (formData[formDataItemKey]) {
+      const formDataAfterOmission = _omit(formData, key);
+      this.setState({
+        formData: { ...formDataAfterOmission }
+      });
+    }
   };
 
   //! Generate Form fields from socialArray for already configured social profiles and from review_platforms for rest of the available platforms.
@@ -66,6 +77,7 @@ class GetStarted extends Component {
       let url = _get(item, "url", "");
       let social_media_app_id = _get(item, "social_media_app_id", "");
       let id = _get(item, "id", "");
+      let is_primary = _get(item, "is_primary", "");
       if (name && social_media_app_id) {
         let formFieldKey =
           social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
@@ -91,7 +103,8 @@ class GetStarted extends Component {
             id: id,
             editURL: formFieldKey,
             isTemporary: !isSocialArray ? true : false,
-            extraPayload: {}
+            extraPayload: {},
+            primary: is_primary
           }
         };
       }
@@ -118,6 +131,18 @@ class GetStarted extends Component {
   handleModalVisibilityToggle = () => {
     this.setState(prevState => {
       return { ...prevState, modelOpen: !prevState.modelOpen };
+    });
+  };
+
+  handleSetAsPrimaryModalVisibilityToggle = formDataItemKey => {
+    const formData = _get(this.state, "formData", {});
+    const formDataItem = formData[formDataItemKey] || {};
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        selectedSetAsPrimaryFormDataObject: { ...formDataItem },
+        showSetAsPrimaryModal: !prevState.showSetAsPrimaryModal
+      };
     });
   };
 
@@ -199,53 +224,70 @@ class GetStarted extends Component {
     }
   };
 
+  //! modified method (Specifically for google reviews) to set Google review URL, address and other params with latest value
   handleAddressSelect = reqBody => {
+    const { formData } = this.state;
     const placeId = _get(reqBody, "placeId", "");
     const address = _get(reqBody, "address", "");
     const url = _get(reqBody, "url", "");
     const formDataItemKey = _get(reqBody, "formDataItemKey", "");
-    const formDataLocal = _get(this.state, "formData", {});
-    this.setState(
-      {
-        formData: {
-          ...formDataLocal,
-          [formDataItemKey]: {
-            ...formDataLocal[formDataItemKey],
-            value: url,
-            extraPayload: { placeId, address },
-            touched: true,
-            valid: validate(url, formDataLocal[formDataItemKey].validationRules)
+    console.log(reqBody);
+    if (formData && formData[formDataItemKey]) {
+      this.setState(
+        {
+          formData: {
+            ...formData,
+            [formDataItemKey]: {
+              ...formData[formDataItemKey],
+              value: url,
+              touched: true,
+              identity: placeId,
+              identity_data: {
+                ...formData[formDataItemKey].identity_data,
+                address: address,
+                directReviewUrl: url
+              },
+              extraPayload: {
+                ...formData[formDataItemKey].extraPayload,
+                placeId: placeId,
+                address: address,
+                directReviewUrl: url
+              },
+              valid: validate(url, formData[formDataItemKey].validationRules)
+            }
           }
+        },
+        () => {
+          console.log("state set");
         }
-      },
-      () => {
-        console.log("Google review URL state set with latest values");
-      }
-    );
+      );
+    }
   };
 
-  renderSelectedAddress = () => {
-    const { selectedAddress, address } = this.state;
-    const addressSelected = _get(this.props, "addressSelected", "");
-    return Object.keys(selectedAddress).length > 0 ? (
-      <div style={{ marginTop: "15px" }}>
-        {address ? (
-          <p>
-            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-            {address}
-          </p>
-        ) : null}
-      </div>
-    ) : (
-      <div style={{ marginTop: "15px" }}>
-        {addressSelected ? (
-          <p>
-            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-            {addressSelected}
-          </p>
-        ) : null}
-      </div>
-    );
+  //! (Specifically for google reviews for now) but functionality wise it's generic and can be used with other platforms also in future
+  handleGooglePlaceNameChange = (newName, formDataItemKey) => {
+    const formDataLocal = _get(this.state, "formData", {});
+    if (formDataLocal[formDataItemKey]) {
+      this.setState(
+        {
+          formData: {
+            ...formDataLocal,
+            [formDataItemKey]: {
+              ...formDataLocal[formDataItemKey],
+              name: newName,
+              touched: true,
+              valid: validate(
+                formDataLocal[formDataItemKey].value,
+                formDataLocal[formDataItemKey].validationRules
+              )
+            }
+          }
+        },
+        () => {
+          console.log("Google review URL state set with latest name");
+        }
+      );
+    }
   };
 
   renderGetStartedHeader = () => {
@@ -286,50 +328,50 @@ class GetStarted extends Component {
     return valid;
   };
   // To be FIXED
-  // renderContinueBtn = reviewURLToEdit => {
-  //   const { selectedAddress, formData, disabledSave } = this.state;
-  //   const { type, isLoading, showGetStarted } = this.props;
-  //   return (
-  //     <div style={{ textAlign: "right" }}>
-  //       {isLoading === true ? (
-  //         <Button variant="contained" color="primary" size="large">
-  //           <CircularProgress size={25} style={{ color: "white" }} />
-  //         </Button>
-  //       ) : (
-  //         <>
-  //           {showGetStarted ? (
-  //             <Button
-  //               variant="contained"
-  //               color="primary"
-  //               size="large"
-  //               onClick={() => {
-  //                 this.props.setGetStartedShow(false, "");
-  //               }}
-  //             >
-  //               Close
-  //             </Button>
-  //           ) : null}
-  //           <Button
-  //             disabled={
-  //               disabledSave ||
-  //               !(
-  //                 Object.keys(selectedAddress).length > 0 ||
-  //                 this.anyURLSelected()
-  //               )
-  //             }
-  //             style={{ marginLeft: "20px" }}
-  //             onClick={this.handleContinueClick}
-  //             variant="contained"
-  //             color="primary"
-  //             size="large"
-  //           >
-  //             Save Changes
-  //           </Button>
-  //         </>
-  //       )}
-  //     </div>
-  //   );
-  // };
+  renderContinueBtn = reviewURLToEdit => {
+    const { selectedAddress, formData, disabledSave } = this.state;
+    const { type, isLoading, showGetStarted } = this.props;
+    return (
+      <div style={{ textAlign: "right" }}>
+        {isLoading === true ? (
+          <Button variant="contained" color="primary" size="large">
+            <CircularProgress size={25} style={{ color: "white" }} />
+          </Button>
+        ) : (
+          <>
+            {showGetStarted ? (
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => {
+                  this.props.setGetStartedShow(false, "");
+                }}
+              >
+                Close
+              </Button>
+            ) : null}
+            <Button
+              disabled={
+                disabledSave ||
+                !(
+                  Object.keys(selectedAddress).length > 0 ||
+                  this.anyURLSelected()
+                )
+              }
+              style={{ marginLeft: "20px" }}
+              onClick={this.handleContinueClick}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Save Changes
+            </Button>
+          </>
+        )}
+      </div>
+    );
+  };
 
   handleChange = (e, id) => {
     this.setState({
@@ -349,52 +391,11 @@ class GetStarted extends Component {
     });
   };
 
-  renderDirectReviewUrl = () => {
-    const { formData, selectedAddress } = this.state;
-    return (
-      <div className="row">
-        <div
-          className="col-md-7"
-          style={{ alignItems: "flex-end", display: "flex", flex: "1" }}
-        >
-          <div style={{ width: "100%" }}>
-            <FormField
-              {...formData.directReviewUrl}
-              id="directReviewUrl"
-              handleChange={this.handleChange}
-              styles={{
-                border: "0",
-                borderBottom: "1px solid #999",
-                borderRadius: "0",
-                marginLeft: 0,
-                paddingLeft: 0
-              }}
-            />
-          </div>
-        </div>
-        <div className="col-md-5">
-          <Link href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708">
-            <a target="_blank">
-              {" "}
-              <p>How to create review short link - Watch Video</p>{" "}
-              <div style={{ maxWidth: "300px", height: "auto" }}>
-                <img
-                  style={{ maxWidth: "100%", height: "auto" }}
-                  src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
-                />
-              </div>
-            </a>
-          </Link>
-        </div>
-      </div>
-    );
-  };
-
   componentDidMount() {
     const { placeId, locatePlace, businessProfile, socialArray } = this.props;
     if (socialArray) {
       if (socialArray.length > 0) {
-        //check on update also
+        //check on update also - Done
         this.generateFormFieldsDynamically(
           _get(this.props, "socialArray", []),
           true
@@ -480,14 +481,44 @@ class GetStarted extends Component {
           let editURL =
             social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
           if (formDataLocal[editURL]) {
-            formDataLocal = {
-              ...formDataLocal,
-              [editURL]: {
-                ...formDataLocal[editURL],
-                value: URL,
-                valid: true
-              }
-            };
+            //!check if google to add identity and identity_data and extra payload
+            if (social_media_app_id === 22) {
+              let directReviewUrl = _get(
+                socialObj,
+                "identity_data.directReviewUrl",
+                ""
+              );
+              let address = _get(socialObj, "identity_data.address", "");
+              let placeId = _get(socialObj, "identity", "");
+              let url = _get(socialObj, "identity_data.directReviewUrl", "");
+              formDataLocal = {
+                ...formDataLocal,
+                [editURL]: {
+                  ...formDataLocal[editURL],
+                  value: url,
+                  valid: true,
+                  identity: placeId,
+                  identity_data: {
+                    directReviewUrl,
+                    address
+                  },
+                  extraPayload: {
+                    address,
+                    placeId,
+                    directReviewUrl
+                  }
+                }
+              };
+            } else {
+              formDataLocal = {
+                ...formDataLocal,
+                [editURL]: {
+                  ...formDataLocal[editURL],
+                  value: URL,
+                  valid: true
+                }
+              };
+            }
           }
         }
       });
@@ -574,6 +605,12 @@ class GetStarted extends Component {
               formData={formData}
               formDataItemKey={item}
               handleAddressSelect={this.handleAddressSelect}
+              handleGooglePlaceNameChange={this.handleGooglePlaceNameChange}
+              handleRemoveTemporaryCard={this.handleRemoveTemporaryCard}
+              handleSetAsPrimaryModalVisibilityToggle={
+                this.handleSetAsPrimaryModalVisibilityToggle
+              }
+              showSetAsPrimaryModal={this.state.showSetAsPrimaryModal}
             />
           </Grid>
         ];
@@ -626,6 +663,45 @@ class GetStarted extends Component {
     //     );
     //   }
     // }
+  };
+
+  //!Generic method to handle primary location change for all platforms
+
+  handlePrimaryLocationChange = selectedSetAsPrimaryFormDataObject => {
+    let formData = _get(this.state, "formData", {});
+    let formDataLocal = _get(this.state, "formData", {});
+    const selectedSocialMediaId = _get(
+      selectedSetAsPrimaryFormDataObject,
+      "social_media_app_id",
+      ""
+    );
+    const selectedFormDataItemKey = _get(
+      selectedSetAsPrimaryFormDataObject,
+      "editURL",
+      ""
+    );
+    for (let item in formData) {
+      let formItemObject = formData[item] || {};
+      let socialMediaAppId = _get(formItemObject, "social_media_app_id", "");
+      let formDataItemKey = _get(formItemObject, "editURL", "");
+      if (socialMediaAppId === selectedSocialMediaId) {
+        if (formDataItemKey === selectedFormDataItemKey) {
+          formDataLocal = {
+            ...formDataLocal,
+            [formDataItemKey]: { ...formDataLocal[formDataItemKey], primary: 1 }
+          };
+        } else {
+          formDataLocal = {
+            ...formDataLocal,
+            [formDataItemKey]: {
+              ...formDataLocal[formDataItemKey],
+              primary: ""
+            }
+          };
+        }
+      }
+    }
+    this.setState({ formData: { ...formData, ...formDataLocal } });
   };
 
   handleUseThesePlatformsClick = () => {
@@ -782,6 +858,15 @@ class GetStarted extends Component {
         <AddPlatformDialog
           open={modelOpen}
           handleClose={this.handleModalVisibilityToggle}
+        />
+        <SetAsPrimaryModal
+          open={this.state.showSetAsPrimaryModal}
+          handleClose={this.handleSetAsPrimaryModalVisibilityToggle}
+          formData={this.state.formData}
+          selectedSetAsPrimaryFormDataObject={
+            this.state.selectedSetAsPrimaryFormDataObject
+          }
+          handlePrimaryLocationChange={this.handlePrimaryLocationChange}
         />
         <Snackbar
           open={this.state.showSnackbar}

@@ -583,22 +583,22 @@ export const businessLogIn = (loginData, api, directLogin) => {
           }
         }
       } else {
-        dispatch({
-          type: BUSINESS_LOGIN_FAILURE,
-          logIn: {
-            authorized: false,
-            loginType: 0,
-            token: "",
-            userProfile: {}
-          },
-          logInTemp: {
-            status: 0,
-            isWrongCredentials: false,
-            isLoginFailed: true,
-            isLoggingIn: false,
-            error: "Some Error Occured."
-          }
-        });
+        // dispatch({
+        //   type: BUSINESS_LOGIN_FAILURE,
+        //   logIn: {
+        //     authorized: false,
+        //     loginType: 0,
+        //     token: "",
+        //     userProfile: {}
+        //   },
+        //   logInTemp: {
+        //     status: 0,
+        //     isWrongCredentials: false,
+        //     isLoginFailed: true,
+        //     isLoggingIn: false,
+        //     error: "Some Error Occured."
+        //   }
+        // });
       }
     } catch (err) {
       let success = _get(err, "response.data.success", false);
@@ -606,22 +606,22 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let error = _get(err, "response.data.error", "Some Error Occured.");
       let isWrongCredentials =
         _get(err, "response.data.error") === "Unauthorized";
-      dispatch({
-        type: BUSINESS_LOGIN_FAILURE,
-        logIn: {
-          authorized: false,
-          loginType: 0,
-          token: "",
-          userProfile: {}
-        },
-        logInTemp: {
-          status: status,
-          isWrongCredentials,
-          isLoginFailed: !success,
-          isLoggingIn: false,
-          error
-        }
-      });
+      // dispatch({
+      //   type: BUSINESS_LOGIN_FAILURE,
+      //   logIn: {
+      //     authorized: false,
+      //     loginType: 0,
+      //     token: "",
+      //     userProfile: {}
+      //   },
+      //   logInTemp: {
+      //     status: status,
+      //     isWrongCredentials,
+      //     isLoginFailed: !success,
+      //     isLoggingIn: false,
+      //     error
+      //   }
+      // });
     }
   };
 };

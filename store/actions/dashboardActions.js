@@ -680,75 +680,73 @@ export const emptyDomainDetails = () => {
 
 export const getThirdPartyReviews = (socialAppId, domainId) => {
   //! here appName is used to set the value to trust for domains whose reviews are successfully fetched to stop the loader in reviews sections
-
-  if (socialAppId && domainId) {
-    let appName = "";
-    if (iconNames.hasOwnProperty(socialAppId)) {
-      if (iconNames) {
-        appName = iconNames[socialAppId].name;
-      }
-    }
-    return async (dispatch, getState) => {
-      let socialAppName = `${iconNames[socialAppId].name}Reviews`;
-      let { dashboardData } = getState();
-      let reviewsObject = _get(dashboardData, "reviewsObject", {});
-
-      dispatch({
-        type: FETCH_THIRD_PARTY_REVIEWS_INIT,
-        thirdPartyReviews: {
-          [socialAppName]: {
-            isLoading: true,
-            success: undefined,
-            errorMsg: "",
-            data: {}
-          }
-        }
-      });
-      try {
-        const result = await axios.get(
-          `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
-        );
-        let success = false;
-        let reviews = _get(result, "data.data.reviews", []);
-        if (reviews) {
-          if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-            success = true;
-          }
-        }
-        reviewsObject[appName] = false;
-        dispatch(setReviewsObjectWithPusher(reviewsObject));
-        dispatch({
-          type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-          thirdPartyReviews: {
-            [socialAppName]: {
-              isLoading: false,
-              success,
-              errorMsg: "",
-              data: _get(result, "data.data", {})
-            }
-          }
-        });
-      } catch (error) {
-        reviewsObject[appName] = false;
-        dispatch(setReviewsObjectWithPusher(reviewsObject));
-        dispatch({
-          type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
-          thirdPartyReviews: {
-            [socialAppName]: {
-              isLoading: false,
-              success: false,
-              errorMsg: _get(
-                error,
-                "response.data.message",
-                "Unable to fetch reviews!"
-              ),
-              data: {}
-            }
-          }
-        });
-      }
-    };
-  }
+  // if (socialAppId && domainId) {
+  //   let appName = "";
+  //   if (iconNames.hasOwnProperty(socialAppId)) {
+  //     if (iconNames) {
+  //       appName = iconNames[socialAppId].name;
+  //     }
+  //   }
+  //   return async (dispatch, getState) => {
+  //     let socialAppName = `${iconNames[socialAppId].name}Reviews`;
+  //     let { dashboardData } = getState();
+  //     let reviewsObject = _get(dashboardData, "reviewsObject", {});
+  //     dispatch({
+  //       type: FETCH_THIRD_PARTY_REVIEWS_INIT,
+  //       thirdPartyReviews: {
+  //         [socialAppName]: {
+  //           isLoading: true,
+  //           success: undefined,
+  //           errorMsg: "",
+  //           data: {}
+  //         }
+  //       }
+  //     });
+  //     try {
+  //       const result = await axios.get(
+  //         `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
+  //       );
+  //       let success = false;
+  //       let reviews = _get(result, "data.data.reviews", []);
+  //       if (reviews) {
+  //         if (!_isEmpty(reviews) && Array.isArray(reviews)) {
+  //           success = true;
+  //         }
+  //       }
+  //       reviewsObject[appName] = false;
+  //       dispatch(setReviewsObjectWithPusher(reviewsObject));
+  //       dispatch({
+  //         type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+  //         thirdPartyReviews: {
+  //           [socialAppName]: {
+  //             isLoading: false,
+  //             success,
+  //             errorMsg: "",
+  //             data: _get(result, "data.data", {})
+  //           }
+  //         }
+  //       });
+  //     } catch (error) {
+  //       reviewsObject[appName] = false;
+  //       dispatch(setReviewsObjectWithPusher(reviewsObject));
+  //       dispatch({
+  //         type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+  //         thirdPartyReviews: {
+  //           [socialAppName]: {
+  //             isLoading: false,
+  //             success: false,
+  //             errorMsg: _get(
+  //               error,
+  //               "response.data.message",
+  //               "Unable to fetch reviews!"
+  //             ),
+  //             data: {}
+  //           }
+  //         }
+  //       });
+  //     }
+  //   };
+  // }
 };
 
 export const setGetStartedShow = (show, reviewURLToEdit) => {
