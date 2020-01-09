@@ -38,6 +38,7 @@ import _omit from "lodash/omit";
 import _now from "lodash/now";
 import GoogleReviewURLBox from "./GoogleReviewURLBox/GoogleReviewURLBox";
 import SetAsPrimaryModal from "./SetAsPrimaryModal/SetAsPrimaryModal";
+import BottomNotificationBar from "./BottomNotificationBar/BottomNotificationBar";
 
 class GetStarted extends Component {
   state = {
@@ -874,6 +875,7 @@ class GetStarted extends Component {
           handleClose={() => this.setState({ showSnackbar: false })}
           message={this.state.snackbarMsg}
         />
+        <BottomNotificationBar />
       </div>
     );
   }
