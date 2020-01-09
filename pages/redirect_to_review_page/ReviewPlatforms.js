@@ -28,7 +28,7 @@ const ReviewPlatforms = ({
   domainName
 }) => {
   const classes = useStyles();
-  let domainProfileUrl = `${process.env.DOMAIN_NAME}/reviews/${domainName}`;
+  let domainProfileUrl = `${process.env.DOMAIN_NAME}reviews/${domainName}`;
   return (
     <div className="container">
       <style jsx>{`

@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import _get from "lodash/get";
 import axios from "axios";
-import { smartUrlApi, configuredPlatforms } from "../../utility/config";
+import { smartUrlApi, configuredPlatformsApi } from "../../utility/config";
 import Router from "next/router";
 import ReviewPlatforms from "./ReviewPlatforms";
 import _isEmpty from "lodash/isEmpty";
 
 class redirect_to_review_page extends Component {
+  state = {
+    platformClicked: false
+  };
   handlePlatformClick = platformId => {
+    this.setState({ platformClicked: true });
     const { domainUrlKey, fallbackUrl } = this.props;
     const api = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${platformId}`;
 
@@ -42,17 +46,22 @@ class redirect_to_review_page extends Component {
       overallRating,
       domainName
     } = this.props;
+    const { platformClicked } = this.state;
     return (
       <>
         {selectedOption === "showAvailablePlatforms" ? (
-          <div>
-            <ReviewPlatforms
-              reviewPlatforms={reviewPlatforms}
-              handlePlatformClick={this.handlePlatformClick}
-              domainName={domainName}
-              overallRating={overallRating}
-            />
-          </div>
+          platformClicked ? (
+            <div>Redirecting...</div>
+          ) : (
+            <div>
+              <ReviewPlatforms
+                reviewPlatforms={reviewPlatforms}
+                handlePlatformClick={this.handlePlatformClick}
+                domainName={domainName}
+                overallRating={overallRating}
+              />
+            </div>
+          )
         ) : (
           <div>Redirecting...</div>
         )}
@@ -65,6 +74,7 @@ redirect_to_review_page.getInitialProps = async ctx => {
   const { query, res } = ctx;
   const fallbackUrl = process.env.DOMAIN_NAME;
   const domainUrlKey = _get(query, "domainUrlKey", "");
+  let configuredPlatformsApiWithDomainUrlKey = `${process.env.BASE_URL}${configuredPlatformsApi}/${domainUrlKey}`;
   const selectedOption = _get(query, "selectedOption", "");
   let domainName = "";
   let overallRating = 0;
@@ -73,7 +83,6 @@ redirect_to_review_page.getInitialProps = async ctx => {
     overallRating = _get(query, "overallRating", 0);
   }
   let fetchUrlApi = "";
-  let configuredPlatformsApi = `${process.env.BASE_URL}${configuredPlatforms}/${domainUrlKey}`;
   if (selectedOption === "leastRating") {
     fetchUrlApi = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}`;
   } else if (typeof selectedOption == "number" && isFinite(selectedOption)) {
@@ -84,7 +93,7 @@ redirect_to_review_page.getInitialProps = async ctx => {
 
   if (selectedOption === "showAvailablePlatforms") {
     try {
-      const result = await axios.get(configuredPlatformsApi);
+      const result = await axios.get(configuredPlatformsApiWithDomainUrlKey);
       const success = _get(result, "data.success", false);
       const configured_platforms = _get(
         result,
