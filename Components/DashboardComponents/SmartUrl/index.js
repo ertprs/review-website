@@ -21,15 +21,15 @@ class SmartUrl extends Component {
     variant: "",
     snackbarMsg: "",
     reviewUrl: "",
-    reviewPlatforms: _get(this.props, "reviewPlatforms", []),
+    reviewPlatformsForSplit: _get(this.props, "reviewPlatformsForSplit", []),
     sumOfAllSplits: 100
   };
 
   handleSplitValueChange = (value, index) => {
-    const { reviewPlatforms } = this.state;
+    const { reviewPlatformsForSplit } = this.state;
     if (Number(value) || value === "" || value === "0" || value === 0) {
       value = value !== "" ? Number(value) : 0;
-      let reviewPlatformsCopy = [...reviewPlatforms];
+      let reviewPlatformsCopy = [...reviewPlatformsForSplit];
       reviewPlatformsCopy[index] = { ...reviewPlatformsCopy[index], value };
       const sumOfAllSplits = _sumBy(reviewPlatformsCopy, "value");
       if (sumOfAllSplits > 100) {
@@ -38,12 +38,17 @@ class SmartUrl extends Component {
           hasError: true
         };
       } else {
-        reviewPlatformsCopy[index] = {
-          ...reviewPlatformsCopy[index],
-          hasError: false
-        };
+        reviewPlatformsCopy = (reviewPlatformsCopy || []).map(platform => {
+          return {
+            ...platform,
+            hasError: false
+          };
+        });
       }
-      this.setState({ reviewPlatforms: reviewPlatformsCopy, sumOfAllSplits });
+      this.setState({
+        reviewPlatformsForSplit: reviewPlatformsCopy,
+        sumOfAllSplits
+      });
     }
   };
 
@@ -54,7 +59,7 @@ class SmartUrl extends Component {
       overallRating,
       domainName
     } = this.props;
-    const { sumOfAllSplits, reviewPlatforms } = this.state;
+    const { sumOfAllSplits, reviewPlatformsForSplit } = this.state;
     const {
       selectedPlatform,
       showSnackbar,
@@ -110,8 +115,8 @@ class SmartUrl extends Component {
               //? sending overall rating and domain name in case of "show available platforms" in jumping page
               let reviewUrl =
                 selectedPlatform === "showAvailablePlatforms"
-                  ? `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
-                  : `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}`;
+                  ? `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
+                  : `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}`;
               this.setState({
                 selectedPlatform,
                 reviewUrl
@@ -125,7 +130,7 @@ class SmartUrl extends Component {
         selectedPlatform !== "" ? (
           selectedPlatform === "splitPlatform" ? (
             <PlatformSplit
-              reviewPlatforms={reviewPlatforms || []}
+              reviewPlatforms={reviewPlatformsForSplit || []}
               handleSplitValueChange={this.handleSplitValueChange}
               sumOfAllSplits={sumOfAllSplits || 0}
             />
@@ -180,40 +185,32 @@ class SmartUrl extends Component {
 }
 
 const mapStateToProps = state => {
-  const socialPlatforms = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.social",
+  const { auth } = state;
+  const reviewPlatforms = _get(
+    auth,
+    "logIn.userProfile.business_profile.configured_platforms",
     []
   );
-  const address = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.google_places.address",
-    ""
-  );
   const domainUrlKey = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.domainUrlKey",
+    auth,
+    "logIn.userProfile.business_profile.domainUrlKey",
     ""
   );
   let dropdownData = [];
-  //# Converted socialplatforms array into dropdowndata that react-select supports
-  if (!_isEmpty(socialPlatforms) && Array.isArray(socialPlatforms)) {
-    dropdownData = socialPlatforms.map(platform => {
-      const social_app_id = _get(platform, "social_media_app_id", "");
-      let label = "";
-      if (iconNames.hasOwnProperty(social_app_id)) {
-        let obj = iconNames[social_app_id];
-        label = _get(obj, "displayName", "");
-      }
+  //# Converted "review platforms" array into dropdown data that react-select supports
+  if (
+    reviewPlatforms &&
+    !_isEmpty(reviewPlatforms) &&
+    Array.isArray(reviewPlatforms)
+  ) {
+    dropdownData = reviewPlatforms.map(platform => {
       let temp = {};
-      temp.label = label;
-      temp.value = social_app_id;
+      temp.label = _get(platform, "name", "");
+      temp.value = _get(platform, "social_app_id", 0);
       return temp;
     });
   }
-  if (address) {
-    dropdownData = [...dropdownData, { value: 0, label: "Google" }];
-  }
+  //? we are adding 3 more options in dropdown apart from actual review platforms
   dropdownData = [
     ...dropdownData,
     { value: "leastRating", label: "Least rating platform" },
@@ -223,50 +220,29 @@ const mapStateToProps = state => {
     },
     { value: "splitPlatform", label: "Split Platform" }
   ];
-
-  //? will need to pull this from api
-  let reviewPlatforms = [
-    {
-      social_app_id: 1,
-      name: "Facebook",
-      value: 0,
-      hasError: false,
-      min: 0,
-      max: 100
-    },
-    {
-      social_app_id: 18,
-      name: "Trustpilot",
-      value: 0,
-      hasError: false,
-      min: 0,
-      max: 100
-    },
-    {
-      social_app_id: 19,
-      name: "Trustedshops",
-      value: 0,
-      hasError: false,
-      min: 0,
-      max: 100
-    }
-  ];
-  let updatedReviewPlatforms = [];
+  //? creating data for split platforms
+  let reviewPlatformsForSplit = [];
   if (
     reviewPlatforms &&
     Array.isArray(reviewPlatforms) &&
     !_isEmpty(reviewPlatforms)
   ) {
     const noOfPlatforms = (reviewPlatforms || []).length;
-    let initValueForSliders = Math.floor(100 / noOfPlatforms);
-    const sumOfAllPlatforms = initValueForSliders * noOfPlatforms;
-    updatedReviewPlatforms = (reviewPlatforms || []).map(platform => {
-      return { ...platform, value: initValueForSliders };
+    let platformInitialValue = Math.floor(100 / noOfPlatforms);
+    const sumOfAllPlatforms = platformInitialValue * noOfPlatforms;
+    reviewPlatformsForSplit = (reviewPlatforms || []).map(platform => {
+      return {
+        ...platform,
+        value: platformInitialValue,
+        hasError: false,
+        min: 0,
+        max: 100
+      };
     });
     if (sumOfAllPlatforms < 100) {
-      updatedReviewPlatforms[0] = {
-        ...updatedReviewPlatforms[0],
-        value: updatedReviewPlatforms[0].value + (100 - sumOfAllPlatforms)
+      reviewPlatformsForSplit[0] = {
+        ...reviewPlatformsForSplit[0],
+        value: reviewPlatformsForSplit[0].value + (100 - sumOfAllPlatforms)
       };
     }
   }
@@ -309,7 +285,7 @@ const mapStateToProps = state => {
   return {
     dropdownData,
     domainUrlKey,
-    reviewPlatforms: updatedReviewPlatforms,
+    reviewPlatformsForSplit,
     overallRating,
     domainName
   };

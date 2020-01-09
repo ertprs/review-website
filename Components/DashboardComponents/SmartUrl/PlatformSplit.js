@@ -115,7 +115,7 @@ const PlatformSplit = ({
           <Button
             variant="contained"
             color="primary"
-            disabled={sumOfAllSplits > 100}
+            disabled={sumOfAllSplits !== 100}
           >
             Generate Review Url
           </Button>
