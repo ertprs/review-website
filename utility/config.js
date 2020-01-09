@@ -56,7 +56,7 @@ export const eCommerceIntegrationApi =
 export const campaignHistoryApi = "/api/my-business/campaigns";
 export const deactivateCampaignApi = "/api/my-business/campaigns";
 export const smartUrlApi = "/api/review-platform-navigate";
-export const configuredPlatforms = "/api/review-platforms";
+export const configuredPlatformsApi = "/api/review-platforms";
 
 //How to create review short link
 export const getStartedVideoUrl =
