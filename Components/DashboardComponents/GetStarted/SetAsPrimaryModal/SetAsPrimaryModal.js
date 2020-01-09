@@ -135,6 +135,7 @@ class SetAsPrimaryModal extends React.Component {
         let identityData = _get(currentlyUsedLocationObj, "identity_data", {});
         let address = _get(identityData, "address", "");
         let directReviewURL = _get(identityData, "directReviewUrl", "");
+        let url = _get(currentlyUsedLocationObj, "value", "");
         let name = _get(currentlyUsedLocationObj, "name", "");
         return (
           <div style={{ margin: "10px 0 0 0" }}>
@@ -155,11 +156,11 @@ class SetAsPrimaryModal extends React.Component {
                 <div className="col-md-4">
                   <h6>Review URL</h6>
                   <a
-                    href={directReviewURL}
+                    href={url ? url : directReviewURL}
                     target="_blank"
                     style={{ wordBreak: "break-all" }}
                   >
-                    {directReviewURL}
+                    {url ? url : directReviewURL}
                   </a>
                 </div>
                 <div className="col-md-4">
@@ -197,6 +198,7 @@ class SetAsPrimaryModal extends React.Component {
       );
       let address = _get(identityData, "address", "");
       let directReviewURL = _get(identityData, "directReviewUrl", "");
+      let url = _get(selectedSetAsPrimaryFormDataObject, "value", "");
       let name = _get(selectedSetAsPrimaryFormDataObject, "name", "");
       return (
         <div style={{ margin: "10px 0 0 0" }}>
@@ -212,11 +214,11 @@ class SetAsPrimaryModal extends React.Component {
               <div className="col-md-4">
                 <h6>Review URL</h6>
                 <a
-                  href={directReviewURL}
+                  href={url ? url : directReviewURL}
                   target="_blank"
                   style={{ wordBreak: "break-all" }}
                 >
-                  {directReviewURL}
+                  {url ? url : directReviewURL}
                 </a>
               </div>
               <div className="col-md-4">

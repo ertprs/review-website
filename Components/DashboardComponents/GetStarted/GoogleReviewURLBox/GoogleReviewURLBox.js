@@ -79,6 +79,7 @@ class GoogleReviewURLBox extends Component {
     const isPrimary = _get(formDataItem, "primary", "");
     const selectedGoogleReviewUrl = _get(formDataItem, "value", "");
     const title = _get(formDataItem, "title", "");
+    const profile_name = _get(formDataItem, "profile_name", "");
     const isTemporary = _get(formDataItem, "isTemporary", false);
     const name = _get(formDataItem, "name", "");
     const placeNameEditMode = _get(this.state, "placeNameEditMode", false);
@@ -182,6 +183,8 @@ class GoogleReviewURLBox extends Component {
                       });
                     }}
                   />
+                ) : profile_name ? (
+                  profile_name
                 ) : name ? (
                   name
                 ) : (

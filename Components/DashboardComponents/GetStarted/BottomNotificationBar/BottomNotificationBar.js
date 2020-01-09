@@ -2,33 +2,50 @@ import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import CloseIcon from "@material-ui/icons/Close";
 import SaveIcon from "@material-ui/icons/Save";
+import _get from "lodash/get";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 class BottomNotificationBar extends Component {
   renderSaveAndCloseBtn() {
+    const showGetStarted = _get(this.props, "showGetStarted", false);
+    const isLoading = _get(this.props, "isLoading", false);
     return (
       <div className="btnContainer">
         <div className="row">
           <div className="col-md-6">
             <div style={{ textAlign: "center" }}>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                endIcon={<CloseIcon />}
-              >
-                Close
-              </Button>
+              {showGetStarted ? (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  endIcon={<CloseIcon />}
+                  onClick={() => {
+                    this.props.handleClose();
+                  }}
+                >
+                  Close
+                </Button>
+              ) : null}
             </div>
           </div>
           <div className="col-md-6">
             <div style={{ textAlign: "center" }}>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                endIcon={<SaveIcon />}
-              >
-                Save permanently
-              </Button>
+              {isLoading ? (
+                <Button variant="contained" size="small">
+                  <CircularProgress size={25} color="primary" />
+                </Button>
+              ) : (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  endIcon={<SaveIcon />}
+                  onClick={this.props.handleSavePermanentlyClick}
+                >
+                  Save permanently
+                </Button>
+              )}
             </div>
           </div>
         </div>

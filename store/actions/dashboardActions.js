@@ -210,23 +210,29 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         data,
         url
       });
-      const success = await _get(result, "data.success", false);
-      dispatch({
-        type: LOCATE_PLACE_SUCCESS,
-        locatePlace: {
-          success: _get(result, "data.success", false)
-        },
-        locatePlaceTemp: {
-          isLoading: false,
-          errorMsg: ""
-        }
-      });
+      const success = _get(result, "data.success", false);
+      console.log(success, "SUCCESS");
       if (success) {
         // dispatch(fetchReviews(token));
+        const socialsArray = _get(result, "data.review_platform_profiles", []);
         cookie.set("placeLocated", true, { expires: 7 });
-        dispatch(updateAuthSocialArray(data));
+        dispatch({
+          type: LOCATE_PLACE_SUCCESS,
+          locatePlace: {
+            success: _get(result, "data.success", false)
+          },
+          locatePlaceTemp: {
+            isLoading: false,
+            errorMsg: ""
+          }
+        });
+        if (socialsArray.length > 0) {
+          dispatch(updateAuthSocialArray(socialsArray));
+        }
       }
+      // We will also get failed array that we can use later to show user which URLs failed to be set
     } catch (error) {
+      console.log(error);
       dispatch({
         type: LOCATE_PLACE_FAILURE,
         locatePlace: {
@@ -1072,16 +1078,16 @@ export const addReviewPlatform = data => {
       const social_media_app = await _get(result, "data.social_media_app", {});
       if (success) {
         dispatch(addNewPlatformInReviewPlatforms({ ...social_media_app }));
+        dispatch({
+          type: ADD_REVIEW_PLATFORM_SUCCESS,
+          addReviewPlatformData: {
+            success,
+            isLoading: false,
+            social_media_app,
+            errorMsg: ""
+          }
+        });
       }
-      dispatch({
-        type: ADD_REVIEW_PLATFORM_SUCCESS,
-        addReviewPlatformData: {
-          success,
-          isLoading: false,
-          social_media_app,
-          errorMsg: ""
-        }
-      });
     } catch (error) {
       dispatch({
         type: ADD_REVIEW_PLATFORM_ERROR,

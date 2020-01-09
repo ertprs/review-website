@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PlacesAutocomplete from "react-places-autocomplete";
-import Paper from "@material-ui/core/Paper/Paper";
 import TextField from "@material-ui/core/TextField/TextField";
 import {
   geocodeByAddress,
@@ -57,7 +56,7 @@ class PlacesAutoComplete extends Component {
             /> */}
             <Tooltip title="Please locate your business." placement="top-start">
               <TextField
-                label="Search your business location to get your review url..."
+                label="Search to locate your business..."
                 margin="dense"
                 {...getInputProps({
                   placeholder: "Business name",
@@ -67,7 +66,27 @@ class PlacesAutoComplete extends Component {
               />
             </Tooltip>
             <div className="autocomplete-dropdown-container">
-              <Paper>
+              <style jsx>
+                {`
+                  .autocomplete-dropdown-container {
+                    position: relative;
+                    max-height: 200px;
+                  }
+                  .autocomplete-dropdown-container-inner {
+                    position: absolute;
+                    width: 100%;
+                    left: 0;
+                    top: 0;
+                    background: #fff;
+                    z-index: 1000;
+                    overflow-y: auto;
+                    box-shadow: 0px 2px 4px #d8d8d8;
+                    max-height: 300px;
+                  }
+                `}
+              </style>
+              <div className="autocomplete-dropdown-container-inner">
+                {/* here */}
                 {loading && <div>Loading...</div>}
                 {suggestions.map(suggestion => {
                   const className = suggestion.active
@@ -89,7 +108,7 @@ class PlacesAutoComplete extends Component {
                     </div>
                   );
                 })}
-              </Paper>
+              </div>
             </div>
           </div>
         )}

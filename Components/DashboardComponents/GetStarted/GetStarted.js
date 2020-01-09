@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
+import Slide from "@material-ui/core/Slide";
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {
   locatePlaceByPlaceId,
   setGetStartedShow
@@ -39,6 +41,7 @@ import _now from "lodash/now";
 import GoogleReviewURLBox from "./GoogleReviewURLBox/GoogleReviewURLBox";
 import SetAsPrimaryModal from "./SetAsPrimaryModal/SetAsPrimaryModal";
 import BottomNotificationBar from "./BottomNotificationBar/BottomNotificationBar";
+import ClosedGetStartedConfirmationDialog from "./CloseGetStartedConfirmationDialog";
 
 class GetStarted extends Component {
   state = {
@@ -51,6 +54,7 @@ class GetStarted extends Component {
     disabledSave: true,
     modelOpen: false,
     showSetAsPrimaryModal: false,
+    showCloseConfirmationModal: false,
     selectedSetAsPrimaryFormDataObject: {}
   };
 
@@ -70,7 +74,8 @@ class GetStarted extends Component {
   generateFormFieldsDynamically = (
     fieldsArray,
     isSocialArray = false,
-    updateMode = false
+    updateMode = false,
+    wipeMode = false
   ) => {
     let formData = {};
     fieldsArray.forEach((item, index) => {
@@ -91,7 +96,7 @@ class GetStarted extends Component {
             valid: false,
             touched: false,
             errorMessage: "Enter valid URL",
-            placeholder: `Enter ${name} page URL (optional)`,
+            placeholder: `Enter ${name} page URL (required)`,
             validationRules: {
               required: true
             },
@@ -112,7 +117,11 @@ class GetStarted extends Component {
     });
     //setState also
     // console.log(formData, "dynamic formData");
-    if (updateMode) {
+    if (wipeMode) {
+      this.setState({ formData: { ...formData } }, () => {
+        this.prefillSocialURLs(fieldsArray);
+      });
+    } else if (updateMode) {
       this.setState(
         { formData: { ...formData, ...this.state.formData } },
         () => {
@@ -147,8 +156,20 @@ class GetStarted extends Component {
     });
   };
 
-  handleContinueClick = () => {
-    const { selectedAddress, address, formData } = this.state;
+  handleCloseConfirmationModalVisibilityToggle = (exitGetStarted = false) => {
+    if (exitGetStarted) {
+      this.props.setGetStartedShow(false, "");
+    }
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        showCloseConfirmationModal: !prevState.showCloseConfirmationModal
+      };
+    });
+  };
+
+  handleSavePermanentlyClick = () => {
+    const formData = _get(this.state, "formData", {});
     const {
       setReviewsPusherConnect,
       setReviewsObjectWithPusher,
@@ -157,64 +178,96 @@ class GetStarted extends Component {
       googlePlaces
     } = this.props;
     let reqBody = {};
-
-    //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
-
-    let reviewsObject = {
-      google: false,
-      facebook: false,
-      trustpilot: false,
-      trustedshops: false
-    };
-
+    //profiles array to be sent in API call
+    let profiles = [];
+    //loop through formData, check which records have been touched by the user and push them inside profiles in the required format
     for (let item in formData) {
-      if (item === "directReviewUrl") {
-        if (Object.keys(selectedAddress).length > 0) {
-          reviewsObject.google = true;
-          reqBody = {
-            ...reqBody,
-            google: {
-              ...selectedAddress,
-              address,
-              directReviewUrl: formData[item].value
-            }
+      let profileBody = {};
+      let formDataItem = formData[item] || {};
+      let touched = _get(formDataItem, "touched", false);
+      let valid = _get(formDataItem, "touched", false);
+      //if the formDataItem was changed and is valid
+      if (touched && valid) {
+        let isTemporary = _get(formDataItem, "isTemporary", false);
+        let social_media_app_id = _get(formDataItem, "social_media_app_id");
+        let url = _get(formDataItem, "value", "");
+        //check if it's a new record, (isTemporary), then we do not need to add id in payload
+        if (isTemporary) {
+          let identity = _get(formDataItem, "identity", "");
+          let identity_data = _get(formDataItem, "identity_data", {});
+          identity_data = _omit(identity_data, "directReviewUrl");
+          let profile_name = _get(formDataItem, "name", "");
+          let primary = _get(formDataItem, "primary", "");
+          let clientKey = _get(formDataItem, "editURL", item);
+          //check for google in primary , becoz it can have multiple profiles
+          if (social_media_app_id === 22) {
+            primary = primary ? 1 : 0;
+          } else {
+            primary = 1;
+          }
+          profileBody = {
+            ...profileBody,
+            platform: social_media_app_id,
+            url: url,
+            identity: identity,
+            identity_data: identity_data,
+            profile_name: profile_name,
+            primary: primary,
+            clientKey: clientKey
           };
-          clearReviewsData();
-        } else if (
-          Object.keys(selectedAddress).length === 0 &&
-          formData[item].touched
-        ) {
-          reviewsObject.google = true;
-          reqBody = {
-            ...reqBody,
-            google: {
-              address: _get(googlePlaces, "address", ""),
-              directReviewUrl: formData[item].value,
-              name: _get(googlePlaces, "name", ""),
-              placeId: _get(googlePlaces, "placeId", "")
-            }
+        }
+        //for already existing records, we will send the id
+        else {
+          let identity = _get(formDataItem, "identity", "");
+          let identity_data = _get(formDataItem, "identity_data", "");
+          identity_data = _omit(identity_data, "directReviewUrl");
+          let profile_name = _get(formDataItem, "name", "");
+          let primary = _get(formDataItem, "primary", "");
+          if (social_media_app_id === 22) {
+            primary = primary ? 1 : 0;
+          } else {
+            primary = 1;
+          }
+          let id = _get(formDataItem, "id", "");
+          profileBody = {
+            ...profileBody,
+            id: id,
+            platform: social_media_app_id,
+            url: url,
+            identity: identity,
+            identity_data: identity_data,
+            profile_name: profile_name,
+            primary: primary
           };
-          clearReviewsData();
         }
-      } else {
-        if (formData[item].valid && formData[item].touched) {
-          let itemName = formData[item].name;
-          reviewsObject[itemName] = true;
-          let key = formData[item].key;
-          reqBody = { ...reqBody, [key]: formData[item].value };
-        }
+        profiles.push(profileBody);
       }
     }
+
+    console.log(profiles);
+    reqBody = { profiles: [...profiles] };
+    //! pass request body to reducer
     if (Object.keys(reqBody).length > 0) {
+      // this.setState({ formData: {} });
       locatePlaceByPlaceId(
         reqBody,
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
-      setReviewsPusherConnect(true);
-      setReviewsObjectWithPusher(reviewsObject);
-      //! we don't want to clear google reviews data as they will be already updating.
     }
+
+    //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
+    // let reviewsObject = {
+    //   google: false,
+    //   facebook: false,
+    //   trustpilot: false,
+    //   trustedshops: false
+    // };
+
+    //   // setReviewsPusherConnect(true);
+    //   // setReviewsObjectWithPusher(reviewsObject);
+    //   //! we don't want to clear google reviews data as they will be already updating.
+    // }
   };
 
   handleAvailablePlatformsListChange = arr => {
@@ -276,6 +329,7 @@ class GetStarted extends Component {
             [formDataItemKey]: {
               ...formDataLocal[formDataItemKey],
               name: newName,
+              profile_name: newName,
               touched: true,
               valid: validate(
                 formDataLocal[formDataItemKey].value,
@@ -320,59 +374,67 @@ class GetStarted extends Component {
     );
   };
 
-  anyURLSelected = () => {
-    let valid = false;
-    let { formData } = this.state;
-    for (let item in formData) {
-      valid = valid || (formData[item].value !== "" && formData[item].valid);
+  anyFormDataChanged = () => {
+    const formData = _get(this.state, "formData", {});
+    let hasChanged = false;
+    if (formData) {
+      if (Object.keys(formData).length > 0) {
+        for (let item in formData) {
+          let formDataItem = formData[item] || {};
+          let valid = _get(formDataItem, "valid", false);
+          let value = _get(formDataItem, "value", "");
+          let touched = _get(formDataItem, "touched", false);
+          hasChanged = hasChanged || (valid && value !== "" && touched);
+        }
+      }
     }
-    return valid;
+    return hasChanged;
   };
   // To be FIXED
-  renderContinueBtn = reviewURLToEdit => {
-    const { selectedAddress, formData, disabledSave } = this.state;
-    const { type, isLoading, showGetStarted } = this.props;
-    return (
-      <div style={{ textAlign: "right" }}>
-        {isLoading === true ? (
-          <Button variant="contained" color="primary" size="large">
-            <CircularProgress size={25} style={{ color: "white" }} />
-          </Button>
-        ) : (
-          <>
-            {showGetStarted ? (
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                onClick={() => {
-                  this.props.setGetStartedShow(false, "");
-                }}
-              >
-                Close
-              </Button>
-            ) : null}
-            <Button
-              disabled={
-                disabledSave ||
-                !(
-                  Object.keys(selectedAddress).length > 0 ||
-                  this.anyURLSelected()
-                )
-              }
-              style={{ marginLeft: "20px" }}
-              onClick={this.handleContinueClick}
-              variant="contained"
-              color="primary"
-              size="large"
-            >
-              Save Changes
-            </Button>
-          </>
-        )}
-      </div>
-    );
-  };
+  // renderContinueBtn = reviewURLToEdit => {
+  //   const { selectedAddress, formData, disabledSave } = this.state;
+  //   const { type, isLoading, showGetStarted } = this.props;
+  //   return (
+  //     <div style={{ textAlign: "right" }}>
+  //       {isLoading === true ? (
+  //         <Button variant="contained" color="primary" size="large">
+  //           <CircularProgress size={25} style={{ color: "white" }} />
+  //         </Button>
+  //       ) : (
+  //         <>
+  //           {showGetStarted ? (
+  //             <Button
+  //               variant="contained"
+  //               color="primary"
+  //               size="large"
+  //               onClick={() => {
+  //                 this.props.setGetStartedShow(false, "");
+  //               }}
+  //             >
+  //               Close
+  //             </Button>
+  //           ) : null}
+  //           <Button
+  //             disabled={
+  //               disabledSave ||
+  //               !(
+  //                 Object.keys(selectedAddress).length > 0 ||
+  //                 this.anyURLSelected()
+  //               )
+  //             }
+  //             style={{ marginLeft: "20px" }}
+  //             onClick={this.handleContinueClick}
+  //             variant="contained"
+  //             color="primary"
+  //             size="large"
+  //           >
+  //             Save Changes
+  //           </Button>
+  //         </>
+  //       )}
+  //     </div>
+  //   );
+  // };
 
   handleChange = (e, id) => {
     this.setState({
@@ -420,38 +482,33 @@ class GetStarted extends Component {
       setGooglePlaces,
       googlePlaces
     } = this.props;
-    const { formData, address, selectedAddress } = this.state;
-    const directReviewUrl = _get(formData, "directReviewUrl.value", "");
-
     if (this.props !== prevProps) {
       if (isLoading !== prevProps.isLoading && success !== prevProps.success) {
         if (isLoading === false && success) {
+          let socialArray = _get(this.props, "socialArray", []);
           this.setState(
             {
               showSnackbar: true,
               variant: "success",
-              snackbarMsg: "Review URL Updated Successfully!"
+              snackbarMsg: "All the changes were saved Successfully!"
             },
             () => {
+              if (Array.isArray(socialArray)) {
+                if (socialArray.length > 0) {
+                  if (socialArray.reverse()) {
+                    this.setState({ formData: {} }, () => {
+                      this.generateFormFieldsDynamically(socialArray.reverse());
+                    });
+                  } else {
+                    this.setState({ formData: {} }, () => {
+                      this.generateFormFieldsDynamically(socialArray);
+                    });
+                  }
+                }
+              }
               changeStepToRender(1);
             }
           );
-
-          if (
-            _get(formData, "directReviewUrl.touched", false) ||
-            selectedAddress
-          ) {
-            // this action is used to update google_places in login/userProfile/business_profile whenever we change directReviewURL or business address
-            let newGooglePlaces = {
-              directReviewUrl:
-                directReviewUrl || _get(googlePlaces, "directReviewUrl", ""),
-              address: address || _get(googlePlaces, "address", ""),
-              placeId:
-                _get(selectedAddress, "placeId", "") ||
-                _get(googlePlaces, "placeId", "")
-            };
-            setGooglePlaces(newGooglePlaces);
-          }
         } else if (isLoading === false && !success) {
           this.setState({
             showSnackbar: true,
@@ -459,12 +516,9 @@ class GetStarted extends Component {
             snackbarMsg: errorMsg
           });
         }
-      }
-      if (this.props.socialArray !== prevProps.socialArray) {
-        this.generateFormFieldsDynamically(
-          _get(this.props, "socialArray", []),
-          true
-        );
+      } else if (this.props.socialArray !== prevProps.socialArray) {
+        let newSocialArray = _get(this.props, "socialArray", []);
+        this.generateFormFieldsDynamically(newSocialArray, true);
       }
     }
   }
@@ -475,7 +529,8 @@ class GetStarted extends Component {
       socialArray.forEach((item, index) => {
         let socialObj = item;
         let name = _get(socialObj, "name", "");
-        let URL = _get(socialObj, "url", "");
+        let profile_name = _get(socialObj, "profile_name", "");
+        let url = _get(socialObj, "url", "");
         let id = _get(socialObj, "id", "");
         let social_media_app_id = _get(socialObj, "social_media_app_id", "");
         if (name && name.length > 0) {
@@ -489,9 +544,9 @@ class GetStarted extends Component {
                 "identity_data.directReviewUrl",
                 ""
               );
+              url = url ? url : directReviewUrl;
               let address = _get(socialObj, "identity_data.address", "");
               let placeId = _get(socialObj, "identity", "");
-              let url = _get(socialObj, "identity_data.directReviewUrl", "");
               formDataLocal = {
                 ...formDataLocal,
                 [editURL]: {
@@ -499,6 +554,7 @@ class GetStarted extends Component {
                   value: url,
                   valid: true,
                   identity: placeId,
+                  profile_name: profile_name,
                   identity_data: {
                     directReviewUrl,
                     address
@@ -515,7 +571,7 @@ class GetStarted extends Component {
                 ...formDataLocal,
                 [editURL]: {
                   ...formDataLocal[editURL],
-                  value: URL,
+                  value: url,
                   valid: true
                 }
               };
@@ -575,7 +631,7 @@ class GetStarted extends Component {
                 </div>
                 <div className="reviewURLBoxContainerInner">
                   <div className="reviewURLBoxImgContainer">
-                    <img src={`/static/images/${formData[item].logo}`} />
+                    {/* <img src={`/static/images/${formData[item].logo}`} /> */}
                   </div>
                   <div className="reviewURLBoxAutoComplete">
                     <>
@@ -689,7 +745,11 @@ class GetStarted extends Component {
         if (formDataItemKey === selectedFormDataItemKey) {
           formDataLocal = {
             ...formDataLocal,
-            [formDataItemKey]: { ...formDataLocal[formDataItemKey], primary: 1 }
+            [formDataItemKey]: {
+              ...formDataLocal[formDataItemKey],
+              primary: 1,
+              touched: true
+            }
           };
         } else {
           formDataLocal = {
@@ -707,7 +767,6 @@ class GetStarted extends Component {
 
   handleUseThesePlatformsClick = () => {
     const { selectedAvailablePlatformItems, formData } = this.state;
-    console.log(selectedAvailablePlatformItems, "use these platforms");
     let parsedArray = [];
     if (
       selectedAvailablePlatformItems &&
@@ -745,104 +804,114 @@ class GetStarted extends Component {
   render() {
     const reviewURLToEdit = _get(this.props, "reviewURLToEdit", "");
     const { modelOpen } = this.state;
+    const showGetStarted = _get(this.props, "showGetStarted", false);
+    const isLoading = _get(this.props, "isLoading", false);
     return (
-      <div>
-        <Head>
-          <link
-            href="/static/css/SimpleBar/simpleBarStyles.min.css"
-            type="text/css"
-            rel="stylesheet"
-          />
-        </Head>
-        <Container>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={8}>
-              {this.renderGetStartedHeader()}
-            </Grid>
-            <Grid item xs={12} md={4} lg={4}>
-              {/* {this.renderContinueBtn(reviewURLToEdit)} */}
-            </Grid>
-          </Grid>
-          {reviewURLToEdit === "" ? (
+      <>
+        <div>
+          <Container>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={9} lg={9}>
-                <AvailablePlatformsList
-                  reviewPlatforms={_get(
-                    this.props,
-                    "review_platforms.data",
-                    {}
-                  )}
-                  socialPlatforms={_get(this.props, "socialArray", [])}
-                  handleAvailablePlatformsListChange={
-                    this.handleAvailablePlatformsListChange
-                  }
-                  selectedAvailablePlatformItems={
-                    this.state.selectedAvailablePlatformItems
-                  }
-                />
+              <Grid item xs={12} md={8} lg={8}>
+                {this.renderGetStartedHeader()}
               </Grid>
-              <Grid item xs={12} md={3} lg={3}>
-                <div style={{ textAlign: "left" }}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={this.handleUseThesePlatformsClick}
-                    disabled={this.isUseThesePlatformsDisabled()}
-                  >
-                    Use these platforms
-                  </Button>
-                </div>
+              <Grid item xs={12} md={4} lg={4}>
+                {/* {this.renderContinueBtn(reviewURLToEdit)} */}
+                {showGetStarted && !this.anyFormDataChanged() ? (
+                  <div style={{ textAlign: "right" }}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        this.props.setGetStartedShow(false, "");
+                      }}
+                      startIcon={<ArrowBackIcon />}
+                    >
+                      Back
+                    </Button>
+                  </div>
+                ) : null}
               </Grid>
             </Grid>
-          ) : null}
-          <Grid container spacing={3}>
-            {/* <SimpleBar
+            {reviewURLToEdit === "" ? (
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={9} lg={9}>
+                  <AvailablePlatformsList
+                    reviewPlatforms={_get(
+                      this.props,
+                      "review_platforms.data",
+                      {}
+                    )}
+                    socialPlatforms={_get(this.props, "socialArray", [])}
+                    handleAvailablePlatformsListChange={
+                      this.handleAvailablePlatformsListChange
+                    }
+                    selectedAvailablePlatformItems={
+                      this.state.selectedAvailablePlatformItems
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} md={3} lg={3}>
+                  <div style={{ textAlign: "left" }}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={this.handleUseThesePlatformsClick}
+                      disabled={this.isUseThesePlatformsDisabled()}
+                    >
+                      Use these platforms
+                    </Button>
+                  </div>
+                </Grid>
+              </Grid>
+            ) : null}
+            <Grid container spacing={3}>
+              {/* <SimpleBar
                 style={{ height: "300px" }}
                 autoHide={false}
                 forceVisible="y"
               > */}
-            {reviewURLToEdit === "" ? (
-              <Grid
-                container
-                xs={12}
-                lg={12}
-                xs={12}
-                style={{ padding: "12px", marginTop: "15px" }}
-              >
-                <div>
-                  <h6>
-                    If your platform is not listed in the dropdown above, you
-                    may add it now :{" "}
-                    <Button
-                      color="secondary"
-                      variant="contained"
-                      size="small"
-                      startIcon={<AddIcon />}
-                      onClick={this.handleModalVisibilityToggle}
-                    >
-                      Add a new platform
-                    </Button>
-                  </h6>
-                </div>
-              </Grid>
-            ) : null}
-            {reviewURLToEdit === ""
-              ? this.renderReviewURLBoxes()
-              : this.renderSpecificReviewURLBox(reviewURLToEdit)}
-            {/* {reviewURLToEdit === "" ? (
+              {reviewURLToEdit === "" ? (
+                <Grid
+                  container
+                  xs={12}
+                  lg={12}
+                  xs={12}
+                  style={{ padding: "12px", marginTop: "15px" }}
+                >
+                  <div>
+                    <h6>
+                      If your platform is not listed in the dropdown above, you
+                      may add it now :{" "}
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        size="small"
+                        startIcon={<AddIcon />}
+                        onClick={this.handleModalVisibilityToggle}
+                      >
+                        Add a new platform
+                      </Button>
+                    </h6>
+                  </div>
+                </Grid>
+              ) : null}
+              {reviewURLToEdit === ""
+                ? this.renderReviewURLBoxes()
+                : this.renderSpecificReviewURLBox(reviewURLToEdit)}
+              {/* {reviewURLToEdit === "" ? (
               <Grid item xs={12} md={6} lg={6}>
                 {this.renderGetStartedBox()}
               </Grid>
             ) : null} */}
-            {/* </SimpleBar> */}
-          </Grid>
-          {/* <Grid container spacing={3}>
+              {/* </SimpleBar> */}
+            </Grid>
+            {/* <Grid container spacing={3}>
             <Grid xs={12} md={12} lg={12}>
             <AddPlatform />
             Second column
             </Grid>
           </Grid> */}
-          {/* <Grid container spacing={3}>
+            {/* <Grid container spacing={3}>
             {reviewURLToEdit === "" ? (
               <Grid item xs={12} md={6} lg={6}>
                 {this.renderGetStartedBox()}
@@ -852,31 +921,70 @@ class GetStarted extends Component {
               ? this.renderReviewURLBoxes()
               : this.renderSpecificReviewURLBox(reviewURLToEdit)}
           </Grid> */}
-          <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {/* {this.renderContinueBtn()} */}
-          </Grid>
-        </Container>
-        <AddPlatformDialog
-          open={modelOpen}
-          handleClose={this.handleModalVisibilityToggle}
-        />
-        <SetAsPrimaryModal
-          open={this.state.showSetAsPrimaryModal}
-          handleClose={this.handleSetAsPrimaryModalVisibilityToggle}
-          formData={this.state.formData}
-          selectedSetAsPrimaryFormDataObject={
-            this.state.selectedSetAsPrimaryFormDataObject
-          }
-          handlePrimaryLocationChange={this.handlePrimaryLocationChange}
-        />
-        <Snackbar
-          open={this.state.showSnackbar}
-          variant={this.state.variant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={this.state.snackbarMsg}
-        />
-        <BottomNotificationBar />
-      </div>
+            <Grid
+              container
+              spacing={3}
+              style={{ marginTop: "35px", marginLeft: "4px" }}
+            >
+              {showGetStarted && !this.anyFormDataChanged() ? (
+                <div style={{ textAlign: "right" }}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => {
+                      this.props.setGetStartedShow(false, "");
+                    }}
+                    startIcon={<ArrowBackIcon />}
+                  >
+                    Back
+                  </Button>
+                </div>
+              ) : null}
+            </Grid>
+          </Container>
+          <AddPlatformDialog
+            open={modelOpen}
+            handleClose={this.handleModalVisibilityToggle}
+          />
+          <SetAsPrimaryModal
+            open={this.state.showSetAsPrimaryModal}
+            handleClose={this.handleSetAsPrimaryModalVisibilityToggle}
+            formData={this.state.formData}
+            selectedSetAsPrimaryFormDataObject={
+              this.state.selectedSetAsPrimaryFormDataObject
+            }
+            handlePrimaryLocationChange={this.handlePrimaryLocationChange}
+          />
+          <ClosedGetStartedConfirmationDialog
+            open={this.state.showCloseConfirmationModal}
+            handleClose={exitGetStarted => {
+              this.handleCloseConfirmationModalVisibilityToggle(exitGetStarted);
+            }}
+          />
+          <Slide
+            direction="up"
+            in={this.anyFormDataChanged()}
+            mountOnEnter
+            unmountOnExit
+          >
+            {/* Pass isLoading */}
+            <BottomNotificationBar
+              handleClose={this.handleCloseConfirmationModalVisibilityToggle}
+              handleSavePermanentlyClick={this.handleSavePermanentlyClick}
+              showGetStarted={this.props.showGetStarted}
+              isLoading={isLoading}
+            />
+          </Slide>
+        </div>
+        <div>
+          <Snackbar
+            open={this.state.showSnackbar}
+            variant={this.state.variant}
+            handleClose={() => this.setState({ showSnackbar: false })}
+            message={this.state.snackbarMsg}
+          />
+        </div>
+      </>
     );
   }
 }
@@ -889,11 +997,7 @@ const mapStateToProps = state => {
   const addressSelected = _get(businessProfile, "google_places.address", "");
   const googlePlaces = _get(businessProfile, "google_places", {});
   const socialArray = _get(businessProfile, "social", []);
-  const isLoading = _get(
-    dashboardData,
-    "locatePlaceTemp.isLoading",
-    "undefined"
-  );
+  const isLoading = _get(dashboardData, "locatePlaceTemp.isLoading", undefined);
   const placeId = _get(businessProfile, "google_places.placeId", "");
   const type = _get(dashboardData, "type", "");
   const success = _get(dashboardData, "locatePlace.success", false);
