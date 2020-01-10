@@ -156,6 +156,9 @@ export const layoutStyles = css.global`
             margin-right: auto;
             margin-left: auto;
           }
+          .text-center {
+            text-align: center;
+          }
           @media (min-width: 576px) {
             .container {
               max-width: 540px;
