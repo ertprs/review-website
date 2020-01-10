@@ -56,7 +56,6 @@ class Home extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { success, socialArray } = this.props;
-    console.log(socialArray, "socialArray");
     if (success !== prevProps.success) {
       let snackbarMsg = "";
       if (success === true) {

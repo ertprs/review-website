@@ -33,16 +33,19 @@ import {
   UPDATE_AUTH_SOCIAL_ARRAY,
   GET_AVAILABLE_PLATFORMS_INIT,
   GET_AVAILABLE_PLATFORMS_SUCCESS,
-  GET_AVAILABLE_PLATFORMS_FAILURE
+  GET_AVAILABLE_PLATFORMS_FAILURE,
+  SET_REVIEWS_AFTER_LOGIN
 } from "./actionTypes";
 import _get from "lodash/get";
-import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
+import {
+  loginApiOAuth,
+  getAvailablePlatformsApi,
+  thirdPartyDataApi
+} from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import { sendTrustVote } from "./trustAction";
 import {
-  fetchReviews,
-  getThirdPartyReviews,
   setInvitationQuota,
   fetchCampaignLanguage,
   getAvailableReviewPlatforms
@@ -52,6 +55,8 @@ import { reportDomain } from "./domainProfileActions";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 import _omit from "lodash/omit";
+import _uniqBy from "lodash/uniqBy";
+import { isValidArray } from "../../utility/commonFunctions";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -547,7 +552,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("token", token, { expires: 7 });
             cookie.set("placeId", placeId, { expires: 7 });
             localStorage.setItem("token", token);
-            dispatch(fetchReviews(token));
+            // dispatch(fetchReviews(token));
             dispatch(getAvailableReviewPlatforms(token));
             dispatch(setSubscription(subscriptionExpired));
             dispatch(fetchCampaignLanguage(token));
@@ -568,37 +573,81 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 error: ""
               }
             });
-            // fetch all thirdy party reviews
-            if (socialArray) {
-              if (socialArray.length > 0) {
-                socialArray.map(item => {
-                  let hasData = _get(item, "hasData", 0);
-                  let socialAppId = _get(item, "social_media_app_id", "");
+            //we are fetching reviews of all social profiles that exist inside social key
+            if (isValidArray(socialArray)) {
+              let reviews = {};
+              Promise.all(
+                socialArray.map(platform => {
+                  let hasData = _get(platform, "hasData", 0);
+                  let socialAppId = _get(platform, "social_media_app_id", "");
+                  let profileId = _get(platform, "id", "");
                   if (hasData === 1) {
-                    dispatch(getThirdPartyReviews(socialAppId, domainId));
+                    return axios
+                      .get(
+                        `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+                      )
+                      .then(res => {
+                        return {
+                          ...res.data,
+                          socialAppId,
+                          profileId
+                        };
+                      })
+                      .catch(err => {
+                        return {
+                          err,
+                          socialAppId,
+                          profileId
+                        };
+                      });
+                  }
+                })
+              ).then(resArr => {
+                resArr.forEach(res => {
+                  let success = false;
+                  let socialAppId = _get(res, "socialAppId", "");
+                  let profileId = _get(res, "profileId");
+                  let reviewsArr = _get(res, "data.reviews", []);
+                  if (isValidArray(reviewsArr)) {
+                    success = true;
+                  }
+                  if (socialAppId && profileId) {
+                    reviews = {
+                      ...reviews,
+                      [socialAppId]: {
+                        ..._get(reviews, socialAppId, {}),
+                        [profileId]: {
+                          ..._get(reviews, socialAppId.profileId, {}),
+                          data: { ...res },
+                          isLoading: false,
+                          success
+                        }
+                      }
+                    };
                   }
                 });
-              }
+                dispatch(setReviewsAfterLogin(reviews));
+              });
             }
           }
         }
       } else {
-        // dispatch({
-        //   type: BUSINESS_LOGIN_FAILURE,
-        //   logIn: {
-        //     authorized: false,
-        //     loginType: 0,
-        //     token: "",
-        //     userProfile: {}
-        //   },
-        //   logInTemp: {
-        //     status: 0,
-        //     isWrongCredentials: false,
-        //     isLoginFailed: true,
-        //     isLoggingIn: false,
-        //     error: "Some Error Occured."
-        //   }
-        // });
+        dispatch({
+          type: BUSINESS_LOGIN_FAILURE,
+          logIn: {
+            authorized: false,
+            loginType: 0,
+            token: "",
+            userProfile: {}
+          },
+          logInTemp: {
+            status: 0,
+            isWrongCredentials: false,
+            isLoginFailed: true,
+            isLoggingIn: false,
+            error: "Some Error Occured."
+          }
+        });
       }
     } catch (err) {
       let success = _get(err, "response.data.success", false);
@@ -606,22 +655,22 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let error = _get(err, "response.data.error", "Some Error Occured.");
       let isWrongCredentials =
         _get(err, "response.data.error") === "Unauthorized";
-      // dispatch({
-      //   type: BUSINESS_LOGIN_FAILURE,
-      //   logIn: {
-      //     authorized: false,
-      //     loginType: 0,
-      //     token: "",
-      //     userProfile: {}
-      //   },
-      //   logInTemp: {
-      //     status: status,
-      //     isWrongCredentials,
-      //     isLoginFailed: !success,
-      //     isLoggingIn: false,
-      //     error
-      //   }
-      // });
+      dispatch({
+        type: BUSINESS_LOGIN_FAILURE,
+        logIn: {
+          authorized: false,
+          loginType: 0,
+          token: "",
+          userProfile: {}
+        },
+        logInTemp: {
+          status: status,
+          isWrongCredentials,
+          isLoginFailed: !success,
+          isLoggingIn: false,
+          error
+        }
+      });
     }
   };
 };
@@ -733,5 +782,13 @@ export const getAvailablePlatforms = token => {
         }
       });
     }
+  };
+};
+
+//? this action creator is used to set reviews in dashboarddata after login only
+export const setReviewsAfterLogin = reviews => {
+  return {
+    type: SET_REVIEWS_AFTER_LOGIN,
+    reviews
   };
 };

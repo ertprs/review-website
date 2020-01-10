@@ -29,7 +29,6 @@ import { logOut } from "../../store/actions/authActions";
 import {
   upgradeToPremium,
   fetchReviews,
-  getThirdPartyReviews,
   setInvitationQuota
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
@@ -297,7 +296,7 @@ function Dashboard(props) {
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
   const [reviewsSelectedTab, setReviewsSelectedTab] = React.useState(0);
-  const { upgradeToPremiumRes, placeLocated, fetchReviews, token } = props;
+  const { upgradeToPremiumRes, placeLocated, token } = props;
   const initState = {};
   const [parentState, setParentState] = useState(initState);
 
@@ -560,12 +559,7 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
-  const {
-    domainId,
-    getThirdPartyReviews,
-    subscriptionId,
-    setInvitationQuota
-  } = props;
+  const { domainId, fetchReviews, subscriptionId, setInvitationQuota } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -580,17 +574,20 @@ function Dashboard(props) {
       {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
-          onChildStateChange={newState => {
-            setParentState({ ...parentState, ...newState });
-            const fetchSuccess = _get(newState, "response.success", false);
-            const reviewsCount = _get(newState, "response.reviewCount", 0);
-            if (reviewsCount > 0 && fetchSuccess) {
-              fetchReviews(token);
-            }
-          }}
+          //? we are not listening for google reviews separately
+          // onChildStateChange={newState => {
+          //   setParentState({ ...parentState, ...newState });
+          //   const fetchSuccess = _get(newState, "response.success", false);
+          //   const reviewsCount = _get(newState, "response.reviewCount", 0);
+          //   if (reviewsCount > 0 && fetchSuccess) {
+          //     fetchReviews(token);
+          //   }
+          // }}
           onAggregatorDataChange={data => {
-            let socialAppId = _get(data, "response.socialAppId", 0);
-            getThirdPartyReviews(socialAppId, domainId);
+            //! need to check new aggregator data
+            let socialAppId = _get(data, "response.socialAppId", "");
+            let profileId = _get(data, "response, profileId", "");
+            fetchReviews(socialAppId, profileId, domainId);
           }}
         />
       ) : null}
@@ -765,6 +762,5 @@ export default connect(mapStateToProps, {
   logOut,
   upgradeToPremium,
   fetchReviews,
-  getThirdPartyReviews,
   setInvitationQuota
 })(Dashboard);
