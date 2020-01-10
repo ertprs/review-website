@@ -1,8 +1,8 @@
 import {
   SET_GET_REVIEWS_DATA,
-  FETCH_REVIEWS_DATA_INIT,
-  FETCH_REVIEWS_DATA_SUCCESS,
-  FETCH_REVIEWS_DATA_FAILURE,
+  FETCH_REVIEWS_INIT,
+  FETCH_REVIEWS_SUCCESS,
+  FETCH_REVIEWS_FAILURE,
   SEND_GET_REVIEWS_INIT,
   SEND_GET_REVIEWS_SUCCESS,
   SEND_GET_REVIEWS_FAILURE,
@@ -39,9 +39,6 @@ import {
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_ERROR,
   EMPTY_DOMAIN_DETAILS,
-  FETCH_THIRD_PARTY_REVIEWS_INIT,
-  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
   SET_REVIEWS_OBJECT_WITH_PUSHER,
   SHOW_GET_STARTED,
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
@@ -93,7 +90,6 @@ const dashboardReducer = (state = {}, action) => {
     companyDetails,
     userDetails,
     domainDetails,
-    thirdPartyReviews,
     showGetStarted,
     reviewPlatformToEdit,
     configDetails,
@@ -115,24 +111,6 @@ const dashboardReducer = (state = {}, action) => {
         type,
         getReviewsData: { ...getReviewsData }
       };
-    // case FETCH_REVIEWS_DATA_INIT:
-    //   return {
-    //     ...state,
-    //     type,
-    //     reviews
-    //   };
-    // case FETCH_REVIEWS_DATA_SUCCESS:
-    //   return {
-    //     ...state,
-    //     type,
-    //     reviews
-    //   };
-    // case FETCH_REVIEWS_DATA_FAILURE:
-    //   return {
-    //     ...state,
-    //     type,
-    //     reviews
-    //   };
     case SEND_GET_REVIEWS_INIT:
       return {
         ...state,
@@ -377,12 +355,12 @@ const dashboardReducer = (state = {}, action) => {
         domainDetails: {}
       };
     }
-    case FETCH_THIRD_PARTY_REVIEWS_INIT:
-      return { ...state, type, ...thirdPartyReviews };
-    case FETCH_THIRD_PARTY_REVIEWS_SUCCESS:
-      return { ...state, type, ...thirdPartyReviews };
-    case FETCH_THIRD_PARTY_REVIEWS_FAILURE:
-      return { ...state, type, ...thirdPartyReviews };
+    case FETCH_REVIEWS_INIT:
+      return { ...state, type, reviews: { ...reviews } };
+    case FETCH_REVIEWS_SUCCESS:
+      return { ...state, type, reviews: { ...reviews } };
+    case FETCH_REVIEWS_FAILURE:
+      return { ...state, type, reviews: { ...reviews } };
     case SHOW_GET_STARTED: {
       return { ...state, type, showGetStarted, reviewPlatformToEdit };
     }

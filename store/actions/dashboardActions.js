@@ -40,9 +40,9 @@ import {
   UPDATE_DOMAIN_DETAILS_ERROR,
   EMPTY_DOMAIN_DETAILS,
   SET_REVIEWS_PUSHER_CONNECT,
-  FETCH_THIRD_PARTY_REVIEWS_INIT,
-  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+  FETCH_REVIEWS_INIT,
+  FETCH_REVIEWS_SUCCESS,
+  FETCH_REVIEWS_FAILURE,
   SET_REVIEWS_OBJECT_WITH_PUSHER,
   SHOW_GET_STARTED,
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
@@ -104,62 +104,61 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
-//! It is used to fetch only google reviews, don't get confused by it's name
-
-export const fetchReviews = (token, page, perPage) => {
-  const pageNo = page || 1;
-  const perPageLimit = perPage || 10;
-  return async (dispatch, getState) => {
-    let { dashboardData } = getState();
-    let reviewsObject = _get(dashboardData, "reviewsObject", {});
-    dispatch({
-      type: FETCH_REVIEWS_DATA_INIT,
-      reviews: {
-        data: {},
-        isFetching: true,
-        error: "",
-        success: "undefined"
-      }
-    });
-    try {
-      const result = await axios({
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=${pageNo}&perPage=${perPageLimit}`
-      });
-      let success = false;
-      let reviews = _get(result, "data.reviews", []);
-      reviewsObject["google"] = false;
-      dispatch(setReviewsObjectWithPusher(reviewsObject));
-      if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-        success = true;
-      }
-      dispatch({
-        type: FETCH_REVIEWS_DATA_SUCCESS,
-        reviews: {
-          data: _get(result, "data", {}),
-          isFetching: false,
-          error: "",
-          success
-        }
-      });
-    } catch (err) {
-      reviewsObject["google"] = false;
-      dispatch(setReviewsObjectWithPusher(reviewsObject));
-      const success = _get(err, "response.data.success", false);
-      const error = _get(err, "response.data.error", "Some Error Occured.");
-      dispatch({
-        type: FETCH_REVIEWS_DATA_FAILURE,
-        reviews: {
-          data: {},
-          isFetching: false,
-          error,
-          success
-        }
-      });
-    }
-  };
-};
+//? remove this action
+// export const fetchReviews = (token, page, perPage) => {
+//   const pageNo = page || 1;
+//   const perPageLimit = perPage || 10;
+//   return async (dispatch, getState) => {
+//     let { dashboardData } = getState();
+//     let reviewsObject = _get(dashboardData, "reviewsObject", {});
+//     dispatch({
+//       type: FETCH_REVIEWS_DATA_INIT,
+//       reviews: {
+//         data: {},
+//         isFetching: true,
+//         error: "",
+//         success: "undefined"
+//       }
+//     });
+//     try {
+//       const result = await axios({
+//         method: "GET",
+//         headers: { Authorization: `Bearer ${token}` },
+//         url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=${pageNo}&perPage=${perPageLimit}`
+//       });
+//       let success = false;
+//       let reviews = _get(result, "data.reviews", []);
+//       reviewsObject["google"] = false;
+//       dispatch(setReviewsObjectWithPusher(reviewsObject));
+//       if (!_isEmpty(reviews) && Array.isArray(reviews)) {
+//         success = true;
+//       }
+//       dispatch({
+//         type: FETCH_REVIEWS_DATA_SUCCESS,
+//         reviews: {
+//           data: _get(result, "data", {}),
+//           isFetching: false,
+//           error: "",
+//           success
+//         }
+//       });
+//     } catch (err) {
+//       reviewsObject["google"] = false;
+//       dispatch(setReviewsObjectWithPusher(reviewsObject));
+//       const success = _get(err, "response.data.success", false);
+//       const error = _get(err, "response.data.error", "Some Error Occured.");
+//       dispatch({
+//         type: FETCH_REVIEWS_DATA_FAILURE,
+//         reviews: {
+//           data: {},
+//           isFetching: false,
+//           error,
+//           success
+//         }
+//       });
+//     }
+//   };
+// };
 
 export const clearReviewsData = () => {
   return {
@@ -213,7 +212,6 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       const success = _get(result, "data.success", false);
       console.log(success, "SUCCESS");
       if (success) {
-        // dispatch(fetchReviews(token));
         const socialsArray = _get(result, "data.review_platform_profiles", []);
         cookie.set("placeLocated", true, { expires: 7 });
         dispatch({
@@ -683,27 +681,29 @@ export const emptyDomainDetails = () => {
     type: EMPTY_DOMAIN_DETAILS
   };
 };
-//? this is used to get reviews of platforms if we pass it's socialAppId and domainId (we get after login). We can also pass profileId to fetch any particular platform reviews but if we don't then it fetched the reviews for platform with isPrimary = true
-export const getThirdPartyReviews = (socialAppId, domainId, profileId) => {
-  //? we'll use this key name to store the review of this socialappid or profileid inside dashboardData key in our store
-  let keyName = profileId ? profileId : socialAppId;
+
+//? it is used to update reviews of any particular profile inside socialappid inside dashboarddata/reviews. We can also fetch reviews by socialappid only it will give us it's primary profiles review but we are not allowing as per now because our current data structure doesn't supports that. So all these fields are mandatory.
+export const fetchReviews = (socialAppId, profileId, domainId) => {
+  //? is we have profile id then we need to send it as query param and we'll get that particular profiles data
   let api = profileId
     ? `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
     : `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`;
-  if (socialAppId && domainId) {
+
+  if (socialAppId && profileId && domainId) {
     return async (dispatch, getState) => {
       const state = getState();
       const dashboardData = _get(state, "dashboardData", {});
+      const reviews = _get(dashboardData, "reviews", {});
       dispatch({
-        type: FETCH_THIRD_PARTY_REVIEWS_INIT,
-        thirdPartyReviews: {
+        type: FETCH_REVIEWS_INIT,
+        reviews: {
+          ...reviews,
           [socialAppId]: {
-            ..._get(dashboardData, socialAppId, {}),
+            ..._get(reviews, socialAppId, {}),
             [profileId]: {
-              // ..._get(dashboardData, socialAppId.profileId, {}),
+              ..._get(reviews, socialAppId.profileId, {}),
               isLoading: true,
-              success: undefined,
-              errorMsg: ""
+              success: undefined
             }
           }
         }
@@ -712,42 +712,34 @@ export const getThirdPartyReviews = (socialAppId, domainId, profileId) => {
         const result = await axios.get(api);
         let success = false;
         let reviews = _get(result, "data.data.reviews", []);
-        if (reviews) {
-          if (isValidArray(reviews)) {
-            success = true;
-          }
+        if (isValidArray(reviews)) {
+          success = true;
         }
         dispatch({
-          type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-          thirdPartyReviews: {
+          type: FETCH_REVIEWS_SUCCESS,
+          reviews: {
+            ...reviews,
             [socialAppId]: {
-              ..._get(dashboardData, socialAppId, {}),
+              ..._get(reviews, socialAppId, {}),
               [profileId]: {
-                ..._get(dashboardData, socialAppId.profileId, {}),
-                ..._get(result, "data.data", {}),
+                ..._get(reviews, socialAppId.profileId, {}),
                 isLoading: false,
-                success,
-                errorMsg: ""
+                success
               }
             }
           }
         });
       } catch (error) {
-        const errorMsg = _get(
-          error,
-          "response.data.message",
-          "Some error occurred!"
-        );
         dispatch({
-          type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
-          thirdPartyReviews: {
+          type: FETCH_REVIEWS_FAILURE,
+          reviews: {
+            ...reviews,
             [socialAppId]: {
-              ..._get(dashboardData, socialAppId, {}),
+              ..._get(reviews, socialAppId, {}),
               [profileId]: {
-                ..._get(dashboardData, socialAppId.profileId, {}),
+                ..._get(reviews, socialAppId.profileId, {}),
                 isLoading: false,
-                success: false,
-                errorMsg
+                success: false
               }
             }
           }
