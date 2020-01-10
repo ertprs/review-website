@@ -69,7 +69,8 @@ import {
   GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
   GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
   GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
-  ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS
+  ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
+  SET_REVIEWS_AFTER_LOGIN
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -114,24 +115,24 @@ const dashboardReducer = (state = {}, action) => {
         type,
         getReviewsData: { ...getReviewsData }
       };
-    case FETCH_REVIEWS_DATA_INIT:
-      return {
-        ...state,
-        type,
-        reviews
-      };
-    case FETCH_REVIEWS_DATA_SUCCESS:
-      return {
-        ...state,
-        type,
-        reviews
-      };
-    case FETCH_REVIEWS_DATA_FAILURE:
-      return {
-        ...state,
-        type,
-        reviews
-      };
+    // case FETCH_REVIEWS_DATA_INIT:
+    //   return {
+    //     ...state,
+    //     type,
+    //     reviews
+    //   };
+    // case FETCH_REVIEWS_DATA_SUCCESS:
+    //   return {
+    //     ...state,
+    //     type,
+    //     reviews
+    //   };
+    // case FETCH_REVIEWS_DATA_FAILURE:
+    //   return {
+    //     ...state,
+    //     type,
+    //     reviews
+    //   };
     case SEND_GET_REVIEWS_INIT:
       return {
         ...state,
@@ -514,6 +515,12 @@ const dashboardReducer = (state = {}, action) => {
           ...state.review_platforms,
           data: { ...updatedReviewPlatforms }
         }
+      };
+    case SET_REVIEWS_AFTER_LOGIN:
+      return {
+        ...state,
+        type,
+        reviews: { ...reviews }
       };
     default:
       return state;
