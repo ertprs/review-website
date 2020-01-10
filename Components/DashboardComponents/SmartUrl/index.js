@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 //? Own imports
-import { iconNames } from "../../../utility/constants/socialMediaConstants";
 import Snackbar from "../../Widgets/Snackbar";
 import Card from "../../MaterialComponents/Card";
 //? Library imports
