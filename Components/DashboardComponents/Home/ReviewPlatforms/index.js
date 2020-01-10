@@ -94,7 +94,6 @@ const mapStateToProps = state => {
       "social_media_app_id"
     );
   }
-  console.log(restructuredReviewPlatforms, "restructuredReviewPlatforms");
   return { reviewPlatforms: restructuredReviewPlatforms };
 };
 
