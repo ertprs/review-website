@@ -162,6 +162,7 @@ export const layoutStyles = css.global`
             display: flex;
             align-items: center;
             justify-content: center;
+          }
           .text-center {
             text-align: center;
           }

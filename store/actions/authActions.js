@@ -44,7 +44,6 @@ import {
 } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
-import { sendTrustVote } from "./trustAction";
 import {
   setInvitationQuota,
   fetchCampaignLanguage,
