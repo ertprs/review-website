@@ -94,7 +94,7 @@ const dashboardReducer = (state = {}, action) => {
     domainDetails,
     thirdPartyReviews,
     showGetStarted,
-    reviewURLToEdit,
+    reviewPlatformToEdit,
     configDetails,
     availablePlatforms,
     requestInstallation,
@@ -383,7 +383,7 @@ const dashboardReducer = (state = {}, action) => {
     case FETCH_THIRD_PARTY_REVIEWS_FAILURE:
       return { ...state, type, ...thirdPartyReviews };
     case SHOW_GET_STARTED: {
-      return { ...state, type, showGetStarted, reviewURLToEdit };
+      return { ...state, type, showGetStarted, reviewPlatformToEdit };
     }
     case POST_AUTOMATIC_INVITATION_CONFIG_INIT: {
       return { ...state, type, configDetails };

@@ -940,7 +940,15 @@ const mapStateToProps = state => {
     "Some Error Occured!"
   );
   const showGetStarted = _get(dashboardData, "showGetStarted", false);
-  const reviewURLToEdit = _get(dashboardData, "reviewURLToEdit", "");
+  //? need to rename this reviewURLToEdit to reviewPlatformToEdit everywhere
+  let reviewURLToEdit = _get(dashboardData, "reviewPlatformToEdit", "");
+  if (reviewURLToEdit) {
+    if (Number(reviewURLToEdit)) {
+      reviewURLToEdit = Number(reviewURLToEdit);
+    } else {
+      reviewURLToEdit = "";
+    }
+  }
   const review_platforms = _get(dashboardData, "review_platforms", {});
   return {
     success,
