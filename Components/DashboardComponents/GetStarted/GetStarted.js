@@ -283,7 +283,6 @@ class GetStarted extends Component {
     const address = _get(reqBody, "address", "");
     const url = _get(reqBody, "url", "");
     const formDataItemKey = _get(reqBody, "formDataItemKey", "");
-    console.log(reqBody);
     if (formData && formData[formDataItemKey]) {
       this.setState(
         {
@@ -308,10 +307,10 @@ class GetStarted extends Component {
               valid: validate(url, formData[formDataItemKey].validationRules)
             }
           }
-        },
-        () => {
-          console.log("state set");
         }
+        // () => {
+        //   console.log("state set");
+        // }
       );
     }
   };
@@ -335,10 +334,10 @@ class GetStarted extends Component {
               )
             }
           }
-        },
-        () => {
-          console.log("Google review URL state set with latest name");
         }
+        // () => {
+        //   console.log("Google review URL state set with latest name");
+        // }
       );
     }
   };
@@ -533,6 +532,7 @@ class GetStarted extends Component {
                   valid: true,
                   identity: placeId,
                   profile_name: profile_name,
+                  name: profile_name,
                   identity_data: {
                     directReviewUrl,
                     address
@@ -671,7 +671,6 @@ class GetStarted extends Component {
             if (onlySelectedPlatformArray) {
               if (Array.isArray(onlySelectedPlatformArray)) {
                 if (onlySelectedPlatformArray.length > 0) {
-                  console.log(onlySelectedPlatformArray);
                   this.generateFormFieldsDynamically(
                     onlySelectedPlatformArray,
                     true
