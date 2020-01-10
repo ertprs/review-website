@@ -589,8 +589,10 @@ function Dashboard(props) {
             }
           }}
           onAggregatorDataChange={data => {
-            let socialAppId = _get(data, "response.socialAppId", 0);
-            getThirdPartyReviews(socialAppId, domainId);
+            //! need to check new aggregator data
+            let socialAppId = _get(data, "response.socialAppId", "");
+            let profileId = _get(data, "response, profileId", "");
+            getThirdPartyReviews(socialAppId, profileId, domainId);
           }}
         />
       ) : null}

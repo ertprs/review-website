@@ -1,8 +1,5 @@
 import {
   SET_GET_REVIEWS_DATA,
-  FETCH_REVIEWS_DATA_INIT,
-  FETCH_REVIEWS_DATA_SUCCESS,
-  FETCH_REVIEWS_DATA_FAILURE,
   SEND_GET_REVIEWS_INIT,
   SEND_GET_REVIEWS_SUCCESS,
   SEND_GET_REVIEWS_FAILURE,
@@ -162,7 +159,7 @@ export const setGetReviewsData = getReviewsData => {
 
 export const clearReviewsData = () => {
   return {
-    type: FETCH_REVIEWS_DATA_SUCCESS,
+    type: fethh_revi,
     reviews: {
       data: {},
       isFetching: false,
