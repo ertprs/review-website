@@ -1,3 +1,5 @@
+import { isEmpty } from "lodash";
+
 //? We can use this method to check if the form is valid or not, you just need to send the formdata object, it will loop through the object and will return true if all the fields are valid.
 
 const isFormValid = formDataObject => {
@@ -117,8 +119,7 @@ export const isFifteenMinuteDiff = date => {
       if (currentMinute >= selectedMinutes) {
         valid = false;
         console.log("current minute is greater than selected minutes");
-      }
-      else if (selectedMinutes - currentMinute < 15) {
+      } else if (selectedMinutes - currentMinute < 15) {
         valid = false;
         console.log("selected minutes diff < 15");
       }
@@ -128,4 +129,12 @@ export const isFifteenMinuteDiff = date => {
     valid = false;
   }
   return valid;
+};
+
+export const isValidArray = arr => {
+  let isValid = false;
+  if (arr && Array.isArray(arr) && !isEmpty(arr)) {
+    isValid = true;
+  }
+  return isValid;
 };
