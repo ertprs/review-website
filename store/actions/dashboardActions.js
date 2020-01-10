@@ -755,11 +755,11 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
   // }
 };
 
-export const setGetStartedShow = (show, reviewURLToEdit) => {
+export const setGetStartedShow = (show, social_media_app_id) => {
   return {
     type: SHOW_GET_STARTED,
     showGetStarted: show,
-    reviewURLToEdit
+    social_media_app_id
   };
 };
 
