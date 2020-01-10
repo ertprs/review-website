@@ -76,7 +76,6 @@ import _find from "lodash/find";
 import cookie from "js-cookie";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { iconNames } from "../../utility/constants/socialMediaConstants";
 import {
   upgradePremiumApi,
   transactionHistoryApi,
@@ -96,6 +95,7 @@ import {
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import _findIndex from "lodash/findIndex";
+import { isValidArray } from "../../utility/commonFunctions";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -683,76 +683,78 @@ export const emptyDomainDetails = () => {
     type: EMPTY_DOMAIN_DETAILS
   };
 };
-
-export const getThirdPartyReviews = (socialAppId, domainId) => {
-  //! here appName is used to set the value to trust for domains whose reviews are successfully fetched to stop the loader in reviews sections
-  // if (socialAppId && domainId) {
-  //   let appName = "";
-  //   if (iconNames.hasOwnProperty(socialAppId)) {
-  //     if (iconNames) {
-  //       appName = iconNames[socialAppId].name;
-  //     }
-  //   }
-  //   return async (dispatch, getState) => {
-  //     let socialAppName = `${iconNames[socialAppId].name}Reviews`;
-  //     let { dashboardData } = getState();
-  //     let reviewsObject = _get(dashboardData, "reviewsObject", {});
-  //     dispatch({
-  //       type: FETCH_THIRD_PARTY_REVIEWS_INIT,
-  //       thirdPartyReviews: {
-  //         [socialAppName]: {
-  //           isLoading: true,
-  //           success: undefined,
-  //           errorMsg: "",
-  //           data: {}
-  //         }
-  //       }
-  //     });
-  //     try {
-  //       const result = await axios.get(
-  //         `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
-  //       );
-  //       let success = false;
-  //       let reviews = _get(result, "data.data.reviews", []);
-  //       if (reviews) {
-  //         if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-  //           success = true;
-  //         }
-  //       }
-  //       reviewsObject[appName] = false;
-  //       dispatch(setReviewsObjectWithPusher(reviewsObject));
-  //       dispatch({
-  //         type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-  //         thirdPartyReviews: {
-  //           [socialAppName]: {
-  //             isLoading: false,
-  //             success,
-  //             errorMsg: "",
-  //             data: _get(result, "data.data", {})
-  //           }
-  //         }
-  //       });
-  //     } catch (error) {
-  //       reviewsObject[appName] = false;
-  //       dispatch(setReviewsObjectWithPusher(reviewsObject));
-  //       dispatch({
-  //         type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
-  //         thirdPartyReviews: {
-  //           [socialAppName]: {
-  //             isLoading: false,
-  //             success: false,
-  //             errorMsg: _get(
-  //               error,
-  //               "response.data.message",
-  //               "Unable to fetch reviews!"
-  //             ),
-  //             data: {}
-  //           }
-  //         }
-  //       });
-  //     }
-  //   };
-  // }
+//? this is used to get reviews of platforms if we pass it's socialAppId and domainId (we get after login). We can also pass profileId to fetch any particular platform reviews but if we don't then it fetched the reviews for platform with isPrimary = true
+export const getThirdPartyReviews = (socialAppId, domainId, profileId) => {
+  //? we'll use this key name to store the review of this socialappid or profileid inside dashboardData key in our store
+  let keyName = profileId ? profileId : socialAppId;
+  let api = profileId
+    ? `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+    : `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`;
+  if (socialAppId && domainId) {
+    return async (dispatch, getState) => {
+      const state = getState();
+      const dashboardData = _get(state, "dashboardData", {});
+      dispatch({
+        type: FETCH_THIRD_PARTY_REVIEWS_INIT,
+        thirdPartyReviews: {
+          [socialAppId]: {
+            ..._get(dashboardData, socialAppId, {}),
+            [profileId]: {
+              // ..._get(dashboardData, socialAppId.profileId, {}),
+              isLoading: true,
+              success: undefined,
+              errorMsg: ""
+            }
+          }
+        }
+      });
+      try {
+        const result = await axios.get(api);
+        let success = false;
+        let reviews = _get(result, "data.data.reviews", []);
+        if (reviews) {
+          if (isValidArray(reviews)) {
+            success = true;
+          }
+        }
+        dispatch({
+          type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
+          thirdPartyReviews: {
+            [socialAppId]: {
+              ..._get(dashboardData, socialAppId, {}),
+              [profileId]: {
+                ..._get(dashboardData, socialAppId.profileId, {}),
+                ..._get(result, "data.data", {}),
+                isLoading: false,
+                success,
+                errorMsg: ""
+              }
+            }
+          }
+        });
+      } catch (error) {
+        const errorMsg = _get(
+          error,
+          "response.data.message",
+          "Some error occurred!"
+        );
+        dispatch({
+          type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+          thirdPartyReviews: {
+            [socialAppId]: {
+              ..._get(dashboardData, socialAppId, {}),
+              [profileId]: {
+                ..._get(dashboardData, socialAppId.profileId, {}),
+                isLoading: false,
+                success: false,
+                errorMsg
+              }
+            }
+          }
+        });
+      }
+    };
+  }
 };
 
 export const setGetStartedShow = (show, social_media_app_id) => {
