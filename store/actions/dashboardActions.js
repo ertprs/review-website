@@ -756,10 +756,11 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
 };
 
 export const setGetStartedShow = (show, social_media_app_id) => {
+  //? we are using social_media_app_id as key of review platform in edit case
   return {
     type: SHOW_GET_STARTED,
     showGetStarted: show,
-    social_media_app_id
+    reviewPlatformToEdit: social_media_app_id
   };
 };
 
