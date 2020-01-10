@@ -707,9 +707,10 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
       });
       try {
         const result = await axios.get(api);
+        // console.log(result.data.data, "DATA");
         let success = false;
-        let reviews = _get(result, "data.data.reviews", []);
-        if (isValidArray(reviews)) {
+        let reviewsArray = _get(result, "data.data.reviews", []);
+        if (isValidArray(reviewsArray)) {
           success = true;
         }
         dispatch({
@@ -720,6 +721,7 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
               ..._get(reviews, socialAppId, {}),
               [profileId]: {
                 ..._get(reviews, socialAppId.profileId, {}),
+                ..._get(result, "data", {}),
                 isLoading: false,
                 success
               }

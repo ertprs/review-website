@@ -11,6 +11,7 @@ import NoReviewsFound from "./noReviewsFound";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 import Link from "next/link";
+import _groupBy from "lodash/groupBy";
 
 class CommonReviewTabPanel extends Component {
   state = {
@@ -106,7 +107,8 @@ class CommonReviewTabPanel extends Component {
       success,
       areTrustedShopsReviewsFetching,
       isReviewsPusherConnected,
-      trustedshopsReviewUrl
+      reviewUrl,
+      totalReviews
     } = this.props;
     const { perPage, total, reviews, showDelay } = this.state;
     return (
@@ -182,12 +184,12 @@ class CommonReviewTabPanel extends Component {
               <NoReviewsFound />
             ) : !showDelay ? (
               <>
-                {trustedshopsReviewUrl ? (
+                {reviewUrl ? (
                   <div className="bold">
-                    TrustedShops Review url :
-                    <Link href={trustedshopsReviewUrl}>
+                    Review url :
+                    <Link href={reviewUrl}>
                       <a style={{ marginLeft: "10px" }} target="_blank">
-                        {trustedshopsReviewUrl}
+                        {reviewUrl}
                       </a>
                     </Link>
                   </div>
@@ -202,9 +204,7 @@ class CommonReviewTabPanel extends Component {
                     date: _get(review, "date", ""),
                     replyURL: _get(review, "review_url", "")
                   };
-                  return (
-                    <ReviewCard review={reviewToSend} provider="trustedshops" />
-                  );
+                  return <ReviewCard review={reviewToSend} provider="google" />;
                 })}
               </>
             ) : (
@@ -253,44 +253,54 @@ class CommonReviewTabPanel extends Component {
 const mapStateToProps = (state, ownProps) => {
   const { dashboardData, auth } = state;
   const socialMediaAppId = _get(ownProps, "socialMediaAppId", 0);
-  const totalReviews = _get(
-    dashboardData,
-    "trustedshopsReviews.data.reviews",
-    []
-  );
-  const success = _get(dashboardData, "trustedshopsReviews.success", undefined);
-  const isLoading = _get(dashboardData, "trustedshopsReviews.isLoading", false);
-  const errorMsg = _get(dashboardData, "trustedshopsReviews.errorMsg", "");
-  const areTrustedShopsReviewsFetching = _get(
-    dashboardData,
-    "reviewsObject.trustedshops",
-    false
-  );
-  const isReviewsPusherConnected = _get(
-    dashboardData,
-    "isReviewsPusherConnected",
-    undefined
-  );
+  const reviews = _get(dashboardData, "reviews", {});
+  const platformReviews = _get(reviews, socialMediaAppId, {});
   const socialArray = _get(
     auth,
     "logIn.userProfile.business_profile.social",
     []
   );
-  let trustedshopsReviewUrl = "";
-  if (Array.isArray(socialArray) && !_isEmpty(socialArray)) {
-    const trustedshopsObj = _find(socialArray, ["social_media_app_id", 19]);
-    if (trustedshopsObj) {
-      trustedshopsReviewUrl = _get(trustedshopsObj, "url", "");
+  const socialArrayGroupedById = _groupBy(socialArray, "social_media_app_id");
+  const dropDownData = (socialArrayGroupedById[socialMediaAppId] || []).map(
+    arr => {
+      return { label: _get(arr, "name", ""), value: _get(arr, "id", "") };
     }
-  }
+  );
+
+  const reviewPlatformArray = socialArrayGroupedById[socialMediaAppId] || [];
+  const primaryReviewPlatform = _find(reviewPlatformArray, ["is_primary", 1]);
+  const primaryReviewPlatformId = _get(primaryReviewPlatform, "id", "");
+
+  const primaryPlatformReviewObj = _get(
+    platformReviews,
+    primaryReviewPlatformId,
+    {}
+  );
+
+  const totalReviews = _get(primaryPlatformReviewObj, "data.data.reviews", []);
+  console.log(totalReviews, socialMediaAppId);
+  const success = _get(primaryPlatformReviewObj, "data.success", undefined);
+  const isLoading = _get(primaryPlatformReviewObj, "isLoading", false);
+  const errorMsg = _get(primaryPlatformReviewObj, "errorMsg", "");
+  //   const areTrustedShopsReviewsFetching = _get(
+  //     primaryPlatformReviewObj,
+  //     "reviewsObject.trustedshops",
+  //     false
+  //   );
+  const isReviewsPusherConnected = _get(
+    primaryPlatformReviewObj,
+    "isReviewsPusherConnected",
+    undefined
+  );
+  let reviewUrl = _get(primaryPlatformReviewObj, "data.data.url");
   return {
     totalReviews,
     success,
     isLoading,
     errorMsg,
-    areTrustedShopsReviewsFetching,
+    // areTrustedShopsReviewsFetching,
     isReviewsPusherConnected,
-    trustedshopsReviewUrl
+    reviewUrl
   };
 };
 

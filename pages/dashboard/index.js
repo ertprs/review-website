@@ -584,10 +584,11 @@ function Dashboard(props) {
           //   }
           // }}
           onAggregatorDataChange={data => {
+            console.log(data, "aggregatorDataChange");
             //! need to check new aggregator data
             let socialAppId = _get(data, "response.socialAppId", "");
-            let profileId = _get(data, "response, profileId", "");
-            fetchReviews(socialAppId, profileId, domainId);
+            let profileId = _get(data, "response.profileId", "");
+            props.fetchReviews(socialAppId, profileId, domainId);
           }}
         />
       ) : null}

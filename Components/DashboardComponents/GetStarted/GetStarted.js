@@ -262,8 +262,8 @@ class GetStarted extends Component {
     //   trustedshops: false
     // };
 
-    //   // setReviewsPusherConnect(true);
-    //   // setReviewsObjectWithPusher(reviewsObject);
+    setReviewsPusherConnect(true);
+    // setReviewsObjectWithPusher(reviewsObject);
     //   //! we don't want to clear google reviews data as they will be already updating.
     // }
   };
