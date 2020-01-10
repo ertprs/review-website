@@ -41,6 +41,7 @@ const styles = theme => ({
     width: "150px"
   }
 });
+const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
 
 class Home extends Component {
   state = {
@@ -55,6 +56,7 @@ class Home extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { success, socialArray } = this.props;
+    console.log(socialArray, "socialArray");
     if (success !== prevProps.success) {
       let snackbarMsg = "";
       if (success === true) {
@@ -919,8 +921,8 @@ class Home extends Component {
             {this.renderOverviewCard()}
             {this.renderReviewsFetchStatusCard()}
             {this.renderInvitationsCard()}
-
-            <>
+            <ReviewPlatforms />
+            {/* <>
               <Grid item xs={6} md={6} lg={6}>
                 <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
               </Grid>
@@ -939,8 +941,8 @@ class Home extends Component {
                   </Button>
                 </div>
               </Grid>
-            </>
-            {this.renderReviewURLBoxes()}
+            </> */}
+            {/* {this.renderReviewURLBoxes()} */}
           </Grid>
         ) : (
           <div>
@@ -948,24 +950,8 @@ class Home extends Component {
               changeStepToRender={data => {}}
               scrollToTopOfThePage={this.props.scrollToTopOfThePage()}
             />
-            {/* <div style={{ marginLeft: "30px" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<ArrowBackIcon />}
-                onClick={() => {
-                  this.setState({
-                    editMode: false
-                  });
-                }}
-              >
-                Back
-              </Button>
-            </div> */}
           </div>
         )}
-        {/* <SmartUrl /> */}
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}
