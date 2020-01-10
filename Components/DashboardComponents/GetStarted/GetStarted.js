@@ -244,11 +244,9 @@ class GetStarted extends Component {
       }
     }
 
-    console.log(profiles);
     reqBody = { profiles: [...profiles] };
     //! pass request body to reducer
     if (Object.keys(reqBody).length > 0) {
-      // this.setState({ formData: {} });
       locatePlaceByPlaceId(
         reqBody,
         this.props.token,
@@ -285,7 +283,6 @@ class GetStarted extends Component {
     const address = _get(reqBody, "address", "");
     const url = _get(reqBody, "url", "");
     const formDataItemKey = _get(reqBody, "formDataItemKey", "");
-    console.log(reqBody);
     if (formData && formData[formDataItemKey]) {
       this.setState(
         {
@@ -310,10 +307,10 @@ class GetStarted extends Component {
               valid: validate(url, formData[formDataItemKey].validationRules)
             }
           }
-        },
-        () => {
-          console.log("state set");
         }
+        // () => {
+        //   console.log("state set");
+        // }
       );
     }
   };
@@ -337,10 +334,10 @@ class GetStarted extends Component {
               )
             }
           }
-        },
-        () => {
-          console.log("Google review URL state set with latest name");
         }
+        // () => {
+        //   console.log("Google review URL state set with latest name");
+        // }
       );
     }
   };
@@ -390,51 +387,6 @@ class GetStarted extends Component {
     }
     return hasChanged;
   };
-  // To be FIXED
-  // renderContinueBtn = reviewURLToEdit => {
-  //   const { selectedAddress, formData, disabledSave } = this.state;
-  //   const { type, isLoading, showGetStarted } = this.props;
-  //   return (
-  //     <div style={{ textAlign: "right" }}>
-  //       {isLoading === true ? (
-  //         <Button variant="contained" color="primary" size="large">
-  //           <CircularProgress size={25} style={{ color: "white" }} />
-  //         </Button>
-  //       ) : (
-  //         <>
-  //           {showGetStarted ? (
-  //             <Button
-  //               variant="contained"
-  //               color="primary"
-  //               size="large"
-  //               onClick={() => {
-  //                 this.props.setGetStartedShow(false, "");
-  //               }}
-  //             >
-  //               Close
-  //             </Button>
-  //           ) : null}
-  //           <Button
-  //             disabled={
-  //               disabledSave ||
-  //               !(
-  //                 Object.keys(selectedAddress).length > 0 ||
-  //                 this.anyURLSelected()
-  //               )
-  //             }
-  //             style={{ marginLeft: "20px" }}
-  //             onClick={this.handleContinueClick}
-  //             variant="contained"
-  //             color="primary"
-  //             size="large"
-  //           >
-  //             Save Changes
-  //           </Button>
-  //         </>
-  //       )}
-  //     </div>
-  //   );
-  // };
 
   handleChange = (e, id) => {
     this.setState({
@@ -455,14 +407,24 @@ class GetStarted extends Component {
   };
 
   componentDidMount() {
-    const { placeId, locatePlace, businessProfile, socialArray } = this.props;
+    const {
+      placeId,
+      locatePlace,
+      businessProfile,
+      socialArray,
+      reviewURLToEdit
+    } = this.props;
     if (socialArray) {
-      if (socialArray.length > 0) {
+      //! NOT reviewURLToEdit check to only generate form fields for the selected social media platform
+      if (socialArray.length > 0 && !reviewURLToEdit) {
         //check on update also - Done
         this.generateFormFieldsDynamically(
           _get(this.props, "socialArray", []),
           true
         );
+      } else if (socialArray.length > 0 && reviewURLToEdit) {
+        //generate formFields for the social media platform selected for editing
+        this.generateFormFieldsForOnlySelectedPlatform(reviewURLToEdit);
       }
     }
     if (this.props.scrollToTopOfThePage) {
@@ -480,7 +442,8 @@ class GetStarted extends Component {
       isLoading,
       errorMsg,
       setGooglePlaces,
-      googlePlaces
+      googlePlaces,
+      reviewURLToEdit
     } = this.props;
     if (this.props !== prevProps) {
       if (isLoading !== prevProps.isLoading && success !== prevProps.success) {
@@ -494,7 +457,7 @@ class GetStarted extends Component {
             },
             () => {
               if (Array.isArray(socialArray)) {
-                if (socialArray.length > 0) {
+                if (socialArray.length > 0 && !reviewURLToEdit) {
                   if (socialArray.reverse()) {
                     this.setState({ formData: {} }, () => {
                       this.generateFormFieldsDynamically(socialArray.reverse());
@@ -504,6 +467,11 @@ class GetStarted extends Component {
                       this.generateFormFieldsDynamically(socialArray);
                     });
                   }
+                } else if (socialArray.length > 0 && reviewURLToEdit) {
+                  //generate formFields for the social media platform selected for editing
+                  this.generateFormFieldsForOnlySelectedPlatform(
+                    reviewURLToEdit
+                  );
                 }
               }
               changeStepToRender(1);
@@ -516,9 +484,18 @@ class GetStarted extends Component {
             snackbarMsg: errorMsg
           });
         }
-      } else if (this.props.socialArray !== prevProps.socialArray) {
+      } else if (
+        this.props.socialArray !== prevProps.socialArray &&
+        !reviewURLToEdit
+      ) {
         let newSocialArray = _get(this.props, "socialArray", []);
         this.generateFormFieldsDynamically(newSocialArray, true);
+      } else if (
+        this.props.socialArray !== prevProps.socialArray &&
+        reviewURLToEdit
+      ) {
+        //generate formFields for the social media platform selected for editing
+        this.generateFormFieldsForOnlySelectedPlatform(reviewURLToEdit);
       }
     }
   }
@@ -555,6 +532,7 @@ class GetStarted extends Component {
                   valid: true,
                   identity: placeId,
                   profile_name: profile_name,
+                  name: profile_name,
                   identity_data: {
                     directReviewUrl,
                     address
@@ -676,50 +654,34 @@ class GetStarted extends Component {
     return output;
   };
 
-  renderSpecificReviewURLBox = reviewURLToEdit => {
-    const { formData } = this.state;
-    console.log(reviewURLToEdit);
-    // if (Object.keys(formData).length > 0) {
-    //   if (reviewURLToEdit === "getStartedBox") {
-    //     return this.renderGetStartedBox();
-    //   } else {
-    //     return (
-    //       <Grid item xs={6} md={6} lg={6}>
-    //         <Paper>
-    //           <style jsx>{reviewURLBoxStyles}</style>
-    //           <div className="reviewURLBox">
-    //             <div className="reviewURLBoxHeader">
-    //               <h4>{formData[reviewURLToEdit].name}</h4>
-    //             </div>
-    //             <div className="reviewURLBoxContainerInner">
-    //               <div className="reviewURLBoxImgContainer">
-    //                 <img
-    //                   src={`/static/images/${formData[reviewURLToEdit].logo}`}
-    //                 />
-    //               </div>
-    //               <div className="reviewURLBoxAutoComplete">
-    //                 <>
-    //                   <FormField
-    //                     {...formData[reviewURLToEdit]}
-    //                     id={reviewURLToEdit}
-    //                     handleChange={this.handleChange}
-    //                     styles={{
-    //                       border: "0",
-    //                       borderBottom: "1px solid #999",
-    //                       borderRadius: "0",
-    //                       marginLeft: 0,
-    //                       paddingLeft: 0
-    //                     }}
-    //                   />
-    //                 </>
-    //               </div>
-    //             </div>
-    //           </div>
-    //         </Paper>
-    //       </Grid>
-    //     );
-    //   }
-    // }
+  //!Generate form fields dynamically only for selected social_media_app_id to edit
+  generateFormFieldsForOnlySelectedPlatform = (reviewURLToEdit = "") => {
+    //!if the review url is provided then continue
+    if (reviewURLToEdit) {
+      const socialArray = _get(this.props, "socialArray", []);
+      if (socialArray) {
+        if (Array.isArray(socialArray)) {
+          if (socialArray.length > 0) {
+            let onlySelectedPlatformArray = socialArray.filter(item => {
+              let socialMediaAppId = _get(item, "social_media_app_id", "");
+              if (socialMediaAppId) {
+                return socialMediaAppId === reviewURLToEdit;
+              }
+            });
+            if (onlySelectedPlatformArray) {
+              if (Array.isArray(onlySelectedPlatformArray)) {
+                if (onlySelectedPlatformArray.length > 0) {
+                  this.generateFormFieldsDynamically(
+                    onlySelectedPlatformArray,
+                    true
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   };
 
   //!Generic method to handle primary location change for all platforms
@@ -767,12 +729,13 @@ class GetStarted extends Component {
 
   handleUseThesePlatformsClick = () => {
     const { selectedAvailablePlatformItems, formData } = this.state;
+    const reviewURLToEdit = _get(this.props, "reviewURLToEdit", "");
     let parsedArray = [];
     if (
       selectedAvailablePlatformItems &&
       Array.isArray(selectedAvailablePlatformItems)
     ) {
-      if (selectedAvailablePlatformItems.length > 0) {
+      if (selectedAvailablePlatformItems.length > 0 && !reviewURLToEdit) {
         selectedAvailablePlatformItems.forEach(item => {
           let temp = {};
           temp.name = _get(item, "label", "");
@@ -815,7 +778,6 @@ class GetStarted extends Component {
                 {this.renderGetStartedHeader()}
               </Grid>
               <Grid item xs={12} md={4} lg={4}>
-                {/* {this.renderContinueBtn(reviewURLToEdit)} */}
                 {showGetStarted && !this.anyFormDataChanged() ? (
                   <div style={{ textAlign: "right" }}>
                     <Button
@@ -865,11 +827,6 @@ class GetStarted extends Component {
               </Grid>
             ) : null}
             <Grid container spacing={3}>
-              {/* <SimpleBar
-                style={{ height: "300px" }}
-                autoHide={false}
-                forceVisible="y"
-              > */}
               {reviewURLToEdit === "" ? (
                 <Grid
                   container
@@ -895,32 +852,8 @@ class GetStarted extends Component {
                   </div>
                 </Grid>
               ) : null}
-              {reviewURLToEdit === ""
-                ? this.renderReviewURLBoxes()
-                : this.renderSpecificReviewURLBox(reviewURLToEdit)}
-              {/* {reviewURLToEdit === "" ? (
-              <Grid item xs={12} md={6} lg={6}>
-                {this.renderGetStartedBox()}
-              </Grid>
-            ) : null} */}
-              {/* </SimpleBar> */}
+              {this.renderReviewURLBoxes()}
             </Grid>
-            {/* <Grid container spacing={3}>
-            <Grid xs={12} md={12} lg={12}>
-            <AddPlatform />
-            Second column
-            </Grid>
-          </Grid> */}
-            {/* <Grid container spacing={3}>
-            {reviewURLToEdit === "" ? (
-              <Grid item xs={12} md={6} lg={6}>
-                {this.renderGetStartedBox()}
-              </Grid>
-            ) : null}
-            {reviewURLToEdit === ""
-              ? this.renderReviewURLBoxes()
-              : this.renderSpecificReviewURLBox(reviewURLToEdit)}
-          </Grid> */}
             <Grid
               container
               spacing={3}
@@ -967,7 +900,6 @@ class GetStarted extends Component {
             mountOnEnter
             unmountOnExit
           >
-            {/* Pass isLoading */}
             <BottomNotificationBar
               handleClose={this.handleCloseConfirmationModalVisibilityToggle}
               handleSavePermanentlyClick={this.handleSavePermanentlyClick}

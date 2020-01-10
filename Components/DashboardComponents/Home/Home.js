@@ -606,7 +606,7 @@ class Home extends Component {
       let social_media_app_id = _get(item, "social_media_app_id", "");
       if (reviewURLObjects[social_media_app_id]) {
         let socialObj = reviewURLObjects[social_media_app_id] || {};
-        let editURL = _get(socialObj, "editURL", "");
+        let editURL = 22;
         let imageLogo = _get(socialObj, "imageLogo", "");
         let URL = _get(item, "url", "");
         let name = _get(socialObj, "name", "");
@@ -829,10 +829,7 @@ class Home extends Component {
             aria-label="edit"
             color="inherit"
             onClick={() => {
-              this.props.setGetStartedShow(
-                !this.props.showGetStarted,
-                "getStartedBox"
-              );
+              this.props.setGetStartedShow(!this.props.showGetStarted, 22);
             }}
           >
             <EditIcon />
