@@ -35,22 +35,22 @@ import {
   GET_AVAILABLE_PLATFORMS_SUCCESS,
   GET_AVAILABLE_PLATFORMS_FAILURE
 } from "./actionTypes";
-import _get from "lodash/get";
-import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
-import { loginApi } from "../../utility/config";
-import axios from "axios";
-import { sendTrustVote } from "./trustAction";
+import {
+  loginApiOAuth,
+  getAvailablePlatformsApi,
+  loginApi
+} from "../../utility/config";
 import {
   fetchReviews,
   getThirdPartyReviews,
   setInvitationQuota,
   fetchCampaignLanguage
 } from "./dashboardActions";
-import cookie from "js-cookie";
+import { sendTrustVote } from "./trustAction";
 import { reportDomain } from "./domainProfileActions";
-import _find from "lodash/find";
-import _isEmpty from "lodash/isEmpty";
-import _omit from "lodash/omit";
+import { get, find, isEmpty, omit, uniqBy } from "lodash";
+import cookie from "js-cookie";
+import axios from "axios";
 
 export const signUp = (signupData, registerApi, signUpType) => {
   return async (dispatch, getState) => {
@@ -69,8 +69,8 @@ export const signUp = (signupData, registerApi, signUpType) => {
         `${process.env.BASE_URL}${registerApi}`,
         signupData
       );
-      let success = _get(res, "data.success", false);
-      let status = _get(res, "status", 0);
+      let success = get(res, "data.success", false);
+      let status = get(res, "status", 0);
       if (signUpType == 2 || signUpType == 3) {
         let oAuthSignUpSuccess = "undefined";
         if (status === 409 || success) {
@@ -105,8 +105,8 @@ export const signUp = (signupData, registerApi, signUpType) => {
         });
       }
     } catch (error) {
-      let success = _get(error, "response.data.success", false);
-      let status = _get(error, "response.status", 0);
+      let success = get(error, "response.data.success", false);
+      let status = get(error, "response.status", 0);
       if (signUpType == 2 || signUpType == 3) {
         let oAuthSignUpSuccess = "undefined";
         if (status === 409) {
@@ -149,14 +149,14 @@ export const logIn = (loginData, loginApi, loginType) => {
     const { trustVote, profileData } = getState();
     const { payload } = trustVote;
     const { reportDomainLaterData } = profileData;
-    const shouldSend = _get(payload, "shouldSend", false);
-    const trustVoteData = _get(payload, "data", {});
-    const shouldReportDomain = _get(
+    const shouldSend = get(payload, "shouldSend", false);
+    const trustVoteData = get(payload, "data", {});
+    const shouldReportDomain = get(
       reportDomainLaterData,
       "shouldReportDomain",
       false
     );
-    const reportDomainData = _get(reportDomainLaterData, "data", {});
+    const reportDomainData = get(reportDomainLaterData, "data", {});
     dispatch({
       type: LOGIN_INIT,
       logIn: {
@@ -177,10 +177,10 @@ export const logIn = (loginData, loginApi, loginType) => {
         `${process.env.BASE_URL}${loginApi}`,
         loginData
       );
-      let success = _get(res, "data.success", false);
-      let userProfile = _get(res, "data.user", {});
-      let status = _get(res, "status", 0);
-      let token = _get(res, "data.token", "");
+      let success = get(res, "data.success", false);
+      let userProfile = get(res, "data.user", {});
+      let status = get(res, "status", 0);
+      let token = get(res, "data.token", "");
       if (success) {
         localStorage.setItem("token", token);
         cookie.set("loginType", loginType, { expires: 7 });
@@ -209,9 +209,9 @@ export const logIn = (loginData, loginApi, loginType) => {
         dispatch(reportDomain(reportDomainData));
       }
     } catch (error) {
-      let success = _get(error, "response.data.success", false);
-      let status = _get(error, "response.status", 0);
-      let message = _get(error, "response.data.error", "") === "Unauthorized";
+      let success = get(error, "response.data.success", false);
+      let status = get(error, "response.status", 0);
+      let message = get(error, "response.data.error", "") === "Unauthorized";
       dispatch({
         type: LOGIN_FAILURE,
         logIn: {
@@ -274,7 +274,7 @@ export const activateUser = (url, activateUserApi) => {
     if (url) {
       let splitUrlArray = url.split("/");
       let token = "";
-      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
+      if (!isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
         token = splitUrlArray[splitUrlArray.length - 1];
       }
       if (token) {
@@ -282,7 +282,7 @@ export const activateUser = (url, activateUserApi) => {
           const res = await axios.get(
             `${process.env.BASE_URL}${activateUserApi}/${token}`
           );
-          let success = _get(res, "data.success", false);
+          let success = get(res, "data.success", false);
           dispatch({
             type: ACTIVATE_USER_SUCCESS,
             activateUserTemp: {
@@ -292,7 +292,7 @@ export const activateUser = (url, activateUserApi) => {
             userActivated: success
           });
         } catch (error) {
-          let success = _get(error, "response.data.success", false);
+          let success = get(error, "response.data.success", false);
           dispatch({
             type: ACTIVATE_USER_FAILURE,
             activateUserTemp: {
@@ -319,7 +319,7 @@ export const verifyToken = (url, verifyTokenApi) => {
     if (url) {
       let splitUrlArray = url.split("/");
       let token = "";
-      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
+      if (!isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
         token = splitUrlArray[splitUrlArray.length - 1];
       }
       if (token) {
@@ -331,7 +331,7 @@ export const verifyToken = (url, verifyTokenApi) => {
             `${process.env.BASE_URL}${verifyTokenApi}`,
             reqBody
           );
-          let success = _get(res, "data.success", false);
+          let success = get(res, "data.success", false);
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_SUCCESS,
             verifyTokenTemp: {
@@ -340,7 +340,7 @@ export const verifyToken = (url, verifyTokenApi) => {
             }
           });
         } catch (error) {
-          let success = _get(error, "response.data.success", false);
+          let success = get(error, "response.data.success", false);
           dispatch({
             type: VERIFY_RESET_PASSWORD_TOKEN_FAILURE,
             verifyTokenTemp: {
@@ -366,7 +366,7 @@ export const resetPassword = (password, url, resetPasswordApi) => {
     if (url) {
       let splitUrlArray = url.split("/");
       let token = "";
-      if (!_isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
+      if (!isEmpty(splitUrlArray) && Array.isArray(splitUrlArray)) {
         token = splitUrlArray[splitUrlArray.length - 1];
       }
       if (token) {
@@ -379,7 +379,7 @@ export const resetPassword = (password, url, resetPasswordApi) => {
             `${process.env.BASE_URL}${resetPasswordApi}`,
             reqBody
           );
-          let success = _get(res, "data.success", false);
+          let success = get(res, "data.success", false);
           dispatch({
             type: RESET_PASSWORD_SUCCESS,
             resetPasswordTemp: {
@@ -388,7 +388,7 @@ export const resetPassword = (password, url, resetPasswordApi) => {
             }
           });
         } catch (error) {
-          let success = _get(error, "response.data.success", false);
+          let success = get(error, "response.data.success", false);
           dispatch({
             type: RESET_PASSWORD_FAILURE,
             resetPasswordTemp: {
@@ -429,8 +429,8 @@ export const businessSignUp = (signupData, api) => {
     });
     try {
       const res = await axios.post(`${process.env.BASE_URL}${api}`, signupData);
-      let success = _get(res, "data.success", false);
-      let status = _get(res, "status", 0);
+      let success = get(res, "data.success", false);
+      let status = get(res, "status", 0);
       if (success) {
         let loginData = {
           email: signupData.email,
@@ -450,9 +450,9 @@ export const businessSignUp = (signupData, api) => {
         }
       });
     } catch (err) {
-      let success = _get(err, "response.data.success", false);
-      let status = _get(err, "response.status", 0);
-      let error = _get(err, "response.data.error", "");
+      let success = get(err, "response.data.success", false);
+      let status = get(err, "response.status", 0);
+      let error = get(err, "response.data.error", "");
       let errorMsg = "";
       switch (error) {
         case "invalid_locale":
@@ -511,19 +511,20 @@ export const businessLogIn = (loginData, api, directLogin) => {
     });
     try {
       const res = await axios.post(`${process.env.BASE_URL}${api}`, loginData);
-      let success = _get(res, "data.success", false);
-      let userProfile = _get(res, "data.user", {});
-      let status = _get(res, "status", 0);
-      let token = _get(res, "data.token", "");
-      let placeId = _get(
+      let success = get(res, "data.success", false);
+      let userProfile = get(res, "data.user", {});
+      let status = get(res, "status", 0);
+      let token = get(res, "data.token", "");
+      let placeId = get(
         res,
         "data.user.business_profile.google_places.placeId",
         ""
       );
       let loginType = 0;
-      const businessProfile = _get(res, "data.user.business_profile", {});
-      const domainId = _get(businessProfile, "domainId", 0);
-      const socialArray = _get(businessProfile, "social", []);
+      const businessProfile = get(res, "data.user.business_profile", {});
+      const domainId = get(businessProfile, "domainId", 0);
+      const socialArray = get(businessProfile, "social", []);
+
       if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
           if (
@@ -534,10 +535,10 @@ export const businessLogIn = (loginData, api, directLogin) => {
             loginType = 4;
             dispatch(
               setInvitationQuota(
-                _get(userProfile, "subscription.quota_details", {})
+                get(userProfile, "subscription.quota_details", {})
               )
             );
-            let subscriptionExpired = _get(
+            let subscriptionExpired = get(
               userProfile,
               "subscription.expired",
               false
@@ -546,7 +547,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("token", token, { expires: 7 });
             cookie.set("placeId", placeId, { expires: 7 });
             localStorage.setItem("token", token);
-            dispatch(fetchReviews(token));
+            // dispatch(fetchReviews(token));
             dispatch(setSubscription(subscriptionExpired));
             dispatch(fetchCampaignLanguage(token));
             dispatch(getAvailablePlatforms(token));
@@ -566,12 +567,24 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 error: ""
               }
             });
-            // fetch all thirdy party reviews
-            if (socialArray) {
-              if (socialArray.length > 0) {
-                socialArray.map(item => {
-                  let hasData = _get(item, "hasData", 0);
-                  let socialAppId = _get(item, "social_media_app_id", "");
+            // fetch all third party reviews
+            if (
+              socialArray &&
+              Array.isArray(socialArray) &&
+              !isEmpty(socialArray)
+            ) {
+              const uniqueSocialKeys = uniqBy(
+                socialArray,
+                "social_media_app_id"
+              );
+              if (
+                uniqueSocialKeys &&
+                Array.isArray(uniqueSocialKeys) &&
+                !isEmpty(uniqueSocialKeys)
+              ) {
+                (uniqueSocialKeys || []).map(item => {
+                  let hasData = get(item, "hasData", 0);
+                  let socialAppId = get(item, "social_media_app_id", "");
                   if (hasData === 1) {
                     dispatch(getThirdPartyReviews(socialAppId, domainId));
                   }
@@ -599,11 +612,11 @@ export const businessLogIn = (loginData, api, directLogin) => {
         });
       }
     } catch (err) {
-      let success = _get(err, "response.data.success", false);
-      let status = _get(err, "response.status", 0);
-      let error = _get(err, "response.data.error", "Some Error Occured.");
+      let success = get(err, "response.data.success", false);
+      let status = get(err, "response.status", 0);
+      let error = get(err, "response.data.error", "Some Error Occured.");
       let isWrongCredentials =
-        _get(err, "response.data.error") === "Unauthorized";
+        get(err, "response.data.error") === "Unauthorized";
       dispatch({
         type: BUSINESS_LOGIN_FAILURE,
         logIn: {
@@ -642,7 +655,7 @@ export const resendActivationLink = (token, api) => {
       dispatch({
         type: RESEND_ACTIVATION_LINK_SUCCESS,
         resendActivation: {
-          success: _get(result, "data.success", false),
+          success: get(result, "data.success", false),
           isLoading: false
         }
       });
@@ -650,7 +663,7 @@ export const resendActivationLink = (token, api) => {
       dispatch({
         type: RESEND_ACTIVATION_LINK_FAILURE,
         resendActivation: {
-          success: _get(err, "response.data.success", false),
+          success: get(err, "response.data.success", false),
           isLoading: false
         }
       });
@@ -675,10 +688,10 @@ export const setSubscription = isSubscriptionExpired => {
 //updating social in auth/logIn/userProfile/business_profile/social with the new url user has changed in getstarted to show cards on home page. currently we are pushing google as well but not displaying it.
 
 export const updateAuthSocialArray = data => {
-  let omittedData = _omit(data, ["google"]);
+  let omittedData = omit(data, ["google"]);
   return async (dispatch, getState) => {
     const state = getState();
-    const socialArray = _get(
+    const socialArray = get(
       state,
       "auth.logIn.userProfile.business_profile.social",
       []
@@ -687,18 +700,18 @@ export const updateAuthSocialArray = data => {
     let mergeArrayOfChangedFieldsWithSocialArray = [];
     if (omittedData) {
       arrayOfChangedFields = Object.keys(omittedData).map(key => {
-        let foundItem = _find(socialArray, ["social_media_app_id", key]);
+        let foundItem = find(socialArray, ["social_media_app_id", key]);
         if (foundItem) {
           return { ...foundItem, url: omittedData[key] };
         } else {
           return { social_media_app_id: Number(key), url: omittedData[key] };
         }
       });
-      if (socialArray && Array.isArray(socialArray) && !_isEmpty(socialArray)) {
+      if (socialArray && Array.isArray(socialArray) && !isEmpty(socialArray)) {
         mergeArrayOfChangedFieldsWithSocialArray = socialArray.filter(item => {
-          let foundItem = _find(arrayOfChangedFields, [
+          let foundItem = find(arrayOfChangedFields, [
             "social_media_app_id",
-            _get(item, "social_media_app_id", 0)
+            get(item, "social_media_app_id", 0)
           ]);
           if (!foundItem) {
             return { ...item };
@@ -733,11 +746,11 @@ export const getAvailablePlatforms = token => {
         url: `${process.env.BASE_URL}${getAvailablePlatformsApi}`,
         headers: { Authorization: `Bearer ${token}` }
       });
-      let response = _get(result, "data.shops", []);
+      let response = get(result, "data.shops", []);
       let shops = [];
       let success = false;
       if (response) {
-        if (Array.isArray(response) && !_isEmpty(response)) {
+        if (Array.isArray(response) && !isEmpty(response)) {
           shops = response;
           success = true;
         }
@@ -758,7 +771,7 @@ export const getAvailablePlatforms = token => {
           isLoading: false,
           success: false,
           data: [],
-          errorMsg: _get(
+          errorMsg: get(
             error,
             "response.data.error.message",
             "Some error occurred while fetching available platforms."

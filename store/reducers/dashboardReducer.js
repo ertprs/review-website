@@ -78,11 +78,9 @@ const dashboardReducer = (state = {}, action) => {
     parsedCampaignLanguage,
     emailTemplate,
     isReviewsPusherConnected,
-    reviewsObject,
     companyDetails,
     userDetails,
     domainDetails,
-    thirdPartyReviews,
     showGetStarted,
     reviewURLToEdit,
     configDetails,
@@ -363,11 +361,11 @@ const dashboardReducer = (state = {}, action) => {
       };
     }
     case FETCH_THIRD_PARTY_REVIEWS_INIT:
-      return { ...state, type, ...thirdPartyReviews };
+      return { ...state, type, ...reviews };
     case FETCH_THIRD_PARTY_REVIEWS_SUCCESS:
-      return { ...state, type, ...thirdPartyReviews };
+      return { ...state, type, ...reviews };
     case FETCH_THIRD_PARTY_REVIEWS_FAILURE:
-      return { ...state, type, ...thirdPartyReviews };
+      return { ...state, type, ...reviews };
     case SHOW_GET_STARTED: {
       return { ...state, type, showGetStarted, reviewURLToEdit };
     }

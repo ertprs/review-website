@@ -65,7 +65,6 @@ import axios from "axios";
 import cookie from "js-cookie";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { iconNames } from "../../utility/constants/socialMediaConstants";
 import {
   upgradePremiumApi,
   transactionHistoryApi,
@@ -91,7 +90,7 @@ export const setGetReviewsData = getReviewsData => {
 };
 
 //! It is used to fetch only google reviews, don't get confused by it's name
-
+//? need to remove this as we are merging t in other reviews
 export const fetchReviews = (token, page, perPage) => {
   const pageNo = page || 1;
   const perPageLimit = perPage || 10;
@@ -664,71 +663,65 @@ export const emptyDomainDetails = () => {
   };
 };
 
-export const getThirdPartyReviews = (socialAppId, domainId) => {
-  //! here appName is used to set the value to trust for domains whose reviews are successfully fetched to stop the loader in reviews sections
-
+export const getThirdPartyReviews = (socialAppId, domainId, profileId) => {
+  console.log(socialAppId, domainId, "socialAppId, domainId");
   if (socialAppId && domainId) {
-    let appName = "";
-    if (iconNames.hasOwnProperty(socialAppId)) {
-      if (iconNames) {
-        appName = iconNames[socialAppId].name;
-      }
-    }
     return async (dispatch, getState) => {
-      let socialAppName = `${iconNames[socialAppId].name}Reviews`;
-      let { dashboardData } = getState();
-      let reviewsObject = _get(dashboardData, "reviewsObject", {});
-
+      const state = getState();
+      const dashboardData = _get(state, "dashboardData", {});
+      // const reviews = _get(dashboardData, "reviews", {});
+      let api = profileId
+        ? `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+        : `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`;
+      let keyName = profileId ? profileId : socialAppId;
       dispatch({
         type: FETCH_THIRD_PARTY_REVIEWS_INIT,
-        thirdPartyReviews: {
-          [socialAppName]: {
+        reviews: {
+          [keyName]: {
+            data: {},
             isLoading: true,
             success: undefined,
-            errorMsg: "",
-            data: {}
+            errorMsg: ""
           }
         }
       });
       try {
-        const result = await axios.get(
-          `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
-        );
+        const result = await axios.get(api);
         let success = false;
-        let reviews = _get(result, "data.data.reviews", []);
-        if (reviews) {
-          if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-            success = true;
-          }
+        let updatedReviews = _get(result, "data.data.reviews", []);
+        if (
+          updatedReviews &&
+          !_isEmpty(updatedReviews) &&
+          Array.isArray(updatedReviews)
+        ) {
+          success = true;
         }
-        reviewsObject[appName] = false;
-        dispatch(setReviewsObjectWithPusher(reviewsObject));
+
         dispatch({
           type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-          thirdPartyReviews: {
-            [socialAppName]: {
+          reviews: {
+            [keyName]: {
+              data: _get(result, "data.data", {}),
               isLoading: false,
               success,
-              errorMsg: "",
-              data: _get(result, "data.data", {})
+              errorMsg: ""
             }
           }
         });
       } catch (error) {
-        reviewsObject[appName] = false;
-        dispatch(setReviewsObjectWithPusher(reviewsObject));
+        const errorMsg = _get(
+          error,
+          "response.data.message",
+          "Some error occurred!"
+        );
         dispatch({
           type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
-          thirdPartyReviews: {
-            [socialAppName]: {
+          reviews: {
+            [keyName]: {
+              data: {},
               isLoading: false,
               success: false,
-              errorMsg: _get(
-                error,
-                "response.data.message",
-                "Unable to fetch reviews!"
-              ),
-              data: {}
+              errorMsg
             }
           }
         });
