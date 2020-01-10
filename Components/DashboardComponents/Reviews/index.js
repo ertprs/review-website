@@ -7,8 +7,10 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { withStyles } from "@material-ui/styles";
 import _get from "lodash/get";
-import Paper from "@material-ui/core/Paper/Paper";
+import _groupBy from "lodash/groupBy";
+import { connect } from "react-redux";
 import dynamic from "next/dynamic";
+import CommonReviewTabPanel from "./CommonReviewTabPanel";
 const GoogleReviews = dynamic(() => import("./Google"), {
   loading: () => (
     <div
@@ -123,9 +125,59 @@ class ReviewsContainer extends React.Component {
     window.scrollTo(0, 0);
   };
 
-  componentDidMount(){
-    this.props.scrollToTopOfThePage()
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
   }
+
+  getUniqueSocialMediaIds = () => {
+    const socialArray = _get(this.props, "socialArray", []);
+    if (socialArray && Array.isArray(socialArray)) {
+      if (socialArray.length > 0) {
+        let socialArrayGroupedByKeys = _groupBy(
+          socialArray,
+          "social_media_app_id"
+        );
+        if (socialArrayGroupedByKeys) {
+          let uniqueSocialKeys = Object.keys(socialArrayGroupedByKeys);
+          return uniqueSocialKeys;
+        }
+      }
+    }
+    return [];
+  };
+
+  generateTabsDynamically = () => {
+    const uniqueSocialMediaKeysArray = this.getUniqueSocialMediaIds();
+    const reviewPlatforms = _get(this.props, "reviewPlatforms", {});
+    let output = [];
+    if (uniqueSocialMediaKeysArray) {
+      if (uniqueSocialMediaKeysArray.length > 0) {
+        output = uniqueSocialMediaKeysArray.map((item, index) => {
+          let tabLabel = _get(reviewPlatforms, Number(item) || "", "");
+          return <Tab label={tabLabel} {...a11yProps(index)} />;
+        });
+      }
+    }
+    return output;
+  };
+
+  generateTabPanelsDynamically = () => {
+    const { selectedTab } = this.state;
+    const uniqueSocialMediaKeysArray = this.getUniqueSocialMediaIds();
+    let output = [];
+    if (uniqueSocialMediaKeysArray) {
+      if (uniqueSocialMediaKeysArray.length > 0) {
+        output = uniqueSocialMediaKeysArray.map((item, index) => {
+          return (
+            <TabPanel value={selectedTab} index={index}>
+              <CommonReviewTabPanel socialMediaAppId={Number(item) || item} />
+            </TabPanel>
+          );
+        });
+      }
+    }
+    return output;
+  };
 
   render() {
     const { classes } = this.props;
@@ -142,27 +194,26 @@ class ReviewsContainer extends React.Component {
             scrollButtons="auto"
             className={classes.flexContainer}
           >
-            <Tab label="Google reviews" {...a11yProps(0)} />
-            <Tab label="Facebook reviews" {...a11yProps(1)} />
-            <Tab label="TrustedShop reviews" {...a11yProps(2)} />
-            <Tab label="Trustpilot reviews" {...a11yProps(3)} />
+            {this.generateTabsDynamically()}
           </Tabs>
         </AppBar>
-        <TabPanel value={selectedTab} index={0}>
-          <GoogleReviews />
-        </TabPanel>
-        <TabPanel value={selectedTab} index={1}>
-          <FacebookReviews />
-        </TabPanel>
-        <TabPanel value={selectedTab} index={2}>
-          <TrustedshopReviews />
-        </TabPanel>
-        <TabPanel value={selectedTab} index={3}>
-          <TrustpilotReviews scrollToTop={this.scrollToTop} />
-        </TabPanel>
+        {this.generateTabPanelsDynamically()}
       </div>
     );
   }
 }
 
-export default withStyles(styles)(ReviewsContainer);
+const mapStateToProps = state => {
+  const socialArray = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.social"
+  );
+  const reviewPlatforms = _get(
+    state,
+    "dashboardData.review_platforms.data",
+    {}
+  );
+  return { socialArray, reviewPlatforms };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(ReviewsContainer));

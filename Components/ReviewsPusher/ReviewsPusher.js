@@ -53,12 +53,13 @@ class ReviewsPusher extends Component {
 
   bindToKey = (pusher, channel) => {
     const { setReviewsPusherConnect, setReviewsObjectWithPusher } = this.props;
-    channel.bind("google_reviews", data => {
-      this.setState({ reviewScrapeResult: { ...data } }, () => {
-        this.props.onChildStateChange(this.state.reviewScrapeResult);
-        console.log(data, "response from pusher");
-      });
-    });
+    //? we are not listening for google reviews separately
+    // channel.bind("google_reviews", data => {
+    //   this.setState({ reviewScrapeResult: { ...data } }, () => {
+    //     this.props.onChildStateChange(this.state.reviewScrapeResult);
+    //     console.log(data, "response from pusher");
+    //   });
+    // });
 
     channel.bind("aggregator", data => {
       this.props.onAggregatorDataChange(data);

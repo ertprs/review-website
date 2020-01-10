@@ -1,8 +1,8 @@
 import {
   SET_GET_REVIEWS_DATA,
-  FETCH_REVIEWS_DATA_INIT,
-  FETCH_REVIEWS_DATA_SUCCESS,
-  FETCH_REVIEWS_DATA_FAILURE,
+  FETCH_REVIEWS_INIT,
+  FETCH_REVIEWS_SUCCESS,
+  FETCH_REVIEWS_FAILURE,
   SEND_GET_REVIEWS_INIT,
   SEND_GET_REVIEWS_SUCCESS,
   SEND_GET_REVIEWS_FAILURE,
@@ -39,9 +39,6 @@ import {
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_ERROR,
   EMPTY_DOMAIN_DETAILS,
-  FETCH_THIRD_PARTY_REVIEWS_INIT,
-  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
   SET_REVIEWS_OBJECT_WITH_PUSHER,
   SHOW_GET_STARTED,
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
@@ -59,7 +56,18 @@ import {
   CHANGE_CAMPAIGN_STATUS_INIT,
   CHANGE_CAMPAIGN_STATUS_SUCCESS,
   CHANGE_CAMPAIGN_STATUS_FAILURE,
-  SET_CAMPAIGN_EDIT_MODE
+  SET_CAMPAIGN_EDIT_MODE,
+  GET_SMART_URL_INIT,
+  GET_SMART_URL_SUCCESS,
+  GET_SMART_URL_ERROR,
+  ADD_REVIEW_PLATFORM_INIT,
+  ADD_REVIEW_PLATFORM_SUCCESS,
+  ADD_REVIEW_PLATFORM_ERROR,
+  GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
+  GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
+  ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
+  SET_REVIEWS_AFTER_LOGIN
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -82,14 +90,18 @@ const dashboardReducer = (state = {}, action) => {
     userDetails,
     domainDetails,
     showGetStarted,
-    reviewURLToEdit,
+    reviewPlatformToEdit,
     configDetails,
     availablePlatforms,
     requestInstallation,
     campaignsData,
     changeCampaignStatus,
     isCampaignEditMode,
-    selectedCampaignData
+    selectedCampaignData,
+    smartUrl,
+    addReviewPlatformData,
+    review_platforms,
+    updatedReviewPlatforms
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -97,24 +109,6 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         getReviewsData: { ...getReviewsData }
-      };
-    case FETCH_REVIEWS_DATA_INIT:
-      return {
-        ...state,
-        type,
-        reviews
-      };
-    case FETCH_REVIEWS_DATA_SUCCESS:
-      return {
-        ...state,
-        type,
-        reviews
-      };
-    case FETCH_REVIEWS_DATA_FAILURE:
-      return {
-        ...state,
-        type,
-        reviews
       };
     case SEND_GET_REVIEWS_INIT:
       return {
@@ -360,14 +354,14 @@ const dashboardReducer = (state = {}, action) => {
         domainDetails: {}
       };
     }
-    case FETCH_THIRD_PARTY_REVIEWS_INIT:
-      return { ...state, type, ...reviews };
-    case FETCH_THIRD_PARTY_REVIEWS_SUCCESS:
-      return { ...state, type, ...reviews };
-    case FETCH_THIRD_PARTY_REVIEWS_FAILURE:
-      return { ...state, type, ...reviews };
+    case FETCH_REVIEWS_INIT:
+      return { ...state, type, reviews: { ...reviews } };
+    case FETCH_REVIEWS_SUCCESS:
+      return { ...state, type, reviews: { ...reviews } };
+    case FETCH_REVIEWS_FAILURE:
+      return { ...state, type, reviews: { ...reviews } };
     case SHOW_GET_STARTED: {
-      return { ...state, type, showGetStarted, reviewURLToEdit };
+      return { ...state, type, showGetStarted, reviewPlatformToEdit };
     }
     case POST_AUTOMATIC_INVITATION_CONFIG_INIT: {
       return { ...state, type, configDetails };
@@ -447,6 +441,63 @@ const dashboardReducer = (state = {}, action) => {
         type,
         selectedCampaignData,
         isCampaignEditMode
+      };
+    case GET_SMART_URL_INIT:
+      return {
+        ...state,
+        type,
+        smartUrl
+      };
+    case GET_SMART_URL_SUCCESS:
+      return {
+        ...state,
+        type,
+        smartUrl
+      };
+    case GET_SMART_URL_ERROR:
+      return {
+        ...state,
+        type,
+        smartUrl
+      };
+    case ADD_REVIEW_PLATFORM_INIT:
+      return {
+        ...state,
+        type,
+        addReviewPlatformData
+      };
+    case ADD_REVIEW_PLATFORM_SUCCESS:
+      return {
+        ...state,
+        type,
+        addReviewPlatformData
+      };
+    case ADD_REVIEW_PLATFORM_ERROR:
+      return {
+        ...state,
+        type,
+        addReviewPlatformData
+      };
+    case GET_AVAILABLE_REVIEW_PLATFORMS_INIT:
+      return { ...state, type, review_platforms };
+    case GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS:
+      return { ...state, type, review_platforms };
+    case GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE:
+      return { ...state, type, review_platforms };
+    case ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS:
+      return {
+        ...state,
+        type,
+        review_platforms: {
+          ...state.review_platforms,
+          data: { ...updatedReviewPlatforms }
+        }
+      };
+    case SET_REVIEWS_AFTER_LOGIN:
+      return {
+        ...state,
+        type,
+        reviews: { ...reviews }
       };
     default:
       return state;

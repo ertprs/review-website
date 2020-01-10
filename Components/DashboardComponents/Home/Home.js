@@ -30,12 +30,18 @@ import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import Link from "next/link";
 import { iconNames } from "../../../utility/constants/socialMediaConstants";
 import SmartUrl from "../../../Components/DashboardComponents/SmartUrl";
+import dynamic from "next/dynamic";
+import Head from "next/head";
+const SimpleBar = dynamic(() => import("simplebar-react"), {
+  ssr: false
+});
 
 const styles = theme => ({
   button: {
     width: "150px"
   }
 });
+const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
 
 class Home extends Component {
   state = {
@@ -363,79 +369,19 @@ class Home extends Component {
           }
         `}</style>
         <SimpleCard style={{ height: "298px" }}>
-          <div className="header">
-            <Title>
-              <h5>Reviews Fetch Status</h5>
-            </Title>
-          </div>
-          <div className="body">
-            {googlePlaceAddress ? (
-              <div className="row p_10">
-                <div className="col-md-6 platform_name">Google</div>
-                <div className="col-md-6 text_right">
-                  {isGoogleReviewsFetching ||
-                  _get(dashboardData, "reviews.isFetching", false) ? (
-                    <div>
-                      <span>Fetching Reviews...</span>
-                      <CircularProgress size={15} />
-                    </div>
-                  ) : (
-                    <>
-                      <FetchedIcon
-                        size={15}
-                        style={{ color: "green", height: "16px" }}
-                      />
-                      <span
-                        className="link ml_10"
-                        onClick={() => this.props.navigateToReviews(0)}
-                      >
-                        See Reviews
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-            ) : null}
-            {(socialArray || []).map(item => {
-              //this will map the review platforms with their tabs in reviews section
-              let reviewsTabIndexObj = {
-                1: "1",
-                18: "3",
-                19: "2"
-              };
-              let platformDisplayName = "";
-              let platformName = "";
-              let platformKeyName = "";
-              let app_id = _get(item, "social_media_app_id", "`");
-              let reviewObj = reviewURLObjects[app_id];
-              let socialMediaObj = iconNames[app_id];
-              if (socialMediaObj) {
-                platformName = _get(socialMediaObj, "name", "");
-              }
-              if (reviewObj) {
-                platformDisplayName = _get(reviewObj, "displayName", "");
-                platformKeyName = _get(reviewObj, "name", "");
-              }
-              let isFetching = false;
-              if (reviewsObject.hasOwnProperty(platformName)) {
-                isFetching = reviewsObject[platformName];
-              }
-              let isFetchingFromApi = false;
-              if (dashboardData.hasOwnProperty(platformKeyName)) {
-                let platformData = _get(dashboardData, platformKeyName, {});
-                isFetchingFromApi = _get(platformData, "isLoading", false);
-              }
-              let reviewsTabIndex = 0;
-              if (reviewsTabIndexObj.hasOwnProperty(app_id)) {
-                reviewsTabIndex = reviewsTabIndexObj[app_id];
-              }
-              return (
+          <SimpleBar style={{ height: "250px" }}>
+            <div className="header">
+              <Title>
+                <h5>Reviews Fetch Status</h5>
+              </Title>
+            </div>
+            <div className="body">
+              {googlePlaceAddress ? (
                 <div className="row p_10">
-                  <div className="col-md-6 platform_name">
-                    {platformDisplayName}
-                  </div>
+                  <div className="col-md-6 platform_name">Google</div>
                   <div className="col-md-6 text_right">
-                    {isFetching || isFetchingFromApi ? (
+                    {isGoogleReviewsFetching ||
+                    _get(dashboardData, "reviews.isFetching", false) ? (
                       <div>
                         <span>Fetching Reviews...</span>
                         <CircularProgress size={15} />
@@ -443,15 +389,12 @@ class Home extends Component {
                     ) : (
                       <>
                         <FetchedIcon
+                          size={15}
                           style={{ color: "green", height: "16px" }}
                         />
                         <span
                           className="link ml_10"
-                          onClick={() =>
-                            this.props.navigateToReviews(
-                              Number(reviewsTabIndex)
-                            )
-                          }
+                          onClick={() => this.props.navigateToReviews(0)}
                         >
                           See Reviews
                         </span>
@@ -459,9 +402,74 @@ class Home extends Component {
                     )}
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              ) : null}
+              {(socialArray || []).map(item => {
+                //this will map the review platforms with their tabs in reviews section
+                let reviewsTabIndexObj = {
+                  1: "1",
+                  18: "3",
+                  19: "2"
+                };
+                let platformDisplayName = "";
+                let platformName = "";
+                let platformKeyName = "";
+                let app_id = _get(item, "social_media_app_id", "`");
+                let reviewObj = reviewURLObjects[app_id];
+                let socialMediaObj = iconNames[app_id];
+                if (socialMediaObj) {
+                  platformName = _get(socialMediaObj, "name", "");
+                }
+                if (reviewObj) {
+                  platformDisplayName = _get(reviewObj, "displayName", "");
+                  platformKeyName = _get(reviewObj, "name", "");
+                }
+                let isFetching = false;
+                if (reviewsObject.hasOwnProperty(platformName)) {
+                  isFetching = reviewsObject[platformName];
+                }
+                let isFetchingFromApi = false;
+                if (dashboardData.hasOwnProperty(platformKeyName)) {
+                  let platformData = _get(dashboardData, platformKeyName, {});
+                  isFetchingFromApi = _get(platformData, "isLoading", false);
+                }
+                let reviewsTabIndex = 0;
+                if (reviewsTabIndexObj.hasOwnProperty(app_id)) {
+                  reviewsTabIndex = reviewsTabIndexObj[app_id];
+                }
+                return (
+                  <div className="row p_10">
+                    <div className="col-md-6 platform_name">
+                      {platformDisplayName}
+                    </div>
+                    <div className="col-md-6 text_right">
+                      {isFetching || isFetchingFromApi ? (
+                        <div>
+                          <span>Fetching Reviews...</span>
+                          <CircularProgress size={15} />
+                        </div>
+                      ) : (
+                        <>
+                          <FetchedIcon
+                            style={{ color: "green", height: "16px" }}
+                          />
+                          <span
+                            className="link ml_10"
+                            onClick={() =>
+                              this.props.navigateToReviews(
+                                Number(reviewsTabIndex)
+                              )
+                            }
+                          >
+                            See Reviews
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </SimpleBar>
         </SimpleCard>
       </Grid>
     );
@@ -597,7 +605,7 @@ class Home extends Component {
       let social_media_app_id = _get(item, "social_media_app_id", "");
       if (reviewURLObjects[social_media_app_id]) {
         let socialObj = reviewURLObjects[social_media_app_id] || {};
-        let editURL = _get(socialObj, "editURL", "");
+        let editURL = 22;
         let imageLogo = _get(socialObj, "imageLogo", "");
         let URL = _get(item, "url", "");
         let name = _get(socialObj, "name", "");
@@ -820,10 +828,7 @@ class Home extends Component {
             aria-label="edit"
             color="inherit"
             onClick={() => {
-              this.props.setGetStartedShow(
-                !this.props.showGetStarted,
-                "getStartedBox"
-              );
+              this.props.setGetStartedShow(!this.props.showGetStarted, 22);
             }}
           >
             <EditIcon />
@@ -858,6 +863,13 @@ class Home extends Component {
       : noImgFound;
     return (
       <>
+        <Head>
+          <link
+            href="/static/css/SimpleBar/simpleBarStyles.min.css"
+            type="text/css"
+            rel="stylesheet"
+          />
+        </Head>
         <style jsx>
           {`
             .businessDetailsContainer {
@@ -905,8 +917,8 @@ class Home extends Component {
             {this.renderOverviewCard()}
             {this.renderReviewsFetchStatusCard()}
             {this.renderInvitationsCard()}
-
-            <>
+            <ReviewPlatforms />
+            {/* <>
               <Grid item xs={6} md={6} lg={6}>
                 <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
               </Grid>
@@ -925,8 +937,8 @@ class Home extends Component {
                   </Button>
                 </div>
               </Grid>
-            </>
-            {this.renderReviewURLBoxes()}
+            </> */}
+            {/* {this.renderReviewURLBoxes()} */}
           </Grid>
         ) : (
           <div>
@@ -934,24 +946,8 @@ class Home extends Component {
               changeStepToRender={data => {}}
               scrollToTopOfThePage={this.props.scrollToTopOfThePage()}
             />
-            {/* <div style={{ marginLeft: "30px" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<ArrowBackIcon />}
-                onClick={() => {
-                  this.setState({
-                    editMode: false
-                  });
-                }}
-              >
-                Back
-              </Button>
-            </div> */}
           </div>
         )}
-        {/* <SmartUrl /> */}
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}

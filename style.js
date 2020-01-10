@@ -162,6 +162,8 @@ export const layoutStyles = css.global`
             display: flex;
             align-items: center;
             justify-content: center;
+          .text-center {
+            text-align: center;
           }
           @media (min-width: 576px) {
             .container {

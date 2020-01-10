@@ -58,6 +58,8 @@ export const deactivateCampaignApi = "/api/my-business/campaigns";
 export const smartUrlApi = "/api/review-platform-navigate";
 export const configuredPlatformsApi = "/api/review-platforms";
 
+export const addReviewPlatformAPI = "/api/my-business/profile/review-platform";
+export const getAvailableReviewPlatformsApi = "/api/master/review-platforms";
 //How to create review short link
 export const getStartedVideoUrl =
   "https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708";
