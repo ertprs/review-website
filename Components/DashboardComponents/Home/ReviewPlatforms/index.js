@@ -31,8 +31,10 @@ class ReviewPlatforms extends Component {
           reviewPlatformsJSX = [
             ...reviewPlatformsJSX,
             <ReviewPlatformCard
+              primaryReviewPlatform={primaryReviewPlatform}
               name={_get(primaryReviewPlatform, "name", "")}
               url={_get(primaryReviewPlatform, "url", "")}
+              id={_get(primaryReviewPlatform, "id", "")}
               socialMediaAppId={socialMediaAppId}
               handleEditClick={() => {
                 setGetStartedShow(true, socialMediaAppId);
@@ -60,7 +62,7 @@ class ReviewPlatforms extends Component {
           <h4 className="ml-5">Review Platforms : </h4>
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
-          <div className="text-center">
+          <div style={{ textAlign: "right" }}>
             <Button
               color="primary"
               variant="contained"

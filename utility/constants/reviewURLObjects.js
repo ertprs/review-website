@@ -22,5 +22,11 @@ export const reviewURLObjects = {
     imageLogo: "trustedShopLogo.jpg",
     name: "trustedshopsReviews",
     displayName: "Trustedshops"
+  },
+  22: {
+    editURL: "directReviewUrl",
+    imageLogo: "googleIcon.png",
+    name: "reviews",
+    displayName: "Reviews"
   }
 };
