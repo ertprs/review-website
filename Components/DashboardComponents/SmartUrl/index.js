@@ -3,7 +3,10 @@ import React, { Component } from "react";
 import Snackbar from "../../Widgets/Snackbar";
 import Card from "../../MaterialComponents/Card";
 import PlatformSplit from "./PlatformSplit";
-import { isValidArray } from "../../../utility/commonFunctions";
+import {
+  isValidArray,
+  calTotalReviewsAndRating
+} from "../../../utility/commonFunctions";
 //? Library imports
 import { connect } from "react-redux";
 import Select from "react-select";
@@ -62,8 +65,8 @@ class SmartUrl extends Component {
     //? sending overall rating and domain name in case of "show available platforms" to jumping page
     let reviewUrl =
       selectedPlatform === "showAvailablePlatforms"
-        ? `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
-        : `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&mode=${mode}`;
+        ? `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
+        : `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&mode=${mode}`;
     this.setState({
       selectedPlatform,
       reviewUrl,
@@ -233,12 +236,13 @@ class SmartUrl extends Component {
 }
 
 const mapStateToProps = state => {
-  const { auth } = state;
+  const { auth, dashboardData } = state;
   const reviewPlatforms = _get(
     auth,
     "logIn.userProfile.business_profile.configured_platforms",
     []
   );
+  const reviews = _get(dashboardData, "reviews", {});
   const domainUrlKey = _get(
     auth,
     "logIn.userProfile.business_profile.domainUrlKey",
@@ -291,37 +295,8 @@ const mapStateToProps = state => {
       };
     }
   }
-  // Calculating total rating
-  const googleRating = _get(state, "dashboardData.reviews.data.rating", 0);
-  const facebookRating = _get(
-    state,
-    "dashboardData.facebookReviews.data.rating",
-    0
-  );
-  const trustpilotRating = _get(
-    state,
-    "dashboardData.trustpilotReviews.data.rating",
-    0
-  );
-  const trustedshopsRating = _get(
-    state,
-    "dashboardData.trustedshopsReviews.data.rating",
-    0
-  );
-  const totalRatingOfAllPlatforms =
-    (googleRating ? Number(googleRating) : 0) +
-    (facebookRating ? Number(facebookRating) : 0) +
-    (trustpilotRating ? Number(trustpilotRating) : 0) +
-    (trustedshopsRating ? Number(trustedshopsRating) : 0);
-  const noOfPlatforms =
-    (googleRating ? 1 : 0) +
-    (facebookRating ? 1 : 0) +
-    (trustpilotRating ? 1 : 0) +
-    (trustedshopsRating ? 1 : 0);
-  let overallRating = totalRatingOfAllPlatforms / (noOfPlatforms || 1);
-  if (overallRating) {
-    overallRating = overallRating.toFixed(1);
-  }
+  const result = calTotalReviewsAndRating(reviews);
+  const overallRating = _get(result, "overallRating", 0);
   const domainName = _get(
     state,
     "auth.logIn.userProfile.business_profile.domain",
