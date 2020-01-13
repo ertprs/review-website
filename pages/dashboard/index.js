@@ -288,10 +288,7 @@ function Dashboard(props) {
 
   const [open, setOpen] = React.useState(false);
   const [stepToRender, setStepToRender] = React.useState(
-    (props.pLocated === false || props.pLocated === undefined) &&
-      (props.pId === undefined || props.pId === "")
-      ? 0
-      : 1
+    _get(props, "socialArray", []).length > 0 ? 1 : 0
   );
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
@@ -314,18 +311,11 @@ function Dashboard(props) {
   let homeDisabled = false;
   let menuItemsDisabled = false;
   let getStartedDisabled = false;
-  if (
-    _get(props, "placeId", "") !== "" ||
-    _get(props, "placeLocated", false) ||
-    props.pId !== ""
-  ) {
+  if (_get(props, "socialArray", []).length > 0) {
     getStartedHide = true;
     homeDisabled = false;
     menuItemsDisabled = false;
-  } else if (
-    _get(props, "placeId", "") === "" ||
-    !_get(props, "placeLocated", false)
-  ) {
+  } else if (_get(props, "socialArray", []).length === 0) {
     getStartedHide = false;
     homeDisabled = true;
     menuItemsDisabled = true;
@@ -663,7 +653,7 @@ function Dashboard(props) {
         <List>
           <MainListItems
             getStartedDisabled={getStartedDisabled}
-            getStartedHide={getStartedHide}
+            getStartedHide={_get(props, "socialArray", []).length > 0}
             homeDisabled={homeDisabled}
             menuItemDisabled={menuItemsDisabled}
             handleMainListItemClick={handleMenuItemClicked}
