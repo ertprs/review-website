@@ -147,7 +147,6 @@ class CommonReviewTabPanel extends Component {
       selectedPlace,
       defaultPlace
     } = this.state;
-    console.log(defaultPlace, "defaultPlace");
     return (
       <>
         <Head>
