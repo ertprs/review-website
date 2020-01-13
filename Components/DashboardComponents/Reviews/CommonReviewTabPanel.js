@@ -261,6 +261,7 @@ const mapStateToProps = (state, ownProps) => {
     []
   );
   const socialArrayGroupedById = _groupBy(socialArray, "social_media_app_id");
+  console.log(socialArrayGroupedById, "Social_Array_grouped_by_ID");
   const dropDownData = (socialArrayGroupedById[socialMediaAppId] || []).map(
     arr => {
       return { label: _get(arr, "name", ""), value: _get(arr, "id", "") };

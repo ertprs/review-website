@@ -531,8 +531,8 @@ class GetStarted extends Component {
                   value: url,
                   valid: true,
                   identity: placeId,
-                  profile_name: profile_name,
-                  name: profile_name,
+                  profile_name: profile_name || name,
+                  name: profile_name || name,
                   identity_data: {
                     directReviewUrl,
                     address
@@ -745,6 +745,7 @@ class GetStarted extends Component {
           temp.id = (Number(_get(item, "value", -1)) || -1) == 22 ? _now() : "";
           parsedArray.push(temp);
         });
+        console.log(parsedArray);
         this.generateFormFieldsDynamically(parsedArray, false, true);
         this.setState({ selectedAvailablePlatformItems: [] });
       }

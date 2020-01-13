@@ -101,7 +101,8 @@ const dashboardReducer = (state = {}, action) => {
     smartUrl,
     addReviewPlatformData,
     review_platforms,
-    updatedReviewPlatforms
+    updatedReviewPlatforms,
+    reviewsObject
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -497,7 +498,13 @@ const dashboardReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        reviews: { ...reviews }
+        reviews: reviews
+      };
+    case SET_LOADING_STATUS_OF_REVIEWS:
+      return {
+        ...state,
+        type,
+        reviews: reviews
       };
     default:
       return state;

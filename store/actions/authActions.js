@@ -33,8 +33,7 @@ import {
   UPDATE_AUTH_SOCIAL_ARRAY,
   GET_AVAILABLE_PLATFORMS_INIT,
   GET_AVAILABLE_PLATFORMS_SUCCESS,
-  GET_AVAILABLE_PLATFORMS_FAILURE,
-  SET_REVIEWS_AFTER_LOGIN
+  GET_AVAILABLE_PLATFORMS_FAILURE
 } from "./actionTypes";
 import _get from "lodash/get";
 import {
@@ -47,7 +46,8 @@ import axios from "axios";
 import {
   setInvitationQuota,
   fetchCampaignLanguage,
-  getAvailableReviewPlatforms
+  getAvailableReviewPlatforms,
+  setReviewsAfterLogin
 } from "./dashboardActions";
 import { sendTrustVote } from "./trustAction";
 import { reportDomain } from "./domainProfileActions";
@@ -500,6 +500,7 @@ export const businessSignUp = (signupData, api) => {
 
 export const businessLogIn = (loginData, api, directLogin) => {
   return async dispatch => {
+    let reviews = {};
     dispatch({
       type: BUSINESS_LOGIN_INIT,
       logIn: {
@@ -577,59 +578,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             });
             //we are fetching reviews of all social profiles that exist inside social key
             if (isValidArray(socialArray)) {
-              let reviews = {};
-              Promise.all(
-                socialArray.map(platform => {
-                  let hasData = _get(platform, "hasData", 0);
-                  let socialAppId = _get(platform, "social_media_app_id", "");
-                  let profileId = _get(platform, "id", "");
-                  if (hasData === 1) {
-                    return axios
-                      .get(
-                        `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
-                      )
-                      .then(res => {
-                        return {
-                          ...res.data,
-                          socialAppId,
-                          profileId
-                        };
-                      })
-                      .catch(err => {
-                        return {
-                          err,
-                          socialAppId,
-                          profileId
-                        };
-                      });
-                  }
-                })
-              ).then(resArr => {
-                resArr.forEach(res => {
-                  let success = false;
-                  let socialAppId = _get(res, "socialAppId", "");
-                  let profileId = _get(res, "profileId");
-                  let reviewsArr = _get(res, "data.reviews", []);
-                  if (isValidArray(reviewsArr)) {
-                    success = true;
-                  }
-                  if (socialAppId && profileId) {
-                    reviews = {
-                      ...reviews,
-                      [socialAppId]: {
-                        ..._get(reviews, socialAppId, {}),
-                        [profileId]: {
-                          ..._get(reviews, socialAppId.profileId, {}),
-                          data: { ...res },
-                          isLoading: false,
-                          success
-                        }
-                      }
-                    };
-                  }
-                });
-                dispatch(setReviewsAfterLogin(reviews));
-              });
+              dispatch(setReviewsAfterLogin(socialArray));
             }
           }
         }
@@ -784,13 +733,5 @@ export const getAvailablePlatforms = token => {
         }
       });
     }
-  };
-};
-
-//? this action creator is used to set reviews in dashboarddata after login only
-export const setReviewsAfterLogin = reviews => {
-  return {
-    type: SET_REVIEWS_AFTER_LOGIN,
-    reviews
   };
 };

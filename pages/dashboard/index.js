@@ -29,7 +29,8 @@ import { logOut } from "../../store/actions/authActions";
 import {
   upgradeToPremium,
   fetchReviews,
-  setInvitationQuota
+  setInvitationQuota,
+  setReviewsAfterLogin
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -401,6 +402,20 @@ function Dashboard(props) {
     };
   }, []);
 
+  useEffect(() => {
+    const socialArray = _get(props, "socialArray", []);
+    const reviews = _get(props, "reviews", {});
+    if (Array.isArray(socialArray)) {
+      if (socialArray.length > 0) {
+        if (reviews) {
+          if (Object.keys(reviews).length === 0) {
+            props.setReviewsAfterLogin(socialArray);
+          }
+        }
+      }
+    }
+  }, []);
+
   const handleMenuItemClicked = index => {
     const step = dashboardSteps[index].name;
     // Current URL is "/"
@@ -702,9 +717,15 @@ const mapStateToProps = state => {
   const userEmail = _get(auth, "logIn.userProfile.email", "");
   const userPhone = _get(auth, "logIn.userProfile.phone", "");
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
-  const reviews = _get(dashboardData, "reviews.data.reviews", []);
+  // const reviews = _get(dashboardData, "reviews.data.reviews", []);
   const token = _get(auth, "logIn.token", "");
   const domainId = _get(auth, "logIn.userProfile.business_profile.domainId", 0);
+  const socialArray = _get(
+    auth,
+    "logIn.userProfile.business_profile.social",
+    []
+  );
+  const reviews = _get(dashboardData, "reviews", {});
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",
@@ -750,12 +771,13 @@ const mapStateToProps = state => {
     upgradeToPremiumRes,
     upgradeToPremiumIsLoading,
     domain,
-    reviews,
     token,
     isSubscriptionExpired,
     isReviewsPusherConnected,
     domainId,
-    subscriptionId
+    subscriptionId,
+    socialArray,
+    reviews
   };
 };
 
@@ -763,5 +785,6 @@ export default connect(mapStateToProps, {
   logOut,
   upgradeToPremium,
   fetchReviews,
-  setInvitationQuota
+  setInvitationQuota,
+  setReviewsAfterLogin
 })(Dashboard);

@@ -65,13 +65,16 @@ import {
   ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
   GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
   GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
-  GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE
+  GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
+  SET_REVIEWS_AFTER_LOGIN,
+  SET_LOADING_STATUS_OF_REVIEWS
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import cookie from "js-cookie";
 import axios from "axios";
 import _find from "lodash/find";
 import _get from "lodash/get";
+import _groupBy from "lodash/groupBy";
 import _isEmpty from "lodash/isEmpty";
 import _findIndex from "lodash/findIndex";
 import {
@@ -156,6 +159,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       console.log(success, "SUCCESS");
       if (success) {
         const socialsArray = _get(result, "data.review_platform_profiles", []);
+        const scraping = _get(result, "data.scraping", []);
         cookie.set("placeLocated", true, { expires: 7 });
         dispatch({
           type: LOCATE_PLACE_SUCCESS,
@@ -169,6 +173,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         });
         if (socialsArray.length > 0) {
           dispatch(updateAuthSocialArray(socialsArray));
+          dispatch(setReviewsLoadingStatus(scraping));
         }
       }
       // We will also get failed array that we can use later to show user which URLs failed to be set
@@ -446,7 +451,7 @@ export const setReviewsPusherConnect = isReviewsPusherConnected => {
   };
 };
 
-export const setReviewsObjectWithPusher = reviewsObject => {
+export const setReviewsObjectWithPusher = (reviewsObject = {}) => {
   return {
     type: SET_REVIEWS_OBJECT_WITH_PUSHER,
     reviewsObject: { ...reviewsObject }
@@ -659,6 +664,7 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
         if (isValidArray(reviewsArray)) {
           success = true;
         }
+        console.log(reviews, "REVIEWS");
         dispatch({
           type: FETCH_REVIEWS_SUCCESS,
           reviews: {
@@ -1132,5 +1138,121 @@ export const postSplitPlatformConfigForSplitPlatform = (
           reject(false);
         });
     });
+  };
+};
+//? this action creator is used to set reviews in dashboarddata after login only
+export const setReviewsAfterLogin = socialArray => {
+  return async (dispatch, getState) => {
+    let reviews = {};
+    const state = getState();
+    const businessProfile = _get(
+      state,
+      "auth.logIn.userProfile.business_profile"
+    );
+    const domainId = _get(businessProfile, "domainId", 0);
+    Promise.all(
+      socialArray.map(platform => {
+        let hasData = _get(platform, "hasData", 0);
+        let socialAppId = _get(platform, "social_media_app_id", "");
+        let profileId = _get(platform, "id", "");
+        if (hasData === 1) {
+          return axios
+            .get(
+              `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+            )
+            .then(res => {
+              return {
+                ...res.data,
+                socialAppId,
+                profileId
+              };
+            })
+            .catch(err => {
+              return {
+                err,
+                socialAppId,
+                profileId
+              };
+            });
+        }
+      })
+    ).then(resArr => {
+      resArr.forEach(res => {
+        let success = false;
+        let socialAppId = _get(res, "socialAppId", "");
+        let profileId = _get(res, "profileId");
+        let reviewsArr = _get(res, "data.reviews", []);
+        if (isValidArray(reviewsArr)) {
+          success = true;
+        }
+        if (socialAppId && profileId) {
+          reviews = {
+            ...reviews,
+            [socialAppId]: {
+              ..._get(reviews, socialAppId, {}),
+              [profileId]: {
+                ..._get(reviews, socialAppId.profileId, {}),
+                data: { ...res },
+                isLoading: false,
+                success
+              }
+            }
+          };
+        }
+      });
+      dispatch({ type: SET_REVIEWS_AFTER_LOGIN, reviews });
+    });
+  };
+};
+
+//Action creator to set loading status of reviews objects
+
+export const setReviewsLoadingStatus = (scrapingArray = []) => {
+  return async (dispatch, getState) => {
+    let reviews = _get(state, "dashboardData.reviews", {});
+    if (scrapingArray) {
+      if (Array.isArray(scrapingArray)) {
+        if (scrapingArray.length > 0) {
+          const state = getState() || {};
+          let scrapingArrayGroupedBySocialId = _groupBy(
+            scrapingArray,
+            "social_media_app_id"
+          );
+          // {1:[{}...], 22: [{}...], 23:[{}...]}
+          for (let item in scrapingArrayGroupedBySocialId) {
+            let selectedSocialMediaAppId = item;
+            if (scrapingArrayGroupedBySocialId[item]) {
+              if (Array.isArray(scrapingArrayGroupedBySocialId[item])) {
+                if (scrapingArrayGroupedBySocialId[item].length > 0) {
+                  scrapingArrayGroupedBySocialId[item].forEach(
+                    (item, index) => {
+                      let selectedAccountId = _get(item, "id", "");
+                      if (selectedAccountId) {
+                        reviews = {
+                          ...reviews,
+                          [selectedSocialMediaAppId]: {
+                            ...reviews[selectedSocialMediaAppId],
+                            [selectedAccountId]: {
+                              ..._get(
+                                reviews,
+                                selectedSocialMediaAppId.selectedAccountId,
+                                {}
+                              ),
+                              isLoading: true,
+                              success: undefined
+                            }
+                          }
+                        };
+                      }
+                    }
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    dispatch({ type: SET_LOADING_STATUS_OF_REVIEWS, reviews: { ...reviews } });
   };
 };
