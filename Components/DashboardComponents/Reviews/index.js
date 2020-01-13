@@ -9,63 +9,8 @@ import { withStyles } from "@material-ui/styles";
 import _get from "lodash/get";
 import _groupBy from "lodash/groupBy";
 import { connect } from "react-redux";
-import dynamic from "next/dynamic";
 import CommonReviewTabPanel from "./CommonReviewTabPanel";
 import { isValidArray } from "../../../utility/commonFunctions";
-
-//! remove these when reviews are done
-// const GoogleReviews = dynamic(() => import("./Google"), {
-//   loading: () => (
-//     <div className="dynamicImport">
-//       <p>Loading.....</p>
-//     </div>
-//   )
-// });
-// const FacebookReviews = dynamic(() => import("./Facebook"), {
-//   loading: () => (
-//     <div
-//       style={{
-//         width: "100%",
-//         height: "80vh",
-//         display: "flex",
-//         alignItems: "center",
-//         justifyContent: "center"
-//       }}
-//     >
-//       <p>Loading.....</p>
-//     </div>
-//   )
-// });
-// const TrustpilotReviews = dynamic(() => import("./Trustpilot"), {
-//   loading: () => (
-//     <div
-//       style={{
-//         width: "100%",
-//         height: "80vh",
-//         display: "flex",
-//         alignItems: "center",
-//         justifyContent: "center"
-//       }}
-//     >
-//       <p>Loading.....</p>
-//     </div>
-//   )
-// });
-// const TrustedshopReviews = dynamic(() => import("./Trustedshop"), {
-//   loading: () => (
-//     <div
-//       style={{
-//         width: "100%",
-//         height: "80vh",
-//         display: "flex",
-//         alignItems: "center",
-//         justifyContent: "center"
-//       }}
-//     >
-//       <p>Loading.....</p>
-//     </div>
-//   )
-// });
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -112,7 +57,8 @@ class ReviewsContainer extends React.Component {
     selectedTab: _get(this.props, "selectedTab", 0)
   };
 
-  handleTabChange = (event, selectedTab) => {
+  handleTabChange = (event, selectedTab, item) => {
+    debugger;
     this.setState({ selectedTab });
   };
 
@@ -146,7 +92,7 @@ class ReviewsContainer extends React.Component {
     if (isValidArray(uniqueSocialMediaKeysArray)) {
       output = uniqueSocialMediaKeysArray.map((item, index) => {
         let tabLabel = _get(reviewPlatforms, Number(item) || "", "");
-        return <Tab label={tabLabel} {...a11yProps(index)} />;
+        return <Tab label={tabLabel} {...a11yProps(index)} id={item} />;
       });
     }
     return output;
