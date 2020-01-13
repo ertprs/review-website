@@ -14,17 +14,32 @@ const renderIcon = provider => {
     case "trustsearch":
       src = "/static/images/logo_footer.png";
       break;
+    case "google":
+      src = "/static/images/googleIcon.png";
+      break;
     case "Google Business":
       src = "/static/images/googleIcon.png";
+      break;
+    case "facebook":
+      src = "/static/images/facebookicon.png";
       break;
     case "Facebook":
       src = "/static/images/facebookicon.png";
       break;
+    case "trustpilot":
+      src = "/static/images/trustpiloticon.png";
+      break;
     case "TrustPilot":
       src = "/static/images/trustpiloticon.png";
       break;
+    case "trustedshops":
+      src = "/static/images/trustedShopLogo.jpg";
+      break;
     case "TrustedShops":
       src = "/static/images/trustedShopLogo.jpg";
+      break;
+    case "wot":
+      src = "/static/images/wotLogo.png";
       break;
     case "Web Of Trust":
       src = "/static/images/wotLogo.png";
@@ -33,16 +48,22 @@ const renderIcon = provider => {
       src = "";
   }
   return (
-    <img
-      title={provider}
-      src={src}
-      alt="icon"
-      style={{
-        height: "15px",
-        width: "15px",
-        marginRight: "10px"
-      }}
-    />
+    <>
+      {src ? (
+        <img
+          title={provider}
+          src={src}
+          alt="icon"
+          style={{
+            height: "15px",
+            width: "15px",
+            marginRight: "10px"
+          }}
+        />
+      ) : (
+        ""
+      )}
+    </>
   );
 };
 
