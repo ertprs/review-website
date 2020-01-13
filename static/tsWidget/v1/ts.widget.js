@@ -29,9 +29,9 @@
       var widgetHtmlFile = "",
         widgetIFrameProtocol = "https:",
         widgetIFrameOrigin =
-          widgetIFrameProtocol + "//widget.thetrustsearch.com",
+          widgetIFrameProtocol + "//widget-dev.thetrustsearch.com",
         widgetBaseUrl =
-          widgetIFrameProtocol + "//widget.thetrustsearch.com/widgetsBox";
+          widgetIFrameProtocol + "//widget-dev.thetrustsearch.com/widgetsBox";
 
       function Widget(container) {
         this.id = generateWidgetId();
