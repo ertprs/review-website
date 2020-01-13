@@ -35,6 +35,7 @@ import Head from "next/head";
 const SimpleBar = dynamic(() => import("simplebar-react"), {
   ssr: false
 });
+import OverallPerformance from "./OverallPerformance";
 
 const styles = theme => ({
   button: {
@@ -165,73 +166,6 @@ class Home extends Component {
     }
   };
 
-  renderOverviewCard = () => {
-    const { totalReviewsOfAllPlatforms, overallRating } = this.props;
-    return (
-      <Grid item xs={12} md={4} lg={4}>
-        <style jsx>{`
-          .header {
-            margin-bottom: 30px;
-          }
-          .body {
-            margin-bottom: 30px;
-          }
-          .bodyHeader {
-            margin-left: 4px;
-          }
-          .ratingsContainer {
-            margin: 10px 0 10px 0;
-          }
-          .bodyFooter {
-            margin-left: 4px;
-          }
-          .footer {
-            border: 1px solid #d8d8d8;
-            padding: 10px;
-          }
-          .trustScore {
-            font-size: 1.5rem;
-            font-weight: lighter;
-          }
-        `}</style>
-        <SimpleCard style={{ height: "298px" }}>
-          <div className="header">
-            <Title>
-              <h5>Overall performance</h5>
-            </Title>
-          </div>
-          <div className="body">
-            <div className="bodyHeader">
-              <h4>{ratingType[Math.round(overallRating)]}</h4>
-            </div>
-            <div className="ratingsContainer">
-              <StarRatings
-                rating={Number(overallRating)}
-                starRatedColor={
-                  ratingColor[Math.round(Number(overallRating)) || 0]
-                }
-                starDimension="30px"
-                starSpacing="0.5px"
-                numberOfStars={5}
-                name="rating"
-              />
-            </div>
-            <div className="bodyFooter">
-              <div>Based on {totalReviewsOfAllPlatforms} reviews</div>
-            </div>
-          </div>
-          <div className="footer">
-            <div>Trustsearch score</div>
-            <div className="trustScore">
-              <span style={{ fontWeight: "400" }}>{overallRating}</span> out of
-              5
-            </div>
-          </div>
-        </SimpleCard>
-      </Grid>
-    );
-  };
-
   renderReviewSnippets = topThreeReviews => {
     return topThreeReviews.map(item => {
       let reviewText = "";
@@ -283,53 +217,53 @@ class Home extends Component {
     });
   };
 
-  renderRecentReviewsCard = () => {
-    const { reviewsData, reviewsObject, isReviewsPusherConnected } = this.props;
-    const reviews = _get(reviewsData, "reviews", []);
-    const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
-    return (
-      <Grid item xs={12} md={4} lg={4}>
-        <style jsx>{`
-          .header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 24px;
-          }
-          .fadedHeader {
-            font-weight: lighter;
-            color: #555;
-          }
-        `}</style>
-        <SimpleCard style={{ height: "298px" }}>
-          <div className="header">
-            <Title>
-              <h5>Latest reviews</h5>
-            </Title>
-            <div className="fadedHeader">(Top 3 )</div>
-          </div>
-          <div className="body">
-            {/* reviewsObject for google means fetching reviews for google from pusher  */}
-            <div>
-              {topThreeReviews.length > 0 ? (
-                this.renderReviewSnippets(topThreeReviews)
-              ) : reviewsObject["google"] === true ? (
-                <>
-                  <div style={{ marginTop: "30px" }}>
-                    <h6 style={{ marginBottom: "50px", color: "green" }}>
-                      <b>Fetching reviews</b>
-                    </h6>
-                    <LinearProgress color="secondary" />
-                  </div>
-                </>
-              ) : (
-                "Reviews will be updated soon!"
-              )}
-            </div>
-          </div>
-        </SimpleCard>
-      </Grid>
-    );
-  };
+  // renderRecentReviewsCard = () => {
+  //   const { reviewsData, reviewsObject, isReviewsPusherConnected } = this.props;
+  //   const reviews = _get(reviewsData, "reviews", []);
+  //   const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
+  //   return (
+  //     <Grid item xs={12} md={4} lg={4}>
+  //       <style jsx>{`
+  //         .header {
+  //           display: flex;
+  //           justify-content: space-between;
+  //           margin-bottom: 24px;
+  //         }
+  //         .fadedHeader {
+  //           font-weight: lighter;
+  //           color: #555;
+  //         }
+  //       `}</style>
+  //       <SimpleCard style={{ height: "298px" }}>
+  //         <div className="header">
+  //           <Title>
+  //             <h5>Latest reviews</h5>
+  //           </Title>
+  //           <div className="fadedHeader">(Top 3 )</div>
+  //         </div>
+  //         <div className="body">
+  //           {/* reviewsObject for google means fetching reviews for google from pusher  */}
+  //           <div>
+  //             {topThreeReviews.length > 0 ? (
+  //               this.renderReviewSnippets(topThreeReviews)
+  //             ) : reviewsObject["google"] === true ? (
+  //               <>
+  //                 <div style={{ marginTop: "30px" }}>
+  //                   <h6 style={{ marginBottom: "50px", color: "green" }}>
+  //                     <b>Fetching reviews</b>
+  //                   </h6>
+  //                   <LinearProgress color="secondary" />
+  //                 </div>
+  //               </>
+  //             ) : (
+  //               "Reviews will be updated soon!"
+  //             )}
+  //           </div>
+  //         </div>
+  //       </SimpleCard>
+  //     </Grid>
+  //   );
+  // };
 
   renderReviewsFetchStatusCard = () => {
     const socialArray = _get(this.props, "socialArray", []);
@@ -760,84 +694,84 @@ class Home extends Component {
     ];
   };
 
-  renderGoogleReviewURLBox = () => {
-    const reviewsData = _get(this.props, "reviewsData", {});
-    const businessProfile = _get(this.props, "businessProfile", {});
-    const ratings = _get(reviewsData, "rating", "");
-    const totalReviews = _get(reviewsData, "total", 0);
-    const directReviewUrl = _get(
-      businessProfile,
-      "google_places.directReviewUrl",
-      ""
-    );
-    const address = _get(businessProfile, "google_places.address", "");
-    const googlePlaceId = _get(businessProfile, "google_places.placeId", "");
+  // renderGoogleReviewURLBox = () => {
+  //   const reviewsData = _get(this.props, "reviewsData", {});
+  //   const businessProfile = _get(this.props, "businessProfile", {});
+  //   const ratings = _get(reviewsData, "rating", "");
+  //   const totalReviews = _get(reviewsData, "total", 0);
+  //   const directReviewUrl = _get(
+  //     businessProfile,
+  //     "google_places.directReviewUrl",
+  //     ""
+  //   );
+  //   const address = _get(businessProfile, "google_places.address", "");
+  //   const googlePlaceId = _get(businessProfile, "google_places.placeId", "");
 
-    const domain = _get(businessProfile, "domain", "");
-    const reviewsObject = _get(this.props, "reviewsObject", {});
-    const googleReviewUrl =
-      directReviewUrl ||
-      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
-    return (
-      <div className="reviewBoxItemContainer">
-        <style jsx>{reviewChannelBoxStyles}</style>
-        <div>
-          <div className="reviewBoxItemLogoContainer">
-            <img src={`/static/images/googleIcon.png`} />
-          </div>
-        </div>
-        <div className="reviewBoxItemTextBoxContainer">
-          <div>
-            <Link href={googleReviewUrl}>
-              <a target="_blank">{address}</a>
-            </Link>
-          </div>
-          <div className="reviewBoxRatingContainer">
-            {ratings ? (
-              <div style={{ marginLeft: "-4px" }}>
-                <StarRatings
-                  rating={Number(ratings)}
-                  starRatedColor="#FFDC0F"
-                  starDimension="20px"
-                  starSpacing="0.5px"
-                  numberOfStars={5}
-                  name="rating"
-                />
-              </div>
-            ) : null}
-          </div>
-          <div className="row" style={{ marginTop: "15px" }}>
-            {ratings ? (
-              <div className="col-md-6">
-                <span style={{ fontWeight: "bold" }}>Ratings : {ratings}</span>{" "}
-              </div>
-            ) : null}
-            {totalReviews ? (
-              <div className="col-md-6">
-                {" "}
-                <span style={{ fontWeight: "bold" }}>
-                  Total reviews : {totalReviews}
-                </span>{" "}
-              </div>
-            ) : null}
-          </div>
-        </div>
-        <div>
-          <IconButton
-            key="edit"
-            aria-label="edit"
-            color="inherit"
-            onClick={() => {
-              this.props.setGetStartedShow(!this.props.showGetStarted, 22);
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </div>
-        {reviewsObject["google"] ? <CircularProgress size={20} /> : null}
-      </div>
-    );
-  };
+  //   const domain = _get(businessProfile, "domain", "");
+  //   const reviewsObject = _get(this.props, "reviewsObject", {});
+  //   const googleReviewUrl =
+  //     directReviewUrl ||
+  //     `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
+  //   return (
+  //     <div className="reviewBoxItemContainer">
+  //       <style jsx>{reviewChannelBoxStyles}</style>
+  //       <div>
+  //         <div className="reviewBoxItemLogoContainer">
+  //           <img src={`/static/images/googleIcon.png`} />
+  //         </div>
+  //       </div>
+  //       <div className="reviewBoxItemTextBoxContainer">
+  //         <div>
+  //           <Link href={googleReviewUrl}>
+  //             <a target="_blank">{address}</a>
+  //           </Link>
+  //         </div>
+  //         <div className="reviewBoxRatingContainer">
+  //           {ratings ? (
+  //             <div style={{ marginLeft: "-4px" }}>
+  //               <StarRatings
+  //                 rating={Number(ratings)}
+  //                 starRatedColor="#FFDC0F"
+  //                 starDimension="20px"
+  //                 starSpacing="0.5px"
+  //                 numberOfStars={5}
+  //                 name="rating"
+  //               />
+  //             </div>
+  //           ) : null}
+  //         </div>
+  //         <div className="row" style={{ marginTop: "15px" }}>
+  //           {ratings ? (
+  //             <div className="col-md-6">
+  //               <span style={{ fontWeight: "bold" }}>Ratings : {ratings}</span>{" "}
+  //             </div>
+  //           ) : null}
+  //           {totalReviews ? (
+  //             <div className="col-md-6">
+  //               {" "}
+  //               <span style={{ fontWeight: "bold" }}>
+  //                 Total reviews : {totalReviews}
+  //               </span>{" "}
+  //             </div>
+  //           ) : null}
+  //         </div>
+  //       </div>
+  //       <div>
+  //         <IconButton
+  //           key="edit"
+  //           aria-label="edit"
+  //           color="inherit"
+  //           onClick={() => {
+  //             this.props.setGetStartedShow(!this.props.showGetStarted, 22);
+  //           }}
+  //         >
+  //           <EditIcon />
+  //         </IconButton>
+  //       </div>
+  //       {reviewsObject["google"] ? <CircularProgress size={20} /> : null}
+  //     </div>
+  //   );
+  // };
 
   render() {
     const {
@@ -914,7 +848,7 @@ class Home extends Component {
                 </div>
               </SimpleCard>
             </Grid>
-            {this.renderOverviewCard()}
+            <OverallPerformance />
             {this.renderReviewsFetchStatusCard()}
             {this.renderInvitationsCard()}
             <ReviewPlatforms />
@@ -967,7 +901,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.activation_required",
     false
   );
-  const reviewsData = _get(dashboardData, "reviews.data", {});
+  const allReviews = _get(dashboardData, "reviews", {});
   const quotaDetails = _get(dashboardData, "quotaDetails", {});
   const token = _get(auth, "logIn.token", "");
   const success = _get(auth, "resendActivation.success", "undefiend");
@@ -1012,40 +946,8 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.screenshot",
     ""
   );
-  const totalReviewsOfAllPlatforms =
-    _get(dashboardData, "reviews.data.total", 0) +
-    _get(dashboardData, "trustedshopsReviews.data.total", 0) +
-    _get(dashboardData, "trustpilotReviews.data.total", 0) +
-    _get(dashboardData, "facebookReviews.data.total", 0);
-  const googleRating = _get(dashboardData, "reviews.data.rating", 0);
-  const facebookRating = _get(dashboardData, "facebookReviews.data.rating", 0);
-  const trustpilotRating = _get(
-    dashboardData,
-    "trustpilotReviews.data.rating",
-    0
-  );
-  const trustedshopsRating = _get(
-    dashboardData,
-    "trustedshopsReviews.data.rating",
-    0
-  );
-  const totalRatingOfAllPlatforms =
-    (googleRating ? Number(googleRating) : 0) +
-    (facebookRating ? Number(facebookRating) : 0) +
-    (trustpilotRating ? Number(trustpilotRating) : 0) +
-    (trustedshopsRating ? Number(trustedshopsRating) : 0);
-  const noOfPlatforms =
-    (googleRating ? 1 : 0) +
-    (facebookRating ? 1 : 0) +
-    (trustpilotRating ? 1 : 0) +
-    (trustedshopsRating ? 1 : 0);
-  const max_rating = 5;
-  //! this rating is calculated for max_rating 5
-  const overallRating = (
-    totalRatingOfAllPlatforms / (noOfPlatforms || 1)
-  ).toFixed(1);
+
   return {
-    reviewsData,
     quotaDetails,
     activated,
     activation_required,
@@ -1068,9 +970,6 @@ const mapStateToProps = state => {
     dashboardData,
     isReviewsPusherConnected,
     showGetStarted,
-    totalReviewsOfAllPlatforms,
-    totalRatingOfAllPlatforms,
-    overallRating,
     screenshot
   };
 };

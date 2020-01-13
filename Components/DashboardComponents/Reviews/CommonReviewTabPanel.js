@@ -61,7 +61,6 @@ class CommonReviewTabPanel extends Component {
 
   setInitialState = () => {
     const { success, isLoading, totalReviews, primaryDropdownObj } = this.props;
-    console.log(primaryDropdownObj, "primaryDropdownObj");
     let total = 0;
     let pageNo = 1;
     let perPage = 10;
