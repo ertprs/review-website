@@ -1265,7 +1265,7 @@ export const setReviewsLoadingStatus = (scrapingArray = []) => {
                                 {}
                               ),
                               isLoading: true,
-                              success: false
+                              success: undefined
                             }
                           }
                         };
