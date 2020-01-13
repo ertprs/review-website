@@ -7,6 +7,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import { withStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const PrettoSlider = withStyles({
   root: {
@@ -41,7 +42,9 @@ const PrettoSlider = withStyles({
 const PlatformSplit = ({
   reviewPlatforms,
   handleSplitValueChange,
-  sumOfAllSplits
+  sumOfAllSplits,
+  handleGenerateReviewUrlClick,
+  isLoading
 }) => {
   return (
     <div>
@@ -112,13 +115,20 @@ const PlatformSplit = ({
       })}
       <div className="row">
         <div className="col-md-8">
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={sumOfAllSplits !== 100}
-          >
-            Generate Review Url
-          </Button>
+          {isLoading ? (
+            <Button variant="contained" color="primary">
+              <CircularProgress style={{ color: "#fff" }} size={20} />
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={sumOfAllSplits !== 100}
+              onClick={handleGenerateReviewUrlClick}
+            >
+              Generate Review Url
+            </Button>
+          )}
         </div>
         <div className="col-md-3">
           <div style={{ textAlign: "center" }}>

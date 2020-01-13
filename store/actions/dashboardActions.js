@@ -68,11 +68,12 @@ import {
   GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
+import cookie from "js-cookie";
 import axios from "axios";
 import _find from "lodash/find";
-import cookie from "js-cookie";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import _findIndex from "lodash/findIndex";
 import {
   upgradePremiumApi,
   transactionHistoryApi,
@@ -88,10 +89,10 @@ import {
   deactivateCampaignApi,
   smartUrlApi,
   addReviewPlatformAPI,
-  getAvailableReviewPlatformsApi
+  getAvailableReviewPlatformsApi,
+  smartLinkSplitPercentageApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
-import _findIndex from "lodash/findIndex";
 import { isValidArray } from "../../utility/commonFunctions";
 
 export const setGetReviewsData = getReviewsData => {
@@ -101,62 +102,7 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
-//? remove this action
-// export const fetchReviews = (token, page, perPage) => {
-//   const pageNo = page || 1;
-//   const perPageLimit = perPage || 10;
-//   return async (dispatch, getState) => {
-//     let { dashboardData } = getState();
-//     let reviewsObject = _get(dashboardData, "reviewsObject", {});
-//     dispatch({
-//       type: FETCH_REVIEWS_DATA_INIT,
-//       reviews: {
-//         data: {},
-//         isFetching: true,
-//         error: "",
-//         success: "undefined"
-//       }
-//     });
-//     try {
-//       const result = await axios({
-//         method: "GET",
-//         headers: { Authorization: `Bearer ${token}` },
-//         url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=${pageNo}&perPage=${perPageLimit}`
-//       });
-//       let success = false;
-//       let reviews = _get(result, "data.reviews", []);
-//       reviewsObject["google"] = false;
-//       dispatch(setReviewsObjectWithPusher(reviewsObject));
-//       if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-//         success = true;
-//       }
-//       dispatch({
-//         type: FETCH_REVIEWS_DATA_SUCCESS,
-//         reviews: {
-//           data: _get(result, "data", {}),
-//           isFetching: false,
-//           error: "",
-//           success
-//         }
-//       });
-//     } catch (err) {
-//       reviewsObject["google"] = false;
-//       dispatch(setReviewsObjectWithPusher(reviewsObject));
-//       const success = _get(err, "response.data.success", false);
-//       const error = _get(err, "response.data.error", "Some Error Occured.");
-//       dispatch({
-//         type: FETCH_REVIEWS_DATA_FAILURE,
-//         reviews: {
-//           data: {},
-//           isFetching: false,
-//           error,
-//           success
-//         }
-//       });
-//     }
-//   };
-// };
-
+//! please check the significance of this action
 export const clearReviewsData = () => {
   return {
     type: fethh_revi,
@@ -1157,5 +1103,34 @@ export const getAvailableReviewPlatforms = token => {
         }
       });
     }
+  };
+};
+
+export const postSplitPlatformConfigForSplitPlatform = (
+  reqBody,
+  domainUrlKey
+) => {
+  let url = `${process.env.BASE_URL}${smartLinkSplitPercentageApi}/${domainUrlKey}/smart-link`;
+  const token = cookie.get("token");
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data: reqBody,
+        url
+      })
+        .then(response => {
+          let success = _get(response, "data.success", false);
+          if (success) {
+            resolve(true);
+          } else {
+            reject(false);
+          }
+        })
+        .catch(error => {
+          reject(false);
+        });
+    });
   };
 };

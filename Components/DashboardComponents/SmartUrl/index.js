@@ -2,6 +2,8 @@ import React, { Component } from "react";
 //? Own imports
 import Snackbar from "../../Widgets/Snackbar";
 import Card from "../../MaterialComponents/Card";
+import PlatformSplit from "./PlatformSplit";
+import { isValidArray } from "../../../utility/commonFunctions";
 //? Library imports
 import { connect } from "react-redux";
 import Select from "react-select";
@@ -11,7 +13,7 @@ import _sumBy from "lodash/sumBy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import IconButton from "@material-ui/core/IconButton";
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
-import PlatformSplit from "./PlatformSplit";
+import { postSplitPlatformConfigForSplitPlatform } from "../../../store/actions/dashboardActions";
 
 class SmartUrl extends Component {
   state = {
@@ -21,7 +23,9 @@ class SmartUrl extends Component {
     snackbarMsg: "",
     reviewUrl: "",
     reviewPlatformsForSplit: _get(this.props, "reviewPlatformsForSplit", []),
-    sumOfAllSplits: 100
+    sumOfAllSplits: 100,
+    generateUrlLoading: false,
+    generateUrlSuccess: undefined
   };
 
   handleSplitValueChange = (value, index) => {
@@ -51,20 +55,77 @@ class SmartUrl extends Component {
     }
   };
 
-  render() {
+  handleDropdownChange = selectedObj => {
+    const { domainUrlKey, overallRating, domainName } = this.props;
+    const selectedPlatform = _get(selectedObj, "value", "");
+    const mode = _get(selectedObj, "mode", "");
+    //? sending overall rating and domain name in case of "show available platforms" to jumping page
+    let reviewUrl =
+      selectedPlatform === "showAvailablePlatforms"
+        ? `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
+        : `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&mode=${mode}`;
+    this.setState({
+      selectedPlatform,
+      reviewUrl,
+      generateUrlSuccess: false
+    });
+  };
+
+  handleGenerateReviewUrlClick = () => {
+    this.setState({ generateUrlLoading: true });
     const {
-      dropdownData,
-      domainUrlKey,
-      overallRating,
-      domainName
+      postSplitPlatformConfigForSplitPlatform,
+      domainUrlKey
     } = this.props;
-    const { sumOfAllSplits, reviewPlatformsForSplit } = this.state;
+    const { reviewPlatformsForSplit } = this.state;
+    let percentageSplitToSend = (reviewPlatformsForSplit || []).map(
+      platform => {
+        return {
+          socialAppId: _get(platform, "social_app_id", 0),
+          percentShare: _get(platform, "value", 0),
+          link: _get(platform, "url", "")
+        };
+      }
+    );
+    const reqBody = {
+      percentageSplit: [...percentageSplitToSend]
+    };
+    postSplitPlatformConfigForSplitPlatform(reqBody, domainUrlKey)
+      .then(success => {
+        if (success) {
+          this.setState({
+            generateUrlSuccess: success,
+            generateUrlLoading: false,
+            showSnackbar: true,
+            snackbarMsg: "Review Url generated successfully!",
+            variant: "success"
+          });
+        }
+      })
+      .catch(success => {
+        if (!success) {
+          this.setState({
+            generateUrlLoading: false,
+            showSnackbar: true,
+            snackbarMsg: "Some error occurred! Please try again!",
+            variant: "error"
+          });
+        }
+      });
+  };
+
+  render() {
+    const { dropdownData } = this.props;
     const {
+      sumOfAllSplits,
+      reviewPlatformsForSplit,
       selectedPlatform,
       showSnackbar,
       variant,
       snackbarMsg,
-      reviewUrl
+      generateUrlLoading,
+      reviewUrl,
+      generateUrlSuccess
     } = this.state;
     return (
       <div>
@@ -109,68 +170,56 @@ class SmartUrl extends Component {
             name="social-platforms"
             placeholder="Select review platform"
             options={dropdownData}
-            onChange={valObj => {
-              let selectedPlatform = _get(valObj, "value", "");
-              //? sending overall rating and domain name in case of "show available platforms" in jumping page
-              let reviewUrl =
-                selectedPlatform === "showAvailablePlatforms"
-                  ? `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
-                  : `${process.env.DOMAIN_NAME}redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}`;
-              this.setState({
-                selectedPlatform,
-                reviewUrl
-              });
-            }}
+            onChange={this.handleDropdownChange}
           />
         </div>
-
-        {selectedPlatform !== null &&
-        selectedPlatform !== undefined &&
-        selectedPlatform !== "" ? (
-          selectedPlatform === "splitPlatform" ? (
-            <PlatformSplit
-              reviewPlatforms={reviewPlatformsForSplit || []}
-              handleSplitValueChange={this.handleSplitValueChange}
-              sumOfAllSplits={sumOfAllSplits || 0}
-            />
-          ) : (
-            <Card
-              style={{
-                marginTop: "100px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-            >
-              <div className="row">
-                <div className="col-md-11">
-                  <div className="mb_10">
-                    <span className="urlText">
-                      Here is your review URL. Please copy and paste this URL in
-                      your emails sent to customers to leave reviews:
-                    </span>
-                  </div>
-                  <span className="url">{reviewUrl}</span>
+        {selectedPlatform === "splitPlatform" && !generateUrlSuccess ? (
+          <PlatformSplit
+            reviewPlatforms={reviewPlatformsForSplit || []}
+            sumOfAllSplits={sumOfAllSplits || 0}
+            handleSplitValueChange={this.handleSplitValueChange}
+            handleGenerateReviewUrlClick={this.handleGenerateReviewUrlClick}
+            isLoading={generateUrlLoading}
+          />
+        ) : null}
+        {(selectedPlatform && selectedPlatform !== "splitPlatform") ||
+        (selectedPlatform === "splitPlatform" && generateUrlSuccess) ? (
+          <Card
+            style={{
+              marginTop: "100px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <div className="row">
+              <div className="col-md-11">
+                <div className="mb_10">
+                  <span className="urlText">
+                    Here is your review URL. Please copy and paste this URL in
+                    your emails sent to customers to leave reviews:
+                  </span>
                 </div>
-                <div className="col-md-1 copyToClipboardIcon">
-                  <CopyToClipboard
-                    text={reviewUrl}
-                    onCopy={() =>
-                      this.setState({
-                        showSnackbar: true,
-                        variant: "success",
-                        snackbarMsg: "Url Copied to clipboard"
-                      })
-                    }
-                  >
-                    <IconButton aria-label="copy">
-                      <CopyIcon />
-                    </IconButton>
-                  </CopyToClipboard>
-                </div>
+                <span className="url">{reviewUrl}</span>
               </div>
-            </Card>
-          )
+              <div className="col-md-1 copyToClipboardIcon">
+                <CopyToClipboard
+                  text={reviewUrl}
+                  onCopy={() =>
+                    this.setState({
+                      showSnackbar: true,
+                      variant: "success",
+                      snackbarMsg: "Url Copied to clipboard"
+                    })
+                  }
+                >
+                  <IconButton aria-label="copy">
+                    <CopyIcon />
+                  </IconButton>
+                </CopyToClipboard>
+              </div>
+            </div>
+          </Card>
         ) : null}
         <Snackbar
           open={showSnackbar}
@@ -210,22 +259,19 @@ const mapStateToProps = state => {
     });
   }
   //? we are adding 3 more options in dropdown apart from actual review platforms
+  //! These mode will be sent to the navigate api in jumping page to generate review url. They are according to backend.
   dropdownData = [
     ...dropdownData,
-    { value: "leastRating", label: "Least rating platform" },
+    { value: "splitPlatform", label: "Split Platform", mode: 1 },
+    { value: "leastRating", label: "Least rating platform", mode: 2 },
     {
       value: "showAvailablePlatforms",
       label: "Let customer choose the platform"
-    },
-    { value: "splitPlatform", label: "Split Platform" }
+    }
   ];
   //? creating data for split platforms
   let reviewPlatformsForSplit = [];
-  if (
-    reviewPlatforms &&
-    Array.isArray(reviewPlatforms) &&
-    !_isEmpty(reviewPlatforms)
-  ) {
+  if (isValidArray(reviewPlatforms)) {
     const noOfPlatforms = (reviewPlatforms || []).length;
     let platformInitialValue = Math.floor(100 / noOfPlatforms);
     const sumOfAllPlatforms = platformInitialValue * noOfPlatforms;
@@ -290,4 +336,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(SmartUrl);
+export default connect(mapStateToProps, {
+  postSplitPlatformConfigForSplitPlatform
+})(SmartUrl);

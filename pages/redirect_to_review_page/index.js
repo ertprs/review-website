@@ -76,17 +76,12 @@ redirect_to_review_page.getInitialProps = async ctx => {
   const domainUrlKey = _get(query, "domainUrlKey", "");
   let configuredPlatformsApiWithDomainUrlKey = `${process.env.BASE_URL}${configuredPlatformsApi}/${domainUrlKey}`;
   const selectedOption = _get(query, "selectedOption", "");
+  const mode = _get(query, "mode", "");
   let domainName = "";
   let overallRating = 0;
   if (selectedOption === "showAvailablePlatforms") {
     domainName = _get(query, "domainName", "");
     overallRating = _get(query, "overallRating", 0);
-  }
-  let fetchUrlApi = "";
-  if (selectedOption === "leastRating") {
-    fetchUrlApi = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}`;
-  } else if (typeof selectedOption == "number" && isFinite(selectedOption)) {
-    fetchUrlApi = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${selectedOption}`;
   }
   let reviewPlatforms = [];
   //! Since in case of showAvailablePlatforms we'll be showing him a dropdown and on basis of selected platform we'll make api call and redirect to that url.
@@ -110,7 +105,15 @@ redirect_to_review_page.getInitialProps = async ctx => {
     } catch (err) {
       const error = _get(err, "response.data.error", "");
     }
-  } else {
+  }
+  //? this else is for platforms for whom we want to navigate to review url page(Accept split platform and least rating).
+  else {
+    let fetchUrlApi = "";
+    if (mode) {
+      fetchUrlApi = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?mode=${mode}`;
+    } else {
+      fetchUrlApi = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${selectedOption}`;
+    }
     let result = "";
     let error = "";
     try {
@@ -120,7 +123,6 @@ redirect_to_review_page.getInitialProps = async ctx => {
     }
     const success = _get(result, "data.success", false);
     const url = _get(result, "data.url", "");
-
     if (success) {
       if (res) {
         res.writeHead(302, {
