@@ -1209,50 +1209,47 @@ export const setReviewsAfterLogin = socialArray => {
 
 export const setReviewsLoadingStatus = (scrapingArray = []) => {
   return async (dispatch, getState) => {
+    const state = getState();
     let reviews = _get(state, "dashboardData.reviews", {});
-    if (scrapingArray) {
-      if (Array.isArray(scrapingArray)) {
-        if (scrapingArray.length > 0) {
-          const state = getState() || {};
-          let scrapingArrayGroupedBySocialId = _groupBy(
-            scrapingArray,
-            "social_media_app_id"
-          );
-          // {1:[{}...], 22: [{}...], 23:[{}...]}
-          for (let item in scrapingArrayGroupedBySocialId) {
-            let selectedSocialMediaAppId = item;
-            if (scrapingArrayGroupedBySocialId[item]) {
-              if (Array.isArray(scrapingArrayGroupedBySocialId[item])) {
-                if (scrapingArrayGroupedBySocialId[item].length > 0) {
-                  scrapingArrayGroupedBySocialId[item].forEach(
-                    (item, index) => {
-                      let selectedAccountId = _get(item, "id", "");
-                      if (selectedAccountId) {
-                        reviews = {
-                          ...reviews,
-                          [selectedSocialMediaAppId]: {
-                            ...reviews[selectedSocialMediaAppId],
-                            [selectedAccountId]: {
-                              ..._get(
-                                reviews,
-                                selectedSocialMediaAppId.selectedAccountId,
-                                {}
-                              ),
-                              isLoading: true,
-                              success: undefined
-                            }
-                          }
-                        };
+    let updatedReviews = {};
+    if (isValidArray(scrapingArray)) {
+      let scrapingArrayGroupedBySocialId = _groupBy(
+        scrapingArray,
+        "social_media_app_id"
+      );
+      for (let item in scrapingArrayGroupedBySocialId) {
+        let selectedSocialMediaAppId = item;
+        if (scrapingArrayGroupedBySocialId[item]) {
+          if (Array.isArray(scrapingArrayGroupedBySocialId[item])) {
+            if (scrapingArrayGroupedBySocialId[item].length > 0) {
+              scrapingArrayGroupedBySocialId[item].forEach((item, index) => {
+                let selectedAccountId = _get(item, "profile_id", "");
+                if (selectedAccountId) {
+                  updatedReviews = {
+                    ...reviews,
+                    [selectedSocialMediaAppId]: {
+                      ..._get(reviews, selectedSocialMediaAppId, {}),
+                      [selectedAccountId]: {
+                        ..._get(
+                          reviews,
+                          selectedSocialMediaAppId.selectedAccountId,
+                          {}
+                        ),
+                        isLoading: true,
+                        success: undefined
                       }
                     }
-                  );
+                  };
                 }
-              }
+              });
             }
           }
         }
       }
     }
-    dispatch({ type: SET_LOADING_STATUS_OF_REVIEWS, reviews: { ...reviews } });
+    dispatch({
+      type: SET_LOADING_STATUS_OF_REVIEWS,
+      reviews: { ...updatedReviews }
+    });
   };
 };
