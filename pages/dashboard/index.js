@@ -409,8 +409,6 @@ function Dashboard(props) {
       if (socialArray.length > 0) {
         if (reviews) {
           if (Object.keys(reviews).length === 0) {
-            console.log(socialArray, "SocialArray");
-            console.log(reviews, "REVOEWS");
             props.setReviewsAfterLogin(socialArray);
           }
         }
