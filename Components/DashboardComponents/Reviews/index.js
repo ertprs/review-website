@@ -58,7 +58,6 @@ class ReviewsContainer extends React.Component {
   };
 
   handleTabChange = (event, selectedTab, item) => {
-    debugger;
     this.setState({ selectedTab });
   };
 
