@@ -673,7 +673,7 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
               ..._get(reviews, socialAppId, {}),
               [profileId]: {
                 ..._get(reviews, socialAppId.profileId, {}),
-                ..._get(result, "data", {}),
+                data: { ..._get(result, "data", {}) },
                 isLoading: false,
                 success
               }

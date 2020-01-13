@@ -67,7 +67,7 @@ class ReviewFetchStatusCard extends Component {
                           <FetchedIcon
                             style={{ color: "green", height: "16px" }}
                           />
-                          //? need to fig out how to navigate
+                          {/* need to fig out how to navigate */}
                           {/* <span
                             className="link ml_10"
                             onClick={() =>
