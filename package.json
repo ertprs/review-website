@@ -64,6 +64,7 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "simplebar-react": "^2.1.0",
     "tus-js-client": "^1.8.0-2",
     "uuid": "^3.3.2"
   },

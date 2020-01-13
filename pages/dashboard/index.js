@@ -29,8 +29,8 @@ import { logOut } from "../../store/actions/authActions";
 import {
   upgradeToPremium,
   fetchReviews,
-  getThirdPartyReviews,
-  setInvitationQuota
+  setInvitationQuota,
+  setReviewsAfterLogin
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -288,16 +288,13 @@ function Dashboard(props) {
 
   const [open, setOpen] = React.useState(false);
   const [stepToRender, setStepToRender] = React.useState(
-    (props.pLocated === false || props.pLocated === undefined) &&
-      (props.pId === undefined || props.pId === "")
-      ? 0
-      : 1
+    _get(props, "socialArray", []).length > 0 ? 1 : 0
   );
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
   const [reviewsSelectedTab, setReviewsSelectedTab] = React.useState(0);
-  const { upgradeToPremiumRes, placeLocated, fetchReviews, token } = props;
+  const { upgradeToPremiumRes, placeLocated, token } = props;
   const initState = {};
   const [parentState, setParentState] = useState(initState);
 
@@ -314,18 +311,11 @@ function Dashboard(props) {
   let homeDisabled = false;
   let menuItemsDisabled = false;
   let getStartedDisabled = false;
-  if (
-    _get(props, "placeId", "") !== "" ||
-    _get(props, "placeLocated", false) ||
-    props.pId !== ""
-  ) {
+  if (_get(props, "socialArray", []).length > 0) {
     getStartedHide = true;
     homeDisabled = false;
     menuItemsDisabled = false;
-  } else if (
-    _get(props, "placeId", "") === "" ||
-    !_get(props, "placeLocated", false)
-  ) {
+  } else if (_get(props, "socialArray", []).length === 0) {
     getStartedHide = false;
     homeDisabled = true;
     menuItemsDisabled = true;
@@ -400,6 +390,20 @@ function Dashboard(props) {
     return () => {
       window.removeEventListener("popstate", changePageWithUrl);
     };
+  }, []);
+
+  useEffect(() => {
+    const socialArray = _get(props, "socialArray", []);
+    const reviews = _get(props, "reviews", {});
+    if (Array.isArray(socialArray)) {
+      if (socialArray.length > 0) {
+        if (reviews) {
+          if (Object.keys(reviews).length === 0) {
+            props.setReviewsAfterLogin(socialArray);
+          }
+        }
+      }
+    }
   }, []);
 
   const handleMenuItemClicked = index => {
@@ -560,12 +564,7 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
-  const {
-    domainId,
-    getThirdPartyReviews,
-    subscriptionId,
-    setInvitationQuota
-  } = props;
+  const { domainId, fetchReviews, subscriptionId, setInvitationQuota } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -580,17 +579,21 @@ function Dashboard(props) {
       {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
-          onChildStateChange={newState => {
-            setParentState({ ...parentState, ...newState });
-            const fetchSuccess = _get(newState, "response.success", false);
-            const reviewsCount = _get(newState, "response.reviewCount", 0);
-            if (reviewsCount > 0 && fetchSuccess) {
-              fetchReviews(token);
-            }
-          }}
+          //? we are not listening for google reviews separately
+          // onChildStateChange={newState => {
+          //   setParentState({ ...parentState, ...newState });
+          //   const fetchSuccess = _get(newState, "response.success", false);
+          //   const reviewsCount = _get(newState, "response.reviewCount", 0);
+          //   if (reviewsCount > 0 && fetchSuccess) {
+          //     fetchReviews(token);
+          //   }
+          // }}
           onAggregatorDataChange={data => {
-            let socialAppId = _get(data, "response.socialAppId", 0);
-            getThirdPartyReviews(socialAppId, domainId);
+            console.log(data, "aggregatorDataChange");
+            //! need to check new aggregator data
+            let socialAppId = _get(data, "response.socialAppId", "");
+            let profileId = _get(data, "response.profileId", "");
+            props.fetchReviews(socialAppId, profileId, domainId);
           }}
         />
       ) : null}
@@ -650,7 +653,7 @@ function Dashboard(props) {
         <List>
           <MainListItems
             getStartedDisabled={getStartedDisabled}
-            getStartedHide={getStartedHide}
+            getStartedHide={_get(props, "socialArray", []).length > 0}
             homeDisabled={homeDisabled}
             menuItemDisabled={menuItemsDisabled}
             handleMainListItemClick={handleMenuItemClicked}
@@ -704,9 +707,15 @@ const mapStateToProps = state => {
   const userEmail = _get(auth, "logIn.userProfile.email", "");
   const userPhone = _get(auth, "logIn.userProfile.phone", "");
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
-  const reviews = _get(dashboardData, "reviews.data.reviews", []);
+  // const reviews = _get(dashboardData, "reviews.data.reviews", []);
   const token = _get(auth, "logIn.token", "");
   const domainId = _get(auth, "logIn.userProfile.business_profile.domainId", 0);
+  const socialArray = _get(
+    auth,
+    "logIn.userProfile.business_profile.social",
+    []
+  );
+  const reviews = _get(dashboardData, "reviews", {});
   const activation_required = _get(
     auth,
     "logIn.userProfile.activation_required",
@@ -752,12 +761,13 @@ const mapStateToProps = state => {
     upgradeToPremiumRes,
     upgradeToPremiumIsLoading,
     domain,
-    reviews,
     token,
     isSubscriptionExpired,
     isReviewsPusherConnected,
     domainId,
-    subscriptionId
+    subscriptionId,
+    socialArray,
+    reviews
   };
 };
 
@@ -765,6 +775,6 @@ export default connect(mapStateToProps, {
   logOut,
   upgradeToPremium,
   fetchReviews,
-  getThirdPartyReviews,
-  setInvitationQuota
+  setInvitationQuota,
+  setReviewsAfterLogin
 })(Dashboard);
