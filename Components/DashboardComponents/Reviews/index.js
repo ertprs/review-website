@@ -9,68 +9,8 @@ import { withStyles } from "@material-ui/styles";
 import _get from "lodash/get";
 import _groupBy from "lodash/groupBy";
 import { connect } from "react-redux";
-import dynamic from "next/dynamic";
 import CommonReviewTabPanel from "./CommonReviewTabPanel";
-const GoogleReviews = dynamic(() => import("./Google"), {
-  loading: () => (
-    <div
-      style={{
-        width: "100%",
-        height: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <p>Loading.....</p>
-    </div>
-  )
-});
-const FacebookReviews = dynamic(() => import("./Facebook"), {
-  loading: () => (
-    <div
-      style={{
-        width: "100%",
-        height: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <p>Loading.....</p>
-    </div>
-  )
-});
-const TrustpilotReviews = dynamic(() => import("./Trustpilot"), {
-  loading: () => (
-    <div
-      style={{
-        width: "100%",
-        height: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <p>Loading.....</p>
-    </div>
-  )
-});
-const TrustedshopReviews = dynamic(() => import("./Trustedshop"), {
-  loading: () => (
-    <div
-      style={{
-        width: "100%",
-        height: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <p>Loading.....</p>
-    </div>
-  )
-});
+import { isValidArray } from "../../../utility/commonFunctions";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -117,8 +57,9 @@ class ReviewsContainer extends React.Component {
     selectedTab: _get(this.props, "selectedTab", 0)
   };
 
-  handleChange = (event, newValue) => {
-    this.setState({ selectedTab: newValue });
+  handleTabChange = (event, selectedTab, item) => {
+    debugger;
+    this.setState({ selectedTab });
   };
 
   scrollToTop = () => {
@@ -131,16 +72,14 @@ class ReviewsContainer extends React.Component {
 
   getUniqueSocialMediaIds = () => {
     const socialArray = _get(this.props, "socialArray", []);
-    if (socialArray && Array.isArray(socialArray)) {
-      if (socialArray.length > 0) {
-        let socialArrayGroupedByKeys = _groupBy(
-          socialArray,
-          "social_media_app_id"
-        );
-        if (socialArrayGroupedByKeys) {
-          let uniqueSocialKeys = Object.keys(socialArrayGroupedByKeys);
-          return uniqueSocialKeys;
-        }
+    if (isValidArray(socialArray)) {
+      let socialArrayGroupedByKeys = _groupBy(
+        socialArray,
+        "social_media_app_id"
+      );
+      if (socialArrayGroupedByKeys) {
+        let uniqueSocialKeys = Object.keys(socialArrayGroupedByKeys);
+        return uniqueSocialKeys;
       }
     }
     return [];
@@ -150,13 +89,11 @@ class ReviewsContainer extends React.Component {
     const uniqueSocialMediaKeysArray = this.getUniqueSocialMediaIds();
     const reviewPlatforms = _get(this.props, "reviewPlatforms", {});
     let output = [];
-    if (uniqueSocialMediaKeysArray) {
-      if (uniqueSocialMediaKeysArray.length > 0) {
-        output = uniqueSocialMediaKeysArray.map((item, index) => {
-          let tabLabel = _get(reviewPlatforms, Number(item) || "", "");
-          return <Tab label={tabLabel} {...a11yProps(index)} />;
-        });
-      }
+    if (isValidArray(uniqueSocialMediaKeysArray)) {
+      output = uniqueSocialMediaKeysArray.map((item, index) => {
+        let tabLabel = _get(reviewPlatforms, Number(item) || "", "");
+        return <Tab label={tabLabel} {...a11yProps(index)} id={item} />;
+      });
     }
     return output;
   };
@@ -165,16 +102,14 @@ class ReviewsContainer extends React.Component {
     const { selectedTab } = this.state;
     const uniqueSocialMediaKeysArray = this.getUniqueSocialMediaIds();
     let output = [];
-    if (uniqueSocialMediaKeysArray) {
-      if (uniqueSocialMediaKeysArray.length > 0) {
-        output = uniqueSocialMediaKeysArray.map((item, index) => {
-          return (
-            <TabPanel value={selectedTab} index={index}>
-              <CommonReviewTabPanel socialMediaAppId={Number(item) || item} />
-            </TabPanel>
-          );
-        });
-      }
+    if (isValidArray(uniqueSocialMediaKeysArray)) {
+      output = uniqueSocialMediaKeysArray.map((item, index) => {
+        return (
+          <TabPanel value={selectedTab} index={index}>
+            <CommonReviewTabPanel socialMediaAppId={Number(item) || item} />
+          </TabPanel>
+        );
+      });
     }
     return output;
   };
@@ -187,7 +122,7 @@ class ReviewsContainer extends React.Component {
         <AppBar position="static" color="default">
           <Tabs
             value={selectedTab}
-            onChange={this.handleChange}
+            onChange={this.handleTabChange}
             indicatorColor="primary"
             textColor="primary"
             variant="scrollable"

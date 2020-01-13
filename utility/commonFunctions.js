@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash";
+import { isEmpty, get } from "lodash";
 
 //? We can use this method to check if the form is valid or not, you just need to send the formdata object, it will loop through the object and will return true if all the fields are valid.
 
@@ -137,4 +137,30 @@ export const isValidArray = arr => {
     isValid = true;
   }
   return isValid;
+};
+
+export const calTotalReviewsAndRating = reviews => {
+  let totalReviews = 0;
+  let totalRating = 0;
+  let noOfPlatforms = 0;
+  for (let platform in reviews) {
+    let platformObj = reviews[platform];
+    for (let place in platformObj) {
+      let placeObj = platformObj[place];
+      let reviews = get(placeObj, "data.data.reviews", []);
+      let rating = get(placeObj, "data.data.rating", 0);
+      if (isValidArray(reviews)) {
+        totalReviews += reviews.length;
+      }
+      if (rating) {
+        totalRating += Number(rating);
+        noOfPlatforms++;
+      }
+    }
+  }
+  let overallRating = (totalRating / (noOfPlatforms || 1)).toFixed(1);
+  return {
+    totalReviews,
+    overallRating
+  };
 };

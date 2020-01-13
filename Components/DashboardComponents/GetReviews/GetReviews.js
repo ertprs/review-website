@@ -741,7 +741,7 @@ class GetReviews extends Component {
     const selectedDate = get(campaignSchedule, "selectedDate", "");
     const formattedDate = get(campaignSchedule, "formattedDate", "");
     const sendAfterMinutes = get(campaignScheduleAutomatic, "value", "");
-    // const subject = get(selectTemplateData, "subject.value", "");
+    const subject = get(selectTemplateData, "subject.value", "");
     let omittedTableData = tableData.map(data => {
       return _omit(data, ["tableData"]);
     });
@@ -774,12 +774,12 @@ class GetReviews extends Component {
           "createCampaign.campaignLanguage.value",
           "d-be60fd9faf074996b23625429aa1dffd"
         ),
-        // subject,
         vars: {
           clientName,
           Entity,
           exampleText,
-          leaveReviewText
+          leaveReviewText,
+          subject
         }
       }
     };
