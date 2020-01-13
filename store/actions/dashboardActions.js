@@ -1249,7 +1249,7 @@ export const setReviewsLoadingStatus = (scrapingArray = []) => {
     }
     dispatch({
       type: SET_LOADING_STATUS_OF_REVIEWS,
-      reviews: { ...updatedReviews }
+      reviews: { ...reviews, ...updatedReviews }
     });
   };
 };
