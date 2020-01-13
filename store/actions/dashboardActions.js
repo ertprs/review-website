@@ -1209,7 +1209,7 @@ export const setReviewsAfterLogin = socialArray => {
 
 export const setReviewsLoadingStatus = (scrapingArray = []) => {
   return async (dispatch, getState) => {
-    const state = getState();
+    const state = getState() || {};
     let reviews = _get(state, "dashboardData.reviews", {});
     let updatedReviews = {};
     if (isValidArray(scrapingArray)) {
