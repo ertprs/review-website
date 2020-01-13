@@ -500,6 +500,12 @@ const dashboardReducer = (state = {}, action) => {
         type,
         reviews: reviews
       };
+    case SET_LOADING_STATUS_OF_REVIEWS:
+      return {
+        ...state,
+        type,
+        reviews: reviews
+      };
     default:
       return state;
   }

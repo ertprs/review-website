@@ -66,13 +66,15 @@ import {
   GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
   GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
   GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
-  SET_REVIEWS_AFTER_LOGIN
+  SET_REVIEWS_AFTER_LOGIN,
+  SET_LOADING_STATUS_OF_REVIEWS
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import axios from "axios";
 import _find from "lodash/find";
 import cookie from "js-cookie";
 import _get from "lodash/get";
+import _groupBy from "lodash/groupBy";
 import _isEmpty from "lodash/isEmpty";
 import {
   upgradePremiumApi,
@@ -211,6 +213,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       console.log(success, "SUCCESS");
       if (success) {
         const socialsArray = _get(result, "data.review_platform_profiles", []);
+        const scraping = _get(result, "data.scraping", []);
         cookie.set("placeLocated", true, { expires: 7 });
         dispatch({
           type: LOCATE_PLACE_SUCCESS,
@@ -224,6 +227,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         });
         if (socialsArray.length > 0) {
           dispatch(updateAuthSocialArray(socialsArray));
+          dispatch(setReviewsLoadingStatus(scraping));
         }
       }
       // We will also get failed array that we can use later to show user which URLs failed to be set
@@ -1225,8 +1229,56 @@ export const setReviewsAfterLogin = socialArray => {
       dispatch({ type: SET_REVIEWS_AFTER_LOGIN, reviews });
     });
   };
-  // return {
-  //   type: SET_REVIEWS_AFTER_LOGIN,
-  //   reviews
-  // };
+};
+
+//Action creator to set loading status of reviews objects
+
+export const setReviewsLoadingStatus = (scrapingArray = []) => {
+  return async (dispatch, getState) => {
+    let reviews = _get(state, "dashboardData.reviews", {});
+    if (scrapingArray) {
+      if (Array.isArray(scrapingArray)) {
+        if (scrapingArray.length > 0) {
+          const state = getState() || {};
+          let scrapingArrayGroupedBySocialId = _groupBy(
+            scrapingArray,
+            "social_media_app_id"
+          );
+          // {1:[{}...], 22: [{}...], 23:[{}...]}
+          for (let item in scrapingArrayGroupedBySocialId) {
+            let selectedSocialMediaAppId = item;
+            if (scrapingArrayGroupedBySocialId[item]) {
+              if (Array.isArray(scrapingArrayGroupedBySocialId[item])) {
+                if (scrapingArrayGroupedBySocialId[item].length > 0) {
+                  scrapingArrayGroupedBySocialId[item].forEach(
+                    (item, index) => {
+                      let selectedAccountId = _get(item, "id", "");
+                      if (selectedAccountId) {
+                        reviews = {
+                          ...reviews,
+                          [selectedSocialMediaAppId]: {
+                            ...reviews[selectedSocialMediaAppId],
+                            [selectedAccountId]: {
+                              ..._get(
+                                reviews,
+                                selectedSocialMediaAppId.selectedAccountId,
+                                {}
+                              ),
+                              isLoading: true,
+                              success: false
+                            }
+                          }
+                        };
+                      }
+                    }
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    dispatch({ type: SET_LOADING_STATUS_OF_REVIEWS, reviews: { ...reviews } });
+  };
 };
