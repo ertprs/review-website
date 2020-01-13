@@ -135,7 +135,12 @@ class CommonReviewTabPanel extends Component {
   };
 
   render() {
-    const { reviewUrl, dropDownData, socialMediaAppId } = this.props;
+    const {
+      reviewUrl,
+      dropDownData,
+      socialMediaAppId,
+      reviewsPlatforms
+    } = this.props;
     const {
       reviews,
       total,
@@ -248,8 +253,14 @@ class CommonReviewTabPanel extends Component {
                     date: _get(review, "date", ""),
                     replyURL: _get(review, "review_url", "")
                   };
+                  let provider = "";
+                  if (socialMediaAppId in reviewsPlatforms) {
+                    provider = reviewsPlatforms[socialMediaAppId];
+                  }
                   //! provider will be dynamic
-                  return <ReviewCard review={reviewToSend} provider="google" />;
+                  return (
+                    <ReviewCard review={reviewToSend} provider={provider} />
+                  );
                 })}
               </>
             ) : (
@@ -297,6 +308,7 @@ class CommonReviewTabPanel extends Component {
 const mapStateToProps = (state, ownProps) => {
   const { dashboardData, auth } = state;
   const socialMediaAppId = _get(ownProps, "socialMediaAppId", 0);
+  const reviewsPlatforms = _get(dashboardData, "review_platforms.data", {});
   const allReviews = _get(dashboardData, "reviews", {});
   const platformReviews = _get(allReviews, socialMediaAppId, {});
   const socialArray = _get(
@@ -371,6 +383,7 @@ const mapStateToProps = (state, ownProps) => {
     allPlacesReviews: platformReviews,
     dropDownData,
     primaryDropdownObj,
+    reviewsPlatforms,
     totalReviews: primaryReviewPlatformReviews,
     success: primaryReviewPlatformSuccess,
     isLoading: primaryReviewPlatformIsLoading,

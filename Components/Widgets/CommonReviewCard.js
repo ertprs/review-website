@@ -14,19 +14,19 @@ const renderIcon = provider => {
     case "trustsearch":
       src = "/static/images/logo_footer.png";
       break;
-    case "google":
+    case "Google Business":
       src = "/static/images/googleIcon.png";
       break;
-    case "facebook":
+    case "Facebook":
       src = "/static/images/facebookicon.png";
       break;
-    case "trustpilot":
+    case "TrustPilot":
       src = "/static/images/trustpiloticon.png";
       break;
-    case "trustedshops":
+    case "TrustedShops":
       src = "/static/images/trustedShopLogo.jpg";
       break;
-    case "wot":
+    case "Web Of Trust":
       src = "/static/images/wotLogo.png";
       break;
     default:
@@ -48,7 +48,7 @@ const renderIcon = provider => {
 
 const ReviewCard = ({ review, provider }) => {
   let { name, text, rating, date, replyURL } = review;
-  name = name==="N/A" ? "Anonymous" : name;
+  name = name === "N/A" ? "Anonymous" : name;
   return (
     <div className="reviewCard">
       <style jsx> {reviewListStyles}</style>
@@ -118,7 +118,7 @@ const ReviewCard = ({ review, provider }) => {
                   provider === "wot" ? "reviewText wordBreak" : "reviewText"
                 }`}
               >
-                {text || _get(review,"review", "") || ""}
+                {text || _get(review, "review", "") || ""}
               </span>
             </div>
           </div>
