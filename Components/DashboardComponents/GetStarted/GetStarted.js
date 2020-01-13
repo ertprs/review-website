@@ -2,21 +2,26 @@ import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
-import PlacesAutoComplete from "../../../Components/Widgets/PlacesAutoComplete/PlacesAutoComplete";
+import Slide from "@material-ui/core/Slide";
 import stringHelpers from "../../../utility/stringHelpers";
 import Snackbar from "../../Widgets/Snackbar";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {
   locatePlaceByPlaceId,
   setGetStartedShow
 } from "../../../store/actions/dashboardActions";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import Button from "@material-ui/core/Button/Button";
-import ArrowRight from "@material-ui/icons/ArrowRight";
+import CloseIcon from "@material-ui/icons/Close";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormField from "../../Widgets/FormField/FormField";
+import AddIcon from "@material-ui/icons/Add";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
+import Tooltip from "@material-ui/core/Tooltip";
+import AvailablePlatformsList from "./AvailablePlatformsList";
+import AddPlatformDialog from "./AddPlatform/AddPlatformDialog/AddPlatformDialog";
 import validate from "../../../utility/validate";
 import {
   setGooglePlaces,
@@ -28,130 +33,143 @@ import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import Link from "next/link";
+import Head from "next/head";
+import dynamic from "next/dynamic";
+import IconButton from "@material-ui/core/IconButton";
+import _omit from "lodash/omit";
+import _now from "lodash/now";
+import GoogleReviewURLBox from "./GoogleReviewURLBox/GoogleReviewURLBox";
+import SetAsPrimaryModal from "./SetAsPrimaryModal/SetAsPrimaryModal";
+import BottomNotificationBar from "./BottomNotificationBar/BottomNotificationBar";
+import ClosedGetStartedConfirmationDialog from "./CloseGetStartedConfirmationDialog";
 
 class GetStarted extends Component {
   state = {
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
-    address: "",
-    selectedAddress: {},
-    formData: {
-      directReviewUrl: {
-        element: "input",
-        type: "text",
-        value: _get(
-          this.props,
-          "businessProfile.google_places.directReviewUrl",
-          ""
-        ),
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid review URL",
-        placeholder: "Enter google review URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "Google review URL: ",
-        name: "google",
-        logo: "googleIcon.png",
-        title: "Google reviews",
-        key: 0,
-        name: "google"
-      },
-      facebookReviewUrl: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid URL",
-        placeholder: "Enter facebook business page URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "Facebook Business Page URL: ",
-        logo: "facebookLogo.png",
-        title: "Facebook reviews",
-        key: 1,
-        name: "facebook"
-      },
-      trustPilotReviewUrl: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid URL",
-        placeholder: "Enter TrustPilot page URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "TrustPilot Page URL: ",
-        logo: "trustpilotLogo.png",
-        title: "TrustPilot reviews",
-        key: 18,
-        name: "trustpilot"
-      },
-      trustedShopsReviewUrl: {
-        element: "input",
-        type: "text",
-        value: "",
-        valid: false,
-        touched: false,
-        errorMessage: "Enter valid URL",
-        placeholder: "Enter TrustedShops page URL (optional)",
-        validationRules: {
-          required: false,
-          isDomain: true
-        },
-        label: "TrustedShops Page URL: ",
-        logo: "trustedShopLogo.jpg",
-        title: "TrustedShops reviews",
-        key: 19,
-        name: "trustedshops"
-      }
-      //   appStoreReviewUrl: {
-      //     element: "input",
-      //     type: "text",
-      //     value: "",
-      //     valid: false,
-      //     touched: false,
-      //     errorMessage: "Enter valid URL",
-      //     placeholder: "Enter App Store review page URL (optional)",
-      //     validationRules: {
-      //       required: false,
-      //       isDomain: true
-      //     },
-      //     label: "App Store review Page URL: ",
-      //     logo: "appStoreLogo.png",
-      //     title: "App Store reviews"
-      //   },
-      //   googlePlayStoreReviewUrl: {
-      //     element: "input",
-      //     type: "text",
-      //     value: "",
-      //     valid: false,
-      //     touched: false,
-      //     errorMessage: "Enter valid URL",
-      //     placeholder: "Enter Google play Store review page URL (optional)",
-      //     validationRules: {
-      //       required: false,
-      //       isDomain: true
-      //     },
-      //     label: "Google play Store URL: ",
-      //     logo: "googlePlayStoreLogo.png",
-      //     title: "Google play store reviews"
-      //   }
-    },
-    disabledSave: true
+    formData: {},
+    generatedCardsFormData: {},
+    selectedAvailablePlatformItems: [],
+    disabledSave: true,
+    modelOpen: false,
+    showSetAsPrimaryModal: false,
+    showCloseConfirmationModal: false,
+    selectedSetAsPrimaryFormDataObject: {}
   };
 
-  handleContinueClick = () => {
-    const { selectedAddress, address, formData } = this.state;
+  handleRemoveTemporaryCard = formDataItemKey => {
+    let key = formDataItemKey;
+    const { formData } = this.state;
+    if (formData[formDataItemKey]) {
+      const formDataAfterOmission = _omit(formData, key);
+      this.setState({
+        formData: { ...formDataAfterOmission }
+      });
+    }
+  };
+
+  //! Generate Form fields from socialArray for already configured social profiles and from review_platforms for rest of the available platforms.
+  //GENERIC_METHOD : generates formFields from fieldsArray parameter.
+  generateFormFieldsDynamically = (
+    fieldsArray,
+    isSocialArray = false,
+    updateMode = false,
+    wipeMode = false
+  ) => {
+    let formData = {};
+    fieldsArray.forEach((item, index) => {
+      let name = _get(item, "name", "");
+      let url = _get(item, "url", "");
+      let social_media_app_id = _get(item, "social_media_app_id", "");
+      let id = _get(item, "id", "");
+      let is_primary = _get(item, "is_primary", "");
+      if (name && social_media_app_id) {
+        let formFieldKey =
+          social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
+        formData = {
+          ...formData,
+          [formFieldKey]: {
+            element: "input",
+            type: "text",
+            value: "",
+            valid: false,
+            touched: false,
+            errorMessage: "Enter valid URL",
+            placeholder: `Enter ${name} page URL (required)`,
+            validationRules: {
+              required: true
+            },
+            label: `${name} Page URL: `,
+            logo: `${name}Logo.png`,
+            title: `${name} reviews`,
+            key: social_media_app_id,
+            social_media_app_id: social_media_app_id,
+            name: name,
+            id: id,
+            editURL: formFieldKey,
+            isTemporary: !isSocialArray ? true : false,
+            extraPayload: {},
+            primary: is_primary
+          }
+        };
+      }
+    });
+    //setState also
+    // console.log(formData, "dynamic formData");
+    if (wipeMode) {
+      this.setState({ formData: { ...formData } }, () => {
+        this.prefillSocialURLs(fieldsArray);
+      });
+    } else if (updateMode) {
+      this.setState(
+        { formData: { ...formData, ...this.state.formData } },
+        () => {
+          this.prefillSocialURLs(fieldsArray);
+        }
+      );
+    } else {
+      this.setState(
+        { formData: { ...this.state.formData, ...formData } },
+        () => {
+          this.prefillSocialURLs(fieldsArray);
+        }
+      );
+    }
+  };
+
+  handleModalVisibilityToggle = () => {
+    this.setState(prevState => {
+      return { ...prevState, modelOpen: !prevState.modelOpen };
+    });
+  };
+
+  handleSetAsPrimaryModalVisibilityToggle = formDataItemKey => {
+    const formData = _get(this.state, "formData", {});
+    const formDataItem = formData[formDataItemKey] || {};
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        selectedSetAsPrimaryFormDataObject: { ...formDataItem },
+        showSetAsPrimaryModal: !prevState.showSetAsPrimaryModal
+      };
+    });
+  };
+
+  handleCloseConfirmationModalVisibilityToggle = (exitGetStarted = false) => {
+    if (exitGetStarted) {
+      this.props.setGetStartedShow(false, "");
+    }
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        showCloseConfirmationModal: !prevState.showCloseConfirmationModal
+      };
+    });
+  };
+
+  handleSavePermanentlyClick = () => {
+    const formData = _get(this.state, "formData", {});
     const {
       setReviewsPusherConnect,
       setReviewsObjectWithPusher,
@@ -160,110 +178,168 @@ class GetStarted extends Component {
       googlePlaces
     } = this.props;
     let reqBody = {};
-
-    //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
-
-    let reviewsObject = {
-      google: false,
-      facebook: false,
-      trustpilot: false,
-      trustedshops: false
-    };
-
+    //profiles array to be sent in API call
+    let profiles = [];
+    //loop through formData, check which records have been touched by the user and push them inside profiles in the required format
     for (let item in formData) {
-      if (item === "directReviewUrl") {
-        if (Object.keys(selectedAddress).length > 0) {
-          reviewsObject.google = true;
-          reqBody = {
-            ...reqBody,
-            google: {
-              ...selectedAddress,
-              address,
-              directReviewUrl: formData[item].value
-            }
+      let profileBody = {};
+      let formDataItem = formData[item] || {};
+      let touched = _get(formDataItem, "touched", false);
+      let valid = _get(formDataItem, "touched", false);
+      //if the formDataItem was changed and is valid
+      if (touched && valid) {
+        let isTemporary = _get(formDataItem, "isTemporary", false);
+        let social_media_app_id = _get(formDataItem, "social_media_app_id");
+        let url = _get(formDataItem, "value", "");
+        //check if it's a new record, (isTemporary), then we do not need to add id in payload
+        if (isTemporary) {
+          let identity = _get(formDataItem, "identity", "");
+          let identity_data = _get(formDataItem, "identity_data", {});
+          identity_data = _omit(identity_data, "directReviewUrl");
+          let profile_name = _get(formDataItem, "name", "");
+          let primary = _get(formDataItem, "primary", "");
+          let clientKey = _get(formDataItem, "editURL", item);
+          //check for google in primary , becoz it can have multiple profiles
+          if (social_media_app_id === 22) {
+            primary = primary ? 1 : 0;
+          } else {
+            primary = 1;
+          }
+          profileBody = {
+            ...profileBody,
+            platform: social_media_app_id,
+            url: url,
+            identity: identity,
+            identity_data: identity_data,
+            profile_name: profile_name,
+            primary: primary,
+            clientKey: clientKey
           };
-          clearReviewsData();
-        } else if (
-          Object.keys(selectedAddress).length === 0 &&
-          formData[item].touched
-        ) {
-          reviewsObject.google = true;
-          reqBody = {
-            ...reqBody,
-            google: {
-              address: _get(googlePlaces, "address", ""),
-              directReviewUrl: formData[item].value,
-              name: _get(googlePlaces, "name", ""),
-              placeId: _get(googlePlaces, "placeId", "")
-            }
+        }
+        //for already existing records, we will send the id
+        else {
+          let identity = _get(formDataItem, "identity", "");
+          let identity_data = _get(formDataItem, "identity_data", "");
+          identity_data = _omit(identity_data, "directReviewUrl");
+          let profile_name = _get(formDataItem, "name", "");
+          let primary = _get(formDataItem, "primary", "");
+          if (social_media_app_id === 22) {
+            primary = primary ? 1 : 0;
+          } else {
+            primary = 1;
+          }
+          let id = _get(formDataItem, "id", "");
+          profileBody = {
+            ...profileBody,
+            id: id,
+            platform: social_media_app_id,
+            url: url,
+            identity: identity,
+            identity_data: identity_data,
+            profile_name: profile_name,
+            primary: primary
           };
-          clearReviewsData();
         }
-      } else {
-        if (formData[item].valid && formData[item].touched) {
-          let itemName = formData[item].name;
-          reviewsObject[itemName] = true;
-          let key = formData[item].key;
-          reqBody = { ...reqBody, [key]: formData[item].value };
-        }
+        profiles.push(profileBody);
       }
     }
+
+    reqBody = { profiles: [...profiles] };
+    //! pass request body to reducer
     if (Object.keys(reqBody).length > 0) {
       locatePlaceByPlaceId(
         reqBody,
         this.props.token,
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
-      setReviewsPusherConnect(true);
-      setReviewsObjectWithPusher(reviewsObject);
-      //! we don't want to clear google reviews data as they will be already updating.
+    }
+
+    //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
+    // let reviewsObject = {
+    //   google: false,
+    //   facebook: false,
+    //   trustpilot: false,
+    //   trustedshops: false
+    // };
+
+    setReviewsPusherConnect(true);
+    // setReviewsObjectWithPusher(reviewsObject);
+    //   //! we don't want to clear google reviews data as they will be already updating.
+    // }
+  };
+
+  handleAvailablePlatformsListChange = arr => {
+    if (Array.isArray(arr) && arr.length > 0) {
+      this.setState({ selectedAvailablePlatformItems: [...arr] });
+    } else {
+      this.setState({ selectedAvailablePlatformItems: [] });
     }
   };
 
-  handleAddressSelect = (reqBody, address) => {
-    const { userProfile, businessProfile } = this.props;
-    const name = _get(userProfile, "company.name", "");
-    const googlePlaceId = _get(reqBody, "placeId", "");
-    const domain = _get(businessProfile, "domain", "");
-    const googleReviewUrl = `https://search.google.com/local/writereview?placeid=${googlePlaceId}`;  
-    this.setState({
-      selectedAddress: { ...reqBody, name },
-      address: address,
-      disabledSave: false,
-      formData: {
-        ...this.state.formData,
-        directReviewUrl: {
-          ...this.state.formData["directReviewUrl"],
-          value: googleReviewUrl,
-          valid: true,
-          touched: true
+  //! modified method (Specifically for google reviews) to set Google review URL, address and other params with latest value
+  handleAddressSelect = reqBody => {
+    const { formData } = this.state;
+    const placeId = _get(reqBody, "placeId", "");
+    const address = _get(reqBody, "address", "");
+    const url = _get(reqBody, "url", "");
+    const formDataItemKey = _get(reqBody, "formDataItemKey", "");
+    if (formData && formData[formDataItemKey]) {
+      this.setState(
+        {
+          formData: {
+            ...formData,
+            [formDataItemKey]: {
+              ...formData[formDataItemKey],
+              value: url,
+              touched: true,
+              identity: placeId,
+              identity_data: {
+                ...formData[formDataItemKey].identity_data,
+                address: address,
+                directReviewUrl: url
+              },
+              extraPayload: {
+                ...formData[formDataItemKey].extraPayload,
+                placeId: placeId,
+                address: address,
+                directReviewUrl: url
+              },
+              valid: validate(url, formData[formDataItemKey].validationRules)
+            }
+          }
         }
-      }
-    });
+        // () => {
+        //   console.log("state set");
+        // }
+      );
+    }
   };
 
-  renderSelectedAddress = () => {
-    const { selectedAddress, address } = this.state;
-    const addressSelected = _get(this.props, "addressSelected", "");
-    return Object.keys(selectedAddress).length > 0 ? (
-      <div style={{ marginTop: "15px" }}>
-        {address ? (
-          <p>
-            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-            {address}
-          </p>
-        ) : null}
-      </div>
-    ) : (
-      <div style={{ marginTop: "15px" }}>
-        {addressSelected ? (
-          <p>
-            <span style={{ fontWeight: "bold" }}>Selected address :</span>{" "}
-            {addressSelected}
-          </p>
-        ) : null}
-      </div>
-    );
+  //! (Specifically for google reviews for now) but functionality wise it's generic and can be used with other platforms also in future
+  handleGooglePlaceNameChange = (newName, formDataItemKey) => {
+    const formDataLocal = _get(this.state, "formData", {});
+    if (formDataLocal[formDataItemKey]) {
+      this.setState(
+        {
+          formData: {
+            ...formDataLocal,
+            [formDataItemKey]: {
+              ...formDataLocal[formDataItemKey],
+              name: newName,
+              profile_name: newName,
+              touched: true,
+              valid: validate(
+                formDataLocal[formDataItemKey].value,
+                formDataLocal[formDataItemKey].validationRules
+              )
+            }
+          }
+        }
+        // () => {
+        //   console.log("Google review URL state set with latest name");
+        // }
+      );
+    }
   };
 
   renderGetStartedHeader = () => {
@@ -295,58 +371,21 @@ class GetStarted extends Component {
     );
   };
 
-  anyURLSelected = () => {
-    let valid = false;
-    let { formData } = this.state;
-    for (let item in formData) {
-      valid = valid || (formData[item].value !== "" && formData[item].valid);
+  anyFormDataChanged = () => {
+    const formData = _get(this.state, "formData", {});
+    let hasChanged = false;
+    if (formData) {
+      if (Object.keys(formData).length > 0) {
+        for (let item in formData) {
+          let formDataItem = formData[item] || {};
+          let valid = _get(formDataItem, "valid", false);
+          let value = _get(formDataItem, "value", "");
+          let touched = _get(formDataItem, "touched", false);
+          hasChanged = hasChanged || (valid && value !== "" && touched);
+        }
+      }
     }
-    return valid;
-  };
-
-  renderContinueBtn = reviewURLToEdit => {
-    const { selectedAddress, formData, disabledSave } = this.state;
-    const { type, isLoading, showGetStarted } = this.props;
-    return (
-      <div style={{ textAlign: "right" }}>
-        {isLoading === true ? (
-          <Button variant="contained" color="primary" size="large">
-            <CircularProgress size={25} style={{ color: "white" }} />
-          </Button>
-        ) : (
-          <>
-            {showGetStarted ? (
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                onClick={() => {
-                  this.props.setGetStartedShow(false, "");
-                }}
-              >
-                Close
-              </Button>
-            ) : null}
-            <Button
-              disabled={
-                disabledSave ||
-                !(
-                  Object.keys(selectedAddress).length > 0 ||
-                  this.anyURLSelected()
-                )
-              }
-              style={{ marginLeft: "20px" }}
-              onClick={this.handleContinueClick}
-              variant="contained"
-              color="primary"
-              size="large"
-            >
-              Save Changes
-            </Button>
-          </>
-        )}
-      </div>
-    );
+    return hasChanged;
   };
 
   handleChange = (e, id) => {
@@ -367,125 +406,32 @@ class GetStarted extends Component {
     });
   };
 
-  renderDirectReviewUrl = () => {
-    const { formData, selectedAddress } = this.state;
-    return (
-      <div className="row">
-        <div
-          className="col-md-7"
-          style={{ alignItems: "flex-end", display: "flex", flex: "1" }}
-        >
-          <div style={{ width: "100%" }}>
-            <FormField
-              {...formData.directReviewUrl}
-              id="directReviewUrl"
-              handleChange={this.handleChange}
-              styles={{
-                border: "0",
-                borderBottom: "1px solid #999",
-                borderRadius: "0",
-                marginLeft: 0,
-                paddingLeft: 0
-              }}
-            />
-          </div>
-        </div>
-        <div className="col-md-5">
-          <Link href="https://www.loom.com/share/ef51f581d64842a6bcdcd000d2645708">
-            <a target="_blank">
-              {" "}
-              <p>How to create review short link - Watch Video</p>{" "}
-              <div style={{ maxWidth: "300px", height: "auto" }}>
-                <img
-                  style={{ maxWidth: "100%", height: "auto" }}
-                  src="https://cdn.loom.com/sessions/thumbnails/ef51f581d64842a6bcdcd000d2645708-with-play.gif"
-                />
-              </div>
-            </a>
-          </Link>
-        </div>
-      </div>
-    );
-  };
-
-  renderGetStartedBox = () => {
-    return (
-      <Paper>
-        <style jsx>
-          {`
-            .getStartedBox {
-              padding: 25px;
-            }
-            .getStartedBoxHeader {
-              margin-bottom: 55px;
-            }
-            .getStartedBoxContainerInner {
-              display: flex;
-            }
-            .getStartedBoxContainerInner div:first-child {
-              flex-basis: 25%;
-            }
-            .getStartedBoxContainerInner div:last-child {
-              flex-basis: 75%;
-            }
-
-            .getStartedBoxImgContainer {
-              max-width: 250px;
-              height: auto;
-            }
-            .getStartedBoxImgContainer img {
-              max-width: 100%;
-              height: auto;
-            }
-
-            @media screen and (max-width: 720px) {
-              .getStartedBoxImgContainer {
-                display: none;
-              }
-              .getStartedBoxHeader h4 {
-                font-size: 1.1rem;
-                margin-bottom: 35px;
-              }
-            }
-          `}
-        </style>
-        <div className="getStartedBox">
-          <div className="getStartedBoxHeader">
-            <h4>Locate your business</h4>
-          </div>
-          <div className="getStartedBoxContainerInner">
-            <div className="getStartedBoxImgContainer">
-              <img src="/static/images/locate.png" />
-            </div>
-            <div className="getStartedBoxAutoComplete">
-              <>
-                <PlacesAutoComplete
-                  handleAddressSelect={this.handleAddressSelect}
-                />
-                {this.renderSelectedAddress()}
-                {this.renderDirectReviewUrl()}
-                {/* {this.renderContinueBtn()} */}
-              </>
-            </div>
-          </div>
-        </div>
-      </Paper>
-    );
-  };
-
   componentDidMount() {
-    const { placeId, locatePlace, businessProfile } = this.props;
-    if(this.props.scrollToTopOfThePage){
+    const {
+      placeId,
+      locatePlace,
+      businessProfile,
+      socialArray,
+      reviewURLToEdit
+    } = this.props;
+    if (socialArray) {
+      //! NOT reviewURLToEdit check to only generate form fields for the selected social media platform
+      if (socialArray.length > 0 && !reviewURLToEdit) {
+        //check on update also - Done
+        this.generateFormFieldsDynamically(
+          _get(this.props, "socialArray", []),
+          true
+        );
+      } else if (socialArray.length > 0 && reviewURLToEdit) {
+        //generate formFields for the social media platform selected for editing
+        this.generateFormFieldsForOnlySelectedPlatform(reviewURLToEdit);
+      }
+    }
+    if (this.props.scrollToTopOfThePage) {
       this.props.scrollToTopOfThePage();
     }
     if (placeId !== "" || locatePlace) {
       this.props.changeStepToRender(1);
-    }
-    const socialArray = _get(this.props, "socialArray", []);
-    if (socialArray) {
-      if (socialArray.length > 0) {
-        this.prefillSocialURLs(socialArray);
-      }
     }
   }
 
@@ -496,40 +442,41 @@ class GetStarted extends Component {
       isLoading,
       errorMsg,
       setGooglePlaces,
-      googlePlaces
+      googlePlaces,
+      reviewURLToEdit
     } = this.props;
-    const { formData, address, selectedAddress } = this.state;
-    const directReviewUrl = _get(formData, "directReviewUrl.value", "");
-
     if (this.props !== prevProps) {
       if (isLoading !== prevProps.isLoading && success !== prevProps.success) {
         if (isLoading === false && success) {
+          let socialArray = _get(this.props, "socialArray", []);
           this.setState(
             {
               showSnackbar: true,
               variant: "success",
-              snackbarMsg: "Review URL Updated Successfully!"
+              snackbarMsg: "All the changes were saved Successfully!"
             },
             () => {
+              if (Array.isArray(socialArray)) {
+                if (socialArray.length > 0 && !reviewURLToEdit) {
+                  if (socialArray.reverse()) {
+                    this.setState({ formData: {} }, () => {
+                      this.generateFormFieldsDynamically(socialArray.reverse());
+                    });
+                  } else {
+                    this.setState({ formData: {} }, () => {
+                      this.generateFormFieldsDynamically(socialArray);
+                    });
+                  }
+                } else if (socialArray.length > 0 && reviewURLToEdit) {
+                  //generate formFields for the social media platform selected for editing
+                  this.generateFormFieldsForOnlySelectedPlatform(
+                    reviewURLToEdit
+                  );
+                }
+              }
               changeStepToRender(1);
             }
           );
-
-          if (
-            _get(formData, "directReviewUrl.touched", false) ||
-            selectedAddress
-          ) {
-            // this action is used to update google_places in login/userProfile/business_profile whenever we change directReviewURL or business address
-            let newGooglePlaces = {
-              directReviewUrl:
-                directReviewUrl || _get(googlePlaces, "directReviewUrl", ""),
-              address: address || _get(googlePlaces, "address", ""),
-              placeId:
-                _get(selectedAddress, "placeId", "") ||
-                _get(googlePlaces, "placeId", "")
-            };
-            setGooglePlaces(newGooglePlaces);
-          }
         } else if (isLoading === false && !success) {
           this.setState({
             showSnackbar: true,
@@ -537,49 +484,132 @@ class GetStarted extends Component {
             snackbarMsg: errorMsg
           });
         }
+      } else if (
+        this.props.socialArray !== prevProps.socialArray &&
+        !reviewURLToEdit
+      ) {
+        let newSocialArray = _get(this.props, "socialArray", []);
+        this.generateFormFieldsDynamically(newSocialArray, true);
+      } else if (
+        this.props.socialArray !== prevProps.socialArray &&
+        reviewURLToEdit
+      ) {
+        //generate formFields for the social media platform selected for editing
+        this.generateFormFieldsForOnlySelectedPlatform(reviewURLToEdit);
       }
     }
   }
-
+  //Fix pre-fill social urls to work with dynamic data - DONE
   prefillSocialURLs = socialArray => {
     let formDataLocal = this.state.formData;
-    socialArray.forEach(item => {
-      if (reviewURLObjects[item.social_media_app_id]) {
-        let socialObj = reviewURLObjects[item.social_media_app_id] || {};
-        let editURL = _get(socialObj, "editURL", "");
-        let URL = _get(item, "url", "");
-        if (formDataLocal[editURL]) {
-          formDataLocal = {
-            ...formDataLocal,
-            [editURL]: {
-              ...formDataLocal[editURL],
-              value: URL,
-              valid: true
+    if (Object.keys(formDataLocal).length > 0) {
+      socialArray.forEach((item, index) => {
+        let socialObj = item;
+        let name = _get(socialObj, "name", "");
+        let profile_name = _get(socialObj, "profile_name", "");
+        let url = _get(socialObj, "url", "");
+        let id = _get(socialObj, "id", "");
+        let social_media_app_id = _get(socialObj, "social_media_app_id", "");
+        if (name && name.length > 0) {
+          let editURL =
+            social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
+          if (formDataLocal[editURL]) {
+            //!check if google to add identity and identity_data and extra payload
+            if (social_media_app_id === 22) {
+              let directReviewUrl = _get(
+                socialObj,
+                "identity_data.directReviewUrl",
+                ""
+              );
+              url = url ? url : directReviewUrl;
+              let address = _get(socialObj, "identity_data.address", "");
+              let placeId = _get(socialObj, "identity", "");
+              formDataLocal = {
+                ...formDataLocal,
+                [editURL]: {
+                  ...formDataLocal[editURL],
+                  value: url,
+                  valid: true,
+                  identity: placeId,
+                  profile_name: profile_name || name,
+                  name: profile_name || name,
+                  identity_data: {
+                    directReviewUrl,
+                    address
+                  },
+                  extraPayload: {
+                    address,
+                    placeId,
+                    directReviewUrl
+                  }
+                }
+              };
+            } else {
+              formDataLocal = {
+                ...formDataLocal,
+                [editURL]: {
+                  ...formDataLocal[editURL],
+                  value: url,
+                  valid: true
+                }
+              };
             }
-          };
+          }
         }
-      }
-    });
-    this.setState({ formData: { ...this.state.formData, ...formDataLocal } });
+      });
+      this.setState({ formData: { ...this.state.formData, ...formDataLocal } });
+    }
   };
 
   renderReviewURLBoxes = () => {
     const { formData } = this.state;
     let output = [];
     for (let item in formData) {
-      if (item !== "directReviewUrl") {
+      //special case for google since the BOX is different from other reviewURL boxes.
+      //check if the item contains platformId as 22
+      let formField = _get(formData, item, {});
+      let platformId = _get(formField, "social_media_app_id", "");
+      if (platformId !== 22) {
         output = [
           ...output,
-          <Grid item xs={6} md={6} lg={6}>
+          <Grid item xs={12} md={6} lg={6}>
             <Paper>
               <style jsx>{reviewURLBoxStyles}</style>
               <div className="reviewURLBox">
                 <div className="reviewURLBoxHeader">
-                  <h4>{formData[item].title}</h4>
+                  <div className="reviewBoxHeaderContainer">
+                    <div>
+                      <h6>{formData[item].title}</h6>
+                    </div>
+                    {formData[item].isTemporary ? (
+                      <div>
+                        <IconButton
+                          aria-label="delete"
+                          size="small"
+                          onClick={() => {
+                            let key = item;
+                            const { formData } = this.state;
+                            const formDataAfterOmission = _omit(formData, item);
+                            this.setState({
+                              formData: { ...formDataAfterOmission }
+                            });
+                          }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                    ) : (
+                      <div>
+                        <Tooltip title="This platform is already configured, but you are allowed to edit the platform URL and save changes">
+                          <InfoIcon />
+                        </Tooltip>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="reviewURLBoxContainerInner">
                   <div className="reviewURLBoxImgContainer">
-                    <img src={`/static/images/${formData[item].logo}`} />
+                    {/* <img src={`/static/images/${formData[item].logo}`} /> */}
                   </div>
                   <div className="reviewURLBoxAutoComplete">
                     <>
@@ -602,88 +632,292 @@ class GetStarted extends Component {
             </Paper>
           </Grid>
         ];
+      } else if (platformId == 22) {
+        output = [
+          ...output,
+          <Grid item xs={12} md={6} lg={6}>
+            <GoogleReviewURLBox
+              formData={formData}
+              formDataItemKey={item}
+              handleAddressSelect={this.handleAddressSelect}
+              handleGooglePlaceNameChange={this.handleGooglePlaceNameChange}
+              handleRemoveTemporaryCard={this.handleRemoveTemporaryCard}
+              handleSetAsPrimaryModalVisibilityToggle={
+                this.handleSetAsPrimaryModalVisibilityToggle
+              }
+              showSetAsPrimaryModal={this.state.showSetAsPrimaryModal}
+            />
+          </Grid>
+        ];
       }
     }
     return output;
   };
 
-  renderSpecificReviewURLBox = reviewURLToEdit => {
-    const { formData } = this.state;
-    if (reviewURLToEdit === "getStartedBox") {
-      return this.renderGetStartedBox();
-    } else {
-      return (
-        <Grid item xs={6} md={6} lg={6}>
-          <Paper>
-            <style jsx>{reviewURLBoxStyles}</style>
-            <div className="reviewURLBox">
-              <div className="reviewURLBoxHeader">
-                <h4>{formData[reviewURLToEdit].title}</h4>
-              </div>
-              <div className="reviewURLBoxContainerInner">
-                <div className="reviewURLBoxImgContainer">
-                  <img
-                    src={`/static/images/${formData[reviewURLToEdit].logo}`}
-                  />
-                </div>
-                <div className="reviewURLBoxAutoComplete">
-                  <>
-                    <FormField
-                      {...formData[reviewURLToEdit]}
-                      id={reviewURLToEdit}
-                      handleChange={this.handleChange}
-                      styles={{
-                        border: "0",
-                        borderBottom: "1px solid #999",
-                        borderRadius: "0",
-                        marginLeft: 0,
-                        paddingLeft: 0
-                      }}
-                    />
-                  </>
-                </div>
-              </div>
-            </div>
-          </Paper>
-        </Grid>
-      );
+  //!Generate form fields dynamically only for selected social_media_app_id to edit
+  generateFormFieldsForOnlySelectedPlatform = (reviewURLToEdit = "") => {
+    //!if the review url is provided then continue
+    if (reviewURLToEdit) {
+      const socialArray = _get(this.props, "socialArray", []);
+      if (socialArray) {
+        if (Array.isArray(socialArray)) {
+          if (socialArray.length > 0) {
+            let onlySelectedPlatformArray = socialArray.filter(item => {
+              let socialMediaAppId = _get(item, "social_media_app_id", "");
+              if (socialMediaAppId) {
+                return socialMediaAppId === reviewURLToEdit;
+              }
+            });
+            if (onlySelectedPlatformArray) {
+              if (Array.isArray(onlySelectedPlatformArray)) {
+                if (onlySelectedPlatformArray.length > 0) {
+                  this.generateFormFieldsDynamically(
+                    onlySelectedPlatformArray,
+                    true
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
     }
+  };
+
+  //!Generic method to handle primary location change for all platforms
+
+  handlePrimaryLocationChange = selectedSetAsPrimaryFormDataObject => {
+    let formData = _get(this.state, "formData", {});
+    let formDataLocal = _get(this.state, "formData", {});
+    const selectedSocialMediaId = _get(
+      selectedSetAsPrimaryFormDataObject,
+      "social_media_app_id",
+      ""
+    );
+    const selectedFormDataItemKey = _get(
+      selectedSetAsPrimaryFormDataObject,
+      "editURL",
+      ""
+    );
+    for (let item in formData) {
+      let formItemObject = formData[item] || {};
+      let socialMediaAppId = _get(formItemObject, "social_media_app_id", "");
+      let formDataItemKey = _get(formItemObject, "editURL", "");
+      if (socialMediaAppId === selectedSocialMediaId) {
+        if (formDataItemKey === selectedFormDataItemKey) {
+          formDataLocal = {
+            ...formDataLocal,
+            [formDataItemKey]: {
+              ...formDataLocal[formDataItemKey],
+              primary: 1,
+              touched: true
+            }
+          };
+        } else {
+          formDataLocal = {
+            ...formDataLocal,
+            [formDataItemKey]: {
+              ...formDataLocal[formDataItemKey],
+              primary: ""
+            }
+          };
+        }
+      }
+    }
+    this.setState({ formData: { ...formData, ...formDataLocal } });
+  };
+
+  handleUseThesePlatformsClick = () => {
+    const { selectedAvailablePlatformItems, formData } = this.state;
+    const reviewURLToEdit = _get(this.props, "reviewURLToEdit", "");
+    let parsedArray = [];
+    if (
+      selectedAvailablePlatformItems &&
+      Array.isArray(selectedAvailablePlatformItems)
+    ) {
+      if (selectedAvailablePlatformItems.length > 0 && !reviewURLToEdit) {
+        selectedAvailablePlatformItems.forEach(item => {
+          let temp = {};
+          temp.name = _get(item, "label", "");
+          temp.social_media_app_id = Number(_get(item, "value", -1)) || -1;
+          temp.url = "";
+          //!adding a unique ID using timestamps for google only, change the condition below or use for all platforms in case multiple cards are needed.
+          temp.id = (Number(_get(item, "value", -1)) || -1) == 22 ? _now() : "";
+          parsedArray.push(temp);
+        });
+        console.log(parsedArray);
+        this.generateFormFieldsDynamically(parsedArray, false, true);
+        this.setState({ selectedAvailablePlatformItems: [] });
+      }
+    }
+  };
+
+  isUseThesePlatformsDisabled = () => {
+    const { selectedAvailablePlatformItems } = this.state;
+    let invalid = true;
+    if (selectedAvailablePlatformItems) {
+      if (Array.isArray(selectedAvailablePlatformItems)) {
+        if (selectedAvailablePlatformItems.length > 0) {
+          invalid = false;
+        }
+      }
+    }
+    return invalid;
   };
 
   render() {
     const reviewURLToEdit = _get(this.props, "reviewURLToEdit", "");
+    const { modelOpen } = this.state;
+    const showGetStarted = _get(this.props, "showGetStarted", false);
+    const isLoading = _get(this.props, "isLoading", false);
     return (
-      <div>
-        <Container>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={8}>
-              {this.renderGetStartedHeader()}
+      <>
+        <div>
+          <Container>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={8} lg={8}>
+                {this.renderGetStartedHeader()}
+              </Grid>
+              <Grid item xs={12} md={4} lg={4}>
+                {showGetStarted && !this.anyFormDataChanged() ? (
+                  <div style={{ textAlign: "right" }}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        this.props.setGetStartedShow(false, "");
+                      }}
+                      startIcon={<ArrowBackIcon />}
+                    >
+                      Back
+                    </Button>
+                  </div>
+                ) : null}
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={4} lg={4}>
-              {this.renderContinueBtn(reviewURLToEdit)}
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
             {reviewURLToEdit === "" ? (
-              <Grid item xs={12} md={6} lg={6}>
-                {this.renderGetStartedBox()}
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={9} lg={9}>
+                  <AvailablePlatformsList
+                    reviewPlatforms={_get(
+                      this.props,
+                      "review_platforms.data",
+                      {}
+                    )}
+                    socialPlatforms={_get(this.props, "socialArray", [])}
+                    handleAvailablePlatformsListChange={
+                      this.handleAvailablePlatformsListChange
+                    }
+                    selectedAvailablePlatformItems={
+                      this.state.selectedAvailablePlatformItems
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} md={3} lg={3}>
+                  <div style={{ textAlign: "left" }}>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={this.handleUseThesePlatformsClick}
+                      disabled={this.isUseThesePlatformsDisabled()}
+                    >
+                      Use these platforms
+                    </Button>
+                  </div>
+                </Grid>
               </Grid>
             ) : null}
-            {reviewURLToEdit === ""
-              ? this.renderReviewURLBoxes()
-              : this.renderSpecificReviewURLBox(reviewURLToEdit)}
-          </Grid>
-          <Grid container spacing={3} style={{ marginTop: "35px" }}>
-            {this.renderContinueBtn()}
-          </Grid>
-        </Container>
-        <Snackbar
-          open={this.state.showSnackbar}
-          variant={this.state.variant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={this.state.snackbarMsg}
-        />
-      </div>
+            <Grid container spacing={3}>
+              {reviewURLToEdit === "" ? (
+                <Grid
+                  container
+                  xs={12}
+                  lg={12}
+                  xs={12}
+                  style={{ padding: "12px", marginTop: "15px" }}
+                >
+                  <div>
+                    <h6>
+                      If your platform is not listed in the dropdown above, you
+                      may add it now :{" "}
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        size="small"
+                        startIcon={<AddIcon />}
+                        onClick={this.handleModalVisibilityToggle}
+                      >
+                        Add a new platform
+                      </Button>
+                    </h6>
+                  </div>
+                </Grid>
+              ) : null}
+              {this.renderReviewURLBoxes()}
+            </Grid>
+            <Grid
+              container
+              spacing={3}
+              style={{ marginTop: "35px", marginLeft: "4px" }}
+            >
+              {showGetStarted && !this.anyFormDataChanged() ? (
+                <div style={{ textAlign: "right" }}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => {
+                      this.props.setGetStartedShow(false, "");
+                    }}
+                    startIcon={<ArrowBackIcon />}
+                  >
+                    Back
+                  </Button>
+                </div>
+              ) : null}
+            </Grid>
+          </Container>
+          <AddPlatformDialog
+            open={modelOpen}
+            handleClose={this.handleModalVisibilityToggle}
+          />
+          <SetAsPrimaryModal
+            open={this.state.showSetAsPrimaryModal}
+            handleClose={this.handleSetAsPrimaryModalVisibilityToggle}
+            formData={this.state.formData}
+            selectedSetAsPrimaryFormDataObject={
+              this.state.selectedSetAsPrimaryFormDataObject
+            }
+            handlePrimaryLocationChange={this.handlePrimaryLocationChange}
+          />
+          <ClosedGetStartedConfirmationDialog
+            open={this.state.showCloseConfirmationModal}
+            handleClose={exitGetStarted => {
+              this.handleCloseConfirmationModalVisibilityToggle(exitGetStarted);
+            }}
+          />
+          <Slide
+            direction="up"
+            in={this.anyFormDataChanged()}
+            mountOnEnter
+            unmountOnExit
+          >
+            <BottomNotificationBar
+              handleClose={this.handleCloseConfirmationModalVisibilityToggle}
+              handleSavePermanentlyClick={this.handleSavePermanentlyClick}
+              showGetStarted={this.props.showGetStarted}
+              isLoading={isLoading}
+            />
+          </Slide>
+        </div>
+        <div>
+          <Snackbar
+            open={this.state.showSnackbar}
+            variant={this.state.variant}
+            handleClose={() => this.setState({ showSnackbar: false })}
+            message={this.state.snackbarMsg}
+          />
+        </div>
+      </>
     );
   }
 }
@@ -696,11 +930,7 @@ const mapStateToProps = state => {
   const addressSelected = _get(businessProfile, "google_places.address", "");
   const googlePlaces = _get(businessProfile, "google_places", {});
   const socialArray = _get(businessProfile, "social", []);
-  const isLoading = _get(
-    dashboardData,
-    "locatePlaceTemp.isLoading",
-    "undefined"
-  );
+  const isLoading = _get(dashboardData, "locatePlaceTemp.isLoading", undefined);
   const placeId = _get(businessProfile, "google_places.placeId", "");
   const type = _get(dashboardData, "type", "");
   const success = _get(dashboardData, "locatePlace.success", false);
@@ -711,7 +941,16 @@ const mapStateToProps = state => {
     "Some Error Occured!"
   );
   const showGetStarted = _get(dashboardData, "showGetStarted", false);
-  const reviewURLToEdit = _get(dashboardData, "reviewURLToEdit", "");
+  //? need to rename this reviewURLToEdit to reviewPlatformToEdit everywhere
+  let reviewURLToEdit = _get(dashboardData, "reviewPlatformToEdit", "");
+  if (reviewURLToEdit) {
+    if (Number(reviewURLToEdit)) {
+      reviewURLToEdit = Number(reviewURLToEdit);
+    } else {
+      reviewURLToEdit = "";
+    }
+  }
+  const review_platforms = _get(dashboardData, "review_platforms", {});
   return {
     success,
     businessProfile,
@@ -726,7 +965,8 @@ const mapStateToProps = state => {
     showGetStarted,
     reviewURLToEdit,
     addressSelected,
-    googlePlaces
+    googlePlaces,
+    review_platforms
   };
 };
 

@@ -3,31 +3,44 @@ import css from "styled-jsx/css";
 export const reviewURLBoxStyles = css`
   .reviewURLBox {
     padding: 25px;
-    height:261.13px;
+    height: 163px;
   }
   .reviewURLBoxHeader {
-    margin-bottom: 55px;
+    margin-bottom: 25px;
   }
   .reviewURLBoxContainerInner {
     display: flex;
   }
   .reviewURLBoxContainerInner div:first-child {
-    flex-basis: 35%;
+    flex-basis: 30%;
+    display: none;
   }
   .reviewURLBoxContainerInner div:last-child {
-    flex-basis: 65%;
-    align-self:center;
-    margin-left:20px;
+    flex-basis: 100%;
+    align-self: center;
+    margin-left: 15px;
+  }
+
+  .reviewBoxHeaderContainer {
+    display: flex;
+  }
+
+  .reviewBoxHeaderContainer div:first-child {
+    flex-basis: 80%;
+  }
+
+  .reviewBoxHeaderContainer div:last-child {
+    flex-basis: 20%;
+    text-align: right;
   }
 
   .reviewURLBoxImgContainer {
-    max-width: 100px;
+    max-width: 65px;
     height: auto;
   }
   .reviewURLBoxImgContainer img {
     max-width: 100%;
     height: auto;
-    border-radius:10px;
   }
 
   @media screen and (max-width: 720px) {
@@ -36,7 +49,7 @@ export const reviewURLBoxStyles = css`
     }
     .reviewURLBoxHeader h4 {
       font-size: 1.1rem;
-      margin-bottom: 35px;
+      margin-bottom: 20px;
     }
   }
 `;

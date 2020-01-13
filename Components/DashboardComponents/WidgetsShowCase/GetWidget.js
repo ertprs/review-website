@@ -11,7 +11,7 @@ import _get from "lodash/get";
 
 const platforms = [
   {
-    value: "0",
+    value: "22",
     name: "Google"
   },
   {

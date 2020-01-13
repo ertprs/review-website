@@ -156,6 +156,16 @@ export const layoutStyles = css.global`
             margin-right: auto;
             margin-left: auto;
           }
+          .dynamicImport {
+            width: 100%;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .text-center {
+            text-align: center;
+          }
           @media (min-width: 576px) {
             .container {
               max-width: 540px;
@@ -1152,7 +1162,5 @@ export const layoutStyles = css.global`
                   display: -ms-inline-flexbox ;
                   display: inline-flex ;
                 }
-              
-                
-                  }
+              }
             `;

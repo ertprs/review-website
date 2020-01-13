@@ -1,8 +1,5 @@
 import {
   SET_GET_REVIEWS_DATA,
-  FETCH_REVIEWS_DATA_INIT,
-  FETCH_REVIEWS_DATA_SUCCESS,
-  FETCH_REVIEWS_DATA_FAILURE,
   SEND_GET_REVIEWS_INIT,
   SEND_GET_REVIEWS_SUCCESS,
   SEND_GET_REVIEWS_FAILURE,
@@ -40,9 +37,9 @@ import {
   UPDATE_DOMAIN_DETAILS_ERROR,
   EMPTY_DOMAIN_DETAILS,
   SET_REVIEWS_PUSHER_CONNECT,
-  FETCH_THIRD_PARTY_REVIEWS_INIT,
-  FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-  FETCH_THIRD_PARTY_REVIEWS_FAILURE,
+  FETCH_REVIEWS_INIT,
+  FETCH_REVIEWS_SUCCESS,
+  FETCH_REVIEWS_FAILURE,
   SET_REVIEWS_OBJECT_WITH_PUSHER,
   SHOW_GET_STARTED,
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
@@ -58,14 +55,28 @@ import {
   CHANGE_CAMPAIGN_STATUS_INIT,
   CHANGE_CAMPAIGN_STATUS_SUCCESS,
   CHANGE_CAMPAIGN_STATUS_FAILURE,
-  SET_CAMPAIGN_EDIT_MODE
+  SET_CAMPAIGN_EDIT_MODE,
+  GET_SMART_URL_INIT,
+  GET_SMART_URL_SUCCESS,
+  GET_SMART_URL_ERROR,
+  ADD_REVIEW_PLATFORM_INIT,
+  ADD_REVIEW_PLATFORM_SUCCESS,
+  ADD_REVIEW_PLATFORM_ERROR,
+  ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
+  GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
+  GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
+  GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
+  SET_REVIEWS_AFTER_LOGIN,
+  SET_LOADING_STATUS_OF_REVIEWS
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
-import axios from "axios";
 import cookie from "js-cookie";
+import axios from "axios";
+import _find from "lodash/find";
 import _get from "lodash/get";
+import _groupBy from "lodash/groupBy";
 import _isEmpty from "lodash/isEmpty";
-import { iconNames } from "../../utility/constants/socialMediaConstants";
+import _findIndex from "lodash/findIndex";
 import {
   upgradePremiumApi,
   transactionHistoryApi,
@@ -78,10 +89,14 @@ import {
   thirdPartyDataApi,
   eCommerceIntegrationApi,
   campaignHistoryApi,
-  deactivateCampaignApi
+  deactivateCampaignApi,
+  smartUrlApi,
+  addReviewPlatformAPI,
+  getAvailableReviewPlatformsApi,
+  smartLinkSplitPercentageApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
-import _findIndex from "lodash/findIndex";
+import { isValidArray } from "../../utility/commonFunctions";
 
 export const setGetReviewsData = getReviewsData => {
   return {
@@ -90,66 +105,10 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
-//! It is used to fetch only google reviews, don't get confused by it's name
-
-export const fetchReviews = (token, page, perPage) => {
-  const pageNo = page || 1;
-  const perPageLimit = perPage || 10;
-  return async (dispatch, getState) => {
-    let { dashboardData } = getState();
-    let reviewsObject = _get(dashboardData, "reviewsObject", {});
-    dispatch({
-      type: FETCH_REVIEWS_DATA_INIT,
-      reviews: {
-        data: {},
-        isFetching: true,
-        error: "",
-        success: "undefined"
-      }
-    });
-    try {
-      const result = await axios({
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}/api/my-business/google-reviews?page=${pageNo}&perPage=${perPageLimit}`
-      });
-      let success = false;
-      let reviews = _get(result, "data.reviews", []);
-      reviewsObject["google"] = false;
-      dispatch(setReviewsObjectWithPusher(reviewsObject));
-      if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-        success = true;
-      }
-      dispatch({
-        type: FETCH_REVIEWS_DATA_SUCCESS,
-        reviews: {
-          data: _get(result, "data", {}),
-          isFetching: false,
-          error: "",
-          success
-        }
-      });
-    } catch (err) {
-      reviewsObject["google"] = false;
-      dispatch(setReviewsObjectWithPusher(reviewsObject));
-      const success = _get(err, "response.data.success", false);
-      const error = _get(err, "response.data.error", "Some Error Occured.");
-      dispatch({
-        type: FETCH_REVIEWS_DATA_FAILURE,
-        reviews: {
-          data: {},
-          isFetching: false,
-          error,
-          success
-        }
-      });
-    }
-  };
-};
-
+//! please check the significance of this action
 export const clearReviewsData = () => {
   return {
-    type: FETCH_REVIEWS_DATA_SUCCESS,
+    type: fethh_revi,
     reviews: {
       data: {},
       isFetching: false,
@@ -196,23 +155,30 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         data,
         url
       });
-      const success = await _get(result, "data.success", false);
-      dispatch({
-        type: LOCATE_PLACE_SUCCESS,
-        locatePlace: {
-          success: _get(result, "data.success", false)
-        },
-        locatePlaceTemp: {
-          isLoading: false,
-          errorMsg: ""
-        }
-      });
+      const success = _get(result, "data.success", false);
+      console.log(success, "SUCCESS");
       if (success) {
-        // dispatch(fetchReviews(token));
+        const socialsArray = _get(result, "data.review_platform_profiles", []);
+        const scraping = _get(result, "data.scraping", []);
         cookie.set("placeLocated", true, { expires: 7 });
-        dispatch(updateAuthSocialArray(data));
+        dispatch({
+          type: LOCATE_PLACE_SUCCESS,
+          locatePlace: {
+            success: _get(result, "data.success", false)
+          },
+          locatePlaceTemp: {
+            isLoading: false,
+            errorMsg: ""
+          }
+        });
+        if (socialsArray.length > 0) {
+          dispatch(updateAuthSocialArray(socialsArray));
+          dispatch(setReviewsLoadingStatus(scraping));
+        }
       }
+      // We will also get failed array that we can use later to show user which URLs failed to be set
     } catch (error) {
+      console.log(error);
       dispatch({
         type: LOCATE_PLACE_FAILURE,
         locatePlace: {
@@ -485,7 +451,7 @@ export const setReviewsPusherConnect = isReviewsPusherConnected => {
   };
 };
 
-export const setReviewsObjectWithPusher = reviewsObject => {
+export const setReviewsObjectWithPusher = (reviewsObject = {}) => {
   return {
     type: SET_REVIEWS_OBJECT_WITH_PUSHER,
     reviewsObject: { ...reviewsObject }
@@ -664,71 +630,68 @@ export const emptyDomainDetails = () => {
   };
 };
 
-export const getThirdPartyReviews = (socialAppId, domainId) => {
-  //! here appName is used to set the value to trust for domains whose reviews are successfully fetched to stop the loader in reviews sections
+//? it is used to update reviews of any particular profile inside socialappid inside dashboarddata/reviews. We can also fetch reviews by socialappid only it will give us it's primary profiles review but we are not allowing as per now because our current data structure doesn't supports that. So all these fields are mandatory.
+export const fetchReviews = (socialAppId, profileId, domainId) => {
+  //? is we have profile id then we need to send it as query param and we'll get that particular profiles data
+  let api = profileId
+    ? `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+    : `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`;
 
-  if (socialAppId && domainId) {
-    let appName = "";
-    if (iconNames.hasOwnProperty(socialAppId)) {
-      if (iconNames) {
-        appName = iconNames[socialAppId].name;
-      }
-    }
+  if (socialAppId && profileId && domainId) {
     return async (dispatch, getState) => {
-      let socialAppName = `${iconNames[socialAppId].name}Reviews`;
-      let { dashboardData } = getState();
-      let reviewsObject = _get(dashboardData, "reviewsObject", {});
-
+      const state = getState();
+      const dashboardData = _get(state, "dashboardData", {});
+      const reviews = _get(dashboardData, "reviews", {});
       dispatch({
-        type: FETCH_THIRD_PARTY_REVIEWS_INIT,
-        thirdPartyReviews: {
-          [socialAppName]: {
-            isLoading: true,
-            success: undefined,
-            errorMsg: "",
-            data: {}
+        type: FETCH_REVIEWS_INIT,
+        reviews: {
+          ...reviews,
+          [socialAppId]: {
+            ..._get(reviews, socialAppId, {}),
+            [profileId]: {
+              ..._get(reviews, socialAppId.profileId, {}),
+              isLoading: true,
+              success: undefined
+            }
           }
         }
       });
       try {
-        const result = await axios.get(
-          `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`
-        );
+        const result = await axios.get(api);
+        // console.log(result.data.data, "DATA");
         let success = false;
-        let reviews = _get(result, "data.data.reviews", []);
-        if (reviews) {
-          if (!_isEmpty(reviews) && Array.isArray(reviews)) {
-            success = true;
-          }
+        let reviewsArray = _get(result, "data.data.reviews", []);
+        if (isValidArray(reviewsArray)) {
+          success = true;
         }
-        reviewsObject[appName] = false;
-        dispatch(setReviewsObjectWithPusher(reviewsObject));
+        console.log(reviews, "REVIEWS");
         dispatch({
-          type: FETCH_THIRD_PARTY_REVIEWS_SUCCESS,
-          thirdPartyReviews: {
-            [socialAppName]: {
-              isLoading: false,
-              success,
-              errorMsg: "",
-              data: _get(result, "data.data", {})
+          type: FETCH_REVIEWS_SUCCESS,
+          reviews: {
+            ...reviews,
+            [socialAppId]: {
+              ..._get(reviews, socialAppId, {}),
+              [profileId]: {
+                ..._get(reviews, socialAppId.profileId, {}),
+                ..._get(result, "data", {}),
+                isLoading: false,
+                success
+              }
             }
           }
         });
       } catch (error) {
-        reviewsObject[appName] = false;
-        dispatch(setReviewsObjectWithPusher(reviewsObject));
         dispatch({
-          type: FETCH_THIRD_PARTY_REVIEWS_FAILURE,
-          thirdPartyReviews: {
-            [socialAppName]: {
-              isLoading: false,
-              success: false,
-              errorMsg: _get(
-                error,
-                "response.data.message",
-                "Unable to fetch reviews!"
-              ),
-              data: {}
+          type: FETCH_REVIEWS_FAILURE,
+          reviews: {
+            ...reviews,
+            [socialAppId]: {
+              ..._get(reviews, socialAppId, {}),
+              [profileId]: {
+                ..._get(reviews, socialAppId.profileId, {}),
+                isLoading: false,
+                success: false
+              }
             }
           }
         });
@@ -737,11 +700,12 @@ export const getThirdPartyReviews = (socialAppId, domainId) => {
   }
 };
 
-export const setGetStartedShow = (show, reviewURLToEdit) => {
+export const setGetStartedShow = (show, social_media_app_id) => {
+  //? we are using social_media_app_id as key of review platform in edit case
   return {
     type: SHOW_GET_STARTED,
     showGetStarted: show,
-    reviewURLToEdit
+    reviewPlatformToEdit: social_media_app_id
   };
 };
 
@@ -982,5 +946,314 @@ export const setCampaignEditMode = (
     type: SET_CAMPAIGN_EDIT_MODE,
     isCampaignEditMode,
     selectedCampaignData
+  };
+};
+
+export const getSmartUrl = platformId => {
+  let token = localStorage.getItem("token");
+
+  return async (dispatch, getState) => {
+    const state = getState();
+    const domainUrlKey = _get(
+      state,
+      "auth.logIn.userProfile.business_profile.domainUrlKey",
+      ""
+    );
+    let url = "";
+    if (platformId === "automatic") {
+      url = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}`;
+    } else {
+      url = `${process.env.BASE_URL}${smartUrlApi}/${domainUrlKey}?p=${platformId}`;
+    }
+    dispatch({
+      type: GET_SMART_URL_INIT,
+      smartUrl: {
+        isLoading: true,
+        success: undefined,
+        url: ""
+      }
+    });
+    try {
+      const res = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url
+      });
+      dispatch({
+        type: GET_SMART_URL_SUCCESS,
+        smartUrl: {
+          isLoading: false,
+          success: _get(res, "data.success", false),
+          url: _get(res, "data.url", "")
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_SMART_URL_ERROR,
+        smartUrl: {
+          isLoading: false,
+          success: false,
+          url: ""
+        }
+      });
+    }
+  };
+};
+
+export const addReviewPlatform = data => {
+  return async (dispatch, getState) => {
+    const { auth } = getState() || {};
+    let token = _get(auth, "logIn.token", "");
+    dispatch({
+      type: ADD_REVIEW_PLATFORM_INIT,
+      addReviewPlatformData: {
+        success: undefined,
+        isLoading: true,
+        social_media_app: {},
+        errorMsg: ""
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url: `${process.env.BASE_URL}${addReviewPlatformAPI}`
+      });
+      const success = await _get(result, "data.success", false);
+      const social_media_app = await _get(result, "data.social_media_app", {});
+      if (success) {
+        dispatch(addNewPlatformInReviewPlatforms({ ...social_media_app }));
+        dispatch({
+          type: ADD_REVIEW_PLATFORM_SUCCESS,
+          addReviewPlatformData: {
+            success,
+            isLoading: false,
+            social_media_app,
+            errorMsg: ""
+          }
+        });
+      }
+    } catch (error) {
+      dispatch({
+        type: ADD_REVIEW_PLATFORM_ERROR,
+        addReviewPlatformData: {
+          success: false,
+          isLoading: false,
+          social_media_app: {},
+          errorMsg: _get(error, "response.data.error", "Some error occurred")
+        }
+      });
+    }
+  };
+};
+
+export const addNewPlatformInReviewPlatforms = data => {
+  return async (dispatch, getState) => {
+    const state = getState() || {};
+    let review_platforms = _get(state, "dashboardData.review_platforms", {});
+    let reviewPlatformsData = _get(review_platforms, "data", {});
+    const id = _get(data, "id", "");
+    const name = _get(data, "name", "");
+    if ((id || id == "0") && name) {
+      reviewPlatformsData = { ...reviewPlatformsData, [id]: name };
+    }
+    dispatch({
+      type: ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
+      updatedReviewPlatforms: reviewPlatformsData
+    });
+  };
+};
+
+export const getAvailableReviewPlatforms = token => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: GET_AVAILABLE_REVIEW_PLATFORMS_INIT,
+      review_platforms: {
+        success: false,
+        isLoading: true,
+        errorMsg: "",
+        data: {}
+      }
+    });
+    try {
+      const res = await axios.get(
+        `${process.env.BASE_URL}${getAvailableReviewPlatformsApi}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      let success = _get(res, "data.success", false);
+      let review_platforms = _get(res, "data.review_platforms", {});
+      let errorMsg = "";
+      dispatch({
+        type: GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
+        review_platforms: {
+          data: { ...review_platforms },
+          isLoading: false,
+          success,
+          errorMsg
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      dispatch({
+        type: GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
+        review_platforms: {
+          success: false,
+          isLoading: false,
+          errorMsg: _get(err, "data.response.message", "Some error occurred"),
+          data: {}
+        }
+      });
+    }
+  };
+};
+
+export const postSplitPlatformConfigForSplitPlatform = (
+  reqBody,
+  domainUrlKey
+) => {
+  let url = `${process.env.BASE_URL}${smartLinkSplitPercentageApi}/${domainUrlKey}/smart-link`;
+  const token = cookie.get("token");
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data: reqBody,
+        url
+      })
+        .then(response => {
+          let success = _get(response, "data.success", false);
+          if (success) {
+            resolve(true);
+          } else {
+            reject(false);
+          }
+        })
+        .catch(error => {
+          reject(false);
+        });
+    });
+  };
+};
+//? this action creator is used to set reviews in dashboarddata after login only
+export const setReviewsAfterLogin = socialArray => {
+  return async (dispatch, getState) => {
+    let reviews = {};
+    const state = getState();
+    const businessProfile = _get(
+      state,
+      "auth.logIn.userProfile.business_profile"
+    );
+    const domainId = _get(businessProfile, "domainId", 0);
+    Promise.all(
+      socialArray.map(platform => {
+        let hasData = _get(platform, "hasData", 0);
+        let socialAppId = _get(platform, "social_media_app_id", "");
+        let profileId = _get(platform, "id", "");
+        if (hasData === 1) {
+          return axios
+            .get(
+              `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+            )
+            .then(res => {
+              return {
+                ...res.data,
+                socialAppId,
+                profileId
+              };
+            })
+            .catch(err => {
+              return {
+                err,
+                socialAppId,
+                profileId
+              };
+            });
+        }
+      })
+    ).then(resArr => {
+      resArr.forEach(res => {
+        let success = false;
+        let socialAppId = _get(res, "socialAppId", "");
+        let profileId = _get(res, "profileId");
+        let reviewsArr = _get(res, "data.reviews", []);
+        if (isValidArray(reviewsArr)) {
+          success = true;
+        }
+        if (socialAppId && profileId) {
+          reviews = {
+            ...reviews,
+            [socialAppId]: {
+              ..._get(reviews, socialAppId, {}),
+              [profileId]: {
+                ..._get(reviews, socialAppId.profileId, {}),
+                data: { ...res },
+                isLoading: false,
+                success
+              }
+            }
+          };
+        }
+      });
+      dispatch({ type: SET_REVIEWS_AFTER_LOGIN, reviews });
+    });
+  };
+};
+
+//Action creator to set loading status of reviews objects
+
+export const setReviewsLoadingStatus = (scrapingArray = []) => {
+  return async (dispatch, getState) => {
+    const state = getState() || {};
+    let reviews = _get(state, "dashboardData.reviews", {});
+    if (scrapingArray) {
+      if (Array.isArray(scrapingArray)) {
+        if (scrapingArray.length > 0) {
+          const state = getState() || {};
+          let scrapingArrayGroupedBySocialId = _groupBy(
+            scrapingArray,
+            "social_media_app_id"
+          );
+          // {1:[{}...], 22: [{}...], 23:[{}...]}
+          for (let item in scrapingArrayGroupedBySocialId) {
+            let selectedSocialMediaAppId = item;
+            if (scrapingArrayGroupedBySocialId[item]) {
+              if (Array.isArray(scrapingArrayGroupedBySocialId[item])) {
+                if (scrapingArrayGroupedBySocialId[item].length > 0) {
+                  scrapingArrayGroupedBySocialId[item].forEach(
+                    (item, index) => {
+                      let selectedAccountId = _get(item, "id", "");
+                      if (selectedAccountId) {
+                        reviews = {
+                          ...reviews,
+                          [selectedSocialMediaAppId]: {
+                            ...reviews[selectedSocialMediaAppId],
+                            [selectedAccountId]: {
+                              ..._get(
+                                reviews,
+                                selectedSocialMediaAppId.selectedAccountId,
+                                {}
+                              ),
+                              isLoading: true,
+                              success: undefined
+                            }
+                          }
+                        };
+                      }
+                    }
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    dispatch({ type: SET_LOADING_STATUS_OF_REVIEWS, reviews: { ...reviews } });
   };
 };

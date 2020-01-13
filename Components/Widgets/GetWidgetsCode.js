@@ -12,7 +12,7 @@ import FormField from "../Widgets/FormField/FormField";
 
 const platforms = [
   {
-    value: "0",
+    value: "22",
     name: "Google"
   },
   {

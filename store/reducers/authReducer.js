@@ -60,7 +60,8 @@ const authReducer = (state = {}, action) => {
     domainDetails,
     socialArray,
     googlePlaces,
-    ecommerceIntegrations
+    ecommerceIntegrations,
+    updatedSocialArray
   } = action;
   switch (type) {
     case SIGNUP_INIT:

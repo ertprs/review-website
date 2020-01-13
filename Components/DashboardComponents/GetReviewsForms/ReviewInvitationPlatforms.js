@@ -57,10 +57,8 @@ class ReviewInvitationPlatforms extends Component {
   }
   renderReviewPlatformSliders = () => {
     const { platforms, handleSliderChange, sumOfAllSplits } = this.props;
-    let output = [];
-    for (let socialId in platforms) {
-      output = [
-        ...output,
+    let output = (platforms || []).map((platform, index) => {
+      return (
         <>
           <style jsx>{`
             .sliderContainer {
@@ -72,9 +70,7 @@ class ReviewInvitationPlatforms extends Component {
           <div className="row" style={{ marginBottom: "30px" }}>
             <div className="col-md-3">
               <TextField
-                // id="standard-read-only-input"
-                label="Review platform"
-                defaultValue={platforms[socialId].name}
+                defaultValue={_get(platform, "name", "")}
                 fullWidth
                 margin="normal"
                 variant="outlined"
@@ -86,26 +82,28 @@ class ReviewInvitationPlatforms extends Component {
             <div className="col-md-6 sliderContainer">
               <PrettoSlider
                 style={{
-                  color: platforms[socialId].hasError ? "#e53935" : "#52af77"
+                  color: _get(platform, "hasError", false)
+                    ? "#e53935"
+                    : "#52af77"
                 }}
                 valueLabelDisplay="auto"
                 aria-label="pretto slider"
-                defaultValue={platforms[socialId].value}
-                value={platforms[socialId].value}
+                defaultValue={_get(platform, "value", 0)}
+                value={_get(platform, "value", 0)}
                 onChange={(e, val) => {
-                  handleSliderChange(e, val, socialId);
+                  handleSliderChange(val, index);
                 }}
-                min={platforms[socialId].min}
-                max={platforms[socialId].max}
+                min={_get(platform, "min", 0)}
+                max={_get(platform, "max", 0)}
               />
             </div>
             <div className="col-md-2">
               <div className="row">
                 <OutlinedInput
                   style={{ width: "45%" }}
-                  value={platforms[socialId].value}
+                  value={_get(platform, "value", 0)}
                   onChange={e => {
-                    handleSliderChange(e, e.target.value, socialId);
+                    handleSliderChange(_get(e, "target.value", 0), index);
                   }}
                   endAdornment={
                     <InputAdornment position="end">%</InputAdornment>
@@ -116,14 +114,15 @@ class ReviewInvitationPlatforms extends Component {
                   id="filled-weight-helper-text"
                   style={{ width: "100%", marginLeft: "2px" }}
                 >
-                  Split
+                  Split Percentage
                 </FormHelperText>
               </div>
             </div>
           </div>
         </>
-      ];
-    }
+      );
+    });
+
     return [
       ...output,
       <div className="row">
@@ -155,22 +154,20 @@ class ReviewInvitationPlatforms extends Component {
       "selectedSinglePlatform",
       ""
     );
-    let output = [];
-    for (let socialId in platforms) {
-      const data = platforms[socialId];
-      output = [
-        ...output,
+    let output = (platforms || []).map(platform => {
+      return (
         <FormControlLabel
           classes={{
             label: classes.label
           }}
-          value={Number(socialId)}
+          value={_get(platform, "social_app_id", 0)}
           control={<Radio style={{ color: "#3a559f" }} />}
-          label={data.name}
+          label={_get(platform, "name", "")}
           style={{ width: "30%" }}
         />
-      ];
-    }
+      );
+    });
+
     return [
       <RadioGroup
         aria-label="gender"
