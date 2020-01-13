@@ -219,8 +219,8 @@ class CommonReviewTabPanel extends Component {
               className="basic-multi-select"
               classNamePrefix="select"
               onChange={this.handleSelectedPlace}
-              defaultValue={defaultPlace}
-              value={selectedPlace}
+              // defaultValue={defaultPlace}
+              // value={selectedPlace}
               placeholder="Select your place"
             />
           </>
