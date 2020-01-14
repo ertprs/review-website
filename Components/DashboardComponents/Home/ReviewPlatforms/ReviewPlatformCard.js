@@ -25,7 +25,6 @@ class ReviewPlatformCard extends React.Component {
     if (reviews[socialMediaAppId]) {
       if (reviews[socialMediaAppId][id]) {
         let primaryReviewData = reviews[socialMediaAppId][id];
-        console.log(primaryReviewData);
         let isLoading = _get(primaryReviewData, "isLoading", false);
         let ratings = _get(primaryReviewData, "data.data.rating", "");
         let maxRating = _get(primaryReviewData, "data.data.max_rating");
