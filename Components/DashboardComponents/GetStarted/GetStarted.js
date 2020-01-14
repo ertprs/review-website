@@ -26,7 +26,6 @@ import validate from "../../../utility/validate";
 import {
   setGooglePlaces,
   setReviewsPusherConnect,
-  setReviewsObjectWithPusher,
   clearReviewsData
 } from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
@@ -172,7 +171,6 @@ class GetStarted extends Component {
     const formData = _get(this.state, "formData", {});
     const {
       setReviewsPusherConnect,
-      setReviewsObjectWithPusher,
       locatePlaceByPlaceId,
       clearReviewsData,
       googlePlaces
@@ -255,15 +253,7 @@ class GetStarted extends Component {
     }
 
     //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
-    // let reviewsObject = {
-    //   google: false,
-    //   facebook: false,
-    //   trustpilot: false,
-    //   trustedshops: false
-    // };
-
     setReviewsPusherConnect(true);
-    // setReviewsObjectWithPusher(reviewsObject);
     //   //! we don't want to clear google reviews data as they will be already updating.
     // }
   };
@@ -974,7 +964,6 @@ export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
   setGooglePlaces,
   setReviewsPusherConnect,
-  setReviewsObjectWithPusher,
   clearReviewsData,
   setGetStartedShow
 })(GetStarted);

@@ -35,7 +35,8 @@ import {
   UPDATE_AUTH_SOCIAL_ARRAY,
   SET_GOOGLE_PLACES,
   POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
-  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS
+  UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
+  FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS
 } from "../actions/actionTypes";
 import { stat } from "fs";
 
@@ -61,7 +62,8 @@ const authReducer = (state = {}, action) => {
     socialArray,
     googlePlaces,
     ecommerceIntegrations,
-    updatedSocialArray
+    updatedSocialArray,
+    configuredPlatforms
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -327,6 +329,25 @@ const authReducer = (state = {}, action) => {
                 ...state.logIn.userProfile.business_profile.integrations,
                 ecommerce: [...ecommerceIntegrations]
               }
+            }
+          }
+        }
+      };
+    }
+    case FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS: {
+      return {
+        ...state,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            business_profile: {
+              ...state.logIn.userProfile.business_profile,
+              configured_platforms: [
+                ...state.logIn.userProfile.business_profile
+                  .configured_platforms,
+                ...configuredPlatforms
+              ]
             }
           }
         }
