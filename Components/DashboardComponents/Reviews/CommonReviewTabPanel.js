@@ -1,21 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Head from "next/head";
-import Link from "next/link";
-import ReactPaginate from "react-paginate";
 import dynamic from "next/dynamic";
+import NoReviewsFound from "./noReviewsFound";
+import ReviewCard from "../../Widgets/CommonReviewCard";
+import { isValidArray } from "../../../utility/commonFunctions";
 const Select = dynamic(() => import("react-select"), {
   ssr: false
 });
-import { isValidArray } from "../../../utility/commonFunctions";
-import NoReviewsFound from "./noReviewsFound";
-import ReviewCard from "../../Widgets/CommonReviewCard";
+const ReactPaginate = dynamic(() => import("react-paginate"), {
+  ssr: false
+});
 import _get from "lodash/get";
 import _map from "lodash/map";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 import _groupBy from "lodash/groupBy";
-import { CircularProgress, Typography } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 
 class CommonReviewTabPanel extends Component {
   state = {
@@ -30,6 +31,63 @@ class CommonReviewTabPanel extends Component {
     selectedPlace: {},
     defaultPlace: {}
   };
+
+  componentDidMount() {
+    const { success, isLoading, totalReviews, primaryDropdownObj } = this.props;
+    let total = 0;
+    let pageNo = 1;
+    let perPage = 10;
+    if (success && isValidArray(totalReviews)) {
+      total = totalReviews.length;
+      perPage = total >= 10 ? 10 : total;
+    }
+    this.setState(
+      {
+        defaultPlace: primaryDropdownObj,
+        totalReviews,
+        isLoading,
+        success,
+        total,
+        perPage,
+        pageNo
+      },
+      () => {
+        this.calReviews();
+      }
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props !== prevProps) {
+      const { selectedPlace } = this.state;
+      const { allPlacesReviews } = this.props;
+      let profileId = _get(selectedPlace, "value", "");
+      let selectedPlaceObj = _get(allPlacesReviews, profileId, {});
+      let totalReviews = _get(selectedPlaceObj, "data.data.reviews", []);
+      let isLoading = _get(selectedPlaceObj, "isLoading", false);
+      let success = _get(selectedPlaceObj, "success", undefined);
+      let total = 0;
+      let pageNo = 1;
+      let perPage = 10;
+      if (success && isValidArray(totalReviews)) {
+        total = totalReviews.length;
+        perPage = total >= 10 ? 10 : total;
+      }
+      this.setState(
+        {
+          totalReviews,
+          isLoading,
+          success,
+          total,
+          perPage,
+          pageNo
+        },
+        () => {
+          this.calReviews();
+        }
+      );
+    }
+  }
 
   calReviews = () => {
     const { totalReviews, pageNo, perPage } = this.state;
@@ -53,58 +111,7 @@ class CommonReviewTabPanel extends Component {
     });
   };
 
-  delayForSometime = ms => {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  };
-
-  setInitialState = () => {
-    const { success, isLoading, totalReviews, primaryDropdownObj } = this.props;
-    let total = 0;
-    let pageNo = 1;
-    let perPage = 10;
-    if (success && isValidArray(totalReviews)) {
-      total = totalReviews.length;
-      perPage = total >= 10 ? 10 : total;
-    }
-    this.setState(
-      {
-        defaultPlace: primaryDropdownObj,
-        totalReviews,
-        isLoading,
-        success,
-        total,
-        perPage,
-        pageNo
-      },
-      () => {
-        this.calReviews();
-      }
-    );
-  };
-
-  componentDidMount() {
-    this.setInitialState();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { totalReviews } = this.props;
-    if (totalReviews !== prevProps.totalReviews) {
-      this.setInitialState();
-    }
-  }
-
-  showLoadingEffect = () => {
-    return (
-      <div style={{ textAlign: "center" }}>
-        <CircularProgress />
-      </div>
-    );
-  };
-
   handleSelectedPlace = selectedObj => {
-    this.setState({ selectedPlace: selectedObj });
     const { allPlacesReviews } = this.props;
     let profileId = _get(selectedObj, "value", "");
     let selectedPlaceObj = _get(allPlacesReviews, profileId, {});
@@ -131,6 +138,20 @@ class CommonReviewTabPanel extends Component {
       () => {
         this.calReviews();
       }
+    );
+  };
+
+  delayForSometime = ms => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  };
+
+  showLoadingEffect = () => {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <CircularProgress />
+      </div>
     );
   };
 
