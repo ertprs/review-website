@@ -251,11 +251,7 @@ class GetStarted extends Component {
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
     }
-
-    //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
     setReviewsPusherConnect(true);
-    //   //! we don't want to clear google reviews data as they will be already updating.
-    // }
   };
 
   handleAvailablePlatformsListChange = arr => {
