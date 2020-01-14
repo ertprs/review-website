@@ -160,7 +160,6 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         url
       });
       const success = _get(result, "data.success", false);
-      console.log(success, "SUCCESS");
       if (success) {
         const socialsArray = _get(result, "data.review_platform_profiles", []);
         const scraping = _get(result, "data.scraping", []);
@@ -183,7 +182,6 @@ export const locatePlaceByPlaceId = (data, token, url) => {
       }
       // We will also get failed array that we can use later to show user which URLs failed to be set
     } catch (error) {
-      console.log(error);
       dispatch({
         type: LOCATE_PLACE_FAILURE,
         locatePlace: {
@@ -656,13 +654,11 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
       });
       try {
         const result = await axios.get(api);
-        // console.log(result.data.data, "DATA");
         let success = false;
         let reviewsArray = _get(result, "data.data.reviews", []);
         if (isValidArray(reviewsArray)) {
           success = true;
         }
-        console.log(reviews, "REVIEWS");
         dispatch({
           type: FETCH_REVIEWS_SUCCESS,
           reviews: {
@@ -875,7 +871,6 @@ export const fetchCampaignsList = token => {
 };
 
 export const changeCampaignStatus = (id, actionOnStatus) => {
-  console.log(id, actionOnStatus, "id, actionOnStatus");
   let token = localStorage.getItem("token");
   return async (dispatch, getState) => {
     const state = getState();
@@ -1096,7 +1091,6 @@ export const getAvailableReviewPlatforms = token => {
         }
       });
     } catch (err) {
-      console.error(err);
       dispatch({
         type: GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
         review_platforms: {
@@ -1138,7 +1132,8 @@ export const postSplitPlatformConfigForSplitPlatform = (
     });
   };
 };
-//? this action creator is used to set reviews in dashboarddata after login only
+
+//? this action creator is used to set reviews in dashboardData after login and on dashboard componentDidMount only
 export const setReviewsAfterLogin = socialArray => {
   return async (dispatch, getState) => {
     let reviews = {};
@@ -1215,33 +1210,27 @@ export const setReviewsLoadingStatus = (scrapingArray = []) => {
         scrapingArray,
         "social_media_app_id"
       );
+
       for (let item in scrapingArrayGroupedBySocialId) {
-        let selectedSocialMediaAppId = item;
-        if (scrapingArrayGroupedBySocialId[item]) {
-          if (Array.isArray(scrapingArrayGroupedBySocialId[item])) {
-            if (scrapingArrayGroupedBySocialId[item].length > 0) {
-              scrapingArrayGroupedBySocialId[item].forEach((item, index) => {
-                let selectedAccountId = _get(item, "profile_id", "");
-                if (selectedAccountId) {
-                  updatedReviews = {
-                    ...reviews,
-                    [selectedSocialMediaAppId]: {
-                      ..._get(reviews, selectedSocialMediaAppId, {}),
-                      [selectedAccountId]: {
-                        ..._get(
-                          reviews,
-                          selectedSocialMediaAppId.selectedAccountId,
-                          {}
-                        ),
-                        isLoading: true,
-                        success: undefined
-                      }
-                    }
-                  };
+        let socialMediaAppId = item;
+        let profilesArray = scrapingArrayGroupedBySocialId[item];
+        if (isValidArray(profilesArray)) {
+          profilesArray.forEach((item, index) => {
+            let profileId = _get(item, "profile_id", "");
+            if (profileId) {
+              updatedReviews = {
+                ...reviews,
+                [socialMediaAppId]: {
+                  ..._get(reviews, socialMediaAppId, {}),
+                  [profileId]: {
+                    ..._get(reviews, socialMediaAppId.profileId, {}),
+                    isLoading: true,
+                    success: undefined
+                  }
                 }
-              });
+              };
             }
-          }
+          });
         }
       }
     }
