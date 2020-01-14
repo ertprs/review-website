@@ -40,7 +40,6 @@ import {
   FETCH_REVIEWS_INIT,
   FETCH_REVIEWS_SUCCESS,
   FETCH_REVIEWS_FAILURE,
-  SET_REVIEWS_OBJECT_WITH_PUSHER,
   SHOW_GET_STARTED,
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
   POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
@@ -454,13 +453,6 @@ export const setReviewsPusherConnect = isReviewsPusherConnected => {
   return {
     type: SET_REVIEWS_PUSHER_CONNECT,
     isReviewsPusherConnected
-  };
-};
-
-export const setReviewsObjectWithPusher = (reviewsObject = {}) => {
-  return {
-    type: SET_REVIEWS_OBJECT_WITH_PUSHER,
-    reviewsObject: { ...reviewsObject }
   };
 };
 
