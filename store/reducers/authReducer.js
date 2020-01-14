@@ -343,11 +343,7 @@ const authReducer = (state = {}, action) => {
             ...state.logIn.userProfile,
             business_profile: {
               ...state.logIn.userProfile.business_profile,
-              configured_platforms: [
-                ...state.logIn.userProfile.business_profile
-                  .configured_platforms,
-                ...configuredPlatforms
-              ]
+              configured_platforms: [...configuredPlatforms]
             }
           }
         }
