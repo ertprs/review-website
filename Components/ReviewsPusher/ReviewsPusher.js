@@ -1,18 +1,8 @@
 import React, { Component } from "react";
 import Pusher from "pusher-js";
-import {
-  setReviewsPusherConnect,
-  setReviewsObjectWithPusher
-} from "../../store/actions/dashboardActions";
+import { setReviewsPusherConnect } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import _get from "lodash/get";
-
-let reviewsObject = {
-  google: false,
-  facebook: false,
-  trustpilot: false,
-  trustedshops: false
-};
 
 class ReviewsPusher extends Component {
   state = { reviewScrapeResult: {}, timeOutKey: "" };
@@ -52,7 +42,7 @@ class ReviewsPusher extends Component {
   }
 
   bindToKey = (pusher, channel) => {
-    const { setReviewsPusherConnect, setReviewsObjectWithPusher } = this.props;
+    const { setReviewsPusherConnect } = this.props;
     //? we are not listening for google reviews separately
     // channel.bind("google_reviews", data => {
     //   this.setState({ reviewScrapeResult: { ...data } }, () => {
@@ -75,7 +65,6 @@ class ReviewsPusher extends Component {
 
     pusher.connection.bind("disconnected", () => {
       setReviewsPusherConnect(false);
-      setReviewsObjectWithPusher(reviewsObject);
       console.log("disconnected");
     });
   };
@@ -95,6 +84,5 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps, {
-  setReviewsPusherConnect,
-  setReviewsObjectWithPusher
+  setReviewsPusherConnect
 })(ReviewsPusher);

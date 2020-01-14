@@ -63,6 +63,7 @@ const PlatformSplit = ({
                     display: flex;
                     flex: 1;
                     align-items: center;
+                    margin-right: 50px;
                   }
                 `}</style>
                 <div className="row" style={{ marginBottom: "30px" }}>

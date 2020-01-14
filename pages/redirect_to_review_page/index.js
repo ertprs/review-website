@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import _get from "lodash/get";
 import axios from "axios";
-import { smartUrlApi, configuredPlatformsApi } from "../../utility/config";
+import {
+  smartUrlApi,
+  configuredReviewPlatformsApi
+} from "../../utility/config";
 import Router from "next/router";
 import ReviewPlatforms from "./ReviewPlatforms";
 import _isEmpty from "lodash/isEmpty";
@@ -74,7 +77,7 @@ redirect_to_review_page.getInitialProps = async ctx => {
   const { query, res } = ctx;
   const fallbackUrl = process.env.DOMAIN_NAME;
   const domainUrlKey = _get(query, "domainUrlKey", "");
-  let configuredPlatformsApiWithDomainUrlKey = `${process.env.BASE_URL}${configuredPlatformsApi}/${domainUrlKey}`;
+  let configuredPlatformsApiWithDomainUrlKey = `${process.env.BASE_URL}${configuredReviewPlatformsApi}/${domainUrlKey}`;
   const selectedOption = _get(query, "selectedOption", "");
   const mode = _get(query, "mode", "");
   let domainName = "";

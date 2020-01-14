@@ -39,7 +39,6 @@ import {
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_ERROR,
   EMPTY_DOMAIN_DETAILS,
-  SET_REVIEWS_OBJECT_WITH_PUSHER,
   SHOW_GET_STARTED,
   POST_AUTOMATIC_INVITATION_CONFIG_INIT,
   POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
@@ -265,13 +264,7 @@ const dashboardReducer = (state = {}, action) => {
         isReviewsPusherConnected
       };
     }
-    case SET_REVIEWS_OBJECT_WITH_PUSHER: {
-      return {
-        ...state,
-        type,
-        reviewsObject: { ...state.reviewsObject, ...reviewsObject }
-      };
-    }
+
     case UPDATE_COMPANY_DETAILS_INIT: {
       return {
         ...state,
