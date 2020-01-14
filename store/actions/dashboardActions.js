@@ -67,7 +67,10 @@ import {
   GET_AVAILABLE_REVIEW_PLATFORMS_SUCCESS,
   GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
   SET_REVIEWS_AFTER_LOGIN,
-  SET_LOADING_STATUS_OF_REVIEWS
+  SET_LOADING_STATUS_OF_REVIEWS,
+  FETCH_CONFIGURED_REVIEW_PLATFORMS_INIT,
+  FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
+  FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import cookie from "js-cookie";
@@ -93,7 +96,9 @@ import {
   smartUrlApi,
   addReviewPlatformAPI,
   getAvailableReviewPlatformsApi,
-  smartLinkSplitPercentageApi
+  smartLinkSplitPercentageApi,
+  configuredReviewPlatformsApi,
+  fetchGoogleReviewsApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -174,6 +179,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         if (socialsArray.length > 0) {
           dispatch(updateAuthSocialArray(socialsArray));
           dispatch(setReviewsLoadingStatus(scraping));
+          dispatch(fetchConfiguredReviewPlatforms());
         }
       }
       // We will also get failed array that we can use later to show user which URLs failed to be set
@@ -1251,5 +1257,45 @@ export const setReviewsLoadingStatus = (scrapingArray = []) => {
       type: SET_LOADING_STATUS_OF_REVIEWS,
       reviews: { ...reviews, ...updatedReviews }
     });
+  };
+};
+
+export const fetchConfiguredReviewPlatforms = () => {
+  return async (dispatch, getState) => {
+    const { auth } = getState() || {};
+    const domainUrlKey = _get(
+      auth,
+      "logIn.userProfile.business_profile.domainUrlKey",
+      ""
+    );
+    let configuredPlatformsApiWithDomainUrlKey = `${process.env.BASE_URL}${configuredReviewPlatformsApi}/${domainUrlKey}`;
+
+    dispatch({
+      type: FETCH_CONFIGURED_REVIEW_PLATFORMS_INIT,
+      configuredPlatforms: []
+    });
+    try {
+      const result = await axios.get(configuredPlatformsApiWithDomainUrlKey);
+      let success = false;
+      const configured_platforms = _get(
+        result,
+        "data.configured_platforms",
+        []
+      );
+      let configuredReviewPlatforms = [];
+      if (isValidArray(configured_platforms)) {
+        configuredReviewPlatforms = [...configured_platforms];
+        success = true;
+      }
+      dispatch({
+        type: FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
+        configuredPlatforms: [...configuredReviewPlatforms]
+      });
+    } catch (error) {
+      dispatch({
+        type: FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE,
+        configuredPlatforms: []
+      });
+    }
   };
 };
