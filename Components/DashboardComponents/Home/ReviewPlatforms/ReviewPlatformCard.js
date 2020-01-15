@@ -18,7 +18,6 @@ class ReviewPlatformCard extends React.Component {
       name,
       socialMediaAppId,
       handleEditClick,
-      primaryReviewPlatform,
       reviews,
       id
     } = this.props;
