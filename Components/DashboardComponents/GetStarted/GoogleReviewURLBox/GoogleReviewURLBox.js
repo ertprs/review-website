@@ -227,6 +227,7 @@ class GoogleReviewURLBox extends Component {
                   aria-label="delete"
                   size="small"
                   onClick={() => {
+                    this.setState({ placeNameEditMode: false });
                     this.props.handleRemoveTemporaryCard(formDataItemKey);
                   }}
                 >
