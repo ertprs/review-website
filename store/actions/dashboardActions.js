@@ -647,28 +647,22 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
           success = true;
         }
         let data = { ..._get(result, "data", {}) };
-        dispatch(setReviewsInReducer(data, success, socialAppId, profileId));
+        dispatch(
+          setReviewsSuccessInReducer(data, success, socialAppId, profileId)
+        );
       } catch (error) {
-        dispatch({
-          type: FETCH_REVIEWS_FAILURE,
-          reviews: {
-            ...reviews,
-            [socialAppId]: {
-              ..._get(reviews, socialAppId, {}),
-              [profileId]: {
-                ..._get(reviews, socialAppId.profileId, {}),
-                isLoading: false,
-                success: false
-              }
-            }
-          }
-        });
+        dispatch(setReviewsFailureInReducer(socialAppId, profileId));
       }
     };
   }
 };
 
-export const setReviewsInReducer = (data, success, socialAppId, profileId) => {
+export const setReviewsSuccessInReducer = (
+  data,
+  success,
+  socialAppId,
+  profileId
+) => {
   return async (dispatch, getState) => {
     const state = getState();
     const dashboardData = _get(state, "dashboardData", {});
@@ -684,6 +678,28 @@ export const setReviewsInReducer = (data, success, socialAppId, profileId) => {
             data: { ...data },
             isLoading: false,
             success
+          }
+        }
+      }
+    });
+  };
+};
+
+export const setReviewsFailureInReducer = (socialAppId, profileId) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const dashboardData = _get(state, "dashboardData", {});
+    const reviews = _get(dashboardData, "reviews", {});
+    dispatch({
+      type: FETCH_REVIEWS_FAILURE,
+      reviews: {
+        ...reviews,
+        [socialAppId]: {
+          ..._get(reviews, socialAppId, {}),
+          [profileId]: {
+            ..._get(reviews, socialAppId.profileId, {}),
+            isLoading: false,
+            success: false
           }
         }
       }
