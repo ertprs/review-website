@@ -1,7 +1,7 @@
 import React from "react";
 import _get from "lodash/get";
 
-const NoReviewsFound = ({ noreviewsFound }) => {
+const NoReviewsFound = ({ noReviewFound }) => {
   return (
     <>
       <style jsx>{`
@@ -17,9 +17,7 @@ const NoReviewsFound = ({ noreviewsFound }) => {
       `}</style>
       <div className="container">
         <h1 className="text">
-          {noreviewsFound
-            ? "No review found!"
-            : "Reviews will be updated soon!"}
+          {noReviewFound ? "No review found!" : "Reviews will be updated soon!"}
         </h1>
       </div>
     </>
