@@ -109,19 +109,6 @@ export const setGetReviewsData = getReviewsData => {
   };
 };
 
-//! please check the significance of this action
-export const clearReviewsData = () => {
-  return {
-    type: fethh_revi,
-    reviews: {
-      data: {},
-      isFetching: false,
-      error: "",
-      success: false
-    }
-  };
-};
-
 export const sendGetReviews = api => {
   return async (dispatch, getState) => {
     dispatch({

@@ -25,8 +25,7 @@ import AddPlatformDialog from "./AddPlatform/AddPlatformDialog/AddPlatformDialog
 import validate from "../../../utility/validate";
 import {
   setGooglePlaces,
-  setReviewsPusherConnect,
-  clearReviewsData
+  setReviewsPusherConnect
 } from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
@@ -172,7 +171,6 @@ class GetStarted extends Component {
     const {
       setReviewsPusherConnect,
       locatePlaceByPlaceId,
-      clearReviewsData,
       googlePlaces
     } = this.props;
     let reqBody = {};
@@ -960,6 +958,5 @@ export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
   setGooglePlaces,
   setReviewsPusherConnect,
-  clearReviewsData,
   setGetStartedShow
 })(GetStarted);
