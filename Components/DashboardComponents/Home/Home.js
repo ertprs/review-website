@@ -217,54 +217,6 @@ class Home extends Component {
     });
   };
 
-  // renderRecentReviewsCard = () => {
-  //   const { reviewsData, reviewsObject, isReviewsPusherConnected } = this.props;
-  //   const reviews = _get(reviewsData, "reviews", []);
-  //   const topThreeReviews = reviews.length > 3 ? reviews.slice(0, 3) : reviews;
-  //   return (
-  //     <Grid item xs={12} md={4} lg={4}>
-  //       <style jsx>{`
-  //         .header {
-  //           display: flex;
-  //           justify-content: space-between;
-  //           margin-bottom: 24px;
-  //         }
-  //         .fadedHeader {
-  //           font-weight: lighter;
-  //           color: #555;
-  //         }
-  //       `}</style>
-  //       <SimpleCard style={{ height: "298px" }}>
-  //         <div className="header">
-  //           <Title>
-  //             <h5>Latest reviews</h5>
-  //           </Title>
-  //           <div className="fadedHeader">(Top 3 )</div>
-  //         </div>
-  //         <div className="body">
-  //           {/* reviewsObject for google means fetching reviews for google from pusher  */}
-  //           <div>
-  //             {topThreeReviews.length > 0 ? (
-  //               this.renderReviewSnippets(topThreeReviews)
-  //             ) : reviewsObject["google"] === true ? (
-  //               <>
-  //                 <div style={{ marginTop: "30px" }}>
-  //                   <h6 style={{ marginBottom: "50px", color: "green" }}>
-  //                     <b>Fetching reviews</b>
-  //                   </h6>
-  //                   <LinearProgress color="secondary" />
-  //                 </div>
-  //               </>
-  //             ) : (
-  //               "Reviews will be updated soon!"
-  //             )}
-  //           </div>
-  //         </div>
-  //       </SimpleCard>
-  //     </Grid>
-  //   );
-  // };
-
   renderInvitationsCard = () => {
     const { quotaDetails } = this.props;
     const total = _get(quotaDetails, "invitations.total", 0);
