@@ -84,7 +84,9 @@ class SmartUrl extends Component {
     let percentageSplitToSend = (reviewPlatformsForSplit || []).map(
       platform => {
         return {
-          socialAppId: _get(platform, "social_app_id", 0),
+          socialAppId:
+            _get(platform, "social_app_id", 0) ||
+            _get(platform, "social_media_app_id", 0),
           percentShare: _get(platform, "value", 0),
           link: _get(platform, "url", "")
         };
