@@ -160,7 +160,10 @@ class ReviewInvitationPlatforms extends Component {
           classes={{
             label: classes.label
           }}
-          value={_get(platform, "social_media_app_id", 0)}
+          value={
+            _get(platform, "social_media_app_id", 0) ||
+            _get(platform, "social_app_id", 0)
+          }
           control={<Radio style={{ color: "#3a559f" }} />}
           label={_get(platform, "name", "")}
           style={{ width: "30%" }}

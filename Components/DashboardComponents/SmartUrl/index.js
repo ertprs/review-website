@@ -254,7 +254,9 @@ const mapStateToProps = state => {
     dropdownData = reviewPlatforms.map(platform => {
       let temp = {};
       temp.label = _get(platform, "name", "");
-      temp.value = _get(platform, "social_media_app_id", 0);
+      temp.value =
+        _get(platform, "social_media_app_id", 0) ||
+        _get(platform, "social_app_id", 0);
       return temp;
     });
   }

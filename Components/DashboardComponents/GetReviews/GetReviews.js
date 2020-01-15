@@ -678,10 +678,9 @@ class GetReviews extends Component {
       0
     );
     if (selectedWay === 0) {
-      const selectedSinglePlatformData = find(platforms, [
-        "social_media_app_id",
-        selectedSinglePlatform
-      ]);
+      const selectedSinglePlatformData =
+        find(platforms, ["social_media_app_id", selectedSinglePlatform]) ||
+        find(platforms, ["social_app_id", selectedSinglePlatform]);
       let percentShare = 0;
       let socialAppId = 0;
       let link = "";
@@ -705,7 +704,9 @@ class GetReviews extends Component {
         platformsArrayWhoseValueIsGreaterThanZero || 0
       ).map(platform => {
         return {
-          socialAppId: get(platform, "social_media_app_id", 0),
+          socialAppId:
+            get(platform, "social_media_app_id", 0) ||
+            get(platform, "social_app_id", 0),
           percentShare: get(platform, "value", ""),
           link: get(platform, "url", "")
         };
@@ -1567,10 +1568,15 @@ class GetReviews extends Component {
     if (isValidArray(percentageSplit)) {
       configuredReviewPlatformsCopy = (configuredReviewPlatforms || []).map(
         platform => {
-          let foundPlatform = find(percentageSplit, [
-            "socialAppId",
-            get(platform, "social_media_app_id", 0)
-          ]);
+          let foundPlatform =
+            find(percentageSplit, [
+              "socialAppId",
+              get(platform, "social_media_app_id", 0)
+            ]) ||
+            find(percentageSplit, [
+              "socialAppId",
+              get(platform, "social_app_id", 0)
+            ]);
           return {
             ...platform,
             value: get(foundPlatform, "percentShare", 0)
