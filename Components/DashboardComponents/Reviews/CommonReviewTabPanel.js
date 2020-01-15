@@ -22,18 +22,25 @@ class CommonReviewTabPanel extends Component {
   state = {
     totalReviews: [],
     reviews: [],
+    reviewUrl: "",
+    isLoading: false,
+    success: undefined,
     total: 0,
     pageNo: 1,
     perPage: 10,
-    isLoading: false,
-    success: undefined,
     showDelay: false,
     selectedPlace: {},
     defaultPlace: {}
   };
 
   componentDidMount() {
-    const { success, isLoading, totalReviews, primaryDropdownObj } = this.props;
+    const { primaryPlatform, platformReviews } = this.props;
+    const profileId = _get(primaryPlatform, "value", 0);
+    let reviewsOfPrimaryPlace = _get(platformReviews, profileId, {});
+    let totalReviews = _get(reviewsOfPrimaryPlace, "data.data.reviews", []);
+    let reviewUrl = _get(reviewsOfPrimaryPlace, "data.data.url", "");
+    let isLoading = _get(reviewsOfPrimaryPlace, "isLoading", false);
+    let success = _get(reviewsOfPrimaryPlace, "success", undefined);
     let total = 0;
     let pageNo = 1;
     let perPage = 10;
@@ -43,7 +50,9 @@ class CommonReviewTabPanel extends Component {
     }
     this.setState(
       {
-        defaultPlace: primaryDropdownObj,
+        defaultPlace: primaryPlatform,
+        selectedPlace: primaryPlatform,
+        reviewUrl,
         totalReviews,
         isLoading,
         success,
@@ -60,12 +69,13 @@ class CommonReviewTabPanel extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps) {
       const { selectedPlace } = this.state;
-      const { allPlacesReviews } = this.props;
+      const { platformReviews } = this.props;
       let profileId = _get(selectedPlace, "value", "");
-      let selectedPlaceObj = _get(allPlacesReviews, profileId, {});
-      let totalReviews = _get(selectedPlaceObj, "data.data.reviews", []);
-      let isLoading = _get(selectedPlaceObj, "isLoading", false);
-      let success = _get(selectedPlaceObj, "success", undefined);
+      let selectedPlaceReviews = _get(platformReviews, profileId, {});
+      let totalReviews = _get(selectedPlaceReviews, "data.data.reviews", []);
+      let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
+      let isLoading = _get(selectedPlaceReviews, "isLoading", false);
+      let success = _get(selectedPlaceReviews, "success", undefined);
       let total = 0;
       let pageNo = 1;
       let perPage = 10;
@@ -76,6 +86,7 @@ class CommonReviewTabPanel extends Component {
       this.setState(
         {
           totalReviews,
+          reviewUrl,
           isLoading,
           success,
           total,
@@ -112,12 +123,13 @@ class CommonReviewTabPanel extends Component {
   };
 
   handleSelectedPlace = selectedObj => {
-    const { allPlacesReviews } = this.props;
+    const { platformReviews } = this.props;
     let profileId = _get(selectedObj, "value", "");
-    let selectedPlaceObj = _get(allPlacesReviews, profileId, {});
-    let totalReviews = _get(selectedPlaceObj, "data.data.reviews", []);
-    let isLoading = _get(selectedPlaceObj, "isLoading", false);
-    let success = _get(selectedPlaceObj, "success", undefined);
+    let selectedPlaceReviews = _get(platformReviews, profileId, {});
+    let totalReviews = _get(selectedPlaceReviews, "data.data.reviews", []);
+    let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
+    let isLoading = _get(selectedPlaceReviews, "isLoading", false);
+    let success = _get(selectedPlaceReviews, "success", undefined);
     let total = 0;
     let pageNo = 1;
     let perPage = 10;
@@ -129,6 +141,7 @@ class CommonReviewTabPanel extends Component {
       {
         selectedPlace: selectedObj,
         totalReviews,
+        reviewUrl,
         isLoading,
         success,
         total,
@@ -157,10 +170,9 @@ class CommonReviewTabPanel extends Component {
 
   render() {
     const {
-      reviewUrl,
       dropDownData,
-      socialMediaAppId,
       reviewsPlatforms,
+      socialMediaAppId,
       isReviewsPusherConnected
     } = this.props;
     const {
@@ -169,6 +181,7 @@ class CommonReviewTabPanel extends Component {
       isLoading,
       perPage,
       success,
+      reviewUrl,
       showDelay,
       selectedPlace,
       defaultPlace
@@ -236,13 +249,14 @@ class CommonReviewTabPanel extends Component {
         {socialMediaAppId === 22 ? (
           <>
             <Select
-              name="reviews_platforms"
+              isSearchable={true}
+              name="allPlaces"
               options={dropDownData || []}
               className="basic-multi-select"
               classNamePrefix="select"
               onChange={this.handleSelectedPlace}
-              // defaultValue={defaultPlace}
-              // value={selectedPlace}
+              defaultValue={defaultPlace}
+              value={selectedPlace}
               placeholder="Select your place"
             />
           </>
@@ -328,93 +342,17 @@ class CommonReviewTabPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { dashboardData, auth } = state;
+  const { dashboardData } = state;
   const socialMediaAppId = _get(ownProps, "socialMediaAppId", 0);
-  const reviewsPlatforms = _get(dashboardData, "review_platforms.data", {});
-  const allReviews = _get(dashboardData, "reviews", {});
-  const platformReviews = _get(allReviews, socialMediaAppId, {});
-  const socialArray = _get(
-    auth,
-    "logIn.userProfile.business_profile.social",
-    []
-  );
-  const socialArrayGroupedById = _groupBy(socialArray, "social_media_app_id");
-  let dropDownData = [];
-  let socialArrayGroupedByPlatforms = [];
-  if (socialMediaAppId in socialArrayGroupedById) {
-    socialArrayGroupedByPlatforms = socialArrayGroupedById[socialMediaAppId];
-    dropDownData = (socialArrayGroupedByPlatforms || []).map(platform => {
-      return {
-        label: _get(platform, "profile_name", ""),
-        value: _get(platform, "id", "")
-      };
-    });
-  }
-  let primaryReviewPlatformPlace = {};
-  primaryReviewPlatformPlace = _find(socialArrayGroupedByPlatforms, [
-    "is_primary",
-    1
-  ]);
-  if (
-    !primaryReviewPlatformPlace &&
-    (socialArrayGroupedByPlatforms || []).length === 1
-  ) {
-    primaryReviewPlatformPlace = socialArrayGroupedByPlatforms[0];
-  }
-  const primaryReviewPlatformPlaceId = _get(
-    primaryReviewPlatformPlace,
-    "id",
-    ""
-  );
-  const primaryDropdownObj = _find(dropDownData, [
-    "value",
-    primaryReviewPlatformPlaceId
-  ]);
-  let primaryReviewPlatformReviews = [];
-  let primaryReviewPlatformSuccess = undefined;
-  let primaryReviewPlatformIsLoading = false;
-  let primaryReviewPlatformReviewUrl = "";
-  if (primaryReviewPlatformPlaceId in platformReviews) {
-    const primaryReviewPlatformReviewsObj = _get(
-      platformReviews,
-      primaryReviewPlatformPlaceId,
-      {}
-    );
-    primaryReviewPlatformReviews = _get(
-      primaryReviewPlatformReviewsObj,
-      "data.data.reviews",
-      []
-    );
-    primaryReviewPlatformSuccess = _get(
-      primaryReviewPlatformReviewsObj,
-      "success",
-      false
-    );
-    primaryReviewPlatformIsLoading = _get(
-      primaryReviewPlatformReviewsObj,
-      "isLoading",
-      false
-    );
-    primaryReviewPlatformReviewUrl = _get(
-      primaryReviewPlatformReviewsObj,
-      "data.data.ur",
-      ""
-    );
-  }
+  const reviews = _get(dashboardData, "reviews", {});
+  const platformReviews = _get(reviews, socialMediaAppId, {});
   const isReviewsPusherConnected = _get(
     dashboardData,
     "isReviewsPusherConnected",
     undefined
   );
   return {
-    allPlacesReviews: platformReviews,
-    dropDownData,
-    primaryDropdownObj,
-    reviewsPlatforms,
-    totalReviews: primaryReviewPlatformReviews,
-    success: primaryReviewPlatformSuccess,
-    isLoading: primaryReviewPlatformIsLoading,
-    reviewUrl: primaryReviewPlatformReviewUrl,
+    platformReviews: platformReviews,
     isReviewsPusherConnected
   };
 };
