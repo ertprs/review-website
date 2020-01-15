@@ -14,6 +14,7 @@ import Papa from "papaparse";
 import moment from "moment";
 import { connect } from "react-redux";
 import dynamic from "next/dynamic";
+import { isValidArray } from "../../../utility/commonFunctions";
 const CreateCampaign = dynamic(
   () => import("../GetReviewsForms/CreateCampaign"),
   {
@@ -678,7 +679,7 @@ class GetReviews extends Component {
     );
     if (selectedWay === 0) {
       const selectedSinglePlatformData = find(platforms, [
-        "social_app_id",
+        "social_media_app_id",
         selectedSinglePlatform
       ]);
       let percentShare = 0;
@@ -704,7 +705,7 @@ class GetReviews extends Component {
         platformsArrayWhoseValueIsGreaterThanZero || 0
       ).map(platform => {
         return {
-          socialAppId: get(platform, "social_app_id", 0),
+          socialAppId: get(platform, "social_media_app_id", 0),
           percentShare: get(platform, "value", ""),
           link: get(platform, "url", "")
         };
@@ -1563,16 +1564,12 @@ class GetReviews extends Component {
     const { configuredReviewPlatforms, percentageSplit } = this.props;
     let configuredReviewPlatformsCopy = [];
     //! In edit mode we will get percentageSplit for review invitation platforms else we'll initialize percentage split by dividing with no of platforms
-    if (
-      percentageSplit &&
-      Array.isArray(percentageSplit) &&
-      !isEmpty(percentageSplit)
-    ) {
-      configuredReviewPlatformsCopy = (configuredReviewPlatformsCopy || []).map(
+    if (isValidArray(percentageSplit)) {
+      configuredReviewPlatformsCopy = (configuredReviewPlatforms || []).map(
         platform => {
           let foundPlatform = find(percentageSplit, [
             "socialAppId",
-            get(platform, "social_app_id", 0)
+            get(platform, "social_media_app_id", 0)
           ]);
           return {
             ...platform,
@@ -1580,11 +1577,7 @@ class GetReviews extends Component {
           };
         }
       );
-    } else if (
-      configuredReviewPlatforms &&
-      Array.isArray(configuredReviewPlatforms) &&
-      !isEmpty(configuredReviewPlatforms)
-    ) {
+    } else if (isValidArray(configuredReviewPlatforms)) {
       const noOfPlatforms = (configuredReviewPlatforms || []).length;
       let platformInitialValue = Math.floor(100 / noOfPlatforms);
       const sumOfAllPlatforms = platformInitialValue * noOfPlatforms;
