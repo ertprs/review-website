@@ -743,11 +743,7 @@ const mapStateToProps = state => {
     ""
   );
   const reviewsObject = _get(dashboardData, "reviewsObject", {});
-  const isReviewsPusherConnected = _get(
-    dashboardData,
-    "isReviewsPusherConnected",
-    false
-  );
+
   const showGetStarted = _get(dashboardData, "showGetStarted", false);
   const screenshot = _get(
     auth,
@@ -776,7 +772,6 @@ const mapStateToProps = state => {
     googlePlaceId,
     socialArray,
     dashboardData,
-    isReviewsPusherConnected,
     showGetStarted,
     screenshot
   };
