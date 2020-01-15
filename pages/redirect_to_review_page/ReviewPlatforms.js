@@ -130,7 +130,7 @@ const ReviewPlatforms = ({
               <div
                 className="platformCard"
                 onClick={() =>
-                  handlePlatformClick(_get(platform, "social_app_id", 0))
+                  handlePlatformClick(_get(platform, "social_media_app_id", 0))
                 }
               >
                 <Card className={classes.card} raised={true}>

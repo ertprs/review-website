@@ -1,35 +1,120 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Head from "next/head";
-import Link from "next/link";
-import ReactPaginate from "react-paginate";
 import dynamic from "next/dynamic";
+import NoReviewsFound from "./noReviewsFound";
+import ReviewCard from "../../Widgets/CommonReviewCard";
+import PlatformDetails from "./PlatformDetails";
+import { isValidArray } from "../../../utility/commonFunctions";
 const Select = dynamic(() => import("react-select"), {
   ssr: false
 });
-import { isValidArray } from "../../../utility/commonFunctions";
-import NoReviewsFound from "./noReviewsFound";
-import ReviewCard from "../../Widgets/CommonReviewCard";
+const ReactPaginate = dynamic(() => import("react-paginate"), {
+  ssr: false
+});
+import { CircularProgress } from "@material-ui/core";
 import _get from "lodash/get";
 import _map from "lodash/map";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 import _groupBy from "lodash/groupBy";
-import { CircularProgress, Typography } from "@material-ui/core";
 
 class CommonReviewTabPanel extends Component {
   state = {
     totalReviews: [],
     reviews: [],
+    reviewUrl: "",
+    isLoading: false,
+    success: undefined,
+    likes: 0,
+    followers: 0,
+    rating: 0,
     total: 0,
     pageNo: 1,
     perPage: 10,
-    isLoading: false,
-    success: undefined,
     showDelay: false,
     selectedPlace: {},
     defaultPlace: {}
   };
+
+  componentDidMount() {
+    const { primaryPlatform, platformReviews } = this.props;
+    const profileId = _get(primaryPlatform, "value", 0);
+    const reviewsOfPrimaryPlace = _get(platformReviews, profileId, {});
+    const totalReviews = _get(reviewsOfPrimaryPlace, "data.data.reviews", []);
+    const reviewUrl = _get(reviewsOfPrimaryPlace, "data.data.url", "");
+    const isLoading = _get(reviewsOfPrimaryPlace, "isLoading", false);
+    const success = _get(reviewsOfPrimaryPlace, "success", undefined);
+    const likes = _get(reviewsOfPrimaryPlace, "data.data.likes", 0);
+    const followers = _get(reviewsOfPrimaryPlace, "data.data.followers", 0);
+    const rating = _get(reviewsOfPrimaryPlace, "data.data.rating", 0);
+    let total = 0;
+    const pageNo = 1;
+    let perPage = 10;
+    if (success && isValidArray(totalReviews)) {
+      total = totalReviews.length;
+      perPage = total >= 10 ? 10 : total;
+    }
+    this.setState(
+      {
+        defaultPlace: primaryPlatform,
+        selectedPlace: primaryPlatform,
+        reviewUrl,
+        totalReviews,
+        isLoading,
+        success,
+        likes,
+        followers,
+        rating,
+        total,
+        perPage,
+        pageNo
+      },
+      () => {
+        this.calReviews();
+      }
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props !== prevProps) {
+      const { selectedPlace } = this.state;
+      const { platformReviews } = this.props;
+      let profileId = _get(selectedPlace, "value", "");
+      let selectedPlaceReviews = _get(platformReviews, profileId, {});
+      let totalReviews = _get(selectedPlaceReviews, "data.data.reviews", []);
+      let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
+      let isLoading = _get(selectedPlaceReviews, "isLoading", false);
+      let success = _get(selectedPlaceReviews, "success", undefined);
+      const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
+      const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
+      const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
+      let total = 0;
+      let pageNo = 1;
+      let perPage = 10;
+      if (success && isValidArray(totalReviews)) {
+        total = totalReviews.length;
+        perPage = total >= 10 ? 10 : total;
+      }
+      this.setState(
+        {
+          totalReviews,
+          reviewUrl,
+          isLoading,
+          success,
+          likes,
+          followers,
+          rating,
+          total,
+          perPage,
+          pageNo
+        },
+        () => {
+          this.calReviews();
+        }
+      );
+    }
+  }
 
   calReviews = () => {
     const { totalReviews, pageNo, perPage } = this.state;
@@ -53,64 +138,17 @@ class CommonReviewTabPanel extends Component {
     });
   };
 
-  delayForSometime = ms => {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  };
-
-  setInitialState = () => {
-    const { success, isLoading, totalReviews, primaryDropdownObj } = this.props;
-    let total = 0;
-    let pageNo = 1;
-    let perPage = 10;
-    if (success && isValidArray(totalReviews)) {
-      total = totalReviews.length;
-      perPage = total >= 10 ? 10 : total;
-    }
-    this.setState(
-      {
-        defaultPlace: primaryDropdownObj,
-        totalReviews,
-        isLoading,
-        success,
-        total,
-        perPage,
-        pageNo
-      },
-      () => {
-        this.calReviews();
-      }
-    );
-  };
-
-  componentDidMount() {
-    this.setInitialState();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { totalReviews } = this.props;
-    if (totalReviews !== prevProps.totalReviews) {
-      this.setInitialState();
-    }
-  }
-
-  showLoadingEffect = () => {
-    return (
-      <div style={{ textAlign: "center" }}>
-        <CircularProgress />
-      </div>
-    );
-  };
-
   handleSelectedPlace = selectedObj => {
-    this.setState({ selectedPlace: selectedObj });
-    const { allPlacesReviews } = this.props;
+    const { platformReviews } = this.props;
     let profileId = _get(selectedObj, "value", "");
-    let selectedPlaceObj = _get(allPlacesReviews, profileId, {});
-    let totalReviews = _get(selectedPlaceObj, "data.data.reviews", []);
-    let isLoading = _get(selectedPlaceObj, "isLoading", false);
-    let success = _get(selectedPlaceObj, "success", undefined);
+    let selectedPlaceReviews = _get(platformReviews, profileId, {});
+    let totalReviews = _get(selectedPlaceReviews, "data.data.reviews", []);
+    let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
+    let isLoading = _get(selectedPlaceReviews, "isLoading", false);
+    let success = _get(selectedPlaceReviews, "success", undefined);
+    const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
+    const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
+    const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
     let total = 0;
     let pageNo = 1;
     let perPage = 10;
@@ -122,8 +160,12 @@ class CommonReviewTabPanel extends Component {
       {
         selectedPlace: selectedObj,
         totalReviews,
+        reviewUrl,
         isLoading,
         success,
+        likes,
+        followers,
+        rating,
         total,
         perPage,
         pageNo
@@ -134,12 +176,26 @@ class CommonReviewTabPanel extends Component {
     );
   };
 
+  delayForSometime = ms => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  };
+
+  showLoadingEffect = () => {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <CircularProgress />
+      </div>
+    );
+  };
+
   render() {
     const {
-      reviewUrl,
       dropDownData,
+      reviewsPlatforms,
       socialMediaAppId,
-      reviewsPlatforms
+      isReviewsPusherConnected
     } = this.props;
     const {
       reviews,
@@ -147,6 +203,10 @@ class CommonReviewTabPanel extends Component {
       isLoading,
       perPage,
       success,
+      likes,
+      followers,
+      rating,
+      reviewUrl,
       showDelay,
       selectedPlace,
       defaultPlace
@@ -214,34 +274,53 @@ class CommonReviewTabPanel extends Component {
         {socialMediaAppId === 22 ? (
           <>
             <Select
-              name="reviews_platforms"
+              isSearchable={true}
+              name="allPlaces"
               options={dropDownData || []}
               className="basic-multi-select"
               classNamePrefix="select"
               onChange={this.handleSelectedPlace}
-              // defaultValue={defaultPlace}
-              // value={selectedPlace}
+              defaultValue={defaultPlace}
+              value={selectedPlace}
               placeholder="Select your place"
             />
           </>
         ) : null}
         <div className="reviewsContainer">
-          {isLoading === true ? (
+          {isLoading === true && isReviewsPusherConnected === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
           ) : isLoading === false ? (
             !success ? (
-              <NoReviewsFound />
+              <>
+                {/* If any of the data is available then we want to show
+                platform details otherwise not. */}
+
+                {reviewUrl || likes || followers || total || rating ? (
+                  <PlatformDetails
+                    reviewUrl={reviewUrl || ""}
+                    likes={likes || 0}
+                    followers={followers || 0}
+                    totalReviews={total || 0}
+                    rating={rating || 0}
+                  />
+                ) : null}
+                <NoReviewsFound />
+              </>
             ) : !showDelay ? (
               <>
-                {reviewUrl ? (
-                  <div className="bold">
-                    Review url :
-                    <a style={{ marginLeft: "10px" }} target="_blank">
-                      {reviewUrl}
-                    </a>
-                  </div>
+                {/* If any of the data is available then we want to show
+                platform details otherwise not. */}
+
+                {reviewUrl || likes || followers || total || rating ? (
+                  <PlatformDetails
+                    reviewUrl={reviewUrl || ""}
+                    likes={likes || 0}
+                    followers={followers || 0}
+                    totalReviews={total || 0}
+                    rating={rating || 0}
+                  />
                 ) : null}
                 {_map(reviews, review => {
                   let name =
@@ -306,88 +385,18 @@ class CommonReviewTabPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { dashboardData, auth } = state;
+  const { dashboardData } = state;
   const socialMediaAppId = _get(ownProps, "socialMediaAppId", 0);
-  const reviewsPlatforms = _get(dashboardData, "review_platforms.data", {});
-  const allReviews = _get(dashboardData, "reviews", {});
-  const platformReviews = _get(allReviews, socialMediaAppId, {});
-  const socialArray = _get(
-    auth,
-    "logIn.userProfile.business_profile.social",
-    []
+  const reviews = _get(dashboardData, "reviews", {});
+  const platformReviews = _get(reviews, socialMediaAppId, {});
+  const isReviewsPusherConnected = _get(
+    dashboardData,
+    "isReviewsPusherConnected",
+    undefined
   );
-  const socialArrayGroupedById = _groupBy(socialArray, "social_media_app_id");
-  let dropDownData = [];
-  let socialArrayGroupedByPlatforms = [];
-  if (socialMediaAppId in socialArrayGroupedById) {
-    socialArrayGroupedByPlatforms = socialArrayGroupedById[socialMediaAppId];
-    dropDownData = (socialArrayGroupedByPlatforms || []).map(platform => {
-      return {
-        label: _get(platform, "profile_name", ""),
-        value: _get(platform, "id", "")
-      };
-    });
-  }
-  let primaryReviewPlatformPlace = {};
-  primaryReviewPlatformPlace = _find(socialArrayGroupedByPlatforms, [
-    "is_primary",
-    1
-  ]);
-  if (
-    !primaryReviewPlatformPlace &&
-    (socialArrayGroupedByPlatforms || []).length === 1
-  ) {
-    primaryReviewPlatformPlace = socialArrayGroupedByPlatforms[0];
-  }
-  const primaryReviewPlatformPlaceId = _get(
-    primaryReviewPlatformPlace,
-    "id",
-    ""
-  );
-  const primaryDropdownObj = _find(dropDownData, [
-    "value",
-    primaryReviewPlatformPlaceId
-  ]);
-  let primaryReviewPlatformReviews = [];
-  let primaryReviewPlatformSuccess = undefined;
-  let primaryReviewPlatformIsLoading = false;
-  let primaryReviewPlatformReviewUrl = "";
-  if (primaryReviewPlatformPlaceId in platformReviews) {
-    const primaryReviewPlatformReviewsObj = _get(
-      platformReviews,
-      primaryReviewPlatformPlaceId,
-      {}
-    );
-    primaryReviewPlatformReviews = _get(
-      primaryReviewPlatformReviewsObj,
-      "data.data.reviews",
-      []
-    );
-    primaryReviewPlatformSuccess = _get(
-      primaryReviewPlatformReviewsObj,
-      "success",
-      false
-    );
-    primaryReviewPlatformIsLoading = _get(
-      primaryReviewPlatformReviewsObj,
-      "isLoading",
-      false
-    );
-    primaryReviewPlatformReviewUrl = _get(
-      primaryReviewPlatformReviewsObj,
-      "data.data.ur",
-      ""
-    );
-  }
   return {
-    allPlacesReviews: platformReviews,
-    dropDownData,
-    primaryDropdownObj,
-    reviewsPlatforms,
-    totalReviews: primaryReviewPlatformReviews,
-    success: primaryReviewPlatformSuccess,
-    isLoading: primaryReviewPlatformIsLoading,
-    reviewUrl: primaryReviewPlatformReviewUrl
+    platformReviews: platformReviews,
+    isReviewsPusherConnected
   };
 };
 
