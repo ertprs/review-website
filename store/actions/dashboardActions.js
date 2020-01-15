@@ -1161,26 +1161,26 @@ export const setReviewsAfterLogin = socialArray => {
         let hasData = _get(platform, "hasData", 0);
         let socialAppId = _get(platform, "social_media_app_id", "");
         let profileId = _get(platform, "id", "");
-        if (hasData === 1) {
-          return axios
-            .get(
-              `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
-            )
-            .then(res => {
-              return {
-                ...res.data,
-                socialAppId,
-                profileId
-              };
-            })
-            .catch(err => {
-              return {
-                err,
-                socialAppId,
-                profileId
-              };
-            });
-        }
+        // if (hasData === 1) {
+        return axios
+          .get(
+            `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+          )
+          .then(res => {
+            return {
+              ...res.data,
+              socialAppId,
+              profileId
+            };
+          })
+          .catch(err => {
+            return {
+              err,
+              socialAppId,
+              profileId
+            };
+          });
+        // }
       })
     ).then(resArr => {
       resArr.forEach(res => {
