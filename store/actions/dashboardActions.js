@@ -659,21 +659,8 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
         if (isValidArray(reviewsArray)) {
           success = true;
         }
-        dispatch({
-          type: FETCH_REVIEWS_SUCCESS,
-          reviews: {
-            ...reviews,
-            [socialAppId]: {
-              ..._get(reviews, socialAppId, {}),
-              [profileId]: {
-                ..._get(reviews, socialAppId.profileId, {}),
-                data: { ..._get(result, "data", {}) },
-                isLoading: false,
-                success
-              }
-            }
-          }
-        });
+        let data = { ..._get(result, "data", {}) };
+        dispatch(setReviewsInReducer(data, success, socialAppId, profileId));
       } catch (error) {
         dispatch({
           type: FETCH_REVIEWS_FAILURE,
@@ -692,6 +679,29 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
       }
     };
   }
+};
+
+export const setReviewsInReducer = (data, success, socialAppId, profileId) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const dashboardData = _get(state, "dashboardData", {});
+    const reviews = _get(dashboardData, "reviews", {});
+    dispatch({
+      type: FETCH_REVIEWS_SUCCESS,
+      reviews: {
+        ...reviews,
+        [socialAppId]: {
+          ..._get(reviews, socialAppId, {}),
+          [profileId]: {
+            ..._get(reviews, socialAppId.profileId, {}),
+            data: { ...data },
+            isLoading: false,
+            success
+          }
+        }
+      }
+    });
+  };
 };
 
 export const setGetStartedShow = (show, social_media_app_id) => {
