@@ -1,3 +1,5 @@
+// We have commented out company name, name and country from the form. When we need it, just comment it from formData and inside render method.
+
 import React, { Component } from "react";
 import Select from "react-select";
 
@@ -40,32 +42,32 @@ class BusinessUserRegistration extends Component {
         },
         name: "website name"
       },
-      company: {
-        element: "input",
-        value: "",
-        placeholder: "Enter your company name",
-        errorMessage: "Enter valid company name (atleast 3 characters)",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true,
-          minLength: 3
-        },
-        name: "company"
-      },
-      name: {
-        element: "input",
-        value: "",
-        placeholder: "Enter your full name",
-        errorMessage: "Enter valid name (atleast 5 characters)",
-        valid: false,
-        touched: false,
-        validationRules: {
-          required: true,
-          minLength: 5
-        },
-        name: "name"
-      },
+      // company: {
+      //   element: "input",
+      //   value: "",
+      //   placeholder: "Enter your company name",
+      //   errorMessage: "Enter valid company name (atleast 3 characters)",
+      //   valid: false,
+      //   touched: false,
+      //   validationRules: {
+      //     required: true,
+      //     minLength: 3
+      //   },
+      //   name: "company"
+      // },
+      // name: {
+      //   element: "input",
+      //   value: "",
+      //   placeholder: "Enter your full name",
+      //   errorMessage: "Enter valid name (atleast 5 characters)",
+      //   valid: false,
+      //   touched: false,
+      //   validationRules: {
+      //     required: true,
+      //     minLength: 5
+      //   },
+      //   name: "name"
+      // },
       email: {
         element: "input",
         value: "",
@@ -116,21 +118,21 @@ class BusinessUserRegistration extends Component {
           required: true
         },
         name: "phone"
-      },
-      country: {
-        element: "select",
-        name: "country",
-        value: "",
-        dialCode: "",
-        options: [...countrieslist],
-        placeholder: "Select your country",
-        valid: false,
-        validationRules: {
-          required: true
-        },
-        touched: false,
-        errorMessage: ""
       }
+      // country: {
+      //   element: "select",
+      //   name: "country",
+      //   value: "",
+      //   dialCode: "",
+      //   options: [...countrieslist],
+      //   placeholder: "Select your country",
+      //   valid: false,
+      //   validationRules: {
+      //     required: true
+      //   },
+      //   touched: false,
+      //   errorMessage: ""
+      // }
     },
     errorMsg: {
       password_confirmation: ""
@@ -297,7 +299,7 @@ class BusinessUserRegistration extends Component {
       }
 
       if (isSignupSuccess) {
-        let snackbarMsg = "Registration Successfull!";
+        let snackbarMsg = "Registration Successful!";
         this.setState({
           showSnackbar: true,
           variant: "success",
@@ -319,7 +321,7 @@ class BusinessUserRegistration extends Component {
             {
               showSnackbar: true,
               variant: "error",
-              snackbarMsg: "Some error occured while loggin in!"
+              snackbarMsg: "Some error occurred while logging in!"
             },
             () => {
               Router.push("/login");
@@ -359,20 +361,20 @@ class BusinessUserRegistration extends Component {
             rows="5"
             col="5"
           />
-          <FormField
+          {/* <FormField
             {...formData.company}
             handleChange={this.handleChange}
             id="company"
             rows="5"
             col="5"
-          />
-          <FormField
+          /> */}
+          {/* <FormField
             {...formData.name}
             handleChange={this.handleChange}
             id="name"
             rows="5"
             col="5"
-          />
+          /> */}
           <FormField
             {...formData.email}
             handleChange={this.handleChange}
@@ -411,15 +413,24 @@ class BusinessUserRegistration extends Component {
             defaultCountry="lv"
             onPhoneNumberChange={(isValid, value, countryData) => {
               const dialCode = _get(countryData, "dialCode", "0");
+              let specialCharRegEx = /[!+@#$%^&*(),.?":{}|<>]/;
+              let valid = isValid;
+              let errorMessage = "";
+              if (specialCharRegEx.test(value)) {
+                valid = false;
+                errorMessage =
+                  "Please remove country code from phone no. we add your country code by default and also remove any special characters if it contains";
+              }
               this.setState({
                 formData: {
                   ...formData,
                   phone: {
                     ...formData.phone,
-                    valid: isValid,
-                    value: value,
-                    dialCode: dialCode,
-                    touched: true
+                    valid,
+                    value,
+                    dialCode,
+                    touched: true,
+                    errorMessage
                   }
                 }
               });
@@ -433,7 +444,7 @@ class BusinessUserRegistration extends Component {
                     ...formData.phone,
                     valid: false,
                     value: "",
-                    dialCode: dialCode,
+                    dialCode,
                     touched: true
                   }
                 }
@@ -453,7 +464,7 @@ class BusinessUserRegistration extends Component {
             col="5"
             styles={{ height: "38px" }}
           /> */}
-          <Select
+          {/* <Select
             className="basic-single"
             classNamePrefix="select"
             isClearable={true}
@@ -471,7 +482,7 @@ class BusinessUserRegistration extends Component {
               };
               this.handleChange(e, "country");
             }}
-          />
+          /> */}
           <div style={{ margin: "20px 0 20px 0" }}>
             <label style={{ cursor: "pointer" }}>
               <input
@@ -504,13 +515,13 @@ class BusinessUserRegistration extends Component {
                 disabled={
                   !(
                     formData.website.valid &&
-                    formData.company.valid &&
-                    formData.name.valid &&
+                    // formData.company.valid &&
+                    // formData.name.valid &&
                     formData.email.valid &&
                     formData.password.valid &&
                     formData.password_confirmation.valid &&
                     formData.phone.valid &&
-                    formData.country.valid &&
+                    // formData.country.valid &&
                     agreement === "yes"
                   )
                 }
