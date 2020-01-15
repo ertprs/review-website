@@ -4,6 +4,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import NoReviewsFound from "./noReviewsFound";
 import ReviewCard from "../../Widgets/CommonReviewCard";
+import PlatformDetails from "./PlatformDetails";
 import { isValidArray } from "../../../utility/commonFunctions";
 const Select = dynamic(() => import("react-select"), {
   ssr: false
@@ -11,12 +12,12 @@ const Select = dynamic(() => import("react-select"), {
 const ReactPaginate = dynamic(() => import("react-paginate"), {
   ssr: false
 });
+import { CircularProgress } from "@material-ui/core";
 import _get from "lodash/get";
 import _map from "lodash/map";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 import _groupBy from "lodash/groupBy";
-import { CircularProgress } from "@material-ui/core";
 
 class CommonReviewTabPanel extends Component {
   state = {
@@ -25,6 +26,9 @@ class CommonReviewTabPanel extends Component {
     reviewUrl: "",
     isLoading: false,
     success: undefined,
+    likes: 0,
+    followers: 0,
+    rating: 0,
     total: 0,
     pageNo: 1,
     perPage: 10,
@@ -36,13 +40,16 @@ class CommonReviewTabPanel extends Component {
   componentDidMount() {
     const { primaryPlatform, platformReviews } = this.props;
     const profileId = _get(primaryPlatform, "value", 0);
-    let reviewsOfPrimaryPlace = _get(platformReviews, profileId, {});
-    let totalReviews = _get(reviewsOfPrimaryPlace, "data.data.reviews", []);
-    let reviewUrl = _get(reviewsOfPrimaryPlace, "data.data.url", "");
-    let isLoading = _get(reviewsOfPrimaryPlace, "isLoading", false);
-    let success = _get(reviewsOfPrimaryPlace, "success", undefined);
+    const reviewsOfPrimaryPlace = _get(platformReviews, profileId, {});
+    const totalReviews = _get(reviewsOfPrimaryPlace, "data.data.reviews", []);
+    const reviewUrl = _get(reviewsOfPrimaryPlace, "data.data.url", "");
+    const isLoading = _get(reviewsOfPrimaryPlace, "isLoading", false);
+    const success = _get(reviewsOfPrimaryPlace, "success", undefined);
+    const likes = _get(reviewsOfPrimaryPlace, "data.data.likes", 0);
+    const followers = _get(reviewsOfPrimaryPlace, "data.data.followers", 0);
+    const rating = _get(reviewsOfPrimaryPlace, "data.data.rating", 0);
     let total = 0;
-    let pageNo = 1;
+    const pageNo = 1;
     let perPage = 10;
     if (success && isValidArray(totalReviews)) {
       total = totalReviews.length;
@@ -56,6 +63,9 @@ class CommonReviewTabPanel extends Component {
         totalReviews,
         isLoading,
         success,
+        likes,
+        followers,
+        rating,
         total,
         perPage,
         pageNo
@@ -76,6 +86,9 @@ class CommonReviewTabPanel extends Component {
       let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
       let isLoading = _get(selectedPlaceReviews, "isLoading", false);
       let success = _get(selectedPlaceReviews, "success", undefined);
+      const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
+      const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
+      const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
       let total = 0;
       let pageNo = 1;
       let perPage = 10;
@@ -89,6 +102,9 @@ class CommonReviewTabPanel extends Component {
           reviewUrl,
           isLoading,
           success,
+          likes,
+          followers,
+          rating,
           total,
           perPage,
           pageNo
@@ -130,6 +146,9 @@ class CommonReviewTabPanel extends Component {
     let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
     let isLoading = _get(selectedPlaceReviews, "isLoading", false);
     let success = _get(selectedPlaceReviews, "success", undefined);
+    const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
+    const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
+    const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
     let total = 0;
     let pageNo = 1;
     let perPage = 10;
@@ -144,6 +163,9 @@ class CommonReviewTabPanel extends Component {
         reviewUrl,
         isLoading,
         success,
+        likes,
+        followers,
+        rating,
         total,
         perPage,
         pageNo
@@ -181,6 +203,9 @@ class CommonReviewTabPanel extends Component {
       isLoading,
       perPage,
       success,
+      likes,
+      followers,
+      rating,
       reviewUrl,
       showDelay,
       selectedPlace,
@@ -268,16 +293,34 @@ class CommonReviewTabPanel extends Component {
             </div>
           ) : isLoading === false ? (
             !success ? (
-              <NoReviewsFound />
+              <>
+                {/* If any of the data is available then we want to show
+                platform details otherwise not. */}
+
+                {reviewUrl || likes || followers || total || rating ? (
+                  <PlatformDetails
+                    reviewUrl={reviewUrl || ""}
+                    likes={likes || 0}
+                    followers={followers || 0}
+                    totalReviews={total || 0}
+                    rating={rating || 0}
+                  />
+                ) : null}
+                <NoReviewsFound />
+              </>
             ) : !showDelay ? (
               <>
-                {reviewUrl ? (
-                  <div className="bold">
-                    Review url :
-                    <a style={{ marginLeft: "10px" }} target="_blank">
-                      {reviewUrl}
-                    </a>
-                  </div>
+                {/* If any of the data is available then we want to show
+                platform details otherwise not. */}
+
+                {reviewUrl || likes || followers || total || rating ? (
+                  <PlatformDetails
+                    reviewUrl={reviewUrl || ""}
+                    likes={likes || 0}
+                    followers={followers || 0}
+                    totalReviews={total || 0}
+                    rating={rating || 0}
+                  />
                 ) : null}
                 {_map(reviews, review => {
                   let name =
