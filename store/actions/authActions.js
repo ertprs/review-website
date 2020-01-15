@@ -462,7 +462,7 @@ export const businessSignUp = (signupData, api) => {
       let error = get(err, "response.data.error", "");
       let errorMsg = "";
       //! Some temporary logic to show errors thrown by Laravel
-      let errors = get(err, "response.data.errors", "");
+      let errors = get(err, "response.data.errors", {});
       let errorsKeyArr = Object.keys(errors);
       errorMsg = errors[errorsKeyArr[0]][0];
       //! *******************************************************
