@@ -461,27 +461,34 @@ export const businessSignUp = (signupData, api) => {
       let status = get(err, "response.status", 0);
       let error = get(err, "response.data.error", "");
       let errorMsg = "";
-      switch (error) {
-        case "invalid_locale":
-          errorMsg = "Please, select a valid language.";
-          break;
-        case "invalid_url":
-          errorMsg =
-            "Sorry, we cannot verify that domain. Please, check if it is correct and try again.";
-          break;
-        case "already_claimed":
-          errorMsg =
-            "Sorry, this domain is already claimed. If you are the owner, please contact support for further assistance.";
-          break;
-        case "business_account_exists":
-          errorMsg =
-            "Sorry, this email already has a registered business account.";
-          break;
-        case "subscription_exists":
-          errorMsg = "Sorry, this company is already registered with us.";
-          break;
-        default:
-          errorMsg = "Some Error Occurred while Registration!";
+      //! Some temporary logic to show errors thrown by Laravel
+      let errors = get(err, "response.data.errors", "");
+      let errorsKeyArr = Object.keys(errors);
+      errorMsg = errors[errorsKeyArr[0]][0];
+      //! *******************************************************
+      if (!errorMsg) {
+        switch (error) {
+          case "invalid_locale":
+            errorMsg = "Please, select a valid language.";
+            break;
+          case "invalid_url":
+            errorMsg =
+              "Sorry, we cannot verify that domain. Please, check if it is correct and try again.";
+            break;
+          case "already_claimed":
+            errorMsg =
+              "Sorry, this domain is already claimed. If you are the owner, please contact support for further assistance.";
+            break;
+          case "business_account_exists":
+            errorMsg =
+              "Sorry, this email already has a registered business account.";
+            break;
+          case "subscription_exists":
+            errorMsg = "Sorry, this company is already registered with us.";
+            break;
+          default:
+            errorMsg = "Some Error Occurred while Registration!";
+        }
       }
       dispatch({
         type: BUSINESS_SIGNUP_FAILURE,
