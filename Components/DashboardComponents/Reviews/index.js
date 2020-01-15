@@ -106,13 +106,11 @@ class ReviewsContainer extends React.Component {
     const data = this.getUniqueSocialMediaIds();
     const uniqueSocialKeys = _get(data, "uniqueSocialKeys", []);
     const socialArrayGroupedByKeys = _get(data, "socialArrayGroupedByKeys", {});
-    console.log(socialArrayGroupedByKeys, "socialArrayGroupedByKeys");
     let output = [];
     if (isValidArray(uniqueSocialKeys)) {
       output = uniqueSocialKeys.map((item, index) => {
         let dropDownData = [];
         let platformPlacesArray = socialArrayGroupedByKeys[item];
-        console.log(platformPlacesArray, "platformPlacesArray");
         dropDownData = (platformPlacesArray || []).map(place => {
           return {
             label: _get(place, "profile_name", ""),
