@@ -42,6 +42,19 @@ class AvailablePlatformsList extends Component {
       <div>
         <Select
           isMulti
+          isLoading={
+            (
+              this.getListOfAvailablePlatforms(
+                review_platforms,
+                socialPlatforms
+              ) || []
+            ).length === 0
+              ? true
+              : false
+          }
+          loadingMessage={() => {
+            return "Fetching available platforms...";
+          }}
           name="colors"
           options={this.getListOfAvailablePlatforms(
             review_platforms,

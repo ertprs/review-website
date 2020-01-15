@@ -91,13 +91,11 @@ class ReviewPlatformCard extends React.Component {
                       </span>{" "}
                     </div>
                   ) : null}
-                  {totalReviews ? (
-                    <div className="col-md-6">
-                      <span style={{ fontWeight: "bold" }}>
-                        Total Reviews : {totalReviews}
-                      </span>{" "}
-                    </div>
-                  ) : null}
+                  <div className="col-md-6">
+                    <span style={{ fontWeight: "bold" }}>
+                      Total Reviews : {totalReviews || 0}
+                    </span>{" "}
+                  </div>
                 </div>
               </div>
               <div>
