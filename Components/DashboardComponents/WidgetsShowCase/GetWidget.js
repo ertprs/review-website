@@ -35,7 +35,6 @@ class GetWidget extends Component {
     const prevReviews = _get(prevProps, "reviews", {});
     const prevSocialArray = _get(prevProps, "socialArray", []);
     if (reviews !== prevReviews && Object.keys(reviews).length > 0) {
-      console.log("here");
       this.generateDropDownDataDynamically();
     }
   }
@@ -301,11 +300,7 @@ class GetWidget extends Component {
                     data-theme="light"
                     style="position: relative;
                     overflow: hidden;"
-                    data-platform-id="${_get(
-                      selectedPlatform,
-                      "socialAppId",
-                      22
-                    )}"
+                    data-platform-id=""
                     data-max-reviews="25"
                     data-newer-than-months="2"
                     data-rating="3"
