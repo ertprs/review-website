@@ -1,0 +1,9 @@
+Start Rating for some platforms
+Trustedshops = "#FFDC0F"
+Trustpilot = <img
+src={`/static/images/tpstars-${Math.round(
+Number(ratings)
+) || 0}.svg`}
+alt=""
+/>
+Facebook = "#3A559F"
