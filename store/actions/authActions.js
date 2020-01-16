@@ -603,7 +603,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
             isWrongCredentials: false,
             isLoginFailed: true,
             isLoggingIn: false,
-            error: "Some Error Occured."
+            error:
+              "You've used this email in your normal user account. Please use different email."
           }
         });
       }
