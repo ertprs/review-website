@@ -579,18 +579,7 @@ function Dashboard(props) {
       {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
           domain={props.domain}
-          //? we are not listening for google reviews separately
-          // onChildStateChange={newState => {
-          //   setParentState({ ...parentState, ...newState });
-          //   const fetchSuccess = _get(newState, "response.success", false);
-          //   const reviewsCount = _get(newState, "response.reviewCount", 0);
-          //   if (reviewsCount > 0 && fetchSuccess) {
-          //     fetchReviews(token);
-          //   }
-          // }}
           onAggregatorDataChange={data => {
-            console.log(data, "aggregatorDataChange");
-            //! need to check new aggregator data
             let socialAppId = _get(data, "response.socialAppId", "");
             let profileId = _get(data, "response.profileId", "");
             props.fetchReviews(socialAppId, profileId, domainId);
