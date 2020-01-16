@@ -127,7 +127,6 @@ class CampaignManagement extends Component {
       field: "is_automatic",
       render: rowData => {
         const { is_automatic, has_custom_flow } = rowData;
-        console.log(has_custom_flow, "has_custom_flow");
         return (
           <>
             <Tooltip
