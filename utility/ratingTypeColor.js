@@ -15,3 +15,4 @@ export const ratingColor = {
   4: "#73CF11",
   5: "#21bc61"
 };
+//? Use cae: ratingColor[Math.round(Number(rating)) || 0]
