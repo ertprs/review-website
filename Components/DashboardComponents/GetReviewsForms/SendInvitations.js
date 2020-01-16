@@ -82,59 +82,6 @@ class SendInvitations extends Component {
     });
   };
 
-  renderReviewUrls = () => {
-    const { socialArray } = this.props;
-    return (socialArray || []).map(platform => {
-      let platformName = "";
-      if (
-        reviewURLObjects.hasOwnProperty(
-          _get(platform, "social_media_app_id", "")
-        )
-      ) {
-        let social_media_app_id = _get(platform, "social_media_app_id", "");
-        platformName = reviewURLObjects[social_media_app_id].displayName;
-      }
-
-      return (
-        <div className="rowStyle">
-          <style jsx>
-            {`
-              .rowStyle {
-                margin-bottom: 15px;
-                font-size: 1.05rem;
-              }
-
-              .boldFont {
-                font-weight: bold;
-              }
-              @media screen and (max-width: 405px) {
-                .rowStyle {
-                  font-size: 0.9rem;
-                }
-              }
-
-              .wordBreak {
-                word-break: break-all;
-              }
-            `}
-          </style>
-          <div className="row" key={uuid()}>
-            <div className="col-md-6 boldFont">{`${platformName} Review Url`}</div>
-            <div className="col-md-6">
-              <a
-                className="wordBreak"
-                href={_get(platform, "url", "")}
-                target="_blank"
-              >
-                {_get(platform, "url", "")}
-              </a>
-            </div>
-          </div>
-        </div>
-      );
-    });
-  };
-
   renderSendInvitationsBody = () => {
     const {
       campaignName,
@@ -144,14 +91,8 @@ class SendInvitations extends Component {
       clientName,
       entity,
       emailSubject,
-      googleDirectReviewUrl,
-      googlePlaceId,
-      domain,
-      businessAddress
+      domain
     } = this.props;
-    const googleReviewUrl =
-      googleDirectReviewUrl ||
-      `https://www.google.com/maps/search/?api=1&query=${domain}&query_place_id=${googlePlaceId}`;
     let campaignLanguageArr = sendgridTemaplateIds.filter(template => {
       return template.value === campaignLanguage;
     });
@@ -191,20 +132,6 @@ class SendInvitations extends Component {
         </style>
 
         {this.renderInfoCards(data)}
-        <>
-          <div className="rowStyle">
-            <div className="row">
-              <div className="col-md-6 boldFont">Google Review Url</div>
-              <div className="col-md-6">
-                <a href={googleReviewUrl} target="_blank">
-                  {businessAddress}
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {this.renderReviewUrls()}
-        </>
       </div>
     );
   };
@@ -491,21 +418,6 @@ const mapStateToProps = state => {
   const isLoading = _get(createCampaignRes, "isLoading", false);
   const success = _get(createCampaignRes, "success", "undefined");
   const errorMsg = _get(createCampaignRes, "errorMsg", "");
-  const googleDirectReviewUrl = _get(
-    auth,
-    "logIn.userProfile.business_profile.google_places.directReviewUrl",
-    ""
-  );
-  const businessAddress = _get(
-    auth,
-    "logIn.userProfile.business_profile.google_places.address",
-    ""
-  );
-  let googlePlaceId = _get(
-    auth,
-    "logIn.userProfile.business_profile.google_places.placeId",
-    ""
-  );
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
   const socialArray = _get(
     auth,
@@ -523,9 +435,6 @@ const mapStateToProps = state => {
     isLoading,
     success,
     errorMsg,
-    googleDirectReviewUrl,
-    businessAddress,
-    googlePlaceId,
     domain,
     socialArray
   };
