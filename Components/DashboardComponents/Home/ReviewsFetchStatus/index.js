@@ -42,7 +42,7 @@ class ReviewFetchStatusCard extends Component {
             margin-left: 10px;
           }
         `}</style>
-        <SimpleCard style={{ height: "298px" }}>
+        <SimpleCard style={{ height: "298px", overflowY: "auto" }}>
           {/* <SimpleBar style={{ height: "250px" }}> */}
           <div className="header">
             <Title>

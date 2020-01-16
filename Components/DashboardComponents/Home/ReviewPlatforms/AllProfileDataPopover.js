@@ -4,6 +4,7 @@ import Card from "@material-ui/core/Card";
 import StarRatings from "react-star-ratings";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import PrimaryIcon from "@material-ui/icons/CheckCircle";
+import Tooltip from "@material-ui/core/Tooltip";
 import { ratingColor } from "../../../../utility/ratingTypeColor";
 
 const AllProfileDataPopover = props => {
@@ -45,7 +46,9 @@ const AllProfileDataPopover = props => {
               <div className="row mb_10">
                 <div className="col-md-1">
                   {isPrimary ? (
-                    <PrimaryIcon style={{ height: "20px" }} />
+                    <Tooltip title="Primary account">
+                      <PrimaryIcon style={{ height: "20px" }} />
+                    </Tooltip>
                   ) : null}
                 </div>
                 <div className="col-md-3">
