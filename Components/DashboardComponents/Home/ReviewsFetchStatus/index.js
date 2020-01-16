@@ -104,7 +104,10 @@ const mapStateToProps = state => {
     let platformObj = reviews[platform];
     for (let place in platformObj) {
       let placeObj = platformObj[place];
-      isLoading = _get(placeObj, "isLoading", false);
+      const isLoadingPlace = _get(placeObj, "isLoading", false);
+      if (isLoadingPlace) {
+        isLoading = true;
+      }
     }
     return {
       platformName,
