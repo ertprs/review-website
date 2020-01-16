@@ -469,7 +469,11 @@ class AutomaticInvitation extends Component {
                 </h5>
               </>
             ) : (
-              <p>You don't have any platforms available.</p>
+              <p>
+                You either don't have any platforms available configured, or
+                your platform data might be loaded, please move to the home page
+                and check data loading status
+              </p>
             )}
           </div>
           <div className="col-md-4">

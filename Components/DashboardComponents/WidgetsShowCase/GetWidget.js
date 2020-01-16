@@ -5,53 +5,97 @@ import Button from "@material-ui/core/Button/Button";
 import BackArrowIcon from "@material-ui/icons/ArrowBack";
 import Input from "@material-ui/core/Input/Input";
 import uuid from "uuid/v1";
-import FormField from "../../Widgets/FormField/FormField";
+import { connect } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Head from "next/head";
 import _get from "lodash/get";
+import _find from "lodash/find";
+import Select from "react-select";
 
-const platforms = [
-  {
-    value: "22",
-    name: "Google"
-  },
-  {
-    value: "1",
-    name: "Facebook"
-  },
-  {
-    value: "18",
-    name: "Trustpilot"
-  },
-  {
-    value: "19",
-    name: "TrustedShops"
-  }
-];
-
-export default class GetWidget extends Component {
+class GetWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
       widgetHeight: this.props.widget.minHeight,
       refreshWidget: false,
-      platforms: {
-        element: "select",
-        name: "platforms",
-        value: platforms[0].value,
-        options: [...platforms],
-        placeholder: "Select your platform",
-        valid: false,
-        touched: false,
-        errorMessage: "",
-        id: "platforms",
-        labelText: "Select a review platform"
-      }
+      platforms: [],
+      selectedPlatform: {}
     };
   }
 
   componentDidMount() {
     window.scrollTo(0, 0);
+    //generate the dropdown dynamically, display only those platforms which have reviews
+    this.generateDropDownDataDynamically();
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const reviews = _get(this.props, "reviews", {});
+    const socialArray = _get(this.props, "socialArray", []);
+    const prevReviews = _get(prevProps, "reviews", {});
+    const prevSocialArray = _get(prevProps, "socialArray", []);
+    if (reviews !== prevReviews && Object.keys(reviews).length > 0) {
+      this.generateDropDownDataDynamically();
+    }
+  }
+
+  generateDropDownDataDynamically = () => {
+    const reviews = _get(this.props, "reviews", {});
+    const socialArray = _get(this.props, "socialArray", []);
+    let platforms = [];
+    //loop over reviews
+    if (Object.keys(reviews)) {
+      if (Object.keys(reviews).length > 0) {
+        for (let socialAppId in reviews) {
+          if (reviews[socialAppId]) {
+            let reviewsObj = reviews[socialAppId];
+            //loop over reviewsObj and push into platforms {label, value:socialAppId,  profileId}
+            for (let item in reviewsObj) {
+              if (reviewsObj[item]) {
+                let particularPlatformReviewsObj = reviewsObj[item];
+                let reviewsCount = (
+                  _get(particularPlatformReviewsObj, "data.data.reviews", []) ||
+                  []
+                ).length;
+                if (reviewsCount > 0) {
+                  let social_media_app_id = _get(
+                    particularPlatformReviewsObj,
+                    "data.socialAppId",
+                    ""
+                  );
+                  let profileId = _get(
+                    particularPlatformReviewsObj,
+                    "data.profileId",
+                    ""
+                  );
+                  let labelObject = _find(socialArray, { id: profileId });
+                  let label =
+                    _get(labelObject, "profile_name", "") ||
+                    _get(labelObject, "name", "");
+                  platforms = [
+                    ...platforms,
+                    {
+                      label: label,
+                      value: profileId,
+                      socialAppId: social_media_app_id
+                    }
+                  ];
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    if (Object.keys(platforms)) {
+      if (Object.keys(platforms).length > 0) {
+        this.setState({
+          platforms: [...platforms],
+          selectedPlatform: platforms[0]
+        });
+      }
+    }
+  };
 
   renderContent = data => {
     return data.map(item => {
@@ -121,10 +165,10 @@ export default class GetWidget extends Component {
     );
   };
 
-  handleFormDataChange = (e, id) => {
+  handleSelectPlatformChange = valObj => {
     this.setState(
       {
-        platforms: { ...this.state.platforms, value: e.target.value },
+        selectedPlatform: { ...valObj },
         refreshWidget: true
       },
       () => {
@@ -137,7 +181,7 @@ export default class GetWidget extends Component {
   };
 
   renderInput = () => {
-    const { widgetHeight } = this.state;
+    const { widgetHeight, platforms, selectedPlatform } = this.state;
     return (
       <>
         <div style={{ fontWeight: "bold", marginBottom: "10px" }}>
@@ -150,32 +194,33 @@ export default class GetWidget extends Component {
           }}
         />
         (in px)
-        <div>
-          <div
-            style={{
-              fontWeight: "bold",
-              marginBottom: "10px",
-              marginTop: "15px"
-            }}
-          >
-            Select your review platform:{" "}
+        {platforms.length > 0 ? (
+          <div>
+            <div
+              style={{
+                fontWeight: "bold",
+                marginBottom: "10px",
+                marginTop: "15px"
+              }}
+            >
+              Select your review platform:{" "}
+            </div>
+            <Select
+              options={platforms}
+              value={selectedPlatform}
+              onChange={valObj => {
+                this.handleSelectPlatformChange(valObj);
+              }}
+            />
           </div>
-          <FormField
-            {...this.state.platforms}
-            handleChange={e => {
-              this.handleFormDataChange(e, "platforms");
-            }}
-            styles={{
-              height: "38px"
-            }}
-          />
-        </div>
+        ) : null}
       </>
     );
   };
 
   getYourWidgetBox = () => {
     const { domainName, widget } = this.props;
+    const { selectedPlatform } = this.state;
     const widgetId = _get(widget, "id", "");
     return (
       <>
@@ -255,7 +300,7 @@ export default class GetWidget extends Component {
                     data-theme="light"
                     style="position: relative;
                     overflow: hidden;"
-                    data-platform-id="${this.state.platforms.value}"
+                    data-platform-id=""
                     data-max-reviews="25"
                     data-newer-than-months="2"
                     data-rating="3"
@@ -272,7 +317,8 @@ export default class GetWidget extends Component {
                 data-theme="light"
                 style="position: relative;
                 overflow: hidden;"
-                data-platform-id="${this.state.platforms.value}"
+                data-platform-id="${_get(selectedPlatform, "socialAppId", 22)}"
+                data-profile-id="${_get(selectedPlatform, "value", "")}"
                 ></div> 
             `}</code>
                 )}
@@ -325,7 +371,12 @@ export default class GetWidget extends Component {
           data-style-height={`${_get(this.state, "widgetHeight", "")}px`}
           data-style-width="100%"
           data-theme="light"
-          data-platform-id={_get(this.state, "platforms.value", "0")}
+          data-platform-id={_get(
+            this.state,
+            "selectedPlatform.socialAppId",
+            22
+          )}
+          data-profile-id={_get(this.state, "selectedPlatform.value", "")}
           style={{ position: "relative", overflow: "hidden" }}
           data-max-reviews="25"
           data-newer-than-months="2"
@@ -353,12 +404,34 @@ export default class GetWidget extends Component {
             Back
           </Button>
         </div>
-        {!this.state.refreshWidget ? this.renderWidget() : null}
+        {!this.state.refreshWidget && this.state.platforms.length > 0
+          ? this.renderWidget()
+          : null}
         <div className="row">
           {/* <div className="col-md-6">{this.renderWidgetInfo()}</div> */}
-          <div className="col-md-12">{this.getYourWidgetBox()}</div>
+          <div className="col-md-12">
+            {this.state.platforms.length > 0 ? (
+              this.getYourWidgetBox()
+            ) : (
+              <div style={{ textAlign: "center" }}>
+                <CircularProgress />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
   }
 }
+
+const mapStateToProps = state => {
+  const reviews = _get(state, "dashboardData.reviews", {});
+  const socialArray = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.social",
+    []
+  );
+  return { reviews, socialArray };
+};
+
+export default connect(mapStateToProps)(GetWidget);
