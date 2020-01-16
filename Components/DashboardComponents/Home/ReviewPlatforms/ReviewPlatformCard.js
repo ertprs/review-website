@@ -2,7 +2,6 @@ import React from "react";
 import { reviewChannelBoxStyles } from "../../GetStarted/reviewChannelBoxStyles";
 //? material-ui imports
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import { connect } from "react-redux";
@@ -26,7 +25,6 @@ class ReviewPlatformCard extends React.Component {
         let primaryReviewData = reviews[socialMediaAppId][id];
         let isLoading = _get(primaryReviewData, "isLoading", false);
         let ratings = _get(primaryReviewData, "data.data.rating", "");
-        let maxRating = _get(primaryReviewData, "data.data.max_rating");
         let likes = _get(primaryReviewData, "data.data.likes", "");
         let followers = _get(primaryReviewData, "data.data.followers", "");
         let totalReviews = _get(primaryReviewData, "data.data.total", "");
