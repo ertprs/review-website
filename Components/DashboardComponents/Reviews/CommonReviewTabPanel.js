@@ -191,12 +191,7 @@ class CommonReviewTabPanel extends Component {
   };
 
   render() {
-    const {
-      dropDownData,
-      reviewsPlatforms,
-      socialMediaAppId,
-      isReviewsPusherConnected
-    } = this.props;
+    const { dropDownData, reviewsPlatforms, socialMediaAppId } = this.props;
     const {
       reviews,
       total,
@@ -287,7 +282,7 @@ class CommonReviewTabPanel extends Component {
           </>
         ) : null}
         <div className="reviewsContainer">
-          {isLoading === true && isReviewsPusherConnected === true ? (
+          {isLoading === true ? (
             <div className="loaderContainer">
               <CircularProgress color="secondary" />
             </div>
@@ -389,14 +384,8 @@ const mapStateToProps = (state, ownProps) => {
   const socialMediaAppId = _get(ownProps, "socialMediaAppId", 0);
   const reviews = _get(dashboardData, "reviews", {});
   const platformReviews = _get(reviews, socialMediaAppId, {});
-  const isReviewsPusherConnected = _get(
-    dashboardData,
-    "isReviewsPusherConnected",
-    undefined
-  );
   return {
-    platformReviews: platformReviews,
-    isReviewsPusherConnected
+    platformReviews: platformReviews
   };
 };
 

@@ -19,7 +19,7 @@ class ReviewFetchStatusCard extends Component {
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
           .body {
-            margin-top: 30px;
+            margin-top: 10px;
           }
           .p_10 {
             padding: 10px 0px;
@@ -43,7 +43,6 @@ class ReviewFetchStatusCard extends Component {
           }
         `}</style>
         <SimpleCard style={{ height: "298px" }}>
-          {/* <SimpleBar style={{ height: "250px" }}> */}
           <div className="header">
             <Title>
               <h5>Reviews Fetch Status</h5>
@@ -86,7 +85,6 @@ class ReviewFetchStatusCard extends Component {
               <div>Loading...</div>
             )}
           </div>
-          {/* </SimpleBar> */}
         </SimpleCard>
       </Grid>
     );
@@ -106,7 +104,10 @@ const mapStateToProps = state => {
     let platformObj = reviews[platform];
     for (let place in platformObj) {
       let placeObj = platformObj[place];
-      isLoading = _get(placeObj, "isLoading", false);
+      const isLoadingPlace = _get(placeObj, "isLoading", false);
+      if (isLoadingPlace) {
+        isLoading = true;
+      }
     }
     return {
       platformName,
