@@ -2,7 +2,6 @@ import React from "react";
 import { reviewChannelBoxStyles } from "../../GetStarted/reviewChannelBoxStyles";
 //? material-ui imports
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import { connect } from "react-redux";

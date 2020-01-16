@@ -726,8 +726,7 @@ class GetStarted extends Component {
           temp.social_media_app_id = Number(_get(item, "value", -1)) || -1;
           temp.url = "";
           //!adding a unique ID using timestamps for google only, change the condition below or use for all platforms in case multiple cards are needed.
-          temp.id =
-            (Number(_get(item, "value", -1)) || -1) == 22 ? _now() + 1999 : "";
+          temp.id = (Number(_get(item, "value", -1)) || -1) == 22 ? _now() : "";
           parsedArray.push(temp);
         });
         console.log(parsedArray);
