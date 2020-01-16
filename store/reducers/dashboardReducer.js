@@ -67,7 +67,8 @@ import {
   GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
   ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
   SET_REVIEWS_AFTER_LOGIN,
-  SET_LOADING_STATUS_OF_REVIEWS
+  SET_LOADING_STATUS_OF_REVIEWS,
+  SET_SCRAPING_ARRAY_IN_REDUCER
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -102,7 +103,7 @@ const dashboardReducer = (state = {}, action) => {
     addReviewPlatformData,
     review_platforms,
     updatedReviewPlatforms,
-    reviewsObject
+    scrapingArray
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -499,6 +500,12 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         reviews: reviews
+      };
+    case SET_SCRAPING_ARRAY_IN_REDUCER:
+      return {
+        ...state,
+        type,
+        scrapingArray
       };
     default:
       return state;

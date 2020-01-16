@@ -69,7 +69,8 @@ import {
   SET_LOADING_STATUS_OF_REVIEWS,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_INIT,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
-  FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE
+  FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE,
+  SET_SCRAPING_ARRAY_IN_REDUCER
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import cookie from "js-cookie";
@@ -106,19 +107,6 @@ export const setGetReviewsData = getReviewsData => {
   return {
     type: SET_GET_REVIEWS_DATA,
     getReviewsData
-  };
-};
-
-//! please check the significance of this action
-export const clearReviewsData = () => {
-  return {
-    type: fethh_revi,
-    reviews: {
-      data: {},
-      isFetching: false,
-      error: "",
-      success: false
-    }
   };
 };
 
@@ -160,7 +148,6 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         url
       });
       const success = _get(result, "data.success", false);
-      console.log(success, "SUCCESS");
       if (success) {
         const socialsArray = _get(result, "data.review_platform_profiles", []);
         const scraping = _get(result, "data.scraping", []);
@@ -177,13 +164,13 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         });
         if (socialsArray.length > 0) {
           dispatch(updateAuthSocialArray(socialsArray));
-          dispatch(setReviewsLoadingStatus(scraping));
+          dispatch(setScrapingArrayInReducer(scraping));
+          dispatch(setReviewsLoadingStatus(scraping, true));
           dispatch(fetchConfiguredReviewPlatforms());
         }
       }
       // We will also get failed array that we can use later to show user which URLs failed to be set
     } catch (error) {
-      console.log(error);
       dispatch({
         type: LOCATE_PLACE_FAILURE,
         locatePlace: {
@@ -656,46 +643,71 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
       });
       try {
         const result = await axios.get(api);
-        // console.log(result.data.data, "DATA");
         let success = false;
         let reviewsArray = _get(result, "data.data.reviews", []);
         if (isValidArray(reviewsArray)) {
           success = true;
         }
-        console.log(reviews, "REVIEWS");
-        dispatch({
-          type: FETCH_REVIEWS_SUCCESS,
-          reviews: {
-            ...reviews,
-            [socialAppId]: {
-              ..._get(reviews, socialAppId, {}),
-              [profileId]: {
-                ..._get(reviews, socialAppId.profileId, {}),
-                data: { ..._get(result, "data", {}) },
-                isLoading: false,
-                success
-              }
-            }
-          }
-        });
+        let data = { ..._get(result, "data", {}) };
+        dispatch(
+          setReviewsSuccessInReducer(data, success, socialAppId, profileId)
+        );
       } catch (error) {
-        dispatch({
-          type: FETCH_REVIEWS_FAILURE,
-          reviews: {
-            ...reviews,
-            [socialAppId]: {
-              ..._get(reviews, socialAppId, {}),
-              [profileId]: {
-                ..._get(reviews, socialAppId.profileId, {}),
-                isLoading: false,
-                success: false
-              }
-            }
-          }
-        });
+        dispatch(setReviewsFailureInReducer(socialAppId, profileId));
       }
     };
   }
+};
+
+export const setReviewsSuccessInReducer = (
+  data,
+  success,
+  socialAppId,
+  profileId
+) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const dashboardData = _get(state, "dashboardData", {});
+    const reviews = _get(dashboardData, "reviews", {});
+    dispatch({
+      type: FETCH_REVIEWS_SUCCESS,
+      reviews: {
+        ...reviews,
+        [socialAppId]: {
+          ..._get(reviews, socialAppId, {}),
+          [profileId]: {
+            ..._get(reviews, socialAppId.profileId, {}),
+            data: { ...data, socialAppId, profileId },
+            isLoading: false,
+            success
+          }
+        }
+      }
+    });
+  };
+};
+
+export const setReviewsFailureInReducer = (socialAppId, profileId) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const dashboardData = _get(state, "dashboardData", {});
+    const reviews = _get(dashboardData, "reviews", {});
+    dispatch({
+      type: FETCH_REVIEWS_FAILURE,
+      reviews: {
+        ...reviews,
+        [socialAppId]: {
+          ..._get(reviews, socialAppId, {}),
+          [profileId]: {
+            ..._get(reviews, socialAppId.profileId, {}),
+            data: { socialAppId, profileId },
+            isLoading: false,
+            success: false
+          }
+        }
+      }
+    });
+  };
 };
 
 export const setGetStartedShow = (show, social_media_app_id) => {
@@ -875,7 +887,6 @@ export const fetchCampaignsList = token => {
 };
 
 export const changeCampaignStatus = (id, actionOnStatus) => {
-  console.log(id, actionOnStatus, "id, actionOnStatus");
   let token = localStorage.getItem("token");
   return async (dispatch, getState) => {
     const state = getState();
@@ -1096,7 +1107,6 @@ export const getAvailableReviewPlatforms = token => {
         }
       });
     } catch (err) {
-      console.error(err);
       dispatch({
         type: GET_AVAILABLE_REVIEW_PLATFORMS_FAILURE,
         review_platforms: {
@@ -1138,7 +1148,8 @@ export const postSplitPlatformConfigForSplitPlatform = (
     });
   };
 };
-//? this action creator is used to set reviews in dashboarddata after login only
+
+//? this action creator is used to set reviews in dashboardData after login and on dashboard componentDidMount only
 export const setReviewsAfterLogin = socialArray => {
   return async (dispatch, getState) => {
     let reviews = {};
@@ -1153,26 +1164,26 @@ export const setReviewsAfterLogin = socialArray => {
         let hasData = _get(platform, "hasData", 0);
         let socialAppId = _get(platform, "social_media_app_id", "");
         let profileId = _get(platform, "id", "");
-        if (hasData === 1) {
-          return axios
-            .get(
-              `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
-            )
-            .then(res => {
-              return {
-                ...res.data,
-                socialAppId,
-                profileId
-              };
-            })
-            .catch(err => {
-              return {
-                err,
-                socialAppId,
-                profileId
-              };
-            });
-        }
+        // if (hasData === 1) {
+        return axios
+          .get(
+            `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+          )
+          .then(res => {
+            return {
+              ...res.data,
+              socialAppId,
+              profileId
+            };
+          })
+          .catch(err => {
+            return {
+              err,
+              socialAppId,
+              profileId
+            };
+          });
+        // }
       })
     ).then(resArr => {
       resArr.forEach(res => {
@@ -1205,43 +1216,40 @@ export const setReviewsAfterLogin = socialArray => {
 
 //Action creator to set loading status of reviews objects
 
-export const setReviewsLoadingStatus = (scrapingArray = []) => {
+export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
   return async (dispatch, getState) => {
     const state = getState() || {};
     let reviews = _get(state, "dashboardData.reviews", {});
     let updatedReviews = {};
+    if (!isValidArray(scrapingArray)) {
+      scrapingArray = _get(state, "dashboardData.scrapingArray", []);
+    }
     if (isValidArray(scrapingArray)) {
       let scrapingArrayGroupedBySocialId = _groupBy(
         scrapingArray,
         "social_media_app_id"
       );
+
       for (let item in scrapingArrayGroupedBySocialId) {
-        let selectedSocialMediaAppId = item;
-        if (scrapingArrayGroupedBySocialId[item]) {
-          if (Array.isArray(scrapingArrayGroupedBySocialId[item])) {
-            if (scrapingArrayGroupedBySocialId[item].length > 0) {
-              scrapingArrayGroupedBySocialId[item].forEach((item, index) => {
-                let selectedAccountId = _get(item, "profile_id", "");
-                if (selectedAccountId) {
-                  updatedReviews = {
-                    ...reviews,
-                    [selectedSocialMediaAppId]: {
-                      ..._get(reviews, selectedSocialMediaAppId, {}),
-                      [selectedAccountId]: {
-                        ..._get(
-                          reviews,
-                          selectedSocialMediaAppId.selectedAccountId,
-                          {}
-                        ),
-                        isLoading: true,
-                        success: undefined
-                      }
-                    }
-                  };
+        let socialMediaAppId = item;
+        let profilesArray = scrapingArrayGroupedBySocialId[item];
+        if (isValidArray(profilesArray)) {
+          profilesArray.forEach((item, index) => {
+            let profileId = _get(item, "profile_id", "");
+            if (profileId) {
+              updatedReviews = {
+                ...reviews,
+                [socialMediaAppId]: {
+                  ..._get(reviews, socialMediaAppId, {}),
+                  [profileId]: {
+                    ..._get(reviews, socialMediaAppId.profileId, {}),
+                    isLoading,
+                    success: undefined
+                  }
                 }
-              });
+              };
             }
-          }
+          });
         }
       }
     }
@@ -1289,5 +1297,13 @@ export const fetchConfiguredReviewPlatforms = () => {
         configuredPlatforms: []
       });
     }
+  };
+};
+
+//? This will store scraping array in reducer, which is the array of those platforms who went for scraping. Later on we'll use this array to stop loading of those reviews when pusher disconnects.
+export const setScrapingArrayInReducer = data => {
+  return {
+    type: SET_SCRAPING_ARRAY_IN_REDUCER,
+    scrapingArray: [...data]
   };
 };

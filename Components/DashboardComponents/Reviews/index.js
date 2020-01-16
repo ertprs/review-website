@@ -8,6 +8,7 @@ import Box from "@material-ui/core/Box";
 import { withStyles } from "@material-ui/styles";
 import _get from "lodash/get";
 import _groupBy from "lodash/groupBy";
+import _find from "lodash/find";
 import { connect } from "react-redux";
 import CommonReviewTabPanel from "./CommonReviewTabPanel";
 import { isValidArray } from "../../../utility/commonFunctions";
@@ -71,25 +72,27 @@ class ReviewsContainer extends React.Component {
 
   getUniqueSocialMediaIds = () => {
     const socialArray = _get(this.props, "socialArray", []);
+    let uniqueSocialKeys = [];
+    let socialArrayGroupedByKeys = {};
     if (isValidArray(socialArray)) {
-      let socialArrayGroupedByKeys = _groupBy(
-        socialArray,
-        "social_media_app_id"
-      );
+      socialArrayGroupedByKeys = _groupBy(socialArray, "social_media_app_id");
       if (socialArrayGroupedByKeys) {
-        let uniqueSocialKeys = Object.keys(socialArrayGroupedByKeys);
-        return uniqueSocialKeys;
+        uniqueSocialKeys = Object.keys(socialArrayGroupedByKeys);
       }
     }
-    return [];
+    return {
+      uniqueSocialKeys,
+      socialArrayGroupedByKeys
+    };
   };
 
   generateTabsDynamically = () => {
-    const uniqueSocialMediaKeysArray = this.getUniqueSocialMediaIds();
-    const reviewPlatforms = _get(this.props, "reviewPlatforms", {});
+    const { reviewPlatforms } = this.props;
+    const data = this.getUniqueSocialMediaIds();
+    const uniqueSocialKeys = _get(data, "uniqueSocialKeys", []);
     let output = [];
-    if (isValidArray(uniqueSocialMediaKeysArray)) {
-      output = uniqueSocialMediaKeysArray.map((item, index) => {
+    if (isValidArray(uniqueSocialKeys)) {
+      output = uniqueSocialKeys.map((item, index) => {
         let tabLabel = _get(reviewPlatforms, Number(item) || "", "");
         return <Tab label={tabLabel} {...a11yProps(index)} id={item} />;
       });
@@ -99,13 +102,36 @@ class ReviewsContainer extends React.Component {
 
   generateTabPanelsDynamically = () => {
     const { selectedTab } = this.state;
-    const uniqueSocialMediaKeysArray = this.getUniqueSocialMediaIds();
+    const { reviewPlatforms } = this.props;
+    const data = this.getUniqueSocialMediaIds();
+    const uniqueSocialKeys = _get(data, "uniqueSocialKeys", []);
+    const socialArrayGroupedByKeys = _get(data, "socialArrayGroupedByKeys", {});
     let output = [];
-    if (isValidArray(uniqueSocialMediaKeysArray)) {
-      output = uniqueSocialMediaKeysArray.map((item, index) => {
+    if (isValidArray(uniqueSocialKeys)) {
+      output = uniqueSocialKeys.map((item, index) => {
+        let dropDownData = [];
+        let platformPlacesArray = socialArrayGroupedByKeys[item];
+        dropDownData = (platformPlacesArray || []).map(place => {
+          return {
+            label: _get(place, "profile_name", ""),
+            value: _get(place, "id", ""),
+            isPrimary: _get(place, "is_primary", null)
+          };
+        });
+        let primaryPlatform = _find(dropDownData, ["isPrimary", 1]);
+        if (!primaryPlatform) {
+          if (isValidArray(dropDownData)) {
+            primaryPlatform = dropDownData[0];
+          }
+        }
         return (
           <TabPanel value={selectedTab} index={index}>
-            <CommonReviewTabPanel socialMediaAppId={Number(item) || item} />
+            <CommonReviewTabPanel
+              dropDownData={dropDownData}
+              reviewsPlatforms={reviewPlatforms}
+              socialMediaAppId={Number(item) || item}
+              primaryPlatform={primaryPlatform}
+            />
           </TabPanel>
         );
       });
@@ -138,15 +164,9 @@ class ReviewsContainer extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const socialArray = _get(
-    state,
-    "auth.logIn.userProfile.business_profile.social"
-  );
-  const reviewPlatforms = _get(
-    state,
-    "dashboardData.review_platforms.data",
-    {}
-  );
+  const { auth, dashboardData } = state;
+  const socialArray = _get(auth, "logIn.userProfile.business_profile.social");
+  const reviewPlatforms = _get(dashboardData, "review_platforms.data", {});
   return { socialArray, reviewPlatforms };
 };
 

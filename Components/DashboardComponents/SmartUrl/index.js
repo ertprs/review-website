@@ -84,7 +84,9 @@ class SmartUrl extends Component {
     let percentageSplitToSend = (reviewPlatformsForSplit || []).map(
       platform => {
         return {
-          socialAppId: _get(platform, "social_app_id", 0),
+          socialAppId:
+            _get(platform, "social_app_id", 0) ||
+            _get(platform, "social_media_app_id", 0),
           percentShare: _get(platform, "value", 0),
           link: _get(platform, "url", "")
         };
@@ -250,15 +252,13 @@ const mapStateToProps = state => {
   );
   let dropdownData = [];
   //# Converted "review platforms" array into dropdown data that react-select supports
-  if (
-    reviewPlatforms &&
-    !_isEmpty(reviewPlatforms) &&
-    Array.isArray(reviewPlatforms)
-  ) {
+  if (isValidArray(reviewPlatforms)) {
     dropdownData = reviewPlatforms.map(platform => {
       let temp = {};
       temp.label = _get(platform, "name", "");
-      temp.value = _get(platform, "social_app_id", 0);
+      temp.value =
+        _get(platform, "social_media_app_id", 0) ||
+        _get(platform, "social_app_id", 0);
       return temp;
     });
   }

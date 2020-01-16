@@ -126,7 +126,7 @@ class CampaignManagement extends Component {
       title: "Edit",
       field: "is_automatic",
       render: rowData => {
-        const { is_automatic } = rowData;
+        const { is_automatic, has_custom_flow } = rowData;
         return (
           <>
             <Tooltip
@@ -134,7 +134,7 @@ class CampaignManagement extends Component {
             >
               <IconButton
                 onClick={() => this.handleEditClick(rowData)}
-                disabled={is_automatic !== 1}
+                disabled={is_automatic !== 1 || has_custom_flow}
               >
                 <EditIcon />
               </IconButton>
@@ -236,6 +236,7 @@ class CampaignManagement extends Component {
                         updated_at,
                         status,
                         is_automatic,
+                        has_custom_flow,
                         campaign_structure
                       } = campaign || {};
 
@@ -271,6 +272,7 @@ class CampaignManagement extends Component {
                         sender_name,
                         actionOnStatus,
                         is_automatic,
+                        has_custom_flow,
                         originalData: { ...campaign }
                       };
                     });

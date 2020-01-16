@@ -25,8 +25,7 @@ import AddPlatformDialog from "./AddPlatform/AddPlatformDialog/AddPlatformDialog
 import validate from "../../../utility/validate";
 import {
   setGooglePlaces,
-  setReviewsPusherConnect,
-  clearReviewsData
+  setReviewsPusherConnect
 } from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
@@ -172,7 +171,6 @@ class GetStarted extends Component {
     const {
       setReviewsPusherConnect,
       locatePlaceByPlaceId,
-      clearReviewsData,
       googlePlaces
     } = this.props;
     let reqBody = {};
@@ -251,11 +249,7 @@ class GetStarted extends Component {
         `${process.env.BASE_URL}${locatePlaceApi}`
       );
     }
-
-    //! this object will be used to represent that which reviews are coming from pusher and their values represent that will they be fetched again or not.
     setReviewsPusherConnect(true);
-    //   //! we don't want to clear google reviews data as they will be already updating.
-    // }
   };
 
   handleAvailablePlatformsListChange = arr => {
@@ -964,6 +958,5 @@ export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
   setGooglePlaces,
   setReviewsPusherConnect,
-  clearReviewsData,
   setGetStartedShow
 })(GetStarted);
