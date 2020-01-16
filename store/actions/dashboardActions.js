@@ -677,7 +677,7 @@ export const setReviewsSuccessInReducer = (
           ..._get(reviews, socialAppId, {}),
           [profileId]: {
             ..._get(reviews, socialAppId.profileId, {}),
-            data: { ...data },
+            data: { ...data, socialAppId, profileId },
             isLoading: false,
             success
           }
@@ -700,6 +700,7 @@ export const setReviewsFailureInReducer = (socialAppId, profileId) => {
           ..._get(reviews, socialAppId, {}),
           [profileId]: {
             ..._get(reviews, socialAppId.profileId, {}),
+            data: { socialAppId, profileId },
             isLoading: false,
             success: false
           }
