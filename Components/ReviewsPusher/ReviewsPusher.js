@@ -57,7 +57,7 @@ class ReviewsPusher extends Component {
     pusher.connection.bind("disconnected", () => {
       setReviewsPusherConnect(false);
       //? This will stop loading of reviews, because pusher is disconnected.
-      setReviewsLoadingStatus([], false);
+      // setReviewsLoadingStatus([], false);
       console.log("reviews pusher disconnected");
     });
   };
