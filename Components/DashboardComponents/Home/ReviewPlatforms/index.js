@@ -22,21 +22,26 @@ class ReviewPlatforms extends Component {
     if (!_isEmpty(reviewPlatforms)) {
       for (let reviewPlatform in reviewPlatforms) {
         let socialMediaAppId = reviewPlatform;
-        let reviewPlatformData = reviewPlatforms[reviewPlatform];
-        let primaryReviewPlatform = _find(reviewPlatformData, [
-          "is_primary",
-          1
-        ]);
+        let platformAllProfiles = reviewPlatforms[reviewPlatform];
+        let primaryReviewPlatform = {};
+        if (isValidArray(platformAllProfiles)) {
+          primaryReviewPlatform = _find(platformAllProfiles, ["is_primary", 1]);
+          if (!primaryReviewPlatform) {
+            primaryReviewPlatform = platformAllProfiles[0];
+          }
+        }
+        // Card will not be displayed if we do not have any primary platform.
         if (primaryReviewPlatform) {
           reviewPlatformsJSX = [
             ...reviewPlatformsJSX,
             <ReviewPlatformCard
-              primaryReviewPlatform={primaryReviewPlatform}
+              platformAllProfiles={platformAllProfiles || []}
               name={_get(primaryReviewPlatform, "name", "")}
               url={_get(primaryReviewPlatform, "url", "")}
-              id={_get(primaryReviewPlatform, "id", "")}
+              profileId={_get(primaryReviewPlatform, "id", "")}
               socialMediaAppId={socialMediaAppId}
               handleEditClick={() => {
+                //? sending him to get started page with social_media_app_id only
                 setGetStartedShow(true, socialMediaAppId);
               }}
             />
@@ -55,14 +60,16 @@ class ReviewPlatforms extends Component {
           .ml-5 {
             margin-left: 5px;
           }
-          .text_center;
+          .text_right {
+            text-align: right;
+          }
         `}</style>
 
         <Grid item xs={6} md={6} lg={6}>
           <h4 className="ml-5">Review Platforms : </h4>
         </Grid>
         <Grid item xs={6} md={6} lg={6}>
-          <div style={{ textAlign: "right" }}>
+          <div className="text_right">
             <Button
               color="primary"
               variant="contained"
