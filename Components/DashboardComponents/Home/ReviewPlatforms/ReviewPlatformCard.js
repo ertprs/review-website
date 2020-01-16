@@ -79,9 +79,7 @@ class ReviewPlatformCard extends React.Component {
             </div>
           </div>
           <div className="reviewBoxItemTextBoxContainer">
-            <div>
-              <h6>{name}</h6>
-            </div>
+            <h6>{name}</h6>
             <div>
               <a target="_blank" href={url}>
                 {url}

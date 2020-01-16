@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import Pusher from "pusher-js";
-import { setReviewsPusherConnect } from "../../store/actions/dashboardActions";
+import {
+  setReviewsPusherConnect,
+  setReviewsLoadingStatus
+} from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 
@@ -9,7 +12,6 @@ class ReviewsPusher extends Component {
   pusherCopy = null;
 
   componentDidUpdate(prevProps, prevState) {
-    // console.log(this.props.type, "TYPEP")
     if (prevProps.type !== this.props.type) {
       const { timeOutKey } = this.state;
       if (this.props.type) {
@@ -18,7 +20,6 @@ class ReviewsPusher extends Component {
           let newTimeOutKey = setTimeout(() => {
             this.pusherCopy.disconnect();
           }, 300000);
-          // console.log(newTimeOutKey, "NEW_TIMEOUT_KEY");
           this.setState({ timeOutKey: newTimeOutKey });
         }
       }
@@ -42,30 +43,22 @@ class ReviewsPusher extends Component {
   }
 
   bindToKey = (pusher, channel) => {
-    const { setReviewsPusherConnect } = this.props;
-    //? we are not listening for google reviews separately
-    // channel.bind("google_reviews", data => {
-    //   this.setState({ reviewScrapeResult: { ...data } }, () => {
-    //     this.props.onChildStateChange(this.state.reviewScrapeResult);
-    //     console.log(data, "response from pusher");
-    //   });
-    // });
+    const { setReviewsPusherConnect, setReviewsLoadingStatus } = this.props;
 
     channel.bind("aggregator", data => {
       this.props.onAggregatorDataChange(data);
-      console.log(data, "response from reviews pusher DomainNameAggregator");
+      console.log(data, "response from reviews pusher");
     });
 
     let timeOutKey = setTimeout(() => {
       pusher.disconnect();
     }, 300000);
-
     this.setState({ timeOutKey });
-    // console.log(timeOutKey, "TIMEOUTKEY");
-
     pusher.connection.bind("disconnected", () => {
       setReviewsPusherConnect(false);
-      console.log("disconnected");
+      //? This will stop loading of reviews, because pusher is disconnected.
+      setReviewsLoadingStatus([], false);
+      console.log("reviews pusher disconnected");
     });
   };
 
@@ -84,5 +77,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps, {
-  setReviewsPusherConnect
+  setReviewsPusherConnect,
+  setReviewsLoadingStatus
 })(ReviewsPusher);

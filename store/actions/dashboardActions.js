@@ -69,7 +69,8 @@ import {
   SET_LOADING_STATUS_OF_REVIEWS,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_INIT,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
-  FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE
+  FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE,
+  SET_SCRAPING_ARRAY_IN_REDUCER
 } from "./actionTypes";
 import { updateAuthSocialArray } from "../actions/authActions";
 import cookie from "js-cookie";
@@ -163,7 +164,8 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         });
         if (socialsArray.length > 0) {
           dispatch(updateAuthSocialArray(socialsArray));
-          dispatch(setReviewsLoadingStatus(scraping));
+          dispatch(setScrapingArrayInReducer(scraping));
+          dispatch(setReviewsLoadingStatus(scraping, true));
           dispatch(fetchConfiguredReviewPlatforms());
         }
       }
@@ -1213,11 +1215,14 @@ export const setReviewsAfterLogin = socialArray => {
 
 //Action creator to set loading status of reviews objects
 
-export const setReviewsLoadingStatus = (scrapingArray = []) => {
+export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
   return async (dispatch, getState) => {
     const state = getState() || {};
     let reviews = _get(state, "dashboardData.reviews", {});
     let updatedReviews = {};
+    if (!isValidArray(scrapingArray)) {
+      scrapingArray = _get(state, "dashboardData.scrapingArray", []);
+    }
     if (isValidArray(scrapingArray)) {
       let scrapingArrayGroupedBySocialId = _groupBy(
         scrapingArray,
@@ -1237,7 +1242,7 @@ export const setReviewsLoadingStatus = (scrapingArray = []) => {
                   ..._get(reviews, socialMediaAppId, {}),
                   [profileId]: {
                     ..._get(reviews, socialMediaAppId.profileId, {}),
-                    isLoading: true,
+                    isLoading,
                     success: undefined
                   }
                 }
@@ -1291,5 +1296,13 @@ export const fetchConfiguredReviewPlatforms = () => {
         configuredPlatforms: []
       });
     }
+  };
+};
+
+//? This will store scraping array in reducer, which is the array of those platforms who went for scraping. Later on we'll use this array to stop loading of those reviews when pusher disconnects.
+export const setScrapingArrayInReducer = data => {
+  return {
+    type: SET_SCRAPING_ARRAY_IN_REDUCER,
+    scrapingArray: [...data]
   };
 };
