@@ -467,7 +467,7 @@ export const businessSignUp = (signupData, api) => {
         let errorsKeyArr = Object.keys(errors);
         if (isValidArray(errorsKeyArr)) {
           if (isValidArray(errors[errorsKeyArr[0]])) {
-            errorMsg = errors[errorsKeyArr[0]][0];
+            errorMsg = errors[errorsKeyArr[0]][0] || "Some Error Occurred!";
           }
         }
       }
