@@ -16,6 +16,14 @@ class MaxReviewsSelector extends Component {
               handleChange("selectedMaxReviews", valObj);
             }}
           />
+          <div style={{ marginBottom: "12px" }}>
+            <small>
+              Note : Selecting the count above only ensures that you get at most
+              selected count reviews per platform but the actual count may vary
+              depending upon the availability on that particular review platform
+              and the number of text reviews available.
+            </small>
+          </div>
         </div>
       </div>
     );
