@@ -8,8 +8,11 @@ import Snackbar from "../../Widgets/Snackbar";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {
   locatePlaceByPlaceId,
-  setGetStartedShow
+  setGetStartedShow,
+  setGooglePlaces,
+  setReviewsPusherConnect
 } from "../../../store/actions/dashboardActions";
+import { setIsNewUser } from "../../../store/actions/authActions";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
 import { connect } from "react-redux";
 import _get from "lodash/get";
@@ -23,10 +26,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import AvailablePlatformsList from "./AvailablePlatformsList";
 import AddPlatformDialog from "./AddPlatform/AddPlatformDialog/AddPlatformDialog";
 import validate from "../../../utility/validate";
-import {
-  setGooglePlaces,
-  setReviewsPusherConnect
-} from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
@@ -40,6 +39,7 @@ import GoogleReviewURLBox from "./GoogleReviewURLBox/GoogleReviewURLBox";
 import SetAsPrimaryModal from "./SetAsPrimaryModal/SetAsPrimaryModal";
 import BottomNotificationBar from "./BottomNotificationBar/BottomNotificationBar";
 import ClosedGetStartedConfirmationDialog from "./CloseGetStartedConfirmationDialog";
+import { isValidArray } from "../../../utility/commonFunctions";
 
 class GetStarted extends Component {
   state = {
@@ -414,9 +414,10 @@ class GetStarted extends Component {
     if (this.props.scrollToTopOfThePage) {
       this.props.scrollToTopOfThePage();
     }
-    if (placeId !== "" || locatePlace) {
-      this.props.changeStepToRender(1);
-    }
+    //? right now we are not dependent on placeId only, user should see getstarted always
+    // if (placeId !== "" || locatePlace) {
+    //   this.props.changeStepToRender(1);
+    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -749,11 +750,18 @@ class GetStarted extends Component {
     return invalid;
   };
 
+  startWithThesePlatforms = () => {
+    const { setIsNewUser, changeStepToRender } = this.props;
+    setIsNewUser(false);
+    changeStepToRender(1);
+  };
+
   render() {
     const reviewURLToEdit = _get(this.props, "reviewURLToEdit", "");
     const { modelOpen } = this.state;
     const showGetStarted = _get(this.props, "showGetStarted", false);
     const isLoading = _get(this.props, "isLoading", false);
+    const { isFirstTimeLogin, socialArray } = this.props;
     return (
       <>
         <div>
@@ -837,6 +845,25 @@ class GetStarted extends Component {
                   </div>
                 </Grid>
               ) : null}
+              {isFirstTimeLogin && (socialArray || []).length > 0 ? (
+                <div style={{ margin: "10px 0px" }}>
+                  <h4 style={{ color: "green" }}>
+                    We've discovered these platforms for you automatically. You
+                    may
+                    <Button
+                      style={{ color: "green", marginLeft: "10px" }}
+                      variant="outlined"
+                      color="primary"
+                      size="large"
+                      onClick={this.startWithThesePlatforms}
+                    >
+                      continue with these platforms{" "}
+                    </Button>{" "}
+                    only or you may add more platforms by selecting it from
+                    above dropdown.
+                  </h4>
+                </div>
+              ) : null}
               {this.renderReviewURLBoxes()}
             </Grid>
             <Grid
@@ -913,7 +940,10 @@ const mapStateToProps = state => {
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const addressSelected = _get(businessProfile, "google_places.address", "");
   const googlePlaces = _get(businessProfile, "google_places", {});
-  const socialArray = _get(businessProfile, "social", []);
+  let socialArray = _get(businessProfile, "social", []);
+  if (!isValidArray(socialArray)) {
+    socialArray = [];
+  }
   const isLoading = _get(dashboardData, "locatePlaceTemp.isLoading", undefined);
   const placeId = _get(businessProfile, "google_places.placeId", "");
   const type = _get(dashboardData, "type", "");
@@ -935,6 +965,7 @@ const mapStateToProps = state => {
     }
   }
   const review_platforms = _get(dashboardData, "review_platforms", {});
+  const isFirstTimeLogin = _get(auth, "logIn.userProfile.isNew", false);
   return {
     success,
     businessProfile,
@@ -950,7 +981,8 @@ const mapStateToProps = state => {
     reviewURLToEdit,
     addressSelected,
     googlePlaces,
-    review_platforms
+    review_platforms,
+    isFirstTimeLogin
   };
 };
 
@@ -958,5 +990,6 @@ export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
   setGooglePlaces,
   setReviewsPusherConnect,
-  setGetStartedShow
+  setGetStartedShow,
+  setIsNewUser
 })(GetStarted);

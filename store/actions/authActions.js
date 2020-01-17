@@ -33,7 +33,8 @@ import {
   UPDATE_AUTH_SOCIAL_ARRAY,
   GET_AVAILABLE_PLATFORMS_INIT,
   GET_AVAILABLE_PLATFORMS_SUCCESS,
-  GET_AVAILABLE_PLATFORMS_FAILURE
+  GET_AVAILABLE_PLATFORMS_FAILURE,
+  SET_IS_NEW_USER
 } from "./actionTypes";
 import _get from "lodash/get";
 import {
@@ -747,5 +748,12 @@ export const getAvailablePlatforms = token => {
         }
       });
     }
+  };
+};
+
+export const setIsNewUser = isNewUser => {
+  return {
+    type: SET_IS_NEW_USER,
+    isNewUser
   };
 };

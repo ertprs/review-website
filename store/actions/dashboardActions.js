@@ -72,7 +72,7 @@ import {
   FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE,
   SET_SCRAPING_ARRAY_IN_REDUCER
 } from "./actionTypes";
-import { updateAuthSocialArray } from "../actions/authActions";
+import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
 import cookie from "js-cookie";
 import axios from "axios";
 import _find from "lodash/find";
@@ -163,6 +163,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
           }
         });
         if (socialsArray.length > 0) {
+          dispatch(setIsNewUser(false));
           dispatch(updateAuthSocialArray(socialsArray));
           dispatch(setScrapingArrayInReducer(scraping));
           dispatch(setReviewsLoadingStatus(scraping, true));
@@ -1220,7 +1221,7 @@ export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
   return async (dispatch, getState) => {
     const state = getState() || {};
     let reviews = _get(state, "dashboardData.reviews", {});
-    let updatedReviews = {};
+    let updatedReviews = { ...reviews };
     if (!isValidArray(scrapingArray)) {
       scrapingArray = _get(state, "dashboardData.scrapingArray", []);
     }
@@ -1235,16 +1236,27 @@ export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
         let profilesArray = scrapingArrayGroupedBySocialId[item];
         if (isValidArray(profilesArray)) {
           profilesArray.forEach((item, index) => {
-            let profileId = _get(item, "profile_id", "");
+            let profileId = _get(item, "profile_id", 0);
             if (profileId) {
+              let platformReviewsObj = _get(
+                updatedReviews,
+                socialMediaAppId,
+                {}
+              );
+              let profileReviewsObj = _get(platformReviewsObj, profileId, {});
               updatedReviews = {
-                ...reviews,
+                ...updatedReviews,
                 [socialMediaAppId]: {
-                  ..._get(reviews, socialMediaAppId, {}),
+                  ...platformReviewsObj,
                   [profileId]: {
-                    ..._get(reviews, socialMediaAppId.profileId, {}),
-                    isLoading,
-                    success: undefined
+                    ...profileReviewsObj,
+                    data: {
+                      ..._get(profileReviewsObj, "data", {}),
+                      data: {
+                        ..._get(profileReviewsObj, "data.data", {})
+                      }
+                    },
+                    isLoading
                   }
                 }
               };
@@ -1252,11 +1264,11 @@ export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
           });
         }
       }
+      dispatch({
+        type: SET_LOADING_STATUS_OF_REVIEWS,
+        reviews: { ...updatedReviews }
+      });
     }
-    dispatch({
-      type: SET_LOADING_STATUS_OF_REVIEWS,
-      reviews: { ...reviews, ...updatedReviews }
-    });
   };
 };
 

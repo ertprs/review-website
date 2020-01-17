@@ -36,7 +36,7 @@ class ReviewsPusher extends Component {
     this.pusherCopy = pusher;
     const channel = pusher.subscribe(domain);
     pusher.connection.bind("connected", () => {
-      console.log("connected");
+      console.log("reviews pusher connected");
       setReviewsPusherConnect(true);
       this.bindToKey(pusher, channel);
     });
@@ -57,7 +57,7 @@ class ReviewsPusher extends Component {
     pusher.connection.bind("disconnected", () => {
       setReviewsPusherConnect(false);
       //? This will stop loading of reviews, because pusher is disconnected.
-      // setReviewsLoadingStatus([], false);
+      setReviewsLoadingStatus([], false);
       console.log("reviews pusher disconnected");
     });
   };
