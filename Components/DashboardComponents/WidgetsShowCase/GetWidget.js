@@ -11,6 +11,10 @@ import Head from "next/head";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import Select from "react-select";
+import CombinedReviewsWidgetConfigurations from "./CombinedReviewsWidgetConfigurations";
+import { newerThanMonthsOptions } from "../../../utility/constants/newerThanMonthsConstants";
+import { maxReviewsOptions } from "../../../utility/constants/maxReviewsConstants";
+import { ratingCountOptions } from "../../../utility/constants/ratingCountConstants";
 
 class GetWidget extends Component {
   constructor(props) {
@@ -19,7 +23,19 @@ class GetWidget extends Component {
       widgetHeight: this.props.widget.minHeight,
       refreshWidget: false,
       platforms: [],
-      selectedPlatform: {}
+      selectedPlatform: {},
+      selectedMaxReviews: {
+        ...(maxReviewsOptions[0] || {
+          value: 24,
+          label: "24 reviews per platform"
+        })
+      },
+      selectedNewerThanMonths: {
+        ...(newerThanMonthsOptions[2] || { value: 2, label: "2 Months" })
+      },
+      selectedRatingCount: {
+        ...(ratingCountOptions[2] || { value: 3, label: "3 stars and above" })
+      }
     };
   }
 
@@ -180,6 +196,21 @@ class GetWidget extends Component {
     );
   };
 
+  handleWidgetConfigurationChange = (id, valObj) => {
+    this.setState(
+      {
+        [id]: { ...valObj },
+        refreshWidget: true
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ refreshWidget: false });
+          this.props.scrollToTopOfThePage();
+        }, 1000);
+      }
+    );
+  };
+
   renderInput = () => {
     const { widgetHeight, platforms, selectedPlatform } = this.state;
     return (
@@ -220,7 +251,12 @@ class GetWidget extends Component {
 
   getYourWidgetBox = () => {
     const { domainName, widget } = this.props;
-    const { selectedPlatform } = this.state;
+    const {
+      selectedPlatform,
+      selectedMaxReviews,
+      selectedNewerThanMonths,
+      selectedRatingCount
+    } = this.state;
     const widgetId = _get(widget, "id", "");
     return (
       <>
@@ -257,7 +293,16 @@ class GetWidget extends Component {
             <div className="body">
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
               <div className="inputContainer">
-                {widgetId !== 0 ? this.renderInput() : null}
+                {widgetId !== 0 ? (
+                  this.renderInput()
+                ) : (
+                  <CombinedReviewsWidgetConfigurations
+                    selectedMaxReviews={selectedMaxReviews}
+                    selectedNewerThanMonths={selectedNewerThanMonths}
+                    selectedRatingCount={selectedRatingCount}
+                    handleChange={this.handleWidgetConfigurationChange}
+                  />
+                )}
               </div>
               <p className="subHeading">
                 1.2-) Copy-paste this code inside the {`<head></head>`} section
@@ -301,9 +346,21 @@ class GetWidget extends Component {
                     style="position: relative;
                     overflow: hidden;"
                     data-platform-id=""
-                    data-max-reviews="25"
-                    data-newer-than-months="2"
-                    data-rating="3"
+                    data-max-reviews="${_get(
+                      this.state,
+                      "selectedMaxReviews.value",
+                      24
+                    )}"
+                    data-newer-than-months="${_get(
+                      this.state,
+                      "selectedNewerThanMonths.value",
+                      ""
+                    )}"
+                    data-rating="${_get(
+                      this.state,
+                      "selectedRatingCount.value",
+                      ""
+                    )}"
                     ></div> 
                 `}</code>
                 ) : (
@@ -378,9 +435,13 @@ class GetWidget extends Component {
           )}
           data-profile-id={_get(this.state, "selectedPlatform.value", "")}
           style={{ position: "relative", overflow: "hidden" }}
-          data-max-reviews="25"
-          data-newer-than-months="2"
-          data-rating="3"
+          data-max-reviews={_get(this.state, "selectedMaxReviews.value", 24)}
+          data-newer-than-months={_get(
+            this.state,
+            "selectedNewerThanMonths.value",
+            ""
+          )}
+          data-rating={_get(this.state, "selectedRatingCount.value", "")}
         ></div>
       </>
     );
