@@ -1220,7 +1220,7 @@ export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
   return async (dispatch, getState) => {
     const state = getState() || {};
     let reviews = _get(state, "dashboardData.reviews", {});
-    let updatedReviews = {};
+    let updatedReviews = { ...reviews };
     if (!isValidArray(scrapingArray)) {
       scrapingArray = _get(state, "dashboardData.scrapingArray", []);
     }
@@ -1235,35 +1235,39 @@ export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
         let profilesArray = scrapingArrayGroupedBySocialId[item];
         if (isValidArray(profilesArray)) {
           profilesArray.forEach((item, index) => {
-            let profileId = _get(item, "profile_id", "");
+            let profileId = _get(item, "profile_id", 0);
             if (profileId) {
-              let reviewsObj = _get(reviews, socialMediaAppId.profileId, {}),
-                updatedReviews = {
-                  ...reviews,
-                  [socialMediaAppId]: {
-                    ..._get(reviews, socialMediaAppId, {}),
-                    [profileId]: {
-                      ...reviewsObj,
+              let platformReviewsObj = _get(
+                updatedReviews,
+                socialMediaAppId,
+                {}
+              );
+              let profileReviewsObj = _get(platformReviewsObj, profileId, {});
+              updatedReviews = {
+                ...updatedReviews,
+                [socialMediaAppId]: {
+                  ...platformReviewsObj,
+                  [profileId]: {
+                    ...profileReviewsObj,
+                    data: {
+                      ..._get(profileReviewsObj, "data", {}),
                       data: {
-                        ..._get(reviewsObj, "data", {}),
-                        data: {
-                          ..._get(reviewsObj, "data.data", {})
-                        }
-                      },
-                      isLoading,
-                      success: undefined
-                    }
+                        ..._get(profileReviewsObj, "data.data", {})
+                      }
+                    },
+                    isLoading
                   }
-                };
+                }
+              };
             }
           });
         }
       }
+      dispatch({
+        type: SET_LOADING_STATUS_OF_REVIEWS,
+        reviews: { ...updatedReviews }
+      });
     }
-    dispatch({
-      type: SET_LOADING_STATUS_OF_REVIEWS,
-      reviews: { ...reviews, ...updatedReviews }
-    });
   };
 };
 
