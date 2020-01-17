@@ -224,7 +224,13 @@ const authReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        userActivated
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            activated: userActivated
+          }
+        }
       };
     case SET_BUSINESS_SUBSCRIPTION: {
       return {

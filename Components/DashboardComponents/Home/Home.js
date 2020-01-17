@@ -340,7 +340,7 @@ class Home extends Component {
     const {
       classes,
       isSubscriptionExpired,
-      userActivated,
+      activated,
       changeStepToRender,
       showGetStarted,
       businessProfile,
@@ -396,7 +396,7 @@ class Home extends Component {
           <Grid container spacing={3}>
             {isSubscriptionExpired === true
               ? this.renderSubscriptionInfo(classes)
-              : userActivated === false
+              : activated === false
               ? this.renderActivationInfo(classes)
               : ""}
             <Grid item xs={12} md={12} lg={12}>
@@ -476,7 +476,6 @@ const mapStateToProps = state => {
   const userName = _get(auth, "logIn.userProfile.name", "");
   const userEmail = _get(auth, "logIn.userProfile.email", "");
   const userPhone = _get(auth, "logIn.userProfile.phone", "");
-  const userActivated = _get(auth, "userActivated", false);
   const upgradeToPremiumIsLoading = _get(
     dashboardData,
     "upgradePremium.isLoading",
@@ -521,7 +520,6 @@ const mapStateToProps = state => {
     userPhone,
     upgradeToPremiumIsLoading,
     googleDirectReviewUrl,
-    userActivated,
     businessAddress,
     reviewsObject,
     googlePlaceId,

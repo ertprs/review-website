@@ -705,7 +705,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.subscription.plan_type_id",
     0
   );
-  const userActivated = _get(auth, "userActivated", false);
+  const userActivated = _get(auth, "logIn.userProfile.activated", false);
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const placeId = _get(businessProfile, "google_places.placeId", "");
   const placeLocated = _get(dashboardData, "locatePlace.success", false);
