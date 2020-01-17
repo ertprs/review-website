@@ -34,11 +34,10 @@ import {
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_AUTH_SOCIAL_ARRAY,
   SET_GOOGLE_PLACES,
-  POST_AUTOMATIC_INVITATION_CONFIG_SUCCESS,
   UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
-  FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS
+  FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
+  SET_IS_NEW_USER
 } from "../actions/actionTypes";
-import { stat } from "fs";
 
 const authReducer = (state = {}, action) => {
   const {
@@ -62,8 +61,8 @@ const authReducer = (state = {}, action) => {
     socialArray,
     googlePlaces,
     ecommerceIntegrations,
-    updatedSocialArray,
-    configuredPlatforms
+    configuredPlatforms,
+    isNewUser
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -345,6 +344,19 @@ const authReducer = (state = {}, action) => {
               ...state.logIn.userProfile.business_profile,
               configured_platforms: [...configuredPlatforms]
             }
+          }
+        }
+      };
+    }
+    case SET_IS_NEW_USER: {
+      return {
+        ...state,
+        type,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ...state.logIn.userProfile,
+            isNew: isNewUser
           }
         }
       };
