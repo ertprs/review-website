@@ -5,7 +5,6 @@ export const maxReviewsOptions = [
   { value: 27, label: "27 reviews per platform" },
   { value: 28, label: "28 reviews per platform" },
   { value: 29, label: "29 reviews per platform" },
-  { value: 29, label: "29 reviews per platform" },
   { value: 30, label: "30 reviews per platform" },
   { value: 31, label: "31 reviews per platform" },
   { value: 32, label: "32 reviews per platform" },
