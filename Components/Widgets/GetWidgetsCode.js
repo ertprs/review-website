@@ -9,6 +9,10 @@ import BackArrowIcon from "@material-ui/icons/KeyboardBackspace";
 import _get from "lodash/get";
 import Router from "next/router";
 import FormField from "../Widgets/FormField/FormField";
+import CombinedReviewsWidgetConfigurations from "../DashboardComponents/WidgetsShowCase/CombinedReviewsWidgetConfigurations";
+import { newerThanMonthsOptions } from "../../utility/constants/newerThanMonthsConstants";
+import { maxReviewsOptions } from "../../utility/constants/maxReviewsConstants";
+import { ratingCountOptions } from "../../utility/constants/ratingCountConstants";
 
 const platforms = [
   {
@@ -46,6 +50,18 @@ class GetWidgetsCode extends Component {
         errorMessage: "",
         id: "platforms",
         labelText: "Select a review platform"
+      },
+      selectedMaxReviews: {
+        ...(maxReviewsOptions[0] || {
+          value: 24,
+          label: "24 reviews per platform"
+        })
+      },
+      selectedNewerThanMonths: {
+        ...(newerThanMonthsOptions[2] || { value: 2, label: "2 Months" })
+      },
+      selectedRatingCount: {
+        ...(ratingCountOptions[2] || { value: 3, label: "3 stars and above" })
       }
     };
   }
@@ -145,6 +161,21 @@ class GetWidgetsCode extends Component {
     );
   };
 
+  handleWidgetConfigurationChange = (id, valObj) => {
+    this.setState(
+      {
+        [id]: { ...valObj },
+        refreshWidget: true
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ refreshWidget: false });
+          this.props.scrollToTopOfThePage();
+        }, 1000);
+      }
+    );
+  };
+
   renderInput = () => {
     const { widgetHeight } = this.state;
     return (
@@ -186,6 +217,12 @@ class GetWidgetsCode extends Component {
   getYourWidgetBox = () => {
     const { domainName, widget } = this.props;
     const widgetId = _get(widget, "id", "");
+    const {
+      selectedPlatform,
+      selectedMaxReviews,
+      selectedNewerThanMonths,
+      selectedRatingCount
+    } = this.state;
     return (
       <>
         <style jsx>
@@ -232,7 +269,14 @@ class GetWidgetsCode extends Component {
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
               {widgetId !== 0 ? (
                 <div className="inputContainer">{this.renderInput()}</div>
-              ) : null}
+              ) : (
+                <CombinedReviewsWidgetConfigurations
+                  selectedMaxReviews={selectedMaxReviews}
+                  selectedNewerThanMonths={selectedNewerThanMonths}
+                  selectedRatingCount={selectedRatingCount}
+                  handleChange={this.handleWidgetConfigurationChange}
+                />
+              )}
               <p className="subHeading">
                 1.2-) Copy-paste this code inside the {`<head></head>`} section
                 of your website’s HTML or as close to the top of the page as
@@ -275,9 +319,21 @@ class GetWidgetsCode extends Component {
                     style="position: relative;
                     overflow: hidden;"
                     data-platform-id="${this.state.platforms.value}"
-                    data-max-reviews="25"
-                    data-newer-than-months="2"
-                    data-rating="3"
+                    data-max-reviews="${_get(
+                      this.state,
+                      "selectedMaxReviews.value",
+                      24
+                    )}"
+                    data-newer-than-months="${_get(
+                      this.state,
+                      "selectedNewerThanMonths.value",
+                      ""
+                    )}"
+                    data-rating="${_get(
+                      this.state,
+                      "selectedRatingCount.value",
+                      ""
+                    )}"
                     ></div> 
                 `}</code>
                 ) : (
@@ -350,9 +406,13 @@ class GetWidgetsCode extends Component {
           data-theme="light"
           data-platform-id={_get(this.state, "platforms.value", "0")}
           style={{ position: "relative", overflow: "hidden" }}
-          data-max-reviews="25"
-          data-newer-than-months="2"
-          data-rating="3"
+          data-max-reviews={_get(this.state, "selectedMaxReviews.value", 24)}
+          data-newer-than-months={_get(
+            this.state,
+            "selectedNewerThanMonths.value",
+            ""
+          )}
+          data-rating={_get(this.state, "selectedRatingCount.value", "")}
         ></div>
       </>
     );
