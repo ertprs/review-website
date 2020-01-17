@@ -1237,17 +1237,24 @@ export const setReviewsLoadingStatus = (scrapingArray = [], isLoading) => {
           profilesArray.forEach((item, index) => {
             let profileId = _get(item, "profile_id", "");
             if (profileId) {
-              updatedReviews = {
-                ...reviews,
-                [socialMediaAppId]: {
-                  ..._get(reviews, socialMediaAppId, {}),
-                  [profileId]: {
-                    ..._get(reviews, socialMediaAppId.profileId, {}),
-                    isLoading,
-                    success: undefined
+              let reviewsObj = _get(reviews, socialMediaAppId.profileId, {}),
+                updatedReviews = {
+                  ...reviews,
+                  [socialMediaAppId]: {
+                    ..._get(reviews, socialMediaAppId, {}),
+                    [profileId]: {
+                      ...reviewsObj,
+                      data: {
+                        ..._get(reviewsObj, "data", {}),
+                        data: {
+                          ..._get(reviewsObj, "data.data", {})
+                        }
+                      },
+                      isLoading,
+                      success: undefined
+                    }
                   }
-                }
-              };
+                };
             }
           });
         }
