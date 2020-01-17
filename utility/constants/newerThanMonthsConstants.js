@@ -29,7 +29,6 @@ export const newerThanMonthsOptions = [
   { value: 27, label: "27 months" },
   { value: 28, label: "28 months" },
   { value: 29, label: "29 months" },
-  { value: 29, label: "29 months" },
   { value: 30, label: "30 months" },
   { value: 31, label: "31 months" },
   { value: 32, label: "32 months" },
