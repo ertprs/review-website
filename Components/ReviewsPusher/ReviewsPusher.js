@@ -36,7 +36,7 @@ class ReviewsPusher extends Component {
     this.pusherCopy = pusher;
     const channel = pusher.subscribe(domain);
     pusher.connection.bind("connected", () => {
-      console.log("connected");
+      console.log("reviews pusher connected");
       setReviewsPusherConnect(true);
       this.bindToKey(pusher, channel);
     });
