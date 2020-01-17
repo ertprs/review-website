@@ -72,7 +72,7 @@ import {
   FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE,
   SET_SCRAPING_ARRAY_IN_REDUCER
 } from "./actionTypes";
-import { updateAuthSocialArray } from "../actions/authActions";
+import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
 import cookie from "js-cookie";
 import axios from "axios";
 import _find from "lodash/find";
@@ -163,6 +163,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
           }
         });
         if (socialsArray.length > 0) {
+          dispatch(setIsNewUser(false));
           dispatch(updateAuthSocialArray(socialsArray));
           dispatch(setScrapingArrayInReducer(scraping));
           dispatch(setReviewsLoadingStatus(scraping, true));

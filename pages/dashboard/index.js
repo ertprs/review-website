@@ -284,18 +284,16 @@ const useStyles = makeStyles(theme => ({
 function Dashboard(props) {
   const classes = useStyles();
   const router = useRouter();
-
+  const { upgradeToPremiumRes, placeLocated, token, isFirstTimeLogin } = props;
   const { pathname, query } = router;
-
   const [open, setOpen] = React.useState(false);
   const [stepToRender, setStepToRender] = React.useState(
-    _get(props, "socialArray", []).length > 0 ? 1 : 0
+    isFirstTimeLogin ? 0 : 1
   );
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarVariant, setSnackbarVariant] = React.useState("success");
   const [snackbarMsg, setSnackbarMsg] = React.useState("");
   const [reviewsSelectedTab, setReviewsSelectedTab] = React.useState(0);
-  const { upgradeToPremiumRes, placeLocated, token } = props;
   const initState = {};
   const [parentState, setParentState] = useState(initState);
 
@@ -312,11 +310,11 @@ function Dashboard(props) {
   let homeDisabled = false;
   let menuItemsDisabled = false;
   let getStartedDisabled = false;
-  if (_get(props, "socialArray", []).length > 0) {
+  if (!isFirstTimeLogin) {
     getStartedHide = true;
     homeDisabled = false;
     menuItemsDisabled = false;
-  } else if (_get(props, "socialArray", []).length === 0) {
+  } else if (isFirstTimeLogin) {
     getStartedHide = false;
     homeDisabled = true;
     menuItemsDisabled = true;
@@ -528,19 +526,6 @@ function Dashboard(props) {
   const renderAppropriateComponent = pId => {
     const ComponentToRender = dashboardSteps[stepToRender].componentToRender;
     return ComponentToRender;
-    // if (stepToRender === 0) {
-    // return <GetStarted changeStepToRender={changeStepToRender} />;
-    // } else if (stepToRender === 1) {
-    // return <Home changeStepToRender={changeStepToRender} />;
-    // } else if (stepToRender === 2) {
-    // return <Reviews />;
-    // } else if (stepToRender === 3) {
-    // return <GetReviews changeStepToRender={changeStepToRender} />;
-    // } else if (stepToRender === 4) {
-    // return <InvitationHistory />;
-    // } else if (stepToRender === 5) {
-    // return <WidgetsShowCase />;
-    // }
   };
 
   const handleLogout = () => {
@@ -646,7 +631,7 @@ function Dashboard(props) {
         <List>
           <MainListItems
             getStartedDisabled={getStartedDisabled}
-            getStartedHide={_get(props, "socialArray", []).length > 0}
+            getStartedHide={getStartedHide}
             homeDisabled={homeDisabled}
             menuItemDisabled={menuItemsDisabled}
             handleMainListItemClick={handleMenuItemClicked}
@@ -703,6 +688,7 @@ const mapStateToProps = state => {
   // const reviews = _get(dashboardData, "reviews.data.reviews", []);
   const token = _get(auth, "logIn.token", "");
   const domainId = _get(auth, "logIn.userProfile.business_profile.domainId", 0);
+  const isFirstTimeLogin = _get(auth, "logIn.userProfile.isNew", false);
   const socialArray = _get(
     auth,
     "logIn.userProfile.business_profile.social",
@@ -719,7 +705,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.subscription.plan_type_id",
     0
   );
-  const userActivated = _get(auth, "userActivated", false);
+  const userActivated = _get(auth, "logIn.userProfile.activated", false);
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const placeId = _get(businessProfile, "google_places.placeId", "");
   const placeLocated = _get(dashboardData, "locatePlace.success", false);
@@ -760,7 +746,8 @@ const mapStateToProps = state => {
     domainId,
     subscriptionId,
     socialArray,
-    reviews
+    reviews,
+    isFirstTimeLogin
   };
 };
 
