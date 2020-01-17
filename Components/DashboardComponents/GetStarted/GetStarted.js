@@ -8,7 +8,9 @@ import Snackbar from "../../Widgets/Snackbar";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {
   locatePlaceByPlaceId,
-  setGetStartedShow
+  setGetStartedShow,
+  setGooglePlaces,
+  setReviewsPusherConnect
 } from "../../../store/actions/dashboardActions";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
 import { connect } from "react-redux";
@@ -23,10 +25,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import AvailablePlatformsList from "./AvailablePlatformsList";
 import AddPlatformDialog from "./AddPlatform/AddPlatformDialog/AddPlatformDialog";
 import validate from "../../../utility/validate";
-import {
-  setGooglePlaces,
-  setReviewsPusherConnect
-} from "../../../store/actions/dashboardActions";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
@@ -414,9 +412,10 @@ class GetStarted extends Component {
     if (this.props.scrollToTopOfThePage) {
       this.props.scrollToTopOfThePage();
     }
-    if (placeId !== "" || locatePlace) {
-      this.props.changeStepToRender(1);
-    }
+    //? right now we are not dependent on placeId only, user should see getstarted always
+    // if (placeId !== "" || locatePlace) {
+    //   this.props.changeStepToRender(1);
+    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
