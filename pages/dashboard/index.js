@@ -30,7 +30,8 @@ import {
   upgradeToPremium,
   fetchReviews,
   setInvitationQuota,
-  setReviewsAfterLogin
+  setReviewsAfterLogin,
+  setReviewsPusherConnect
 } from "../../store/actions/dashboardActions";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -393,6 +394,9 @@ function Dashboard(props) {
   }, []);
 
   useEffect(() => {
+    const { setReviewsPusherConnect } = props;
+    //? this will connect the pusher when someone reloads the dashboard, so that we can again listen for the keys and fetch reviews accordingly
+    setReviewsPusherConnect(true);
     const socialArray = _get(props, "socialArray", []);
     const reviews = _get(props, "reviews", {});
     if (Array.isArray(socialArray)) {
@@ -765,5 +769,6 @@ export default connect(mapStateToProps, {
   upgradeToPremium,
   fetchReviews,
   setInvitationQuota,
-  setReviewsAfterLogin
+  setReviewsAfterLogin,
+  setReviewsPusherConnect
 })(Dashboard);
