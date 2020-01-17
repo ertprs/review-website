@@ -38,6 +38,7 @@ import {
   FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
   SET_IS_NEW_USER
 } from "../actions/actionTypes";
+import _get from "lodash/get";
 
 const authReducer = (state = {}, action) => {
   const {
@@ -227,7 +228,7 @@ const authReducer = (state = {}, action) => {
         logIn: {
           ...state.logIn,
           userProfile: {
-            ...state.logIn.userProfile,
+            ..._get(state, "logIn.userProfile", {}),
             activated: userActivated
           }
         }
