@@ -522,11 +522,13 @@ class GetWidget extends Component {
             ""
           )}
           data-rating={_get(this.state, "selectedRatingCount.value", "")}
-          data-platform-order={
-            _get(this.state, "preferencePlatformArray", []).length > 1
-              ? _get(this.state, "preferencePlatformString", "")
-              : ""
-          }
+          //just uncomment the lines below and remove line 531
+          // data-platform-order={
+          //   _get(this.state, "preferencePlatformArray", []).length > 1
+          //     ? _get(this.state, "preferencePlatformString", "")
+          //     : ""
+          // }
+          data-platform-order=""
         ></div>
       </>
     );
