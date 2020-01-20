@@ -401,6 +401,7 @@ function Dashboard(props) {
       if (socialArray.length > 0) {
         if (reviews) {
           if (Object.keys(reviews).length === 0) {
+            //?need to make sure that this is not called after login
             props.setReviewsAfterLogin(socialArray);
           }
         }
