@@ -18,7 +18,7 @@ const authPersistConfig = {
 const dashboardPersistConfig = {
   key: "dashboardData",
   storage: storage,
-  blacklist: ["locatePlaceTemp", "upgradePremium"]
+  blacklist: ["locatePlaceTemp", "upgradePremium", "toggleReviewResponse"]
 };
 
 const profileDataConfig = {

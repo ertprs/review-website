@@ -70,7 +70,11 @@ import {
   FETCH_CONFIGURED_REVIEW_PLATFORMS_INIT,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_FAILURE,
-  SET_SCRAPING_ARRAY_IN_REDUCER
+  SET_SCRAPING_ARRAY_IN_REDUCER,
+  TOGGLE_REVIEW_VISIBILITY_INIT,
+  TOGGLE_REVIEW_VISIBILITY_SUCCESS,
+  TOGGLE_REVIEW_VISIBILITY_FAILURE,
+  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY
 } from "./actionTypes";
 import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
 import cookie from "js-cookie";
@@ -98,7 +102,7 @@ import {
   getAvailableReviewPlatformsApi,
   smartLinkSplitPercentageApi,
   configuredReviewPlatformsApi,
-  fetchGoogleReviewsApi
+  toggleReviewVisibilityApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -1162,29 +1166,35 @@ export const setReviewsAfterLogin = socialArray => {
     const domainId = _get(businessProfile, "domainId", 0);
     Promise.all(
       socialArray.map(platform => {
-        let hasData = _get(platform, "hasData", 0);
+        const hasData = _get(platform, "hasData", 0);
+        const has_review_aggregator = _get(
+          platform,
+          "has_review_aggregator",
+          0
+        );
+        console.log(has_review_aggregator, "has_review_aggregator");
         let socialAppId = _get(platform, "social_media_app_id", "");
         let profileId = _get(platform, "id", "");
-        // if (hasData === 1) {
-        return axios
-          .get(
-            `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
-          )
-          .then(res => {
-            return {
-              ...res.data,
-              socialAppId,
-              profileId
-            };
-          })
-          .catch(err => {
-            return {
-              err,
-              socialAppId,
-              profileId
-            };
-          });
-        // }
+        if (has_review_aggregator === 1) {
+          return axios
+            .get(
+              `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+            )
+            .then(res => {
+              return {
+                ...res.data,
+                socialAppId,
+                profileId
+              };
+            })
+            .catch(err => {
+              return {
+                err,
+                socialAppId,
+                profileId
+              };
+            });
+        }
       })
     ).then(resArr => {
       resArr.forEach(res => {
@@ -1318,4 +1328,99 @@ export const setScrapingArrayInReducer = data => {
     type: SET_SCRAPING_ARRAY_IN_REDUCER,
     scrapingArray: [...data]
   };
+};
+
+//HIDE REVIEWS FROM WIDGETS
+export const toggleReviewVisibility = (id, socialMediaAppId, profileId) => {
+  if (id && socialMediaAppId && profileId) {
+    const token = cookie.get("token");
+    return async (dispatch, getState) => {
+      const state = getState();
+      const reviews = _get(state, "dashboardData.reviews", {});
+      dispatch({
+        type: TOGGLE_REVIEW_VISIBILITY_INIT,
+        toggleReviewResponse: {
+          isLoading: true,
+          errorMsg: "",
+          success: {}
+        }
+      });
+      try {
+        const result = await axios({
+          method: "POST",
+          url: `${process.env.BASE_URL}/${toggleReviewVisibilityApi}/${id}/toggle-widget-visibility`,
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const success = _get(result, "data.success", false);
+        if (success) {
+          dispatch({
+            type: TOGGLE_REVIEW_VISIBILITY_SUCCESS,
+            toggleReviewResponse: {
+              isLoading: false,
+              errorMsg: "",
+              success
+            }
+          });
+          //? this will toggle hide_from_widget key of that profile review
+          let updatedReviews = { ...reviews };
+          let platformReviewsObj = _get(updatedReviews, socialMediaAppId, {});
+          let profileReviewsObj = _get(platformReviewsObj, profileId, {});
+          let reviewsOfProfile = _get(
+            profileReviewsObj,
+            "data.data.reviews",
+            []
+          );
+          if (isValidArray(reviewsOfProfile)) {
+            let indexOfReviewToUpdate = _findIndex(reviewsOfProfile, [
+              "id",
+              id
+            ]);
+            if (indexOfReviewToUpdate !== -1) {
+              let obj = reviewsOfProfile[indexOfReviewToUpdate];
+              reviewsOfProfile[indexOfReviewToUpdate] = {
+                ...obj,
+                hide_from_widget: obj.hide_from_widget === 0 ? 1 : 0
+              };
+            }
+          }
+          updatedReviews = {
+            ...updatedReviews,
+            [socialMediaAppId]: {
+              ...platformReviewsObj,
+              [profileId]: {
+                ...profileReviewsObj,
+                data: {
+                  ..._get(profileReviewsObj, "data", {}),
+                  data: {
+                    ..._get(profileReviewsObj, "data.data", {}),
+                    reviews: [...reviewsOfProfile]
+                  }
+                }
+              }
+            }
+          };
+          dispatch({
+            type: SET_REVIEWS_AFTER_TOGGLE_VISIBILITY,
+            reviews: { ...updatedReviews }
+          });
+        } else {
+          throw "Some Error Occurred!";
+        }
+      } catch (error) {
+        const errorMsg = _get(
+          error,
+          "response.data.data.message",
+          "Some Error Occurred!"
+        );
+        dispatch({
+          type: TOGGLE_REVIEW_VISIBILITY_FAILURE,
+          toggleReviewResponse: {
+            isLoading: false,
+            errorMsg,
+            success: false
+          }
+        });
+      }
+    };
+  }
 };
