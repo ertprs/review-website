@@ -10,6 +10,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Head from "next/head";
 import _get from "lodash/get";
 import _find from "lodash/find";
+import _groupBy from "lodash/groupBy";
 import Select from "react-select";
 import CombinedReviewsWidgetConfigurations from "./CombinedReviewsWidgetConfigurations";
 import { newerThanMonthsOptions } from "../../../utility/constants/newerThanMonthsConstants";
@@ -31,11 +32,13 @@ class GetWidget extends Component {
         })
       },
       selectedNewerThanMonths: {
-        ...(newerThanMonthsOptions[2] || { value: 2, label: "2 Months" })
+        ...(newerThanMonthsOptions[0] || { value: 2, label: "Not needed" })
       },
       selectedRatingCount: {
         ...(ratingCountOptions[2] || { value: 3, label: "3 stars and above" })
-      }
+      },
+      preferencePlatformArray: [],
+      preferencePlatformString: ""
     };
   }
 
@@ -43,6 +46,7 @@ class GetWidget extends Component {
     window.scrollTo(0, 0);
     //generate the dropdown dynamically, display only those platforms which have reviews
     this.generateDropDownDataDynamically();
+    //if platforms were generated dynamically, go for platformPreferenceArray generation
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -54,6 +58,35 @@ class GetWidget extends Component {
       this.generateDropDownDataDynamically();
     }
   }
+
+  generatePreferencePlatformArray = () => {
+    const platforms = _get(this.state, "platforms", []);
+    const review_platforms = _get(this.props, "review_platforms.data", {});
+    const platformsGrouped = _groupBy(platforms, "socialAppId");
+    const socialPlatforms = Object.keys(platformsGrouped);
+    let localPlatforms = [];
+    let preferencePlatformString = "";
+    localPlatforms = socialPlatforms.map((item, index) => {
+      let socialAppId = item;
+      if (socialAppId) {
+        if (preferencePlatformString.length > 0) {
+          preferencePlatformString =
+            preferencePlatformString + "," + socialAppId;
+        } else {
+          preferencePlatformString = socialAppId;
+        }
+      }
+      return {
+        id: "item-" + index,
+        label: review_platforms[socialAppId],
+        socialAppId: socialAppId
+      };
+    });
+    this.setState({
+      preferencePlatformArray: [...localPlatforms],
+      preferencePlatformString
+    });
+  };
 
   generateDropDownDataDynamically = () => {
     const reviews = _get(this.props, "reviews", {});
@@ -105,10 +138,47 @@ class GetWidget extends Component {
     }
     if (Object.keys(platforms)) {
       if (Object.keys(platforms).length > 0) {
-        this.setState({
-          platforms: [...platforms],
-          selectedPlatform: platforms[0]
-        });
+        this.setState(
+          {
+            platforms: [...platforms],
+            selectedPlatform: platforms[0]
+          },
+          () => {
+            this.generatePreferencePlatformArray();
+          }
+        );
+      }
+    }
+  };
+
+  refreshWidgetOnDemand = () => {
+    this.setState({ refreshWidget: true }, () => {
+      setTimeout(() => {
+        this.setState({ refreshWidget: false });
+        this.props.scrollToTopOfThePage();
+      }, 1000);
+    });
+  };
+
+  setPreferencePlatformData = data => {
+    if (data) {
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
+          let preferencePlatformString = "";
+          data.forEach(item => {
+            let socialAppId = _get(item, "socialAppId", "");
+            if (preferencePlatformString.length > 0) {
+              preferencePlatformString =
+                preferencePlatformString + "," + socialAppId;
+            } else {
+              preferencePlatformString = socialAppId;
+            }
+          });
+          this.setState({
+            preferencePlatformArray: [...data],
+            preferencePlatformString
+          });
+        }
       }
     }
   };
@@ -301,6 +371,11 @@ class GetWidget extends Component {
                     selectedNewerThanMonths={selectedNewerThanMonths}
                     selectedRatingCount={selectedRatingCount}
                     handleChange={this.handleWidgetConfigurationChange}
+                    platforms={this.state.platforms}
+                    preferencePlatformArray={this.state.preferencePlatformArray}
+                    setPreferencePlatformData={this.setPreferencePlatformData}
+                    refreshWidgetOnDemand={this.refreshWidgetOnDemand}
+                    refreshWidget={this.state.refreshWidget}
                   />
                 )}
               </div>
@@ -313,12 +388,12 @@ class GetWidget extends Component {
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 {widgetId === 0 ? (
                   <code className="blue">{`
-                    <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                    <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                     async></script>
                 `}</code>
                 ) : (
                   <code className="blue">{`
-                <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                 async></script>
             `}</code>
                 )}
@@ -361,6 +436,11 @@ class GetWidget extends Component {
                       "selectedRatingCount.value",
                       ""
                     )}"
+                    data-platform-order="${
+                      _get(this.state, "preferencePlatformArray", []).length > 1
+                        ? _get(this.state, "preferencePlatformString", "")
+                        : ""
+                    }"
                     ></div> 
                 `}</code>
                 ) : (
@@ -409,13 +489,13 @@ class GetWidget extends Component {
           {widgetId === 0 ? (
             <script
               type="text/javascript"
-              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           ) : (
             <script
               type="text/javascript"
-              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           )}
@@ -442,6 +522,11 @@ class GetWidget extends Component {
             ""
           )}
           data-rating={_get(this.state, "selectedRatingCount.value", "")}
+          data-platform-order={
+            _get(this.state, "preferencePlatformArray", []).length > 1
+              ? _get(this.state, "preferencePlatformString", "")
+              : ""
+          }
         ></div>
       </>
     );
@@ -487,12 +572,13 @@ class GetWidget extends Component {
 
 const mapStateToProps = state => {
   const reviews = _get(state, "dashboardData.reviews", {});
+  const review_platforms = _get(state, "dashboardData.review_platforms", {});
   const socialArray = _get(
     state,
     "auth.logIn.userProfile.business_profile.social",
     []
   );
-  return { reviews, socialArray };
+  return { reviews, socialArray, review_platforms };
 };
 
 export default connect(mapStateToProps)(GetWidget);

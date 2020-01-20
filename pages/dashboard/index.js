@@ -286,7 +286,7 @@ function Dashboard(props) {
   const router = useRouter();
   const { upgradeToPremiumRes, placeLocated, token, isFirstTimeLogin } = props;
   const { pathname, query } = router;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [stepToRender, setStepToRender] = React.useState(
     isFirstTimeLogin ? 0 : 1
   );
