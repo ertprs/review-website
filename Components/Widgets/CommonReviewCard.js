@@ -3,6 +3,8 @@ import { reviewListStyles } from "../Widgets/MyReviewsUser/myReviewsStyles";
 import RatingIndicators from "../Widgets/RatingIndicators/RatingIndicators";
 import { ratingColor } from "../../utility/ratingTypeColor";
 import Button from "@material-ui/core/Button";
+import ShowIcon from "@material-ui/icons/VisibilityOutlined";
+import HideIcon from "@material-ui/icons/VisibilityOffOutlined";
 import ReplyIcon from "@material-ui/icons/Reply";
 import _get from "lodash/get";
 import moment from "moment";
@@ -67,8 +69,13 @@ const renderIcon = provider => {
   );
 };
 
-const ReviewCard = ({ review, provider }) => {
-  let { name, text, rating, date, replyURL } = review;
+const ReviewCard = ({
+  review,
+  provider,
+  showToggleBtn,
+  toggleReviewVisibility
+}) => {
+  let { name, text, rating, date, replyURL, id, hideFromWidget } = review;
   name = name === "N/A" ? "Anonymous" : name;
   return (
     <div className="reviewCard">
@@ -94,7 +101,7 @@ const ReviewCard = ({ review, provider }) => {
         .mr-10 {
           margin-right: 10px;
         }
-        .replyBtnContainer {
+        .bottomBtn {
           padding: 14px;
         }
       `}</style>
@@ -145,21 +152,40 @@ const ReviewCard = ({ review, provider }) => {
           </div>
         </div>
       </div>
-      {replyURL ? (
+      {replyURL || showToggleBtn ? (
         <div className="row">
-          <div className="col-md-6 offset-md-6">
-            <div className="replyBtnContainer">
-              <Button
-                color="primary"
-                startIcon={<ReplyIcon />}
-                onClick={() => {
-                  window.open(replyURL, "_blank");
-                }}
-              >
-                Reply
-              </Button>
+          {showToggleBtn ? (
+            <div className="col-md-6">
+              <div className="bottomBtn">
+                <Button
+                  color="primary"
+                  startIcon={hideFromWidget === 0 ? <HideIcon /> : <ShowIcon />}
+                  onClick={() => toggleReviewVisibility(id)}
+                >
+                  {hideFromWidget === 0
+                    ? "Hide"
+                    : hideFromWidget === 1
+                    ? "Show"
+                    : null}
+                </Button>
+              </div>
             </div>
-          </div>
+          ) : null}
+          {replyURL ? (
+            <div className="col-md-6">
+              <div className="bottomBtn">
+                <Button
+                  color="primary"
+                  startIcon={<ReplyIcon />}
+                  onClick={() => {
+                    window.open(replyURL, "_blank");
+                  }}
+                >
+                  Reply
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>
