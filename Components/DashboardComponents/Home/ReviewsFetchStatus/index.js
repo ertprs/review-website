@@ -12,7 +12,6 @@ import _find from "lodash/find";
 class ReviewFetchStatusCard extends Component {
   render() {
     const { reviewFetchStatusArray } = this.props;
-    console.log(reviewFetchStatusArray, "reviewFetchStatusArray");
     return (
       <Grid item xs={12} md={4} lg={4}>
         <style jsx>{`
