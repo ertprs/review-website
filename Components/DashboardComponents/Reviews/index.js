@@ -9,6 +9,7 @@ import { withStyles } from "@material-ui/styles";
 import _get from "lodash/get";
 import _groupBy from "lodash/groupBy";
 import _find from "lodash/find";
+import _findIndex from "lodash/findIndex";
 import { connect } from "react-redux";
 import CommonReviewTabPanel from "./CommonReviewTabPanel";
 import { isValidArray } from "../../../utility/commonFunctions";
@@ -58,7 +59,7 @@ class ReviewsContainer extends React.Component {
     selectedTab: _get(this.props, "selectedTab", 0)
   };
 
-  handleTabChange = (event, selectedTab, item) => {
+  handleTabChange = (event, selectedTab) => {
     this.setState({ selectedTab });
   };
 
@@ -74,27 +75,42 @@ class ReviewsContainer extends React.Component {
     const socialArray = _get(this.props, "socialArray", []);
     let uniqueSocialKeys = [];
     let socialArrayGroupedByKeys = {};
+    const platformsWithReviews = [];
+
     if (isValidArray(socialArray)) {
       socialArrayGroupedByKeys = _groupBy(socialArray, "social_media_app_id");
       if (socialArrayGroupedByKeys) {
         uniqueSocialKeys = Object.keys(socialArrayGroupedByKeys);
+        //? This array will contain only those socialAppIds whose scraping is enabled.
+        uniqueSocialKeys.forEach(socialAppId => {
+          const platformAllPlacesArr = socialArrayGroupedByKeys[socialAppId];
+          const has_review_aggregator_exists = _findIndex(
+            platformAllPlacesArr,
+            "has_review_aggregator"
+          );
+          if (has_review_aggregator_exists !== -1) {
+            platformsWithReviews.push(socialAppId);
+          }
+        });
       }
     }
+
     return {
       uniqueSocialKeys,
-      socialArrayGroupedByKeys
+      socialArrayGroupedByKeys,
+      platformsWithReviews
     };
   };
 
   generateTabsDynamically = () => {
     const { reviewPlatforms } = this.props;
     const data = this.getUniqueSocialMediaIds();
-    const uniqueSocialKeys = _get(data, "uniqueSocialKeys", []);
+    const platformsWithReviews = _get(data, "platformsWithReviews", {});
     let output = [];
-    if (isValidArray(uniqueSocialKeys)) {
-      output = uniqueSocialKeys.map((item, index) => {
+    if (isValidArray(platformsWithReviews)) {
+      output = platformsWithReviews.map((item, index) => {
         let tabLabel = _get(reviewPlatforms, Number(item) || "", "");
-        return <Tab label={tabLabel} {...a11yProps(index)} id={item} />;
+        return <Tab label={tabLabel} {...a11yProps(index)} />;
       });
     }
     return output;
@@ -104,11 +120,11 @@ class ReviewsContainer extends React.Component {
     const { selectedTab } = this.state;
     const { reviewPlatforms } = this.props;
     const data = this.getUniqueSocialMediaIds();
-    const uniqueSocialKeys = _get(data, "uniqueSocialKeys", []);
     const socialArrayGroupedByKeys = _get(data, "socialArrayGroupedByKeys", {});
+    const platformsWithReviews = _get(data, "platformsWithReviews", {});
     let output = [];
-    if (isValidArray(uniqueSocialKeys)) {
-      output = uniqueSocialKeys.map((item, index) => {
+    if (isValidArray(platformsWithReviews)) {
+      output = platformsWithReviews.map((item, index) => {
         let dropDownData = [];
         let platformPlacesArray = socialArrayGroupedByKeys[item];
         dropDownData = (platformPlacesArray || []).map(place => {
