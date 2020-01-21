@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import Avatar from "react-avatar";
 import styles from "./userProfileStyles";
-import countrieslist from "../../../utility/newCountryList.json";
+import countriesList from "../../../utility/select2CountryList.json";
+import timezoneList from "../../../utility/timezone.json";
 import validate from "../../../utility/validate";
 import UpdateIcon from "@material-ui/icons/PhotoCamera";
 import Button from "@material-ui/core/Button";
@@ -88,7 +89,7 @@ class UserProfile extends Component {
         element: "select",
         name: "country",
         value: _get(this.props, "userProfile.country", ""),
-        options: [...countrieslist],
+        options: [...countriesList],
         placeholder: "Select your country",
         valid: false,
         validationRules: {
@@ -101,8 +102,22 @@ class UserProfile extends Component {
         element: "select",
         name: "lang",
         value: _get(this.props, "userProfile.lang", ""),
+        selectedOption: {},
         options: [...Languages],
         placeholder: "Select your language",
+        valid: false,
+        validationRules: {
+          required: true
+        },
+        touched: false,
+        errorMessage: ""
+      },
+      timezone: {
+        element: "select",
+        name: "timezone",
+        value: _get(this.props, "userProfile.timezone", ""),
+        options: [...timezoneList],
+        placeholder: "Select your timezone",
         valid: false,
         validationRules: {
           required: true
@@ -181,7 +196,7 @@ class UserProfile extends Component {
         element: "select",
         name: "country",
         value: _get(this.props, "userProfile.company.country_id", ""),
-        options: [...countrieslist],
+        options: [...countriesList],
         placeholder: "Select your country",
         valid: false,
         validationRules: {
@@ -310,7 +325,7 @@ class UserProfile extends Component {
     );
   };
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.scrollToTopOfThePage();
   }
 
