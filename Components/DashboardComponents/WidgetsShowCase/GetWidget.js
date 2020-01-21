@@ -32,7 +32,7 @@ class GetWidget extends Component {
         })
       },
       selectedNewerThanMonths: {
-        ...(newerThanMonthsOptions[0] || { value: 2, label: "Not needed" })
+        ...(newerThanMonthsOptions[0] || { value: 0, label: "Not needed" })
       },
       selectedRatingCount: {
         ...(ratingCountOptions[2] || { value: 3, label: "3 stars and above" })
@@ -523,12 +523,12 @@ class GetWidget extends Component {
           )}
           data-rating={_get(this.state, "selectedRatingCount.value", "")}
           //just uncomment the lines below and remove line 531
-          // data-platform-order={
-          //   _get(this.state, "preferencePlatformArray", []).length > 1
-          //     ? _get(this.state, "preferencePlatformString", "")
-          //     : ""
-          // }
-          data-platform-order=""
+          data-platform-order={
+            _get(this.state, "preferencePlatformArray", []).length > 1
+              ? _get(this.state, "preferencePlatformString", "")
+              : ""
+          }
+          // data-platform-order=""
         ></div>
       </>
     );
