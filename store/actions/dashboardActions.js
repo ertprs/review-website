@@ -531,15 +531,7 @@ export const updateUserDetails = data => {
           }
         });
       } else {
-        dispatch({
-          type: UPDATE_USER_DETAILS_ERROR,
-          userDetails: {
-            isLoading: false,
-            success: false,
-            data: {},
-            errorMsg: "Some error occured. Please try again later."
-          }
-        });
+        throw "Some error occurred. Please try again later.";
       }
     } catch (error) {
       dispatch({
@@ -551,7 +543,7 @@ export const updateUserDetails = data => {
           errorMsg: _get(
             error,
             "response.data.error.message",
-            "Some error occured. Please try again later."
+            "Some error occurred. Please try again later."
           )
         }
       });

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Select from "react-select";
-
 import select2CountryList from "../../utility/select2CountryList.json";
 import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
