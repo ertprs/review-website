@@ -3,7 +3,7 @@ import css from "styled-jsx/css";
 export const reviewURLBoxStyles = css`
   .reviewURLBox {
     padding: 25px;
-    height: 163px;
+    height: 100%;
   }
   .reviewURLBoxHeader {
     margin-bottom: 25px;
