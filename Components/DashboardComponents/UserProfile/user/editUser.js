@@ -5,6 +5,7 @@ import SaveIcon from "@material-ui/icons/Check";
 import CancelIcon from "@material-ui/icons/CloseRounded";
 import FormField from "../../../Widgets/FormField/FormField";
 import Card from "../../../MaterialComponents/Card";
+import Select from "react-select";
 import createReqBody from "../../../../utility/createReqBody";
 import {
   updateUserDetails,
@@ -13,6 +14,7 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import _find from "lodash/find";
 
 class editUser extends Component {
   handleSaveClick = () => {
@@ -35,22 +37,62 @@ class editUser extends Component {
     const { userDetails, handleChange } = this.props;
     let formFields = [];
     for (let formField in userDetails) {
-      formFields = [
-        ...formFields,
-        <div className="col-md-6">
-          <FormField
-            {...userDetails[formField]}
-            handleChange={handleChange}
-            id={formField}
-            styles={{
-              borderWidth: "0px 0px 1px 0px",
-              borderStyle: "solid",
-              borderColor: "rgb(206, 212, 218)",
-              height: "38px"
-            }}
-          />
-        </div>
-      ];
+      if (formField === "country" || formField === "timezone") {
+        let options = [];
+        let selectedOption = userDetails[formField].value;
+        let value = "";
+        if (userDetails[formField].hasOwnProperty("options")) {
+          options = userDetails[formField].options;
+        }
+        if (formField === "country") {
+          //? converting selectedCountry to integer as value in options is in integer
+          value = _find(options, ["value", +selectedOption]);
+        } else if (formField === "timezone") {
+          value = _find(options, ["value", selectedOption]);
+        }
+        formFields = [
+          ...formFields,
+          <div className="col-md-6">
+            <Select
+              {...userDetails[formField]}
+              className="basic-single"
+              classNamePrefix="select"
+              isClearable={true}
+              isSearchable={true}
+              name="countries-list"
+              options={options}
+              value={value}
+              onChange={selectedOption => {
+                let e = {};
+                e.target = selectedOption || {};
+                e.target = {
+                  ...e.target,
+                  value: selectedOption ? selectedOption.value.toString() : "",
+                  name: formField
+                };
+                handleChange(e);
+              }}
+            />
+          </div>
+        ];
+      } else {
+        formFields = [
+          ...formFields,
+          <div className="col-md-6">
+            <FormField
+              {...userDetails[formField]}
+              handleChange={handleChange}
+              id={formField}
+              styles={{
+                borderWidth: "0px 0px 1px 0px",
+                borderStyle: "solid",
+                borderColor: "rgb(206, 212, 218)",
+                height: "38px"
+              }}
+            />
+          </div>
+        ];
+      }
     }
     return [...formFields];
   };

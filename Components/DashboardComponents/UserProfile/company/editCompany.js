@@ -5,6 +5,7 @@ import SaveIcon from "@material-ui/icons/Check";
 import CancelIcon from "@material-ui/icons/CloseRounded";
 import FormField from "../../../Widgets/FormField/FormField";
 import Card from "../../../MaterialComponents/Card";
+import Select from "react-select";
 import createReqBody from "../../../../utility/createReqBody";
 import {
   updateCompanyDetails,
@@ -13,6 +14,7 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import _find from "lodash/find";
 
 class editCompany extends Component {
   handleSaveClick = () => {
@@ -35,22 +37,60 @@ class editCompany extends Component {
     const { companyDetails, handleChange } = this.props;
     let formFields = [];
     for (let formField in companyDetails) {
-      formFields = [
-        ...formFields,
-        <div className="col-md-6">
-          <FormField
-            {...companyDetails[formField]}
-            handleChange={handleChange}
-            id={formField}
-            styles={{
-              borderWidth: "0px 0px 1px 0px",
-              borderStyle: "solid",
-              borderColor: "rgb(206, 212, 218)",
-              height: "38px"
-            }}
-          />
-        </div>
-      ];
+      if (formField === "country") {
+        let options = [];
+        let value = "";
+        if (companyDetails[formField].hasOwnProperty("options")) {
+          options = companyDetails[formField].options;
+        }
+        if (companyDetails[formField].hasOwnProperty("value")) {
+          let selectedCountry = companyDetails[formField].value;
+          //? converting selectedCountry to integer as value in options is in integer
+          value = _find(options, ["value", +selectedCountry]);
+        }
+        formFields = [
+          ...formFields,
+          <div className="col-md-6">
+            <Select
+              className="basic-single"
+              classNamePrefix="select"
+              isClearable={true}
+              isSearchable={true}
+              name="countries-list"
+              placeholder="Select your country..."
+              options={options}
+              value={value}
+              onChange={selectedOption => {
+                let e = {};
+                e.target = selectedOption || {};
+                e.target = {
+                  ...e.target,
+                  value: selectedOption ? selectedOption.value.toString() : "",
+                  name: "country"
+                };
+                handleChange(e);
+              }}
+            />
+          </div>
+        ];
+      } else {
+        formFields = [
+          ...formFields,
+          <div className="col-md-6">
+            <FormField
+              {...companyDetails[formField]}
+              handleChange={handleChange}
+              id={formField}
+              styles={{
+                borderWidth: "0px 0px 1px 0px",
+                borderStyle: "solid",
+                borderColor: "rgb(206, 212, 218)",
+                height: "38px"
+              }}
+            />
+          </div>
+        ];
+      }
     }
     return [...formFields];
   };
