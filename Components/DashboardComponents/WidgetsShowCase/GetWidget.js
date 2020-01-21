@@ -562,7 +562,11 @@ class GetWidget extends Component {
               this.getYourWidgetBox()
             ) : (
               <div style={{ textAlign: "center" }}>
-                <CircularProgress />
+                <p>
+                  Either the reviews have not be fetched till yet, or the
+                  platforms you have set have zero (0) reviews, please check the
+                  status on the homepage
+                </p>
               </div>
             )}
           </div>
