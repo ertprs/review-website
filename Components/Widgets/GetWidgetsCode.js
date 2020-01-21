@@ -58,7 +58,7 @@ class GetWidgetsCode extends Component {
         })
       },
       selectedNewerThanMonths: {
-        ...(newerThanMonthsOptions[2] || { value: 2, label: "2 Months" })
+        ...(newerThanMonthsOptions[0] || { value: 0, label: "Not needed" })
       },
       selectedRatingCount: {
         ...(ratingCountOptions[2] || { value: 3, label: "3 stars and above" })
