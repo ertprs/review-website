@@ -6,11 +6,13 @@ import Card from "../../../MaterialComponents/Card";
 import EditIcon from "@material-ui/icons/Edit";
 import _get from "lodash/get";
 import _find from "lodash/find";
-import countrieslist from "../../../../utility/newCountryList.json";
+import countriesList from "../../../../utility/select2CountryList.json";
 import Languages from "../../../../utility/languages";
+import timezoneList from "../../../../utility/timezone.json";
 
 const userDetailsData = userProfile => {
-  const { name, city, phone, address, country, lang, zip } = userProfile || {};
+  const { name, city, phone, address, country, lang, zip, timezone } =
+    userProfile || {};
 
   let filteredLang = _find(Languages, ["value", lang]);
   let language = "";
@@ -18,12 +20,17 @@ const userDetailsData = userProfile => {
     language = _get(filteredLang, "name", "");
   }
 
-  let filteredCountry = _find(countrieslist, ["value", Number(country)]);
+  let filteredCountry = _find(countriesList, ["value", +country]);
   let countryName = "";
   if (filteredCountry) {
-    countryName = _get(filteredCountry, "name", "");
+    countryName = _get(filteredCountry, "label", "");
   }
 
+  let filteredTimezone = _find(timezoneList, ["value", timezone]);
+  let timezoneName = "";
+  if (filteredTimezone) {
+    timezoneName = _get(filteredTimezone, "label", "");
+  }
   const userDetails = [
     { key: "Name", value: name || "" },
     { key: "City", value: city || "" },
@@ -31,7 +38,8 @@ const userDetailsData = userProfile => {
     { key: "Address", value: address || "" },
     { key: "Country", value: countryName || "" },
     { key: "Language", value: language || "" },
-    { key: "Zipcode", value: zip || "" }
+    { key: "Zipcode", value: zip || "" },
+    { key: "Timezone", value: timezoneName || "" }
   ];
   return userDetails;
 };

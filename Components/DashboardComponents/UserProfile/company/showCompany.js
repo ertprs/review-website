@@ -6,7 +6,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Card from "../../../MaterialComponents/Card";
 import EditIcon from "@material-ui/icons/Edit";
 import _find from "lodash/find";
-import countrieslist from "../../../../utility/newCountryList.json";
+import countriesList from "../../../../utility/select2CountryList.json";
 
 class showCompany extends Component {
   companyDetailsData = () => {
@@ -19,10 +19,10 @@ class showCompany extends Component {
       const actual_address = _get(company, "actual_address", "");
       const description = _get(company, "description", "");
       const country_id = _get(company, "country_id", "");
-      let filteredCountry = _find(countrieslist, ["value", Number(country_id)]);
+      let filteredCountry = _find(countriesList, ["value", +country_id]);
       let country = "";
       if (filteredCountry) {
-        country = _get(filteredCountry, "name", "");
+        country = _get(filteredCountry, "label", "");
       }
       const companyDetails = [
         { key: "Name", value: name || "" },

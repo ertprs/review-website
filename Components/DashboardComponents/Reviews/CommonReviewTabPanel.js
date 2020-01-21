@@ -85,9 +85,9 @@ class CommonReviewTabPanel extends Component {
     const {
       platformReviews,
       toggleReviewSuccess,
-      toggleReviewErrorMsg,
-      toggleReviewLoading
+      toggleReviewErrorMsg
     } = this.props;
+    const { snackbarMsg } = this.state;
     if (platformReviews !== prevProps.platformReviews) {
       const { selectedPlace } = this.state;
       let profileId = _get(selectedPlace, "value", "");
@@ -127,10 +127,11 @@ class CommonReviewTabPanel extends Component {
     if (toggleReviewSuccess !== prevProps.toggleReviewSuccess) {
       let showSnackbar = true;
       let snackbarVariant = toggleReviewSuccess ? "success" : "error";
-      let snackbarMsg = toggleReviewSuccess
-        ? "Review State Changed Successfully!"
-        : toggleReviewErrorMsg;
-      this.setState({ showSnackbar, snackbarVariant, snackbarMsg });
+      this.setState({
+        showSnackbar,
+        snackbarVariant,
+        snackbarMsg: toggleReviewErrorMsg ? toggleReviewErrorMsg : snackbarMsg
+      });
     }
   }
 
@@ -208,11 +209,16 @@ class CommonReviewTabPanel extends Component {
     );
   };
 
-  toggleReviewVisibility = id => {
+  toggleReviewVisibility = (id, hideFromWidget) => {
     const { toggleReviewVisibility, socialMediaAppId } = this.props;
     const { selectedPlace } = this.state;
     let profileId = _get(selectedPlace, "value", "");
     toggleReviewVisibility(id, socialMediaAppId, profileId);
+    let snackbarMsg =
+      hideFromWidget === 0
+        ? "Review will be hidden from widgets."
+        : "Review will be displayed now in widgets.";
+    this.setState({ snackbarMsg });
   };
 
   render() {
@@ -424,17 +430,25 @@ class CommonReviewTabPanel extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { dashboardData, toggleReviewResponse } = state;
+  const { dashboardData } = state;
   const socialMediaAppId = _get(ownProps, "socialMediaAppId", 0);
   const reviews = _get(dashboardData, "reviews", {});
   const platformReviews = _get(reviews, socialMediaAppId, {});
-  const toggleReviewSuccess = _get(toggleReviewResponse, "success", false);
+  const toggleReviewSuccess = _get(
+    dashboardData,
+    "toggleReviewResponse.success",
+    false
+  );
   const toggleReviewErrorMsg = _get(
-    toggleReviewResponse,
-    "errorMsg",
+    dashboardData,
+    "toggleReviewResponse.errorMsg",
     "Some Error Occurred!"
   );
-  const toggleReviewLoading = _get(toggleReviewResponse, "isLoading", false);
+  const toggleReviewLoading = _get(
+    dashboardData,
+    "toggleReviewResponse.isLoading",
+    false
+  );
   return {
     platformReviews,
     toggleReviewSuccess,

@@ -10,7 +10,8 @@ import {
   locatePlaceByPlaceId,
   setGetStartedShow,
   setGooglePlaces,
-  setReviewsPusherConnect
+  setReviewsPusherConnect,
+  setReviewsAfterLogin
 } from "../../../store/actions/dashboardActions";
 import { setIsNewUser } from "../../../store/actions/authActions";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
@@ -798,8 +799,16 @@ class GetStarted extends Component {
   };
 
   startWithThesePlatforms = () => {
-    const { setIsNewUser, changeStepToRender } = this.props;
+    const {
+      setIsNewUser,
+      changeStepToRender,
+      setReviewsAfterLogin,
+      socialArray
+    } = this.props;
     setIsNewUser(false);
+    if (isValidArray(socialArray)) {
+      setReviewsAfterLogin();
+    }
     changeStepToRender(1);
   };
 
@@ -1038,5 +1047,6 @@ export default connect(mapStateToProps, {
   setGooglePlaces,
   setReviewsPusherConnect,
   setGetStartedShow,
-  setIsNewUser
+  setIsNewUser,
+  setReviewsAfterLogin
 })(GetStarted);

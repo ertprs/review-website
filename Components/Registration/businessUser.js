@@ -6,7 +6,6 @@ import Select from "react-select";
 import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
 import validate from "../../utility/validate";
-import countrieslist from "../../utility/countryList.json";
 import select2CountryList from "../../utility/select2CountryList.json";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -124,7 +123,7 @@ class BusinessUserRegistration extends Component {
       //   name: "country",
       //   value: "",
       //   dialCode: "",
-      //   options: [...countrieslist],
+      //   options: [...select2CountryList],
       //   placeholder: "Select your country",
       //   valid: false,
       //   validationRules: {

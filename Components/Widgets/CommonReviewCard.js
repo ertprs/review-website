@@ -160,7 +160,7 @@ const ReviewCard = ({
                 <Button
                   color="primary"
                   startIcon={hideFromWidget === 0 ? <HideIcon /> : <ShowIcon />}
-                  onClick={() => toggleReviewVisibility(id)}
+                  onClick={() => toggleReviewVisibility(id, hideFromWidget)}
                 >
                   {hideFromWidget === 0
                     ? "Hide"

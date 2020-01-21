@@ -1,0 +1,26 @@
+[
+  {
+    "value": "Pacific/Honolulu",
+    "label": "Pacific/Honolulu"
+  },
+  {
+    "value": "US/Alaska",
+    "label": "US/Alaska"
+  },
+  {
+    "value": "America/Los_Angeles",
+    "label": "America/Los_Angeles"
+  },
+  {
+    "value": "America/Tijuana",
+    "label": "America/Tijuana"
+  },
+  {
+    "value": "US/Arizona",
+    "label": "US/Arizona"
+  },
+  {
+    "value": "America/Chihuahua",
+    "label": "America/Chihuahua"
+  }
+]
