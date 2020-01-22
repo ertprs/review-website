@@ -80,7 +80,6 @@ const mapStateToProps = state => {
       });
     }
   }
-  console.log(countPerPlatform, "countPerPlatform");
   return { totalUrlHits, countPerPlatform };
 };
 
