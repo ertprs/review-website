@@ -7,6 +7,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import _get from "lodash/get";
+import _find from "lodash/find";
 import { connect } from "react-redux";
 
 class ShowInWidgetList extends Component {
@@ -23,6 +24,12 @@ class ShowInWidgetList extends Component {
       this.props.refreshWidgetOnDemand();
     }
   }
+
+  anyCheckBoxTouched = () => {
+    const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
+    let touched = _find(showHidePlatformsList, { touched: true });
+    return touched ? true : false;
+  };
 
   renderShowHidePlatformsList = () => {
     const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
@@ -108,6 +115,8 @@ class ShowInWidgetList extends Component {
               <Button
                 size="small"
                 onClick={this.props.handleShowHidePlatformSave}
+                style={{ border: "1px solid #999" }}
+                disabled={!this.anyCheckBoxTouched()}
               >
                 Click here after Checking/Un-checking platforms above to save
                 and see live preview
