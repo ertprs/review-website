@@ -37,11 +37,7 @@ import {
   SET_IS_NEW_USER
 } from "./actionTypes";
 import _get from "lodash/get";
-import {
-  loginApiOAuth,
-  getAvailablePlatformsApi,
-  thirdPartyDataApi
-} from "../../utility/config";
+import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import {
