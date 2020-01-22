@@ -28,7 +28,7 @@ class ShowInWidgetList extends Component {
   anyCheckBoxTouched = () => {
     const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
     let touched = _find(showHidePlatformsList, { touched: true });
-    let onePlatformLeft = _find(showHidePlatformsList, { show_in_widget: 0 });
+    let onePlatformLeft = _find(showHidePlatformsList, { show_in_widget: 1 });
     if (!onePlatformLeft) {
       return false;
     } else {
@@ -75,7 +75,7 @@ class ShowInWidgetList extends Component {
                 <Checkbox
                   edge="end"
                   disabled={!has_review_aggregator}
-                  checked={show_in_widget}
+                  checked={show_in_widget && has_review_aggregator}
                   // onChange={handleToggle(value)}
                   onChange={() => {
                     this.props.handleShowHidePlatformChange(
@@ -143,7 +143,7 @@ class ShowInWidgetList extends Component {
                     <div>
                       <div>
                         {_find(showHidePlatformsList, {
-                          show_in_widget: 0
+                          show_in_widget: 1
                         }) ? null : (
                           <small style={{ color: "red" }}>
                             * You cannot disable all platforms at once

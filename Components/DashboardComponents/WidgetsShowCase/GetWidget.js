@@ -184,7 +184,7 @@ class GetWidget extends Component {
             ...showHidePlatformsList,
             [id]: {
               id,
-              show_in_widget,
+              show_in_widget: show_in_widget && has_review_aggregator,
               social_media_app_id,
               label: profile_name || name,
               touched: false,
