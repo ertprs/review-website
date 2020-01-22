@@ -10,8 +10,6 @@ import FormField from "../../../Widgets/FormField/FormField";
 import VpnKeyOutlinedIcon from "@material-ui/icons/VpnKeyOutlined";
 import validate from "../../../../utility/validate";
 import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 class GoogleReviewURLBox extends Component {
   state = {
@@ -292,28 +290,6 @@ class GoogleReviewURLBox extends Component {
             ) : (
               this.renderSetPrimaryBtn(isPrimary)
             )}
-          </div>
-          <div style={{ marginTop: "5px" }}>
-            {_get(formData[formDataItemKey], "has_review_aggregator", 0) ? (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={_get(
-                      formData[formDataItemKey],
-                      "show_in_widget",
-                      0
-                    )}
-                    onChange={() => {
-                      this.props.handleShowInWidgetCheckboxChange(
-                        formDataItemKey
-                      );
-                    }}
-                    value={_get(formData[formDataItemKey], "show_in_widget", 0)}
-                  />
-                }
-                label="Show this profile in widgets"
-              />
-            ) : null}
           </div>
         </div>
       </Paper>

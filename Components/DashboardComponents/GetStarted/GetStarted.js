@@ -27,8 +27,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import AvailablePlatformsList from "./AvailablePlatformsList";
 import AddPlatformDialog from "./AddPlatform/AddPlatformDialog/AddPlatformDialog";
 import validate from "../../../utility/validate";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { reviewChannelBoxStyles } from "./reviewChannelBoxStyles";
 import { reviewURLBoxStyles } from "./reviewURLBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
@@ -190,7 +188,6 @@ class GetStarted extends Component {
         let isTemporary = _get(formDataItem, "isTemporary", false);
         let social_media_app_id = _get(formDataItem, "social_media_app_id");
         let url = _get(formDataItem, "value", "");
-        let show_in_widget = _get(formDataItem, "show_in_widget", 0);
         //check if it's a new record, (isTemporary), then we do not need to add id in payload
         if (isTemporary) {
           let identity = _get(formDataItem, "identity", "");
@@ -213,8 +210,7 @@ class GetStarted extends Component {
             identity_data: identity_data,
             profile_name: profile_name,
             primary: primary,
-            clientKey: clientKey,
-            show_in_widget: show_in_widget
+            clientKey: clientKey
           };
         }
         //for already existing records, we will send the id
@@ -238,8 +234,7 @@ class GetStarted extends Component {
             identity: identity,
             identity_data: identity_data,
             profile_name: profile_name,
-            primary: primary,
-            show_in_widget: show_in_widget
+            primary: primary
           };
         }
         profiles.push(profileBody);
@@ -378,23 +373,6 @@ class GetStarted extends Component {
     return hasChanged;
   };
 
-  handleShowInWidgetCheckboxChange = item => {
-    this.setState({
-      formData: {
-        ...this.state.formData,
-        [item]: {
-          ...this.state.formData[item],
-          show_in_widget: !_get(this.state.formData[item], "show_in_widget", 1)
-            ? 1
-            : 0,
-          valid: true,
-          touched: true
-        }
-      },
-      disabledSave: false
-    });
-  };
-
   handleChange = (e, id) => {
     this.setState({
       formData: {
@@ -519,7 +497,6 @@ class GetStarted extends Component {
         let id = _get(socialObj, "id", "");
         let social_media_app_id = _get(socialObj, "social_media_app_id", "");
         let has_review_aggregator = _get(item, "has_review_aggregator", 0);
-        let show_in_widget = _get(item, "show_in_widget", 0);
         if (name && name.length > 0) {
           let editURL =
             social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
@@ -552,8 +529,7 @@ class GetStarted extends Component {
                     placeId,
                     directReviewUrl
                   },
-                  has_review_aggregator,
-                  show_in_widget
+                  has_review_aggregator
                 }
               };
             } else {
@@ -563,8 +539,7 @@ class GetStarted extends Component {
                   ...formDataLocal[editURL],
                   value: url,
                   valid: true,
-                  has_review_aggregator,
-                  show_in_widget
+                  has_review_aggregator
                 }
               };
             }
@@ -642,22 +617,6 @@ class GetStarted extends Component {
                     </>
                   </div>
                 </div>
-                <div>
-                  {_get(formData[item], "has_review_aggregator", 0) ? (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={_get(formData[item], "show_in_widget", 0)}
-                          onChange={() => {
-                            this.handleShowInWidgetCheckboxChange(item);
-                          }}
-                          value={_get(formData[item], "show_in_widget", 0)}
-                        />
-                      }
-                      label="Show this profile in widgets"
-                    />
-                  ) : null}
-                </div>
               </div>
             </Paper>
           </Grid>
@@ -676,9 +635,6 @@ class GetStarted extends Component {
                 this.handleSetAsPrimaryModalVisibilityToggle
               }
               showSetAsPrimaryModal={this.state.showSetAsPrimaryModal}
-              handleShowInWidgetCheckboxChange={
-                this.handleShowInWidgetCheckboxChange
-              }
             />
           </Grid>
         ];

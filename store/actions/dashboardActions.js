@@ -75,6 +75,9 @@ import {
   TOGGLE_REVIEW_VISIBILITY_SUCCESS,
   TOGGLE_REVIEW_VISIBILITY_FAILURE,
   SET_REVIEWS_AFTER_TOGGLE_VISIBILITY,
+  SET_WIDGET_PLATFORM_VISIBILITY_INIT,
+  SET_WIDGET_PLATFORM_VISIBILITY_SUCCESS,
+  SET_WIDGET_PLATFORM_VISIBILITY_FAILURE,
   GET_SHORT_REVIEW_URL_INIT,
   GET_SHORT_REVIEW_URL_SUCCESS,
   GET_SHORT_REVIEW_URL_ERROR
@@ -106,6 +109,7 @@ import {
   smartLinkSplitPercentageApi,
   configuredReviewPlatformsApi,
   toggleReviewVisibilityApi,
+  toggleWidgetPlatformVisibilityApi,
   shortReviewUrlApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
@@ -1419,6 +1423,62 @@ export const toggleReviewVisibility = (id, socialMediaAppId, profileId) => {
       }
     };
   }
+};
+
+//HIDE REVIEW PLATFORMS FROM WIDGETS
+
+export const toggleWidgetPlatformVisibility = profileData => {
+  return async (dispatch, getState) => {
+    const token = cookie.get("token");
+    dispatch({
+      type: SET_WIDGET_PLATFORM_VISIBILITY_INIT,
+      toggleWidgetPlatformVisibilityResponse: {
+        isLoading: true,
+        errorMsg: "",
+        success: {}
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}/${toggleWidgetPlatformVisibilityApi}`,
+        headers: { Authorization: `Bearer ${token}` },
+        data: { ...profileData }
+      });
+      const success = _get(result, "data.success", false);
+      const reviewPlatformProfiles = _get(
+        result,
+        "data.review_platform_profiles",
+        []
+      );
+      if (success) {
+        dispatch(updateAuthSocialArray(reviewPlatformProfiles));
+        dispatch({
+          type: SET_WIDGET_PLATFORM_VISIBILITY_SUCCESS,
+          toggleWidgetPlatformVisibilityResponse: {
+            isLoading: false,
+            errorMsg: "",
+            success
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      const errorMsg = _get(
+        error,
+        "response.data.data.message",
+        "Some Error Occurred!"
+      );
+      dispatch({
+        type: TOGGLE_REVIEW_VISIBILITY_FAILURE,
+        toggleReviewResponse: {
+          isLoading: false,
+          errorMsg,
+          success: false
+        }
+      });
+    }
+  };
 };
 
 export const getShortReviewUrl = data => {
