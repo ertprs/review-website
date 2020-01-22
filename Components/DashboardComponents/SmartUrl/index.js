@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Snackbar from "../../Widgets/Snackbar";
 import Card from "../../MaterialComponents/Card";
 import PlatformSplit from "./PlatformSplit";
+import UrlHitCount from "./UrlHitCount";
 import {
   isValidArray,
   calTotalReviewsAndRating
@@ -175,6 +176,7 @@ class SmartUrl extends Component {
             align-content: center;
           }
         `}</style>
+        <UrlHitCount />
         <h3> Generate Review URL</h3>
         <span>
           Select any one of the review platform from drop down below to fetch
