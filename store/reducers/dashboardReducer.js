@@ -72,7 +72,10 @@ import {
   TOGGLE_REVIEW_VISIBILITY_INIT,
   TOGGLE_REVIEW_VISIBILITY_SUCCESS,
   TOGGLE_REVIEW_VISIBILITY_FAILURE,
-  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY
+  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY,
+  GET_SHORT_REVIEW_URL_INIT,
+  GET_SHORT_REVIEW_URL_SUCCESS,
+  GET_SHORT_REVIEW_URL_ERROR
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -108,7 +111,8 @@ const dashboardReducer = (state = {}, action) => {
     review_platforms,
     updatedReviewPlatforms,
     scrapingArray,
-    toggleReviewResponse
+    toggleReviewResponse,
+    shortReviewUrl
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -535,6 +539,24 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         reviews: { ...reviews }
+      };
+    case GET_SHORT_REVIEW_URL_INIT:
+      return {
+        ...state,
+        type,
+        shortReviewUrl
+      };
+    case GET_SHORT_REVIEW_URL_SUCCESS:
+      return {
+        ...state,
+        type,
+        shortReviewUrl
+      };
+    case GET_SHORT_REVIEW_URL_ERROR:
+      return {
+        ...state,
+        type,
+        shortReviewUrl
       };
     default:
       return state;

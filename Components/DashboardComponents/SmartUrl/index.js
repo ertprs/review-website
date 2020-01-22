@@ -7,6 +7,10 @@ import {
   isValidArray,
   calTotalReviewsAndRating
 } from "../../../utility/commonFunctions";
+import {
+  postSplitPlatformConfigForSplitPlatform,
+  getShortReviewUrl
+} from "../../../store/actions/dashboardActions";
 //? Library imports
 import { connect } from "react-redux";
 import Select from "react-select";
@@ -16,7 +20,7 @@ import _sumBy from "lodash/sumBy";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import IconButton from "@material-ui/core/IconButton";
 import CopyIcon from "@material-ui/icons/FileCopyOutlined";
-import { postSplitPlatformConfigForSplitPlatform } from "../../../store/actions/dashboardActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class SmartUrl extends Component {
   state = {
@@ -24,7 +28,6 @@ class SmartUrl extends Component {
     showSnackbar: false,
     variant: "",
     snackbarMsg: "",
-    reviewUrl: "",
     reviewPlatformsForSplit: _get(this.props, "reviewPlatformsForSplit", []),
     sumOfAllSplits: 100,
     generateUrlLoading: false,
@@ -59,7 +62,12 @@ class SmartUrl extends Component {
   };
 
   handleDropdownChange = selectedObj => {
-    const { domainUrlKey, overallRating, domainName } = this.props;
+    const {
+      domainUrlKey,
+      overallRating,
+      domainName,
+      getShortReviewUrl
+    } = this.props;
     const selectedPlatform = _get(selectedObj, "value", "");
     const mode = _get(selectedObj, "mode", "");
     //? sending overall rating and domain name in case of "show available platforms" to jumping page
@@ -67,9 +75,9 @@ class SmartUrl extends Component {
       selectedPlatform === "showAvailablePlatforms"
         ? `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
         : `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&mode=${mode}`;
+    getShortReviewUrl({ url: reviewUrl });
     this.setState({
       selectedPlatform,
-      reviewUrl,
       generateUrlSuccess: false
     });
   };
@@ -120,7 +128,15 @@ class SmartUrl extends Component {
   };
 
   render() {
-    const { dropdownData } = this.props;
+    const { dropdownData, shortReviewUrl } = this.props;
+    const reviewUrl = _get(shortReviewUrl, "url", "");
+    const reviewUrlLoading = _get(shortReviewUrl, "isLoading", false);
+    const reviewUrlSuccess = _get(shortReviewUrl, "success", false);
+    const reviewUrlErrorMsg = _get(
+      shortReviewUrl,
+      "errorMsg",
+      "Unable to generate review Url!"
+    );
     const {
       sumOfAllSplits,
       reviewPlatformsForSplit,
@@ -129,7 +145,6 @@ class SmartUrl extends Component {
       variant,
       snackbarMsg,
       generateUrlLoading,
-      reviewUrl,
       generateUrlSuccess
     } = this.state;
     return (
@@ -149,6 +164,7 @@ class SmartUrl extends Component {
             font-weight: bold;
             margin: 12px 0px;
             word-break: break-all;
+            display: flex;
           }
           .urlText {
             font-size: "14px";
@@ -197,33 +213,47 @@ class SmartUrl extends Component {
               alignItems: "center"
             }}
           >
-            <div className="row">
-              <div className="col-md-11">
-                <div className="mb_10">
-                  <span className="urlText">
-                    Here is your review URL. Please copy and paste this URL in
-                    your emails sent to customers to leave reviews:
-                  </span>
+            {reviewUrlLoading ? (
+              <div>
+                <CircularProgress color="secondary" />
+              </div>
+            ) : reviewUrlSuccess ? (
+              <>
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="mb_10">
+                      <span className="urlText">
+                        Here is your review URL. Please copy and paste this URL
+                        in your emails sent to customers to leave reviews:
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <span className="url">{reviewUrl}</span>
-              </div>
-              <div className="col-md-1 copyToClipboardIcon">
-                <CopyToClipboard
-                  text={reviewUrl}
-                  onCopy={() =>
-                    this.setState({
-                      showSnackbar: true,
-                      variant: "success",
-                      snackbarMsg: "Url Copied to clipboard"
-                    })
-                  }
-                >
-                  <IconButton aria-label="copy">
-                    <CopyIcon />
-                  </IconButton>
-                </CopyToClipboard>
-              </div>
-            </div>
+                <div className="row">
+                  <div className="col-md-9">
+                    <span className="url">{reviewUrl}</span>
+                  </div>
+                  <div className="col-md-3">
+                    <CopyToClipboard
+                      text={reviewUrl}
+                      onCopy={() =>
+                        this.setState({
+                          showSnackbar: true,
+                          variant: "success",
+                          snackbarMsg: "Url Copied to clipboard"
+                        })
+                      }
+                    >
+                      <IconButton aria-label="copy">
+                        <CopyIcon />
+                      </IconButton>
+                    </CopyToClipboard>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div style={{ color: "red" }}>{reviewUrlErrorMsg}</div>
+            )}
           </Card>
         ) : null}
         <Snackbar
@@ -302,15 +332,19 @@ const mapStateToProps = state => {
     "auth.logIn.userProfile.business_profile.domain",
     ""
   );
+
+  const shortReviewUrl = _get(dashboardData, "shortReviewUrl", {});
   return {
     dropdownData,
     domainUrlKey,
     reviewPlatformsForSplit,
     overallRating,
-    domainName
+    domainName,
+    shortReviewUrl
   };
 };
 
 export default connect(mapStateToProps, {
-  postSplitPlatformConfigForSplitPlatform
+  postSplitPlatformConfigForSplitPlatform,
+  getShortReviewUrl
 })(SmartUrl);
