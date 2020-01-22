@@ -18,7 +18,8 @@ class CombinedReviewsWidgetConfigurations extends Component {
       refreshWidgetOnDemand,
       refreshWidget,
       showHidePlatformsList,
-      handleShowHidePlatformChange
+      handleShowHidePlatformChange,
+      handleShowHidePlatformSave
     } = this.props;
     return (
       <div>
@@ -57,6 +58,8 @@ class CombinedReviewsWidgetConfigurations extends Component {
               <ShowInWidgetList
                 showHidePlatformsList={showHidePlatformsList}
                 handleShowHidePlatformChange={handleShowHidePlatformChange}
+                handleShowHidePlatformSave={handleShowHidePlatformSave}
+                refreshWidgetOnDemand={refreshWidgetOnDemand}
               />
             </div>
           </div>

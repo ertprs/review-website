@@ -72,7 +72,10 @@ import {
   TOGGLE_REVIEW_VISIBILITY_INIT,
   TOGGLE_REVIEW_VISIBILITY_SUCCESS,
   TOGGLE_REVIEW_VISIBILITY_FAILURE,
-  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY
+  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY,
+  SET_WIDGET_PLATFORM_VISIBILITY_INIT,
+  SET_WIDGET_PLATFORM_VISIBILITY_SUCCESS,
+  SET_WIDGET_PLATFORM_VISIBILITY_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -108,7 +111,8 @@ const dashboardReducer = (state = {}, action) => {
     review_platforms,
     updatedReviewPlatforms,
     scrapingArray,
-    toggleReviewResponse
+    toggleReviewResponse,
+    toggleWidgetPlatformVisibilityResponse
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -535,6 +539,24 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         reviews: { ...reviews }
+      };
+    case SET_WIDGET_PLATFORM_VISIBILITY_INIT:
+      return {
+        ...state,
+        type,
+        toggleWidgetPlatformVisibilityResponse
+      };
+    case SET_WIDGET_PLATFORM_VISIBILITY_SUCCESS:
+      return {
+        ...state,
+        type,
+        toggleWidgetPlatformVisibilityResponse
+      };
+    case SET_WIDGET_PLATFORM_VISIBILITY_FAILURE:
+      return {
+        ...state,
+        type,
+        toggleWidgetPlatformVisibilityResponse
       };
     default:
       return state;

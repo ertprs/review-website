@@ -5,9 +5,25 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import _get from "lodash/get";
+import { connect } from "react-redux";
 
 class ShowInWidgetList extends Component {
+  componentDidUpdate(prevProps, prevState) {
+    const isLoading = _get(this.props, "isLoading", false);
+    const success = _get(this.props, "success", {});
+    const prevIsLoading = _get(prevProps, "isLoading", false);
+    const prevSuccess = _get(prevProps, "success", {});
+    if (
+      isLoading !== prevIsLoading &&
+      success !== prevSuccess &&
+      isLoading === false
+    ) {
+      this.props.refreshWidgetOnDemand();
+    }
+  }
+
   renderShowHidePlatformsList = () => {
     const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
     let output = [];
@@ -64,6 +80,7 @@ class ShowInWidgetList extends Component {
   };
 
   render() {
+    const isLoading = _get(this.props, "isLoading", false);
     return (
       <div>
         <h6>Show / Hide platforms from widget</h6>
@@ -71,14 +88,42 @@ class ShowInWidgetList extends Component {
           <List>{this.renderShowHidePlatformsList()}</List>
         </div>
         <div>
-          <Button size="small">
-            Click here after showing/hiding platforms above to save and see live
-            preview
-          </Button>
+          {isLoading ? (
+            <div style={{ textAlign: "center" }}>
+              <Button size="small">
+                <CircularProgress size={20} />
+              </Button>
+            </div>
+          ) : (
+            <div style={{ margin: "2px 0 35px 0" }}>
+              <Button
+                size="small"
+                onClick={this.props.handleShowHidePlatformSave}
+              >
+                Click here after Checking/Un-checking platforms above to save
+                and see live preview
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
   }
 }
 
-export default ShowInWidgetList;
+const mapStateToProps = state => {
+  const toggleWidgetPlatformVisibilityResponse = _get(
+    state,
+    "dashboardData.toggleWidgetPlatformVisibilityResponse",
+    {}
+  );
+  const isLoading = _get(
+    toggleWidgetPlatformVisibilityResponse,
+    "isLoading",
+    false
+  );
+  const success = _get(toggleWidgetPlatformVisibilityResponse, "success", {});
+  return { isLoading, success };
+};
+
+export default connect(mapStateToProps)(ShowInWidgetList);

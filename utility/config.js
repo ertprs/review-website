@@ -41,3 +41,5 @@ export const addReviewPlatformAPI = "/api/my-business/profile/review-platform";
 export const getAvailableReviewPlatformsApi = "/api/master/review-platforms";
 export const smartLinkSplitPercentageApi = "/api/my-business/domain";
 export const toggleReviewVisibilityApi = "api/my-business/reviews";
+export const toggleWidgetPlatformVisibilityApi =
+  "/api/my-business/profile/direct-platform-urls/update-widget-visibility";
