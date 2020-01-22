@@ -28,14 +28,19 @@ class ShowInWidgetList extends Component {
   anyCheckBoxTouched = () => {
     const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
     let touched = _find(showHidePlatformsList, { touched: true });
-    return touched ? true : false;
+    let onePlatformLeft = _find(showHidePlatformsList, { show_in_widget: 0 });
+    if (!onePlatformLeft) {
+      return false;
+    } else {
+      return touched ? true : false;
+    }
   };
 
   renderShowHidePlatformsList = () => {
     const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
     let output = [];
     if (showHidePlatformsList) {
-      if (Object.keys(showHidePlatformsList).length > 0) {
+      if (Object.keys(showHidePlatformsList).length > 1) {
         for (let item in showHidePlatformsList) {
           let showHidePlatformsListItem = showHidePlatformsList[item] || {};
           let id = _get(showHidePlatformsListItem, "id", "");
@@ -89,6 +94,7 @@ class ShowInWidgetList extends Component {
 
   render() {
     const isLoading = _get(this.props, "isLoading", false);
+    const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
     return (
       <div>
         <h6>Show / Hide platforms from widget</h6>
@@ -101,29 +107,56 @@ class ShowInWidgetList extends Component {
           `}
         </style>
         <div className="platformListContainer">
-          <List>{this.renderShowHidePlatformsList()}</List>
+          {showHidePlatformsList ? (
+            Object.keys(showHidePlatformsList).length <= 1 ? (
+              <div>
+                To use hide/show platforms from widgets functionality, you need
+                to setup at least two platforms that must have reviews
+              </div>
+            ) : (
+              <List>{this.renderShowHidePlatformsList()}</List>
+            )
+          ) : null}
         </div>
-        <div>
-          {isLoading ? (
-            <div style={{ textAlign: "center" }}>
-              <Button size="small">
-                <CircularProgress size={20} />
-              </Button>
+        {showHidePlatformsList ? (
+          Object.keys(showHidePlatformsList).length <= 1 ? null : (
+            <div>
+              {isLoading ? (
+                <div style={{ textAlign: "center" }}>
+                  <Button size="small">
+                    <CircularProgress size={20} />
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <div style={{ margin: "20px 0 35px 0" }}>
+                    <Button
+                      size="small"
+                      onClick={this.props.handleShowHidePlatformSave}
+                      color="primary"
+                      variant="contained"
+                      disabled={!this.anyCheckBoxTouched()}
+                    >
+                      Click here after Checking/Un-checking platforms above to
+                      save and see live preview
+                    </Button>
+                    <div>
+                      <div>
+                        {_find(showHidePlatformsList, {
+                          show_in_widget: 0
+                        }) ? null : (
+                          <small style={{ color: "red" }}>
+                            * You cannot disable all platforms at once
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
-          ) : (
-            <div style={{ margin: "20px 0 35px 0" }}>
-              <Button
-                size="small"
-                onClick={this.props.handleShowHidePlatformSave}
-                style={{ border: "1px solid #999" }}
-                disabled={!this.anyCheckBoxTouched()}
-              >
-                Click here after Checking/Un-checking platforms above to save
-                and see live preview
-              </Button>
-            </div>
-          )}
-        </div>
+          )
+        ) : null}
       </div>
     );
   }
