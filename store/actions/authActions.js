@@ -493,6 +493,10 @@ export const businessSignUp = (signupData, api) => {
           case "subscription_exists":
             errorMsg = "Sorry, this company is already registered with us.";
             break;
+          case "unsupported_suffix":
+            errorMsg =
+              "Your domain isn't supported yet. Please, check the website given or contact support.";
+            break;
           default:
             errorMsg = "Some Error Occurred while Registration!";
         }

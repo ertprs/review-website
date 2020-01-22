@@ -5,6 +5,9 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
 import Moment from "react-moment";
+import "moment-timezone";
+import { convertToTimeStamp } from "../../../utility/commonFunctions";
+import cookie from "js-cookie";
 
 const columns = [
   { title: "Created", field: "created" },
@@ -14,16 +17,19 @@ const columns = [
   { title: "Reference", field: "reference" }
 ];
 
-const parseTableData = tableData => {
+const parseTableData = (tableData, timezone) => {
   let result = tableData.map(data => {
     let status = _get(data, "status", 0);
     status = status === null ? 0 : status;
     let statusInWords = status === 1 ? "Sent" : "Not Sent";
     let reference = _get(data, "reference", "##");
     reference = reference === null ? "##" : reference;
-    let created = (
-      <Moment format="DD/MM/YYYY HH:mm">
-        {data.created || new Date().getDate()}
+    let created = _get(data, "created", "");
+    //? This will convert date according to timezone
+    const unixTimestamp = convertToTimeStamp(created);
+    created = (
+      <Moment unix tz={timezone} format="DD/MM/YYYY HH:mm">
+        {unixTimestamp}
       </Moment>
     );
     return { ...data, status: statusInWords, reference, created };
@@ -40,7 +46,7 @@ class InvitationHistory extends Component {
     this.props.scrollToTopOfThePage();
   }
   render() {
-    const { token } = this.props;
+    const { timezone } = this.props;
     return (
       <MaterialTable
         title="Invitation History"
@@ -66,12 +72,12 @@ class InvitationHistory extends Component {
             axios({
               method: "GET",
               url: url,
-              headers: { Authorization: `Bearer ${token}` }
+              headers: { Authorization: `Bearer ${cookie.get("token")}` }
             }).then(result => {
               let tableData = _get(result, "data.invitations", []);
               let parsedTableData = [];
               if (Array.isArray(tableData) && !_isEmpty(tableData)) {
-                parsedTableData = parseTableData(tableData);
+                parsedTableData = parseTableData(tableData, timezone);
               }
               resolve({
                 data: parsedTableData,
@@ -88,8 +94,8 @@ class InvitationHistory extends Component {
 
 const mapStateToProps = state => {
   const { auth } = state;
-  const token = _get(auth, "logIn.token", "");
-  return { token };
+  const timezone = _get(auth, "logIn.userProfile.timezone", "");
+  return { timezone };
 };
 
 export default connect(mapStateToProps)(InvitationHistory);
