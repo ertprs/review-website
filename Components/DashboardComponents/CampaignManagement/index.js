@@ -23,6 +23,10 @@ import _find from "lodash/find";
 import { campaignHistoryApi } from "../../../utility/config";
 //! Connect import
 import { connect } from "react-redux";
+//! Moment imports
+import Moment from "react-moment";
+import "moment-timezone";
+import { convertToTimeStamp } from "../../../utility/commonFunctions";
 
 const campaignStatus = {
   1: "Active",
@@ -260,12 +264,20 @@ class CampaignManagement extends Component {
                         statusInString === "Scheduled"
                           ? "Deactivate"
                           : "Activate";
-
+                      //? This will convert date according to timezone
+                      let createdDate = created_at || "";
+                      const timezone = _get(this.props, "timezone", "");
+                      const unixTimestamp = convertToTimeStamp(createdDate);
+                      createdDate = (
+                        <Moment unix tz={timezone} format="DD/MM/YYYY HH:mm">
+                          {unixTimestamp}
+                        </Moment>
+                      );
                       return {
                         id,
                         name,
                         sender_name,
-                        created_at,
+                        created_at: createdDate,
                         updated_at,
                         status: statusInString,
                         campaign_type,
@@ -315,13 +327,16 @@ class CampaignManagement extends Component {
 }
 
 const mapStateToProps = state => {
-  const { changeCampaignStatus } = state.dashboardData;
+  const { dashboardData, auth } = state;
+  const { changeCampaignStatus } = dashboardData;
+  const timezone = _get(auth, "logIn.userProfile.timezone", "");
   let campaignStatusIsLoading = _get(changeCampaignStatus, "isLoading", false);
   let campaignStatusSuccess = _get(changeCampaignStatus, "success", undefined);
 
   return {
     campaignStatusIsLoading,
-    campaignStatusSuccess
+    campaignStatusSuccess,
+    timezone
   };
 };
 

@@ -74,7 +74,10 @@ import {
   TOGGLE_REVIEW_VISIBILITY_INIT,
   TOGGLE_REVIEW_VISIBILITY_SUCCESS,
   TOGGLE_REVIEW_VISIBILITY_FAILURE,
-  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY
+  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY,
+  GET_SHORT_REVIEW_URL_INIT,
+  GET_SHORT_REVIEW_URL_SUCCESS,
+  GET_SHORT_REVIEW_URL_ERROR
 } from "./actionTypes";
 import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
 import cookie from "js-cookie";
@@ -102,7 +105,8 @@ import {
   getAvailableReviewPlatformsApi,
   smartLinkSplitPercentageApi,
   configuredReviewPlatformsApi,
-  toggleReviewVisibilityApi
+  toggleReviewVisibilityApi,
+  shortReviewUrlApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -1340,7 +1344,7 @@ export const toggleReviewVisibility = (id, socialMediaAppId, profileId) => {
       try {
         const result = await axios({
           method: "POST",
-          url: `${process.env.BASE_URL}/${toggleReviewVisibilityApi}/${id}/toggle-widget-visibility`,
+          url: `${process.env.BASE_URL}${toggleReviewVisibilityApi}/${id}/toggle-widget-visibility`,
           headers: { Authorization: `Bearer ${token}` }
         });
         const success = _get(result, "data.success", false);
@@ -1415,4 +1419,50 @@ export const toggleReviewVisibility = (id, socialMediaAppId, profileId) => {
       }
     };
   }
+};
+
+export const getShortReviewUrl = data => {
+  const token = cookie.get("token");
+  return async dispatch => {
+    dispatch({
+      type: GET_SHORT_REVIEW_URL_INIT,
+      shortReviewUrl: {
+        url: "",
+        isLoading: true,
+        errorMsg: "",
+        success: undefined
+      }
+    });
+    try {
+      const result = await axios({
+        method: "POST",
+        url: `${process.env.BASE_URL}${shortReviewUrlApi}`,
+        data,
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      dispatch({
+        type: GET_SHORT_REVIEW_URL_SUCCESS,
+        shortReviewUrl: {
+          url: _get(result, "data.short_url", ""),
+          success: _get(result, "data.success", false),
+          isLoading: false,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_SHORT_REVIEW_URL_ERROR,
+        shortReviewUrl: {
+          url: "",
+          success: false,
+          isLoading: false,
+          errorMsg: _get(
+            error,
+            "response.data.message",
+            "Unable to generate review Url!"
+          )
+        }
+      });
+    }
+  };
 };
