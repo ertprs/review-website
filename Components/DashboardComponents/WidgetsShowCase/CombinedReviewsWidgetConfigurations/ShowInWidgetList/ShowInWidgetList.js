@@ -53,7 +53,8 @@ class ShowInWidgetList extends Component {
             <ListItem
               style={{
                 boxShadow: "0px 2px 4px #d8d8d8",
-                margin: "5px 0 5px 0"
+                margin: "10px auto 10px auto",
+                width: "99%"
               }}
               key={id}
             >
@@ -84,7 +85,15 @@ class ShowInWidgetList extends Component {
     return (
       <div>
         <h6>Show / Hide platforms from widget</h6>
-        <div>
+        <style jsx>
+          {`
+            .platformListContainer {
+              max-height: 300px;
+              overflow-y: auto;
+            }
+          `}
+        </style>
+        <div className="platformListContainer">
           <List>{this.renderShowHidePlatformsList()}</List>
         </div>
         <div>
@@ -95,7 +104,7 @@ class ShowInWidgetList extends Component {
               </Button>
             </div>
           ) : (
-            <div style={{ margin: "2px 0 35px 0" }}>
+            <div style={{ margin: "20px 0 35px 0" }}>
               <Button
                 size="small"
                 onClick={this.props.handleShowHidePlatformSave}
