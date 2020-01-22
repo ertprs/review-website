@@ -17,7 +17,7 @@ const columns = [
   { title: "Reference", field: "reference" }
 ];
 
-const parseTableData = tableData => {
+const parseTableData = (tableData, timezone) => {
   let result = tableData.map(data => {
     let status = _get(data, "status", 0);
     status = status === null ? 0 : status;
@@ -26,7 +26,6 @@ const parseTableData = tableData => {
     reference = reference === null ? "##" : reference;
     let created = _get(data, "created", "");
     //? This will convert date according to timezone
-    const timezone = _get(this.props, "timezone", "");
     const unixTimestamp = convertToTimeStamp(created);
     created = (
       <Moment unix tz={timezone} format="DD/MM/YYYY HH:mm">
@@ -47,7 +46,7 @@ class InvitationHistory extends Component {
     this.props.scrollToTopOfThePage();
   }
   render() {
-    const { token } = this.props;
+    const { timezone } = this.props;
     return (
       <MaterialTable
         title="Invitation History"
@@ -78,7 +77,7 @@ class InvitationHistory extends Component {
               let tableData = _get(result, "data.invitations", []);
               let parsedTableData = [];
               if (Array.isArray(tableData) && !_isEmpty(tableData)) {
-                parsedTableData = parseTableData(tableData);
+                parsedTableData = parseTableData(tableData, timezone);
               }
               resolve({
                 data: parsedTableData,
