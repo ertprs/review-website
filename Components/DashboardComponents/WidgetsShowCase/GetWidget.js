@@ -38,7 +38,8 @@ class GetWidget extends Component {
         ...(ratingCountOptions[2] || { value: 3, label: "3 stars and above" })
       },
       preferencePlatformArray: [],
-      preferencePlatformString: ""
+      preferencePlatformString: "",
+      showHidePlatformsList: {}
     };
   }
 
@@ -46,7 +47,8 @@ class GetWidget extends Component {
     window.scrollTo(0, 0);
     //generate the dropdown dynamically, display only those platforms which have reviews
     this.generateDropDownDataDynamically();
-    //if platforms were generated dynamically, go for platformPreferenceArray generation
+    //generate the showHidePlatformsList dynamically
+    this.generateShowHidePlatformsListDynamically();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -149,6 +151,36 @@ class GetWidget extends Component {
         );
       }
     }
+  };
+
+  generateShowHidePlatformsListDynamically = () => {
+    const socialArray = _get(this.props, "socialArray", []);
+    let showHidePlatformsList = {};
+    if (socialArray) {
+      if (socialArray.length > 0) {
+        socialArray.forEach(item => {
+          let id = _get(item, "id", "");
+          let show_in_widget = _get(item, "show_in_widget", 0);
+          let social_media_app_id = _get(item, "social_media_app_id", "");
+          let profile_name = _get(item, "profile_name", "");
+          let has_review_aggregator = _get(item, "has_review_aggregator", 0);
+          let name = _get(item, "name", "");
+          showHidePlatformsList = {
+            ...showHidePlatformsList,
+            [id]: {
+              id,
+              show_in_widget,
+              social_media_app_id,
+              label: profile_name || name,
+              touched: false,
+              has_review_aggregator
+            }
+          };
+        });
+      }
+    }
+    console.log(showHidePlatformsList, "showHidePlatformsList");
+    this.setState({ showHidePlatformsList });
   };
 
   refreshWidgetOnDemand = () => {
@@ -281,6 +313,23 @@ class GetWidget extends Component {
     );
   };
 
+  //!Handler for show/hide platforms change in widget
+  handleShowHidePlatformChange = item => {
+    const showHidePlatformsList = _get(this.state, "showHidePlatformsList", {});
+    const id = _get(item, "id", "");
+    const show_in_widget = _get(item, "show_in_widget", 0);
+    this.setState({
+      showHidePlatformsList: {
+        ...showHidePlatformsList,
+        [id]: {
+          ...showHidePlatformsList[id],
+          show_in_widget: show_in_widget ? 0 : 1,
+          touched: true
+        }
+      }
+    });
+  };
+
   renderInput = () => {
     const { widgetHeight, platforms, selectedPlatform } = this.state;
     return (
@@ -376,6 +425,10 @@ class GetWidget extends Component {
                     setPreferencePlatformData={this.setPreferencePlatformData}
                     refreshWidgetOnDemand={this.refreshWidgetOnDemand}
                     refreshWidget={this.state.refreshWidget}
+                    showHidePlatformsList={this.state.showHidePlatformsList}
+                    handleShowHidePlatformChange={
+                      this.handleShowHidePlatformChange
+                    }
                   />
                 )}
               </div>

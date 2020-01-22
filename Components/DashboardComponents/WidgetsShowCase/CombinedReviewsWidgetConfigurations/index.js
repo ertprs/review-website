@@ -3,6 +3,7 @@ import MaxReviewsSelector from "./MaxReviewsSelector";
 import NewerThanMonthSelector from "./NewerThanMonthSelector";
 import RatingSelector from "./RatingSelector";
 import WidgetPlatformPreference from "./WidgetPlatformPreference/WidgetPlatformPreference";
+import ShowInWidgetList from "./ShowInWidgetList/ShowInWidgetList";
 
 class CombinedReviewsWidgetConfigurations extends Component {
   render() {
@@ -15,7 +16,9 @@ class CombinedReviewsWidgetConfigurations extends Component {
       preferencePlatformArray,
       setPreferencePlatformData,
       refreshWidgetOnDemand,
-      refreshWidget
+      refreshWidget,
+      showHidePlatformsList,
+      handleShowHidePlatformChange
     } = this.props;
     return (
       <div>
@@ -46,6 +49,14 @@ class CombinedReviewsWidgetConfigurations extends Component {
                 setPreferencePlatformData={setPreferencePlatformData}
                 refreshWidgetOnDemand={refreshWidgetOnDemand}
                 refreshWidget={refreshWidget}
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12">
+              <ShowInWidgetList
+                showHidePlatformsList={showHidePlatformsList}
+                handleShowHidePlatformChange={handleShowHidePlatformChange}
               />
             </div>
           </div>
