@@ -97,7 +97,7 @@ class ShowInWidgetList extends Component {
     const showHidePlatformsList = _get(this.props, "showHidePlatformsList", {});
     return (
       <div>
-        <h6>Show / Hide platforms from widget</h6>
+        <h6>Show (Checked) / Hide (Unchecked) platforms from widget</h6>
         <style jsx>
           {`
             .platformListContainer {
