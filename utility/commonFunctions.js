@@ -164,3 +164,12 @@ export const calTotalReviewsAndRating = reviews => {
     overallRating
   };
 };
+
+//The date can be date-time and should be in string
+export const convertToTimeStamp = date => {
+  let timestamp = 0;
+  if (date) {
+    timestamp = Date.parse(date) / 1000;
+  }
+  return timestamp;
+};
