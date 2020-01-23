@@ -1157,71 +1157,73 @@ export const postSplitPlatformConfigForSplitPlatform = (
 //? this action creator is used to set reviews in dashboardData after login and on dashboard componentDidMount only
 export const setReviewsAfterLogin = socialArray => {
   return async (dispatch, getState) => {
-    let reviews = {};
-    const state = getState();
-    const businessProfile = _get(
-      state,
-      "auth.logIn.userProfile.business_profile"
-    );
-    const domainId = _get(businessProfile, "domainId", 0);
-    Promise.all(
-      socialArray.map(platform => {
-        const hasData = _get(platform, "hasData", 0);
-        const has_review_aggregator = _get(
-          platform,
-          "has_review_aggregator",
-          0
-        );
-        console.log(has_review_aggregator, "has_review_aggregator");
-        let socialAppId = _get(platform, "social_media_app_id", "");
-        let profileId = _get(platform, "id", "");
-        if (has_review_aggregator === 1) {
-          return axios
-            .get(
-              `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
-            )
-            .then(res => {
-              return {
-                ...res.data,
-                socialAppId,
-                profileId
-              };
-            })
-            .catch(err => {
-              return {
-                err,
-                socialAppId,
-                profileId
-              };
-            });
-        }
-      })
-    ).then(resArr => {
-      resArr.forEach(res => {
-        let success = false;
-        let socialAppId = _get(res, "socialAppId", "");
-        let profileId = _get(res, "profileId");
-        let reviewsArr = _get(res, "data.reviews", []);
-        if (isValidArray(reviewsArr)) {
-          success = true;
-        }
-        if (socialAppId && profileId) {
-          reviews = {
-            ...reviews,
-            [socialAppId]: {
-              ..._get(reviews, socialAppId, {}),
-              [profileId]: {
-                ..._get(reviews, socialAppId.profileId, {}),
-                data: { ...res },
-                isLoading: false,
-                success
+    if (isValidArray(socialArray)) {
+      let reviews = {};
+      const state = getState();
+      const businessProfile = _get(
+        state,
+        "auth.logIn.userProfile.business_profile"
+      );
+      const domainId = _get(businessProfile, "domainId", 0);
+      Promise.all(
+        socialArray.map(platform => {
+          const hasData = _get(platform, "hasData", 0);
+          const has_review_aggregator = _get(
+            platform,
+            "has_review_aggregator",
+            0
+          );
+          console.log(has_review_aggregator, "has_review_aggregator");
+          let socialAppId = _get(platform, "social_media_app_id", "");
+          let profileId = _get(platform, "id", "");
+          if (has_review_aggregator === 1) {
+            return axios
+              .get(
+                `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
+              )
+              .then(res => {
+                return {
+                  ...res.data,
+                  socialAppId,
+                  profileId
+                };
+              })
+              .catch(err => {
+                return {
+                  err,
+                  socialAppId,
+                  profileId
+                };
+              });
+          }
+        })
+      ).then(resArr => {
+        resArr.forEach(res => {
+          let success = false;
+          let socialAppId = _get(res, "socialAppId", "");
+          let profileId = _get(res, "profileId");
+          let reviewsArr = _get(res, "data.reviews", []);
+          if (isValidArray(reviewsArr)) {
+            success = true;
+          }
+          if (socialAppId && profileId) {
+            reviews = {
+              ...reviews,
+              [socialAppId]: {
+                ..._get(reviews, socialAppId, {}),
+                [profileId]: {
+                  ..._get(reviews, socialAppId.profileId, {}),
+                  data: { ...res },
+                  isLoading: false,
+                  success
+                }
               }
-            }
-          };
-        }
+            };
+          }
+        });
+        dispatch({ type: SET_REVIEWS_AFTER_LOGIN, reviews });
       });
-      dispatch({ type: SET_REVIEWS_AFTER_LOGIN, reviews });
-    });
+    }
   };
 };
 
