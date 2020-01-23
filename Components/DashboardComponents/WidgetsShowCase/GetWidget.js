@@ -10,11 +10,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Head from "next/head";
 import _get from "lodash/get";
 import _find from "lodash/find";
+import _groupBy from "lodash/groupBy";
 import Select from "react-select";
 import CombinedReviewsWidgetConfigurations from "./CombinedReviewsWidgetConfigurations";
 import { newerThanMonthsOptions } from "../../../utility/constants/newerThanMonthsConstants";
 import { maxReviewsOptions } from "../../../utility/constants/maxReviewsConstants";
 import { ratingCountOptions } from "../../../utility/constants/ratingCountConstants";
+import { toggleWidgetPlatformVisibility } from "../../../store/actions/dashboardActions";
+import ShowInWidgetList from "./CombinedReviewsWidgetConfigurations/ShowInWidgetList/ShowInWidgetList";
 
 class GetWidget extends Component {
   constructor(props) {
@@ -31,18 +34,23 @@ class GetWidget extends Component {
         })
       },
       selectedNewerThanMonths: {
-        ...(newerThanMonthsOptions[2] || { value: 2, label: "2 Months" })
+        ...(newerThanMonthsOptions[0] || { value: 0, label: "Not needed" })
       },
       selectedRatingCount: {
         ...(ratingCountOptions[2] || { value: 3, label: "3 stars and above" })
-      }
+      },
+      preferencePlatformArray: [],
+      preferencePlatformString: "",
+      showHidePlatformsList: {}
     };
   }
 
   componentDidMount() {
-    window.scrollTo(0, 0);
+    this.props.scrollToTopOfThePage();
     //generate the dropdown dynamically, display only those platforms which have reviews
     this.generateDropDownDataDynamically();
+    //generate the showHidePlatformsList dynamically
+    this.generateShowHidePlatformsListDynamically();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -50,10 +58,43 @@ class GetWidget extends Component {
     const socialArray = _get(this.props, "socialArray", []);
     const prevReviews = _get(prevProps, "reviews", {});
     const prevSocialArray = _get(prevProps, "socialArray", []);
-    if (reviews !== prevReviews && Object.keys(reviews).length > 0) {
+    if (
+      (reviews !== prevReviews && Object.keys(reviews).length > 0) ||
+      (socialArray !== prevSocialArray && socialArray.length > 0)
+    ) {
       this.generateDropDownDataDynamically();
+      this.generateShowHidePlatformsListDynamically();
     }
   }
+
+  generatePreferencePlatformArray = () => {
+    const platforms = _get(this.state, "platforms", []);
+    const review_platforms = _get(this.props, "review_platforms.data", {});
+    const platformsGrouped = _groupBy(platforms, "socialAppId");
+    const socialPlatforms = Object.keys(platformsGrouped);
+    let localPlatforms = [];
+    let preferencePlatformString = "";
+    localPlatforms = socialPlatforms.map((item, index) => {
+      let socialAppId = item;
+      if (socialAppId) {
+        if (preferencePlatformString.length > 0) {
+          preferencePlatformString =
+            preferencePlatformString + "," + socialAppId;
+        } else {
+          preferencePlatformString = socialAppId;
+        }
+      }
+      return {
+        id: "item-" + index,
+        label: review_platforms[socialAppId],
+        socialAppId: socialAppId
+      };
+    });
+    this.setState({
+      preferencePlatformArray: [...localPlatforms],
+      preferencePlatformString
+    });
+  };
 
   generateDropDownDataDynamically = () => {
     const reviews = _get(this.props, "reviews", {});
@@ -67,7 +108,16 @@ class GetWidget extends Component {
             let reviewsObj = reviews[socialAppId];
             //loop over reviewsObj and push into platforms {label, value:socialAppId,  profileId}
             for (let item in reviewsObj) {
-              if (reviewsObj[item]) {
+              //check for the reviewObj in social array and extract it's show_in_widget
+              let socialObjOfReview = _find(socialArray, {
+                id: Number(item) || ""
+              });
+              let show_in_widget = 0;
+              if (socialObjOfReview) {
+                show_in_widget = _get(socialObjOfReview, "show_in_widget", 0);
+              }
+              //if their are reviews and show_in_widget
+              if (reviewsObj[item] && show_in_widget) {
                 let particularPlatformReviewsObj = reviewsObj[item];
                 let reviewsCount = (
                   _get(particularPlatformReviewsObj, "data.data.reviews", []) ||
@@ -105,10 +155,76 @@ class GetWidget extends Component {
     }
     if (Object.keys(platforms)) {
       if (Object.keys(platforms).length > 0) {
-        this.setState({
-          platforms: [...platforms],
-          selectedPlatform: platforms[0]
+        this.setState(
+          {
+            platforms: [...platforms],
+            selectedPlatform: platforms[0]
+          },
+          () => {
+            this.generatePreferencePlatformArray();
+          }
+        );
+      }
+    }
+  };
+
+  generateShowHidePlatformsListDynamically = () => {
+    const socialArray = _get(this.props, "socialArray", []);
+    let showHidePlatformsList = {};
+    if (socialArray) {
+      if (socialArray.length > 0) {
+        socialArray.forEach(item => {
+          let id = _get(item, "id", "");
+          let show_in_widget = _get(item, "show_in_widget", 0);
+          let social_media_app_id = _get(item, "social_media_app_id", "");
+          let profile_name = _get(item, "profile_name", "");
+          let has_review_aggregator = _get(item, "has_review_aggregator", 0);
+          let name = _get(item, "name", "");
+          showHidePlatformsList = {
+            ...showHidePlatformsList,
+            [id]: {
+              id,
+              show_in_widget: show_in_widget && has_review_aggregator,
+              social_media_app_id,
+              label: profile_name || name,
+              touched: false,
+              has_review_aggregator
+            }
+          };
         });
+      }
+    }
+    this.setState({ showHidePlatformsList });
+  };
+
+  refreshWidgetOnDemand = () => {
+    this.setState({ refreshWidget: true }, () => {
+      setTimeout(() => {
+        this.setState({ refreshWidget: false });
+        this.props.scrollToTopOfThePage();
+      }, 1000);
+    });
+  };
+
+  setPreferencePlatformData = data => {
+    if (data) {
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
+          let preferencePlatformString = "";
+          data.forEach(item => {
+            let socialAppId = _get(item, "socialAppId", "");
+            if (preferencePlatformString.length > 0) {
+              preferencePlatformString =
+                preferencePlatformString + "," + socialAppId;
+            } else {
+              preferencePlatformString = socialAppId;
+            }
+          });
+          this.setState({
+            preferencePlatformArray: [...data],
+            preferencePlatformString
+          });
+        }
       }
     }
   };
@@ -211,6 +327,47 @@ class GetWidget extends Component {
     );
   };
 
+  //!Handler for show/hide platforms change in widget
+  handleShowHidePlatformChange = item => {
+    const showHidePlatformsList = _get(this.state, "showHidePlatformsList", {});
+    const id = _get(item, "id", "");
+    const show_in_widget = _get(item, "show_in_widget", 0);
+    this.setState({
+      showHidePlatformsList: {
+        ...showHidePlatformsList,
+        [id]: {
+          ...showHidePlatformsList[id],
+          show_in_widget: show_in_widget ? 0 : 1,
+          touched: true
+        }
+      }
+    });
+  };
+
+  handleShowHidePlatformSave = () => {
+    const showHidePlatformsList = _get(this.state, "showHidePlatformsList", {});
+    if (showHidePlatformsList) {
+      let profiles = [];
+      if (Object.keys(showHidePlatformsList).length > 0) {
+        for (let item in showHidePlatformsList) {
+          let profileItem = showHidePlatformsList[item] || {};
+          let touched = _get(profileItem, "touched", false);
+          let id = _get(profileItem, "id", "");
+          let show_in_widget = _get(profileItem, "show_in_widget", 0);
+          if (touched) {
+            profiles = [...profiles, { id, show_in_widget }];
+          }
+        }
+        //check for profiles array length, in case 0 don't make a call
+        if (profiles.length > 0) {
+          this.props.toggleWidgetPlatformVisibility({
+            profiles: [...profiles]
+          });
+        }
+      }
+    }
+  };
+
   renderInput = () => {
     const { widgetHeight, platforms, selectedPlatform } = this.state;
     return (
@@ -294,13 +451,37 @@ class GetWidget extends Component {
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
               <div className="inputContainer">
                 {widgetId !== 0 ? (
-                  this.renderInput()
+                  <>
+                    {this.renderInput()}
+                    <div style={{ margin: "25px 0 15px 0" }}>
+                      <ShowInWidgetList
+                        refreshWidgetOnDemand={this.refreshWidgetOnDemand}
+                        showHidePlatformsList={this.state.showHidePlatformsList}
+                        handleShowHidePlatformChange={
+                          this.handleShowHidePlatformChange
+                        }
+                        handleShowHidePlatformSave={
+                          this.handleShowHidePlatformSave
+                        }
+                      />
+                    </div>
+                  </>
                 ) : (
                   <CombinedReviewsWidgetConfigurations
                     selectedMaxReviews={selectedMaxReviews}
                     selectedNewerThanMonths={selectedNewerThanMonths}
                     selectedRatingCount={selectedRatingCount}
                     handleChange={this.handleWidgetConfigurationChange}
+                    platforms={this.state.platforms}
+                    preferencePlatformArray={this.state.preferencePlatformArray}
+                    setPreferencePlatformData={this.setPreferencePlatformData}
+                    refreshWidgetOnDemand={this.refreshWidgetOnDemand}
+                    refreshWidget={this.state.refreshWidget}
+                    showHidePlatformsList={this.state.showHidePlatformsList}
+                    handleShowHidePlatformChange={
+                      this.handleShowHidePlatformChange
+                    }
+                    handleShowHidePlatformSave={this.handleShowHidePlatformSave}
                   />
                 )}
               </div>
@@ -361,6 +542,11 @@ class GetWidget extends Component {
                       "selectedRatingCount.value",
                       ""
                     )}"
+                    data-platform-order="${
+                      _get(this.state, "preferencePlatformArray", []).length > 1
+                        ? _get(this.state, "preferencePlatformString", "")
+                        : ""
+                    }"
                     ></div> 
                 `}</code>
                 ) : (
@@ -442,6 +628,13 @@ class GetWidget extends Component {
             ""
           )}
           data-rating={_get(this.state, "selectedRatingCount.value", "")}
+          //just uncomment the lines below and remove line 531
+          data-platform-order={
+            _get(this.state, "preferencePlatformArray", []).length > 1
+              ? _get(this.state, "preferencePlatformString", "")
+              : ""
+          }
+          // data-platform-order=""
         ></div>
       </>
     );
@@ -475,7 +668,11 @@ class GetWidget extends Component {
               this.getYourWidgetBox()
             ) : (
               <div style={{ textAlign: "center" }}>
-                <CircularProgress />
+                <p>
+                  Either the reviews have not be fetched till yet, or the
+                  platforms you have set have zero (0) reviews, please check the
+                  status on the homepage
+                </p>
               </div>
             )}
           </div>
@@ -487,12 +684,15 @@ class GetWidget extends Component {
 
 const mapStateToProps = state => {
   const reviews = _get(state, "dashboardData.reviews", {});
+  const review_platforms = _get(state, "dashboardData.review_platforms", {});
   const socialArray = _get(
     state,
     "auth.logIn.userProfile.business_profile.social",
     []
   );
-  return { reviews, socialArray };
+  return { reviews, socialArray, review_platforms };
 };
 
-export default connect(mapStateToProps)(GetWidget);
+export default connect(mapStateToProps, { toggleWidgetPlatformVisibility })(
+  GetWidget
+);

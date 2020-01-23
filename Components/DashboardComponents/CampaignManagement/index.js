@@ -23,6 +23,10 @@ import _find from "lodash/find";
 import { campaignHistoryApi } from "../../../utility/config";
 //! Connect import
 import { connect } from "react-redux";
+//! Moment imports
+import Moment from "react-moment";
+import "moment-timezone";
+import { utcToTimezone } from "../../../utility/commonFunctions";
 
 const campaignStatus = {
   1: "Active",
@@ -65,7 +69,7 @@ class CampaignManagement extends Component {
   tableColumns = [
     { title: "Name", field: "name" },
     { title: "Created At", field: "created_at" },
-    { title: "Updated At", field: "updated_at" },
+    // { title: "Updated At", field: "updated_at" },
     { title: "Campaign Type", field: "campaign_type" },
     { title: "Status", field: "status" },
     {
@@ -260,12 +264,14 @@ class CampaignManagement extends Component {
                         statusInString === "Scheduled"
                           ? "Deactivate"
                           : "Activate";
-
+                      //? This will convert date according to timezone
+                      const timezone = _get(this.props, "timezone", "");
+                      let createdDate = utcToTimezone(created_at, timezone);
                       return {
                         id,
                         name,
                         sender_name,
-                        created_at,
+                        created_at: createdDate,
                         updated_at,
                         status: statusInString,
                         campaign_type,
@@ -315,13 +321,16 @@ class CampaignManagement extends Component {
 }
 
 const mapStateToProps = state => {
-  const { changeCampaignStatus } = state.dashboardData;
+  const { dashboardData, auth } = state;
+  const { changeCampaignStatus } = dashboardData;
+  const timezone = _get(auth, "logIn.userProfile.timezone", "");
   let campaignStatusIsLoading = _get(changeCampaignStatus, "isLoading", false);
   let campaignStatusSuccess = _get(changeCampaignStatus, "success", undefined);
 
   return {
     campaignStatusIsLoading,
-    campaignStatusSuccess
+    campaignStatusSuccess,
+    timezone
   };
 };
 

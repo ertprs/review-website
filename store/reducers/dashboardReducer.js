@@ -68,7 +68,17 @@ import {
   ADD_NEW_PLATFORM_IN_REVIEW_PLATFORMS,
   SET_REVIEWS_AFTER_LOGIN,
   SET_LOADING_STATUS_OF_REVIEWS,
-  SET_SCRAPING_ARRAY_IN_REDUCER
+  SET_SCRAPING_ARRAY_IN_REDUCER,
+  TOGGLE_REVIEW_VISIBILITY_INIT,
+  TOGGLE_REVIEW_VISIBILITY_SUCCESS,
+  TOGGLE_REVIEW_VISIBILITY_FAILURE,
+  SET_REVIEWS_AFTER_TOGGLE_VISIBILITY,
+  SET_WIDGET_PLATFORM_VISIBILITY_INIT,
+  SET_WIDGET_PLATFORM_VISIBILITY_SUCCESS,
+  SET_WIDGET_PLATFORM_VISIBILITY_FAILURE,
+  GET_SHORT_REVIEW_URL_INIT,
+  GET_SHORT_REVIEW_URL_SUCCESS,
+  GET_SHORT_REVIEW_URL_ERROR
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -103,7 +113,10 @@ const dashboardReducer = (state = {}, action) => {
     addReviewPlatformData,
     review_platforms,
     updatedReviewPlatforms,
-    scrapingArray
+    scrapingArray,
+    toggleReviewResponse,
+    toggleWidgetPlatformVisibilityResponse,
+    shortReviewUrl
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -493,19 +506,79 @@ const dashboardReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        reviews: reviews
+        reviews: { ...reviews }
       };
     case SET_LOADING_STATUS_OF_REVIEWS:
       return {
         ...state,
         type,
-        reviews: reviews
+        reviews: { ...reviews }
       };
     case SET_SCRAPING_ARRAY_IN_REDUCER:
       return {
         ...state,
         type,
         scrapingArray
+      };
+    case TOGGLE_REVIEW_VISIBILITY_INIT:
+      return {
+        ...state,
+        type,
+        toggleReviewResponse
+      };
+    case TOGGLE_REVIEW_VISIBILITY_SUCCESS:
+      return {
+        ...state,
+        type,
+        toggleReviewResponse
+      };
+    case TOGGLE_REVIEW_VISIBILITY_FAILURE:
+      return {
+        ...state,
+        type,
+        toggleReviewResponse
+      };
+    case SET_REVIEWS_AFTER_TOGGLE_VISIBILITY:
+      return {
+        ...state,
+        type,
+        reviews: { ...reviews }
+      };
+    case SET_WIDGET_PLATFORM_VISIBILITY_INIT:
+      return {
+        ...state,
+        type,
+        toggleWidgetPlatformVisibilityResponse
+      };
+    case SET_WIDGET_PLATFORM_VISIBILITY_SUCCESS:
+      return {
+        ...state,
+        type,
+        toggleWidgetPlatformVisibilityResponse
+      };
+    case SET_WIDGET_PLATFORM_VISIBILITY_FAILURE:
+      return {
+        ...state,
+        type,
+        toggleWidgetPlatformVisibilityResponse
+      };
+    case GET_SHORT_REVIEW_URL_INIT:
+      return {
+        ...state,
+        type,
+        shortReviewUrl
+      };
+    case GET_SHORT_REVIEW_URL_SUCCESS:
+      return {
+        ...state,
+        type,
+        shortReviewUrl
+      };
+    case GET_SHORT_REVIEW_URL_ERROR:
+      return {
+        ...state,
+        type,
+        shortReviewUrl
       };
     default:
       return state;

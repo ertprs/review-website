@@ -37,11 +37,7 @@ import {
   SET_IS_NEW_USER
 } from "./actionTypes";
 import _get from "lodash/get";
-import {
-  loginApiOAuth,
-  getAvailablePlatformsApi,
-  thirdPartyDataApi
-} from "../../utility/config";
+import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import {
@@ -493,6 +489,10 @@ export const businessSignUp = (signupData, api) => {
           case "subscription_exists":
             errorMsg = "Sorry, this company is already registered with us.";
             break;
+          case "unsupported_suffix":
+            errorMsg =
+              "Your domain isn't supported yet. Please, check the website given or contact support.";
+            break;
           default:
             errorMsg = "Some Error Occurred while Registration!";
         }
@@ -590,10 +590,11 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 error: ""
               }
             });
-            //we are fetching reviews of all social profiles that exist inside social key
-            if (isValidArray(socialArray)) {
-              dispatch(setReviewsAfterLogin(socialArray));
-            }
+            //?Uncomment when pagination is done on backend
+            //we are fetching reviews of all social profiles that exist inside social key inside useEffect of dashboard index
+            // if (isValidArray(socialArray)) {
+            //   dispatch(setReviewsAfterLogin(socialArray));
+            // }
           }
         }
       } else {

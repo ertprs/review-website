@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import Select from "react-select";
-
 import select2CountryList from "../../utility/select2CountryList.json";
 import { authenticationPageStyles } from "../Styles/authenticationPageStyles";
 import FormField from "../Widgets/FormField/FormField";
-import countrieslist from "../../utility/newCountryList.json";
 import validate from "../../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -82,7 +80,7 @@ class InternetUserRegistration extends Component {
         element: "select",
         name: "country",
         value: "",
-        options: [...countrieslist],
+        options: [...select2CountryList],
         placeholder: "Select your country",
         valid: false,
         validationRules: {
@@ -353,15 +351,7 @@ class InternetUserRegistration extends Component {
             {" "}
             {_get(errorMsg, "password_confirmation", "")}{" "}
           </span>{" "}
-          {/* <FormField
-            {...formData.country}
-            handleChange={this.handleChange}
-            id="country"
-            rows="5"
-            col="5"
-            styles={{ height: "38px" }}
-          /> */}
-          <div style={{marginBottom:"1rem"}}>
+          <div style={{ marginBottom: "1rem" }}>
             <Select
               className="basic-single"
               classNamePrefix="select"
@@ -369,7 +359,7 @@ class InternetUserRegistration extends Component {
               isSearchable={true}
               name="countries-list"
               placeholder="Select your country..."
-              options={select2CountryList}
+              options={_get(formData, "country.options", [])}
               onChange={valObj => {
                 let e = {};
                 e.target = valObj || {};

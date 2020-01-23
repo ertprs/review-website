@@ -10,7 +10,8 @@ import {
   locatePlaceByPlaceId,
   setGetStartedShow,
   setGooglePlaces,
-  setReviewsPusherConnect
+  setReviewsPusherConnect,
+  setReviewsAfterLogin
 } from "../../../store/actions/dashboardActions";
 import { setIsNewUser } from "../../../store/actions/authActions";
 import { locatePlaceApi, getStartedVideoUrl } from "../../../utility/config";
@@ -495,6 +496,7 @@ class GetStarted extends Component {
         let url = _get(socialObj, "url", "");
         let id = _get(socialObj, "id", "");
         let social_media_app_id = _get(socialObj, "social_media_app_id", "");
+        let has_review_aggregator = _get(item, "has_review_aggregator", 0);
         if (name && name.length > 0) {
           let editURL =
             social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
@@ -526,7 +528,8 @@ class GetStarted extends Component {
                     address,
                     placeId,
                     directReviewUrl
-                  }
+                  },
+                  has_review_aggregator
                 }
               };
             } else {
@@ -535,7 +538,8 @@ class GetStarted extends Component {
                 [editURL]: {
                   ...formDataLocal[editURL],
                   value: url,
-                  valid: true
+                  valid: true,
+                  has_review_aggregator
                 }
               };
             }
@@ -751,8 +755,17 @@ class GetStarted extends Component {
   };
 
   startWithThesePlatforms = () => {
-    const { setIsNewUser, changeStepToRender } = this.props;
+    const {
+      setIsNewUser,
+      changeStepToRender,
+      setReviewsAfterLogin,
+      socialArray
+    } = this.props;
     setIsNewUser(false);
+    //Uncomment when pagination is done on backend
+    // if (isValidArray(socialArray)) {
+    //   setReviewsAfterLogin(socialArray);
+    // }
     changeStepToRender(1);
   };
 
@@ -991,5 +1004,6 @@ export default connect(mapStateToProps, {
   setGooglePlaces,
   setReviewsPusherConnect,
   setGetStartedShow,
-  setIsNewUser
+  setIsNewUser,
+  setReviewsAfterLogin
 })(GetStarted);

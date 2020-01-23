@@ -6,6 +6,8 @@ import NoReviewsFound from "./noReviewsFound";
 import ReviewCard from "../../Widgets/CommonReviewCard";
 import PlatformDetails from "./PlatformDetails";
 import { isValidArray } from "../../../utility/commonFunctions";
+import { toggleReviewVisibility } from "../../../store/actions/dashboardActions";
+import Snackbar from "../../Widgets/Snackbar";
 const Select = dynamic(() => import("react-select"), {
   ssr: false
 });
@@ -34,7 +36,10 @@ class CommonReviewTabPanel extends Component {
     perPage: 10,
     showDelay: false,
     selectedPlace: {},
-    defaultPlace: {}
+    defaultPlace: {},
+    showSnackbar: false,
+    snackbarVariant: "",
+    snackbarMsg: ""
   };
 
   componentDidMount() {
@@ -77,9 +82,14 @@ class CommonReviewTabPanel extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props !== prevProps) {
+    const {
+      platformReviews,
+      toggleReviewSuccess,
+      toggleReviewErrorMsg
+    } = this.props;
+    const { snackbarMsg } = this.state;
+    if (platformReviews !== prevProps.platformReviews) {
       const { selectedPlace } = this.state;
-      const { platformReviews } = this.props;
       let profileId = _get(selectedPlace, "value", "");
       let selectedPlaceReviews = _get(platformReviews, profileId, {});
       let totalReviews = _get(selectedPlaceReviews, "data.data.reviews", []);
@@ -113,6 +123,15 @@ class CommonReviewTabPanel extends Component {
           this.calReviews();
         }
       );
+    }
+    if (toggleReviewSuccess !== prevProps.toggleReviewSuccess) {
+      let showSnackbar = true;
+      let snackbarVariant = toggleReviewSuccess ? "success" : "error";
+      this.setState({
+        showSnackbar,
+        snackbarVariant,
+        snackbarMsg: toggleReviewErrorMsg ? toggleReviewErrorMsg : snackbarMsg
+      });
     }
   }
 
@@ -190,6 +209,18 @@ class CommonReviewTabPanel extends Component {
     );
   };
 
+  toggleReviewVisibility = (id, hideFromWidget) => {
+    const { toggleReviewVisibility, socialMediaAppId } = this.props;
+    const { selectedPlace } = this.state;
+    let profileId = _get(selectedPlace, "value", "");
+    toggleReviewVisibility(id, socialMediaAppId, profileId);
+    let snackbarMsg =
+      hideFromWidget === 0
+        ? "Review will be hidden from widgets."
+        : "Review will be displayed now in widgets.";
+    this.setState({ snackbarMsg });
+  };
+
   render() {
     const { dropDownData, reviewsPlatforms, socialMediaAppId } = this.props;
     const {
@@ -204,7 +235,10 @@ class CommonReviewTabPanel extends Component {
       reviewUrl,
       showDelay,
       selectedPlace,
-      defaultPlace
+      defaultPlace,
+      showSnackbar,
+      snackbarVariant,
+      snackbarMsg
     } = this.state;
     return (
       <>
@@ -321,19 +355,27 @@ class CommonReviewTabPanel extends Component {
                   let name =
                     _get(review, "user", "") || _get(review, "name", "");
                   let reviewToSend = {
+                    id: _get(review, "id", ""),
                     name: name === "N/A" ? "" : name,
                     text: _get(review, "review", ""),
                     rating: _get(review, "rating", 0),
                     date: _get(review, "date", ""),
-                    replyURL: _get(review, "review_url", "")
+                    replyURL: _get(review, "review_url", ""),
+                    hideFromWidget: _get(review, "hide_from_widget", 0)
                   };
                   let provider = "";
                   if (socialMediaAppId in reviewsPlatforms) {
                     provider = reviewsPlatforms[socialMediaAppId];
                   }
-                  //! provider will be dynamic
+                  //! provider is dynamic
                   return (
-                    <ReviewCard review={reviewToSend} provider={provider} />
+                    //? hideBtn is used to show hide review button on card
+                    <ReviewCard
+                      review={reviewToSend}
+                      provider={provider}
+                      showToggleBtn={true}
+                      toggleReviewVisibility={this.toggleReviewVisibility}
+                    />
                   );
                 })}
               </>
@@ -374,6 +416,14 @@ class CommonReviewTabPanel extends Component {
             disableInitialCallback={true}
           />
         </div>
+        <Snackbar
+          variant={snackbarVariant}
+          message={snackbarMsg}
+          open={showSnackbar}
+          handleClose={() => {
+            this.setState({ showSnackbar: false });
+          }}
+        />
       </>
     );
   }
@@ -384,9 +434,29 @@ const mapStateToProps = (state, ownProps) => {
   const socialMediaAppId = _get(ownProps, "socialMediaAppId", 0);
   const reviews = _get(dashboardData, "reviews", {});
   const platformReviews = _get(reviews, socialMediaAppId, {});
+  const toggleReviewSuccess = _get(
+    dashboardData,
+    "toggleReviewResponse.success",
+    false
+  );
+  const toggleReviewErrorMsg = _get(
+    dashboardData,
+    "toggleReviewResponse.errorMsg",
+    "Some Error Occurred!"
+  );
+  const toggleReviewLoading = _get(
+    dashboardData,
+    "toggleReviewResponse.isLoading",
+    false
+  );
   return {
-    platformReviews: platformReviews
+    platformReviews,
+    toggleReviewSuccess,
+    toggleReviewErrorMsg,
+    toggleReviewLoading
   };
 };
 
-export default connect(mapStateToProps)(CommonReviewTabPanel);
+export default connect(mapStateToProps, { toggleReviewVisibility })(
+  CommonReviewTabPanel
+);

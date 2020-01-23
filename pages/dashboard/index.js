@@ -286,7 +286,7 @@ function Dashboard(props) {
   const router = useRouter();
   const { upgradeToPremiumRes, placeLocated, token, isFirstTimeLogin } = props;
   const { pathname, query } = router;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [stepToRender, setStepToRender] = React.useState(
     isFirstTimeLogin ? 0 : 1
   );
@@ -395,17 +395,20 @@ function Dashboard(props) {
     const { setReviewsPusherConnect } = props;
     //? this will connect the pusher when someone reloads the dashboard, so that we can again listen for the keys and fetch reviews accordingly
     setReviewsPusherConnect(true);
+    //? comment when pagination is done on backend
     const socialArray = _get(props, "socialArray", []);
     const reviews = _get(props, "reviews", {});
     if (Array.isArray(socialArray)) {
       if (socialArray.length > 0) {
         if (reviews) {
           if (Object.keys(reviews).length === 0) {
+            //?need to make sure that this is not called after login
             props.setReviewsAfterLogin(socialArray);
           }
         }
       }
     }
+    //?end comment
   }, []);
 
   const handleMenuItemClicked = index => {
