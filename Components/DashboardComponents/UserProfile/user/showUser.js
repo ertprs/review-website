@@ -9,6 +9,8 @@ import _find from "lodash/find";
 import countriesList from "../../../../utility/select2CountryList.json";
 import Languages from "../../../../utility/languages";
 import timezoneList from "../../../../utility/timezone.json";
+import moment from "moment";
+import "moment-timezone";
 
 const userDetailsData = userProfile => {
   const { name, city, phone, address, country, lang, zip, timezone } =
@@ -31,6 +33,7 @@ const userDetailsData = userProfile => {
   if (filteredTimezone) {
     timezoneName = _get(filteredTimezone, "label", "");
   }
+  let localTimezone = moment.tz.guess();
   const userDetails = [
     { key: "Name", value: name || "" },
     { key: "City", value: city || "" },
@@ -39,7 +42,8 @@ const userDetailsData = userProfile => {
     { key: "Country", value: countryName || "" },
     { key: "Language", value: language || "" },
     { key: "Zipcode", value: zip || "" },
-    { key: "Timezone", value: timezoneName || "" }
+    { key: "Timezone", value: timezoneName || "" },
+    { key: "Local Timezone", value: localTimezone }
   ];
   return userDetails;
 };
