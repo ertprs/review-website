@@ -4,9 +4,8 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import axios from "axios";
-import Moment from "react-moment";
 import "moment-timezone";
-import { convertToTimeStamp } from "../../../utility/commonFunctions";
+import { utcToTimezone } from "../../../utility/commonFunctions";
 import cookie from "js-cookie";
 
 const columns = [
@@ -25,13 +24,7 @@ const parseTableData = (tableData, timezone) => {
     let reference = _get(data, "reference", "##");
     reference = reference === null ? "##" : reference;
     let created = _get(data, "created", "");
-    //? This will convert date according to timezone
-    const unixTimestamp = convertToTimeStamp(created);
-    created = (
-      <Moment unix tz={timezone} format="DD/MM/YYYY HH:mm">
-        {unixTimestamp}
-      </Moment>
-    );
+    created = utcToTimezone(created, timezone);
     return { ...data, status: statusInWords, reference, created };
   });
   return result;
