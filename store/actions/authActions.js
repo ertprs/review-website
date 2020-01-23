@@ -590,10 +590,11 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 error: ""
               }
             });
-            //we are fetching reviews of all social profiles that exist inside social key
-            if (isValidArray(socialArray)) {
-              dispatch(setReviewsAfterLogin(socialArray));
-            }
+            //?Uncomment when pagination is done on backend
+            //we are fetching reviews of all social profiles that exist inside social key inside useEffect of dashboard index
+            // if (isValidArray(socialArray)) {
+            //   dispatch(setReviewsAfterLogin(socialArray));
+            // }
           }
         }
       } else {

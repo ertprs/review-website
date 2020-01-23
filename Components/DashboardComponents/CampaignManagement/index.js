@@ -69,7 +69,7 @@ class CampaignManagement extends Component {
   tableColumns = [
     { title: "Name", field: "name" },
     { title: "Created At", field: "created_at" },
-    { title: "Updated At", field: "updated_at" },
+    // { title: "Updated At", field: "updated_at" },
     { title: "Campaign Type", field: "campaign_type" },
     { title: "Status", field: "status" },
     {
