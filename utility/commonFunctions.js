@@ -1,5 +1,6 @@
 import { isEmpty, get } from "lodash";
-
+import moment from "moment";
+import "moment-timezone";
 //? We can use this method to check if the form is valid or not, you just need to send the formdata object, it will loop through the object and will return true if all the fields are valid.
 
 const isFormValid = formDataObject => {
@@ -163,6 +164,39 @@ export const calTotalReviewsAndRating = reviews => {
     totalReviews,
     overallRating
   };
+};
+
+//How to convert utc date to timezone
+//! props: {
+//!  * dateTime: date-time which we want to convert, should be in UTC 24 hour string
+//!   timezone: could be any of moment timezone(from moment.json file), if not provided it will use moment.local to convert according to system timezone
+//!  utcFormat: your utc string dateTime format
+//!   displayFormat: the format in which you want to display date time
+//! }
+export const utcToTimezone = (dateTime, timezone, UtcFormat, displayFormat) => {
+  if (dateTime) {
+    let convertedDateTime = null;
+    const defaultUtcFormat = "YYYY-MM-DD HH:mm:ss";
+    const defaultDisplayFormat = "DD/MM/YYYY HH:mm:ss";
+    let newUTCFormat = UtcFormat ? UtcFormat : defaultUtcFormat;
+    let newDisplayFormat = displayFormat ? displayFormat : defaultDisplayFormat;
+    if (timezone) {
+      convertedDateTime = moment
+        .utc(dateTime, newUTCFormat)
+        .clone()
+        .tz(timezone)
+        .format(newDisplayFormat);
+    } else {
+      convertedDateTime = moment
+        .utc(dateTime, newUTCFormat)
+        .clone()
+        .local()
+        .format(newDisplayFormat);
+    }
+    return convertedDateTime;
+  } else {
+    return "N/A";
+  }
 };
 
 //The date can be date-time and should be in string

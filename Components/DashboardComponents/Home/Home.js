@@ -23,9 +23,6 @@ import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton/IconButton";
-import Moment from "react-moment";
-import "moment-timezone";
-import { convertToTimeStamp } from "../../../utility/commonFunctions";
 import { ratingColor, ratingType } from "../../../utility/ratingTypeColor";
 import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
 import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
@@ -45,6 +42,7 @@ const styles = theme => ({
   }
 });
 const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
+import { utcToTimezone } from "../../../utility/commonFunctions";
 
 class Home extends Component {
   state = {
@@ -236,7 +234,7 @@ class Home extends Component {
             color: #555;
           }
           .container {
-            margin: 50px 0;
+            margin: 25px 0;
             border-bottom: 1px solid #999;
             display: flex;
             justify-content: space-between;
@@ -280,9 +278,7 @@ class Home extends Component {
     const companyName = _get(userProfile, "company.name", "");
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
     const expiresAt = _get(userProfile, "subscription.expires_at", "");
-    //? This will convert date according to timezone
     const timezone = _get(userProfile, "timezone", "");
-    const unixTimestamp = convertToTimeStamp(expiresAt);
     return (
       <div className="businessDetailsContainer">
         <style jsx>
@@ -330,11 +326,7 @@ class Home extends Component {
         </div>
         <div className="businessDetailsFlexItem">
           <div className="bold">Subscription Expiry Date :</div>
-          <div>
-            <Moment unix tz={timezone} format="DD/MM/YYYY HH:mm">
-              {unixTimestamp}
-            </Moment>
-          </div>
+          <div>{utcToTimezone(expiresAt, timezone)}</div>
         </div>
       </div>
     );

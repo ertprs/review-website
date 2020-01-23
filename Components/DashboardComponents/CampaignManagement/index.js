@@ -26,7 +26,7 @@ import { connect } from "react-redux";
 //! Moment imports
 import Moment from "react-moment";
 import "moment-timezone";
-import { convertToTimeStamp } from "../../../utility/commonFunctions";
+import { utcToTimezone } from "../../../utility/commonFunctions";
 
 const campaignStatus = {
   1: "Active",
@@ -265,14 +265,8 @@ class CampaignManagement extends Component {
                           ? "Deactivate"
                           : "Activate";
                       //? This will convert date according to timezone
-                      let createdDate = created_at || "";
                       const timezone = _get(this.props, "timezone", "");
-                      const unixTimestamp = convertToTimeStamp(createdDate);
-                      createdDate = (
-                        <Moment unix tz={timezone} format="DD/MM/YYYY HH:mm">
-                          {unixTimestamp}
-                        </Moment>
-                      );
+                      let createdDate = utcToTimezone(created_at, timezone);
                       return {
                         id,
                         name,
