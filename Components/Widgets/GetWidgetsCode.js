@@ -275,6 +275,7 @@ class GetWidgetsCode extends Component {
                   selectedNewerThanMonths={selectedNewerThanMonths}
                   selectedRatingCount={selectedRatingCount}
                   handleChange={this.handleWidgetConfigurationChange}
+                  hideDashboardParticularSettings={true}
                 />
               )}
               <p className="subHeading">
