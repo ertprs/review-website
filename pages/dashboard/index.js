@@ -395,6 +395,7 @@ function Dashboard(props) {
     const { setReviewsPusherConnect } = props;
     //? this will connect the pusher when someone reloads the dashboard, so that we can again listen for the keys and fetch reviews accordingly
     setReviewsPusherConnect(true);
+    //? comment when pagination is done on backend
     const socialArray = _get(props, "socialArray", []);
     const reviews = _get(props, "reviews", {});
     if (Array.isArray(socialArray)) {
@@ -407,6 +408,7 @@ function Dashboard(props) {
         }
       }
     }
+    //?end comment
   }, []);
 
   const handleMenuItemClicked = index => {

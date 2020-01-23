@@ -762,9 +762,10 @@ class GetStarted extends Component {
       socialArray
     } = this.props;
     setIsNewUser(false);
-    if (isValidArray(socialArray)) {
-      setReviewsAfterLogin();
-    }
+    //Uncomment when pagination is done on backend
+    // if (isValidArray(socialArray)) {
+    //   setReviewsAfterLogin(socialArray);
+    // }
     changeStepToRender(1);
   };
 
