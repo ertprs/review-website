@@ -1172,7 +1172,6 @@ export const setReviewsAfterLogin = socialArray => {
           "has_review_aggregator",
           0
         );
-        console.log(has_review_aggregator, "has_review_aggregator");
         let socialAppId = _get(platform, "social_media_app_id", "");
         let profileId = _get(platform, "id", "");
         if (has_review_aggregator === 1) {
