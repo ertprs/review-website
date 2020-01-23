@@ -1,4 +1,5 @@
 [
+  { "value": "", "label": "System Timezone(local)" },
   { "value": "Africa/Abidjan", "label": "Africa/Abidjan" },
   { "value": "Africa/Accra", "label": "Africa/Accra" },
   { "value": "Africa/Addis_Ababa", "label": "Africa/Addis_Ababa" },
