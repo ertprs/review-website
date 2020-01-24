@@ -20,6 +20,8 @@ const validate = (value, rules) => {
       case "maxLength":
         isValid = isValid && isMaxLength(value, rules[rule]);
         break;
+      case "isCountryCode":
+        isValid = isValid && isCountryCode(value);
       default:
         isValid = true;
     }
@@ -39,6 +41,10 @@ const isEmail = value => {
 
 const isPhoneNumber = value => {
   return /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(value);
+};
+
+const isCountryCode = value => {
+  return /(\+\d{1-3})|(\d{1,4})/.test(value);
 };
 
 const isDomain = value => {
