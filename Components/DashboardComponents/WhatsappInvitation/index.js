@@ -3,7 +3,6 @@ import validate from "../../../utility/validate";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import _get from "lodash/get";
-
 //Components
 const UploadCustomerData = dynamic(
   () => import("./StepComponents/UploadCustomerData"),
@@ -15,7 +14,6 @@ const UploadCustomerData = dynamic(
     )
   }
 );
-
 const CreateTemplate = dynamic(
   () => import("./StepComponents/CreateTemplate"),
   {
@@ -32,7 +30,7 @@ class WhatsAppInvitation extends Component {
     super(props);
     this.state = {
       activeStep: 2,
-      totalSteps,
+      totalSteps: 2,
       createTemplate: {
         templateLanguage: {
           element: "select",
@@ -90,17 +88,6 @@ class WhatsAppInvitation extends Component {
         }
       }
     };
-
-    this.steps = {
-      1: <UploadCustomerData />,
-      2: (
-        <CreateTemplate
-          createTemplate={_get(this.state, "createTemplate", {})}
-          handleChange={this.handleChange}
-        />
-      )
-    };
-    let totalSteps = Object.keys(this.steps).length;
   }
 
   handleNext = stepNo => {
@@ -151,9 +138,25 @@ class WhatsAppInvitation extends Component {
     });
   };
 
+  renderActiveComponent = () => {
+    const { activeStep, createTemplate } = this.state;
+    switch (activeStep) {
+      case 1:
+        return <UploadCustomerData />;
+      case 2:
+        return (
+          <CreateTemplate
+            createTemplate={createTemplate || {}}
+            handleChange={this.handleChange}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   render() {
-    const { activeStep } = this.state;
-    return <div>{this.steps[activeStep]}</div>;
+    return <div>{this.renderActiveComponent()}</div>;
   }
 }
 
