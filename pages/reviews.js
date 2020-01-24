@@ -244,11 +244,11 @@ class Profile extends React.Component {
         if (payload[item].verified) {
           socialTemp = {
             ...socialTemp,
-            name: iconNames[item].name,
+            name: (iconNames[item] || {}).name,
             followers: payload[item].followers,
             profile_url: payload[item].profile_url,
-            icon: iconNames[item].name,
-            color: iconNames[item].color
+            icon: (iconNames[item] || {}).name,
+            color: (iconNames[item] || {}).color
           };
           socialMediaStats = [...socialMediaStats, socialTemp];
         }
@@ -574,14 +574,11 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    setDomainDataInRedux,
-    setLoading,
-    getAggregateData,
-    setAggregateData,
-    fetchGoogleReviews,
-    removeAggregateData
-  }
-)(Profile);
+export default connect(mapStateToProps, {
+  setDomainDataInRedux,
+  setLoading,
+  getAggregateData,
+  setAggregateData,
+  fetchGoogleReviews,
+  removeAggregateData
+})(Profile);
