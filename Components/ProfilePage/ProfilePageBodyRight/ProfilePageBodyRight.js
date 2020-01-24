@@ -71,7 +71,7 @@ class ProfilePageBodyRight extends Component {
               key={uuid()}
               analysisTitle={item.split("_").join(" ")}
               analysisInfo={data[item]}
-              analysisIcon={trafficIcons[item].name}
+              analysisIcon={(trafficIcons[item] || {}).name || ""}
             />
           ];
         }
@@ -85,9 +85,9 @@ class ProfilePageBodyRight extends Component {
       return (
         <NewAnalysisCard
           key={uuid()}
-          analysisTitle={item.name}
-          analysisInfo={item.followers}
-          analysisIcon={item.icon}
+          analysisTitle={item.name || ""}
+          analysisInfo={item.followers || ""}
+          analysisIcon={item.icon || ""}
         />
       );
     });
