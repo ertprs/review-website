@@ -194,14 +194,14 @@ export const MainListItems = ({
         className={stepToRender === 8 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
-          title={<span style={{ fontSize: "14px" }}>My Profile</span>}
+          title={<span style={{ fontSize: "14px" }}>WhatsApp Invite</span>}
           placement="right"
         >
           <ListItemIcon>
-            <UserProfileIcon />
+            <WhatsAppIcon />
           </ListItemIcon>
         </Tooltip>
-        <ListItemText primary="User Profile" />
+        <ListItemText primary="WhatsApp Invite" />
       </ListItem>
       <ListItem
         button
@@ -212,14 +212,14 @@ export const MainListItems = ({
         className={stepToRender === 9 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
-          title={<span style={{ fontSize: "14px" }}>WhatsApp Invitations</span>}
+          title={<span style={{ fontSize: "14px" }}>My Profile</span>}
           placement="right"
         >
           <ListItemIcon>
-            <WhatsAppIcon />
+            <UserProfileIcon />
           </ListItemIcon>
         </Tooltip>
-        <ListItemText primary="WhatsApp" secondary="Invitations" />
+        <ListItemText primary="User Profile" />
       </ListItem>
     </div>
   );
