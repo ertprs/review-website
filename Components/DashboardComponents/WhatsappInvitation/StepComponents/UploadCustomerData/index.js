@@ -256,6 +256,7 @@ class UploadCustomerData extends React.Component {
           expanded={"uploadFile" === selectedWay}
           onChange={e => {
             this.setState({ selectedWay: "uploadFile" });
+            this.props.setUploadCustomerData([]);
           }}
         >
           <ExpansionPanelSummary
@@ -272,6 +273,7 @@ class UploadCustomerData extends React.Component {
               value={"uploadFile"}
               onClick={e => {
                 this.setState({ selectedWay: "uploadFile" });
+                this.props.setUploadCustomerData([]);
               }}
             />
           </ExpansionPanelSummary>
@@ -289,6 +291,7 @@ class UploadCustomerData extends React.Component {
           expanded={"copyPaste" === selectedWay}
           onChange={e => {
             this.setState({ selectedWay: "copyPaste" });
+            this.props.setUploadCustomerData([]);
           }}
         >
           <ExpansionPanelSummary
@@ -305,6 +308,7 @@ class UploadCustomerData extends React.Component {
               value={"copyPaste"}
               onClick={e => {
                 this.setState({ selectedWay: "copyPaste" });
+                this.props.setUploadCustomerData([]);
               }}
             />
           </ExpansionPanelSummary>
