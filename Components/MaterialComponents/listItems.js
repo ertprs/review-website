@@ -16,6 +16,7 @@ import HistoryIcon from "@material-ui/icons/History";
 import URLIcon from "@material-ui/icons/Link";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CircularProgress } from "@material-ui/core";
+import WhatsAppIcon from "@material-ui/icons/WhatsApp";
 
 export const MainListItems = ({
   stepToRender,
@@ -202,6 +203,24 @@ export const MainListItems = ({
         </Tooltip>
         <ListItemText primary="User Profile" />
       </ListItem>
+      <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(9);
+        }}
+        disabled={menuItemDisabled}
+        className={stepToRender === 9 ? "grayBg pb_0" : "pb_0"}
+      >
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>WhatsApp Invitations</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <WhatsAppIcon />
+          </ListItemIcon>
+        </Tooltip>
+        <ListItemText primary="WhatsApp" secondary="Invitations" />
+      </ListItem>
     </div>
   );
 };
@@ -213,7 +232,7 @@ export const SecondaryListItems = ({
 }) => {
   return (
     <div>
-      <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader>
+      {/* <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader> */}
       <ListItem />
       {/* <ListItem />
       <ListItem /> */}
