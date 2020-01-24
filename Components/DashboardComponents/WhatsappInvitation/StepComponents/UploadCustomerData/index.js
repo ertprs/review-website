@@ -24,6 +24,24 @@ class UploadCustomerData extends React.Component {
           uploadProgress: 0
         },
         parseErrors: []
+      },
+      copyPasteFormData: {
+        textbox: {
+          element: "textarea",
+          readOnly: false,
+          value: "",
+          valid: false,
+          touched: false,
+          errorMessage: "Enter valid records",
+          placeholder: "John Doe, 234567890, +371",
+          validationRules: {
+            required: true
+          },
+          rows: 10,
+          cols: 10,
+          name: "textbox"
+        },
+        parseErrors: []
       }
     };
     this.fileInput = React.createRef();
@@ -76,6 +94,81 @@ class UploadCustomerData extends React.Component {
     }
   };
 
+  //!handle parsing of text area
+  handleParseBtnClick = async () => {
+    const { copyPasteFormData } = this.state;
+    const parsedData = Papa.parse(copyPasteFormData.textbox.value, {
+      skipEmptyLines: true
+    });
+    let valid = true;
+    let errorObj = [];
+    let tempObj = [];
+    //check if data is not empty
+    const newTableData = parsedData.data.map((item, index) => {
+      if (item.length === 3) {
+        const name = item[0].trim() || "";
+        const phone = item[1].trim() || "";
+        const countryCode = item[2].trim() || "";
+        if (
+          name.trim() === "" ||
+          phone.trim() === "" ||
+          countryCode.trim() === "" ||
+          !validate(phone.trim(), { isPhoneNumber: true }) ||
+          !validate(countryCode.trim(), { isCountryCode: true })
+        ) {
+          valid = false;
+          errorObj = [
+            ...errorObj,
+            {
+              index: index,
+              name: name.trim() || "",
+              phone: phone.trim() || "",
+              countryCode: countryCode.trim() || ""
+            }
+          ];
+        }
+        return {
+          name: name.trim() || "",
+          phone: phone.trim() || "",
+          countryCode: countryCode.trim() || ""
+        };
+      } else {
+        valid = false;
+        const name = item[0] || "";
+        const phone = item[1] || "";
+        const countryCode = item[2] || "";
+        tempObj = [
+          ...tempObj,
+          {
+            index: index,
+            name: name.trim() || "",
+            phone: phone.trim() || "",
+            countryCode: countryCode.trim() || ""
+          }
+        ];
+        return {};
+      }
+    });
+    if (newTableData.length > 0 && valid) {
+      this.props.setUploadCustomerData(newTableData);
+      this.setState({
+        tableData: [...newTableData],
+        copyPasteFormData: {
+          ...this.state.copyPasteFormData,
+          parseErrors: [...tempObj, ...errorObj]
+        }
+      });
+    } else {
+      this.props.setUploadCustomerData([]);
+      this.setState({
+        copyPasteFormData: {
+          ...this.state.copyPasteFormData,
+          parseErrors: [...tempObj, ...errorObj]
+        }
+      });
+    }
+  };
+
   //!Parse file data after uploading
   parseFileData = async () => {
     const { uploadFileData } = this.state;
@@ -88,9 +181,9 @@ class UploadCustomerData extends React.Component {
       complete: parsedData => {
         const newTableData = parsedData.data.map((item, index) => {
           if (item.length === 3) {
-            const name = item[0] || "";
-            const phone = item[1] || "";
-            const countryCode = item[2] || "";
+            const name = item[0].trim() || "";
+            const phone = item[1].trim() || "";
+            const countryCode = item[2].trim() || "";
             if (
               name.trim() === "" ||
               phone.trim() === "" ||
@@ -103,16 +196,16 @@ class UploadCustomerData extends React.Component {
                 ...errorObj,
                 {
                   index: index,
-                  name: name,
-                  phone: phone,
-                  countryCode: countryCode
+                  name: name.trim() || "",
+                  phone: phone.trim() || "",
+                  countryCode: countryCode.trim() || ""
                 }
               ];
             }
             return {
-              name: name,
-              phone: phone,
-              countryCode: countryCode
+              name: name.trim() || "",
+              phone: phone.trim() || "",
+              countryCode: countryCode.trim() || ""
             };
           } else {
             valid = false;
@@ -123,19 +216,21 @@ class UploadCustomerData extends React.Component {
               ...tempObj,
               {
                 index: index,
-                name: name || "",
-                phone: phone || "",
-                countryCode: countryCode || ""
+                name: name.trim() || "",
+                phone: phone.trim() || "",
+                countryCode: countryCode.trim() || ""
               }
             ];
             return {};
           }
         });
         if (newTableData.length > 0 && valid) {
+          this.props.setUploadCustomerData(newTableData);
           this.setState({
             tableData: [...newTableData]
           });
         } else {
+          this.props.setUploadCustomerData([]);
           this.setState({
             uploadFileData: {
               ...this.state.uploadFileData,
@@ -185,6 +280,7 @@ class UploadCustomerData extends React.Component {
               ref={this.fileInput}
               handleChange={this.handleChange}
               formData={this.state.uploadFileData}
+              setUploadCustomerData={this.props.setUploadCustomerData}
             />{" "}
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -213,7 +309,12 @@ class UploadCustomerData extends React.Component {
             />
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{ width: "100%" }}>
-            <CopyPasteData />
+            <CopyPasteData
+              formData={this.state.copyPasteFormData}
+              handleChange={this.handleChange}
+              handleParseBtnClick={this.handleParseBtnClick}
+              setUploadCustomerData={this.props.setUploadCustomerData}
+            />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </RadioGroup>

@@ -29,8 +29,9 @@ class WhatsAppInvitation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 2,
+      activeStep: 1,
       totalSteps: 2,
+      uploadCustomerData: [],
       createTemplate: {
         templateLanguage: {
           element: "select",
@@ -90,6 +91,10 @@ class WhatsAppInvitation extends Component {
     };
   }
 
+  setUploadCustomerData = data => {
+    this.setState({ uploadCustomerData: [...data] });
+  };
+
   handleNext = stepNo => {
     const { totalSteps } = this.state;
     let activeStep = _get(this.state, "activeStep", 1);
@@ -142,7 +147,11 @@ class WhatsAppInvitation extends Component {
     const { activeStep, createTemplate } = this.state;
     switch (activeStep) {
       case 1:
-        return <UploadCustomerData />;
+        return (
+          <UploadCustomerData
+            setUploadCustomerData={this.setUploadCustomerData}
+          />
+        );
       case 2:
         return (
           <CreateTemplate
