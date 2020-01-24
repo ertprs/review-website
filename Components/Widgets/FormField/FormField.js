@@ -122,7 +122,7 @@ const renderSelectOptions = (options, placeholder, id) => {
     </option>
   ));
   optionsToRender = [
-    <option value="" key={uuid()} style={{ width: "100%" }}>
+    <option value="" key={uuid()}>
       {placeholder}
     </option>,
     ...optionsToRender

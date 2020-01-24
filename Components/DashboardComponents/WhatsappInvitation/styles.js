@@ -1,8 +1,4 @@
 import css from "styled-jsx/css";
 
-const styles = css`
-  .selectBox {
-    padding: 10px;
-  }
-`;
+const styles = css``;
 export default styles;
