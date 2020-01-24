@@ -164,11 +164,11 @@ const createSocialMediaStats = data => {
         if (payload[item].verified) {
           socialTemp = {
             ...socialTemp,
-            name: iconNames[item].name,
-            followers: payload[item].followers,
-            profile_url: payload[item].profile_url,
-            icon: iconNames[item].name,
-            color: iconNames[item].color
+            name: (iconNames[item] || {}).name || "",
+            followers: payload[item].followers || "",
+            profile_url: payload[item].profile_url || "",
+            icon: (iconNames[item] || {}).name || "",
+            color: (iconNames[item] || {}).color || ""
           };
           socialMediaStats = [...socialMediaStats, socialTemp];
         }
