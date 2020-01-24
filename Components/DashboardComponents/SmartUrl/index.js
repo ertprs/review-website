@@ -129,7 +129,7 @@ class SmartUrl extends Component {
   };
 
   render() {
-    const { dropdownData, shortReviewUrl } = this.props;
+    const { dropdownData, shortReviewUrl, viaWhatsApp } = this.props;
     const reviewUrl = _get(shortReviewUrl, "url", "");
     const reviewUrlLoading = _get(shortReviewUrl, "isLoading", false);
     const reviewUrlSuccess = _get(shortReviewUrl, "success", false);
@@ -176,8 +176,12 @@ class SmartUrl extends Component {
             align-content: center;
           }
         `}</style>
-        <UrlHitCount />
-        <h3> Generate Review URL</h3>
+        {viaWhatsApp ? null : (
+          <>
+            <UrlHitCount />
+            <h3> Generate Review URL</h3>
+          </>
+        )}
         <span>
           Select any one of the review platform from drop down below to fetch
           smart link review URL for that particular platform. If you want to
