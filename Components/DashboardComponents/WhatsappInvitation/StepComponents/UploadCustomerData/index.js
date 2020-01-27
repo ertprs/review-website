@@ -252,6 +252,9 @@ class UploadCustomerData extends React.Component {
 
   renderExpansionPanel = () => {
     const { handleNext, handlePrev } = this.props;
+    const { uploadFileData } = this.state;
+    const fileSize = _get(uploadFileData, "csvFile.size", 0);
+    const parseErrors = _get(uploadFileData, "parseErrors", []);
     const selectedWay = _get(this.state, "selectedWay", "");
     return (
       <RadioGroup
@@ -287,16 +290,26 @@ class UploadCustomerData extends React.Component {
             />
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{ width: "100%" }}>
-            <UploadFile
-              ref={this.fileInput}
-              handleChange={this.handleChange}
-              formData={this.state.uploadFileData}
-              setUploadCustomerData={this.props.setUploadCustomerData}
-            />{" "}
+            <div>
+              <UploadFile
+                ref={this.fileInput}
+                handleChange={this.handleChange}
+                formData={this.state.uploadFileData}
+                setUploadCustomerData={this.props.setUploadCustomerData}
+              />
+            </div>{" "}
           </ExpansionPanelDetails>
-          <Button variant="container" color="primary" onClick={handleNext}>
-            Continue
-          </Button>
+          <div style={{ textAlign: "right", margin: "0px 25px 25px 0px" }}>
+            <Button
+              color="primary"
+              variant="contained"
+              size="small"
+              onClick={handleNext}
+              disabled={fileSize === 0 || parseErrors.length > 0}
+            >
+              Continue
+            </Button>
+          </div>
         </ExpansionPanel>
 
         <ExpansionPanel

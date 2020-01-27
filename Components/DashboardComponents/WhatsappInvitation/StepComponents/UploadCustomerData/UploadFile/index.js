@@ -2,6 +2,7 @@ import React from "react";
 import _get from "lodash/get";
 import uuid from "uuid/v1";
 import validate from "../../../../../../utility/validate";
+import Button from "@material-ui/core/Button";
 
 class UploadFile extends React.Component {
   componentDidMount() {

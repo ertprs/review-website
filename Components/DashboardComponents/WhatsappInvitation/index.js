@@ -99,8 +99,8 @@ class WhatsAppInvitation extends Component {
             labelText: "Enter Review Url:",
             type: "text",
             value: "",
-            valid: true,
-            touched: true,
+            valid: false,
+            touched: false,
             errorMessage: "Please enter a Review Url!",
             placeholder: "Enter Review Url",
             validationRules: {

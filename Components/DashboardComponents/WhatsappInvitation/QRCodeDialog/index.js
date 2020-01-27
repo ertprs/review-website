@@ -71,8 +71,8 @@ const QRCodeDialog = props => {
               {title}
             </Typography>
           </Toolbar>
+          </AppBar>
           {renderComponentByEvent()}
-        </AppBar>
       </Dialog>
     </div>
   );

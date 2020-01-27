@@ -8,9 +8,9 @@ const QRCode = ({ QRCodeString }) => {
   return (
     <div className="row">
       <style jsx>{styles}</style>
-      <div className="col-md-5">
+      <div className="col-md-5" style={{padding:"25px"}}>
         <h3>Scan QR code to start sending invites:</h3>
-        <ol>
+        <ol className="QRCodeStepsList">
           <li>Open WhatsApp on your phone.</li>
           <li>
             Tap Menu <MenuIcon /> or Setting <SettingsIcon /> and select

@@ -3,9 +3,9 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 export default function CampaignStartedMsg() {
   return (
-    <div>
+    <div style={{textAlign:"center", marginTop:"50px"}}>
       <CircularProgress />
-      Started sending invitations..
+      <div style={{marginTop:"25px"}}>Started sending invitations..</div>
     </div>
   );
 }

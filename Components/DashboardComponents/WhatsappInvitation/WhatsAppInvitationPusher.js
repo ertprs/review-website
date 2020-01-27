@@ -24,7 +24,7 @@ class WhatsAppInvitationPusher extends Component {
     const { whatsAppPusherHandler } = this.props;
     channel.bind("whatsapp", data => {
       whatsAppPusherHandler(data);
-      console.log(data, "WhatsApp pusher connected");
+      console.log(data, "Receive data from whatsApp pusher");
     });
 
     pusher.connection.bind("disconnected", () => {
