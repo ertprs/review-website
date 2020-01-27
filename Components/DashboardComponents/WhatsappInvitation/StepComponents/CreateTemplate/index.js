@@ -55,14 +55,16 @@ const CreateTemplate = props => {
               />
             </div>
           </div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            size={"large"}
-          >
-            Submit
-          </Button>
+          <div className="submitBtn">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              size={"large"}
+            >
+              Submit
+            </Button>
+          </div>
         </>
       ) : null}
     </div>

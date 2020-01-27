@@ -1560,7 +1560,7 @@ export const whatsAppManualInvitation = data => {
         url
       });
       const success = _get(result, "data.success", false);
-      const campaignId = _get(result, "data.campaignId", "");
+      const campaignId = _get(result, "data.campaign_id", "");
       const channelName = _get(result, "data.channel_name", "");
       dispatch({
         type: WHATSAPP_MANUAL_INVITE_SUCCESS,
@@ -1612,7 +1612,6 @@ export const whatsAppManualInvitationCommit = campaignId => {
       const result = await axios({
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
-        data,
         url
       });
       const success = _get(result, "data.success", false);
@@ -1625,6 +1624,7 @@ export const whatsAppManualInvitationCommit = campaignId => {
         }
       });
     } catch (error) {
+      console.log(error, "error");
       const errorMsg = _get(
         error,
         "response.data.error",
