@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import QRCodeDialog from "./QRCodeDialog";
 import WhatsAppInvitationPusher from "./WhatsAppInvitationPusher";
 import {
   whatsAppTemplates,
@@ -40,6 +41,10 @@ class WhatsAppInvitation extends Component {
       totalSteps: 2,
       uploadCustomerData: [],
       mountWhatsAppPusher: false,
+      QRCodeString: "",
+      openQRCodeDialog: false,
+      QRCodeDialogTitle: "",
+      activeEvent: {},
       createTemplate: {
         templateLanguage: {
           element: "select",
@@ -48,7 +53,8 @@ class WhatsAppInvitation extends Component {
           code: "",
           options: _get(this.props, "templateLanguage", []),
           placeholder: "Select template language",
-          errorMessage: "",
+          errorMessage:
+            "Please select template language to start creating template!",
           valid: false,
           touched: false,
           validationRules: {
@@ -209,12 +215,12 @@ class WhatsAppInvitation extends Component {
     let template = `${salutation} ${customerName}, ${message} ${reviewUrl}`;
     let reqBody = {};
     if (isValidArray(uploadCustomerData)) {
-      reqBody["numbers"] = [...uploadCustomerData];
+      reqBody["customers"] = [...uploadCustomerData];
     }
     if (template) {
       reqBody["template"] = template;
     }
-    reqBody["saveSession"] = false;
+    reqBody["storeCustomerData"] = false;
     console.log(reqBody, "reqBody");
     whatsAppManualInvitation(reqBody);
   };
@@ -253,11 +259,12 @@ class WhatsAppInvitation extends Component {
       case "qr_code_changed":
         this.qrCodeChange(data);
         break;
+      // This comes when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
+      // case "qr_code_started":
+      //   this.qrCodeStarted(data);
+      //   break;
       case " qr_code_expired":
         this.qrCodeExpired(data);
-        break;
-      case "qr_code_started":
-        this.qrCodeStarted(data);
         break;
       case "login_successful":
         this.loginSuccessful(data);
@@ -282,59 +289,75 @@ class WhatsAppInvitation extends Component {
   //! handler for displaying QR code on UI
   qrCodeChange = data => {
     const value = _get(data, "value", "");
-    //generate QR code from above value.
+    this.setState({
+      QRCodeString: value,
+      openQRCodeDialog: true,
+      QRCodeDialogTitle: "Scan QR Code",
+      activeEvent: data
+    });
   };
 
   //! handler for displaying Retry
   qrCodeExpired = data => {
-    this.setState({ mountWhatsAppPusher: false });
+    this.setState({ mountWhatsAppPusher: false, activeEvent: data });
   };
 
   qrCodeStarted = data => {
     //show QR code scanned successfully
+    this.setState({ activeEvent: data });
   };
 
   loginSuccessful = data => {
-    //show message
+    this.setState({ activeEvent: data });
   };
 
   logoutSuccessful = data => {
-    this.setState({ mountWhatsAppPusher: false });
-
-    //show message
+    this.setState({
+      mountWhatsAppPusher: false,
+      activeEvent: data,
+      openQRCodeDialog: false
+    });
   };
 
   campaignStarted = data => {
-    //show in progress
+    this.setState({ activeEvent: data });
   };
 
   campaignFailed = data => {
-    this.setState({ mountWhatsAppPusher: false });
-    //end
+    this.setState({
+      mountWhatsAppPusher: false,
+      activeEvent: data,
+      openQRCodeDialog: false
+    });
   };
 
   campaignFinished = data => {
-    this.setState({ mountWhatsAppPusher: false });
-    //end
+    this.setState({ mountWhatsAppPusher: false, activeEvent: data });
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { whatsAppManualInvite } = this.props;
-    const whatsAppManualInviteSuccess = _get(
-      whatsAppManualInvite,
+    const { whatsAppManualInvite, whatsAppManualCommit } = this.props;
+    const whatsAppManualCommitSuccess = _get(
+      whatsAppManualCommit,
       "success",
       false
     );
     if (
-      whatsAppManualInviteSuccess !==
-      _get(prevProps, "whatsAppManualInvite.success", false)
+      whatsAppManualCommitSuccess !==
+      _get(prevProps, "whatsAppManualCommit.success", false)
     ) {
-      this.setState({ mountWhatsAppPusher: whatsAppManualInviteSuccess });
+      this.setState({ mountWhatsAppPusher: whatsAppManualCommitSuccess });
     }
   }
 
   render() {
-    const { mountWhatsAppPusher } = this.state;
+    const {
+      mountWhatsAppPusher,
+      openQRCodeDialog,
+      QRCodeString,
+      QRCodeDialogTitle,
+      activeEvent
+    } = this.state;
     const { channelName } = this.props;
     return (
       <div>
@@ -345,6 +368,15 @@ class WhatsAppInvitation extends Component {
           />
         ) : null}
         {this.renderActiveComponent()}
+        <QRCodeDialog
+          open={openQRCodeDialog}
+          QRCodeString={QRCodeString}
+          title={QRCodeDialogTitle}
+          activeEvent={activeEvent || {}}
+          handleClose={() => {
+            this.setState({ openQRCodeDialog: false });
+          }}
+        />
       </div>
     );
   }
