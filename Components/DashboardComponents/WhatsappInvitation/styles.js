@@ -27,5 +27,17 @@ const styles = css`
     max-width: 100%;
     height: auto;
   }
+
+  .QRCodeStepsList li{
+    padding:15px;
+  }
+
+  .generateURLSpan {
+    color: blue;
+  }
+  .generateURLSpan:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
 `;
 export default styles;

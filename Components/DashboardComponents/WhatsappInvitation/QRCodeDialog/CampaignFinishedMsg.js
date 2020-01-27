@@ -5,11 +5,11 @@ export default function({ result }) {
   const failed = _get(result, "failed", 0);
   const success = _get(result, "success", 0);
   return (
-    <div>
+    <div style={{textAlign:"center", marginTop:"50px"}}>
       <h2>Campaign Finished!</h2>
-      <span>Here are the results:</span>
-      <span>Successful: {success}</span>
-      <span>Failed: {failed}</span>
+      <div>Here are the results:</div>
+      <div>Successful: {success}</div>
+      <div>Failed: {failed}</div>
     </div>
   );
 }

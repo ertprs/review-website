@@ -19,6 +19,16 @@ const CreateTemplate = props => {
     handleSubmit
   } = props;
   const isLanguageSelected = _get(createTemplate, "templateLanguage.value", "");
+
+  const areValidInputFields = ()=>{
+    let valid = true;
+    const formData=_get(createTemplate, "inputFields", {});
+    for(let item in formData){
+      let formDataObject = formData[item] || {};
+      valid = valid && _get(formDataObject, "valid", false);
+    }
+    return valid
+  }
   return (
     <div className="container">
       <style jsx>{styles}</style>
@@ -48,6 +58,12 @@ const CreateTemplate = props => {
                 formData={_get(createTemplate, "inputFields", {})}
                 handleChange={handleFormDataChange}
               />
+              <span
+                onClick={() => setDialogOpen(true)}
+                className="generateURLSpan"
+              >
+                If you don't have a review url, click here to generate
+              </span>
             </div>
             <div className="col-md-6">
               <MessagePreview
@@ -61,12 +77,23 @@ const CreateTemplate = props => {
               color="primary"
               onClick={handleSubmit}
               size={"large"}
+              disabled={!areValidInputFields()}
             >
               Submit
             </Button>
           </div>
         </>
       ) : null}
+      <div style={{ marginTop: "50px", textAlign: "left" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={props.handlePrev}
+          size={"small"}
+        >
+          Back
+        </Button>
+      </div>
     </div>
   );
 };

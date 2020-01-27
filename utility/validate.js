@@ -1,3 +1,5 @@
+import _isFinite from "lodash/isFinite";
+import _toNumber from "lodash/toNumber";
 const validate = (value, rules) => {
   let isValid = true;
   for (let rule in rules) {
@@ -40,7 +42,8 @@ const isEmail = value => {
 };
 
 const isPhoneNumber = value => {
-  return /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(value);
+  value = value.replace(/ +?/g, "", "");
+  return true;
 };
 
 const isCountryCode = value => {
