@@ -1,8 +1,12 @@
 import React, { Component } from "react";
+import QRCodeDialog from "./QRCodeDialog";
+import WhatsAppInvitationPusher from "./WhatsAppInvitationPusher";
 import {
   whatsAppTemplates,
   getMessage
 } from "../../../utility/whatsAppTemplate";
+import { isValidArray } from "../../../utility/commonFunctions";
+import { whatsAppManualInvitation } from "../../../store/actions/dashboardActions";
 import validate from "../../../utility/validate";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
@@ -33,9 +37,14 @@ class WhatsAppInvitation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 2,
+      activeStep: 1,
       totalSteps: 2,
       uploadCustomerData: [],
+      mountWhatsAppPusher: false,
+      QRCodeString: "",
+      openQRCodeDialog: false,
+      QRCodeDialogTitle: "",
+      activeEvent: {},
       createTemplate: {
         templateLanguage: {
           element: "select",
@@ -44,14 +53,15 @@ class WhatsAppInvitation extends Component {
           code: "",
           options: _get(this.props, "templateLanguage", []),
           placeholder: "Select template language",
-          errorMessage: "",
+          errorMessage:
+            "Please select template language to start creating template!",
           valid: false,
           touched: false,
           validationRules: {
             required: true
           }
         },
-        customerName: "{{Customer}}",
+        customerName: "{{{name}}}",
         inputFields: {
           salutation: {
             element: "input",
@@ -106,11 +116,11 @@ class WhatsAppInvitation extends Component {
     this.setState({ uploadCustomerData: [...data] });
   };
 
-  handleNext = stepNo => {
+  handleNext = (e, stepNo = null) => {
     const { totalSteps } = this.state;
     let activeStep = _get(this.state, "activeStep", 1);
     //? If step no is greater than total no of steps or less than one then we are setting it to 1
-    if (stepNo > totalSteps || stepNo < 1) {
+    if ((stepNo > totalSteps || stepNo < 1) && stepNo) {
       stepNo = 1;
     }
     if (activeStep < totalSteps) {
@@ -118,11 +128,10 @@ class WhatsAppInvitation extends Component {
     } else {
       activeStep = activeStep;
     }
-    activeStep = stepNo ? stepNo : activeStep + 1;
     this.setState({ activeStep });
   };
 
-  handlePrev = stepNo => {
+  handlePrev = (e, stepNo = null) => {
     const { totalSteps } = this.state;
     let activeStep = _get(this.state, "activeStep", 1);
     //? If step no is greater than total no of steps or less than one then we are setting it to 1
@@ -196,6 +205,26 @@ class WhatsAppInvitation extends Component {
     });
   };
 
+  initWhatsAppInvitation = () => {
+    const { whatsAppManualInvitation } = this.props;
+    const { uploadCustomerData, createTemplate } = this.state;
+    let salutation = _get(createTemplate, "inputFields.salutation.value", "");
+    let customerName = _get(createTemplate, "customerName", "");
+    let message = _get(createTemplate, "inputFields.message.value", "");
+    let reviewUrl = _get(createTemplate, "inputFields.reviewUrl.value", "");
+    let template = `${salutation} ${customerName}, ${message} ${reviewUrl}`;
+    let reqBody = {};
+    if (isValidArray(uploadCustomerData)) {
+      reqBody["customers"] = [...uploadCustomerData];
+    }
+    if (template) {
+      reqBody["template"] = template;
+    }
+    reqBody["storeCustomerData"] = false;
+    console.log(reqBody, "reqBody");
+    whatsAppManualInvitation(reqBody);
+  };
+
   renderActiveComponent = () => {
     const { activeStep, createTemplate } = this.state;
     switch (activeStep) {
@@ -203,6 +232,8 @@ class WhatsAppInvitation extends Component {
         return (
           <UploadCustomerData
             setUploadCustomerData={this.setUploadCustomerData}
+            handleNext={this.handleNext}
+            handlePrev={this.handlePrev}
           />
         );
       case 2:
@@ -211,6 +242,9 @@ class WhatsAppInvitation extends Component {
             createTemplate={createTemplate || {}}
             handleFormDataChange={this.handleFormDataChange}
             handleTemplateLanguageChange={this.handleTemplateLanguageChange}
+            handleNext={this.handleNext}
+            handlePrev={this.handlePrev}
+            handleSubmit={this.initWhatsAppInvitation}
           />
         );
       default:
@@ -218,8 +252,133 @@ class WhatsAppInvitation extends Component {
     }
   };
 
+  //! A top level handler to handle pusher events appropriately
+  whatsAppPusherHandler = data => {
+    const event = _get(data, "event", "");
+    switch (event) {
+      case "qr_code_changed":
+        this.qrCodeChange(data);
+        break;
+      // This comes when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
+      // case "qr_code_started":
+      //   this.qrCodeStarted(data);
+      //   break;
+      case " qr_code_expired":
+        this.qrCodeExpired(data);
+        break;
+      case "login_successful":
+        this.loginSuccessful(data);
+        break;
+      case "logout_successful":
+        this.logoutSuccessful(data);
+        break;
+      case "campaign_started":
+        this.campaignStarted(data);
+        break;
+      case "campaign_failed":
+        this.campaignFailed(data);
+        break;
+      case "campaign_finished":
+        this.campaignFinished(data);
+        break;
+      default:
+        console.error(`WhatsAppPusher default case ${event}`);
+    }
+  };
+
+  //! handler for displaying QR code on UI
+  qrCodeChange = data => {
+    const value = _get(data, "value", "");
+    this.setState({
+      QRCodeString: value,
+      openQRCodeDialog: true,
+      QRCodeDialogTitle: "Scan QR Code",
+      activeEvent: data
+    });
+  };
+
+  //! handler for displaying Retry
+  qrCodeExpired = data => {
+    this.setState({ mountWhatsAppPusher: false, activeEvent: data });
+  };
+
+  qrCodeStarted = data => {
+    //show QR code scanned successfully
+    this.setState({ activeEvent: data });
+  };
+
+  loginSuccessful = data => {
+    this.setState({ activeEvent: data });
+  };
+
+  logoutSuccessful = data => {
+    this.setState({
+      mountWhatsAppPusher: false,
+      activeEvent: data,
+      openQRCodeDialog: false
+    });
+  };
+
+  campaignStarted = data => {
+    this.setState({ activeEvent: data });
+  };
+
+  campaignFailed = data => {
+    this.setState({
+      mountWhatsAppPusher: false,
+      activeEvent: data,
+      openQRCodeDialog: false
+    });
+  };
+
+  campaignFinished = data => {
+    this.setState({ mountWhatsAppPusher: false, activeEvent: data });
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    const { whatsAppManualInvite, whatsAppManualCommit } = this.props;
+    const whatsAppManualCommitSuccess = _get(
+      whatsAppManualCommit,
+      "success",
+      false
+    );
+    if (
+      whatsAppManualCommitSuccess !==
+      _get(prevProps, "whatsAppManualCommit.success", false)
+    ) {
+      this.setState({ mountWhatsAppPusher: whatsAppManualCommitSuccess });
+    }
+  }
+
   render() {
-    return <div>{this.renderActiveComponent()}</div>;
+    const {
+      mountWhatsAppPusher,
+      openQRCodeDialog,
+      QRCodeString,
+      QRCodeDialogTitle,
+      activeEvent
+    } = this.state;
+    const { channelName } = this.props;
+    return (
+      <div>
+        {mountWhatsAppPusher ? (
+          <WhatsAppInvitationPusher
+            channelName={channelName}
+            whatsAppPusherHandler={this.whatsAppPusherHandler}
+          />
+        ) : null}
+        {this.renderActiveComponent()}
+        <QRCodeDialog
+          open={openQRCodeDialog}
+          QRCodeString={QRCodeString}
+          title={QRCodeDialogTitle}
+          activeEvent={activeEvent || {}}
+          handleClose={() => {
+            this.setState({ openQRCodeDialog: false });
+          }}
+        />
+      </div>
+    );
   }
 }
 
@@ -233,7 +392,18 @@ const mapStateToProps = state => {
     }
   ]);
   let companyName = _get(auth, "logIn.userProfile.company.name", "");
-  return { templateLanguage, companyName };
+  let channelName = _get(dashboardData, "whatsAppManualInvite.channelName", "");
+  let whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
+  let whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
+  return {
+    templateLanguage,
+    companyName,
+    channelName,
+    whatsAppManualInvite,
+    whatsAppManualCommit
+  };
 };
 
-export default connect(mapStateToProps)(WhatsAppInvitation);
+export default connect(mapStateToProps, { whatsAppManualInvitation })(
+  WhatsAppInvitation
+);
