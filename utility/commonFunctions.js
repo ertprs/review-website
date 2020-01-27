@@ -1,9 +1,10 @@
 import { isEmpty, get } from "lodash";
 import moment from "moment";
 import "moment-timezone";
-//? We can use this method to check if the form is valid or not, you just need to send the formdata object, it will loop through the object and will return true if all the fields are valid.
+import FormField from "../Components/Widgets/FormField/FormField";
 
-const isFormValid = formDataObject => {
+//? We can use this method to check if the form is valid or not, you just need to send the formdata object, it will loop through the object and will return true if all the fields are valid.
+export const isFormValid = formDataObject => {
   let valid = true;
   for (let item in formDataObject) {
     valid = valid && formDataObject[item].valid;
@@ -52,39 +53,36 @@ const isFormValid = formDataObject => {
 //   });
 // };
 
-//! This method can be ysed to render form fields if you pass form data object make sure to import <FormField />
+//! This method can be used to render form fields if you pass form data object make sure to import <FormField />
 
-const renderFormFields = (formData, handleFormDataChange) => {
+export const renderFormFields = (formData, handleFormDataChange) => {
   let output = [];
-  for (let item in formData) {
-    output = [
-      ...output,
-      <div>
-        <style jsx>
-          {`
-            .label {
-              font-weight: bold;
-              margin-bottom: 5px;
-              font-size: 15px;
-            }
-          `}
-        </style>
-        <div className="form-group">
-          <div className="label">
-            <label>{formData[item].labelText}</label>
+  if (Object.keys(formData).length > 0 && handleFormDataChange) {
+    for (let item in formData) {
+      output = [
+        ...output,
+        <div>
+          <style jsx>
+            {`
+              .label {
+                font-weight: bold;
+                margin-bottom: 5px;
+                font-size: 15px;
+              }
+            `}
+          </style>
+          <div className="form-group">
+            <div className="label">
+              <label>{formData[item].labelText}</label>
+            </div>
+            <FormField
+              {...formData[item]}
+              handleChange={handleFormDataChange}
+            />
           </div>
-          <FormField
-            {...formData[item]}
-            handleChange={(e, id) => {
-              handleFormDataChange(e, id);
-            }}
-            styles={{
-              height: "38px"
-            }}
-          />
         </div>
-      </div>
-    ];
+      ];
+    }
   }
   return output;
 };
