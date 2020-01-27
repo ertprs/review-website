@@ -22,9 +22,8 @@ class WhatsAppInvitationPusher extends Component {
 
   bindToKey = (pusher, channel) => {
     const { whatsAppPusherHandler } = this.props;
-
     channel.bind("whatsapp", data => {
-      this.props.whatsAppPusherHandler(data);
+      whatsAppPusherHandler(data);
       console.log(data, "WhatsApp pusher connected");
     });
 

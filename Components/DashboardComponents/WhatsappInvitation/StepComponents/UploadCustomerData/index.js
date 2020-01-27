@@ -5,6 +5,9 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import Button from "@material-ui/core/Button";
+import ForwardIcon from "@material-ui/icons/ArrowRightAlt";
+import BackwardIcon from "@material-ui/icons/ArrowBack";
 import _get from "lodash/get";
 import Papa from "papaparse";
 
@@ -151,13 +154,18 @@ class UploadCustomerData extends React.Component {
     });
     if (newTableData.length > 0 && valid) {
       this.props.setUploadCustomerData(newTableData);
-      this.setState({
-        tableData: [...newTableData],
-        copyPasteFormData: {
-          ...this.state.copyPasteFormData,
-          parseErrors: [...tempObj, ...errorObj]
+      this.setState(
+        {
+          tableData: [...newTableData],
+          copyPasteFormData: {
+            ...this.state.copyPasteFormData,
+            parseErrors: [...tempObj, ...errorObj]
+          }
+        },
+        () => {
+          this.props.handleNext();
         }
-      });
+      );
     } else {
       this.props.setUploadCustomerData([]);
       this.setState({
@@ -243,6 +251,7 @@ class UploadCustomerData extends React.Component {
   };
 
   renderExpansionPanel = () => {
+    const { handleNext, handlePrev } = this.props;
     const selectedWay = _get(this.state, "selectedWay", "");
     return (
       <RadioGroup
@@ -285,7 +294,11 @@ class UploadCustomerData extends React.Component {
               setUploadCustomerData={this.props.setUploadCustomerData}
             />{" "}
           </ExpansionPanelDetails>
+          <Button variant="container" color="primary" onClick={handleNext}>
+            Continue
+          </Button>
         </ExpansionPanel>
+
         <ExpansionPanel
           style={{ marginBottom: "15px" }}
           expanded={"copyPaste" === selectedWay}
@@ -318,6 +331,7 @@ class UploadCustomerData extends React.Component {
               handleChange={this.handleChange}
               handleParseBtnClick={this.handleParseBtnClick}
               setUploadCustomerData={this.props.setUploadCustomerData}
+              handleContinueBtnClick={handleNext}
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>

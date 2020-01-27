@@ -1,8 +1,11 @@
 import React, { Component } from "react";
+import WhatsAppInvitationPusher from "./WhatsAppInvitationPusher";
 import {
   whatsAppTemplates,
   getMessage
 } from "../../../utility/whatsAppTemplate";
+import { isValidArray } from "../../../utility/commonFunctions";
+import { whatsAppManualInvitation } from "../../../store/actions/dashboardActions";
 import validate from "../../../utility/validate";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
@@ -33,9 +36,10 @@ class WhatsAppInvitation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 2,
+      activeStep: 1,
       totalSteps: 2,
       uploadCustomerData: [],
+      mountWhatsAppPusher: false,
       createTemplate: {
         templateLanguage: {
           element: "select",
@@ -51,7 +55,7 @@ class WhatsAppInvitation extends Component {
             required: true
           }
         },
-        customerName: "{{Customer}}",
+        customerName: "{{{name}}}",
         inputFields: {
           salutation: {
             element: "input",
@@ -106,11 +110,11 @@ class WhatsAppInvitation extends Component {
     this.setState({ uploadCustomerData: [...data] });
   };
 
-  handleNext = stepNo => {
+  handleNext = (e, stepNo = null) => {
     const { totalSteps } = this.state;
     let activeStep = _get(this.state, "activeStep", 1);
     //? If step no is greater than total no of steps or less than one then we are setting it to 1
-    if (stepNo > totalSteps || stepNo < 1) {
+    if ((stepNo > totalSteps || stepNo < 1) && stepNo) {
       stepNo = 1;
     }
     if (activeStep < totalSteps) {
@@ -118,11 +122,10 @@ class WhatsAppInvitation extends Component {
     } else {
       activeStep = activeStep;
     }
-    activeStep = stepNo ? stepNo : activeStep + 1;
     this.setState({ activeStep });
   };
 
-  handlePrev = stepNo => {
+  handlePrev = (e, stepNo = null) => {
     const { totalSteps } = this.state;
     let activeStep = _get(this.state, "activeStep", 1);
     //? If step no is greater than total no of steps or less than one then we are setting it to 1
@@ -196,6 +199,26 @@ class WhatsAppInvitation extends Component {
     });
   };
 
+  initWhatsAppInvitation = () => {
+    const { whatsAppManualInvitation } = this.props;
+    const { uploadCustomerData, createTemplate } = this.state;
+    let salutation = _get(createTemplate, "inputFields.salutation.value", "");
+    let customerName = _get(createTemplate, "customerName", "");
+    let message = _get(createTemplate, "inputFields.message.value", "");
+    let reviewUrl = _get(createTemplate, "inputFields.reviewUrl.value", "");
+    let template = `${salutation} ${customerName}, ${message} ${reviewUrl}`;
+    let reqBody = {};
+    if (isValidArray(uploadCustomerData)) {
+      reqBody["numbers"] = [...uploadCustomerData];
+    }
+    if (template) {
+      reqBody["template"] = template;
+    }
+    reqBody["saveSession"] = false;
+    console.log(reqBody, "reqBody");
+    whatsAppManualInvitation(reqBody);
+  };
+
   renderActiveComponent = () => {
     const { activeStep, createTemplate } = this.state;
     switch (activeStep) {
@@ -203,6 +226,8 @@ class WhatsAppInvitation extends Component {
         return (
           <UploadCustomerData
             setUploadCustomerData={this.setUploadCustomerData}
+            handleNext={this.handleNext}
+            handlePrev={this.handlePrev}
           />
         );
       case 2:
@@ -211,6 +236,9 @@ class WhatsAppInvitation extends Component {
             createTemplate={createTemplate || {}}
             handleFormDataChange={this.handleFormDataChange}
             handleTemplateLanguageChange={this.handleTemplateLanguageChange}
+            handleNext={this.handleNext}
+            handlePrev={this.handlePrev}
+            handleSubmit={this.initWhatsAppInvitation}
           />
         );
       default:
@@ -259,7 +287,7 @@ class WhatsAppInvitation extends Component {
 
   //! handler for displaying Retry
   qrCodeExpired = data => {
-    //show retry button expire
+    this.setState({ mountWhatsAppPusher: false });
   };
 
   qrCodeStarted = data => {
@@ -271,6 +299,8 @@ class WhatsAppInvitation extends Component {
   };
 
   logoutSuccessful = data => {
+    this.setState({ mountWhatsAppPusher: false });
+
     //show message
   };
 
@@ -279,15 +309,44 @@ class WhatsAppInvitation extends Component {
   };
 
   campaignFailed = data => {
+    this.setState({ mountWhatsAppPusher: false });
     //end
   };
 
   campaignFinished = data => {
+    this.setState({ mountWhatsAppPusher: false });
     //end
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    const { whatsAppManualInvite } = this.props;
+    const whatsAppManualInviteSuccess = _get(
+      whatsAppManualInvite,
+      "success",
+      false
+    );
+    if (
+      whatsAppManualInviteSuccess !==
+      _get(prevProps, "whatsAppManualInvite.success", false)
+    ) {
+      this.setState({ mountWhatsAppPusher: whatsAppManualInviteSuccess });
+    }
+  }
+
   render() {
-    return <div>{this.renderActiveComponent()}</div>;
+    const { mountWhatsAppPusher } = this.state;
+    const { channelName } = this.props;
+    return (
+      <div>
+        {mountWhatsAppPusher ? (
+          <WhatsAppInvitationPusher
+            channelName={channelName}
+            whatsAppPusherHandler={this.whatsAppPusherHandler}
+          />
+        ) : null}
+        {this.renderActiveComponent()}
+      </div>
+    );
   }
 }
 
@@ -301,7 +360,18 @@ const mapStateToProps = state => {
     }
   ]);
   let companyName = _get(auth, "logIn.userProfile.company.name", "");
-  return { templateLanguage, companyName };
+  let channelName = _get(dashboardData, "whatsAppManualInvite.channelName", "");
+  let whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
+  let whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
+  return {
+    templateLanguage,
+    companyName,
+    channelName,
+    whatsAppManualInvite,
+    whatsAppManualCommit
+  };
 };
 
-export default connect(mapStateToProps)(WhatsAppInvitation);
+export default connect(mapStateToProps, { whatsAppManualInvitation })(
+  WhatsAppInvitation
+);

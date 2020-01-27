@@ -123,8 +123,8 @@ const dashboardReducer = (state = {}, action) => {
     toggleReviewResponse,
     toggleWidgetPlatformVisibilityResponse,
     shortReviewUrl,
-    whatsAppManualCommit,
-    whatsAppManualInvite
+    whatsAppManualInvite,
+    whatsAppManualCommit
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:

@@ -1562,7 +1562,6 @@ export const whatsAppManualInvitation = data => {
       const success = _get(result, "data.success", false);
       const campaignId = _get(result, "data.campaignId", "");
       const channelName = _get(result, "data.channel_name", "");
-
       dispatch({
         type: WHATSAPP_MANUAL_INVITE_SUCCESS,
         whatsAppManualInvite: {
@@ -1573,6 +1572,9 @@ export const whatsAppManualInvitation = data => {
           channelName
         }
       });
+      if (success && campaignId) {
+        dispatch(whatsAppManualInvitationCommit(campaignId));
+      }
     } catch (error) {
       const errorMsg = _get(
         error,
@@ -1614,7 +1616,6 @@ export const whatsAppManualInvitationCommit = campaignId => {
         url
       });
       const success = _get(result, "data.success", false);
-
       dispatch({
         type: WHATSAPP_MANUAL_COMMIT_SUCCESS,
         whatsAppManualCommit: {
@@ -1634,7 +1635,7 @@ export const whatsAppManualInvitationCommit = campaignId => {
         whatsAppManualCommit: {
           success: false,
           isLoading: false,
-          errorMsg,
+          errorMsg
         }
       });
     }
