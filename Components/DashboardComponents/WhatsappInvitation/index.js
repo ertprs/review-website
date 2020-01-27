@@ -218,6 +218,74 @@ class WhatsAppInvitation extends Component {
     }
   };
 
+  //! A top level handler to handle pusher events appropriately
+  whatsAppPusherHandler = data => {
+    const event = _get(data, "event", "");
+    switch (event) {
+      case "qr_code_changed":
+        this.qrCodeChange(data);
+        break;
+      case " qr_code_expired":
+        this.qrCodeExpired(data);
+        break;
+      case "qr_code_started":
+        this.qrCodeStarted(data);
+        break;
+      case "login_successful":
+        this.loginSuccessful(data);
+        break;
+      case "logout_successful":
+        this.logoutSuccessful(data);
+        break;
+      case "campaign_started":
+        this.campaignStarted(data);
+        break;
+      case "campaign_failed":
+        this.campaignFailed(data);
+        break;
+      case "campaign_finished":
+        this.campaignFinished(data);
+        break;
+      default:
+        console.error(`WhatsAppPusher default case ${event}`);
+    }
+  };
+
+  //! handler for displaying QR code on UI
+  qrCodeChange = data => {
+    const value = _get(data, "value", "");
+    //generate QR code from above value.
+  };
+
+  //! handler for displaying Retry
+  qrCodeExpired = data => {
+    //show retry button expire
+  };
+
+  qrCodeStarted = data => {
+    //show QR code scanned successfully
+  };
+
+  loginSuccessful = data => {
+    //show message
+  };
+
+  logoutSuccessful = data => {
+    //show message
+  };
+
+  campaignStarted = data => {
+    //show in progress
+  };
+
+  campaignFailed = data => {
+    //end
+  };
+
+  campaignFinished = data => {
+    //end
+  };
+
   render() {
     return <div>{this.renderActiveComponent()}</div>;
   }

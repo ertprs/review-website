@@ -80,7 +80,13 @@ import {
   SET_WIDGET_PLATFORM_VISIBILITY_FAILURE,
   GET_SHORT_REVIEW_URL_INIT,
   GET_SHORT_REVIEW_URL_SUCCESS,
-  GET_SHORT_REVIEW_URL_ERROR
+  GET_SHORT_REVIEW_URL_ERROR,
+  WHATSAPP_MANUAL_INVITE_INIT,
+  WHATSAPP_MANUAL_INVITE_SUCCESS,
+  WHATSAPP_MANUAL_INVITE_FAILURE,
+  WHATSAPP_MANUAL_COMMIT_INIT,
+  WHATSAPP_MANUAL_COMMIT_SUCCESS,
+  WHATSAPP_MANUAL_COMMIT_FAILURE
 } from "./actionTypes";
 import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
 import cookie from "js-cookie";
@@ -110,7 +116,9 @@ import {
   configuredReviewPlatformsApi,
   toggleReviewVisibilityApi,
   toggleWidgetPlatformVisibilityApi,
-  shortReviewUrlApi
+  shortReviewUrlApi,
+  whatsAppManualInvitationApi,
+  whatsAppManualInvitationCommitApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -1472,11 +1480,11 @@ export const toggleWidgetPlatformVisibility = profileData => {
         "Some Error Occurred!"
       );
       dispatch({
-        type: TOGGLE_REVIEW_VISIBILITY_FAILURE,
-        toggleReviewResponse: {
+        type: SET_WIDGET_PLATFORM_VISIBILITY_FAILURE,
+        toggleWidgetPlatformVisibilityResponse: {
           isLoading: false,
-          errorMsg,
-          success: false
+          errorMsg: errorMsg,
+          success
         }
       });
     }
@@ -1523,6 +1531,110 @@ export const getShortReviewUrl = data => {
             "response.data.message",
             "Unable to generate review Url!"
           )
+        }
+      });
+    }
+  };
+};
+
+//WHATSAPP MANUAL INVITE INIT
+export const whatsAppManualInvitation = data => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: WHATSAPP_MANUAL_INVITE_INIT,
+      whatsAppManualInvite: {
+        success: undefined,
+        isLoading: true,
+        errorMsg: "",
+        campaignId: "",
+        channelName: ""
+      }
+    });
+    try {
+      const token = cookie.get("token");
+      const url = `${process.env.BASE_URL}${whatsAppManualInvitationApi}`;
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url
+      });
+      const success = _get(result, "data.success", false);
+      const campaignId = _get(result, "data.campaignId", "");
+      const channelName = _get(result, "data.channel_name", "");
+
+      dispatch({
+        type: WHATSAPP_MANUAL_INVITE_SUCCESS,
+        whatsAppManualInvite: {
+          success,
+          isLoading: false,
+          errorMsg: "",
+          campaignId,
+          channelName
+        }
+      });
+    } catch (error) {
+      const errorMsg = _get(
+        error,
+        "response.data.message",
+        "Some error ocurred !"
+      );
+      dispatch({
+        type: WHATSAPP_MANUAL_INVITE_FAILURE,
+        whatsAppManualInvite: {
+          success: false,
+          isLoading: false,
+          errorMsg,
+          campaignId: "",
+          channelName: ""
+        }
+      });
+    }
+  };
+};
+
+//WHATSAPP MANUAL INVITE COMMIT
+export const whatsAppManualInvitationCommit = campaignId => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: WHATSAPP_MANUAL_COMMIT_INIT,
+      whatsAppManualCommit: {
+        success: undefined,
+        isLoading: true,
+        errorMsg: ""
+      }
+    });
+    try {
+      const token = cookie.get("token");
+      const url = `${process.env.BASE_URL}${whatsAppManualInvitationCommitApi}/${campaignId}`;
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url
+      });
+      const success = _get(result, "data.success", false);
+
+      dispatch({
+        type: WHATSAPP_MANUAL_COMMIT_SUCCESS,
+        whatsAppManualCommit: {
+          success,
+          isLoading: false,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      const errorMsg = _get(
+        error,
+        "response.data.error",
+        "Some error ocurred !"
+      );
+      dispatch({
+        type: WHATSAPP_MANUAL_COMMIT_FAILURE,
+        whatsAppManualCommit: {
+          success: false,
+          isLoading: false,
+          errorMsg,
         }
       });
     }
