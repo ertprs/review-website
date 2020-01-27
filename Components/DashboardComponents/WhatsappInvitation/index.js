@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import {
+  whatsAppTemplates,
+  getMessage
+} from "../../../utility/whatsAppTemplate";
 import validate from "../../../utility/validate";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
@@ -29,12 +33,13 @@ class WhatsAppInvitation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 1,
+      activeStep: 2,
       totalSteps: 2,
       uploadCustomerData: [],
       createTemplate: {
         templateLanguage: {
           element: "select",
+          name: "templateLanguage",
           value: "",
           code: "",
           options: _get(this.props, "templateLanguage", []),
@@ -44,47 +49,53 @@ class WhatsAppInvitation extends Component {
           touched: false,
           validationRules: {
             required: true
+          }
+        },
+        customerName: "{{Customer}}",
+        inputFields: {
+          salutation: {
+            element: "input",
+            name: "salutation",
+            labelText: "Enter salutation:",
+            type: "text",
+            value: "",
+            valid: true,
+            touched: true,
+            errorMessage: "Please enter a salutation!",
+            placeholder: "Enter salutation",
+            validationRules: {
+              required: true
+            }
           },
-          name: "templateLanguage"
-        },
-        salutation: {
-          element: "input",
-          labelText: "Salutation",
-          type: "text",
-          value: "",
-          valid: true,
-          touched: true,
-          errorMessage: "Please enter a salutation.",
-          placeholder: "Enter salutation.",
-          validationRules: {
-            required: true
-          }
-        },
-        customerName: "{{CustomerName}}",
-        message: {
-          element: "input",
-          labelText: "Message",
-          type: "text",
-          value: "",
-          valid: true,
-          touched: true,
-          errorMessage: "Please enter a message.",
-          placeholder: "Enter your message here",
-          validationRules: {
-            required: true
-          }
-        },
-        reviewUrl: {
-          element: "input",
-          labelText: "Subject",
-          type: "text",
-          value: "Leave a review on Entity",
-          valid: true,
-          touched: true,
-          errorMessage: "Please enter a review url.",
-          placeholder: "Enter review url",
-          validationRules: {
-            required: true
+          message: {
+            element: "textarea",
+            name: "message",
+            labelText: "Enter your message:",
+            type: "text",
+            value: "",
+            valid: true,
+            touched: true,
+            errorMessage: "Please enter a message!",
+            placeholder: "Enter your message here",
+            rows: "5",
+            cols: "5",
+            validationRules: {
+              required: true
+            }
+          },
+          reviewUrl: {
+            element: "input",
+            name: "reviewUrl",
+            labelText: "Enter Review Url:",
+            type: "text",
+            value: "",
+            valid: true,
+            touched: true,
+            errorMessage: "Please enter a Review Url!",
+            placeholder: "Enter Review Url",
+            validationRules: {
+              required: true
+            }
           }
         }
       }
@@ -127,17 +138,59 @@ class WhatsAppInvitation extends Component {
     this.setState({ activeStep });
   };
 
-  handleChange = (e, stateKeyName) => {
+  handleTemplateLanguageChange = e => {
     const { name, value } = e.target;
-    const objData = _get(this.state, stateKeyName, {});
+    const { companyName } = this.props;
+    const createTemplateObj = _get(this.state, "createTemplate", {});
+    let inputFieldsObj = _get(this.state, "createTemplate.inputFields", {});
+    let salutation = "";
+    let message = "";
+    if (value) {
+      salutation = whatsAppTemplates[value].hasOwnProperty("salutation")
+        ? whatsAppTemplates[value].salutation
+        : "";
+      message = getMessage(value, companyName);
+    }
     this.setState({
-      [stateKeyName]: {
-        ...objData,
+      createTemplate: {
+        ...createTemplateObj,
         [name]: {
-          ..._get(objData, name, {}),
+          ..._get(createTemplateObj, name, {}),
           value,
           touched: true,
-          valid: validate(value, objData[name].validationRules)
+          valid: validate(value, createTemplateObj[name].validationRules)
+        },
+        inputFields: {
+          ...inputFieldsObj,
+          salutation: {
+            ..._get(inputFieldsObj, "salutation", {}),
+            value: salutation,
+            valid: true
+          },
+          message: {
+            ..._get(inputFieldsObj, "message", {}),
+            value: message,
+            valid: true
+          }
+        }
+      }
+    });
+  };
+
+  handleFormDataChange = e => {
+    const { name, value } = e.target;
+    const objData = _get(this.state, "createTemplate.inputFields", {});
+    this.setState({
+      createTemplate: {
+        ..._get(this.state, "createTemplate", {}),
+        inputFields: {
+          ...objData,
+          [name]: {
+            ..._get(objData, name, {}),
+            value,
+            touched: true,
+            valid: validate(value, objData[name].validationRules)
+          }
         }
       }
     });
@@ -156,7 +209,8 @@ class WhatsAppInvitation extends Component {
         return (
           <CreateTemplate
             createTemplate={createTemplate || {}}
-            handleChange={this.handleChange}
+            handleFormDataChange={this.handleFormDataChange}
+            handleTemplateLanguageChange={this.handleTemplateLanguageChange}
           />
         );
       default:
@@ -170,7 +224,7 @@ class WhatsAppInvitation extends Component {
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { auth, dashboardData } = state;
   const templateLanguage = _get(dashboardData, "parsedCampaignLanguage", [
     {
       name: "English",
@@ -178,7 +232,8 @@ const mapStateToProps = state => {
       code: "en"
     }
   ]);
-  return { templateLanguage };
+  let companyName = _get(auth, "logIn.userProfile.company.name", "");
+  return { templateLanguage, companyName };
 };
 
 export default connect(mapStateToProps)(WhatsAppInvitation);

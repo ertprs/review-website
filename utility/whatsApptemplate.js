@@ -5,7 +5,7 @@ export const whatsAppTemplates = {
     templateLanguage: "english",
     salutation: "Hi",
     message: [
-      "Great that you visited ",
+      "Great that you visited",
       "Please leave a review about your experience here:"
     ]
   },
@@ -27,24 +27,8 @@ export const whatsAppTemplates = {
   }
 };
 
-export const getWhatsAppTemplateData = (
-  tempId = "",
-  key = "",
-  entityDomain = ""
-) => {
-  const selectedTemplate = emailTemplates[tempId] || {};
-  const templateLanguage = _get(selectedTemplate, "templateLanguage", "");
-  if (key === "exampleText") {
-    const exampleText = _get(selectedTemplate, "exampleText", []);
-    return (
-      (exampleText[0] || "") +
-      " " +
-      (entityDomain || "") +
-      " " +
-      (exampleText[1] || "")
-    );
-  } else if (key === "leaveReviewText") {
-    const leaveReviewText = _get(selectedTemplate, "leaveReviewText", "");
-    return leaveReviewText;
-  }
+export const getMessage = (tempId = "", companyName = "") => {
+  const templateObj = whatsAppTemplates[tempId] || {};
+  const message = _get(templateObj, "message", []);
+  return (message[0] || "") + " " + companyName + ". " + (message[1] || "");
 };
