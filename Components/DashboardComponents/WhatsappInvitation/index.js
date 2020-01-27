@@ -259,9 +259,10 @@ class WhatsAppInvitation extends Component {
       case "qr_code_changed":
         this.qrCodeChange(data);
         break;
-      case "qr_code_started":
-        this.qrCodeStarted(data);
-        break;
+      // This comes when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
+      // case "qr_code_started":
+      //   this.qrCodeStarted(data);
+      //   break;
       case " qr_code_expired":
         this.qrCodeExpired(data);
         break;
