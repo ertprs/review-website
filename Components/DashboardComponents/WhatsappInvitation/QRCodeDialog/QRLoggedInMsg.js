@@ -1,10 +1,38 @@
 import React from "react";
 
-export default function QRLoggedInMsg() {
+function QRLoggedInMsg() {
   return (
-    <div style={{textAlign:"center", marginTop:"50pc"}}>
-      <h2 style={{ color: "green" }}>Logged In Successful!</h2>
-      <p style={{marginTop:"25px"}}>Preparing invitations...</p>
+    <div className="container">
+      <style jsx>
+        {`
+          .campaignStartedContainer {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+          }
+          .imageContainer {
+            max-width: 400px;
+            height: auto;
+          }
+          .imageContainer img {
+            max-width: 100%;
+            height: auto;
+          }
+        `}
+      </style>
+      <div className="campaignStartedContainer">
+        <div className="imageContainer">
+          <img src="/static/images/check-mark-animated.gif" />
+        </div>
+        <div>
+          <h4>Logged in successfully, preparing your invitations...</h4>
+        </div>
+      </div>
     </div>
   );
 }
+
+export default QRLoggedInMsg;

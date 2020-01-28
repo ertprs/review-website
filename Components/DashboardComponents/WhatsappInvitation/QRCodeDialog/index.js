@@ -29,7 +29,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const QRCodeDialog = props => {
   const classes = useStyles();
-  const { open, handleClose, activeEvent, reloadQRCode } = props;
+  const {
+    open,
+    handleClose,
+    activeEvent,
+    reloadQRCode,
+    whatsAppPusherConnected
+  } = props;
   const event = _get(activeEvent, "event", "");
   const value = _get(activeEvent, "value", "");
   let title = "";
@@ -45,9 +51,11 @@ const QRCodeDialog = props => {
             QRCodeString=""
             reloadQRCode={reloadQRCode}
             activeEvent={activeEvent}
+            whatsAppPusherConnected={whatsAppPusherConnected}
           />
         );
       case "login_successful":
+        console.log("LOGIN SUCCESSS DIALOG");
         title = "Logged In Successfully!";
         return <QRLoggedInMsg />;
       case "campaign_started":
@@ -75,12 +83,14 @@ const QRCodeDialog = props => {
             <Typography variant="h6" className={classes.title}>
               {title}
             </Typography>
+            {event === "campaign_finished" ||
+            "qr_code_expired" ||
+            "qr_code_changed" ? (
+              <Button autoFocus color="inherit" onClick={handleClose}>
+                Close
+              </Button>
+            ) : null}
           </Toolbar>
-          {event === "campaign_finished" ? (
-            <Button autoFocus color="inherit" onClick={handleClose}>
-              Close
-            </Button>
-          ) : null}
         </AppBar>
         {renderComponentByEvent()}
       </Dialog>

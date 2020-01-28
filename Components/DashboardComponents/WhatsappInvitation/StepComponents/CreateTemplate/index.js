@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { isFormValid } from "../../../../../utility/commonFunctions";
 import GenerateReviewUrl from "./GenerateReviewUrl";
@@ -35,10 +35,17 @@ const CreateTemplate = props => {
     handleSubmit,
     handleCheckboxChange,
     isLoading,
-    activeEvent
+    activeEvent,
+    whatsAppPusherConnected
   } = props;
   const isLanguageSelected = _get(createTemplate, "templateLanguage.value", "");
   const saveCampaign = _get(createTemplate, "saveCampaign", false);
+
+  useEffect(() => {
+    if (window && props.scrollToTopOfThePage) {
+      props.scrollToTopOfThePage();
+    }
+  }, []);
 
   const classes = useStyles();
   return (
@@ -106,12 +113,17 @@ const CreateTemplate = props => {
               color="primary"
               onClick={handleSubmit}
               size={"large"}
-              disabled={!isFormValid(_get(createTemplate, "inputFields", {}))}
+              disabled={
+                !isFormValid(_get(createTemplate, "inputFields", {})) ||
+                whatsAppPusherConnected
+              }
             >
               {/* showing loader when any of two api call is in progress or we
               haven't received any broadcast from pusher */}
-              {isLoading || !_isEmpty(activeEvent) ? (
+              {isLoading ? (
                 <CircularProgress color={"#fff"} />
+              ) : whatsAppPusherConnected ? (
+                "Loading QR code"
               ) : (
                 "Start Sending Invitations"
               )}

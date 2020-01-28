@@ -17,7 +17,7 @@ class UploadFile extends React.Component {
         <h6 style={{ fontWeight: "lighter" }}>
           Upload a CSV file containing the data of customers you’d like to
           invite. The columns in the CSV file should contain: customer name,
-          customer phone number and customer country code.
+          customer country code and customer phone number.
         </h6>
         {/* <Link href="/static/user_invite_sample.csv">
           <a>Download Sample File</a>
@@ -99,19 +99,6 @@ class UploadFile extends React.Component {
                   ) : null}
                 </div>
                 <div>
-                  {item.phone.trim() === "" ? (
-                    <span className="red">
-                      Phone: empty <small>(required)</small>
-                    </span>
-                  ) : (
-                    <span>
-                      {validate(item.phone, { isPhoneNumber: true }) ? null : (
-                        <span className="red">Phone :Invalid phone number</span>
-                      )}
-                    </span>
-                  )}
-                </div>
-                <div>
                   {item.countryCode.trim() === "" ? (
                     <span className="red">
                       Country code: empty <small>(required)</small>
@@ -124,6 +111,19 @@ class UploadFile extends React.Component {
                         <span className="red">
                           Country code :Invalid country code
                         </span>
+                      )}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  {item.phone.trim() === "" ? (
+                    <span className="red">
+                      Phone: empty <small>(required)</small>
+                    </span>
+                  ) : (
+                    <span>
+                      {validate(item.phone, { isPhoneNumber: true }) ? null : (
+                        <span className="red">Phone :Invalid phone number</span>
                       )}
                     </span>
                   )}

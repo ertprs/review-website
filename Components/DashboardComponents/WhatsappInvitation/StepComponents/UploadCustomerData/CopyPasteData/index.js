@@ -18,7 +18,7 @@ class CopyPasteData extends Component {
         <p>
           Please place the columns in the following order:{" "}
           <span style={{ fontWeight: "bold" }}>
-            name, phone number, country code
+            name, country code, phone number
           </span>
           .
         </p>
@@ -147,19 +147,6 @@ class CopyPasteData extends Component {
                   ) : null}
                 </div>
                 <div>
-                  {item.phone.trim() === "" ? (
-                    <span className="red">
-                      Phone: empty <small>(required)</small>
-                    </span>
-                  ) : (
-                    <span>
-                      {validate(item.phone, { isPhoneNumber: true }) ? null : (
-                        <span className="red">Phone :Invalid phone number</span>
-                      )}
-                    </span>
-                  )}
-                </div>
-                <div>
                   {item.countryCode.trim() === "" ? (
                     <span className="red">
                       Country code: empty <small>(required)</small>
@@ -172,6 +159,19 @@ class CopyPasteData extends Component {
                         <span className="red">
                           Country code :Invalid country code
                         </span>
+                      )}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  {item.phone.trim() === "" ? (
+                    <span className="red">
+                      Phone: empty <small>(required)</small>
+                    </span>
+                  ) : (
+                    <span>
+                      {validate(item.phone, { isPhoneNumber: true }) ? null : (
+                        <span className="red">Phone :Invalid phone number</span>
                       )}
                     </span>
                   )}
