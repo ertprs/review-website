@@ -28,28 +28,33 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const QRCodeDialog = props => {
-  const [title, setTitle] = useState("");
   const classes = useStyles();
-  const { open, handleClose, activeEvent } = props;
+  const { open, handleClose, activeEvent, reloadQRCode } = props;
   const event = _get(activeEvent, "event", "");
   const value = _get(activeEvent, "value", "");
-
+  let title = "";
   const renderComponentByEvent = () => {
     switch (event) {
       case "qr_code_changed":
-        // setTitle("Scan QR Code");
+        title = "Scan QR Code";
         return <QRCode QRCodeString={value || ""} />;
       case "qr_code_expired":
-        // setTitle("QR Code Expired");
-        return "Expired QR Code";
+        title = "QR Code Expired";
+        return (
+          <QRCode
+            QRCodeString=""
+            reloadQRCode={reloadQRCode}
+            activeEvent={activeEvent}
+          />
+        );
       case "login_successful":
-        // setTitle("Logged In Successfully!");
+        title = "Logged In Successfully!";
         return <QRLoggedInMsg />;
       case "campaign_started":
-        // setTitle("Campaign Started!");
+        title = "Campaign Started!";
         return <CampaignStarted />;
       case "campaign_finished":
-        // setTitle("Campaign Finished!");
+        title = "Campaign Finished!";
         return <CampaignFinished result={value || {}} />;
       default:
         null;
@@ -71,8 +76,13 @@ const QRCodeDialog = props => {
               {title}
             </Typography>
           </Toolbar>
-          </AppBar>
-          {renderComponentByEvent()}
+          {event === "campaign_finished" ? (
+            <Button autoFocus color="inherit" onClick={handleClose}>
+              Close
+            </Button>
+          ) : null}
+        </AppBar>
+        {renderComponentByEvent()}
       </Dialog>
     </div>
   );

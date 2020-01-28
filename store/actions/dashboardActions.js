@@ -1624,7 +1624,6 @@ export const whatsAppManualInvitationCommit = campaignId => {
         }
       });
     } catch (error) {
-      console.log(error, "error");
       const errorMsg = _get(
         error,
         "response.data.error",
