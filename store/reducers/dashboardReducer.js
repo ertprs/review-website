@@ -78,7 +78,13 @@ import {
   SET_WIDGET_PLATFORM_VISIBILITY_FAILURE,
   GET_SHORT_REVIEW_URL_INIT,
   GET_SHORT_REVIEW_URL_SUCCESS,
-  GET_SHORT_REVIEW_URL_ERROR
+  GET_SHORT_REVIEW_URL_ERROR,
+  WHATSAPP_MANUAL_INVITE_INIT,
+  WHATSAPP_MANUAL_INVITE_SUCCESS,
+  WHATSAPP_MANUAL_INVITE_FAILURE,
+  WHATSAPP_MANUAL_COMMIT_INIT,
+  WHATSAPP_MANUAL_COMMIT_SUCCESS,
+  WHATSAPP_MANUAL_COMMIT_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -116,7 +122,9 @@ const dashboardReducer = (state = {}, action) => {
     scrapingArray,
     toggleReviewResponse,
     toggleWidgetPlatformVisibilityResponse,
-    shortReviewUrl
+    shortReviewUrl,
+    whatsAppManualInvite,
+    whatsAppManualCommit
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -579,6 +587,42 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         shortReviewUrl
+      };
+    case WHATSAPP_MANUAL_INVITE_INIT:
+      return {
+        ...state,
+        type,
+        whatsAppManualInvite
+      };
+    case WHATSAPP_MANUAL_INVITE_SUCCESS:
+      return {
+        ...state,
+        type,
+        whatsAppManualInvite
+      };
+    case WHATSAPP_MANUAL_INVITE_FAILURE:
+      return {
+        ...state,
+        type,
+        whatsAppManualInvite
+      };
+    case WHATSAPP_MANUAL_COMMIT_INIT:
+      return {
+        ...state,
+        type,
+        whatsAppManualCommit
+      };
+    case WHATSAPP_MANUAL_COMMIT_SUCCESS:
+      return {
+        ...state,
+        type,
+        whatsAppManualCommit
+      };
+    case WHATSAPP_MANUAL_COMMIT_FAILURE:
+      return {
+        ...state,
+        type,
+        whatsAppManualCommit
       };
     default:
       return state;

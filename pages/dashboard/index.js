@@ -200,6 +200,17 @@ const ReviewUrl = dynamic(
   }
 );
 
+const WhatsAppInvitation = dynamic(
+  () => import("../../Components/DashboardComponents/WhatsappInvitation"),
+  {
+    loading: () => (
+      <div className="dynamicImport">
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -519,6 +530,12 @@ function Dashboard(props) {
       )
     },
     8: {
+      name: "whatsAppInvitation",
+      componentToRender: (
+        <WhatsAppInvitation scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
+    },
+    9: {
       name: "userProfile",
       componentToRender: (
         <UserProfile scrollToTopOfThePage={scrollToTopOfThePage} />
@@ -676,6 +693,7 @@ Dashboard.getInitialProps = async ctx => {
   // Check user's session
   const queryStep = ctx.query;
   isAuthenticatedBusiness(ctx);
+  //! remove placeId and placeLocated
   const { placeId, placeLocated } = nextCookie(ctx);
   return { pId: placeId, pLocated: placeLocated, queryStep };
 };

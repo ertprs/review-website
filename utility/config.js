@@ -44,3 +44,7 @@ export const toggleReviewVisibilityApi = "api/my-business/reviews";
 export const toggleWidgetPlatformVisibilityApi =
   "/api/my-business/profile/direct-platform-urls/update-widget-visibility";
 export const shortReviewUrlApi = "/api/my-business/profile/short-urls";
+export const whatsAppManualInvitationApi =
+  "/api/my-business/invitations/whatsapp/manual/init";
+export const whatsAppManualInvitationCommitApi =
+  "/api/my-business/invitations/whatsapp/manual/commit";

@@ -545,8 +545,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let loginType = 0;
       const businessProfile = get(res, "data.user.business_profile", {});
       const domainId = get(businessProfile, "domainId", 0);
-      const socialArray = get(businessProfile, "social", []);
-
+      let activationRequired = get(res, "data.user.activation_required", false);
+      let subscriptionExpired = get(userProfile, "subscription.expired", false);
       if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
           if (
@@ -555,21 +555,15 @@ export const businessLogIn = (loginData, api, directLogin) => {
             userProfile.subscription.plan_type_id === 3
           ) {
             loginType = 4;
+            cookie.set("loginType", loginType, { expires: 7 });
+            cookie.set("token", token, { expires: 7 });
+            cookie.set("placeId", placeId, { expires: 7 });
+            localStorage.setItem("token", token);
             dispatch(
               setInvitationQuota(
                 get(userProfile, "subscription.quota_details", {})
               )
             );
-            let subscriptionExpired = get(
-              userProfile,
-              "subscription.expired",
-              false
-            );
-            cookie.set("loginType", loginType, { expires: 7 });
-            cookie.set("token", token, { expires: 7 });
-            cookie.set("placeId", placeId, { expires: 7 });
-            localStorage.setItem("token", token);
-            // dispatch(fetchReviews(token));
             dispatch(getAvailableReviewPlatforms(token));
             dispatch(setSubscription(subscriptionExpired));
             dispatch(fetchCampaignLanguage(token));
@@ -619,7 +613,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
     } catch (err) {
       let success = get(err, "response.data.success", false);
       let status = get(err, "response.status", 0);
-      let error = get(err, "response.data.error", "Some Error Occured.");
+      let error = get(err, "response.data.error", "Some Error Occurred.");
       let isWrongCredentials =
         get(err, "response.data.error") === "Unauthorized";
       dispatch({

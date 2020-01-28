@@ -20,12 +20,24 @@ const parseTableData = (tableData, timezone) => {
   let result = tableData.map(data => {
     let status = _get(data, "status", 0);
     status = status === null ? 0 : status;
+    let campaign_type = _get(data, "campaign_type", 0);
     let statusInWords = status === 1 ? "Sent" : "Not Sent";
     let reference = _get(data, "reference", "##");
     reference = reference === null ? "##" : reference;
     let created = _get(data, "created", "");
     created = utcToTimezone(created, timezone);
-    return { ...data, status: statusInWords, reference, created };
+    let campaign_name = _get(data, "campaign_name", "");
+    campaign_name = campaign_type === 2 ? "WhatsApp" : campaign_name;
+    let email = _get(data, "email", "");
+    email = campaign_type === 2 ? "--" : email;
+    return {
+      ...data,
+      status: statusInWords,
+      reference,
+      created,
+      campaign_name,
+      email
+    };
   });
   return result;
 };

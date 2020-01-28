@@ -71,6 +71,8 @@ class MyApp extends App {
 
           <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0yD1Nm-2HeTnWMZUSXN8CzvzejmGKEXk&libraries=places"></script>
 
+          <script src="https://fonts.googleapis.com/css?family=Roboto"></script>
+
           {process.env.NODE_ENV === "production" ? (
             <script
               dangerouslySetInnerHTML={{

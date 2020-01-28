@@ -24,7 +24,6 @@ import { campaignHistoryApi } from "../../../utility/config";
 //! Connect import
 import { connect } from "react-redux";
 //! Moment imports
-import Moment from "react-moment";
 import "moment-timezone";
 import { utcToTimezone } from "../../../utility/commonFunctions";
 
@@ -35,8 +34,13 @@ const campaignStatus = {
 };
 
 const campaignType = {
-  0: "Manual",
-  1: "Automatic"
+  1: "Email",
+  2: "WhatsApp"
+};
+
+const isAutomatic = {
+  0: "No",
+  1: "Yes"
 };
 
 class CampaignManagement extends Component {
@@ -69,15 +73,17 @@ class CampaignManagement extends Component {
   tableColumns = [
     { title: "Name", field: "name" },
     { title: "Created At", field: "created_at" },
-    // { title: "Updated At", field: "updated_at" },
-    { title: "Campaign Type", field: "campaign_type" },
+    { title: "Is Automatic", field: "isAutomaticInString" },
     { title: "Status", field: "status" },
     {
       title: "Change Status",
       field: "actionOnStatus",
       render: rowData => {
-        const { actionOnStatus, is_automatic } = rowData;
-        let disabled = is_automatic === 0 && actionOnStatus === "Activate";
+        const { actionOnStatus, is_automatic, campaign_type } = rowData;
+        //? can not take any action for manual campaigns ||  whatsApp campaigns || closed campaigns
+        let disabled =
+          (is_automatic === 0 && actionOnStatus === "Activate") ||
+          campaign_type === 2;
         let confirmDialogTitle =
           actionOnStatus === "Activate"
             ? "Are you sure? This action will mark current active campaign as closed."
@@ -130,7 +136,7 @@ class CampaignManagement extends Component {
       title: "Edit",
       field: "is_automatic",
       render: rowData => {
-        const { is_automatic, has_custom_flow } = rowData;
+        const { is_automatic, has_custom_flow, campaign_type } = rowData;
         return (
           <>
             <Tooltip
@@ -138,7 +144,10 @@ class CampaignManagement extends Component {
             >
               <IconButton
                 onClick={() => this.handleEditClick(rowData)}
-                disabled={is_automatic !== 1 || has_custom_flow}
+                //? disabled when if manual, if whatsApp or if has_custom_flow == true
+                disabled={
+                  is_automatic !== 1 || has_custom_flow || campaign_type === 2
+                }
               >
                 <EditIcon />
               </IconButton>
@@ -219,6 +228,7 @@ class CampaignManagement extends Component {
                 let campaignsList = _get(result, "data.campaigns", []);
                 let parsedCampaignsList = [];
                 if (Array.isArray(campaignsList) && !_isEmpty(campaignsList)) {
+                  //? parsing campaign_structure as t contains some escape(/) chars
                   parsedCampaignsList = campaignsList.map(campaign => {
                     let parsedCampaignStructure = JSON.parse(
                       _get(campaign, "campaign_structure", {})
@@ -235,30 +245,33 @@ class CampaignManagement extends Component {
                     tableData = parsedCampaignsList.map(campaign => {
                       const {
                         id,
-                        name,
                         created_at,
                         updated_at,
                         status,
                         is_automatic,
                         has_custom_flow,
-                        campaign_structure
+                        campaign_structure,
+                        campaign_type
                       } = campaign || {};
-
+                      //? setting name to WhatsApp for campaign_type == 2
+                      let name = _get(campaign, "name", "");
+                      name = campaign_type === 1 ? name : "WhatsApp";
+                      //? to show status in string active,scheduled or closed
                       let statusInString = "--";
-                      let campaign_type = "--";
-
+                      //?showing yes or no for is_automatic
+                      let isAutomaticInString = "--";
                       if (campaignStatus.hasOwnProperty(status)) {
                         statusInString = campaignStatus[status];
                       }
-                      if (campaignType.hasOwnProperty(is_automatic)) {
-                        campaign_type = campaignType[is_automatic];
+                      if (isAutomatic.hasOwnProperty(is_automatic)) {
+                        isAutomaticInString = isAutomatic[is_automatic];
                       }
-
                       let sender_name = _get(
                         campaign_structure,
                         "senderName",
                         ""
                       );
+                      //? actions we can perform for particular statuses, for active and scheduled we can deactivate and for closed we can activate
                       let actionOnStatus =
                         statusInString === "Active" ||
                         statusInString === "Scheduled"
@@ -274,11 +287,12 @@ class CampaignManagement extends Component {
                         created_at: createdDate,
                         updated_at,
                         status: statusInString,
-                        campaign_type,
+                        isAutomaticInString,
                         sender_name,
                         actionOnStatus,
                         is_automatic,
                         has_custom_flow,
+                        campaign_type,
                         originalData: { ...campaign }
                       };
                     });
