@@ -44,6 +44,7 @@ const QRCodeDialog = dynamic(() => import("./QRCodeDialog"), {
 class WhatsAppInvitation extends Component {
   constructor(props) {
     super(props);
+    this.containerRef = React.createRef();
     this.state = {
       activeStep: 1,
       //? when you add any extra step don't forget to increase it here
@@ -250,7 +251,12 @@ class WhatsAppInvitation extends Component {
   };
 
   renderActiveComponent = () => {
-    const { activeStep, createTemplate, activeEvent } = this.state;
+    const {
+      activeStep,
+      createTemplate,
+      activeEvent,
+      mountWhatsAppPusher
+    } = this.state;
     switch (activeStep) {
       case 1:
         return (
@@ -270,6 +276,8 @@ class WhatsAppInvitation extends Component {
             handlePrev={this.handlePrev}
             handleSubmit={this.startWhatsAppInvitation}
             handleCheckboxChange={this.handleSaveCampaignCheckbox}
+            whatsAppPusherConnected={mountWhatsAppPusher}
+            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
         );
       default:
@@ -307,7 +315,13 @@ class WhatsAppInvitation extends Component {
         this.campaignFinished(data);
         break;
       default:
-        // this.setState({ mountWhatsAppPusher: false, openQRCodeDialog: false });
+        this.setState({
+          mountWhatsAppPusher: false,
+          openQRCodeDialog: false,
+          openSnackbar: true,
+          snackbarMsg: event,
+          snackbarVariant: "error"
+        });
         console.log(`WhatsAppPusher default case ${event}`);
     }
   };
@@ -336,7 +350,10 @@ class WhatsAppInvitation extends Component {
     this.setState({
       mountWhatsAppPusher: false,
       activeEvent: data,
-      openQRCodeDialog: false
+      openQRCodeDialog: false,
+      openSnackbar: true,
+      snackbarMsg: _get(data, "event", "Logged out successfully!"),
+      snackbarVariant: "info"
     });
   };
 
@@ -348,7 +365,10 @@ class WhatsAppInvitation extends Component {
     this.setState({
       mountWhatsAppPusher: false,
       activeEvent: data,
-      openQRCodeDialog: false
+      openQRCodeDialog: false,
+      openSnackbar: true,
+      snackbarMsg: _get(data, "event", "Campaign failed!"),
+      snackbarVariant: "error"
     });
   };
 
@@ -407,6 +427,33 @@ class WhatsAppInvitation extends Component {
     }
   }
 
+  //! Closing dialog box, setting to first step and initializing values in createTemplate
+  handleQuitCampaign = () => {
+    this.setState({
+      openQRCodeDialog: false,
+      mountWhatsAppPusher: false,
+      activeStep: 1,
+      createTemplate: {
+        ..._get(this.state, "createTemplate", {}),
+        templateLanguage: {
+          ..._get(this.state, "createTemplate.templateLanguage", {}),
+          value: "",
+          valid: false,
+          touched: false
+        },
+        inputFields: {
+          ..._get(this.state, "createTemplate.inputFields", {}),
+          reviewUrl: {
+            ..._get(this.state, "createTemplate.inputFields.reviewUrl", {}),
+            value: "",
+            valid: false,
+            touched: false
+          }
+        }
+      }
+    });
+  };
+
   render() {
     const {
       mountWhatsAppPusher,
@@ -429,10 +476,9 @@ class WhatsAppInvitation extends Component {
         <QRCodeDialog
           open={openQRCodeDialog}
           activeEvent={activeEvent || {}}
-          handleClose={() => {
-            this.setState({ openQRCodeDialog: false });
-          }}
+          handleClose={this.handleQuitCampaign}
           reloadQRCode={this.startWhatsAppInvitation}
+          whatsAppPusherConnected={mountWhatsAppPusher}
         />
         <Snackbar
           open={openSnackbar}

@@ -36,7 +36,7 @@ class UploadCustomerData extends React.Component {
           valid: false,
           touched: false,
           errorMessage: "Enter valid records",
-          placeholder: "John Doe, 234567890, +371",
+          placeholder: "John Doe, +371, 234567890",
           validationRules: {
             required: true
           },
@@ -110,8 +110,8 @@ class UploadCustomerData extends React.Component {
     const newTableData = parsedData.data.map((item, index) => {
       if (item.length === 3) {
         const name = item[0].trim() || "";
-        const phone = item[1].trim() || "";
-        const countryCode = item[2].trim() || "";
+        const countryCode = item[1].trim() || "";
+        const phone = item[2].trim() || "";
         if (
           name.trim() === "" ||
           phone.trim() === "" ||
@@ -138,8 +138,8 @@ class UploadCustomerData extends React.Component {
       } else {
         valid = false;
         const name = item[0] || "";
-        const phone = item[1] || "";
-        const countryCode = item[2] || "";
+        const countryCode = item[1] || "";
+        const phone = item[2] || "";
         tempObj = [
           ...tempObj,
           {
@@ -190,8 +190,8 @@ class UploadCustomerData extends React.Component {
         const newTableData = parsedData.data.map((item, index) => {
           if (item.length === 3) {
             const name = item[0].trim() || "";
-            const phone = item[1].trim() || "";
-            const countryCode = item[2].trim() || "";
+            const countryCode = item[1].trim() || "";
+            const phone = item[2].trim() || "";
             if (
               name.trim() === "" ||
               phone.trim() === "" ||
@@ -218,8 +218,8 @@ class UploadCustomerData extends React.Component {
           } else {
             valid = false;
             const name = item[0] || "";
-            const phone = item[1] || "";
-            const countryCode = item[2] || "";
+            const countryCode = item[1] || "";
+            const phone = item[2] || "";
             tempObj = [
               ...tempObj,
               {

@@ -693,6 +693,7 @@ Dashboard.getInitialProps = async ctx => {
   // Check user's session
   const queryStep = ctx.query;
   isAuthenticatedBusiness(ctx);
+  //! remove placeId and placeLocated
   const { placeId, placeLocated } = nextCookie(ctx);
   return { pId: placeId, pLocated: placeLocated, queryStep };
 };

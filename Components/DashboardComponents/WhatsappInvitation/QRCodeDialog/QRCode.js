@@ -11,7 +11,13 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import isEmpty from "lodash/isEmpty";
 
-const QRCode = ({ QRCodeString, reloadQRCode, isLoading, activeEvent }) => {
+const QRCode = ({
+  QRCodeString,
+  reloadQRCode,
+  isLoading,
+  activeEvent,
+  whatsAppPusherConnected
+}) => {
   return (
     <div className="container">
       <div className="row">
@@ -37,6 +43,8 @@ const QRCode = ({ QRCodeString, reloadQRCode, isLoading, activeEvent }) => {
             ) : //? showing loader when any of two api call is in progress or we haven't received any broadcast from pusher
             isLoading ? (
               <CircularProgress size={50} />
+            ) : whatsAppPusherConnected ? (
+              <h6>loading QR code...</h6>
             ) : (
               <IconButton onClick={reloadQRCode}>
                 <ReloadIcon size={50} />
