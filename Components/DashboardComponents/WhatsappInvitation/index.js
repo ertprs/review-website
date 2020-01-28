@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import QRCodeDialog from "./QRCodeDialog";
+import Snackbar from "../../Widgets/Snackbar";
 import WhatsAppInvitationPusher from "./WhatsAppInvitationPusher";
 import {
   whatsAppTemplates,
   getMessage
 } from "../../../utility/whatsAppTemplate";
 import { isValidArray } from "../../../utility/commonFunctions";
-import { whatsAppManualInvitation } from "../../../store/actions/dashboardActions";
 import validate from "../../../utility/validate";
+import { whatsAppManualInvitation } from "../../../store/actions/dashboardActions";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import _get from "lodash/get";
@@ -33,17 +33,27 @@ const CreateTemplate = dynamic(
   }
 );
 
+const QRCodeDialog = dynamic(() => import("./QRCodeDialog"), {
+  loading: () => (
+    <div className="dynamicImport">
+      <p>Loading.....</p>
+    </div>
+  )
+});
+
 class WhatsAppInvitation extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeStep: 1,
+      //? when you add any extra step don't forget to increase it here
       totalSteps: 2,
+      //? parsed data from CSV or copy-paste will be stored here
       uploadCustomerData: [],
+      //? mounting pusher when response from commit api is success(inside cdu) and un mounting when qr_code_expired, logout_successful, campaign_failed, campaign_finished
       mountWhatsAppPusher: false,
-      QRCodeString: "",
       openQRCodeDialog: false,
-      QRCodeDialogTitle: "",
+      //? this is always the last broadcast event
       activeEvent: {},
       createTemplate: {
         templateLanguage: {
@@ -62,6 +72,7 @@ class WhatsAppInvitation extends Component {
           }
         },
         customerName: "{{{name}}}",
+        saveCampaign: true,
         inputFields: {
           salutation: {
             element: "input",
@@ -80,7 +91,7 @@ class WhatsAppInvitation extends Component {
           message: {
             element: "textarea",
             name: "message",
-            labelText: "Enter your message:",
+            labelText: "Enter your message*:",
             type: "text",
             value: "",
             valid: true,
@@ -96,7 +107,7 @@ class WhatsAppInvitation extends Component {
           reviewUrl: {
             element: "input",
             name: "reviewUrl",
-            labelText: "Enter Review Url:",
+            labelText: "Enter Review Url*:",
             type: "text",
             value: "",
             valid: false,
@@ -108,7 +119,10 @@ class WhatsAppInvitation extends Component {
             }
           }
         }
-      }
+      },
+      openSnackbar: false,
+      snackbarVariant: "",
+      snackbarMsg: ""
     };
   }
 
@@ -205,13 +219,14 @@ class WhatsAppInvitation extends Component {
     });
   };
 
-  initWhatsAppInvitation = () => {
+  startWhatsAppInvitation = () => {
     const { whatsAppManualInvitation } = this.props;
     const { uploadCustomerData, createTemplate } = this.state;
     let salutation = _get(createTemplate, "inputFields.salutation.value", "");
     let customerName = _get(createTemplate, "customerName", "");
     let message = _get(createTemplate, "inputFields.message.value", "");
     let reviewUrl = _get(createTemplate, "inputFields.reviewUrl.value", "");
+    let saveCampaign = _get(createTemplate, "saveCampaign", false);
     let template = `${salutation} ${customerName}, ${message} ${reviewUrl}`;
     let reqBody = {};
     if (isValidArray(uploadCustomerData)) {
@@ -220,13 +235,22 @@ class WhatsAppInvitation extends Component {
     if (template) {
       reqBody["template"] = template;
     }
-    reqBody["storeCustomerData"] = false;
-    console.log(reqBody, "reqBody");
+    reqBody["storeCustomerData"] = saveCampaign;
     whatsAppManualInvitation(reqBody);
   };
 
+  handleSaveCampaignCheckbox = event => {
+    const { checked } = event.target;
+    this.setState({
+      createTemplate: {
+        ..._get(this.state, "createTemplate", {}),
+        saveCampaign: checked
+      }
+    });
+  };
+
   renderActiveComponent = () => {
-    const { activeStep, createTemplate } = this.state;
+    const { activeStep, createTemplate, activeEvent } = this.state;
     switch (activeStep) {
       case 1:
         return (
@@ -241,10 +265,11 @@ class WhatsAppInvitation extends Component {
           <CreateTemplate
             createTemplate={createTemplate || {}}
             handleFormDataChange={this.handleFormDataChange}
+            activeEvent={activeEvent}
             handleTemplateLanguageChange={this.handleTemplateLanguageChange}
-            handleNext={this.handleNext}
             handlePrev={this.handlePrev}
-            handleSubmit={this.initWhatsAppInvitation}
+            handleSubmit={this.startWhatsAppInvitation}
+            handleCheckboxChange={this.handleSaveCampaignCheckbox}
           />
         );
       default:
@@ -255,15 +280,15 @@ class WhatsAppInvitation extends Component {
   //! A top level handler to handle pusher events appropriately
   whatsAppPusherHandler = data => {
     const event = _get(data, "event", "");
+    //add any new case for any other kind of event broadcast e.g: phone disconnected
     switch (event) {
+      //! This gets fired when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
+      case "qr_code_started":
+        break;
       case "qr_code_changed":
         this.qrCodeChange(data);
         break;
-      // This comes when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
-      // case "qr_code_started":
-      //   this.qrCodeStarted(data);
-      //   break;
-      case " qr_code_expired":
+      case "qr_code_expired":
         this.qrCodeExpired(data);
         break;
       case "login_successful":
@@ -282,29 +307,25 @@ class WhatsAppInvitation extends Component {
         this.campaignFinished(data);
         break;
       default:
-        console.error(`WhatsAppPusher default case ${event}`);
+        // this.setState({ mountWhatsAppPusher: false, openQRCodeDialog: false });
+        console.log(`WhatsAppPusher default case ${event}`);
     }
   };
 
   //! handler for displaying QR code on UI
   qrCodeChange = data => {
-    const value = _get(data, "value", "");
     this.setState({
-      QRCodeString: value,
       openQRCodeDialog: true,
-      QRCodeDialogTitle: "Scan QR Code",
       activeEvent: data
     });
   };
 
   //! handler for displaying Retry
   qrCodeExpired = data => {
-    this.setState({ mountWhatsAppPusher: false, activeEvent: data });
-  };
-
-  qrCodeStarted = data => {
-    //show QR code scanned successfully
-    this.setState({ activeEvent: data });
+    this.setState({
+      mountWhatsAppPusher: false,
+      activeEvent: data
+    });
   };
 
   loginSuccessful = data => {
@@ -336,17 +357,53 @@ class WhatsAppInvitation extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    //? we are showing snackbar only when any of two api calls (invite and commit) fails and mounting pusher on success of commit(2nd) api
     const { whatsAppManualInvite, whatsAppManualCommit } = this.props;
+    const whatsAppManualInviteErrorMsg = _get(
+      whatsAppManualInvite,
+      "errorMsg",
+      "Some Error Occurred !"
+    );
+    const whatsAppManualInviteSuccess = _get(
+      whatsAppManualInvite,
+      "success",
+      undefined
+    );
+    const whatsAppManualCommitErrorMsg = _get(
+      whatsAppManualCommit,
+      "errorMsg",
+      "Some Error Occurred !"
+    );
     const whatsAppManualCommitSuccess = _get(
       whatsAppManualCommit,
       "success",
-      false
+      undefined
     );
     if (
-      whatsAppManualCommitSuccess !==
-      _get(prevProps, "whatsAppManualCommit.success", false)
+      whatsAppManualInviteSuccess !== prevProps.whatsAppManualInvite.success ||
+      whatsAppManualCommitSuccess !== prevProps.whatsAppManualCommit.success
     ) {
-      this.setState({ mountWhatsAppPusher: whatsAppManualCommitSuccess });
+      if (whatsAppManualInviteSuccess === false) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMsg: whatsAppManualInviteErrorMsg,
+          snackbarVariant: "error"
+        });
+      } else if (whatsAppManualCommitSuccess === false) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMsg: whatsAppManualCommitErrorMsg,
+          snackbarVariant: "error"
+        });
+      }
+    }
+    if (
+      whatsAppManualCommitSuccess !==
+      _get(prevProps, "whatsAppManualCommit.success", undefined)
+    ) {
+      this.setState({
+        mountWhatsAppPusher: whatsAppManualCommitSuccess
+      });
     }
   }
 
@@ -354,9 +411,10 @@ class WhatsAppInvitation extends Component {
     const {
       mountWhatsAppPusher,
       openQRCodeDialog,
-      QRCodeString,
-      QRCodeDialogTitle,
-      activeEvent
+      activeEvent,
+      openSnackbar,
+      snackbarMsg,
+      snackbarVariant
     } = this.state;
     const { channelName } = this.props;
     return (
@@ -370,11 +428,18 @@ class WhatsAppInvitation extends Component {
         {this.renderActiveComponent()}
         <QRCodeDialog
           open={openQRCodeDialog}
-          QRCodeString={QRCodeString}
-          title={QRCodeDialogTitle}
           activeEvent={activeEvent || {}}
           handleClose={() => {
             this.setState({ openQRCodeDialog: false });
+          }}
+          reloadQRCode={this.startWhatsAppInvitation}
+        />
+        <Snackbar
+          open={openSnackbar}
+          message={snackbarMsg}
+          variant={snackbarVariant}
+          handleClose={() => {
+            this.setState({ openSnackbar: false });
           }}
         />
       </div>

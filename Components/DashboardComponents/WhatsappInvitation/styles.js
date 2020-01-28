@@ -1,8 +1,26 @@
 import css from "styled-jsx/css";
 
 const styles = css`
-  .alignRight {
-    text-align: right;
+  .p_25 {
+    padding: 25px;
+  }
+
+  .mt_25px {
+    margin-top: 25px;
+  }
+
+  .mt_50 {
+    margin-top: 50px;
+  }
+
+  .textCenter {
+    text-align: center;
+  }
+
+  .btnContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
   }
 
   .templateContainer {
@@ -12,8 +30,13 @@ const styles = css`
     padding: 30px;
   }
 
-  .submitBtn {
+  .checkboxContainer {
     margin-top: 30px;
+    text-align: center;
+  }
+
+  .submitBtn {
+    margin-top: 10px;
     text-align: center;
   }
 
@@ -28,8 +51,8 @@ const styles = css`
     height: auto;
   }
 
-  .QRCodeStepsList li{
-    padding:15px;
+  .QRCodeStepsList li {
+    padding: 15px;
   }
 
   .generateURLSpan {

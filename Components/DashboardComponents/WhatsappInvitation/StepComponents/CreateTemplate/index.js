@@ -1,13 +1,29 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { isFormValid } from "../../../../../utility/commonFunctions";
 import GenerateReviewUrl from "./GenerateReviewUrl";
 import TemplateLanguage from "./TemplateLanguage";
 import InputFields from "./InputFields";
 import MessagePreview from "./WhatsAppMsg";
 import styles from "../../styles";
-import Button from "@material-ui/core/Button";
-import ForwardIcon from "@material-ui/icons/ArrowRightAlt";
-import BackwardIcon from "@material-ui/icons/ArrowBack";
 import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
+import BackwardIcon from "@material-ui/icons/ArrowBack";
+import {
+  Card,
+  Checkbox,
+  Button,
+  Grow,
+  CircularProgress
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  card: {
+    marginTop: "25px",
+    padding: "25px"
+  }
+});
 
 const CreateTemplate = props => {
   const [openDialog, setDialogOpen] = useState(false);
@@ -16,30 +32,35 @@ const CreateTemplate = props => {
     handleFormDataChange,
     handleTemplateLanguageChange,
     handlePrev,
-    handleSubmit
+    handleSubmit,
+    handleCheckboxChange,
+    isLoading,
+    activeEvent
   } = props;
   const isLanguageSelected = _get(createTemplate, "templateLanguage.value", "");
+  const saveCampaign = _get(createTemplate, "saveCampaign", false);
 
-  const areValidInputFields = ()=>{
-    let valid = true;
-    const formData=_get(createTemplate, "inputFields", {});
-    for(let item in formData){
-      let formDataObject = formData[item] || {};
-      valid = valid && _get(formDataObject, "valid", false);
-    }
-    return valid
-  }
+  const classes = useStyles();
   return (
     <div className="container">
       <style jsx>{styles}</style>
-      <div className="alignRight">
+      <div className="btnContainer">
         <Button
-          variant="text"
+          variant="outlined"
+          color="primary"
+          onClick={handlePrev}
+          startIcon={<BackwardIcon />}
+          size={"small"}
+        >
+          Back
+        </Button>
+        <Button
+          variant="outlined"
           color="primary"
           size="medium"
           onClick={() => setDialogOpen(true)}
         >
-          Generate Smart Url
+          Generate Review Url
         </Button>
       </div>
       <TemplateLanguage
@@ -50,9 +71,9 @@ const CreateTemplate = props => {
         open={openDialog}
         handleClose={() => setDialogOpen(false)}
       />
-      {isLanguageSelected ? (
-        <>
-          <div className="row templateContainer">
+      <Grow in={isLanguageSelected}>
+        <Card className={classes.card}>
+          <div className="row">
             <div className="col-md-6">
               <InputFields
                 formData={_get(createTemplate, "inputFields", {})}
@@ -71,31 +92,47 @@ const CreateTemplate = props => {
               />
             </div>
           </div>
+          <div className="checkboxContainer">
+            <Checkbox
+              color="primary"
+              checked={saveCampaign}
+              onChange={handleCheckboxChange}
+            />
+            I want to save this campaign.
+          </div>
           <div className="submitBtn">
             <Button
               variant="contained"
               color="primary"
               onClick={handleSubmit}
               size={"large"}
-              disabled={!areValidInputFields()}
+              disabled={!isFormValid(_get(createTemplate, "inputFields", {}))}
             >
-              Submit
+              {/* showing loader when any of two api call is in progress or we
+              haven't received any broadcast from pusher */}
+              {isLoading || !_isEmpty(activeEvent) ? (
+                <CircularProgress color={"#fff"} />
+              ) : (
+                "Start Sending Invitations"
+              )}
             </Button>
           </div>
-        </>
-      ) : null}
-      <div style={{ marginTop: "50px", textAlign: "left" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={props.handlePrev}
-          size={"small"}
-        >
-          Back
-        </Button>
-      </div>
+        </Card>
+      </Grow>
     </div>
   );
 };
 
-export default CreateTemplate;
+const mapStateToProps = state => {
+  const { dashboardData } = state;
+  let whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
+  let whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
+  const isLoading =
+    _get(whatsAppManualInvite, "isLoading", false) ||
+    _get(whatsAppManualCommit, "isLoading", false);
+  return {
+    isLoading
+  };
+};
+
+export default connect(mapStateToProps)(CreateTemplate);
