@@ -57,7 +57,9 @@ class ReviewFetchStatusCard extends Component {
                 const { platformName, socialAppId, isLoading } = platform;
                 return (
                   <div className="row p_10">
-                    <div className="col-md-6 platform_name">{platformName}</div>
+                    <div className="col-md-6 platform_name">
+                      {platformName || "N/A"}
+                    </div>
                     <div className="col-md-6 text_right">
                       {isLoading ? (
                         <div>

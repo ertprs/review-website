@@ -17,6 +17,14 @@ const styles = css`
     text-align: center;
   }
 
+  .qrCodeMsg {
+    height: 300px;
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .btnContainer {
     display: flex;
     justify-content: space-between;
@@ -46,7 +54,7 @@ const styles = css`
     margin: 60px auto;
   }
 
-  .qrCodeImg {
+  .qrCodeEl {
     max-width: 100%;
     height: auto;
   }

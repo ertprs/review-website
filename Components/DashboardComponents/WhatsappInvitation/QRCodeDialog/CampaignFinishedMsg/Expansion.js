@@ -60,7 +60,7 @@ function Expansion(props) {
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Typography>
+              <Typography className={classes.root}>
                 <ExpansionPanelList data={successArray || []} />
               </Typography>
             </ExpansionPanelDetails>
@@ -83,7 +83,7 @@ function Expansion(props) {
               </Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Typography>
+              <Typography className={classes.root}>
                 <ExpansionPanelList data={failedArray || []} />
               </Typography>
             </ExpansionPanelDetails>
