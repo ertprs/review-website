@@ -53,7 +53,7 @@ class WhatsAppInvitation extends Component {
       uploadCustomerData: [],
       //? mounting pusher when response from commit api is success(inside cdu) and un mounting when qr_code_expired, logout_successful, campaign_failed, campaign_finished
       mountWhatsAppPusher: false,
-      openQRCodeDialog: false,
+      openFullScreenDialog: false,
       //? this is always the last broadcast event
       activeEvent: {},
       createTemplate: {
@@ -74,6 +74,7 @@ class WhatsAppInvitation extends Component {
         },
         customerName: "{{{name}}}",
         saveCampaign: true,
+        keepMeLoggedIn: false,
         inputFields: {
           salutation: {
             element: "input",
@@ -228,6 +229,7 @@ class WhatsAppInvitation extends Component {
     let message = _get(createTemplate, "inputFields.message.value", "");
     let reviewUrl = _get(createTemplate, "inputFields.reviewUrl.value", "");
     let saveCampaign = _get(createTemplate, "saveCampaign", false);
+    let keepMeLoggedIn = _get(createTemplate, "keepMeLoggedIn", false);
     let template = `${salutation} ${customerName}, ${message} ${reviewUrl}`;
     let reqBody = {};
     if (isValidArray(uploadCustomerData)) {
@@ -239,13 +241,14 @@ class WhatsAppInvitation extends Component {
     reqBody["storeCustomerData"] = saveCampaign;
     whatsAppManualInvitation(reqBody);
   };
-
-  handleSaveCampaignCheckbox = event => {
-    const { checked } = event.target;
+  //! uncomment when api start accepting this key and change key name
+  // reqBody["rememberMe"] = keepMeLoggedIn
+  handleCheckboxChange = event => {
+    const { checked, name } = event.target;
     this.setState({
       createTemplate: {
         ..._get(this.state, "createTemplate", {}),
-        saveCampaign: checked
+        [name]: checked
       }
     });
   };
@@ -275,7 +278,7 @@ class WhatsAppInvitation extends Component {
             handleTemplateLanguageChange={this.handleTemplateLanguageChange}
             handlePrev={this.handlePrev}
             handleSubmit={this.startWhatsAppInvitation}
-            handleCheckboxChange={this.handleSaveCampaignCheckbox}
+            handleCheckboxChange={this.handleCheckboxChange}
             whatsAppPusherConnected={mountWhatsAppPusher}
             scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           />
@@ -290,7 +293,7 @@ class WhatsAppInvitation extends Component {
     const event = _get(data, "event", "");
     //add any new case for any other kind of event broadcast e.g: phone disconnected
     switch (event) {
-      //! This gets fired when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
+      //! qr_code_started comes when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
       case "qr_code_started":
         break;
       case "qr_code_changed":
@@ -317,7 +320,7 @@ class WhatsAppInvitation extends Component {
       default:
         this.setState({
           mountWhatsAppPusher: false,
-          openQRCodeDialog: false,
+          openFullScreenDialog: false,
           openSnackbar: true,
           snackbarMsg: event,
           snackbarVariant: "error"
@@ -326,15 +329,15 @@ class WhatsAppInvitation extends Component {
     }
   };
 
-  //! handler for displaying QR code on UI
+  //? We open QRCode dialog in "login_successful" or "qr_code_changed" event, we receive "qr_code_changed" event when QRCode string is generated, and "login_successful" if session is already exist in DB so he can directly send campaigns without scanning QRCode
+
   qrCodeChange = data => {
     this.setState({
-      openQRCodeDialog: true,
+      openFullScreenDialog: true,
       activeEvent: data
     });
   };
 
-  //! handler for displaying Retry
   qrCodeExpired = data => {
     this.setState({
       mountWhatsAppPusher: false,
@@ -343,14 +346,14 @@ class WhatsAppInvitation extends Component {
   };
 
   loginSuccessful = data => {
-    this.setState({ activeEvent: data });
+    this.setState({ openFullScreenDialog: true, activeEvent: data });
   };
 
   logoutSuccessful = data => {
     this.setState({
       mountWhatsAppPusher: false,
       activeEvent: data,
-      openQRCodeDialog: false,
+      openFullScreenDialog: false,
       openSnackbar: true,
       snackbarMsg: _get(data, "event", "Logged out successfully!"),
       snackbarVariant: "info"
@@ -365,7 +368,7 @@ class WhatsAppInvitation extends Component {
     this.setState({
       mountWhatsAppPusher: false,
       activeEvent: data,
-      openQRCodeDialog: false,
+      openFullScreenDialog: false,
       openSnackbar: true,
       snackbarMsg: _get(data, "event", "Campaign failed!"),
       snackbarVariant: "error"
@@ -377,7 +380,7 @@ class WhatsAppInvitation extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    //? we are showing snackbar only when any of two api calls (invite and commit) fails and mounting pusher on success of commit(2nd) api
+    //? we are showing snackbar only when any of two api calls (invite and commit) fails
     const { whatsAppManualInvite, whatsAppManualCommit } = this.props;
     const whatsAppManualInviteErrorMsg = _get(
       whatsAppManualInvite,
@@ -417,6 +420,7 @@ class WhatsAppInvitation extends Component {
         });
       }
     }
+    //? mounting pusher on success of commit(2nd) api
     if (
       whatsAppManualCommitSuccess !==
       _get(prevProps, "whatsAppManualCommit.success", undefined)
@@ -430,7 +434,7 @@ class WhatsAppInvitation extends Component {
   //! Closing dialog box, setting to first step and initializing values in createTemplate
   handleQuitCampaign = () => {
     this.setState({
-      openQRCodeDialog: false,
+      openFullScreenDialog: false,
       mountWhatsAppPusher: false,
       activeStep: 1,
       createTemplate: {
@@ -457,7 +461,7 @@ class WhatsAppInvitation extends Component {
   render() {
     const {
       mountWhatsAppPusher,
-      openQRCodeDialog,
+      openFullScreenDialog,
       activeEvent,
       openSnackbar,
       snackbarMsg,
@@ -474,7 +478,7 @@ class WhatsAppInvitation extends Component {
         ) : null}
         {this.renderActiveComponent()}
         <QRCodeDialog
-          open={openQRCodeDialog}
+          open={openFullScreenDialog}
           activeEvent={activeEvent || {}}
           handleClose={this.handleQuitCampaign}
           reloadQRCode={this.startWhatsAppInvitation}
