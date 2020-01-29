@@ -6,16 +6,14 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import IconButton from "@material-ui/core/IconButton";
 import ReloadIcon from "@material-ui/icons/Refresh";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Tooltip from "@material-ui/core/Tooltip";
 import styles from "../styles";
 import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
-import isEmpty from "lodash/isEmpty";
 
 const QRCode = ({
   QRCodeString,
   reloadQRCode,
   isLoading,
-  activeEvent,
   whatsAppPusherConnected
 }) => {
   return (
@@ -37,18 +35,30 @@ const QRCode = ({
           <div className="qrCodeContainer">
             {QRCodeString ? (
               <img
-                className="qrCodeImg"
+                className="qrCodeEl"
                 src={getQRCode(QRCodeString, { size: 500 })}
               />
             ) : //? showing loader when any of two api call is in progress or we haven't received any broadcast from pusher
             isLoading ? (
-              <CircularProgress size={50} />
+              <div className="qrCodeEl">
+                <CircularProgress size={250} />
+              </div>
             ) : whatsAppPusherConnected ? (
-              <h6>loading QR code...</h6>
+              <div className="qrCodeMsg">
+                <h6>Loading QR code...</h6>
+              </div>
             ) : (
-              <IconButton onClick={reloadQRCode}>
-                <ReloadIcon size={50} />
-              </IconButton>
+              <Tooltip
+                title={
+                  <span style={{ fontSize: "14px" }}>
+                    Click to reload QR code
+                  </span>
+                }
+              >
+                <IconButton onClick={reloadQRCode}>
+                  <ReloadIcon style={{ height: "250px", width: "250px" }} />
+                </IconButton>
+              </Tooltip>
             )}
           </div>
         </div>
