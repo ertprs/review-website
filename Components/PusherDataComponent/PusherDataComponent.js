@@ -54,7 +54,7 @@ class PusherDataComponent extends React.Component {
     });
     this.pusherCopy = pusher;
     const channel = pusher.subscribe(domain);
-    // on connection make a network request for intial keys -
+    // on connection make a network request for initial keys -
     pusher.connection.bind("connected", () => {
       console.log("main pusher connected");
       axios

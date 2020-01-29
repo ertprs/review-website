@@ -86,6 +86,7 @@ class Profile extends React.Component {
       this.setState({ waitingTimeOut: false });
     }, 60000);
     const { fetchGoogleReviews, domain } = this.props;
+    //? We try to fetch google reviews on first load
     fetchGoogleReviews(domain);
     this.setState({ isMounted: true });
     Router.events.on("routeChangeStart", this.handleRouteChange);
@@ -136,7 +137,6 @@ class Profile extends React.Component {
 
   updateAggregatorData = newData => {
     const { id, aggregateSocialData } = this.state;
-    const socialAppId = _get(newData, "response.socialAppId", undefined);
     this.props.getAggregateData(newData, id);
   };
 
@@ -149,14 +149,16 @@ class Profile extends React.Component {
   };
 
   updateParentState = newState => {
+    //? this action is used to set all profile data in a structured way in redux
     this.props.setDomainDataInRedux(newState);
+    //? isNewDomain is used to show unicorn loader when user search for a new domain and we start scraping for that domain
     const isNewDomain = _get(
       newState,
       "notifications.payload.is_new_domain",
       false
     );
     this.setState({ isNewDomain });
-    const { domainData } = this.state;
+    //? this id is used as domainId in thirdpartydata api that we are using to fetch reviews of diff platforms.
     if (this.state.id === "") {
       const id = _get(newState, "id", "");
       this.setState({ id });
@@ -233,7 +235,7 @@ class Profile extends React.Component {
 
     let socialMediaStats = [];
     let domainReviews = [];
-
+    //? this data is used to generate cards in right side
     if (
       !_isEmpty(_get(newState, "social.payload", {})) &&
       typeof _get(newState, "social.payload", {}) === "object"
@@ -254,7 +256,7 @@ class Profile extends React.Component {
         }
       }
     }
-
+    // these are the trustsearch reviews
     _get(newState, "reviews.domain.reviews", []).map(review => {
       let temp = {
         ...temp,
@@ -274,6 +276,7 @@ class Profile extends React.Component {
       domainReviews: [...domainReviews]
     });
 
+    //? this aggregate social data is used for displaying cards of review platforms
     let aggregateSocialData = { ...this.state.aggregateSocialData };
 
     if (
@@ -475,10 +478,12 @@ class Profile extends React.Component {
 
     return (
       <>
+        {/* This hits verify_domain api twice in interval of 500ms(if we don’t get data in first call).Then we receive a array of scheduled keys inside sch key and then bind for each key to listen for it. Then we pass all that data to parent component. */}
         <PusherDataComponent
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
+        {/* This is bind for two keys “google_reviews” and “aggregator”. For google reviews we get totalReviewscount and if it greater than 0 we try to fetch google reviews(“/api/reviews/domain” api)  and for aggregator we get socialAppId and profileId to get review of that platform through thirdpartydata Api. */}
         <DomainPusherComponent
           domain={domain}
           onAggregatorDataChange={this.updateAggregatorData}
@@ -529,11 +534,11 @@ class Profile extends React.Component {
 }
 
 Profile.getInitialProps = async ({ query }) => {
-  // const oldURL = "https://watchdog-api-v1.cryptopolice.com/api/verify";
   const searchURL = query.domain
     ? `https://${query.domain}`
     : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
+  //? i think we can remove this from here as we are not using amp
   if (query.amp === "1") {
     const response = await axios.get(
       `${process.env.BASE_URL}/api/verify?domain=${searchURL}`
@@ -582,3 +587,9 @@ export default connect(mapStateToProps, {
   fetchGoogleReviews,
   removeAggregateData
 })(Profile);
+
+// 1. We connect with two pushers: (a) PusherDataComponent (b) DomainPusherComponent
+// 2. PusherDataComponent: This hits verify_domain api twice in interval of 500ms(if we don’t get data in first call).Then we receive a array of scheduled keys inside sch key and then bind for each key to listen for it. Then we pass all that data to parent component.
+// 3. DomainPusherComponent: This is bind for two keys “google_reviews” and “aggregator”. For google reviews we get totalReviewscount and if it greater than 0 we try to fetch google reviews(“/api/reviews/domain” api)  and for aggregator we get socialAppId and profileId to get review of that platform through thirdpartydata Api.
+// 4. We are adding https:// manually in all domains.
+// 5. We get an id in verify-domain call that we use as domainId to to hit thirdpartydata call to fetch reviews of different platforms.
