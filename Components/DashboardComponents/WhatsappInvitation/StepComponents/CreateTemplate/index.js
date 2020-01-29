@@ -7,7 +7,6 @@ import InputFields from "./InputFields";
 import MessagePreview from "./WhatsAppMsg";
 import styles from "../../styles";
 import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
 import BackwardIcon from "@material-ui/icons/ArrowBack";
 import {
   Card,
@@ -121,7 +120,7 @@ const CreateTemplate = props => {
               {/* showing loader when any of two api call is in progress or we
               haven't received any broadcast from pusher */}
               {isLoading ? (
-                <CircularProgress color={"#fff"} />
+                <CircularProgress size={25} color={"#fff"} />
               ) : whatsAppPusherConnected ? (
                 "Loading QR code"
               ) : (
