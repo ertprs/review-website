@@ -13,6 +13,11 @@ const templateIds = [
     name: "de",
     value: "d-e73ffb22e7424626ade09f4daf7de400",
     displayName: "German"
+  },
+  {
+    name: "ru",
+    value: "d-750571abc0fc4a63ac929d439c24a5bb",
+    displayName: "Russian"
   }
 ];
 

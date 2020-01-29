@@ -19,7 +19,10 @@ const createCampaignLang = locales => {
       campaignLanguage =
         localesArray &&
         localesArray.map(locales => {
-          let template = _filter(templateIds, ["name", locales.value]);
+          let template = _filter(templateIds, [
+            "name",
+            _get(locales, "value", "")
+          ]);
           if (template && template !== undefined) {
             let temp = {};
             temp.name = locales.name;

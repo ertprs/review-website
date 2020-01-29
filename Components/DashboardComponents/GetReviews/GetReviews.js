@@ -3,7 +3,10 @@ import React, { Component } from "react";
 import CustomSteppers from "../../MaterialComponents/CustomSteppers";
 import EditableTable from "../../MaterialComponents/EditableTable";
 import validate from "../../../utility/validate";
-import { getEmailTemplateData } from "../../../utility/emailTemplates/emailTemplates";
+import {
+  getEmailTemplateData,
+  emailTemplates
+} from "../../../utility/emailTemplates/emailTemplates";
 import { isFifteenMinuteDiff } from "../../../utility/commonFunctions";
 import UploadCSVForm from "../GetReviewsForms/UploadCSVForm";
 //? Library imports
@@ -226,11 +229,15 @@ class GetReviews extends Component {
           element: "input",
           labelText: "Subject",
           type: "text",
-          value: "Leave a review on Entity",
+          value: get(
+            this.props,
+            "selectedCampaignData.campaign_structure.template_vars.subject",
+            ""
+          ),
           valid: true,
           touched: true,
           // errorMessage: "Enter valid subject",
-          placeholder: "Enter subject",
+          placeholder: "Please enter a subject",
           validationRules: {
             required: true
           }
@@ -914,6 +921,11 @@ class GetReviews extends Component {
                   "leaveReviewText",
                   get(this.props, "companyName", "")
                 )
+              },
+              subject: {
+                ...get(this.state, "selectTemplateData.subject", ""),
+                value: (emailTemplates[value] || {}).subject || "",
+                valid: true
               }
             }
           });
