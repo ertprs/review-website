@@ -34,12 +34,11 @@ const CreateTemplate = props => {
     handleSubmit,
     handleCheckboxChange,
     isLoading,
-    activeEvent,
     whatsAppPusherConnected
   } = props;
   const isLanguageSelected = _get(createTemplate, "templateLanguage.value", "");
   const saveCampaign = _get(createTemplate, "saveCampaign", false);
-
+  const keepMeLoggedIn = _get(createTemplate, "keepMeLoggedIn", false);
   useEffect(() => {
     if (window && props.scrollToTopOfThePage) {
       props.scrollToTopOfThePage();
@@ -103,8 +102,17 @@ const CreateTemplate = props => {
               color="primary"
               checked={saveCampaign}
               onChange={handleCheckboxChange}
+              name="saveCampaign"
             />
-            I want to save this campaign.
+            I want to save this campaign
+            {/* uncomment when keep me logged in key need to send
+             <Checkbox
+              color="primary"
+              checked={keepMeLoggedIn}
+              onChange={handleCheckboxChange}
+              name="keepMeLoggedIn"
+            />
+            Keep me logged in   */}
           </div>
           <div className="submitBtn">
             <Button

@@ -48,7 +48,7 @@ class ReviewFetchStatusCard extends Component {
         <SimpleCard style={{ height: "298px", overflowY: "auto" }}>
           <div className="header">
             <Title>
-              <h5>Reviews Fetch Status</h5>
+              <span>Reviews Fetch Status</span>
             </Title>
           </div>
           <div className="body">
