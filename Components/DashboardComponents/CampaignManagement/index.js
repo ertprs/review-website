@@ -200,7 +200,8 @@ class CampaignManagement extends Component {
         <MaterialTable
           title="Campaigns History"
           options={{
-            search: false
+            search: false,
+            pageSize: 10
           }}
           tableRef={this.tableRef}
           columns={this.tableColumns}

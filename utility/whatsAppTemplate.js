@@ -24,6 +24,14 @@ export const whatsAppTemplates = {
       "Schön, dass Sie uns besucht haben",
       "Bitte hinterlassen Sie hier eine Bewertung zu Ihren Erfahrungen:"
     ]
+  },
+  "d-750571abc0fc4a63ac929d439c24a5bb": {
+    templateLanguage: "russian",
+    salutation: "Здравствуй",
+    message: [
+      "Здорово, что вы посетили",
+      "Пожалуйста, оставьте отзыв о вашем опыте здесь:"
+    ]
   }
 };
 

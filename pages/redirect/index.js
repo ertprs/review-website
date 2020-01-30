@@ -52,7 +52,7 @@ class redirect_to_review_page extends Component {
     const { platformClicked } = this.state;
     return (
       <>
-        {selectedOption === "showAvailablePlatforms" ? (
+        {selectedOption === "showPlatforms" ? (
           platformClicked ? (
             <div>Redirecting...</div>
           ) : (
@@ -78,18 +78,18 @@ redirect_to_review_page.getInitialProps = async ctx => {
   const fallbackUrl = process.env.DOMAIN_NAME;
   const domainUrlKey = _get(query, "domainUrlKey", "");
   let configuredPlatformsApiWithDomainUrlKey = `${process.env.BASE_URL}${configuredReviewPlatformsApi}/${domainUrlKey}`;
-  const selectedOption = _get(query, "selectedOption", "");
+  const selectedOption = _get(query, "selected", "");
   const mode = _get(query, "mode", "");
   let domainName = "";
   let overallRating = 0;
-  if (selectedOption === "showAvailablePlatforms") {
-    domainName = _get(query, "domainName", "");
-    overallRating = _get(query, "overallRating", 0);
+  if (selectedOption === "showPlatforms") {
+    domainName = _get(query, "domain", "");
+    overallRating = _get(query, "rating", 0);
   }
   let reviewPlatforms = [];
-  //! Since in case of showAvailablePlatforms we'll be showing him a dropdown and on basis of selected platform we'll make api call and redirect to that url.
+  //! Since in case of showPlatforms we'll be showing him a dropdown and on basis of selected platform we'll make api call and redirect to that url.
 
-  if (selectedOption === "showAvailablePlatforms") {
+  if (selectedOption === "showPlatforms") {
     try {
       const result = await axios.get(configuredPlatformsApiWithDomainUrlKey);
       const success = _get(result, "data.success", false);

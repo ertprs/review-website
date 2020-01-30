@@ -18,6 +18,7 @@ import { maxReviewsOptions } from "../../../utility/constants/maxReviewsConstant
 import { ratingCountOptions } from "../../../utility/constants/ratingCountConstants";
 import { toggleWidgetPlatformVisibility } from "../../../store/actions/dashboardActions";
 import ShowInWidgetList from "./CombinedReviewsWidgetConfigurations/ShowInWidgetList/ShowInWidgetList";
+import PremiumBrandingToggle from "./CombinedReviewsWidgetConfigurations/PremiumBrandingToggle/PremiumBrandingToggle";
 
 class GetWidget extends Component {
   constructor(props) {
@@ -41,7 +42,13 @@ class GetWidget extends Component {
       },
       preferencePlatformArray: [],
       preferencePlatformString: "",
-      showHidePlatformsList: {}
+      showHidePlatformsList: {},
+      premiumBrandingToggleData: {
+        value: "",
+        checked: false,
+        label: "Turn on the switch to see widget with branding",
+        disabled: _get(this.props, "planTypeId", 1) > 1 ? false : true
+      }
     };
   }
 
@@ -368,6 +375,31 @@ class GetWidget extends Component {
     }
   };
 
+  //!Handler to change get widget code on toggling branding for non-free customers
+  handlePremiumBrandingToggleChange = e => {
+    const checked = _get(e, "target.checked", false);
+    const premiumBrandingToggleData = _get(
+      this.state,
+      "premiumBrandingToggleData",
+      {}
+    );
+    this.setState(
+      {
+        premiumBrandingToggleData: {
+          ...premiumBrandingToggleData,
+          value: checked ? 1 : "",
+          checked,
+          label: checked
+            ? "Turn off the switch to see widget without branding"
+            : "Turn on the switch to see widget with branding"
+        }
+      },
+      () => {
+        this.refreshWidgetOnDemand();
+      }
+    );
+  };
+
   renderInput = () => {
     const { widgetHeight, platforms, selectedPlatform } = this.state;
     return (
@@ -408,11 +440,13 @@ class GetWidget extends Component {
 
   getYourWidgetBox = () => {
     const { domainName, widget } = this.props;
+    const planTypeId = _get(this.props, "planTypeId", 1);
     const {
       selectedPlatform,
       selectedMaxReviews,
       selectedNewerThanMonths,
-      selectedRatingCount
+      selectedRatingCount,
+      premiumBrandingToggleData
     } = this.state;
     const widgetId = _get(widget, "id", "");
     return (
@@ -464,6 +498,10 @@ class GetWidget extends Component {
                           this.handleShowHidePlatformSave
                         }
                       />
+                      <PremiumBrandingToggle
+                        premiumBrandingToggleData={premiumBrandingToggleData}
+                        handleChange={this.handlePremiumBrandingToggleChange}
+                      />
                     </div>
                   </>
                 ) : (
@@ -482,6 +520,12 @@ class GetWidget extends Component {
                       this.handleShowHidePlatformChange
                     }
                     handleShowHidePlatformSave={this.handleShowHidePlatformSave}
+                    handlePremiumBrandingToggleChange={
+                      this.handlePremiumBrandingToggleChange
+                    }
+                    premiumBrandingToggleData={
+                      this.state.premiumBrandingToggleData
+                    }
                   />
                 )}
               </div>
@@ -547,6 +591,12 @@ class GetWidget extends Component {
                         ? _get(this.state, "preferencePlatformString", "")
                         : ""
                     }"
+                    ></div>
+                    data-show-branding="${_get(
+                      this.state,
+                      "premiumBrandingToggleData.value",
+                      ""
+                    )}"
                     ></div> 
                 `}</code>
                 ) : (
@@ -562,6 +612,12 @@ class GetWidget extends Component {
                 overflow: hidden;"
                 data-platform-id="${_get(selectedPlatform, "socialAppId", 22)}"
                 data-profile-id="${_get(selectedPlatform, "value", "")}"
+                ></div>
+                data-show-branding="${_get(
+                  this.state,
+                  "premiumBrandingToggleData.value",
+                  ""
+                )}"
                 ></div> 
             `}</code>
                 )}
@@ -628,13 +684,16 @@ class GetWidget extends Component {
             ""
           )}
           data-rating={_get(this.state, "selectedRatingCount.value", "")}
-          //just uncomment the lines below and remove line 531
           data-platform-order={
             _get(this.state, "preferencePlatformArray", []).length > 1
               ? _get(this.state, "preferencePlatformString", "")
               : ""
           }
-          // data-platform-order=""
+          data-show-branding={_get(
+            this.state,
+            "premiumBrandingToggleData.value",
+            ""
+          )}
         ></div>
       </>
     );
@@ -690,7 +749,12 @@ const mapStateToProps = state => {
     "auth.logIn.userProfile.business_profile.social",
     []
   );
-  return { reviews, socialArray, review_platforms };
+  const planTypeId = _get(
+    state,
+    "auth.logIn.userProfile.subscription.plan_type_id",
+    1
+  );
+  return { reviews, socialArray, review_platforms, planTypeId };
 };
 
 export default connect(mapStateToProps, { toggleWidgetPlatformVisibility })(

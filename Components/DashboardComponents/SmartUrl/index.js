@@ -73,9 +73,9 @@ class SmartUrl extends Component {
     const mode = _get(selectedObj, "mode", "");
     //? sending overall rating and domain name in case of "show available platforms" to jumping page
     let reviewUrl =
-      selectedPlatform === "showAvailablePlatforms"
-        ? `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&overallRating=${overallRating}&&domainName=${domainName}`
-        : `${process.env.DOMAIN_NAME}/redirect_to_review_page?domainUrlKey=${domainUrlKey}&&selectedOption=${selectedPlatform}&&mode=${mode}`;
+      selectedPlatform === "showPlatforms"
+        ? `${process.env.DOMAIN_NAME}/redirect?domainUrlKey=${domainUrlKey}&&selected=${selectedPlatform}&&rating=${overallRating}&&domain=${domainName}`
+        : `${process.env.DOMAIN_NAME}/redirect?domainUrlKey=${domainUrlKey}&&selected=${selectedPlatform}&&mode=${mode}`;
     getShortReviewUrl({ url: reviewUrl });
     this.setState({
       selectedPlatform,
@@ -305,7 +305,7 @@ const mapStateToProps = state => {
     { value: "splitPlatform", label: "Split Platform", mode: 1 },
     { value: "leastRating", label: "Least rating platform", mode: 2 },
     {
-      value: "showAvailablePlatforms",
+      value: "showPlatforms",
       label: "Let customer choose the platform"
     }
   ];

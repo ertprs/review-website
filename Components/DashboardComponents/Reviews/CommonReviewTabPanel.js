@@ -125,13 +125,19 @@ class CommonReviewTabPanel extends Component {
       );
     }
     if (toggleReviewSuccess !== prevProps.toggleReviewSuccess) {
-      let showSnackbar = true;
-      let snackbarVariant = toggleReviewSuccess ? "success" : "error";
-      this.setState({
-        showSnackbar,
-        snackbarVariant,
-        snackbarMsg: toggleReviewErrorMsg ? toggleReviewErrorMsg : snackbarMsg
-      });
+      if (toggleReviewSuccess === true) {
+        this.setState({
+          showSnackbar: true,
+          snackbarVariant: "success",
+          snackbarMsg: snackbarMsg
+        });
+      } else if (toggleReviewSuccess === false) {
+        this.setState({
+          showSnackbar: true,
+          snackbarVariant: "error",
+          snackbarMsg: toggleReviewErrorMsg
+        });
+      }
     }
   }
 
@@ -423,6 +429,7 @@ class CommonReviewTabPanel extends Component {
           handleClose={() => {
             this.setState({ showSnackbar: false });
           }}
+          autoHide={2000}
         />
       </>
     );
@@ -437,7 +444,7 @@ const mapStateToProps = (state, ownProps) => {
   const toggleReviewSuccess = _get(
     dashboardData,
     "toggleReviewResponse.success",
-    false
+    undefined
   );
   const toggleReviewErrorMsg = _get(
     dashboardData,
