@@ -207,22 +207,28 @@ export default function TrustSearc_API_integrationDocumentation() {
           margin_bottom: 20px;
         }
       `}</style>
-      <h2 className="heading">
-        TrustSearch Business API
-      </h2>
+      <h2 className="heading">TrustSearch Business API</h2>
       <p>
         <span className="normal_text">
-         If you are a business customer looking to integrate your e-commerce systems with TrustSearch, this API enables you to streamline your reputation building process. Continue reading to get started.
+          If you are a business customer looking to integrate your e-commerce
+          systems with TrustSearch, this API enables you to streamline your
+          reputation building process. Continue reading to get started.
         </span>
         <span className="normal_text">
-          TrustSearch API follows the REST design. This document will be continually updated to reflect the latest changes in the API. If you encounter any problem during set up or need developer support, feel free to get in touch.
+          TrustSearch API follows the REST design. This document will be
+          continually updated to reflect the latest changes in the API. If you
+          encounter any problem during set up or need developer support, feel
+          free to get in touch.
         </span>
       </p>
       <p>
         <div className="bold heading_text underline">Setup</div>
         <div className="normal_text">
           <div className="normal_text">
-            You will get a pair of system identifier and key when you set up your automatic invite to use TrustSearch API. (Head to Get Invites -> Select Automatic Invitations -> Click next and set up TrustSearch API)
+            You will get a pair of system identifier and key when you set up
+            your automatic invite to use TrustSearch API. (Head to Get Invites
+            -> Select Automatic Invitations -> Click next and set up TrustSearch
+            API)
           </div>
           <div>
             <div className="row">
@@ -239,6 +245,9 @@ export default function TrustSearc_API_integrationDocumentation() {
         </div>
       </p>
       <MaterialTable
+        options={{
+          pageSize: 10
+        }}
         title="Endpoint List"
         columns={EndpointListTableColumns}
         data={EndpointListTableData}
@@ -256,9 +265,7 @@ export default function TrustSearc_API_integrationDocumentation() {
         ‘Authorization: Bearer {token} in other requests.
       </div>
       <div className="mt_20">
-        <p className="heading_text">
-          Steps:
-        </p>
+        <p className="heading_text">Steps:</p>
         <p className="normal_text">
           1. Authenticate (Necessary before every API call to get token)
           <br /> Endpoint: Authentication (POST) <br /> Response: token
@@ -276,7 +283,10 @@ export default function TrustSearc_API_integrationDocumentation() {
         <p className="heading_text">Response:</p>
         <p className="normal_text">
           JSON with a key ‘message’ or ‘error’ depending upon the result.
-          Relying on error codes is possible but not recommended. In case of success, email will be sent out to the customer adhering to the latest invite configuration present in TrustSearch for your e-commerce system.
+          Relying on error codes is possible but not recommended. In case of
+          success, email will be sent out to the customer adhering to the latest
+          invite configuration present in TrustSearch for your e-commerce
+          system.
         </p>
       </div>
     </div>
