@@ -498,10 +498,10 @@ class GetWidget extends Component {
                           this.handleShowHidePlatformSave
                         }
                       />
-                      {/* <PremiumBrandingToggle
+                      <PremiumBrandingToggle
                         premiumBrandingToggleData={premiumBrandingToggleData}
                         handleChange={this.handlePremiumBrandingToggleChange}
-                      /> */}
+                      />
                     </div>
                   </>
                 ) : (
@@ -538,12 +538,12 @@ class GetWidget extends Component {
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 {widgetId === 0 ? (
                   <code className="blue">{`
-                    <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                    <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                     async></script>
                 `}</code>
                 ) : (
                   <code className="blue">{`
-                <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                 async></script>
             `}</code>
                 )}
@@ -651,13 +651,13 @@ class GetWidget extends Component {
           {widgetId === 0 ? (
             <script
               type="text/javascript"
-              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           ) : (
             <script
               type="text/javascript"
-              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           )}
