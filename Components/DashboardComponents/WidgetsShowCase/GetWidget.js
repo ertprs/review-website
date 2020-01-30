@@ -498,10 +498,10 @@ class GetWidget extends Component {
                           this.handleShowHidePlatformSave
                         }
                       />
-                      <PremiumBrandingToggle
+                      {/* <PremiumBrandingToggle
                         premiumBrandingToggleData={premiumBrandingToggleData}
                         handleChange={this.handlePremiumBrandingToggleChange}
-                      />
+                      /> */}
                     </div>
                   </>
                 ) : (
