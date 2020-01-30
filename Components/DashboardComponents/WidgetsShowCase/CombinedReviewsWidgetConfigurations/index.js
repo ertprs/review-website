@@ -5,6 +5,7 @@ import RatingSelector from "./RatingSelector";
 import WidgetPlatformPreference from "./WidgetPlatformPreference/WidgetPlatformPreference";
 import ShowInWidgetList from "./ShowInWidgetList/ShowInWidgetList";
 import _get from "lodash/get";
+import PremiumBrandingToggle from "./PremiumBrandingToggle/PremiumBrandingToggle";
 
 class CombinedReviewsWidgetConfigurations extends Component {
   render() {
@@ -20,7 +21,10 @@ class CombinedReviewsWidgetConfigurations extends Component {
       refreshWidget,
       showHidePlatformsList,
       handleShowHidePlatformChange,
-      handleShowHidePlatformSave
+      handleShowHidePlatformSave,
+      handlePremiumBrandingToggleChange,
+      premiumBrandingToggleData,
+      planTypeId
     } = this.props;
     const hideDashboardParticularSettings = _get(
       this.props,
@@ -69,6 +73,17 @@ class CombinedReviewsWidgetConfigurations extends Component {
                   handleShowHidePlatformChange={handleShowHidePlatformChange}
                   handleShowHidePlatformSave={handleShowHidePlatformSave}
                   refreshWidgetOnDemand={refreshWidgetOnDemand}
+                />
+              </div>
+            </div>
+          )}
+
+          {hideDashboardParticularSettings ? null : (
+            <div className="row">
+              <div className="col-md-12">
+                <PremiumBrandingToggle
+                  handleChange={handlePremiumBrandingToggleChange}
+                  premiumBrandingToggleData={premiumBrandingToggleData}
                 />
               </div>
             </div>
