@@ -1451,7 +1451,7 @@ export const toggleWidgetPlatformVisibility = profileData => {
     try {
       const result = await axios({
         method: "POST",
-        url: `${process.env.BASE_URL}/${toggleWidgetPlatformVisibilityApi}`,
+        url: `${process.env.BASE_URL}${toggleWidgetPlatformVisibilityApi}`,
         headers: { Authorization: `Bearer ${token}` },
         data: { ...profileData }
       });
