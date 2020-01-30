@@ -1576,7 +1576,7 @@ class GetReviews extends Component {
     this.props.scrollToTopOfThePage();
     const { configuredReviewPlatforms, percentageSplit } = this.props;
     let configuredReviewPlatformsCopy = [];
-    //! In edit mode we will get percentageSplit for review invitation platforms else we'll initialize percentage split by dividing with no of platforms
+    //! In edit mode we will get percentageSplit for review invitation platforms else we'll
     if (isValidArray(percentageSplit)) {
       configuredReviewPlatformsCopy = (configuredReviewPlatforms || []).map(
         platform => {
@@ -1596,26 +1596,39 @@ class GetReviews extends Component {
         }
       );
     } else if (isValidArray(configuredReviewPlatforms)) {
-      const noOfPlatforms = (configuredReviewPlatforms || []).length;
-      let platformInitialValue = Math.floor(100 / noOfPlatforms);
-      const sumOfAllPlatforms = platformInitialValue * noOfPlatforms;
+      let noOfPlatforms = (configuredReviewPlatforms || []).length;
+      noOfPlatforms = noOfPlatforms > 10 ? 10 : noOfPlatforms;
+      let remainder = 100 % (noOfPlatforms * 10);
+      let quotient = Math.floor(100 / (noOfPlatforms * 10));
       configuredReviewPlatformsCopy = (configuredReviewPlatforms || []).map(
-        platform => {
-          return {
-            ...platform,
-            value: platformInitialValue,
-            hasError: false,
-            min: 0,
-            max: 100
-          };
+        (platform, index) => {
+          let tempObj =
+            index < 10
+              ? {
+                  ...platform,
+                  value: quotient * 10,
+                  hasError: false,
+                  min: 0,
+                  max: 100
+                }
+              : {
+                  ...platform,
+                  value: 0,
+                  hasError: false,
+                  min: 0,
+                  max: 100
+                };
+          return tempObj;
         }
       );
-      if (sumOfAllPlatforms < 100) {
-        configuredReviewPlatformsCopy[0] = {
-          ...configuredReviewPlatformsCopy[0],
-          value:
-            configuredReviewPlatformsCopy[0].value + (100 - sumOfAllPlatforms)
-        };
+      if (remainder > 0) {
+        if (noOfPlatforms - 1 >= 0) {
+          configuredReviewPlatformsCopy[noOfPlatforms - 1] = {
+            ...configuredReviewPlatformsCopy[noOfPlatforms - 1],
+            value:
+              configuredReviewPlatformsCopy[noOfPlatforms - 1].value + remainder
+          };
+        }
       }
     }
     this.setState({

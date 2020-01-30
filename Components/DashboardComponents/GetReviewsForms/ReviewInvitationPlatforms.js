@@ -10,6 +10,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@material-ui/core/TextField";
 import ArrowRight from "@material-ui/icons/ArrowRight";
+import ToolTip from "@material-ui/core/Tooltip";
 import ArrowLeft from "@material-ui/icons/ArrowLeft";
 import { connect } from "react-redux";
 import _get from "lodash/get";
@@ -95,12 +96,14 @@ class ReviewInvitationPlatforms extends Component {
                 }}
                 min={_get(platform, "min", 0)}
                 max={_get(platform, "max", 0)}
+                step={10}
               />
             </div>
             <div className="col-md-2">
               <div className="row">
                 <OutlinedInput
                   style={{ width: "45%" }}
+                  disabled={true}
                   value={_get(platform, "value", 0)}
                   onChange={e => {
                     handleSliderChange(_get(e, "target.value", 0), index);
