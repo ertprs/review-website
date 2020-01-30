@@ -57,7 +57,8 @@ class InvitationHistory extends Component {
         title="Invitation History"
         columns={columns}
         options={{
-          search: false
+          search: false,
+          pageSize: 10
         }}
         tableRef={this.tableRef}
         actions={[
