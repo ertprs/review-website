@@ -1352,7 +1352,7 @@ export const toggleReviewVisibility = (id, socialMediaAppId, profileId) => {
         toggleReviewResponse: {
           isLoading: true,
           errorMsg: "",
-          success: {}
+          success: undefined
         }
       });
       try {
