@@ -45,7 +45,7 @@ class GetWidget extends Component {
       showHidePlatformsList: {},
       premiumBrandingToggleData: {
         value: _get(this.props, "planTypeId", 1) > 1 ? "1" : "",
-        checked: true,
+        checked: _get(this.props, "planTypeId", 1) > 1 ? true : false,
         label: "Turn off the switch to see widget without branding",
         disabled: _get(this.props, "planTypeId", 1) > 1 ? false : true
       }
