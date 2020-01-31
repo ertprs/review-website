@@ -13,7 +13,9 @@ import _isEmpty from "lodash/isEmpty";
 import { iconNames } from "../utility/constants/socialMediaConstants";
 import {
   setDomainDataInRedux,
-  setLoading
+  setLoading,
+  fetchProfileReviews,
+  fetchProfileReviewsInitially
 } from "../store/actions/domainProfileActions";
 import { connect } from "react-redux";
 import DomainPusherComponent from "../Components/DomainPusherComponent/DomainPusherComponent";
@@ -51,7 +53,6 @@ const SimpleTabs = dynamic(() =>
   import("../Components/MaterialComponents/SimpleTabs")
 );
 import Snackbar from "../Components/Widgets/Snackbar";
-import { fetchGoogleReviews } from "../store/actions/googleReviewsAction";
 import UnicornLoader from "../Components/Widgets/UnicornLoader";
 import { removeAggregateData } from "../store/actions/aggregateActions";
 
@@ -85,9 +86,6 @@ class Profile extends React.Component {
     setTimeout(() => {
       this.setState({ waitingTimeOut: false });
     }, 60000);
-    const { fetchGoogleReviews, domain } = this.props;
-    //? We try to fetch google reviews on first load
-    fetchGoogleReviews(domain);
     this.setState({ isMounted: true });
     Router.events.on("routeChangeStart", this.handleRouteChange);
     Events.scrollEvent.register("begin", function() {});
@@ -135,16 +133,11 @@ class Profile extends React.Component {
     removeAggregateData();
   }
 
-  updateAggregatorData = newData => {
-    const { id, aggregateSocialData } = this.state;
-    this.props.getAggregateData(newData, id);
-  };
-
-  onGoogleReviewsChange = data => {
-    const googleReviewsTotal = _get(data, "response.reviewCount", 0);
-    const { fetchGoogleReviews, domain } = this.props;
-    if (googleReviewsTotal > 0) {
-      fetchGoogleReviews(domain);
+  handleAggregatorDataChange = updatedData => {
+    const platformId = _get(updatedData, "response.socialAppId", 0);
+    const { fetchProfileReviews, domain } = this.props;
+    if (platformId && domain) {
+      fetchProfileReviews(domain, platformId, true);
     }
   };
 
@@ -278,7 +271,6 @@ class Profile extends React.Component {
 
     //? this aggregate social data is used for displaying cards of review platforms
     let aggregateSocialData = { ...this.state.aggregateSocialData };
-
     if (
       !_isEmpty(_get(newState, "social.payload", {})) &&
       typeof _get(newState, "social.payload", {}) === "object"
@@ -290,6 +282,22 @@ class Profile extends React.Component {
     }
     this.setState({ aggregateSocialData: { ...aggregateSocialData } });
     this.props.setAggregateData({ ...aggregateSocialData });
+
+    //! we'll get an object of scraped platforms inside social key, we'll create an array of socialObj of them and fetch their reviews
+    const { domain } = this.props;
+    let socialObj = _get(newState, "social.payload", {});
+    let socialPlatformsArr = [];
+    if (socialObj && !_isEmpty(socialObj)) {
+      let platformIdsArray = Object.keys(socialObj);
+      socialPlatformsArr = platformIdsArray.map(platformId => {
+        return {
+          id: platformId,
+          name: (socialObj[platformId] || {}).name || ""
+        };
+      });
+      const { fetchProfileReviewsInitially } = this.props;
+      fetchProfileReviewsInitially(socialPlatformsArr, domain);
+    }
   };
 
   handleTabChange = e => {};
@@ -483,15 +491,18 @@ class Profile extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
-        {/* This is bind for two keys “google_reviews” and “aggregator”. For google reviews we get totalReviewscount and if it greater than 0 we try to fetch google reviews(“/api/reviews/domain” api)  and for aggregator we get socialAppId and profileId to get review of that platform through thirdpartydata Api. */}
+        {/* This is bind for two keys “google_reviews” and “aggregator”. For google reviews we get totalReviewsCount and if it greater than 0 we try to fetch google reviews(“/api/reviews/domain” api)  and for aggregator we get socialAppId and profileId to get review of that platform through thirdpartydata Api. */}
         <DomainPusherComponent
           domain={domain}
-          onAggregatorDataChange={this.updateAggregatorData}
-          onGoogleReviewsChange={this.onGoogleReviewsChange}
+          onAggregatorDataChange={this.handleAggregatorDataChange}
+          //! remove this when done refactor
+          // onGoogleReviewsChange={this.onGoogleReviewsChange}
         />
 
         <>
           <Navbar />
+          {/* waitingTimeOut is used only for stopping this loader after 5
+          minutes */}
           {isNewDomain && waitingTimeOut && this.unicornLoaderHandler() ? (
             <UnicornLoader />
           ) : null}
@@ -534,18 +545,8 @@ class Profile extends React.Component {
 }
 
 Profile.getInitialProps = async ({ query }) => {
-  const searchURL = query.domain
-    ? `https://${query.domain}`
-    : "https://google.com";
   const domain = query.domain ? query.domain : "google.com";
-  //? i think we can remove this from here as we are not using amp
-  if (query.amp === "1") {
-    const response = await axios.get(
-      `${process.env.BASE_URL}/api/verify?domain=${searchURL}`
-    );
-    return { analysisData: { ...response.data }, domain };
-  }
-  return { domain: domain };
+  return { domain };
 };
 
 const mapStateToProps = state => {
@@ -584,8 +585,9 @@ export default connect(mapStateToProps, {
   setLoading,
   getAggregateData,
   setAggregateData,
-  fetchGoogleReviews,
-  removeAggregateData
+  removeAggregateData,
+  fetchProfileReviews,
+  fetchProfileReviewsInitially
 })(Profile);
 
 // 1. We connect with two pushers: (a) PusherDataComponent (b) DomainPusherComponent

@@ -5,13 +5,18 @@ import {
   REPORT_DOMAIN_SUCCESS,
   REPORT_DOMAIN_FAILURE,
   REPORT_DOMAIN_AFTER_LOGIN,
-  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL
+  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL,
+  FETCH_PROFILE_REVIEWS_INIT,
+  FETCH_PROFILE_REVIEWS_SUCCESS,
+  FETCH_PROFILE_REVIEWS_FAILURE,
+  FETCH_PROFILE_REVIEWS_INITIALLY
 } from "./actionTypes";
+import { iconNames } from "../../utility/constants/socialMediaConstants";
+import { reportDomainApi, fetchProfileReviewsApi } from "../../utility/config";
+import { isValidArray } from "../../utility/commonFunctions";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _isNumber from "lodash/isEmpty";
-import { iconNames } from "../../utility/constants/socialMediaConstants";
-import { reportDomainApi } from "../../utility/config";
 import axios from "axios";
 import Router from "next/router";
 
@@ -352,5 +357,169 @@ export const redirectWithDomain = (route, domain) => {
   return {
     type: REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL,
     domain
+  };
+};
+
+//? verbose true will give complete data like url, followers, rating, review. By default it's false
+//? we are also not passing rating profileId filters, we are only passing platformId that will fetch reviews of all it's profiles
+//? replaceReviews will replace the old reviews with new one. When we are coming from broadcast we are replacing it and when we are coming from showmore we are merging it.
+export const fetchProfileReviews = (
+  domain = "",
+  platformId,
+  replaceReviews = false,
+  page = 1,
+  perPage = 30,
+  profileId,
+  rating,
+  verbose = true
+) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
+    let platformObj = _get(platformReviews, platformId, {});
+    dispatch({
+      type: FETCH_PROFILE_REVIEWS_INIT,
+      socialPlatformReviews: {
+        ...platformReviews,
+        [platformId]: {
+          data: { ...platformObj },
+          isLoading: true,
+          success: undefined
+        }
+      }
+    });
+    try {
+      const result = await axios({
+        method: "GET",
+        url: `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`
+      });
+      let success = false;
+      let reviewsArr = _get(result, "data.data.reviews", []);
+      if (isValidArray(reviewsArr)) {
+        success = true;
+      }
+      let socialPlatformReviews = {};
+      if (replaceReviews) {
+        socialPlatformReviews = {
+          ...platformReviews,
+          [platformId]: {
+            data: {
+              ..._get(platformObj, "data", {}),
+              ..._get(result, "data", {}),
+              data: {
+                ..._get(platformObj, "data.data", {}),
+                ..._get(result, "data.data", {}),
+                reviews: [..._get(result, "data.data.reviews", [])]
+              }
+            },
+            isLoading: false,
+            success
+          }
+        };
+      } else if (!replaceReviews) {
+        socialPlatformReviews = {
+          ...platformReviews,
+          [platformId]: {
+            data: {
+              ..._get(platformObj, "data", {}),
+              ..._get(result, "data", {}),
+              data: {
+                ..._get(platformObj, "data.data", {}),
+                ..._get(result, "data.data", {}),
+                reviews: [
+                  ..._get(platformObj, "data.data.reviews", []),
+                  ..._get(result, "data.data.reviews", [])
+                ]
+              }
+            },
+            isLoading: false,
+            success
+          }
+        };
+      }
+
+      dispatch({
+        type: FETCH_PROFILE_REVIEWS_SUCCESS,
+        socialPlatformReviews: {
+          ...socialPlatformReviews
+        }
+      });
+    } catch (err) {
+      const error = _get(err, "response.data.error", "Some Error Occurred!");
+      dispatch({
+        type: FETCH_PROFILE_REVIEWS_FAILURE,
+        socialPlatformReviews: {
+          ...platformReviews,
+          [platformId]: {
+            data: { ...platformObj },
+            isLoading: false,
+            success: false
+          }
+        }
+      });
+    }
+  };
+};
+
+//? This method will receive an array of socialPlatforms and fetch reviews of all of them one by one by making an array of promise and calling Promise.All(). We'll return a socialPlatformReviews object from this action.
+export const fetchProfileReviewsInitially = (
+  socialPlatformsArr,
+  domain,
+  page = 1,
+  perPage = 30,
+  verbose = true
+) => {
+  return async dispatch => {
+    let socialPlatformReviews = {};
+    Promise.all(
+      socialPlatformsArr.map(socialPlatform => {
+        let platformId = _get(socialPlatform, "id", 0);
+        let platformName = _get(socialPlatform, "name", "");
+        return axios
+          .get(
+            `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`
+          )
+          .then(res => {
+            return {
+              ...res.data,
+              platformId,
+              platformName
+            };
+          })
+          .catch(err => {
+            return {
+              err,
+              platformId,
+              platformName
+            };
+          });
+      })
+    )
+      .then(resArr => {
+        resArr.forEach(res => {
+          let success = false;
+          let platformId = _get(res, "platformId", "");
+          let reviewsArr = _get(res, "data.data.reviews", []);
+          if (isValidArray(reviewsArr)) {
+            success = true;
+          }
+          if (platformId) {
+            socialPlatformReviews = {
+              ...socialPlatformReviews,
+              [platformId]: {
+                data: { ...res },
+                isLoading: false,
+                success
+              }
+            };
+          }
+        });
+      })
+      .then(() => {
+        dispatch({
+          type: FETCH_PROFILE_REVIEWS_INITIALLY,
+          socialPlatformReviews: { ...socialPlatformReviews }
+        });
+      });
   };
 };

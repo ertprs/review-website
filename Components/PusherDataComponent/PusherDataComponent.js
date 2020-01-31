@@ -35,7 +35,6 @@ class PusherDataComponent extends React.Component {
               }
             },
             () => {
-              console.log(this.state.domainData, "DOMAIN_DATA");
               this.props.onChildStateChange(this.state.domainData);
             }
           );
@@ -58,7 +57,7 @@ class PusherDataComponent extends React.Component {
     pusher.connection.bind("connected", () => {
       console.log("main pusher connected");
       axios
-        .get(`${process.env.BASE_URL}/api/verify?domain=https://${domain}`)
+        .get(`${process.env.BASE_URL}/api/verify?domain=${domain}`)
         .then(res => {
           //set the state and call unbindRecievedKeys
           this.setState(
@@ -73,9 +72,7 @@ class PusherDataComponent extends React.Component {
               else {
                 let intr = setInterval(() => {
                   axios
-                    .get(
-                      `${process.env.BASE_URL}/api/verify?domain=https://${domain}`
-                    )
+                    .get(`${process.env.BASE_URL}/api/verify?domain=${domain}`)
                     .then(res => {
                       this.setState(
                         {

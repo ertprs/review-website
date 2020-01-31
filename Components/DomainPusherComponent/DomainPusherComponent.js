@@ -22,11 +22,6 @@ class DomainPusherComponent extends Component {
   }
   //change state and create separate onChildStateChange for both.
   bindToKey = (pusher, channel) => {
-    channel.bind("google_reviews", data => {
-      this.props.onGoogleReviewsChange(data);
-      console.log(data, "response from DomainPusherComponent Google_Reviews");
-    });
-
     channel.bind("aggregator", data => {
       this.props.onAggregatorDataChange(data);
       console.log(

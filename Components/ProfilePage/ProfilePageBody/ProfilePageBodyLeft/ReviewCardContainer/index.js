@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import WriteReviewCard from "../WriteReviewCard";
+import RenderSocialPlatforms from "./SocialPlatformReviews";
 import _get from "lodash/get";
 import Paper from "../../../../MaterialComponents/Paper";
 import { connect } from "react-redux";
@@ -7,6 +8,7 @@ import uuid from "uuid/v1";
 import ReviewCardPlaceholder from "./ReviewCardPlaceholder";
 import ReviewCard from "../../../../Widgets/CommonReviewCard";
 import _isEmpty from "lodash/isEmpty";
+import { isValidArray } from "../../../../../utility/commonFunctions";
 
 class ReviewCardContainer extends Component {
   state = {
@@ -187,22 +189,17 @@ class ReviewCardContainer extends Component {
       }
     }
   };
-
-  renderTrustSearchReviews = (domainReviewsData, isLoading) => {
-    return (
-      domainReviewsData &&
-      domainReviewsData.map(review => {
+  //? common method for rendering reviews, need to handle pagination
+  renderReviews = (reviews, provider) => {
+    if (isValidArray(reviews)) {
+      return (reviews || []).map(review => {
         return (
           <div style={{ marginBottom: "25px" }} key={uuid()}>
-            <ReviewCard
-              isLoading={isLoading}
-              review={review || {}}
-              provider="trustsearch"
-            />
+            <ReviewCard review={review || {}} provider={provider} />
           </div>
         );
-      })
-    );
+      });
+    }
   };
 
   handleShowMore = () => {
@@ -373,17 +370,15 @@ class ReviewCardContainer extends Component {
       googleReviewsData,
       wotReviewsData,
       trustPilotReviewsData,
-      trustedShopReviewsData
+      trustedShopReviewsData,
+      trustsearchReviews,
+      wotReviews
     } = this.props;
     const domainReviewsData =
       ((domainProfileData || {}).domainReviews || {}).data || [];
     const domainReviewsWillCome =
       ((domainProfileData || {}).domainReviews || {}).willCome || false;
-    const is_verified = _get(
-      domainProfileData,
-      "headerData.data.is_verified",
-      false
-    );
+
     const {
       googleReviewsToShow,
       wotReviewsToShow,
@@ -409,18 +404,18 @@ class ReviewCardContainer extends Component {
 
           .showMoreContainer:hover {
             text-decoration: underline;
-            color: #4285F4;
+            color: #4285f4;
           }
 
           .showMore {
-            color: #4285F4;
+            color: #4285f4;
             cursor: pointer;
-            font-weight:bold;
-            font-size:1.0rem;
+            font-weight: bold;
+            font-size: 1rem;
           }
 
-          .violet{
-            color:#4285F4;
+          .violet {
+            color: #4285f4;
           }
 
           .showmore: hover {
@@ -428,7 +423,13 @@ class ReviewCardContainer extends Component {
           }
         `}</style>
         <WriteReviewCard trustClicked={this.props.trustClicked} />
-        {isLoading ? (
+        {/* these two platforms are different then other social
+        platforms so that's why they are being rendered differently */}
+        {this.renderReviews(trustsearchReviews, "trustsearch")}
+        {/* this will render reviews of all social platforms except trustsearch and wot */}
+        <RenderSocialPlatforms />
+        {this.renderReviews(wotReviews, "wot")}
+        {/* {isLoading ? (
           <ReviewCardPlaceholder />
         ) : domainReviewsWillCome ||
           googleReviewsData.length > 0 ||
@@ -504,17 +505,14 @@ class ReviewCardContainer extends Component {
           </>
         ) : (
           <>
-            {/* {this.state.showNoReviewsFound ? ( */}
             <Paper>
               <div className="noReviewFound">
                 <h1 className="noReviewFoundText">No Reviews Found</h1>
               </div>
             </Paper>
-            {/* ) : (
-              <ReviewCardPlaceholder />
-            )} */}
+           
           </>
-        )}
+        )} */}
       </div>
     );
   }
@@ -523,6 +521,8 @@ class ReviewCardContainer extends Component {
 const mapStateToProps = state => {
   const { profileData, googleReviews, aggregateData } = state;
   const { domainProfileData, isLoading } = profileData;
+  const trustsearchReviews = _get(domainProfileData, "domainReviews.data", []);
+  const wotReviews = _get(domainProfileData, "wotReviews.data", []);
   const googleReviewsFromRedux = _get(
     googleReviews,
     "reviews.data.reviews",
@@ -577,8 +577,12 @@ const mapStateToProps = state => {
     googleReviewsData,
     wotReviewsData,
     trustPilotReviewsData,
-    trustedShopReviewsData
+    trustedShopReviewsData,
+    trustsearchReviews,
+    wotReviews
   };
 };
 
 export default connect(mapStateToProps)(ReviewCardContainer);
+
+//? need to write loading logic and no reviews found logic also check unicorn loader
