@@ -287,12 +287,12 @@ class GetWidgetsCode extends Component {
                 <pre className="comment">{`<!-- TrustBox script -->`}</pre>
                 {widgetId === 0 ? (
                   <code className="blue">{`
-                    <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                    <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                     async></script>
                 `}</code>
                 ) : (
                   <code className="blue">{`
-                <script type="text/javascript" src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+                <script type="text/javascript" src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
                 async></script>
             `}</code>
                 )}
@@ -335,6 +335,7 @@ class GetWidgetsCode extends Component {
                       "selectedRatingCount.value",
                       ""
                     )}"
+                    data-show-branding="1"
                     ></div> 
                 `}</code>
                 ) : (
@@ -349,6 +350,7 @@ class GetWidgetsCode extends Component {
                 style="position: relative;
                 overflow: hidden;"
                 data-platform-id="${this.state.platforms.value}"
+                data-show-branding="1"
                 ></div> 
             `}</code>
                 )}
@@ -386,13 +388,13 @@ class GetWidgetsCode extends Component {
           {widgetId === 0 ? (
             <script
               type="text/javascript"
-              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           ) : (
             <script
               type="text/javascript"
-              src="https://widget-dev.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
+              src="https://widget.thetrustsearch.com/static/tsWidget/v1/ts.widget_v1.min.js"
               async
             ></script>
           )}
@@ -414,6 +416,7 @@ class GetWidgetsCode extends Component {
             ""
           )}
           data-rating={_get(this.state, "selectedRatingCount.value", "")}
+          data-show-branding={1}
         ></div>
       </>
     );
