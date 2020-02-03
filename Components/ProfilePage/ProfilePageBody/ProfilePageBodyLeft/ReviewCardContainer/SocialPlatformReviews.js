@@ -24,7 +24,7 @@ const SocialPlatformReviews = props => {
                 //! will change provider
                 return <ReviewCard review={review} provider={platformId} />;
               })}
-              <div onClick={() => fetchProfileReviews("", "", false, nextLink)}>
+              <div onClick={() => fetchProfileReviews("", platformId, false, nextLink)}>
                 Show More
               </div>
             </>

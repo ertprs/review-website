@@ -385,7 +385,7 @@ export const fetchProfileReviews = (
       socialPlatformReviews: {
         ...platformReviews,
         [platformId]: {
-          data: { ...platformObj },
+          ...platformObj,
           isLoading: true,
           success: undefined
         }
@@ -396,9 +396,9 @@ export const fetchProfileReviews = (
         method: "GET",
         url
       });
-      setProfileReviewsSuccessInReducer(result, platformId, replaceReviews);
+      dispatch(setProfileReviewsSuccessInReducer(result, platformId, replaceReviews))
     } catch (err) {
-      setProfileReviewsFailureInReducer(platformId);
+      dispatch(setProfileReviewsFailureInReducer(platformId))
     }
   };
 };
@@ -414,6 +414,8 @@ export const setProfileReviewsSuccessInReducer = (
     let platformObj = _get(platformReviews, platformId, {});
     let success = false;
     let reviewsArr = _get(result, "data.data.reviews", []);
+    console.log("result", result);
+    console.log("platformObjext", platformObj)
     if (isValidArray(reviewsArr)) {
       success = true;
     }
