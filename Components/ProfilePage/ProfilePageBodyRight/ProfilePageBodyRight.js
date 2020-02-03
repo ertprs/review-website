@@ -889,7 +889,9 @@ class ProfilePageBodyRight extends Component {
     if (socialPlatformReviews.hasOwnProperty("18")) {
       if (
         _get(socialPlatformReviews, "18.data", null) !== null &&
-        !_isEmpty(_get(socialPlatformReviews, "18.data", {}))
+        !_isEmpty(_get(socialPlatformReviews, "18.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "18.data.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "18.data.data.reviews", {}))
       ) {
         showTrustPilot = true;
       } else {
@@ -900,7 +902,9 @@ class ProfilePageBodyRight extends Component {
     if (socialPlatformReviews.hasOwnProperty("19")) {
       if (
         _get(socialPlatformReviews, "19.data", null) !== null &&
-        !_isEmpty(_get(socialPlatformReviews, "19.data", {}))
+        !_isEmpty(_get(socialPlatformReviews, "19.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "19.data.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "19.data.data.reviews", {}))
       ) {
         showTrustedShop = true;
       } else {
