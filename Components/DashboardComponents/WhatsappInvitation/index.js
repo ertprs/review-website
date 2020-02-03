@@ -79,7 +79,7 @@ class WhatsAppInvitation extends Component {
           salutation: {
             element: "input",
             name: "salutation",
-            labelText: "Enter salutation:",
+            labelText: "Enter salutation (required)*:",
             type: "text",
             value: "",
             valid: true,
@@ -93,7 +93,7 @@ class WhatsAppInvitation extends Component {
           message: {
             element: "textarea",
             name: "message",
-            labelText: "Enter your message*:",
+            labelText: "Enter your message (required)*:",
             type: "text",
             value: "",
             valid: true,
@@ -109,7 +109,7 @@ class WhatsAppInvitation extends Component {
           reviewUrl: {
             element: "input",
             name: "reviewUrl",
-            labelText: "Enter Review Url*:",
+            labelText: "Enter Review Url (required)*:",
             type: "text",
             value: "",
             valid: false,
