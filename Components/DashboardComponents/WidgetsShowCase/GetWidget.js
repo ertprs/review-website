@@ -44,9 +44,9 @@ class GetWidget extends Component {
       preferencePlatformString: "",
       showHidePlatformsList: {},
       premiumBrandingToggleData: {
-        value: "",
-        checked: false,
-        label: "Turn on the switch to see widget with branding",
+        value: _get(this.props, "planTypeId", 1) > 1 ? "1" : "",
+        checked: _get(this.props, "planTypeId", 1) > 1 ? true : false,
+        label: "Turn off the switch to see widget without branding",
         disabled: _get(this.props, "planTypeId", 1) > 1 ? false : true
       }
     };
@@ -591,13 +591,12 @@ class GetWidget extends Component {
                         ? _get(this.state, "preferencePlatformString", "")
                         : ""
                     }"
-                    ></div>
                     data-show-branding="${_get(
                       this.state,
                       "premiumBrandingToggleData.value",
                       ""
                     )}"
-                    ></div> 
+                    ></div>
                 `}</code>
                 ) : (
                   <code className="blue">{`
@@ -612,13 +611,12 @@ class GetWidget extends Component {
                 overflow: hidden;"
                 data-platform-id="${_get(selectedPlatform, "socialAppId", 22)}"
                 data-profile-id="${_get(selectedPlatform, "value", "")}"
-                ></div>
                 data-show-branding="${_get(
                   this.state,
                   "premiumBrandingToggleData.value",
                   ""
                 )}"
-                ></div> 
+                ></div>
             `}</code>
                 )}
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
