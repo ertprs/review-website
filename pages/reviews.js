@@ -10,6 +10,8 @@ import {
 } from "react-scroll";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import _sortBy from "lodash/sortBy";
+import _isEqual from "lodash/isEqual";
 import { iconNames } from "../utility/constants/socialMediaConstants";
 import {
   setDomainDataInRedux,
@@ -142,6 +144,7 @@ class Profile extends React.Component {
   };
 
   updateParentState = newState => {
+    console.log(newState, "newState");
     //? this action is used to set all profile data in a structured way in redux
     this.props.setDomainDataInRedux(newState);
     //? isNewDomain is used to show unicorn loader when user search for a new domain and we start scraping for that domain
@@ -296,6 +299,7 @@ class Profile extends React.Component {
         };
       });
       const { fetchProfileReviewsInitially } = this.props;
+      //! make api call only if the prev array is not equal to current array
       fetchProfileReviewsInitially(socialPlatformsArr, domain);
     }
   };
@@ -495,8 +499,6 @@ class Profile extends React.Component {
         <DomainPusherComponent
           domain={domain}
           onAggregatorDataChange={this.handleAggregatorDataChange}
-          //! remove this when done refactor
-          // onGoogleReviewsChange={this.onGoogleReviewsChange}
         />
 
         <>

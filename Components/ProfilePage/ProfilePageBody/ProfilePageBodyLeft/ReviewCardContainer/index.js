@@ -1,21 +1,19 @@
 import React, { Component } from "react";
-import WriteReviewCard from "../WriteReviewCard";
-import RenderSocialPlatforms from "./SocialPlatformReviews";
-import _get from "lodash/get";
-import Paper from "../../../../MaterialComponents/Paper";
 import { connect } from "react-redux";
-import uuid from "uuid/v1";
-import ReviewCardPlaceholder from "./ReviewCardPlaceholder";
+import WriteReviewCard from "../WriteReviewCard";
 import ReviewCard from "../../../../Widgets/CommonReviewCard";
-import _isEmpty from "lodash/isEmpty";
+import ReviewCardPlaceholder from "./ReviewCardPlaceholder";
+import RenderSocialPlatforms from "./SocialPlatformReviews";
+import Paper from "../../../../MaterialComponents/Paper";
 import { isValidArray } from "../../../../../utility/commonFunctions";
+import _get from "lodash/get";
+import uuid from "uuid/v1";
+import _isEmpty from "lodash/isEmpty";
 
 class ReviewCardContainer extends Component {
   state = {
-    googleReviewsToShow: [],
     wotReviewsToShow: [],
-    trustPilotReviewsToShow: [],
-    trustedShopReviewsData: [],
+    trustSearchReviewsToShow: [],
     showNoReviewsFound: false
   };
 
@@ -23,113 +21,34 @@ class ReviewCardContainer extends Component {
     setTimeout(() => {
       this.setState({ showNoReviewsFound: true });
     }, 40000);
-    const {
-      googleReviewsData,
-      wotReviewsData,
-      trustPilotReviewsData,
-      trustedShopReviewsData
-    } = this.props;
-    const calGoogleReviewsToShow = () => {
-      let googleReviewsToShow = [];
-      if (googleReviewsData.length > 8) {
-        googleReviewsToShow = googleReviewsData.slice(0, 8);
-      } else {
-        googleReviewsToShow = googleReviewsData;
-      }
-      return googleReviewsToShow;
-    };
-
-    const calWotReviewsToShow = () => {
-      let wotReviewsToShow = [];
-      if (wotReviewsData.length > 8) {
-        wotReviewsToShow = wotReviewsData.slice(0, 8);
-      } else {
-        wotReviewsToShow = wotReviewsData;
-      }
-      return wotReviewsToShow;
-    };
-
-    const calTrustpilotReviewsToShow = () => {
-      let trustPilotReviewsToShow = [];
-      if (trustPilotReviewsData.length > 8) {
-        trustPilotReviewsToShow = trustPilotReviewsData.slice(0, 8);
-      } else {
-        trustPilotReviewsToShow = trustPilotReviewsData;
-      }
-      return trustPilotReviewsToShow;
-    };
-
-    const calTrustedShopReviewsToShow = () => {
-      let trustedShopReviewsToShow = [];
-      if (trustedShopReviewsData.length > 8) {
-        trustedShopReviewsToShow = trustPilotReviewsData.slice(0, 8);
-      } else {
-        trustedShopReviewsToShow = trustedShopReviewsData;
-      }
-      return trustedShopReviewsToShow;
-    };
-
+    const { trustSearchReviews, wotReviews } = this.props;
     this.setState({
-      googleReviewsToShow: calGoogleReviewsToShow(),
-      wotReviewsToShow: calWotReviewsToShow(),
-      trustPilotReviewsToShow: calTrustpilotReviewsToShow(),
-      trustedShopReviewsToShow: calTrustedShopReviewsToShow()
+      wotReviewsToShow: this.calReviewsToShow(wotReviews),
+      trustSearchReviewsToShow: this.calReviewsToShow(trustSearchReviews)
     });
   }
 
+  calReviewsToShow = reviews => {
+    let reviewsToShow = [];
+    if (reviews.length > 30) {
+      reviewsToShow = reviews.slice(0, 30);
+    } else {
+      reviewsToShow = reviews;
+    }
+    return reviewsToShow;
+  };
+
   componentDidUpdate(prevProps, prevState) {
-    if (this.props !== prevProps) {
-      const {
-        googleReviewsData,
-        wotReviewsData,
-        trustPilotReviewsData,
-        trustedShopReviewsData
-      } = this.props;
-      const calGoogleReviewsToShow = () => {
-        let googleReviewsToShow = [];
-        if (googleReviewsData.length > 8) {
-          googleReviewsToShow = googleReviewsData.slice(0, 8);
-        } else {
-          googleReviewsToShow = googleReviewsData;
-        }
-        return googleReviewsToShow;
-      };
-
-      const calWotReviewsToShow = () => {
-        let wotReviewsToShow = [];
-        if (wotReviewsData.length > 8) {
-          wotReviewsToShow = wotReviewsData.slice(0, 8);
-        } else {
-          wotReviewsToShow = wotReviewsData;
-        }
-        return wotReviewsToShow;
-      };
-
-      const calTrustpilotReviewsToShow = () => {
-        let trustPilotReviewsToShow = [];
-        if (trustPilotReviewsData.length > 8) {
-          trustPilotReviewsToShow = trustPilotReviewsData.slice(0, 8);
-        } else {
-          trustPilotReviewsToShow = trustPilotReviewsData;
-        }
-        return trustPilotReviewsToShow;
-      };
-
-      const calTrustedShopReviewsToShow = () => {
-        let trustedShopReviewsToShow = [];
-        if (trustedShopReviewsData.length > 8) {
-          trustedShopReviewsToShow = trustedShopReviewsData.slice(0, 8);
-        } else {
-          trustedShopReviewsToShow = trustedShopReviewsData;
-        }
-        return trustedShopReviewsToShow;
-      };
-
+    if (
+      _get(this.props, "wotReviews", []) !==
+        _get(prevProps, "wotReviews", []) ||
+      _get(this.props, "trustSearchReviews", []) !==
+        _get(prevProps, "trustSearchReviews", [])
+    ) {
+      const { trustSearchReviews, wotReviews } = this.props;
       this.setState({
-        googleReviewsToShow: calGoogleReviewsToShow(),
-        wotReviewsToShow: calWotReviewsToShow(),
-        trustPilotReviewsToShow: calTrustpilotReviewsToShow(),
-        trustedShopReviewsToShow: calTrustedShopReviewsToShow()
+        wotReviewsToShow: this.calReviewsToShow(wotReviews),
+        trustSearchReviewsToShow: this.calReviewsToShow(trustSearchReviews)
       });
     }
   }
@@ -208,59 +127,58 @@ class ReviewCardContainer extends Component {
 
     if (googleReviewsData.length <= googleReviewsToShow.length) {
     }
-    if (googleReviewsToShow.length === 8) {
+    if (googleReviewsToShow.length === 30) {
       this.setState({
         googleReviewsToShow: [
           ...googleReviewsToShow,
           ...googleReviewsData.slice(
             googleReviewsToShow.length,
-            googleReviewsData.length < 8
+            googleReviewsData.length < 30
               ? googleReviewsData.length
-              : googleReviewsToShow.length + 8
+              : googleReviewsToShow.length + 30
           )
         ]
       });
-    } else if (googleReviewsToShow.length > 8) {
+    } else if (googleReviewsToShow.length > 30) {
       this.setState({
         googleReviewsToShow: [
           ...googleReviewsToShow,
           ...googleReviewsData.slice(
             googleReviewsToShow.length,
-            googleReviewsData.length < googleReviewsToShow.length + 8
+            googleReviewsData.length < googleReviewsToShow.length + 30
               ? googleReviewsData.length
-              : googleReviewsToShow.length + 8
+              : googleReviewsToShow.length + 30
           )
         ]
       });
     }
   };
 
-  handleWotShowMoreClick = () => {
-    const { wotReviewsToShow } = this.state;
-    const { wotReviewsData } = this.props;
-    if (wotReviewsData.length <= wotReviewsToShow.length) {
+  handleShowMoreClick = (propName, stateName) => {
+    const reviews = _get(this.props, propName, []);
+    const reviewsToShow = _get(this.state, stateName, []);
+    if (reviews.length <= reviewsToShow.length) {
+      console.log("Nothing to do!");
     }
-    if (wotReviewsToShow.length === 8) {
+    if (reviewsToShow.length === 30) {
       this.setState({
-        wotReviewsToShow: [
-          ...wotReviewsToShow,
-          ...wotReviewsData.slice(
-            wotReviewsToShow.length,
-            wotReviewsData.length < 8
-              ? wotReviewsData.length
-              : wotReviewsToShow.length + 8
+        [stateName]: [
+          ...reviewsToShow,
+          ...reviews.slice(
+            reviewsToShow.length,
+            reviews.length < 30 ? reviews.length : reviewsToShow.length + 30
           )
         ]
       });
-    } else if (wotReviewsToShow.length > 8) {
+    } else if (reviewsToShow.length > 30) {
       this.setState({
-        wotReviewsToShow: [
-          ...wotReviewsToShow,
-          ...wotReviewsData.slice(
-            wotReviewsToShow.length,
-            wotReviewsData.length < wotReviewsToShow.length + 8
-              ? wotReviewsData.length
-              : wotReviewsToShow.length + 8
+        [stateName]: [
+          ...reviewsToShow,
+          ...reviews.slice(
+            reviewsToShow.length,
+            reviews.length < reviewsToShow.length + 30
+              ? reviews.length
+              : reviewsToShow.length + 30
           )
         ]
       });
@@ -364,27 +282,8 @@ class ReviewCardContainer extends Component {
   };
 
   render() {
-    const {
-      domainProfileData,
-      isLoading,
-      googleReviewsData,
-      wotReviewsData,
-      trustPilotReviewsData,
-      trustedShopReviewsData,
-      trustsearchReviews,
-      wotReviews
-    } = this.props;
-    const domainReviewsData =
-      ((domainProfileData || {}).domainReviews || {}).data || [];
-    const domainReviewsWillCome =
-      ((domainProfileData || {}).domainReviews || {}).willCome || false;
-
-    const {
-      googleReviewsToShow,
-      wotReviewsToShow,
-      trustPilotReviewsToShow,
-      trustedShopReviewsToShow
-    } = this.state;
+    const { wotReviews, trustSearchReviews } = this.props;
+    const { wotReviewsToShow, trustSearchReviewsToShow } = this.state;
     return (
       <div>
         <style jsx>{`
@@ -423,12 +322,39 @@ class ReviewCardContainer extends Component {
           }
         `}</style>
         <WriteReviewCard trustClicked={this.props.trustClicked} />
-        {/* these two platforms are different then other social
+        {/* These two platforms(TrustSearch, WOT) are different then other social
         platforms so that's why they are being rendered differently */}
-        {this.renderReviews(trustsearchReviews, "trustsearch")}
-        {/* this will render reviews of all social platforms except trustsearch and wot */}
+        {this.renderReviews(trustSearchReviewsToShow, "trustsearch")}
+        {trustSearchReviews.length <= 30 ||
+        trustSearchReviewsToShow.length === trustSearchReviews.length ? null : (
+          <div className="showMoreContainer">
+            <span
+              className="showMore"
+              onClick={this.handleShowMoreClick(
+                "trustSearchReviews",
+                "trustSearchReviewsToShow"
+              )}
+            >
+              Show more <span className="violet">TrustSearch</span> reviews
+            </span>
+          </div>
+        )}
+        {/* this will render reviews of all social platforms except trustSearch and wot */}
         <RenderSocialPlatforms />
-        {this.renderReviews(wotReviews, "wot")}
+        {this.renderReviews(wotReviewsToShow, "wot")}
+        {wotReviewsToShow.length === wotReviews.length ? null : (
+          <div className="showMoreContainer">
+            <span
+              className="showMore"
+              onClick={this.handleShowMoreClick(
+                "wotReviews",
+                "wotReviewsToShow"
+              )}
+            >
+              Show more <span className="violet">WOT</span> reviews
+            </span>
+          </div>
+        )}
         {/* {isLoading ? (
           <ReviewCardPlaceholder />
         ) : domainReviewsWillCome ||
@@ -521,8 +447,14 @@ class ReviewCardContainer extends Component {
 const mapStateToProps = state => {
   const { profileData, googleReviews, aggregateData } = state;
   const { domainProfileData, isLoading } = profileData;
-  const trustsearchReviews = _get(domainProfileData, "domainReviews.data", []);
-  const wotReviews = _get(domainProfileData, "wotReviews.data", []);
+  let trustSearchReviews = _get(domainProfileData, "domainReviews.data", []);
+  let wotReviews = _get(domainProfileData, "wotReviews.data", []);
+  if (!isValidArray(trustSearchReviews)) {
+    trustSearchReviews = [];
+  }
+  if (!isValidArray(wotReviews)) {
+    wotReviews = [];
+  }
   const googleReviewsFromRedux = _get(
     googleReviews,
     "reviews.data.reviews",
@@ -578,7 +510,7 @@ const mapStateToProps = state => {
     wotReviewsData,
     trustPilotReviewsData,
     trustedShopReviewsData,
-    trustsearchReviews,
+    trustSearchReviews,
     wotReviews
   };
 };

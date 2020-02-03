@@ -229,7 +229,6 @@ const createDomainReviews = data => {
 };
 
 const createWotReviews = data => {
-  console.log(data, "CREATE_WOT");
   let wotReviews = [];
   let willCome = false;
   let isScheduled = false;
@@ -362,11 +361,12 @@ export const redirectWithDomain = (route, domain) => {
 
 //? verbose true will give complete data like url, followers, rating, review. By default it's false
 //? we are also not passing rating profileId filters, we are only passing platformId that will fetch reviews of all it's profiles
-//? replaceReviews will replace the old reviews with new one. When we are coming from broadcast we are replacing it and when we are coming from showmore we are merging it.
+//? replaceReviews will replace the old reviews with new one. When we are coming from broadcast we are replacing it and when we are coming from "show more" we are merging it.
 export const fetchProfileReviews = (
   domain = "",
   platformId,
   replaceReviews = false,
+  nextUrl = "",
   page = 1,
   perPage = 30,
   profileId,
@@ -377,6 +377,9 @@ export const fetchProfileReviews = (
     const state = getState();
     let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
     let platformObj = _get(platformReviews, platformId, {});
+    let url = nextUrl
+      ? `${nextUrl}&verbose=${verbose}`
+      : `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`;
     dispatch({
       type: FETCH_PROFILE_REVIEWS_INIT,
       socialPlatformReviews: {
@@ -391,73 +394,94 @@ export const fetchProfileReviews = (
     try {
       const result = await axios({
         method: "GET",
-        url: `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`
+        url
       });
-      let success = false;
-      let reviewsArr = _get(result, "data.data.reviews", []);
-      if (isValidArray(reviewsArr)) {
-        success = true;
-      }
-      let socialPlatformReviews = {};
-      if (replaceReviews) {
-        socialPlatformReviews = {
-          ...platformReviews,
-          [platformId]: {
-            data: {
-              ..._get(platformObj, "data", {}),
-              ..._get(result, "data", {}),
-              data: {
-                ..._get(platformObj, "data.data", {}),
-                ..._get(result, "data.data", {}),
-                reviews: [..._get(result, "data.data.reviews", [])]
-              }
-            },
-            isLoading: false,
-            success
-          }
-        };
-      } else if (!replaceReviews) {
-        socialPlatformReviews = {
-          ...platformReviews,
-          [platformId]: {
-            data: {
-              ..._get(platformObj, "data", {}),
-              ..._get(result, "data", {}),
-              data: {
-                ..._get(platformObj, "data.data", {}),
-                ..._get(result, "data.data", {}),
-                reviews: [
-                  ..._get(platformObj, "data.data.reviews", []),
-                  ..._get(result, "data.data.reviews", [])
-                ]
-              }
-            },
-            isLoading: false,
-            success
-          }
-        };
-      }
-
-      dispatch({
-        type: FETCH_PROFILE_REVIEWS_SUCCESS,
-        socialPlatformReviews: {
-          ...socialPlatformReviews
-        }
-      });
+      setProfileReviewsSuccessInReducer(result, platformId, replaceReviews);
     } catch (err) {
-      const error = _get(err, "response.data.error", "Some Error Occurred!");
-      dispatch({
-        type: FETCH_PROFILE_REVIEWS_FAILURE,
-        socialPlatformReviews: {
-          ...platformReviews,
-          [platformId]: {
-            data: { ...platformObj },
-            isLoading: false,
-            success: false
-          }
-        }
-      });
+      setProfileReviewsFailureInReducer(platformId);
     }
+  };
+};
+
+export const setProfileReviewsSuccessInReducer = (
+  result,
+  platformId,
+  replaceReviews = false
+) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
+    let platformObj = _get(platformReviews, platformId, {});
+    let success = false;
+    let reviewsArr = _get(result, "data.data.reviews", []);
+    if (isValidArray(reviewsArr)) {
+      success = true;
+    }
+    let socialPlatformReviews = {};
+    if (replaceReviews) {
+      socialPlatformReviews = {
+        ...platformReviews,
+        [platformId]: {
+          data: {
+            ..._get(platformObj, "data", {}),
+            ..._get(result, "data", {}),
+            data: {
+              ..._get(platformObj, "data.data", {}),
+              ..._get(result, "data.data", {}),
+              reviews: [..._get(result, "data.data.reviews", [])]
+            }
+          },
+          isLoading: false,
+          success
+        }
+      };
+    } else if (!replaceReviews) {
+      socialPlatformReviews = {
+        ...platformReviews,
+        [platformId]: {
+          data: {
+            ..._get(platformObj, "data", {}),
+            ..._get(result, "data", {}),
+            data: {
+              ..._get(platformObj, "data.data", {}),
+              ..._get(result, "data.data", {}),
+              reviews: [
+                ..._get(platformObj, "data.data.reviews", []),
+                ..._get(result, "data.data.reviews", [])
+              ]
+            }
+          },
+          isLoading: false,
+          success
+        }
+      };
+    }
+
+    dispatch({
+      type: FETCH_PROFILE_REVIEWS_SUCCESS,
+      socialPlatformReviews: {
+        ...socialPlatformReviews
+      }
+    });
+  };
+};
+
+export const setProfileReviewsFailureInReducer = platformId => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
+    let platformObj = _get(platformReviews, platformId, {});
+    dispatch({
+      type: FETCH_PROFILE_REVIEWS_FAILURE,
+      socialPlatformReviews: {
+        ...platformReviews,
+        [platformId]: {
+          data: { ...platformObj },
+          isLoading: false,
+          success: false
+        }
+      }
+    });
   };
 };
 

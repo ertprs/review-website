@@ -143,7 +143,6 @@ const Home = props => {
   };
 
   const handleSearchSubmit = searchBoxVal => {
-    console.log(searchBoxVal, "searchbox");
     props.startLoading();
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
