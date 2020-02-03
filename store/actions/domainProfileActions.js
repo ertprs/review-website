@@ -19,6 +19,7 @@ import _isEmpty from "lodash/isEmpty";
 import _isNumber from "lodash/isEmpty";
 import axios from "axios";
 import Router from "next/router";
+import cookie from "js-cookie";
 
 const createHeaderData = data => {
   let willCome = false;
@@ -373,13 +374,28 @@ export const fetchProfileReviews = (
   rating,
   verbose = true
 ) => {
+  const token = cookie.get("token") || "";
+  const loginType = cookie.get("loginType") || "";
+  let url = nextUrl
+    ? `${nextUrl}&verbose=${verbose}`
+    : `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`;
+  let axiosConfig = {};
+  if (token && loginType === 4) {
+    axiosConfig = {
+      url,
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    };
+  } else {
+    axiosConfig = {
+      url,
+      method: "GET"
+    };
+  }
   return async (dispatch, getState) => {
     const state = getState();
     let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
     let platformObj = _get(platformReviews, platformId, {});
-    let url = nextUrl
-      ? `${nextUrl}&verbose=${verbose}`
-      : `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`;
     dispatch({
       type: FETCH_PROFILE_REVIEWS_INIT,
       socialPlatformReviews: {
@@ -393,12 +409,13 @@ export const fetchProfileReviews = (
     });
     try {
       const result = await axios({
-        method: "GET",
-        url
+        ...axiosConfig
       });
-      dispatch(setProfileReviewsSuccessInReducer(result, platformId, replaceReviews))
+      dispatch(
+        setProfileReviewsSuccessInReducer(result, platformId, replaceReviews)
+      );
     } catch (err) {
-      dispatch(setProfileReviewsFailureInReducer(platformId))
+      dispatch(setProfileReviewsFailureInReducer(platformId));
     }
   };
 };
@@ -414,8 +431,6 @@ export const setProfileReviewsSuccessInReducer = (
     let platformObj = _get(platformReviews, platformId, {});
     let success = false;
     let reviewsArr = _get(result, "data.data.reviews", []);
-    console.log("result", result);
-    console.log("platformObjext", platformObj)
     if (isValidArray(reviewsArr)) {
       success = true;
     }
@@ -495,16 +510,28 @@ export const fetchProfileReviewsInitially = (
   perPage = 30,
   verbose = true
 ) => {
+  const token = cookie.get("token") || "";
+  const loginType = cookie.get("loginType") || "";
   return async dispatch => {
     let socialPlatformReviews = {};
     Promise.all(
       socialPlatformsArr.map(socialPlatform => {
         let platformId = _get(socialPlatform, "id", 0);
         let platformName = _get(socialPlatform, "name", "");
-        return axios
-          .get(
-            `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`
-          )
+        let axiosConfig = {};
+        if (token && loginType === 4) {
+          axiosConfig = {
+            url: `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`,
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` }
+          };
+        } else {
+          axiosConfig = {
+            url: `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`,
+            method: "GET"
+          };
+        }
+        return axios({ ...axiosConfig })
           .then(res => {
             return {
               ...res.data,
