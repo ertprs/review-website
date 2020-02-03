@@ -335,6 +335,7 @@ class GetWidgetsCode extends Component {
                       "selectedRatingCount.value",
                       ""
                     )}"
+                    data-show-branding="1"
                     ></div> 
                 `}</code>
                 ) : (
@@ -349,6 +350,7 @@ class GetWidgetsCode extends Component {
                 style="position: relative;
                 overflow: hidden;"
                 data-platform-id="${this.state.platforms.value}"
+                data-show-branding="1"
                 ></div> 
             `}</code>
                 )}
@@ -414,6 +416,7 @@ class GetWidgetsCode extends Component {
             ""
           )}
           data-rating={_get(this.state, "selectedRatingCount.value", "")}
+          data-show-branding={1}
         ></div>
       </>
     );
