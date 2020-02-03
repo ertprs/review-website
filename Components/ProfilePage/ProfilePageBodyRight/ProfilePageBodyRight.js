@@ -152,20 +152,22 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderTrustPilotCard = () => {
-    const { aggregateData } = this.props;
-    const trustPilotData = _get(aggregateData, "18", {});
-    const profile_url = _get(trustPilotData, "profile_url", "");
-    const verified = _get(trustPilotData, "verified", false);
-    const total = _get(trustPilotData, "data.total", 0);
-    const claimed = _get(trustPilotData, "data.claimed", false);
-    const rating = _get(trustPilotData, "data.rating", 0);
-    const max_rating = _get(trustPilotData, "data.max_rating", 0);
-    const categories = _get(trustPilotData, "data.categories", []);
+    const { socialPlatformReviews } = this.props;
+    const trustPilotDataOuter = _get(socialPlatformReviews, "18.data", {});
+    const trustPilotDataInner = _get(socialPlatformReviews, "18.data.data", {});
+    const profile_url = _get(trustPilotDataInner, "url", "");
+    const verified = _get(trustPilotDataOuter, "verified", false);
+    const total = _get(trustPilotDataInner, "total", 0);
+    const claimed = _get(trustPilotDataInner, "claimed", false);
+    const rating = _get(trustPilotDataInner, "rating", 0);
+    const max_rating = _get(trustPilotDataInner, "max_rating", 0);
+    const categories = _get(trustPilotDataInner, "categories", []);
     const image_url = "/static/images/trustpilotLogo.png";
-    const description = _get(trustPilotData, "data.description", "");
-    const url = _get(trustPilotData, "data.url", "");
-    const followers = _get(trustPilotData, "followers", 0);
+    const description = _get(trustPilotDataInner, "description", "");
+    const url = _get(trustPilotDataOuter, "url", "");
+    const followers = _get(trustPilotDataOuter, "followers", 0);
 
+    console.log(rating);
     // const trustPilotData = {
     //   reviews: [],
     //   claimed: false,
@@ -631,8 +633,8 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderTrustedShopCard = () => {
-    const { aggregateData } = this.props;
-    const trustedShopData = _get(aggregateData, "19", {});
+    const { socialPlatformReviews } = this.props;
+    const trustedShopData = _get(socialPlatformReviews, "19.data", {});
     const total = _get(trustedShopData, "data.total", 0);
     const verified = _get(trustedShopData, "verified", false);
     const certificate_expiry_date = _get(
@@ -873,15 +875,21 @@ class ProfilePageBodyRight extends Component {
   };
 
   render() {
-    const { domainProfileData, isLoading, aggregateData } = this.props;
+    //!replace aggregateData from everywhere below :
+    const {
+      domainProfileData,
+      isLoading,
+      aggregateData,
+      socialPlatformReviews
+    } = this.props;
     let showTrustPilot = false;
     let showTrustedShop = false;
     let showFacebook = false;
     let showLinkedInCard = false;
-    if (aggregateData.hasOwnProperty("18")) {
+    if (socialPlatformReviews.hasOwnProperty("18")) {
       if (
-        _get(aggregateData, "18.data", null) !== null &&
-        !_isEmpty(_get(aggregateData, "18.data", {}))
+        _get(socialPlatformReviews, "18.data", null) !== null &&
+        !_isEmpty(_get(socialPlatformReviews, "18.data", {}))
       ) {
         showTrustPilot = true;
       } else {
@@ -889,10 +897,10 @@ class ProfilePageBodyRight extends Component {
       }
     }
 
-    if (aggregateData.hasOwnProperty("19")) {
+    if (socialPlatformReviews.hasOwnProperty("19")) {
       if (
-        _get(aggregateData, "19.data", null) !== null &&
-        !_isEmpty(_get(aggregateData, "19.data", {}))
+        _get(socialPlatformReviews, "19.data", null) !== null &&
+        !_isEmpty(_get(socialPlatformReviews, "19.data", {}))
       ) {
         showTrustedShop = true;
       } else {
@@ -1021,8 +1029,9 @@ class ProfilePageBodyRight extends Component {
 
 const mapStateToProps = state => {
   const { profileData, aggregateData } = state;
+  const socialPlatformReviews = _get(profileData, "socialPlatformReviews", {});
   const { domainProfileData, isLoading } = profileData;
-  return { domainProfileData, isLoading, aggregateData };
+  return { domainProfileData, isLoading, aggregateData, socialPlatformReviews };
 };
 
 export default connect(mapStateToProps)(ProfilePageBodyRight);

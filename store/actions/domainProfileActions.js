@@ -372,7 +372,7 @@ export const fetchProfileReviews = (
   perPage = 30,
   profileId,
   rating,
-  verbose = true
+  verbose = 1
 ) => {
   const token = cookie.get("token") || "";
   const loginType = cookie.get("loginType") || "";
@@ -508,7 +508,7 @@ export const fetchProfileReviewsInitially = (
   domain,
   page = 1,
   perPage = 30,
-  verbose = true
+  verbose = 1
 ) => {
   const token = cookie.get("token") || "";
   const loginType = cookie.get("loginType") || "";
