@@ -18,6 +18,7 @@ import moment from "moment";
 import { connect } from "react-redux";
 import dynamic from "next/dynamic";
 import { isValidArray } from "../../../utility/commonFunctions";
+import _isFinite from "lodash/isFinite";
 const CreateCampaign = dynamic(
   () => import("../GetReviewsForms/CreateCampaign"),
   {
@@ -1576,46 +1577,83 @@ class GetReviews extends Component {
     this.props.scrollToTopOfThePage();
     const { configuredReviewPlatforms, percentageSplit } = this.props;
     let configuredReviewPlatformsCopy = [];
-    //! In edit mode we will get percentageSplit for review invitation platforms else we'll initialize percentage split by dividing with no of platforms
-    if (isValidArray(percentageSplit)) {
+    //! In edit mode we will get percentageSplit for review invitation platforms else we'll
+    //! google is coming as 0 for older campaigns thats why we have a added && condition below
+    if (
+      isValidArray(percentageSplit) &&
+      find(percentageSplit, ["socialAppId", "0"]) === undefined &&
+      find(percentageSplit, ["socialAppId", 0]) === undefined
+    ) {
       configuredReviewPlatformsCopy = (configuredReviewPlatforms || []).map(
         platform => {
           let foundPlatform =
             find(percentageSplit, [
               "socialAppId",
-              get(platform, "social_media_app_id", 0)
+              get(platform, "social_media_app_id", "").toString()
             ]) ||
             find(percentageSplit, [
               "socialAppId",
-              get(platform, "social_app_id", 0)
+              get(platform, "social_media_app_id", "")
+            ]) ||
+            find(percentageSplit, [
+              "socialAppId",
+              get(platform, "social_app_id", "").toString()
+            ]) ||
+            find(percentageSplit, [
+              "socialAppId",
+              get(platform, "social_app_id", "")
             ]);
+          let value = _isFinite(
+            Number(get(foundPlatform, "percentShare", 0)) || 0
+          )
+            ? Number(get(foundPlatform, "percentShare", 0))
+            : 0;
           return {
             ...platform,
-            value: get(foundPlatform, "percentShare", 0)
-          };
-        }
-      );
-    } else if (isValidArray(configuredReviewPlatforms)) {
-      const noOfPlatforms = (configuredReviewPlatforms || []).length;
-      let platformInitialValue = Math.floor(100 / noOfPlatforms);
-      const sumOfAllPlatforms = platformInitialValue * noOfPlatforms;
-      configuredReviewPlatformsCopy = (configuredReviewPlatforms || []).map(
-        platform => {
-          return {
-            ...platform,
-            value: platformInitialValue,
+            value: value,
             hasError: false,
             min: 0,
             max: 100
           };
         }
       );
-      if (sumOfAllPlatforms < 100) {
-        configuredReviewPlatformsCopy[0] = {
-          ...configuredReviewPlatformsCopy[0],
-          value:
-            configuredReviewPlatformsCopy[0].value + (100 - sumOfAllPlatforms)
-        };
+    } else {
+      if (isValidArray(configuredReviewPlatforms)) {
+        let noOfPlatforms = (configuredReviewPlatforms || []).length;
+        noOfPlatforms = noOfPlatforms > 10 ? 10 : noOfPlatforms;
+        let remainder = 100 % (noOfPlatforms * 10);
+        let quotient = Math.floor(100 / (noOfPlatforms * 10));
+        configuredReviewPlatformsCopy = (configuredReviewPlatforms || []).map(
+          (platform, index) => {
+            let tempObj =
+              index < 10
+                ? {
+                    ...platform,
+                    value: quotient * 10,
+                    hasError: false,
+                    min: 0,
+                    max: 100
+                  }
+                : {
+                    ...platform,
+                    value: 0,
+                    hasError: false,
+                    min: 0,
+                    max: 100
+                  };
+            return tempObj;
+          }
+        );
+        if (remainder > 0) {
+          if (noOfPlatforms - 1 >= 0) {
+            configuredReviewPlatformsCopy[noOfPlatforms - 1] = {
+              ...configuredReviewPlatformsCopy[noOfPlatforms - 1],
+              value:
+                configuredReviewPlatformsCopy[noOfPlatforms - 1].value +
+                remainder
+            };
+          }
+        }
       }
     }
     this.setState({
@@ -1779,7 +1817,8 @@ const mapStateToProps = state => {
     selectedWay,
     selectedSinglePlatform,
     isCampaignEditMode,
-    configuredReviewPlatforms
+    configuredReviewPlatforms,
+    percentageSplit
   };
 };
 

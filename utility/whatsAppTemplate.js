@@ -27,10 +27,10 @@ export const whatsAppTemplates = {
   },
   "d-750571abc0fc4a63ac929d439c24a5bb": {
     templateLanguage: "russian",
-    salutation: "Здравствуй",
+    salutation: "Здравствуйте",
     message: [
       "Здорово, что вы посетили",
-      "Пожалуйста, оставьте отзыв о вашем опыте здесь:"
+      "Пожалуйста, оставьте отзыв ЗДЕСЬ:"
     ]
   }
 };

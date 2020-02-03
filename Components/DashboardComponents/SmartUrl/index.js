@@ -312,23 +312,37 @@ const mapStateToProps = state => {
   //? creating data for split platforms
   let reviewPlatformsForSplit = [];
   if (isValidArray(reviewPlatforms)) {
-    const noOfPlatforms = (reviewPlatforms || []).length;
-    let platformInitialValue = Math.floor(100 / noOfPlatforms);
-    const sumOfAllPlatforms = platformInitialValue * noOfPlatforms;
-    reviewPlatformsForSplit = (reviewPlatforms || []).map(platform => {
-      return {
-        ...platform,
-        value: platformInitialValue,
-        hasError: false,
-        min: 0,
-        max: 100
-      };
+    let noOfPlatforms = (reviewPlatforms || []).length;
+    noOfPlatforms = noOfPlatforms > 10 ? 10 : noOfPlatforms;
+    let remainder = 100 % (noOfPlatforms * 10);
+    let quotient = Math.floor(100 / (noOfPlatforms * 10));
+
+    reviewPlatformsForSplit = (reviewPlatforms || []).map((platform, index) => {
+      let tempObj =
+        index < 10
+          ? {
+              ...platform,
+              value: quotient * 10,
+              hasError: false,
+              min: 0,
+              max: 100
+            }
+          : {
+              ...platform,
+              value: 0,
+              hasError: false,
+              min: 0,
+              max: 100
+            };
+      return tempObj;
     });
-    if (sumOfAllPlatforms < 100) {
-      reviewPlatformsForSplit[0] = {
-        ...reviewPlatformsForSplit[0],
-        value: reviewPlatformsForSplit[0].value + (100 - sumOfAllPlatforms)
-      };
+    if (remainder > 0) {
+      if (noOfPlatforms - 1 >= 0) {
+        reviewPlatformsForSplit[noOfPlatforms - 1] = {
+          ...reviewPlatformsForSplit[noOfPlatforms - 1],
+          value: reviewPlatformsForSplit[noOfPlatforms - 1].value + remainder
+        };
+      }
     }
   }
   const result = calTotalReviewsAndRating(reviews);

@@ -78,7 +78,7 @@ class CombinedReviewsWidgetConfigurations extends Component {
             </div>
           )}
 
-          {/* {hideDashboardParticularSettings ? null : (
+          {hideDashboardParticularSettings ? null : (
             <div className="row">
               <div className="col-md-12">
                 <PremiumBrandingToggle
@@ -87,7 +87,7 @@ class CombinedReviewsWidgetConfigurations extends Component {
                 />
               </div>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     );
