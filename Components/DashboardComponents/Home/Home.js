@@ -7,9 +7,6 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import FetchedIcon from "@material-ui/icons/CheckCircleRounded";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { resendActivationLink } from "../../../store/actions/authActions";
 import { resendActivationLinkApi } from "../../../utility/config";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -22,13 +19,9 @@ import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
 import EditIcon from "@material-ui/icons/Edit";
-import IconButton from "@material-ui/core/IconButton/IconButton";
+
 import { ratingColor, ratingType } from "../../../utility/ratingTypeColor";
-import { reviewChannelBoxStyles } from "../GetStarted/reviewChannelBoxStyles";
-import { reviewURLObjects } from "../../../utility/constants/reviewURLObjects";
 import Link from "next/link";
-import { iconNames } from "../../../utility/constants/socialMediaConstants";
-import SmartUrl from "../../../Components/DashboardComponents/SmartUrl";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 const SimpleBar = dynamic(() => import("simplebar-react"), {
@@ -42,7 +35,10 @@ const styles = theme => ({
   }
 });
 const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
-import { utcToTimezone } from "../../../utility/commonFunctions";
+import {
+  utcToTimezone,
+  removeSubDomain
+} from "../../../utility/commonFunctions";
 
 class Home extends Component {
   state = {
@@ -337,14 +333,12 @@ class Home extends Component {
       classes,
       isSubscriptionExpired,
       activated,
-      changeStepToRender,
       showGetStarted,
       businessProfile,
       screenshot
     } = this.props;
     const domain = _get(businessProfile, "domain", "");
-    let parsed_domain_name = domain.replace(/https:\/\//gim, "");
-    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    let parsed_domain_name = removeSubDomain(domain);
     const screenshotLayer = `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
       Math.random() * 10 + 1
     )}`;
