@@ -25,6 +25,7 @@ import Snackbar from "../Widgets/Snackbar";
 import SearchBoxSuggestion from "../../Components/Widgets/SuggestionBox";
 import _get from "lodash/get";
 import cookie from "js-cookie";
+import { removeSubDomain } from "../../utility/commonFunctions";
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -127,8 +128,7 @@ const hitDomainApi = searchBoxVal => {
     )
   ) {
     let domainName = searchBoxVal.toLowerCase().trim();
-    let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
-    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    let parsed_domain_name = removeSubDomain(domainName);
     window.location.assign(`${parsed_domain_name}`);
   }
 };

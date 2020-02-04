@@ -1,26 +1,26 @@
 import {
-  FETCH_GOOGLE_REVIEWS_DATA_INIT,
-  FETCH_GOOGLE_REVIEWS_DATA_SUCCESS,
-  FETCH_GOOGLE_REVIEWS_DATA_FAILURE
+  FETCH_PROFILE_REVIEWS_INIT,
+  FETCH_PROFILE_REVIEWS_SUCCESS,
+  FETCH_PROFILE_REVIEWS_FAILURE
 } from "../actions/actionTypes";
 
 const googleReviewsReducer = (state = {}, action) => {
   const { type, reviews } = action;
   switch (type) {
-    case FETCH_GOOGLE_REVIEWS_DATA_INIT:
+    case FETCH_PROFILE_REVIEWS_INIT:
       return {
         //!will be changed
         ...state,
         type,
         reviews
       };
-    case FETCH_GOOGLE_REVIEWS_DATA_SUCCESS:
+    case FETCH_PROFILE_REVIEWS_SUCCESS:
       return {
         ...state,
         type,
         reviews
       };
-    case FETCH_GOOGLE_REVIEWS_DATA_FAILURE:
+    case FETCH_PROFILE_REVIEWS_FAILURE:
       return {
         ...state,
         type,

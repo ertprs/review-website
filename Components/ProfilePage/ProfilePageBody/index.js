@@ -8,7 +8,7 @@ import _get from "lodash/get";
 
 class ProfilePageBody extends Component {
   render() {
-    const { is_verified } = this.props;
+    const { showClaimYourWebsite } = this.props;
     return (
       <div style={{ background: "#f5f5f5" }}>
         <style jsx>
@@ -36,7 +36,7 @@ class ProfilePageBody extends Component {
             <div className="col-md-8 profilePageBodyLeftContainer">
               <Element name="reviews" className="reviews">
                 <ProfilePageBodyLeft {...this.props} />
-                {!is_verified ? (
+                {showClaimYourWebsite ? (
                   <div style={{ margin: "35px 0px" }}>
                     <ProfilePageFooter />
                   </div>
@@ -62,13 +62,20 @@ class ProfilePageBody extends Component {
 }
 
 const mapStateToProps = state => {
-  const { domainProfileData } = state.profileData;
-  const is_verified = _get(
-    domainProfileData,
-    "headerData.data.is_verified",
-    false
+  const { auth, profileData } = state;
+  const { domainProfileData } = profileData;
+  const companyNameFromBusiness = _get(
+    auth,
+    "logIn.userProfile.company.name",
+    ""
   );
-  return { is_verified };
+  const companyNameFromPusher = _get(
+    domainProfileData,
+    "headerData.data.company",
+    ""
+  );
+  let showClaimYourWebsite = companyNameFromPusher != companyNameFromBusiness;
+  return { showClaimYourWebsite };
 };
 
 export default connect(mapStateToProps)(ProfilePageBody);

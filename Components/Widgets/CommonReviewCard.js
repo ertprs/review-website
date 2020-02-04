@@ -12,6 +12,7 @@ import Avatar from "react-avatar";
 
 const renderIcon = provider => {
   let src = "";
+  //? will replace the names with socialAppId
   switch (provider) {
     case "trustsearch":
       src = "/static/images/logo_footer.png";
@@ -22,10 +23,16 @@ const renderIcon = provider => {
     case "Google Business":
       src = "/static/images/googleIcon.png";
       break;
+    case 22:
+      src = "/static/images/googleIcon.png";
+      break;
     case "facebook":
       src = "/static/images/facebookicon.png";
       break;
     case "Facebook":
+      src = "/static/images/facebookicon.png";
+      break;
+    case 1:
       src = "/static/images/facebookicon.png";
       break;
     case "trustpilot":
@@ -34,10 +41,16 @@ const renderIcon = provider => {
     case "TrustPilot":
       src = "/static/images/trustpiloticon.png";
       break;
+    case 18:
+      src = "/static/images/trustpiloticon.png";
+      break;
     case "trustedshops":
       src = "/static/images/trustedShopLogo.jpg";
       break;
     case "TrustedShops":
+      src = "/static/images/trustedShopLogo.jpg";
+      break;
+    case 19:
       src = "/static/images/trustedShopLogo.jpg";
       break;
     case "wot":

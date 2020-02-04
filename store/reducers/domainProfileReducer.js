@@ -5,7 +5,11 @@ import {
   REPORT_DOMAIN_SUCCESS,
   REPORT_DOMAIN_FAILURE,
   REPORT_DOMAIN_AFTER_LOGIN,
-  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL
+  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL,
+  FETCH_PROFILE_REVIEWS_INIT,
+  FETCH_PROFILE_REVIEWS_SUCCESS,
+  FETCH_PROFILE_REVIEWS_FAILURE,
+  FETCH_PROFILE_REVIEWS_INITIALLY
 } from "../actions/actionTypes";
 
 const domainProfileReducer = (state = {}, action) => {
@@ -15,7 +19,8 @@ const domainProfileReducer = (state = {}, action) => {
     isLoading,
     reportDomain,
     reportDomainLaterData,
-    domain
+    domain,
+    socialPlatformReviews
   } = action;
   switch (type) {
     case SET_DOMAIN_DATA_IN_REDUX:
@@ -63,6 +68,34 @@ const domainProfileReducer = (state = {}, action) => {
         ...state,
         type,
         domain
+      };
+    }
+    case FETCH_PROFILE_REVIEWS_INIT: {
+      return {
+        type,
+        ...state,
+        socialPlatformReviews: { ...socialPlatformReviews }
+      };
+    }
+    case FETCH_PROFILE_REVIEWS_SUCCESS: {
+      return {
+        type,
+        ...state,
+        socialPlatformReviews: { ...socialPlatformReviews }
+      };
+    }
+    case FETCH_PROFILE_REVIEWS_FAILURE: {
+      return {
+        type,
+        ...state,
+        socialPlatformReviews: { ...socialPlatformReviews }
+      };
+    }
+    case FETCH_PROFILE_REVIEWS_INITIALLY: {
+      return {
+        type,
+        ...state,
+        socialPlatformReviews: { ...socialPlatformReviews }
       };
     }
     default:

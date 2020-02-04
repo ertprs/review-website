@@ -95,10 +95,9 @@ export const areFieldsTouched = formData => {
   return touched;
 };
 
-//remove https and www from domain names
+//remove https || http || www from domain names
 export const removeSubDomain = domain => {
-  let parsed_domain_name = domain.replace(/https:\/\//gim, "");
-  parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+  let parsed_domain_name = domain.replace(/http:\/\/|https:\/\/|www\./gim, "");
   return parsed_domain_name;
 };
 
