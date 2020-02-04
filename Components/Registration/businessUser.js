@@ -16,7 +16,6 @@ import { businessSignUp } from "../../store/actions/authActions";
 import Snackbar from "../Widgets/Snackbar";
 import { CircularProgress } from "@material-ui/core";
 import Link from "next/link";
-import { redirectWithDomain } from "../../store/actions/domainProfileActions";
 import dynamic from "next/dynamic";
 const IntlTelInput = dynamic(() => import("react-intl-tel-input"), {
   ssr: false
@@ -239,11 +238,6 @@ class BusinessUserRegistration extends Component {
         }
       });
     }
-  }
-
-  componentWillUnmount() {
-    const { redirectWithDomain } = this.props;
-    redirectWithDomain("", "");
   }
 
   createReqBody = formData => {
@@ -577,6 +571,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { businessSignUp, redirectWithDomain })(
+export default connect(mapStateToProps, { businessSignUp })(
   BusinessUserRegistration
 );

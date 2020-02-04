@@ -4,33 +4,29 @@ import { claimYourWebsiteStyles } from "./claimYourWebsiteStyles";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
-import { redirectWithDomain } from "../../../store/actions/domainProfileActions";
-import Router from "next/router";
+import { removeSubDomain } from "../../../utility/commonFunctions";
+import Link from "next/link";
 
 class ClaimYourWebsite extends Component {
   renderClaimButton = () => {
-    const { redirectWithDomain, domain_name } = this.props;
-    let parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
-    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    const { domain_name } = this.props;
+    let parsed_domain_name = removeSubDomain(domain_name);
     return (
       <>
         <style jsx>{claimYourWebsiteStyles}</style>
-        <Button
-          variant="contained"
-          color="primary"
-          // className="claimBtn"
-          onClick={() => {
-            Router.push(`/get-widgets/${parsed_domain_name}`);
-          }}
-        >
-          Click if this is your website
-        </Button>
+        <Link href={`/get-widgets/${parsed_domain_name}`}>
+          <a>
+            <Button variant="contained" color="primary">
+              Click if this is your website
+            </Button>
+          </a>
+        </Link>
       </>
     );
   };
 
   renderAppropriateBox = () => {
-    const { variant, domain_name, redirectWithDomain } = this.props;
+    const { variant, domain_name } = this.props;
     switch (variant) {
       case "big":
         return (
@@ -94,6 +90,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { redirectWithDomain })(
-  ClaimYourWebsite
-);
+export default connect(mapStateToProps)(ClaimYourWebsite);

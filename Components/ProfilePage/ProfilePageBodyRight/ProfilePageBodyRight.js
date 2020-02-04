@@ -880,7 +880,8 @@ class ProfilePageBodyRight extends Component {
       domainProfileData,
       isLoading,
       aggregateData,
-      socialPlatformReviews
+      socialPlatformReviews,
+      companyNameFromPusher
     } = this.props;
     let showTrustPilot = false;
     let showTrustedShop = false;
@@ -953,10 +954,10 @@ class ProfilePageBodyRight extends Component {
       ((domainProfileData || {}).trafficReports || {}).willCome || false;
     const socialMediaStatsWillCome =
       ((domainProfileData || {}).socialMediaStats || {}).willCome || false;
-    const is_verified = _get(
+    const companyNameFromBusiness = _get(
       domainProfileData,
-      "headerData.data.is_verified",
-      false
+      "headerData.data.company",
+      ""
     );
     return (
       <div>
@@ -998,7 +999,8 @@ class ProfilePageBodyRight extends Component {
             {showFacebook ? (
               <div className="mb-25">{this.renderFacebookCard()}</div>
             ) : null}
-            {!is_verified ? (
+            {/* company is coming from verifyDomain whereas companyName is coming from business login api, so if both the names are same then we'll not show this box */}
+            {companyNameFromPusher != companyNameFromBusiness ? (
               <div className="mb-25 claim">
                 <ClaimYourWebsite variant="small" />
               </div>
@@ -1032,10 +1034,21 @@ class ProfilePageBodyRight extends Component {
 }
 
 const mapStateToProps = state => {
-  const { profileData, aggregateData } = state;
+  const { profileData, aggregateData, auth } = state;
   const socialPlatformReviews = _get(profileData, "socialPlatformReviews", {});
   const { domainProfileData, isLoading } = profileData;
-  return { domainProfileData, isLoading, aggregateData, socialPlatformReviews };
+  const companyNameFromPusher = _get(
+    auth,
+    "logIn.userProfile.company.name",
+    ""
+  );
+  return {
+    domainProfileData,
+    isLoading,
+    aggregateData,
+    socialPlatformReviews,
+    companyNameFromPusher
+  };
 };
 
 export default connect(mapStateToProps)(ProfilePageBodyRight);

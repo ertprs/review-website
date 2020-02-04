@@ -7,7 +7,6 @@ class DomainPusherComponent extends Component {
 
   componentDidMount() {
     const { domain } = this.props;
-    console.log(domain);
     const pusher = new Pusher("a962a1b0d1b0ab9e3399", {
       cluster: "ap2",
       forceTLS: true
@@ -24,15 +23,12 @@ class DomainPusherComponent extends Component {
   bindToKey = (pusher, channel) => {
     channel.bind("aggregator", data => {
       this.props.onAggregatorDataChange(data);
-      console.log(
-        data,
-        "response from DomainPusherComponent DomainNameAggregator"
-      );
+      console.log(data, "response from aggregator pusher");
     });
 
     setTimeout(() => {
       pusher.disconnect();
-    }, 60000);
+    }, 300000);
 
     pusher.connection.bind("disconnected", () => {
       console.log("aggregator pusher disconnected");

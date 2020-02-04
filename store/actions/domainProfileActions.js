@@ -39,6 +39,7 @@ const createHeaderData = data => {
     ...parsedData,
     domain_name: _get(data, "domain_data.name", ""),
     is_verified: _get(data, "domain_data.is_verified", false),
+    company: _get(data, "domain_data.company", ""),
     screenshot: _get(data, "domain_data.screenshot", ""),
     review_length: _get(data, "reviews.domain.total", 0),
     rating: _get(data, "general_analysis.payload.ratings.watchdog", 0)
@@ -272,6 +273,25 @@ const createWotReviews = data => {
   };
 };
 
+const getOverallRatingAndReviews = data => {
+  let totalReviews = 0;
+  let averageRating = 0;
+  let totalReviewsFromPusher = _get(data, "ratings.total", 0);
+  let averageRatingFromPusher = _get(data, "ratings.average", 0);
+  let totalReviewsFromPusherUpdated = _get(data, "ratings_update.total", 0);
+  let averageRatingFromPusherUpdated = _get(data, "ratings_update.average", 0);
+  totalReviews = +totalReviewsFromPusherUpdated
+    ? +totalReviewsFromPusherUpdated
+    : +totalReviewsFromPusher;
+  averageRating = +averageRatingFromPusherUpdated
+    ? +averageRatingFromPusherUpdated
+    : averageRatingFromPusher;
+  return {
+    totalReviews,
+    averageRating
+  };
+};
+
 export const setDomainDataInRedux = profileData => {
   const domainProfileData = {
     headerData: createHeaderData(profileData),
@@ -285,7 +305,12 @@ export const setDomainDataInRedux = profileData => {
       "general_analysis.payload.ratings.watchdog",
       0
     ),
-    isNewDomain: _get(profileData, "notifications.payload.is_new_domain", false)
+    isNewDomain: _get(
+      profileData,
+      "notifications.payload.is_new_domain",
+      false
+    ),
+    overallRatingAndReviews: getOverallRatingAndReviews(profileData)
   };
   return {
     type: SET_DOMAIN_DATA_IN_REDUX,

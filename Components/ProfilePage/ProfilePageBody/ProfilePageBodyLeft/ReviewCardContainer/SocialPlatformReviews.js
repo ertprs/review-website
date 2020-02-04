@@ -9,7 +9,7 @@ import cookie from "js-cookie";
 import Link from "next/link";
 
 //? this is the order in which the reviews will be displayed, you only need to add socialAppId of the platform here only whose reviews you want to display
-const reviewsOrder = [22, 1, 18, 19, 20, 13];
+const reviewsOrder = [22, 1, 18, 19, 20, 13, 21, 23];
 
 const SocialPlatformReviews = props => {
   const { socialPlatformReviews, fetchProfileReviews } = props;
@@ -50,10 +50,10 @@ const SocialPlatformReviews = props => {
                 //! will change provider
                 return <ReviewCard review={review} provider={platformId} />;
               })}{" "}
-              {!(loginType === 4 && token) ? (
+              {loginType == 4 && token ? (
                 <div className="showMoreContainer">
                   {_get(reviewsObj, "isLoading", false) ? (
-                    <CircularProgress size={40} />
+                    <CircularProgress size={25} />
                   ) : nextLink ? (
                     <div
                       className="showMore"
@@ -68,9 +68,7 @@ const SocialPlatformReviews = props => {
               ) : (
                 <div className="showMoreContainer">
                   <div className="showMore">
-                    <Link href="/login">
-                      Click here to login and see more reviews
-                    </Link>
+                    <Link href="/login">Login to see all reviews</Link>
                   </div>
                 </div>
               )}
