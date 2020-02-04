@@ -83,7 +83,6 @@ class Profile extends React.Component {
       this.setState({ waitingTimeOut: false });
     }, 60000);
     this.setState({ isMounted: true });
-    Router.events.on("routeChangeStart", this.handleRouteChange);
     Events.scrollEvent.register("begin", function() {});
     Events.scrollEvent.register("end", function() {});
   }
