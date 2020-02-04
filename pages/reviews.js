@@ -1,9 +1,11 @@
 import React from "react";
 import {
   Link,
+  DirectLink,
   Element,
   Events,
   animateScroll as scroll,
+  scrollSpy,
   scroller
 } from "react-scroll";
 import _get from "lodash/get";

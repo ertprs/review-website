@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import Router from "next/router";
 import { removeSubDomain } from "../../../utility/commonFunctions";
-import Link from "next/link";
 
 class ProfilePageFooter extends Component {
   render() {
@@ -84,13 +83,15 @@ class ProfilePageFooter extends Component {
               to get access to your feedback bar.
             </p>
             <div style={{ textAlign: "center" }}>
-              <Link href={`/get-widgets/${parsed_domain_name}`}>
-                <a>
-                  <Button variant="contained" color="primary">
-                    Click here to proceed
-                  </Button>
-                </a>
-              </Link>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  Router.push(`/get-widgets/${parsed_domain_name}`);
+                }}
+              >
+                Click here to proceed
+              </Button>
             </div>
           </div>
         </Card>
