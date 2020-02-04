@@ -7,7 +7,6 @@ import RenderSocialPlatforms from "./SocialPlatformReviews";
 import Paper from "../../../../MaterialComponents/Paper";
 import { isValidArray } from "../../../../../utility/commonFunctions";
 import _get from "lodash/get";
-import uuid from "uuid/v1";
 import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
 import _sortBy from "lodash/sortBy";
@@ -22,16 +21,16 @@ class ReviewCardContainer extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      this.setState({ showNoReviewsFound: true, isLoading: false });
+      this.setState({ isLoading: false });
     }, 60000);
-    this.checkIsLoading();
+    this.updateLoadingAndReviewsFoundState();
     const { wotReviews, trustSearchReviews } = this.props;
     this.setState({
       wotReviewsToShow: this.calReviewsToShow(wotReviews),
       trustSearchReviewsToShow: this.calReviewsToShow(trustSearchReviews)
     });
   }
-
+  //? this will slice first 30 reviews
   calReviewsToShow = reviews => {
     let reviewsToShow = [];
     if (reviews.length > 30) {
@@ -44,8 +43,9 @@ class ReviewCardContainer extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps && this.state.isLoading !== false) {
-      this.checkIsLoading();
+      this.updateLoadingAndReviewsFoundState();
     }
+    //? this will check if current wotReviews or trustSearch reviews are not equal to old reviews and then just slicing first 30 reviews if condition is true
     if (
       !_isEqual(
         _sortBy(_get(this.props, "wotReviews", [])),
@@ -64,7 +64,8 @@ class ReviewCardContainer extends Component {
     }
   }
 
-  checkIsLoading = () => {
+  //? this will set isLoading to false and reviewsFound to true if any reviews found of any platform
+  updateLoadingAndReviewsFoundState = () => {
     const {
       wotReviews,
       trustSearchReviews,
@@ -88,24 +89,20 @@ class ReviewCardContainer extends Component {
     this.setState({ isLoading, reviewsFound });
   };
 
-  //? common method for rendering reviews, need to handle pagination
+  //? common method for rendering reviews
   renderReviews = (reviews, provider) => {
     if (isValidArray(reviews)) {
       return (reviews || []).map(review => {
-        return (
-          <div style={{ marginBottom: "25px" }} key={uuid()}>
-            <ReviewCard review={review || {}} provider={provider} />
-          </div>
-        );
+        return <ReviewCard review={review || {}} provider={provider} />;
       });
     }
   };
 
+  //? this will add next 30 reviews in reviewsToShow state of that platform
   handleShowMoreClick = (propName, stateName) => {
     const reviews = _get(this.props, propName, []);
     const reviewsToShow = _get(this.state, stateName, []);
     if (reviews.length <= reviewsToShow.length) {
-      console.log("Nothing to do!");
     }
     if (reviewsToShow.length === 30) {
       this.setState({
@@ -178,12 +175,14 @@ class ReviewCardContainer extends Component {
           }
         `}</style>
         <WriteReviewCard trustClicked={this.props.trustClicked} />
-        {/* These two platforms(TrustSearch, WOT) are different then other social
-        platforms so that's why they are being rendered differently */}
+
+        {/* loader is true and reviewsFound is false initially, if any platform reviews are available then loader will be false and reviewsFound will be true otherwise loader will automatically be false after 5 minutes and it will show no reviews found */}
         {isLoading ? (
           <ReviewCardPlaceholder />
         ) : reviewsFound ? (
           <>
+            {/* These two platforms(TrustSearch, WOT) are different then other social
+            platforms so that's why they are being rendered differently */}
             {this.renderReviews(trustSearchReviewsToShow, "trustsearch")}
             {trustSearchReviews.length <= 30 ||
             trustSearchReviewsToShow.length ===
@@ -200,7 +199,7 @@ class ReviewCardContainer extends Component {
                 </span>
               </div>
             )}
-            {/* this will render reviews of all social platforms except trustSearch and wot */}
+            {/* this will render reviews of all social platforms except trustSearch and wot as they have separate methods to render(above and below)*/}
             <RenderSocialPlatforms />
             {this.renderReviews(wotReviewsToShow, "wot")}
             {wotReviewsToShow.length === wotReviews.length ? null : (
@@ -251,5 +250,3 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps)(ReviewCardContainer);
-
-//? need to write loading logic and no reviews found logic also check unicorn loader
