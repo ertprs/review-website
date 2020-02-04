@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import Button from "@material-ui/core/Button";
 import { removeSubDomain } from "../../../utility/commonFunctions";
-import Link from "next/link";
+import Router from "next/router";
 
 class ClaimYourWebsite extends Component {
   renderClaimButton = () => {
@@ -14,13 +14,16 @@ class ClaimYourWebsite extends Component {
     return (
       <>
         <style jsx>{claimYourWebsiteStyles}</style>
-        <Link href={`/get-widgets/${parsed_domain_name}`}>
-          <a>
-            <Button variant="contained" color="primary">
-              Click if this is your website
-            </Button>
-          </a>
-        </Link>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            Router.push(`/get-widgets/${parsed_domain_name}`);
+          }}
+        >
+          Click if this is your website
+        </Button>
       </>
     );
   };

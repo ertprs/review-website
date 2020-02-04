@@ -68,7 +68,9 @@ const SocialPlatformReviews = props => {
               ) : (
                 <div className="showMoreContainer">
                   <div className="showMore">
-                    <Link href="/login">Login to see all reviews</Link>
+                    <Link href="/login">
+                      <a>Login to see all reviews</a>
+                    </Link>
                   </div>
                 </div>
               )}
