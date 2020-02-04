@@ -2,16 +2,16 @@ import React, { Component } from "react";
 import Card from "../../MaterialComponents/Card";
 import Button from "@material-ui/core/Button/Button";
 import ArrowIconRight from "@material-ui/icons/ArrowForward";
-import { redirectWithDomain } from "../../../store/actions/domainProfileActions";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import Router from "next/router";
+import { removeSubDomain } from "../../../utility/commonFunctions";
+import Link from "next/link";
 
 class ProfilePageFooter extends Component {
   render() {
-    const { redirectWithDomain, domainName } = this.props;
-    let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
-    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+    const { domainName } = this.props;
+    let parsed_domain_name = removeSubDomain(domainName);
     return (
       <div>
         <Card>
@@ -84,16 +84,13 @@ class ProfilePageFooter extends Component {
               to get access to your feedback bar.
             </p>
             <div style={{ textAlign: "center" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<ArrowIconRight />}
-                onClick={() => {
-                  Router.push(`/get-widgets/${parsed_domain_name}`);
-                }}
-              >
-                Click here to proceed
-              </Button>
+              <Link href={`/get-widgets/${parsed_domain_name}`}>
+                <a>
+                  <Button variant="contained" color="primary">
+                    Click here to proceed
+                  </Button>
+                </a>
+              </Link>
             </div>
           </div>
         </Card>
@@ -112,6 +109,4 @@ const mapStateToProps = state => {
   return { domainName };
 };
 
-export default connect(mapStateToProps, { redirectWithDomain })(
-  ProfilePageFooter
-);
+export default connect(mapStateToProps)(ProfilePageFooter);
