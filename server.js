@@ -29,11 +29,43 @@ app.prepare().then(() => {
     return app.render(req, res, "/dashboard", { v: req.params.component });
   });
 
+  //! this will support all type of subdomains in get-widgets page if anyone directly tries to visit the page
+
   server.get("/get-widgets/:domain/", (req, res) => {
     return app.render(req, res, "/get-widgets", {
       domain: req.params.domain
     });
   });
+
+  server.get("/get-widgets/https://:domain/", (req, res) => {
+    console.log(req, "req");
+    return app.render(req, res, "/get-widgets", {
+      domain: req.params.domain
+    });
+  });
+
+  server.get("/get-widgets/https://www.:domain/", (req, res) => {
+    console.log(req, "req");
+    return app.render(req, res, "/get-widgets", {
+      domain: req.params.domain
+    });
+  });
+
+  server.get("/get-widgets/http://:domain/", (req, res) => {
+    console.log(req, "req");
+    return app.render(req, res, "/get-widgets", {
+      domain: req.params.domain
+    });
+  });
+
+  server.get("/get-widgets/http://www.:domain/", (req, res) => {
+    console.log(req, "req");
+    return app.render(req, res, "/get-widgets", {
+      domain: req.params.domain
+    });
+  });
+
+  //! ***************************************************************************
 
   server.get("*", (req, res) => {
     return handle(req, res);
