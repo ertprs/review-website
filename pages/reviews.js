@@ -123,8 +123,12 @@ class Profile extends React.Component {
 
   updateParentState = newState => {
     console.log(newState, "newState");
-    const { setDomainDataInRedux, domain } = this.props;
-    const { domainId } = this.state;
+    const {
+      setDomainDataInRedux,
+      domain,
+      fetchProfileReviewsInitially
+    } = this.props;
+    const { domainId, socialPlatforms } = this.state;
     //? this action is used to set all profile data in a structured way in redux
     setDomainDataInRedux(newState);
     //? isNewDomain is used to show unicorn loader when user search for a new domain and we start scraping for that domain
@@ -150,9 +154,10 @@ class Profile extends React.Component {
           name: (socialObj[platformId] || {}).name || ""
         };
       });
-      const { fetchProfileReviewsInitially } = this.props;
-      //! make api call only if the prev array is not equal to current array
-      fetchProfileReviewsInitially(socialPlatformsArr, domain);
+      this.setState({ socialPlatforms: [...socialPlatformsArr] });
+      if (!_isEqual(_sortBy(socialPlatformsArr), _sortBy(socialPlatforms))) {
+        fetchProfileReviewsInitially(socialPlatformsArr, domain);
+      }
     }
   };
 
@@ -313,13 +318,6 @@ class Profile extends React.Component {
   render() {
     const { domain } = this.props;
     const { waitingTimeOut, isNewDomain } = this.state;
-    const {
-      headerData,
-      analyzeReports,
-      trafficReports,
-      socialMediaStats,
-      domainReviews
-    } = this.state;
 
     return (
       <>
@@ -423,3 +421,5 @@ export default connect(mapStateToProps, {
   fetchProfileReviews,
   fetchProfileReviewsInitially
 })(Profile);
+
+// We are connecting two pushers: PusherDataComponent and AggregatorPusherComponent. PusherDataComponent is connected for 1minute and  AggregatorPusherComponent is connected for 5mins. In case of new domain we are showing unicornLoader for 1 minute and we have also set 1 min timing in reviewCardContainer to show "no reviews found"

@@ -720,7 +720,7 @@ class ProfilePageBodyRight extends Component {
           {certificate_expiry_date ? (
             <div className="additionalDetails">
               <div className="additionalDetailsHeader">
-                Certifcate expiry date:
+                Certificate expiry date:
               </div>{" "}
               <div>{certificate_expiry_date}</div>
             </div>
