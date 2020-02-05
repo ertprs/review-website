@@ -17,6 +17,7 @@ import URLIcon from "@material-ui/icons/Link";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CircularProgress } from "@material-ui/core";
 import WhatsAppIcon from "@material-ui/icons/WhatsApp";
+import Link from "next/link";
 
 export const MainListItems = ({
   stepToRender,
@@ -264,23 +265,34 @@ export const SecondaryListItems = ({
   );
 };
 
-export const DashboardLogo = () => {
+export const DashboardLogo = ({ domain }) => {
   return (
-    <div className="imgContainer">
-      <style jsx>{`
-        .imgContainer {
-          display: flex;
-          justify-content: center;
-          align-items: baseline;
-          height: 40px;
-          width: auto;
-        }
-        .imgStyle {
-          max-width: 100%;
-          height: auto;
-        }
-      `}</style>
-      <img src="/static/images/logo_footer.png" className="imgStyle" />
-    </div>
+    <Tooltip
+      title={<span style={{ fontSize: "14px" }}>See Profile</span>}
+      placement="right"
+    >
+      <div className="imgContainer">
+        <style jsx>{`
+          .imgContainer {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            height: 40px;
+            width: auto;
+          }
+          .imgContainer:hover {
+            cursor: pointer;
+          }
+          .imgStyle {
+            max-width: 100%;
+            height: auto;
+          }
+        `}</style>
+
+        <Link href={`/reviews/${domain}`}>
+          <img src="/static/images/logo_footer.png" className="imgStyle" />
+        </Link>
+      </div>
+    </Tooltip>
   );
 };

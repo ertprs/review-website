@@ -573,7 +573,13 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
-  const { domainId, fetchReviews, subscriptionId, setInvitationQuota } = props;
+  const {
+    domainId,
+    fetchReviews,
+    subscriptionId,
+    setInvitationQuota,
+    domain
+  } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -587,7 +593,7 @@ function Dashboard(props) {
       ) : null}
       {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
-          domain={props.domain}
+          domain={domain}
           onAggregatorDataChange={data => {
             let socialAppId = _get(data, "response.socialAppId", "");
             let profileId = _get(data, "response.profileId", "");
@@ -670,7 +676,7 @@ function Dashboard(props) {
         </List>
         <Divider />
         <List>
-          <DashboardLogo />
+          <DashboardLogo domain={domain || "google.com"} />
         </List>
       </Drawer>
       <main className={classes.content} ref={mainContainer}>
