@@ -1545,7 +1545,8 @@ export const whatsAppManualInvitation = data => {
         isLoading: true,
         errorMsg: "",
         campaignId: "",
-        channelName: ""
+        channelName: "",
+        isSessionPresent: false
       }
     });
     try {
@@ -1560,6 +1561,7 @@ export const whatsAppManualInvitation = data => {
       const success = _get(result, "data.success", false);
       const campaignId = _get(result, "data.campaign_id", "");
       const channelName = _get(result, "data.channel_name", "");
+      const isSessionPresent = _get(result, "data.is_session_present", false);
       dispatch({
         type: WHATSAPP_MANUAL_INVITE_SUCCESS,
         whatsAppManualInvite: {
@@ -1567,7 +1569,8 @@ export const whatsAppManualInvitation = data => {
           isLoading: false,
           errorMsg: "",
           campaignId,
-          channelName
+          channelName,
+          isSessionPresent
         }
       });
       if (success && campaignId) {
@@ -1586,7 +1589,8 @@ export const whatsAppManualInvitation = data => {
           isLoading: false,
           errorMsg,
           campaignId: "",
-          channelName: ""
+          channelName: "",
+          isSessionPresent: false
         }
       });
     }
