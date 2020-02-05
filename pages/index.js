@@ -141,7 +141,7 @@ const Home = props => {
   };
 
   const handleSearchSubmit = searchBoxVal => {
-    const { setLoading } = this.props;
+    const { setLoading } = props;
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
       if (
