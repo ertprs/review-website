@@ -45,13 +45,7 @@ class ProfilePageBody extends Component {
             </div>
             <div className="col-md-4 profilePageBodyRightContainer">
               <Element name="analyzeReports" className="analyzeReports">
-                <ProfilePageBodyRight
-                  analyzeReports={this.props.analyzeReports}
-                  trafficReports={this.props.trafficReports}
-                  socialMediaStats={this.props.socialMediaStats}
-                  isMounted={this.props.isMounted}
-                  domainReviews={this.props.domainReviews}
-                />
+                <ProfilePageBodyRight />
               </Element>
             </div>
           </div>

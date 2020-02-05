@@ -36,7 +36,6 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderAnalyzeReports = data => {
-    const analyzeReports = this.props.analyzeReports;
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
@@ -328,8 +327,8 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderLinkedInCard = () => {
-    const { aggregateData } = this.props;
-    const linkedInData = _get(aggregateData, "13", {});
+    const { socialPlatformReviews } = this.props;
+    const linkedInData = _get(socialPlatformReviews, "13.data", {});
     const followers = _get(linkedInData, "data.followers", 0);
     const employee_count = _get(linkedInData, "data.employee_count", 0);
     const industry = _get(linkedInData, "data.industry", "");
@@ -340,17 +339,6 @@ class ProfilePageBodyRight extends Component {
     const specialities = _get(linkedInData, "data.specialities", "");
     const url = _get(linkedInData, "data.url", "");
     const employees = _get(linkedInData, "empolyees", []);
-
-    // const trustPilotData = {
-    //   reviews: [],
-    //   claimed: false,
-    //   rating: 3.5,
-    //   max_rating: 5,
-    //   categories: ["sports", "wrestling"],
-    //   image_url: "/static/images/trustpilotLogo.png",
-    //   description:
-    //     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
-    // };
 
     return (
       <div style={{ marginBottom: "50px" }}>
@@ -491,8 +479,8 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderFacebookCard = () => {
-    const { aggregateData } = this.props;
-    const facebookData = _get(aggregateData, "1", {});
+    const { socialPlatformReviews } = this.props;
+    const facebookData = _get(socialPlatformReviews, "1.data", {});
     const profile_url = _get(facebookData, "profile_url", "");
     const verified = _get(facebookData, "verified", false);
     const likes = _get(facebookData, "data.likes", 0);
@@ -874,11 +862,9 @@ class ProfilePageBodyRight extends Component {
   };
 
   render() {
-    //!replace aggregateData from everywhere below :
     const {
       domainProfileData,
       isLoading,
-      aggregateData,
       socialPlatformReviews,
       companyNameFromPusher
     } = this.props;
@@ -912,25 +898,25 @@ class ProfilePageBodyRight extends Component {
       }
     }
 
-    if (aggregateData.hasOwnProperty("1")) {
+    if (socialPlatformReviews.hasOwnProperty("1")) {
       if (
-        _get(aggregateData, "1.data", null) !== null &&
-        !_isEmpty(_get(aggregateData, "1.data", {}))
+        _get(socialPlatformReviews, "1.data", null) !== null &&
+        !_isEmpty(_get(socialPlatformReviews, "1.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "1.data.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "1.data.data.reviews", {}))
       ) {
-        if (
-          _get(aggregateData, "1.data.likes", "") ||
-          _get(aggregateData, "1.data.followers")
-        )
-          showFacebook = true;
+        showFacebook = true;
       } else {
         showFacebook = false;
       }
     }
-    if (aggregateData.hasOwnProperty("13")) {
+
+    if (socialPlatformReviews.hasOwnProperty("13")) {
       if (
-        _get(aggregateData, "13.data", null) !== null &&
-        !_isEmpty(_get(aggregateData, "13.data", {})) &&
-        _get(aggregateData, "followers", "")
+        _get(socialPlatformReviews, "13.data", null) !== null &&
+        !_isEmpty(_get(socialPlatformReviews, "13.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "13.data.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "13.data.data.reviews", {}))
       ) {
         showLinkedInCard = true;
       } else {
@@ -944,9 +930,6 @@ class ProfilePageBodyRight extends Component {
       ((domainProfileData || {}).trafficReports || {}).data || {};
     const socialMediaStatsData =
       ((domainProfileData || {}).socialMediaStats || {}).data || {};
-
-    const domainReviewsWillCome =
-      ((domainProfileData || {}).domainReviews || {}).willCome || false;
     const analysisReportsWillCome =
       ((domainProfileData || {}).analysisReports || {}).willCome || false;
     const trafficReportsWillCome =
@@ -1033,7 +1016,7 @@ class ProfilePageBodyRight extends Component {
 }
 
 const mapStateToProps = state => {
-  const { profileData, aggregateData, auth } = state;
+  const { profileData, auth } = state;
   const socialPlatformReviews = _get(profileData, "socialPlatformReviews", {});
   const { domainProfileData, isLoading } = profileData;
   const companyNameFromPusher = _get(
@@ -1044,7 +1027,6 @@ const mapStateToProps = state => {
   return {
     domainProfileData,
     isLoading,
-    aggregateData,
     socialPlatformReviews,
     companyNameFromPusher
   };
