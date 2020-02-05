@@ -521,8 +521,6 @@ class GetReviews extends Component {
         }
       });
     }
-    console.log(isFifteenMinuteDiff(date), "valid");
-    console.log(moment(new Date(date)).format(), "date_with_timestamp");
   };
 
   parseFileData = async () => {

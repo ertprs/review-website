@@ -30,7 +30,6 @@ export const getAggregateData = (data, id) => {
       const result = await axios.get(
         `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${id}&socialAppId=${socialAppId}`
       );
-      //   console.log(result, "result");
       dispatch({
         type: GET_AGGREGATE_DATA_SUCCESS,
         aggregateData: { [socialAppId]: { ...result.data } }
@@ -40,7 +39,6 @@ export const getAggregateData = (data, id) => {
         type: GET_AGGREGATE_DATA_FAILURE,
         aggregateData: {}
       });
-      //   console.log(error, "error");
     }
   };
 };

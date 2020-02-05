@@ -6,7 +6,6 @@ class NotificationPusherComponent extends Component {
 
   componentDidMount() {
     const { subscriptionId } = this.props;
-    console.log(subscriptionId);
     const pusher = new Pusher("a962a1b0d1b0ab9e3399", {
       cluster: "ap2",
       forceTLS: true

@@ -1472,7 +1472,6 @@ export const toggleWidgetPlatformVisibility = profileData => {
         });
       }
     } catch (error) {
-      console.log(error);
       const errorMsg = _get(
         error,
         "response.data.data.message",

@@ -55,7 +55,6 @@ const QRCodeDialog = props => {
           />
         );
       case "login_successful":
-        console.log("LOGIN SUCCESSS DIALOG");
         title = "Logged In Successfully!";
         return <QRLoggedInMsg />;
       case "campaign_started":

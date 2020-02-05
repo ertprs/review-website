@@ -115,7 +115,6 @@ class GetStarted extends Component {
       }
     });
     //setState also
-    // console.log(formData, "dynamic formData");
     if (wipeMode) {
       this.setState({ formData: { ...formData } }, () => {
         this.prefillSocialURLs(fieldsArray);
@@ -734,7 +733,6 @@ class GetStarted extends Component {
           temp.id = (Number(_get(item, "value", -1)) || -1) == 22 ? _now() : "";
           parsedArray.push(temp);
         });
-        console.log(parsedArray);
         this.generateFormFieldsDynamically(parsedArray, false, true);
         this.setState({ selectedAvailablePlatformItems: [] });
       }

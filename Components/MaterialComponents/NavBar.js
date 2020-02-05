@@ -184,7 +184,7 @@ function PrimarySearchAppBar(props) {
           .then(
             auth2
               .disconnect()
-              .then(console.log("Logout Sucessfully from google."))
+              .then(console.log("Logout Successfully from google."))
           );
       }
     }

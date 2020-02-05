@@ -38,28 +38,24 @@ app.prepare().then(() => {
   });
 
   server.get("/get-widgets/https://:domain/", (req, res) => {
-    console.log(req, "req");
     return app.render(req, res, "/get-widgets", {
       domain: req.params.domain
     });
   });
 
   server.get("/get-widgets/https://www.:domain/", (req, res) => {
-    console.log(req, "req");
     return app.render(req, res, "/get-widgets", {
       domain: req.params.domain
     });
   });
 
   server.get("/get-widgets/http://:domain/", (req, res) => {
-    console.log(req, "req");
     return app.render(req, res, "/get-widgets", {
       domain: req.params.domain
     });
   });
 
   server.get("/get-widgets/http://www.:domain/", (req, res) => {
-    console.log(req, "req");
     return app.render(req, res, "/get-widgets", {
       domain: req.params.domain
     });

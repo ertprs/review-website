@@ -167,7 +167,6 @@ class ProfilePageBodyRight extends Component {
     const url = _get(trustPilotDataOuter, "url", "");
     const followers = _get(trustPilotDataOuter, "followers", 0);
 
-    console.log(rating);
     // const trustPilotData = {
     //   reviews: [],
     //   claimed: false,
