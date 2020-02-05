@@ -293,35 +293,56 @@ const getOverallRatingAndReviews = data => {
 };
 
 export const setDomainDataInRedux = profileData => {
-  const domainProfileData = {
-    headerData: createHeaderData(profileData),
-    analysisReports: createAnalysisData(profileData),
-    trafficReports: createTrafficReports(profileData),
-    socialMediaStats: createSocialMediaStats(profileData),
-    domainReviews: createDomainReviews(profileData),
-    wotReviews: createWotReviews(profileData),
-    watchdogRating: _get(
-      profileData,
-      "general_analysis.payload.ratings.watchdog",
-      0
-    ),
-    isNewDomain: _get(
-      profileData,
-      "notifications.payload.is_new_domain",
-      false
-    ),
-    overallRatingAndReviews: getOverallRatingAndReviews(profileData)
-  };
-  return {
-    type: SET_DOMAIN_DATA_IN_REDUX,
-    domainProfileData
+  return async (dispatch, getState) => {
+    const state = getState();
+    const isLoading = _get(state, "profileData.isLoading", false);
+    const headerData = createHeaderData(profileData, dispatch);
+    const analysisReports = createAnalysisData(profileData, dispatch);
+    const trafficReports = createTrafficReports(profileData, dispatch);
+    const socialMediaStats = createSocialMediaStats(profileData, dispatch);
+    const domainReviews = createDomainReviews(profileData, dispatch);
+    const wotReviews = createWotReviews(profileData, dispatch);
+    const domainProfileData = {
+      headerData,
+      analysisReports,
+      trafficReports,
+      socialMediaStats,
+      domainReviews,
+      wotReviews,
+      overallRatingAndReviews: getOverallRatingAndReviews(profileData),
+      isNewDomain: _get(
+        profileData,
+        "notifications.payload.is_new_domain",
+        false
+      )
+    };
+    //? if loading is true then stop loader if any data is received.
+    if (isLoading) {
+      if (
+        !_isEmpty(headerData) ||
+        !_isEmpty(analysisReports) ||
+        !_isEmpty(trafficReports) ||
+        !_isEmpty(socialMediaStats) ||
+        !_isEmpty(domainReviews) ||
+        !_isEmpty(wotReviews)
+      ) {
+        dispatch({ type: SET_DOMAIN_PROFILE_LOADER, isLoading: false });
+      }
+    }
+    dispatch({ type: SET_DOMAIN_DATA_IN_REDUX, domainProfileData });
   };
 };
 
 export const setLoading = isLoading => {
-  return {
-    type: SET_DOMAIN_PROFILE_LOADER,
-    isLoading
+  return async (dispatch, getState) => {
+    const state = getState();
+    const isLoadingInRedux = _get(state, "profileData.isLoading", false);
+    if (isLoading !== isLoadingInRedux) {
+      dispatch({
+        type: SET_DOMAIN_PROFILE_LOADER,
+        isLoading
+      });
+    }
   };
 };
 
@@ -358,7 +379,7 @@ export const reportDomain = data => {
         reportDomain: {
           isLoading: false,
           success: false,
-          errorMsg: "Some error occured in reporting domain!"
+          errorMsg: "Some error occurred in reporting domain!"
         }
       });
     }
@@ -386,8 +407,10 @@ export const redirectWithDomain = (route, domain) => {
 };
 
 //? verbose true will give complete data like url, followers, rating, review. By default it's false
-//? we are also not passing rating profileId filters, we are only passing platformId that will fetch reviews of all it's profiles
+//? we are also not passing rating and profileId filters, we are only passing platformId that will fetch reviews of all of it's profiles
 //? replaceReviews will replace the old reviews with new one. When we are coming from broadcast we are replacing it and when we are coming from "show more" we are merging it.
+//?nextUrl will be passed in case of "show more reviews" (e.g: socialPlatformReviews)
+//? we are fetching 30 reviews initial, can be increased from here only
 export const fetchProfileReviews = (
   domain = "",
   platformId,

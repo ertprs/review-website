@@ -5,9 +5,6 @@ import authReducer from "./authReducer";
 import trustReducer from "./trustReducer";
 import domainProfileReducer from "./domainProfileReducer";
 import dashboardReducer from "./dashboardReducer";
-import loaderReducer from "./loaderReducer";
-import aggregateReducer from "./aggregateReducer";
-import googleReviews from "./googleReviewReducer";
 
 const authPersistConfig = {
   key: "auth",
@@ -41,8 +38,5 @@ export default combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   trustVote: trustReducer,
   profileData: persistReducer(profileDataConfig, domainProfileReducer),
-  dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer),
-  loader: loaderReducer,
-  aggregateData: aggregateReducer,
-  googleReviews
+  dashboardData: persistReducer(dashboardPersistConfig, dashboardReducer)
 });

@@ -1,37 +1,40 @@
 import React from "react";
+import { connect } from "react-redux";
+import dynamic from "next/dynamic";
+import AggregatorPusherComponent from "../Components/AggregatorPusherComponent";
+import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
+import Snackbar from "../Components/Widgets/Snackbar";
+import UnicornLoader from "../Components/Widgets/UnicornLoader";
+import { isValidArray } from "../utility/commonFunctions";
+import { removeSubDomain } from "../utility/commonFunctions";
 import {
   Link,
-  DirectLink,
   Element,
   Events,
   animateScroll as scroll,
-  scrollSpy,
   scroller
 } from "react-scroll";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _sortBy from "lodash/sortBy";
 import _isEqual from "lodash/isEqual";
-import { iconNames } from "../utility/constants/socialMediaConstants";
 import {
   setDomainDataInRedux,
   setLoading,
   fetchProfileReviews,
   fetchProfileReviewsInitially
 } from "../store/actions/domainProfileActions";
-import { connect } from "react-redux";
-import AggregatorPusherComponent from "../Components/AggregatorPusherComponent";
-import {
-  getAggregateData,
-  setAggregateData
-} from "../store/actions/aggregateActions";
-import Router from "next/router";
-import dynamic from "next/dynamic";
 const Navbar = dynamic(() => import("../Components/MaterialComponents/NavBar"));
-const ProfilePageHeader = dynamic(() =>
-  import("../Components/ProfilePage/ProfilePageHeader")
+const ProfilePageHeader = dynamic(
+  () => import("../Components/ProfilePage/ProfilePageHeader"),
+  {
+    loading: () => (
+      <div className="dynamicImport">
+        <p>Loading.....</p>
+      </div>
+    )
+  }
 );
-import { isValidArray } from "../utility/commonFunctions";
 const ProfilePageBody = dynamic(
   () => import("../Components/ProfilePage/ProfilePageBody"),
   {
@@ -43,42 +46,26 @@ const ProfilePageBody = dynamic(
   }
 );
 const Footer = dynamic(() => import("../Components/Footer/Footer"));
-import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
 const SimpleTabs = dynamic(() =>
   import("../Components/MaterialComponents/SimpleTabs")
 );
-import Snackbar from "../Components/Widgets/Snackbar";
-import UnicornLoader from "../Components/Widgets/UnicornLoader";
-import { removeAggregateData } from "../store/actions/aggregateActions";
-import { removeSubDomain } from "../utility/commonFunctions";
 
 class Profile extends React.Component {
   state = {
-    domainData: {},
-    headerData: {},
-    analyzeReports: {},
-    trafficReports: {},
-    socialMediaStats: [],
-    domainReviews: [],
     selectedTab: "overview",
-    isLoading: true,
+    isNewDomain: false,
     isMounted: false,
     searchBoxVal: "",
     showSnackbar: false,
     variant: "success",
     snackbarMsg: "",
-    id: "",
-    aggregateSocialData: {},
+    domainId: "",
     trustClicked: false,
-    waitingTimeOut: true,
-    isNewDomain: false
+    waitingTimeOut: true
   };
 
   componentDidMount() {
-    //call fetch reviews action creator
-    if (this.state.isLoading) {
-      this.props.setLoading(true);
-    }
+    this.props.setLoading(true);
     setTimeout(() => {
       this.setState({ waitingTimeOut: false });
     }, 60000);
@@ -124,8 +111,6 @@ class Profile extends React.Component {
   componentWillUnmount() {
     Events.scrollEvent.remove("begin");
     Events.scrollEvent.remove("end");
-    const { removeAggregateData } = this.props;
-    removeAggregateData();
   }
 
   handleAggregatorDataChange = updatedData => {
@@ -138,8 +123,14 @@ class Profile extends React.Component {
 
   updateParentState = newState => {
     console.log(newState, "newState");
+    const {
+      setDomainDataInRedux,
+      domain,
+      fetchProfileReviewsInitially
+    } = this.props;
+    const { domainId, socialPlatforms } = this.state;
     //? this action is used to set all profile data in a structured way in redux
-    this.props.setDomainDataInRedux(newState);
+    setDomainDataInRedux(newState);
     //? isNewDomain is used to show unicorn loader when user search for a new domain and we start scraping for that domain
     const isNewDomain = _get(
       newState,
@@ -147,141 +138,12 @@ class Profile extends React.Component {
       false
     );
     this.setState({ isNewDomain });
-    //? this id is used as domainId in thirdpartydata api that we are using to fetch reviews of diff platforms.
-    if (this.state.id === "") {
-      const id = _get(newState, "id", "");
-      this.setState({ id });
+    //? this is domainId
+    const id = _get(newState, "id", "");
+    if (id !== domainId) {
+      this.setState({ domainId: id });
     }
-    const headerData = {
-      ...this.state.headerData,
-      domain_name: _get(newState, "domain_data.name", ""),
-      is_verified: _get(newState, "domain_data.is_verified", false),
-      review_length: _get(newState, "reviews.domain.reviews", []).length,
-      rating: _get(newState, "general_analysis.payload.ratings.watchdog", 0)
-    };
-
-    if (!_isEmpty(headerData)) {
-      this.props.setLoading(false);
-    }
-
-    const analyzeReports = {
-      ...this.state.analyzeReports,
-      registration_date: _get(newState, "whois.payload.registration.value", ""),
-      expiration_date: _get(newState, "whois.payload.expiration.value", ""),
-      connection_safety: _get(newState, "ssl.payload.enabled.value", ""),
-      organisation_check: _get(newState, "ssl.payload.ogranisation.value", ""),
-      etherScam_DB: _get(newState, "etherscam.payload.status.value", ""),
-      phishtank_status: _get(newState, "phishtank.payload.status.value", ""),
-      trustworthiness: _get(newState, "wot.payload.trust.value", 0),
-      index_Page_Analysis: _get(newState, "deface.payload.index.value", 0),
-      redirect_Count: _get(newState, "deface.payload.redirect.value", 0)
-    };
-    let daily_unique_visitors = "";
-    let monthly_unique_visitors = "";
-    let pages_per_visit = "";
-    let bounce_rate = "";
-    let alexa_pageviews = "";
-    if (_get(newState, "traffic.payload.timeline", []).length > 0) {
-      daily_unique_visitors = _get(
-        newState,
-        "traffic.payload.timeline[0].visits.daily_unique_visitors",
-        0
-      );
-
-      monthly_unique_visitors = _get(
-        newState,
-        "traffic.payload.timeline[0].visits.monthly_unique_visitors",
-        0
-      );
-
-      pages_per_visit = _get(
-        newState,
-        "traffic.payload.timeline[0].visits.pages_per_visit",
-        0
-      );
-
-      bounce_rate = _get(
-        newState,
-        "traffic.payload.timeline[0].visits.bounce_rate",
-        0
-      );
-
-      alexa_pageviews = _get(
-        newState,
-        "traffic.payload.timeline[0].visits.alexa_pageviews",
-        0
-      );
-    }
-
-    const trafficReports = {
-      ...this.state.trafficReports,
-      daily_unique_visitors,
-      monthly_unique_visitors,
-      pages_per_visit,
-      bounce_rate,
-      alexa_pageviews
-    };
-
-    let socialMediaStats = [];
-    let domainReviews = [];
-    //? this data is used to generate cards in right side
-    if (
-      !_isEmpty(_get(newState, "social.payload", {})) &&
-      typeof _get(newState, "social.payload", {}) === "object"
-    ) {
-      const payload = _get(newState, "social.payload", {});
-      for (let item in _get(newState, "social.payload", {})) {
-        let socialTemp = {};
-        if (payload[item].verified) {
-          socialTemp = {
-            ...socialTemp,
-            name: (iconNames[item] || {}).name,
-            followers: payload[item].followers,
-            profile_url: payload[item].profile_url,
-            icon: (iconNames[item] || {}).name,
-            color: (iconNames[item] || {}).color
-          };
-          socialMediaStats = [...socialMediaStats, socialTemp];
-        }
-      }
-    }
-    // these are the trustsearch reviews
-    _get(newState, "reviews.domain.reviews", []).map(review => {
-      let temp = {
-        ...temp,
-        userName: _get(review, "user.name", ""),
-        text: _get(review, "text", ""),
-        ratings: _get(review, "avg_rating", 0)
-      };
-      domainReviews = [...domainReviews, temp];
-    });
-
-    this.setState({
-      domainData: { ...newState },
-      headerData: { ...headerData },
-      analyzeReports: { ...analyzeReports },
-      trafficReports: { ...trafficReports },
-      socialMediaStats: [...socialMediaStats],
-      domainReviews: [...domainReviews]
-    });
-
-    //? this aggregate social data is used for displaying cards of review platforms
-    //! remove this logic when mapping changed
-    let aggregateSocialData = { ...this.state.aggregateSocialData };
-    if (
-      !_isEmpty(_get(newState, "social.payload", {})) &&
-      typeof _get(newState, "social.payload", {}) === "object"
-    ) {
-      const payload = _get(newState, "social.payload", {});
-      for (let item in _get(newState, "social.payload", {})) {
-        aggregateSocialData = { ...aggregateSocialData, [item]: payload[item] };
-      }
-    }
-    this.setState({ aggregateSocialData: { ...aggregateSocialData } });
-    this.props.setAggregateData({ ...aggregateSocialData });
-
     //! we'll get an object of scraped platforms inside social key, we'll create an array of socialObj of them and fetch their reviews
-    const { domain } = this.props;
     let socialObj = _get(newState, "social.payload", {});
     let socialPlatformsArr = [];
     if (socialObj && !_isEmpty(socialObj)) {
@@ -292,9 +154,10 @@ class Profile extends React.Component {
           name: (socialObj[platformId] || {}).name || ""
         };
       });
-      const { fetchProfileReviewsInitially } = this.props;
-      //! make api call only if the prev array is not equal to current array
-      fetchProfileReviewsInitially(socialPlatformsArr, domain);
+      this.setState({ socialPlatforms: [...socialPlatformsArr] });
+      if (!_isEqual(_sortBy(socialPlatformsArr), _sortBy(socialPlatforms))) {
+        fetchProfileReviewsInitially(socialPlatformsArr, domain);
+      }
     }
   };
 
@@ -439,7 +302,7 @@ class Profile extends React.Component {
           this.setState({
             showSnackbar: true,
             variant: "error",
-            snackbarMsg: "Some Error Occured!"
+            snackbarMsg: "Some Error Occurred!"
           });
         }
       } else if (authorized) {
@@ -450,28 +313,11 @@ class Profile extends React.Component {
         });
       }
     }
-
-    if (this.state.isLoading) {
-      if (!_isEmpty(_get(this.state, "domainData", {}))) {
-        if (!_isEmpty(_get(this.state, "domainData.domain_data", {}))) {
-          this.setState({ isLoading: false }, () => {
-            this.props.setLoading(false);
-          });
-        }
-      }
-    }
   }
 
   render() {
     const { domain } = this.props;
     const { waitingTimeOut, isNewDomain } = this.state;
-    const {
-      headerData,
-      analyzeReports,
-      trafficReports,
-      socialMediaStats,
-      domainReviews
-    } = this.state;
 
     return (
       <>
@@ -480,7 +326,7 @@ class Profile extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
-        {/* This is bind for two keys “google_reviews” and “aggregator”. For google reviews we get totalReviewsCount and if it greater than 0 we try to fetch google reviews(“/api/reviews/domain” api)  and for aggregator we get socialAppId and profileId to get review of that platform through thirdpartydata Api. */}
+        {/* This is bind with "aggregator" and broadcasts platforms whose reviews are scraped.*/}
         <AggregatorPusherComponent
           domain={domain}
           onAggregatorDataChange={this.handleAggregatorDataChange}
@@ -497,8 +343,6 @@ class Profile extends React.Component {
           {this.renderSimpleTabs()}
           <Element name="overview" className="overview">
             <ProfilePageHeader
-              headerData={headerData}
-              isMounted={this.state.isMounted}
               onTrustClick={() =>
                 this.setState({ trustClicked: true }, () => {
                   setTimeout(() => {
@@ -509,14 +353,7 @@ class Profile extends React.Component {
             />
           </Element>
           <Element name="writeReview" className="writeReview">
-            <ProfilePageBody
-              analyzeReports={analyzeReports}
-              trafficReports={trafficReports}
-              socialMediaStats={socialMediaStats}
-              domainReviews={domainReviews || []}
-              isMounted={this.state.isMounted}
-              trustClicked={this.state.trustClicked}
-            />
+            <ProfilePageBody trustClicked={this.state.trustClicked} />
           </Element>
           <Footer />
         </>
@@ -581,15 +418,8 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   setDomainDataInRedux,
   setLoading,
-  getAggregateData,
-  setAggregateData,
-  removeAggregateData,
   fetchProfileReviews,
   fetchProfileReviewsInitially
 })(Profile);
 
-// 1. We connect with two pushers: (a) PusherDataComponent (b) DomainPusherComponent
-// 2. PusherDataComponent: This hits verify_domain api twice in interval of 500ms(if we don’t get data in first call).Then we receive a array of scheduled keys inside sch key and then bind for each key to listen for it. Then we pass all that data to parent component.
-// 3. DomainPusherComponent: This is bind for two keys “google_reviews” and “aggregator”. For google reviews we get totalReviewscount and if it greater than 0 we try to fetch google reviews(“/api/reviews/domain” api)  and for aggregator we get socialAppId and profileId to get review of that platform through thirdpartydata Api.
-// 4. We are adding https:// manually in all domains.
-// 5. We get an id in verify-domain call that we use as domainId to to hit thirdpartydata call to fetch reviews of different platforms.
+// We are connecting two pushers: PusherDataComponent and AggregatorPusherComponent. PusherDataComponent is connected for 1minute and  AggregatorPusherComponent is connected for 5mins. In case of new domain we are showing unicornLoader for 1 minute and we have also set 1 min timing in reviewCardContainer to show "no reviews found"

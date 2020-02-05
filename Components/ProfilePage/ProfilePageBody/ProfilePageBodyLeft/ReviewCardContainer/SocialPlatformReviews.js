@@ -67,7 +67,7 @@ const SocialPlatformReviews = props => {
                     </div>
                   ) : null}
                 </div>
-              ) : (
+              ) : nextLink ? (
                 <div className="showMoreContainer">
                   <div className="showMore">
                     <div
@@ -82,7 +82,7 @@ const SocialPlatformReviews = props => {
                     </div>
                   </div>
                 </div>
-              )}
+              ) : null}
             </>
           );
         }

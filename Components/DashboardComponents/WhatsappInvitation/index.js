@@ -114,10 +114,11 @@ class WhatsAppInvitation extends Component {
             value: "",
             valid: false,
             touched: false,
-            errorMessage: "Please enter a Review Url!",
+            errorMessage: "Please enter a valid review url!",
             placeholder: "Enter Review Url",
             validationRules: {
-              required: true
+              required: true,
+              isDomain: true
             }
           }
         }
@@ -239,10 +240,9 @@ class WhatsAppInvitation extends Component {
       reqBody["template"] = template;
     }
     reqBody["storeCustomerData"] = saveCampaign;
+    reqBody["rememberMe"] = keepMeLoggedIn;
     whatsAppManualInvitation(reqBody);
   };
-  //! uncomment when api start accepting this key and change key name
-  // reqBody["rememberMe"] = keepMeLoggedIn
   handleCheckboxChange = event => {
     const { checked, name } = event.target;
     this.setState({
@@ -296,6 +296,8 @@ class WhatsAppInvitation extends Component {
       //! qr_code_started comes when backend opens whatsAppWeb.com in headless browser. Doesn't useful for us.
       case "qr_code_started":
         break;
+      case "qr_session_invalid":
+        this.qrSessionInvalid(data);
       case "qr_code_changed":
         this.qrCodeChange(data);
         break;
@@ -329,6 +331,13 @@ class WhatsAppInvitation extends Component {
   };
 
   //? We open QRCode dialog in "login_successful" or "qr_code_changed" event, we receive "qr_code_changed" event when QRCode string is generated, and "login_successful" if session is already exist in DB so he can directly send campaigns without scanning QRCode
+
+  qrSessionInvalid = data => {
+    this.setState({
+      openFullScreenDialog: true,
+      activeEvent: data
+    });
+  };
 
   qrCodeChange = data => {
     this.setState({
@@ -505,10 +514,14 @@ const mapStateToProps = state => {
       code: "en"
     }
   ]);
-  let companyName = _get(auth, "logIn.userProfile.company.name", "");
-  let channelName = _get(dashboardData, "whatsAppManualInvite.channelName", "");
-  let whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
-  let whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
+  const companyName = _get(auth, "logIn.userProfile.company.name", "");
+  const channelName = _get(
+    dashboardData,
+    "whatsAppManualInvite.channelName",
+    ""
+  );
+  const whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
+  const whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
   return {
     templateLanguage,
     companyName,

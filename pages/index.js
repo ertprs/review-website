@@ -10,7 +10,6 @@ import SearchInput from "../Components/MaterialComponents/SearchInput";
 import SearchBoxSuggestion from "../Components/Widgets/SuggestionBox";
 import { connect } from "react-redux";
 import Snackbar from "../Components/Widgets/Snackbar";
-import { startLoading } from "../store/actions/loaderAction";
 import { GoogleLogout } from "react-google-login";
 import { logOut } from "../store/actions/authActions";
 import SubscriptionPlanCard from "../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
@@ -25,6 +24,7 @@ import {
 import _get from "lodash/get";
 import NextLink from "next/link";
 import { removeSubDomain } from "../utility/commonFunctions";
+import { setLoading } from "../store/actions/domainProfileActions";
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -141,7 +141,7 @@ const Home = props => {
   };
 
   const handleSearchSubmit = searchBoxVal => {
-    props.startLoading();
+    const { setLoading } = props;
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
       if (
@@ -1837,4 +1837,4 @@ const mapStateToProps = state => {
   return { showSnackbar, variant, message, auth };
 };
 
-export default connect(mapStateToProps, { startLoading, logOut })(Home);
+export default connect(mapStateToProps, { logOut, setLoading })(Home);

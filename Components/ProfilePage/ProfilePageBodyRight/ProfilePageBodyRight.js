@@ -36,7 +36,6 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderAnalyzeReports = data => {
-    const analyzeReports = this.props.analyzeReports;
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
@@ -94,38 +93,6 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderTrafficAnalysisReports = data => {
-    const analysisData = [
-      {
-        analysisTitle: "Daily Unique Visitors",
-        analysisInfo: "1,017,574,672",
-        analysisIcon: "pie-chart"
-      },
-      {
-        analysisTitle: "Monthly Unique Visitors",
-        analysisInfo: "30,527,240,160",
-        analysisIcon: "calendar"
-      },
-      {
-        analysisTitle: "Pages Per Visit",
-        analysisInfo: "13.51",
-        analysisIcon: "bullseye"
-      },
-      {
-        analysisTitle: "Bounce Rate",
-        analysisInfo: "27.38%",
-        analysisIcon: "chain-broken"
-      },
-      {
-        analysisTitle: "Daily Pageviews",
-        analysisInfo: "2,147,483,647",
-        analysisIcon: "eye"
-      },
-      {
-        analysisTitle: "Alexa Pageviews",
-        analysisInfo: "1",
-        analysisIcon: "bolt"
-      }
-    ];
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
@@ -166,17 +133,6 @@ class ProfilePageBodyRight extends Component {
     const description = _get(trustPilotDataInner, "description", "");
     const url = _get(trustPilotDataOuter, "url", "");
     const followers = _get(trustPilotDataOuter, "followers", 0);
-
-    // const trustPilotData = {
-    //   reviews: [],
-    //   claimed: false,
-    //   rating: 3.5,
-    //   max_rating: 5,
-    //   categories: ["sports", "wrestling"],
-    //   image_url: "/static/images/trustpilotLogo.png",
-    //   description:
-    //     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
-    // };
 
     return (
       <div style={{ marginBottom: "50px" }}>
@@ -328,8 +284,8 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderLinkedInCard = () => {
-    const { aggregateData } = this.props;
-    const linkedInData = _get(aggregateData, "13", {});
+    const { socialPlatformReviews } = this.props;
+    const linkedInData = _get(socialPlatformReviews, "13.data", {});
     const followers = _get(linkedInData, "data.followers", 0);
     const employee_count = _get(linkedInData, "data.employee_count", 0);
     const industry = _get(linkedInData, "data.industry", "");
@@ -340,17 +296,6 @@ class ProfilePageBodyRight extends Component {
     const specialities = _get(linkedInData, "data.specialities", "");
     const url = _get(linkedInData, "data.url", "");
     const employees = _get(linkedInData, "empolyees", []);
-
-    // const trustPilotData = {
-    //   reviews: [],
-    //   claimed: false,
-    //   rating: 3.5,
-    //   max_rating: 5,
-    //   categories: ["sports", "wrestling"],
-    //   image_url: "/static/images/trustpilotLogo.png",
-    //   description:
-    //     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
-    // };
 
     return (
       <div style={{ marginBottom: "50px" }}>
@@ -491,15 +436,15 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderFacebookCard = () => {
-    const { aggregateData } = this.props;
-    const facebookData = _get(aggregateData, "1", {});
-    const profile_url = _get(facebookData, "profile_url", "");
+    const { socialPlatformReviews } = this.props;
+    const facebookData = _get(socialPlatformReviews, "1.data", {});
     const verified = _get(facebookData, "verified", false);
-    const likes = _get(facebookData, "data.likes", 0);
-    const url = _get(facebookData, "data.url", "");
-    const followers = _get(facebookData, "data.followers", "");
-    const username = _get(facebookData, "data.username", "");
-
+    const likes = _get(facebookData, "likes", 0);
+    const url = _get(facebookData, "url", "");
+    const followers = _get(facebookData, "followers", "");
+    const username = _get(facebookData, "username", "");
+    const rating = _get(facebookData, "data.rating", 0);
+    const total = _get(facebookData, "data.total", 0);
     return (
       <div>
         <style jsx>
@@ -648,18 +593,6 @@ class ProfilePageBodyRight extends Component {
     const description = _get(trustedShopData, "data.description", "");
     const url = _get(trustedShopData, "data.url", "");
 
-    // const trustedShopData = {
-    //   reviews: [],
-    //   claimed: "",
-    //   certificate_expiry_date: "27/12/2019",
-    //   rating: 3.5,
-    //   max_rating: 5,
-    //   categories: ["sports", "wrestling"],
-    //   image_url: "/static/images/trustedShopLogo.jpg",
-    //   description:
-    //     "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."
-    // };
-
     return (
       <div style={{ marginBottom: "50px" }}>
         <style jsx>{`
@@ -787,7 +720,7 @@ class ProfilePageBodyRight extends Component {
           {certificate_expiry_date ? (
             <div className="additionalDetails">
               <div className="additionalDetailsHeader">
-                Certifcate expiry date:
+                Certificate expiry date:
               </div>{" "}
               <div>{certificate_expiry_date}</div>
             </div>
@@ -826,28 +759,6 @@ class ProfilePageBodyRight extends Component {
   };
 
   renderSocialMediaReports = data => {
-    const analysisData = [
-      {
-        analysisTitle: "Facebook",
-        analysisInfo: "27992084",
-        analysisIcon: "facebook"
-      },
-      {
-        analysisTitle: "Twitter",
-        analysisInfo: "21498343",
-        analysisIcon: "twitter"
-      },
-      {
-        analysisTitle: "Instagram",
-        analysisInfo: "22598343",
-        analysisIcon: "instagram"
-      },
-      {
-        analysisTitle: "Medium",
-        analysisInfo: "22612369",
-        analysisIcon: "medium"
-      }
-    ];
     return (
       <div>
         <style jsx>{profilePageBodyRightStyles}</style>
@@ -874,11 +785,9 @@ class ProfilePageBodyRight extends Component {
   };
 
   render() {
-    //!replace aggregateData from everywhere below :
     const {
       domainProfileData,
       isLoading,
-      aggregateData,
       socialPlatformReviews,
       companyNameFromPusher
     } = this.props;
@@ -886,12 +795,14 @@ class ProfilePageBodyRight extends Component {
     let showTrustedShop = false;
     let showFacebook = false;
     let showLinkedInCard = false;
+
+    //! change this cards show logic after response confirmation
     if (socialPlatformReviews.hasOwnProperty("18")) {
       if (
         _get(socialPlatformReviews, "18.data", null) !== null &&
         !_isEmpty(_get(socialPlatformReviews, "18.data", {})) &&
         !_isEmpty(_get(socialPlatformReviews, "18.data.data", {})) &&
-        !_isEmpty(_get(socialPlatformReviews, "18.data.data.reviews", {}))
+        !_isEmpty(_get(socialPlatformReviews, "18.data.data.reviews", []))
       ) {
         showTrustPilot = true;
       } else {
@@ -904,7 +815,7 @@ class ProfilePageBodyRight extends Component {
         _get(socialPlatformReviews, "19.data", null) !== null &&
         !_isEmpty(_get(socialPlatformReviews, "19.data", {})) &&
         !_isEmpty(_get(socialPlatformReviews, "19.data.data", {})) &&
-        !_isEmpty(_get(socialPlatformReviews, "19.data.data.reviews", {}))
+        !_isEmpty(_get(socialPlatformReviews, "19.data.data.reviews", []))
       ) {
         showTrustedShop = true;
       } else {
@@ -912,25 +823,25 @@ class ProfilePageBodyRight extends Component {
       }
     }
 
-    if (aggregateData.hasOwnProperty("1")) {
+    if (socialPlatformReviews.hasOwnProperty("1")) {
       if (
-        _get(aggregateData, "1.data", null) !== null &&
-        !_isEmpty(_get(aggregateData, "1.data", {}))
+        _get(socialPlatformReviews, "1.data", null) !== null &&
+        !_isEmpty(_get(socialPlatformReviews, "1.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "1.data.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "1.data.data.reviews", []))
       ) {
-        if (
-          _get(aggregateData, "1.data.likes", "") ||
-          _get(aggregateData, "1.data.followers")
-        )
-          showFacebook = true;
+        showFacebook = true;
       } else {
         showFacebook = false;
       }
     }
-    if (aggregateData.hasOwnProperty("13")) {
+
+    if (socialPlatformReviews.hasOwnProperty("13")) {
       if (
-        _get(aggregateData, "13.data", null) !== null &&
-        !_isEmpty(_get(aggregateData, "13.data", {})) &&
-        _get(aggregateData, "followers", "")
+        _get(socialPlatformReviews, "13.data", null) !== null &&
+        !_isEmpty(_get(socialPlatformReviews, "13.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "13.data.data", {})) &&
+        !_isEmpty(_get(socialPlatformReviews, "13.data.data.reviews", []))
       ) {
         showLinkedInCard = true;
       } else {
@@ -944,9 +855,6 @@ class ProfilePageBodyRight extends Component {
       ((domainProfileData || {}).trafficReports || {}).data || {};
     const socialMediaStatsData =
       ((domainProfileData || {}).socialMediaStats || {}).data || {};
-
-    const domainReviewsWillCome =
-      ((domainProfileData || {}).domainReviews || {}).willCome || false;
     const analysisReportsWillCome =
       ((domainProfileData || {}).analysisReports || {}).willCome || false;
     const trafficReportsWillCome =
@@ -990,6 +898,7 @@ class ProfilePageBodyRight extends Component {
           </div>
         ) : (
           <div>
+            {/* need to change mapping maybe later on */}
             {showTrustPilot ? this.renderTrustPilotCard() : null}
             {showTrustedShop ? this.renderTrustedShopCard() : null}
             {showLinkedInCard ? (
@@ -1033,7 +942,7 @@ class ProfilePageBodyRight extends Component {
 }
 
 const mapStateToProps = state => {
-  const { profileData, aggregateData, auth } = state;
+  const { profileData, auth } = state;
   const socialPlatformReviews = _get(profileData, "socialPlatformReviews", {});
   const { domainProfileData, isLoading } = profileData;
   const companyNameFromPusher = _get(
@@ -1044,7 +953,6 @@ const mapStateToProps = state => {
   return {
     domainProfileData,
     isLoading,
-    aggregateData,
     socialPlatformReviews,
     companyNameFromPusher
   };

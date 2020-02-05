@@ -15,14 +15,7 @@ const persistConfig = {
   key: "primary",
   storage,
   // whitelist: ['exampleData'] // place to select which state you want to persist
-  blacklist: [
-    "auth",
-    "trustVote",
-    "dashboardData",
-    "aggregateData",
-    "profileData",
-    "googleReviews"
-  ]
+  blacklist: ["auth", "trustVote", "dashboardData", "profileData"]
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
