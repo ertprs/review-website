@@ -6,6 +6,7 @@ import WidgetPlatformPreference from "./WidgetPlatformPreference/WidgetPlatformP
 import ShowInWidgetList from "./ShowInWidgetList/ShowInWidgetList";
 import _get from "lodash/get";
 import PremiumBrandingToggle from "./PremiumBrandingToggle/PremiumBrandingToggle";
+import BackgroundColorToggler from "./BackgroundColorToggler/BackgroundColorToggler";
 
 class CombinedReviewsWidgetConfigurations extends Component {
   render() {
@@ -24,7 +25,9 @@ class CombinedReviewsWidgetConfigurations extends Component {
       handleShowHidePlatformSave,
       handlePremiumBrandingToggleChange,
       premiumBrandingToggleData,
-      planTypeId
+      planTypeId,
+      handleBackgroundColorTogglerChange,
+      backgroundColorTogglerData
     } = this.props;
     const hideDashboardParticularSettings = _get(
       this.props,
@@ -84,6 +87,17 @@ class CombinedReviewsWidgetConfigurations extends Component {
                 <PremiumBrandingToggle
                   handleChange={handlePremiumBrandingToggleChange}
                   premiumBrandingToggleData={premiumBrandingToggleData}
+                />
+              </div>
+            </div>
+          )}
+
+          {hideDashboardParticularSettings ? null : (
+            <div className="row">
+              <div className="col-md-12">
+                <BackgroundColorToggler
+                  handleChange={handleBackgroundColorTogglerChange}
+                  backgroundColorTogglerData={backgroundColorTogglerData}
                 />
               </div>
             </div>
