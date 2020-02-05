@@ -93,7 +93,8 @@ class BusinessUserLogin extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { logIn, logInTemp } = this.props.auth;
+    const { logIn, logInTemp } = _get(this.props, "auth", {});
+    const pathname = _get(this.props, "pathname", "");
     const { formData } = this.state;
     const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
     const authorized = _get(logIn, "authorized", false);
@@ -130,7 +131,11 @@ class BusinessUserLogin extends Component {
             snackbarMsg: "Logged in successfully!"
           },
           () => {
-            Router.push("/dashboard");
+            if (pathname) {
+              Router.push(pathname);
+            } else {
+              Router.push("/dashboard");
+            }
           }
         );
       }
