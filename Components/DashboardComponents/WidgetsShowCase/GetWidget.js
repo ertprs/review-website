@@ -19,6 +19,7 @@ import { ratingCountOptions } from "../../../utility/constants/ratingCountConsta
 import { toggleWidgetPlatformVisibility } from "../../../store/actions/dashboardActions";
 import ShowInWidgetList from "./CombinedReviewsWidgetConfigurations/ShowInWidgetList/ShowInWidgetList";
 import PremiumBrandingToggle from "./CombinedReviewsWidgetConfigurations/PremiumBrandingToggle/PremiumBrandingToggle";
+import BackgroundColorToggler from "./CombinedReviewsWidgetConfigurations/BackgroundColorToggler/BackgroundColorToggler";
 
 class GetWidget extends Component {
   constructor(props) {
@@ -48,6 +49,12 @@ class GetWidget extends Component {
         checked: _get(this.props, "planTypeId", 1) > 1 ? true : false,
         label: "Turn off the switch to see widget without branding",
         disabled: _get(this.props, "planTypeId", 1) > 1 ? false : true
+      },
+      backgroundColorTogglerData: {
+        value: "",
+        checked: true,
+        label: "Turn off the switch to get widget with transparent background",
+        disabled: false
       }
     };
   }
@@ -400,6 +407,31 @@ class GetWidget extends Component {
     );
   };
 
+  //!Handler to change get widget code on toggling background color
+  handleBackgroundColorTogglerChange = e => {
+    const checked = _get(e, "target.checked", false);
+    const backgroundColorTogglerData = _get(
+      this.state,
+      "backgroundColorTogglerData",
+      {}
+    );
+    this.setState(
+      {
+        backgroundColorTogglerData: {
+          ...backgroundColorTogglerData,
+          value: checked ? "" : 1,
+          checked,
+          label: checked
+            ? "Turn off the switch to get widget with transparent background"
+            : "Turn on the switch to get widget with white background"
+        }
+      },
+      () => {
+        this.refreshWidgetOnDemand();
+      }
+    );
+  };
+
   renderInput = () => {
     const { widgetHeight, platforms, selectedPlatform } = this.state;
     return (
@@ -446,7 +478,8 @@ class GetWidget extends Component {
       selectedMaxReviews,
       selectedNewerThanMonths,
       selectedRatingCount,
-      premiumBrandingToggleData
+      premiumBrandingToggleData,
+      backgroundColorTogglerData
     } = this.state;
     const widgetId = _get(widget, "id", "");
     return (
@@ -502,6 +535,10 @@ class GetWidget extends Component {
                         premiumBrandingToggleData={premiumBrandingToggleData}
                         handleChange={this.handlePremiumBrandingToggleChange}
                       />
+                      <BackgroundColorToggler
+                        backgroundColorTogglerData={backgroundColorTogglerData}
+                        handleChange={this.handleBackgroundColorTogglerChange}
+                      />
                     </div>
                   </>
                 ) : (
@@ -525,6 +562,12 @@ class GetWidget extends Component {
                     }
                     premiumBrandingToggleData={
                       this.state.premiumBrandingToggleData
+                    }
+                    handleBackgroundColorTogglerChange={
+                      this.handleBackgroundColorTogglerChange
+                    }
+                    backgroundColorTogglerData={
+                      this.state.backgroundColorTogglerData
                     }
                   />
                 )}
@@ -596,6 +639,11 @@ class GetWidget extends Component {
                       "premiumBrandingToggleData.value",
                       ""
                     )}"
+                    data-transparent-background="${_get(
+                      this.state,
+                      "backgroundColorTogglerData.value",
+                      ""
+                    )}"
                     ></div>
                 `}</code>
                 ) : (
@@ -614,6 +662,11 @@ class GetWidget extends Component {
                 data-show-branding="${_get(
                   this.state,
                   "premiumBrandingToggleData.value",
+                  ""
+                )}"
+                data-transparent-background="${_get(
+                  this.state,
+                  "backgroundColorTogglerData.value",
                   ""
                 )}"
                 ></div>
@@ -690,6 +743,11 @@ class GetWidget extends Component {
           data-show-branding={_get(
             this.state,
             "premiumBrandingToggleData.value",
+            ""
+          )}
+          data-transparent-background={_get(
+            this.state,
+            "backgroundColorTogglerData.value",
             ""
           )}
         ></div>
