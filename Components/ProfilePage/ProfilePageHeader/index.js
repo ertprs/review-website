@@ -1,25 +1,23 @@
 import React, { Component } from "react";
-import Paper from "../../../Components/MaterialComponents/Paper";
-import Card from "../../../Components/MaterialComponents/Card";
-import ReviewCard from "../../Widgets/ReviewCard/ReviewCard";
-import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
-import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
-import _get from "lodash/get";
 import { connect } from "react-redux";
-import Placeholder from "./headerPlaceholder";
+import ReviewCard from "../../Widgets/ReviewCard/ReviewCard";
 import CustomModal from "../../Widgets/CustomModal/CustomModal";
 import ReportDomainModal from "../../ReportDomainModal";
+import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
+import { ratingType, ratingColor } from "../../../utility/ratingTypeColor";
+import { removeSubDomain } from "../../../utility/commonFunctions";
+import Placeholder from "./headerPlaceholder";
+import Paper from "../../../Components/MaterialComponents/Paper";
+import Card from "../../../Components/MaterialComponents/Card";
+import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import VerifiedIcon from "@material-ui/icons/VerifiedUser";
 import UnVerifiedIcon from "@material-ui/icons/NotInterested";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Link } from "react-scroll";
-import { ratingType, ratingColor } from "../../../utility/ratingTypeColor";
-import { removeSubDomain } from "../../../utility/commonFunctions";
+import _get from "lodash/get";
 
 class ProfilePageHeader extends Component {
   state = {
-    headerData: {},
-    imageSrc: "",
     showReportDomainModal: false
   };
 
@@ -28,7 +26,8 @@ class ProfilePageHeader extends Component {
       domainProfileData,
       isLoading,
       totalReviews,
-      averageRating
+      averageRating,
+      onTrustClick
     } = this.props;
 
     const { showReportDomainModal } = this.state;
@@ -103,7 +102,7 @@ class ProfilePageHeader extends Component {
                       offset={-50}
                     >
                       <div
-                        onClick={this.props.onTrustClick}
+                        onClick={onTrustClick}
                         className="companyLink"
                         style={{ marginBottom: "14px" }}
                       >

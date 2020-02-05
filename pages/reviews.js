@@ -480,7 +480,7 @@ class Profile extends React.Component {
           domain={domain}
           onChildStateChange={this.updateParentState}
         />
-        {/* This is bind for two keys “google_reviews” and “aggregator”. For google reviews we get totalReviewsCount and if it greater than 0 we try to fetch google reviews(“/api/reviews/domain” api)  and for aggregator we get socialAppId and profileId to get review of that platform through thirdpartydata Api. */}
+        {/* This is bind with "aggregator" and broadcasts platforms whose reviews are scraped.*/}
         <AggregatorPusherComponent
           domain={domain}
           onAggregatorDataChange={this.handleAggregatorDataChange}
@@ -497,8 +497,6 @@ class Profile extends React.Component {
           {this.renderSimpleTabs()}
           <Element name="overview" className="overview">
             <ProfilePageHeader
-              headerData={headerData}
-              isMounted={this.state.isMounted}
               onTrustClick={() =>
                 this.setState({ trustClicked: true }, () => {
                   setTimeout(() => {
