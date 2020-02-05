@@ -41,7 +41,6 @@ class editDomain extends Component {
       domainDetails,
       handleChange
     } = this.props;
-    console.log(isLoading, "isLoading");
     return (
       <div className="mt-50">
         <style jsx>{styles}</style>

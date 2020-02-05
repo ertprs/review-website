@@ -24,7 +24,6 @@ class ActivateUser extends Component {
   showData = () => {
     const { success } = this.props;
     let data;
-    console.log(success, "success inside showData");
     if (success === true) {
       data = <></>;
     } else if (success === false) {
@@ -35,7 +34,6 @@ class ActivateUser extends Component {
 
   render() {
     const { success } = this.props;
-    console.log(success, "success inside render");
     return (
       <>
         <Layout>
@@ -83,7 +81,4 @@ ActivateUser.getInitialProps = async ({ query }) => {
   return { success };
 };
 
-export default connect(
-  null,
-  { setUserActivated }
-)(ActivateUser);
+export default connect(null, { setUserActivated })(ActivateUser);

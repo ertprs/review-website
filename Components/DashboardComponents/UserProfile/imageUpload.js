@@ -37,12 +37,8 @@ export default class ImageUpload extends Component {
             onDrop={acceptedFiles => {
               onUpload(acceptedFiles);
             }}
-            onDropAccepted={e => {
-              console.log("hello", e);
-            }}
-            onDropRejected={e => {
-              console.log("hi", e);
-            }}
+            onDropAccepted={e => {}}
+            onDropRejected={e => {}}
           >
             {({ getRootProps, getInputProps }) => (
               <section>

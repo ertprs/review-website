@@ -6,13 +6,15 @@ import { isValidArray } from "../../../../../utility/commonFunctions";
 import { fetchProfileReviews } from "../../../../../store/actions/domainProfileActions";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import cookie from "js-cookie";
-import Link from "next/link";
+import Router from "next/router";
+import { useRouter } from "next/router";
 
 //? this is the order in which the reviews will be displayed, you only need to add socialAppId of the platform here only whose reviews you want to display
 const reviewsOrder = [22, 1, 18, 19, 20, 13, 21, 23];
 
 const SocialPlatformReviews = props => {
   const { socialPlatformReviews, fetchProfileReviews } = props;
+  const router = useRouter();
   const token = cookie.get("token") || "";
   const loginType = cookie.get("loginType") || "";
   //?  need to handle pagination, we may create new action creator to which we'll pass next link and it will add new reviews
@@ -68,9 +70,16 @@ const SocialPlatformReviews = props => {
               ) : (
                 <div className="showMoreContainer">
                   <div className="showMore">
-                    <Link href="/login">
-                      <a>Login to see all reviews</a>
-                    </Link>
+                    <div
+                      onClick={() => {
+                        Router.push({
+                          pathname: "/login",
+                          query: { pathname: router.asPath || "" }
+                        });
+                      }}
+                    >
+                      Login to see all reviews
+                    </div>
                   </div>
                 </div>
               )}

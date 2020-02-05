@@ -325,7 +325,6 @@ class WhatsAppInvitation extends Component {
           snackbarMsg: event,
           snackbarVariant: "error"
         });
-        console.log(`WhatsAppPusher default case ${event}`);
     }
   };
 

@@ -112,14 +112,11 @@ export const isFifteenMinuteDiff = date => {
   if (selectedDay === currentDay) {
     if (currentHour > selectedHour) {
       valid = false;
-      console.log("current hour is greater than selected hour");
     } else if (currentHour === selectedHour) {
       if (currentMinute >= selectedMinutes) {
         valid = false;
-        console.log("current minute is greater than selected minutes");
       } else if (selectedMinutes - currentMinute < 15) {
         valid = false;
-        console.log("selected minutes diff < 15");
       }
     }
   }

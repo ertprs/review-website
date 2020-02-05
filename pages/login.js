@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { authenticationPageStyles } from "../Components/Styles/authenticationPageStyles";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import BuisnessUserLogin from "../Components/Login/businessUser";
+import BusinessUserLogin from "../Components/Login/businessUser";
 import InternetUSerLogin from "../Components/Login/internetUser";
 import Layout from "../hoc/layout/layout";
 import isAlreadyLoggedIn from "../utility/isAuthenticated/isAlreadyLoggedIn";
+import _get from "lodash/get";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    width: 500
-  }
-}));
-
-const Login = () => {
-  const classes = useStyles();
+const Login = props => {
   const [tabValue, setTabValue] = useState(0);
-
+  const pathname = _get(props, "pathname", "");
   const a11yProps = index => {
     return {
       id: `full-width-tab-${index}`,
@@ -59,7 +51,11 @@ const Login = () => {
               <Tab label="Business Login" {...a11yProps(0)} />
               <Tab label="User Login" {...a11yProps(1)} />
             </Tabs>
-            {tabValue === 1 ? <InternetUSerLogin /> : <BuisnessUserLogin />}
+            {tabValue === 1 ? (
+              <InternetUSerLogin />
+            ) : (
+              <BusinessUserLogin pathname={pathname} />
+            )}
           </div>
         </div>
       </div>
@@ -69,7 +65,8 @@ const Login = () => {
 
 Login.getInitialProps = async ctx => {
   isAlreadyLoggedIn(ctx);
-  return {};
+  const pathname = _get(ctx, "query.pathname", "");
+  return { pathname };
 };
 
 export default Login;

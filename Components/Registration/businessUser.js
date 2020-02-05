@@ -265,7 +265,6 @@ class BusinessUserRegistration extends Component {
     const { businessSignUp } = this.props;
     const { formData } = this.state;
     let reqBody = this.createReqBody(formData);
-    console.log(reqBody, "reqBody");
     businessSignUp(reqBody, businessRegisterApi);
   };
 
