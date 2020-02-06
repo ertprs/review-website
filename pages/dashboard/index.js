@@ -662,17 +662,17 @@ function Dashboard(props) {
             menuItemDisabled={menuItemsDisabled}
             handleMainListItemClick={handleMenuItemClicked}
             stepToRender={stepToRender}
+            domain={domain || "google.com"}
           />
         </List>
         <Divider />
         <List>
           <SecondaryListItems
-            subsriptionPlan={getSubscriptionPlan(
-              _get(props, "subsriptionPlan", 0)
+            subscriptionPlan={getSubscriptionPlan(
+              _get(props, "subscriptionPlan", 0)
             )}
             handleClick={clickToUpgradeHandler}
             isLoading={props.upgradeToPremiumIsLoading || false}
-            domain={domain || "google.com"}
           />
         </List>
         <Divider />
@@ -728,7 +728,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.activation_required",
     false
   );
-  const subsriptionPlan = _get(
+  const subscriptionPlan = _get(
     auth,
     "logIn.userProfile.subscription.plan_type_id",
     0
@@ -761,7 +761,7 @@ const mapStateToProps = state => {
     userEmail,
     userPhone,
     activation_required,
-    subsriptionPlan,
+    subscriptionPlan,
     userActivated,
     placeId,
     placeLocated,

@@ -27,7 +27,8 @@ export const MainListItems = ({
   getStartedHide,
   homeDisabled,
   handleMainListItemClick,
-  getStartedDisabled
+  getStartedDisabled,
+  domain
 }) => {
   return (
     <div>
@@ -224,19 +225,36 @@ export const MainListItems = ({
         </Tooltip>
         <ListItemText primary="User Profile" />
       </ListItem>
+      <ListItem />
+      <Divider />
+      <ListItem button className="pb_0">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Public Profile</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <Link href={`/reviews/${domain}`}>
+              <PublicIcon />
+            </Link>
+          </ListItemIcon>
+        </Tooltip>
+        <Link href={`/reviews/${domain}`}>
+          <ListItemText primary="Public Profile" />
+        </Link>
+      </ListItem>
     </div>
   );
 };
 
 export const SecondaryListItems = ({
-  subsriptionPlan,
+  subscriptionPlan,
   handleClick,
   isLoading,
   domain
 }) => {
   return (
     <div>
-      {/* <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader>
+      {/* <ListSubheader inset>Your plan: {subscriptionPlan}</ListSubheader>
       <ListItem /> */}
       <ListItem
         button
@@ -261,32 +279,6 @@ export const SecondaryListItems = ({
             <ListItemText onClick={handleClick} primary="Click to upgrade" />
           </>
         )}
-      </ListItem>
-      <ListItem />
-      <Divider />
-      <ListItem />
-      <ListItem
-        button
-        style={{
-          background: "#303030",
-          color: "#fff"
-        }}
-      >
-        <>
-          <Tooltip
-            title={<span style={{ fontSize: "14px" }}>Public Profile</span>}
-            placement="right"
-          >
-            <ListItemIcon style={{ color: "#fff" }}>
-              <Link href={`/reviews/${domain}`}>
-                <PublicIcon />
-              </Link>
-            </ListItemIcon>
-          </Tooltip>
-          <Link href={`/reviews/${domain}`}>
-            <ListItemText primary="Public Profile" />
-          </Link>
-        </>
       </ListItem>
     </div>
   );
