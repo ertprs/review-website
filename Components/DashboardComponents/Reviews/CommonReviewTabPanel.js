@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import cookie from "js-cookie";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import NoReviewsFound from "./noReviewsFound";
 import ReviewCard from "../../Widgets/CommonReviewCard";
 import PlatformDetails from "./PlatformDetails";
 import { isValidArray } from "../../../utility/commonFunctions";
-import { toggleReviewVisibility } from "../../../store/actions/dashboardActions";
+import {
+  toggleReviewVisibility,
+  fetchReviews
+} from "../../../store/actions/dashboardActions";
 import Snackbar from "../../Widgets/Snackbar";
 const Select = dynamic(() => import("react-select"), {
   ssr: false
@@ -23,7 +27,6 @@ import _groupBy from "lodash/groupBy";
 
 class CommonReviewTabPanel extends Component {
   state = {
-    totalReviews: [],
     reviews: [],
     reviewUrl: "",
     isLoading: false,
@@ -34,7 +37,6 @@ class CommonReviewTabPanel extends Component {
     total: 0,
     pageNo: 1,
     perPage: 10,
-    showDelay: false,
     selectedPlace: {},
     defaultPlace: {},
     showSnackbar: false,
@@ -46,18 +48,17 @@ class CommonReviewTabPanel extends Component {
     const { primaryPlatform, platformReviews } = this.props;
     const profileId = _get(primaryPlatform, "value", 0);
     const reviewsOfPrimaryPlace = _get(platformReviews, profileId, {});
-    const totalReviews = _get(reviewsOfPrimaryPlace, "data.data.reviews", []);
+    const reviews = _get(reviewsOfPrimaryPlace, "data.data.reviews", []);
     const reviewUrl = _get(reviewsOfPrimaryPlace, "data.data.url", "");
     const isLoading = _get(reviewsOfPrimaryPlace, "isLoading", false);
     const success = _get(reviewsOfPrimaryPlace, "success", undefined);
     const likes = _get(reviewsOfPrimaryPlace, "data.data.likes", 0);
     const followers = _get(reviewsOfPrimaryPlace, "data.data.followers", 0);
     const rating = _get(reviewsOfPrimaryPlace, "data.data.rating", 0);
-    let total = 0;
+    let total = _get(reviewsOfPrimaryPlace, "data.data.total", 0);
     const pageNo = 1;
     let perPage = 10;
-    if (success && isValidArray(totalReviews)) {
-      total = totalReviews.length;
+    if (success && isValidArray(reviews)) {
       perPage = total >= 10 ? 10 : total;
     }
     this.setState(
@@ -65,7 +66,7 @@ class CommonReviewTabPanel extends Component {
         defaultPlace: primaryPlatform,
         selectedPlace: primaryPlatform,
         reviewUrl,
-        totalReviews,
+        reviews,
         isLoading,
         success,
         likes,
@@ -76,7 +77,7 @@ class CommonReviewTabPanel extends Component {
         pageNo
       },
       () => {
-        this.calReviews();
+        this.fetchReviewsHandler();
       }
     );
   }
@@ -92,23 +93,22 @@ class CommonReviewTabPanel extends Component {
       const { selectedPlace } = this.state;
       let profileId = _get(selectedPlace, "value", "");
       let selectedPlaceReviews = _get(platformReviews, profileId, {});
-      let totalReviews = _get(selectedPlaceReviews, "data.data.reviews", []);
+      let reviews = _get(selectedPlaceReviews, "data.data.reviews", []);
       let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
       let isLoading = _get(selectedPlaceReviews, "isLoading", false);
       let success = _get(selectedPlaceReviews, "success", undefined);
       const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
       const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
       const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
-      let total = 0;
+      let total = _get(selectedPlaceReviews, "data.data.total", 0);
       let pageNo = 1;
       let perPage = 10;
-      if (success && isValidArray(totalReviews)) {
-        total = totalReviews.length;
+      if (success && isValidArray(reviews)) {
         perPage = total >= 10 ? 10 : total;
       }
       this.setState(
         {
-          totalReviews,
+          reviews,
           reviewUrl,
           isLoading,
           success,
@@ -120,7 +120,7 @@ class CommonReviewTabPanel extends Component {
           pageNo
         },
         () => {
-          this.calReviews();
+          this.fetchReviewsHandler();
         }
       );
     }
@@ -141,77 +141,39 @@ class CommonReviewTabPanel extends Component {
     }
   }
 
-  calReviews = () => {
-    const { totalReviews, pageNo, perPage } = this.state;
-    if (isValidArray(totalReviews) && pageNo && perPage) {
-      let slicedReviews = totalReviews.slice(
-        (pageNo - 1) * perPage,
-        pageNo * perPage
-      );
-      this.setState({ reviews: slicedReviews });
+  fetchReviewsHandler = () => {
+    const { fetchReviews, socialMediaAppId } = this.props;
+    const { selectedPlace, perPage, pageNo } = this.state;
+    const domainId = cookie.get("domainId");
+    const profileId = _get(selectedPlace, "value", 0);
+    console.log(socialMediaAppId, profileId, domainId);
+    if (socialMediaAppId && profileId && domainId) {
+      console.log("hello is");
+      fetchReviews(socialMediaAppId, profileId, domainId, pageNo, perPage);
     }
   };
 
   handlePageChange = ({ selected }) => {
-    this.setState({ pageNo: selected + 1 }, () => {
-      this.calReviews();
-      window.scrollTo(0, 0);
-      this.setState({ showDelay: true });
-      this.delayForSometime(400).then(() => {
-        this.setState({ showDelay: false });
-      });
-    });
-  };
-
-  handleSelectedPlace = selectedObj => {
-    const { platformReviews } = this.props;
-    let profileId = _get(selectedObj, "value", "");
-    let selectedPlaceReviews = _get(platformReviews, profileId, {});
-    let totalReviews = _get(selectedPlaceReviews, "data.data.reviews", []);
-    let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
-    let isLoading = _get(selectedPlaceReviews, "isLoading", false);
-    let success = _get(selectedPlaceReviews, "success", undefined);
-    const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
-    const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
-    const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
-    let total = 0;
-    let pageNo = 1;
-    let perPage = 10;
-    if (success && isValidArray(totalReviews)) {
-      total = totalReviews.length;
-      perPage = total >= 10 ? 10 : total;
-    }
     this.setState(
       {
-        selectedPlace: selectedObj,
-        totalReviews,
-        reviewUrl,
-        isLoading,
-        success,
-        likes,
-        followers,
-        rating,
-        total,
-        perPage,
-        pageNo
+        pageNo: selected + 1
       },
       () => {
-        this.calReviews();
+        this.fetchReviewsHandler();
       }
     );
   };
 
-  delayForSometime = ms => {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  };
-
-  showLoadingEffect = () => {
-    return (
-      <div style={{ textAlign: "center" }}>
-        <CircularProgress />
-      </div>
+  handleSelectedPlace = selectedObj => {
+    //! handle if someone clears the value from dropdown
+    this.setState(
+      {
+        selectedPlace: selectedObj,
+        pageNo: 1
+      },
+      () => {
+        this.fetchReviewsHandler();
+      }
     );
   };
 
@@ -239,7 +201,6 @@ class CommonReviewTabPanel extends Component {
       followers,
       rating,
       reviewUrl,
-      showDelay,
       selectedPlace,
       defaultPlace,
       showSnackbar,
@@ -343,7 +304,7 @@ class CommonReviewTabPanel extends Component {
                 ) : null}
                 <NoReviewsFound />
               </>
-            ) : !showDelay ? (
+            ) : (
               <>
                 {/* If any of the data is available then we want to show
                 platform details otherwise not. */}
@@ -385,18 +346,12 @@ class CommonReviewTabPanel extends Component {
                   );
                 })}
               </>
-            ) : (
-              this.showLoadingEffect()
             )
           ) : null}
         </div>
         <div
           className={`${
-            isLoading ||
-            success == false ||
-            total < 11 ||
-            reviews === 0 ||
-            showDelay
+            isLoading || success == false || total < 11 || reviews === 0
               ? "hiddenPagination"
               : "paginationContainer"
           }`}
@@ -460,7 +415,8 @@ const mapStateToProps = (state, ownProps) => {
     platformReviews,
     toggleReviewSuccess,
     toggleReviewErrorMsg,
-    toggleReviewLoading
+    toggleReviewLoading,
+    fetchReviews
   };
 };
 

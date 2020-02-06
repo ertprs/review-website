@@ -241,6 +241,7 @@ export const logOut = () => {
   cookie.remove("token");
   cookie.remove("placeLocated");
   cookie.remove("placeId");
+  cookie.remove("domainId");
   localStorage.removeItem("persist:primary");
   localStorage.removeItem("persist:auth");
   localStorage.removeItem("userActivated");
@@ -558,6 +559,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("loginType", loginType, { expires: 7 });
             cookie.set("token", token, { expires: 7 });
             cookie.set("placeId", placeId, { expires: 7 });
+            cookie.set("domainId", domainId, { expires: 7 });
             localStorage.setItem("token", token);
             dispatch(
               setInvitationQuota(
