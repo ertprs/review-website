@@ -294,26 +294,21 @@ export const SecondaryListItems = ({
 
 export const DashboardLogo = () => {
   return (
-    <Tooltip
-      title={<span style={{ fontSize: "14px" }}>See Profile</span>}
-      placement="right"
-    >
-      <div className="imgContainer">
-        <style jsx>{`
-          .imgContainer {
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            height: 40px;
-            width: auto;
-          }
-          .imgStyle {
-            max-width: 100%;
-            height: auto;
-          }
-        `}</style>
-        <img src="/static/images/logo_footer.png" className="imgStyle" />
-      </div>
-    </Tooltip>
+    <div className="imgContainer">
+      <style jsx>{`
+        .imgContainer {
+          display: flex;
+          justify-content: center;
+          align-items: baseline;
+          height: 40px;
+          width: auto;
+        }
+        .imgStyle {
+          max-width: 100%;
+          height: auto;
+        }
+      `}</style>
+      <img src="/static/images/logo_footer.png" className="imgStyle" />
+    </div>
   );
 };
