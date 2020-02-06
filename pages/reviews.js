@@ -7,6 +7,7 @@ import Snackbar from "../Components/Widgets/Snackbar";
 import UnicornLoader from "../Components/Widgets/UnicornLoader";
 import { isValidArray } from "../utility/commonFunctions";
 import { removeSubDomain } from "../utility/commonFunctions";
+import { profilePageLoadingTimeout } from "../utility/constants/pusherTimeoutConstants";
 import {
   Link,
   Element,
@@ -68,7 +69,7 @@ class Profile extends React.Component {
     this.props.setLoading(true);
     setTimeout(() => {
       this.setState({ waitingTimeOut: false });
-    }, 60000);
+    }, profilePageLoadingTimeout);
     this.setState({ isMounted: true });
     Events.scrollEvent.register("begin", function() {});
     Events.scrollEvent.register("end", function() {});

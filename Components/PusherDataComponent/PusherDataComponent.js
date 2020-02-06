@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Pusher from "pusher-js";
 import axios from "axios";
+import { profilePageLoadingTimeout } from "../../utility/constants/pusherTimeoutConstants";
 //child component to fetch data and listen to channels and in turn update parent component
 
 class PusherDataComponent extends React.Component {
@@ -109,7 +110,7 @@ class PusherDataComponent extends React.Component {
     });
     setTimeout(() => {
       this.pusherCopy.disconnect();
-    }, 60000);
+    }, profilePageLoadingTimeout);
     pusher.connection.bind("disconnected", () => {
       console.log("Main pusher disconnected");
     });

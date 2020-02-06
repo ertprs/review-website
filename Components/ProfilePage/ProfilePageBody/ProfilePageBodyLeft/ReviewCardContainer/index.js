@@ -6,6 +6,7 @@ import ReviewCardPlaceholder from "./ReviewCardPlaceholder";
 import RenderSocialPlatforms from "./SocialPlatformReviews";
 import Paper from "../../../../MaterialComponents/Paper";
 import { isValidArray } from "../../../../../utility/commonFunctions";
+import { profilePageLoadingTimeout } from "../../../../../utility/constants/pusherTimeoutConstants";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _isEqual from "lodash/isEqual";
@@ -22,7 +23,7 @@ class ReviewCardContainer extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ isLoading: false });
-    }, 60000);
+    }, profilePageLoadingTimeout);
     this.updateLoadingAndReviewsFoundState();
     const { wotReviews, trustSearchReviews } = this.props;
     this.setState({
