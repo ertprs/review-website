@@ -6,6 +6,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Home from "@material-ui/icons/Home";
 import RateReview from "@material-ui/icons/RateReview";
 import InsertInvitation from "@material-ui/icons/InsertInvitation";
+import PublicIcon from "@material-ui/icons/Public";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import UserProfileIcon from "@material-ui/icons/AccountCircleSharp";
 import WidgetsOutlined from "@material-ui/icons/WidgetsOutlined";
@@ -16,6 +17,7 @@ import HistoryIcon from "@material-ui/icons/History";
 import URLIcon from "@material-ui/icons/Link";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CircularProgress } from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
 import WhatsAppIcon from "@material-ui/icons/WhatsApp";
 import Link from "next/link";
 
@@ -229,13 +231,12 @@ export const MainListItems = ({
 export const SecondaryListItems = ({
   subsriptionPlan,
   handleClick,
-  isLoading
+  isLoading,
+  domain
 }) => {
   return (
     <div>
-      {/* <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader> */}
-      <ListItem />
-      {/* <ListItem />
+      {/* <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader>
       <ListItem /> */}
       <ListItem
         button
@@ -261,11 +262,37 @@ export const SecondaryListItems = ({
           </>
         )}
       </ListItem>
+      <ListItem />
+      <Divider />
+      <ListItem />
+      <ListItem
+        button
+        style={{
+          background: "#303030",
+          color: "#fff"
+        }}
+      >
+        <>
+          <Tooltip
+            title={<span style={{ fontSize: "14px" }}>See Profile</span>}
+            placement="right"
+          >
+            <ListItemIcon style={{ color: "#fff" }}>
+              <Link href={`/reviews/${domain}`}>
+                <PublicIcon />
+              </Link>
+            </ListItemIcon>
+          </Tooltip>
+          <Link href={`/reviews/${domain}`}>
+            <ListItemText primary="Public Profile" />
+          </Link>
+        </>
+      </ListItem>
     </div>
   );
 };
 
-export const DashboardLogo = ({ domain }) => {
+export const DashboardLogo = () => {
   return (
     <Tooltip
       title={<span style={{ fontSize: "14px" }}>See Profile</span>}
@@ -280,18 +307,12 @@ export const DashboardLogo = ({ domain }) => {
             height: 40px;
             width: auto;
           }
-          .imgContainer:hover {
-            cursor: pointer;
-          }
           .imgStyle {
             max-width: 100%;
             height: auto;
           }
         `}</style>
-
-        <Link href={`/reviews/${domain}`}>
-          <img src="/static/images/logo_footer.png" className="imgStyle" />
-        </Link>
+        <img src="/static/images/logo_footer.png" className="imgStyle" />
       </div>
     </Tooltip>
   );

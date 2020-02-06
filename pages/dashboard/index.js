@@ -672,11 +672,12 @@ function Dashboard(props) {
             )}
             handleClick={clickToUpgradeHandler}
             isLoading={props.upgradeToPremiumIsLoading || false}
+            domain={domain || "google.com"}
           />
         </List>
         <Divider />
         <List>
-          <DashboardLogo domain={domain || "google.com"} />
+          <DashboardLogo />
         </List>
       </Drawer>
       <main className={classes.content} ref={mainContainer}>
