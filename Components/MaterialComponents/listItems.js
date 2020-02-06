@@ -274,7 +274,7 @@ export const SecondaryListItems = ({
       >
         <>
           <Tooltip
-            title={<span style={{ fontSize: "14px" }}>See Profile</span>}
+            title={<span style={{ fontSize: "14px" }}>Public Profile</span>}
             placement="right"
           >
             <ListItemIcon style={{ color: "#fff" }}>
