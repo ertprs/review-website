@@ -259,7 +259,8 @@ class Profile extends React.Component {
     if (socialPlatformReviews) {
       (Object.keys(socialPlatformReviews) || []).forEach(socialPlatform => {
         let reviewsObject = socialPlatformReviews[socialPlatform] || {};
-        if (isValidArray(_get(reviewsObject, "data.data.reviews", []))) {
+        let reviews = _get(reviewsObject, "data.data.reviews", []);
+        if (isValidArray(reviews)) {
           invalidReviews = false;
         }
       });
