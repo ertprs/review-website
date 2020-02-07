@@ -825,10 +825,8 @@ class ProfilePageBodyRight extends Component {
 
     if (socialPlatformReviews.hasOwnProperty("1")) {
       if (
-        _get(socialPlatformReviews, "1.data", null) !== null &&
-        !_isEmpty(_get(socialPlatformReviews, "1.data", {})) &&
-        !_isEmpty(_get(socialPlatformReviews, "1.data.data", {})) &&
-        !_isEmpty(_get(socialPlatformReviews, "1.data.data.reviews", []))
+        _get(socialPlatformReviews, "1.data.likes", 0) ||
+        _get(socialPlatformReviews, "1.data.followers", 0)
       ) {
         showFacebook = true;
       } else {
