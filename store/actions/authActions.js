@@ -240,7 +240,6 @@ export const logOut = () => {
   cookie.remove("loginType");
   cookie.remove("token");
   cookie.remove("placeLocated");
-  cookie.remove("placeId");
   cookie.remove("domainId");
   localStorage.removeItem("persist:primary");
   localStorage.removeItem("persist:auth");
@@ -537,11 +536,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let userProfile = get(res, "data.user", {});
       let status = get(res, "status", 0);
       let token = get(res, "data.token", "");
-      let placeId = get(
-        res,
-        "data.user.business_profile.google_places.placeId",
-        ""
-      );
+
       let socialArray = get(res, "data.user.business_profile.social", []);
       let loginType = 0;
       const businessProfile = get(res, "data.user.business_profile", {});
@@ -558,7 +553,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
             loginType = 4;
             cookie.set("loginType", loginType, { expires: 7 });
             cookie.set("token", token, { expires: 7 });
-            cookie.set("placeId", placeId, { expires: 7 });
             cookie.set("domainId", domainId, { expires: 7 });
             localStorage.setItem("token", token);
             dispatch(

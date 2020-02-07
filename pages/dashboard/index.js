@@ -542,7 +542,7 @@ function Dashboard(props) {
     }
   };
 
-  const renderAppropriateComponent = pId => {
+  const renderAppropriateComponent = () => {
     const ComponentToRender = dashboardSteps[stepToRender].componentToRender;
     return ComponentToRender;
   };
@@ -682,7 +682,7 @@ function Dashboard(props) {
       <main className={classes.content} ref={mainContainer}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          {renderAppropriateComponent(props.pId)}
+          {renderAppropriateComponent()}
         </Container>
       </main>
       <Snackbar
@@ -699,9 +699,7 @@ Dashboard.getInitialProps = async ctx => {
   // Check user's session
   const queryStep = ctx.query;
   isAuthenticatedBusiness(ctx);
-  //! remove placeId and placeLocated
-  const { placeId, placeLocated } = nextCookie(ctx);
-  return { pId: placeId, pLocated: placeLocated, queryStep };
+  return { queryStep };
 };
 
 const mapStateToProps = state => {
@@ -734,7 +732,6 @@ const mapStateToProps = state => {
   );
   const userActivated = _get(auth, "logIn.userProfile.activated", false);
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
-  const placeId = _get(businessProfile, "google_places.placeId", "");
   const placeLocated = _get(dashboardData, "locatePlace.success", false);
   const upgradeToPremiumRes = _get(
     dashboardData,
@@ -762,7 +759,6 @@ const mapStateToProps = state => {
     activation_required,
     subscriptionPlan,
     userActivated,
-    placeId,
     placeLocated,
     upgradeToPremiumRes,
     upgradeToPremiumIsLoading,

@@ -481,13 +481,7 @@ const mapStateToProps = state => {
     "logIn.userProfile.business_profile.google_places.address",
     ""
   );
-  const googlePlaceId = _get(
-    auth,
-    "logIn.userProfile.business_profile.google_places.placeId",
-    ""
-  );
   const reviewsObject = _get(dashboardData, "reviewsObject", {});
-
   const showGetStarted = _get(dashboardData, "showGetStarted", false);
   const screenshot = _get(
     auth,
@@ -511,7 +505,6 @@ const mapStateToProps = state => {
     googleDirectReviewUrl,
     businessAddress,
     reviewsObject,
-    googlePlaceId,
     socialArray,
     dashboardData,
     showGetStarted,
