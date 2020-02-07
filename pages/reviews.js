@@ -7,6 +7,7 @@ import Snackbar from "../Components/Widgets/Snackbar";
 import UnicornLoader from "../Components/Widgets/UnicornLoader";
 import { isValidArray } from "../utility/commonFunctions";
 import { removeSubDomain } from "../utility/commonFunctions";
+import { profilePageLoadingTimeout } from "../utility/constants/pusherTimeoutConstants";
 import {
   Link,
   Element,
@@ -68,7 +69,7 @@ class Profile extends React.Component {
     this.props.setLoading(true);
     setTimeout(() => {
       this.setState({ waitingTimeOut: false });
-    }, 60000);
+    }, profilePageLoadingTimeout);
     this.setState({ isMounted: true });
     Events.scrollEvent.register("begin", function() {});
     Events.scrollEvent.register("end", function() {});
@@ -422,4 +423,14 @@ export default connect(mapStateToProps, {
   fetchProfileReviewsInitially
 })(Profile);
 
-// We are connecting two pushers: PusherDataComponent and AggregatorPusherComponent. PusherDataComponent is connected for 1minute and  AggregatorPusherComponent is connected for 5mins. In case of new domain we are showing unicornLoader for 1 minute and we have also set 1 min timing in reviewCardContainer to show "no reviews found"
+//! important notes
+//? We are connecting two pushers: PusherDataComponent and AggregatorPusherComponent.
+//? We are disconnecting both pushers and stopping reviews loader and showing no review found after 1 min. We can increase/decrease this timing from here utility/constants/profilePageLoadingTimeout only.
+//? All the reviews and right side cards are coming from socialPlatformReviews key inside profileData
+//? Unicorn loader is displayed if we get isNewDomain and gets hidden if any of these two cases match (i)1min timeout, (ii) any review come
+//? We are checking for reviews loading and no review case by looping through socialPlatformReviews key inside profileData and wot and trustSearch reviews.
+//? Wot and trustSearch reviews are coming differently. Wot inside wot key and trustSearch inside reviews->domain
+//? In order to add any new platform in reviews, we can add it in reviewsOrder arr in SocialPlatformReviews component at whichever position we want to display it.
+//? Right side platform cards are mapped one by one by their platformId, in order to add any new we can add in ProfilePageBodyRight component
+//? In header reviews and rating are coming from ratings key (verify-domain pusher broadcast) and when it changes it comes inside rating-update key
+//? verified is showing from is_verified key inside header_data and claim if this is your website is displaying from company key inside header_data if it is not equal to companyName inside dashboard

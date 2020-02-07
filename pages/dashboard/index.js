@@ -39,6 +39,7 @@ import { useRouter } from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
+import { isValidArray } from "../../utility/commonFunctions";
 import dynamic from "next/dynamic";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -406,20 +407,18 @@ function Dashboard(props) {
     const { setReviewsPusherConnect } = props;
     //? this will connect the pusher when someone reloads the dashboard, so that we can again listen for the keys and fetch reviews accordingly
     setReviewsPusherConnect(true);
-    //? comment when pagination is done on backend
+    //? this will fetch reviews of all platforms that exist inside social array
     const socialArray = _get(props, "socialArray", []);
     const reviews = _get(props, "reviews", {});
-    if (Array.isArray(socialArray)) {
-      if (socialArray.length > 0) {
-        if (reviews) {
-          if (Object.keys(reviews).length === 0) {
-            //?need to make sure that this is not called after login
-            props.setReviewsAfterLogin(socialArray);
-          }
+    if (isValidArray(socialArray)) {
+      if (reviews) {
+        if (Object.keys(reviews).length === 0) {
+          //?need to make sure that this is not called after login
+          props.setReviewsAfterLogin(socialArray);
         }
       }
     }
-    //?end comment
+    //? **********************************************************************************
   }, []);
 
   const handleMenuItemClicked = index => {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Pusher from "pusher-js";
+import { profilePageLoadingTimeout } from "../../utility/constants/pusherTimeoutConstants";
 
 class DomainPusherComponent extends Component {
   state = { reviewScrapeResult: {} };
@@ -28,7 +29,7 @@ class DomainPusherComponent extends Component {
 
     setTimeout(() => {
       pusher.disconnect();
-    }, 300000);
+    }, profilePageLoadingTimeout);
 
     pusher.connection.bind("disconnected", () => {
       console.log("aggregator pusher disconnected");

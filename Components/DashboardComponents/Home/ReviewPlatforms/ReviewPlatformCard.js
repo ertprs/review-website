@@ -33,8 +33,7 @@ class ReviewPlatformCard extends React.Component {
       maxRating = "",
       likes = "",
       followers = "",
-      totalReviews = "",
-      reviewsArray = [],
+      totalReviews = 0,
       imageLogo = "";
     if (reviews[socialMediaAppId]) {
       if (reviews[socialMediaAppId][profileId]) {
@@ -44,8 +43,7 @@ class ReviewPlatformCard extends React.Component {
         maxRating = _get(primaryReviewData, "data.data.max_rating", 5);
         likes = _get(primaryReviewData, "data.data.likes", "");
         followers = _get(primaryReviewData, "data.data.followers", "");
-        reviewsArray = _get(primaryReviewData, "data.data.reviews", []);
-        totalReviews = (reviewsArray || []).length;
+        totalReviews = _get(primaryReviewData, "data.data.tsTotal", 0);
         imageLogo = "";
         if (Number(socialMediaAppId)) {
           if (reviewURLObjects[Number(socialMediaAppId)]) {
@@ -195,11 +193,7 @@ const mapStateToProps = (state, ownProps) => {
       let platformReviewObj = _get(reviews, socialMediaAppId, {});
       let profileReviewObj = _get(platformReviewObj, profileId, {});
       let rating = Number(_get(profileReviewObj, "data.data.rating", 0));
-      let reviewsArr = _get(profileReviewObj, "data.data.reviews", []);
-      let totalReviews = 0;
-      if (isValidArray(reviewsArr)) {
-        totalReviews = (reviewsArr || []).length;
-      }
+      let totalReviews = _get(profileReviewObj, "data.data.tsTotal", 0);
       let isFetching = _get(profileReviewObj, "isLoading", false);
       return {
         name,
