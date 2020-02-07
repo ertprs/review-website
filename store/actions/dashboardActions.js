@@ -199,7 +199,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         },
         locatePlaceTemp: {
           isLoading: false,
-          errorMsg: _get(error, "response.data.message", "Some Error Occured!")
+          errorMsg: _get(error, "response.data.message", "Some Error Occurred!")
         }
       });
     }
@@ -643,19 +643,22 @@ export const fetchReviews = (
     : `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&page=${page}&perPage=${perPage}`;
 
   if (socialAppId && profileId && domainId) {
-    console.log("hello isss");
     return async (dispatch, getState) => {
       const state = getState();
-      const dashboardData = _get(state, "dashboardData", {});
-      const reviews = _get(dashboardData, "reviews", {});
+      const reviews = _get(state, "dashboardData.reviews", {});
+      const platformReviewsObj = _get(reviews, socialAppId, {});
+      const profileReviewsObj = _get(platformReviewsObj, profileId, {});
       dispatch({
         type: FETCH_REVIEWS_INIT,
         reviews: {
           ...reviews,
           [socialAppId]: {
-            ..._get(reviews, socialAppId, {}),
+            ...platformReviewsObj,
             [profileId]: {
-              ..._get(reviews, socialAppId.profileId, {}),
+              ...profileReviewsObj,
+              data: {
+                ..._get(profileReviewsObj, "data", {})
+              },
               isLoading: true,
               success: undefined
             }
@@ -663,7 +666,7 @@ export const fetchReviews = (
         }
       });
       try {
-        const result = await axios.get({
+        const result = await axios({
           method: "GET",
           url: api,
           headers: { Authorization: `Bearer ${token}` }
@@ -675,34 +678,60 @@ export const fetchReviews = (
         }
         let data = { ..._get(result, "data", {}) };
         dispatch(
-          setReviewsSuccessInReducer(data, success, socialAppId, profileId)
+          setReviewsSuccessInReducer(
+            data,
+            success,
+            reviews,
+            platformReviewsObj,
+            profileReviewsObj,
+            socialAppId,
+            profileId
+          )
         );
       } catch (error) {
-        dispatch(setReviewsFailureInReducer(socialAppId, profileId));
+        dispatch(
+          setReviewsFailureInReducer(
+            reviews,
+            platformReviewsObj,
+            socialAppId,
+            profileId
+          )
+        );
       }
     };
   }
 };
-
+//? in case of success, we are overriding only those keys which comes otherwise preserving old data.
+//? But reviews are always  with new response, they are not preserved
 export const setReviewsSuccessInReducer = (
-  data,
+  result,
   success,
+  reviews,
+  platformReviewsObj,
+  profileReviewsObj,
   socialAppId,
   profileId
 ) => {
   return async (dispatch, getState) => {
-    const state = getState();
-    const dashboardData = _get(state, "dashboardData", {});
-    const reviews = _get(dashboardData, "reviews", {});
     dispatch({
       type: FETCH_REVIEWS_SUCCESS,
       reviews: {
         ...reviews,
         [socialAppId]: {
-          ..._get(reviews, socialAppId, {}),
+          ...platformReviewsObj,
           [profileId]: {
-            ..._get(reviews, socialAppId.profileId, {}),
-            data: { ...data, socialAppId, profileId },
+            ...profileReviewsObj,
+            data: {
+              ..._get(profileReviewsObj, "data", {}),
+              ...result,
+              socialAppId,
+              profileId,
+              data: {
+                ..._get(profileReviewsObj, "data.data", {}),
+                ..._get(result, "data", {}),
+                reviews: [..._get(result, "data.reviews", [])]
+              }
+            },
             isLoading: false,
             success
           }
@@ -712,20 +741,25 @@ export const setReviewsSuccessInReducer = (
   };
 };
 
-export const setReviewsFailureInReducer = (socialAppId, profileId) => {
+//? In case of failure we are removing all data of that profile
+export const setReviewsFailureInReducer = (
+  reviews,
+  platformReviewsObj,
+  socialAppId,
+  profileId
+) => {
   return async (dispatch, getState) => {
-    const state = getState();
-    const dashboardData = _get(state, "dashboardData", {});
-    const reviews = _get(dashboardData, "reviews", {});
     dispatch({
       type: FETCH_REVIEWS_FAILURE,
       reviews: {
         ...reviews,
         [socialAppId]: {
-          ..._get(reviews, socialAppId, {}),
+          ...platformReviewsObj,
           [profileId]: {
-            ..._get(reviews, socialAppId.profileId, {}),
-            data: { socialAppId, profileId },
+            data: {
+              socialAppId,
+              profileId
+            },
             isLoading: false,
             success: false
           }
@@ -1176,7 +1210,6 @@ export const postSplitPlatformConfigForSplitPlatform = (
 
 //? this action creator is used to set reviews in dashboardData after login and on dashboard componentDidMount only
 export const setReviewsAfterLogin = socialArray => {
-  console.log(socialArray, "socialArray");
   const token = cookie.get("token");
   return async (dispatch, getState) => {
     if (isValidArray(socialArray)) {

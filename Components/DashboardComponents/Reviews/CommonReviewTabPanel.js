@@ -55,31 +55,26 @@ class CommonReviewTabPanel extends Component {
     const likes = _get(reviewsOfPrimaryPlace, "data.data.likes", 0);
     const followers = _get(reviewsOfPrimaryPlace, "data.data.followers", 0);
     const rating = _get(reviewsOfPrimaryPlace, "data.data.rating", 0);
-    let total = _get(reviewsOfPrimaryPlace, "data.data.total", 0);
+    let total = _get(reviewsOfPrimaryPlace, "data.data.tsTotal", 0);
     const pageNo = 1;
     let perPage = 10;
     if (success && isValidArray(reviews)) {
       perPage = total >= 10 ? 10 : total;
     }
-    this.setState(
-      {
-        defaultPlace: primaryPlatform,
-        selectedPlace: primaryPlatform,
-        reviewUrl,
-        reviews,
-        isLoading,
-        success,
-        likes,
-        followers,
-        rating,
-        total,
-        perPage,
-        pageNo
-      },
-      () => {
-        this.fetchReviewsHandler();
-      }
-    );
+    this.setState({
+      defaultPlace: primaryPlatform,
+      selectedPlace: primaryPlatform,
+      reviewUrl,
+      reviews,
+      isLoading,
+      success,
+      likes,
+      followers,
+      rating,
+      total,
+      perPage,
+      pageNo
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -100,29 +95,24 @@ class CommonReviewTabPanel extends Component {
       const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
       const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
       const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
-      let total = _get(selectedPlaceReviews, "data.data.total", 0);
+      let total = _get(selectedPlaceReviews, "data.data.tsTotal", 0);
       let pageNo = 1;
       let perPage = 10;
       if (success && isValidArray(reviews)) {
         perPage = total >= 10 ? 10 : total;
       }
-      this.setState(
-        {
-          reviews,
-          reviewUrl,
-          isLoading,
-          success,
-          likes,
-          followers,
-          rating,
-          total,
-          perPage,
-          pageNo
-        },
-        () => {
-          this.fetchReviewsHandler();
-        }
-      );
+      this.setState({
+        reviews,
+        reviewUrl,
+        isLoading,
+        success,
+        likes,
+        followers,
+        rating,
+        total,
+        perPage,
+        pageNo
+      });
     }
     if (toggleReviewSuccess !== prevProps.toggleReviewSuccess) {
       if (toggleReviewSuccess === true) {
@@ -146,9 +136,7 @@ class CommonReviewTabPanel extends Component {
     const { selectedPlace, perPage, pageNo } = this.state;
     const domainId = cookie.get("domainId");
     const profileId = _get(selectedPlace, "value", 0);
-    console.log(socialMediaAppId, profileId, domainId);
     if (socialMediaAppId && profileId && domainId) {
-      console.log("hello is");
       fetchReviews(socialMediaAppId, profileId, domainId, pageNo, perPage);
     }
   };
@@ -415,11 +403,11 @@ const mapStateToProps = (state, ownProps) => {
     platformReviews,
     toggleReviewSuccess,
     toggleReviewErrorMsg,
-    toggleReviewLoading,
-    fetchReviews
+    toggleReviewLoading
   };
 };
 
-export default connect(mapStateToProps, { toggleReviewVisibility })(
-  CommonReviewTabPanel
-);
+export default connect(mapStateToProps, {
+  toggleReviewVisibility,
+  fetchReviews
+})(CommonReviewTabPanel);

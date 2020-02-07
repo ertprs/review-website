@@ -515,7 +515,6 @@ export const businessSignUp = (signupData, api) => {
 
 export const businessLogIn = (loginData, api, directLogin) => {
   return async dispatch => {
-    let reviews = {};
     dispatch({
       type: BUSINESS_LOGIN_INIT,
       logIn: {
@@ -543,6 +542,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
         "data.user.business_profile.google_places.placeId",
         ""
       );
+      let socialArray = get(res, "data.user.business_profile.social", []);
       let loginType = 0;
       const businessProfile = get(res, "data.user.business_profile", {});
       const domainId = get(businessProfile, "domainId", 0);
@@ -586,8 +586,7 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 error: ""
               }
             });
-            //?Uncomment when pagination is done on backend
-            //we are fetching reviews of all social profiles that exist inside social key inside useEffect of dashboard index
+            // this will fetch reviews of all platforms that exist inside social array, but we are doing the same in dashboard useEffect so that on page reload reviews will be refreshed
             // if (isValidArray(socialArray)) {
             //   dispatch(setReviewsAfterLogin(socialArray));
             // }

@@ -760,7 +760,7 @@ class GetStarted extends Component {
       socialArray
     } = this.props;
     setIsNewUser(false);
-    //Uncomment when pagination is done on backend
+    //! reviews will be fetched in dashboard cdm
     // if (isValidArray(socialArray)) {
     //   setReviewsAfterLogin(socialArray);
     // }
