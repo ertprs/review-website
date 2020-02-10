@@ -49,7 +49,9 @@ class CommonReviewTabPanel extends Component {
     const profileId = _get(primaryPlatform, "value", 0);
     const reviewsOfPrimaryPlace = _get(platformReviews, profileId, {});
     const reviews = _get(reviewsOfPrimaryPlace, "data.data.reviews", []);
-    const reviewUrl = _get(reviewsOfPrimaryPlace, "data.data.url", "");
+    const reviewUrl =
+      _get(reviewsOfPrimaryPlace, "data.data.url", "") ||
+      _get(reviewsOfPrimaryPlace, "data.data.businessProfile", "");
     const isLoading = _get(reviewsOfPrimaryPlace, "isLoading", false);
     const success = _get(reviewsOfPrimaryPlace, "success", undefined);
     const likes = _get(reviewsOfPrimaryPlace, "data.data.likes", 0);
@@ -89,7 +91,9 @@ class CommonReviewTabPanel extends Component {
       let profileId = _get(selectedPlace, "value", "");
       let selectedPlaceReviews = _get(platformReviews, profileId, {});
       let reviews = _get(selectedPlaceReviews, "data.data.reviews", []);
-      let reviewUrl = _get(selectedPlaceReviews, "data.data.url", "");
+      let reviewUrl =
+        _get(selectedPlaceReviews, "data.data.url", "") ||
+        _get(reviewsOfPrimaryPlace, "data.data.businessProfile", "");
       let isLoading = _get(selectedPlaceReviews, "isLoading", false);
       let success = _get(selectedPlaceReviews, "success", undefined);
       const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
