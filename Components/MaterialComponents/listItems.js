@@ -6,6 +6,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Home from "@material-ui/icons/Home";
 import RateReview from "@material-ui/icons/RateReview";
 import InsertInvitation from "@material-ui/icons/InsertInvitation";
+import PublicIcon from "@material-ui/icons/Public";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import UserProfileIcon from "@material-ui/icons/AccountCircleSharp";
 import WidgetsOutlined from "@material-ui/icons/WidgetsOutlined";
@@ -16,7 +17,9 @@ import HistoryIcon from "@material-ui/icons/History";
 import URLIcon from "@material-ui/icons/Link";
 import Tooltip from "@material-ui/core/Tooltip";
 import { CircularProgress } from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
 import WhatsAppIcon from "@material-ui/icons/WhatsApp";
+import Link from "next/link";
 
 export const MainListItems = ({
   stepToRender,
@@ -24,7 +27,8 @@ export const MainListItems = ({
   getStartedHide,
   homeDisabled,
   handleMainListItemClick,
-  getStartedDisabled
+  getStartedDisabled,
+  domain
 }) => {
   return (
     <div>
@@ -221,20 +225,36 @@ export const MainListItems = ({
         </Tooltip>
         <ListItemText primary="User Profile" />
       </ListItem>
+      <ListItem />
+      <Divider />
+      <ListItem button className="pb_0">
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Public Profile</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <Link href={`/reviews/${domain}`}>
+              <PublicIcon />
+            </Link>
+          </ListItemIcon>
+        </Tooltip>
+        <Link href={`/reviews/${domain}`}>
+          <ListItemText primary="Public Profile" />
+        </Link>
+      </ListItem>
     </div>
   );
 };
 
 export const SecondaryListItems = ({
-  subsriptionPlan,
+  subscriptionPlan,
   handleClick,
-  isLoading
+  isLoading,
+  domain
 }) => {
   return (
     <div>
-      {/* <ListSubheader inset>Your plan: {subsriptionPlan}</ListSubheader> */}
-      <ListItem />
-      {/* <ListItem />
+      {/* <ListSubheader inset>Your plan: {subscriptionPlan}</ListSubheader>
       <ListItem /> */}
       <ListItem
         button

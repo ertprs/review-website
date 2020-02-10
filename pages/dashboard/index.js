@@ -39,6 +39,7 @@ import { useRouter } from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
+import { isValidArray } from "../../utility/commonFunctions";
 import dynamic from "next/dynamic";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -406,20 +407,18 @@ function Dashboard(props) {
     const { setReviewsPusherConnect } = props;
     //? this will connect the pusher when someone reloads the dashboard, so that we can again listen for the keys and fetch reviews accordingly
     setReviewsPusherConnect(true);
-    //? comment when pagination is done on backend
+    //? this will fetch reviews of all platforms that exist inside social array
     const socialArray = _get(props, "socialArray", []);
     const reviews = _get(props, "reviews", {});
-    if (Array.isArray(socialArray)) {
-      if (socialArray.length > 0) {
-        if (reviews) {
-          if (Object.keys(reviews).length === 0) {
-            //?need to make sure that this is not called after login
-            props.setReviewsAfterLogin(socialArray);
-          }
+    if (isValidArray(socialArray)) {
+      if (reviews) {
+        if (Object.keys(reviews).length === 0) {
+          //?need to make sure that this is not called after login
+          props.setReviewsAfterLogin(socialArray);
         }
       }
     }
-    //?end comment
+    //? **********************************************************************************
   }, []);
 
   const handleMenuItemClicked = index => {
@@ -543,7 +542,7 @@ function Dashboard(props) {
     }
   };
 
-  const renderAppropriateComponent = pId => {
+  const renderAppropriateComponent = () => {
     const ComponentToRender = dashboardSteps[stepToRender].componentToRender;
     return ComponentToRender;
   };
@@ -573,7 +572,13 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
-  const { domainId, fetchReviews, subscriptionId, setInvitationQuota } = props;
+  const {
+    domainId,
+    fetchReviews,
+    subscriptionId,
+    setInvitationQuota,
+    domain
+  } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -587,7 +592,7 @@ function Dashboard(props) {
       ) : null}
       {props.isReviewsPusherConnected === true ? (
         <ReviewsPusher
-          domain={props.domain}
+          domain={domain}
           onAggregatorDataChange={data => {
             let socialAppId = _get(data, "response.socialAppId", "");
             let profileId = _get(data, "response.profileId", "");
@@ -656,13 +661,14 @@ function Dashboard(props) {
             menuItemDisabled={menuItemsDisabled}
             handleMainListItemClick={handleMenuItemClicked}
             stepToRender={stepToRender}
+            domain={domain || "google.com"}
           />
         </List>
         <Divider />
         <List>
           <SecondaryListItems
-            subsriptionPlan={getSubscriptionPlan(
-              _get(props, "subsriptionPlan", 0)
+            subscriptionPlan={getSubscriptionPlan(
+              _get(props, "subscriptionPlan", 0)
             )}
             handleClick={clickToUpgradeHandler}
             isLoading={props.upgradeToPremiumIsLoading || false}
@@ -676,7 +682,7 @@ function Dashboard(props) {
       <main className={classes.content} ref={mainContainer}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          {renderAppropriateComponent(props.pId)}
+          {renderAppropriateComponent()}
         </Container>
       </main>
       <Snackbar
@@ -693,9 +699,7 @@ Dashboard.getInitialProps = async ctx => {
   // Check user's session
   const queryStep = ctx.query;
   isAuthenticatedBusiness(ctx);
-  //! remove placeId and placeLocated
-  const { placeId, placeLocated } = nextCookie(ctx);
-  return { pId: placeId, pLocated: placeLocated, queryStep };
+  return { queryStep };
 };
 
 const mapStateToProps = state => {
@@ -721,14 +725,13 @@ const mapStateToProps = state => {
     "logIn.userProfile.activation_required",
     false
   );
-  const subsriptionPlan = _get(
+  const subscriptionPlan = _get(
     auth,
     "logIn.userProfile.subscription.plan_type_id",
     0
   );
   const userActivated = _get(auth, "logIn.userProfile.activated", false);
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
-  const placeId = _get(businessProfile, "google_places.placeId", "");
   const placeLocated = _get(dashboardData, "locatePlace.success", false);
   const upgradeToPremiumRes = _get(
     dashboardData,
@@ -754,9 +757,8 @@ const mapStateToProps = state => {
     userEmail,
     userPhone,
     activation_required,
-    subsriptionPlan,
+    subscriptionPlan,
     userActivated,
-    placeId,
     placeLocated,
     upgradeToPremiumRes,
     upgradeToPremiumIsLoading,

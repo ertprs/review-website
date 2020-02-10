@@ -10,7 +10,6 @@ import SearchInput from "../Components/MaterialComponents/SearchInput";
 import SearchBoxSuggestion from "../Components/Widgets/SuggestionBox";
 import { connect } from "react-redux";
 import Snackbar from "../Components/Widgets/Snackbar";
-import { startLoading } from "../store/actions/loaderAction";
 import { GoogleLogout } from "react-google-login";
 import { logOut } from "../store/actions/authActions";
 import SubscriptionPlanCard from "../Components/Widgets/SubscriptionPlanCard/SubscriptionPlanCard";
@@ -24,6 +23,9 @@ import {
 } from "react-scroll";
 import _get from "lodash/get";
 import NextLink from "next/link";
+import { removeSubDomain } from "../utility/commonFunctions";
+import { setLoading } from "../store/actions/domainProfileActions";
+
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
@@ -35,10 +37,6 @@ const useStyles = makeStyles(theme => ({
     marginRight: "12px"
   },
   title: {
-    // display: "none",
-    // [theme.breakpoints.up("sm")]: {
-    //   display: "block"
-    // },
     "&:hover": {
       cursor: "pointer"
     }
@@ -143,8 +141,7 @@ const Home = props => {
   };
 
   const handleSearchSubmit = searchBoxVal => {
-    console.log(searchBoxVal, "searchbox");
-    props.startLoading();
+    const { setLoading } = props;
     setPageLoading(true);
     if (searchBoxVal.trim() !== "") {
       if (
@@ -153,8 +150,7 @@ const Home = props => {
         )
       ) {
         let domainName = searchBoxVal.toLowerCase().trim();
-        let parsed_domain_name = domainName.replace(/https:\/\//gim, "");
-        parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+        let parsed_domain_name = removeSubDomain(domainName);
         setLoading(true);
         Router.push(
           `/reviews?domain=${parsed_domain_name}`,
@@ -1841,4 +1837,4 @@ const mapStateToProps = state => {
   return { showSnackbar, variant, message, auth };
 };
 
-export default connect(mapStateToProps, { startLoading, logOut })(Home);
+export default connect(mapStateToProps, { logOut, setLoading })(Home);

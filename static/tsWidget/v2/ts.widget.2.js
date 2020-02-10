@@ -110,7 +110,6 @@
               try {
                 parsedData = JSON.parse(event.data);
               } catch (ex) {
-                console.log("Invalid data sent on widget: " + event.data);
                 return;
               }
 

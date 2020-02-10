@@ -34,7 +34,8 @@ const CreateTemplate = props => {
     handleSubmit,
     handleCheckboxChange,
     isLoading,
-    whatsAppPusherConnected
+    whatsAppPusherConnected,
+    isSessionPresent
   } = props;
   const isLanguageSelected = _get(createTemplate, "templateLanguage.value", "");
   const saveCampaign = _get(createTemplate, "saveCampaign", false);
@@ -105,14 +106,13 @@ const CreateTemplate = props => {
               name="saveCampaign"
             />
             I want to save this campaign
-            {/* uncomment when keep me logged in key need to send
-             <Checkbox
+            <Checkbox
               color="primary"
               checked={keepMeLoggedIn}
               onChange={handleCheckboxChange}
               name="keepMeLoggedIn"
             />
-            Keep me logged in   */}
+            Keep me logged in
           </div>
           <div className="submitBtn">
             <Button
@@ -130,7 +130,11 @@ const CreateTemplate = props => {
               {isLoading ? (
                 <CircularProgress size={25} color={"#fff"} />
               ) : whatsAppPusherConnected ? (
-                "Loading QR code"
+                isSessionPresent ? (
+                  "Trying to login using existing session!"
+                ) : (
+                  "Loading QR code"
+                )
               ) : (
                 "Start Sending Invitations"
               )}
@@ -149,8 +153,14 @@ const mapStateToProps = state => {
   const isLoading =
     _get(whatsAppManualInvite, "isLoading", false) ||
     _get(whatsAppManualCommit, "isLoading", false);
+  const isSessionPresent = _get(
+    dashboardData,
+    "whatsAppManualInvite.isSessionPresent",
+    false
+  );
   return {
-    isLoading
+    isLoading,
+    isSessionPresent
   };
 };
 

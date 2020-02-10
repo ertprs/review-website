@@ -11,6 +11,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import CheckBox from "@material-ui/icons/CheckBox";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowForward";
+import GetSchemaCode from "./GetSchemaCode/GetSchemaCode";
 import uuid from "uuid/v1";
 import { connect } from "react-redux";
 import _get from "lodash/get";
@@ -38,7 +39,8 @@ const widgetsObj = [
   {
     id: 0,
     title: "Combined Reviews carousel",
-    tagLine: "Boost customer confidence with honest reviews from different platforms",
+    tagLine:
+      "Boost customer confidence with honest reviews from different platforms",
     minHeight: 400,
     imgURL: "/static/images/combinedCarousel.png",
     listItems: [
@@ -101,13 +103,13 @@ class WidgetsShowCase extends Component {
     selectedWidgetIndex: 0
   };
 
-  componentDidMount(){
-    this.props.scrollToTopOfThePage()
+  componentDidMount() {
+    this.props.scrollToTopOfThePage();
   }
   renderWidgetBox = (item, index) => {
     return (
       <div
-        className={item.id === 1 || item.id===0 ? "col-md-12" : "col-md-6"}
+        className={item.id === 1 || item.id === 0 ? "col-md-12" : "col-md-6"}
         style={{ alignSelf: "stretch" }}
       >
         <style jsx>
@@ -141,7 +143,9 @@ class WidgetsShowCase extends Component {
             <p>{item.tagLine}</p>
             <div
               className={`${
-                item.id === 1 || item.id===0 ? "widgetImgContainer" : "widgetImgContainerSm"
+                item.id === 1 || item.id === 0
+                  ? "widgetImgContainer"
+                  : "widgetImgContainerSm"
               }`}
             >
               <img src={item.imgURL} />
@@ -194,6 +198,8 @@ class WidgetsShowCase extends Component {
                 return this.renderWidgetBox(item, index);
               })}
             </div>
+            {/* uncomment when schema code API is ready */}
+            {/* <GetSchemaCode /> */}
           </>
         ) : (
           <GetWidget

@@ -16,6 +16,7 @@ import uuid from "uuid/v1";
 import _get from "lodash/get";
 import Router from "next/router";
 import _findIndex from "lodash/findIndex";
+import { removeSubDomain } from "../utility/commonFunctions";
 
 const widgetsObj = [
   {
@@ -41,7 +42,8 @@ const widgetsObj = [
   {
     id: 0,
     title: "Combined Reviews carousel",
-    tagLine: "Boost customer confidence with honest reviews from different platforms",
+    tagLine:
+      "Boost customer confidence with honest reviews from different platforms",
     minHeight: 400,
     imgURL: "/static/images/combinedCarousel.png",
     listItems: [
@@ -114,7 +116,7 @@ class GetWidgets extends Component {
     const { domain } = this.props;
     return (
       <div
-        className={item.id === 1 || item.id===0 ? "col-md-12" : "col-md-6"}
+        className={item.id === 1 || item.id === 0 ? "col-md-12" : "col-md-6"}
         style={{ alignSelf: "stretch" }}
       >
         <style jsx>
@@ -148,7 +150,9 @@ class GetWidgets extends Component {
             <p>{item.tagLine}</p>
             <div
               className={`${
-                item.id === 1 || item.id===0 ? "widgetImgContainer" : "widgetImgContainerSm"
+                item.id === 1 || item.id === 0
+                  ? "widgetImgContainer"
+                  : "widgetImgContainerSm"
               }`}
             >
               <img src={item.imgURL} />
@@ -203,7 +207,12 @@ class GetWidgets extends Component {
 
   toggleViewWithUrl = () => {
     const { domain } = this.props;
-    const widgetTypes = ["carousel", "card", "card_with_reviews", "combined_carousel"];
+    const widgetTypes = [
+      "carousel",
+      "card",
+      "card_with_reviews",
+      "combined_carousel"
+    ];
     let url = window.location.href;
     let urlSplit = url.split("#");
     if (urlSplit.length > 1) {
@@ -229,9 +238,9 @@ class GetWidgets extends Component {
     }
   };
 
-  scrollToTopOfThePage = ()=>{
-    window.scrollTo(0,0);
-  }
+  scrollToTopOfThePage = () => {
+    window.scrollTo(0, 0);
+  };
 
   componentDidMount() {
     window.addEventListener("popstate", this.onBackButtonEvent);
@@ -280,6 +289,7 @@ class GetWidgets extends Component {
 GetWidgets.getInitialProps = async ctx => {
   const { query, res } = ctx;
   let domain = query.domain || "";
+  domain = removeSubDomain(domain);
   if (!domain) {
     if (res) {
       res.writeHead(302, {

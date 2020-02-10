@@ -95,10 +95,9 @@ export const areFieldsTouched = formData => {
   return touched;
 };
 
-//remove https and www from domain names
+//remove https || http || www from domain names
 export const removeSubDomain = domain => {
-  let parsed_domain_name = domain.replace(/https:\/\//gim, "");
-  parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
+  let parsed_domain_name = domain.replace(/http:\/\/|https:\/\/|www\./gim, "");
   return parsed_domain_name;
 };
 
@@ -113,14 +112,11 @@ export const isFifteenMinuteDiff = date => {
   if (selectedDay === currentDay) {
     if (currentHour > selectedHour) {
       valid = false;
-      console.log("current hour is greater than selected hour");
     } else if (currentHour === selectedHour) {
       if (currentMinute >= selectedMinutes) {
         valid = false;
-        console.log("current minute is greater than selected minutes");
       } else if (selectedMinutes - currentMinute < 15) {
         valid = false;
-        console.log("selected minutes diff < 15");
       }
     }
   }

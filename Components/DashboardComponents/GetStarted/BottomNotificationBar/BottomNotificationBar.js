@@ -65,6 +65,7 @@ class BottomNotificationBar extends Component {
               width: 100%;
               background: rgba(35, 93, 87, 0.8);
               padding: 10px 10px 8px 10px;
+              z-index: 10000;
             }
             .notificationMsg {
               color: #fff;

@@ -1,32 +1,23 @@
 import React, { Component } from "react";
-import Paper from "../../../Components/MaterialComponents/Paper";
-import Card from "../../../Components/MaterialComponents/Card";
-import ReviewCard from "../../Widgets/ReviewCard/ReviewCard";
-import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
-import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
-import _get from "lodash/get";
 import { connect } from "react-redux";
-import Placeholder from "./headerPlaceholder";
+import ReviewCard from "../../Widgets/ReviewCard/ReviewCard";
 import CustomModal from "../../Widgets/CustomModal/CustomModal";
 import ReportDomainModal from "../../ReportDomainModal";
+import { profilePageHeaderStyles } from "./profilePageHeaderStyles";
+import { ratingType, ratingColor } from "../../../utility/ratingTypeColor";
+import { removeSubDomain } from "../../../utility/commonFunctions";
+import Placeholder from "./headerPlaceholder";
+import Paper from "../../../Components/MaterialComponents/Paper";
+import Card from "../../../Components/MaterialComponents/Card";
+import RatingIndicators from "../../Widgets/RatingIndicators/RatingIndicators";
 import VerifiedIcon from "@material-ui/icons/VerifiedUser";
 import UnVerifiedIcon from "@material-ui/icons/NotInterested";
 import Tooltip from "@material-ui/core/Tooltip";
-import {
-  Link,
-  DirectLink,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller
-} from "react-scroll";
-import { ratingType, ratingColor } from "../../../utility/ratingTypeColor";
+import { Link } from "react-scroll";
+import _get from "lodash/get";
 
 class ProfilePageHeader extends Component {
   state = {
-    headerData: {},
-    imageSrc: "",
     showReportDomainModal: false
   };
 
@@ -34,36 +25,22 @@ class ProfilePageHeader extends Component {
     const {
       domainProfileData,
       isLoading,
-      googleRating,
-      trustPilotRating,
-      watchdogRating,
-      reviewsCount
+      totalReviews,
+      averageRating,
+      onTrustClick
     } = this.props;
 
     const { showReportDomainModal } = this.state;
     const headerData = ((domainProfileData || {}).headerData || {}).data || {};
-    const ratings = (headerData || {}).rating || 0;
     const domain_name = (headerData || {}).domain_name || "";
     const is_verified = (headerData || {}).is_verified || false;
     const screenshotUrl = (headerData || {}).screenshot || "";
-    const review_length = (headerData || {}).review_length || 0;
-    const willCome = (headerData || {}).willCome || false;
-    let parsed_domain_name = domain_name.replace(/https:\/\//gim, "");
-    parsed_domain_name = parsed_domain_name.replace(/www\./gim, "");
-    let domainRating = 0;
-    if (googleRating && Number(googleRating) > 0) {
-      domainRating = Number(googleRating);
-    } else if (trustPilotRating && Number(trustPilotRating) > 0) {
-      domainRating = trustPilotRating;
-    } else if (watchdogRating && Number(watchdogRating) > 0) {
-      domainRating = watchdogRating;
-    }
-
+    let parsed_domain_name = removeSubDomain(domain_name);
     const reviewCardBody = (
       <RatingIndicators
-        rating={Number(domainRating)}
+        rating={Number(averageRating)}
         typeOfWidget="star"
-        widgetRatedColors={ratingColor[Math.round(Number(domainRating)) || 0]}
+        widgetRatedColors={ratingColor[Math.round(Number(averageRating)) || 0]}
         widgetDimensions="35px"
         widgetSpacings="2px"
       />
@@ -87,7 +64,6 @@ class ProfilePageHeader extends Component {
                     Math.random() * 10 + 1
                   )}`}
                   image={screenshotUrl}
-                  // image={`http://localhost:3000/upload?domain=https://www.${domain_name}/`}
                   imgContainerStyles={{
                     maxWidth: "300px"
                   }}
@@ -95,13 +71,13 @@ class ProfilePageHeader extends Component {
                   subTitle={
                     <>
                       <span>
-                        {reviewsCount
-                          ? `Reviews ${reviewsCount || 0} `
+                        {totalReviews
+                          ? `Reviews ${totalReviews || 0} `
                           : "Reviews 0"}
                       </span>
                       <span style={{ marginLeft: "5px" }}>
-                        {domainRating
-                          ? `• ${ratingType[Math.round(Number(domainRating))]}`
+                        {averageRating
+                          ? `• ${ratingType[Math.round(Number(averageRating))]}`
                           : null}
                       </span>
                     </>
@@ -126,7 +102,7 @@ class ProfilePageHeader extends Component {
                       offset={-50}
                     >
                       <div
-                        onClick={this.props.onTrustClick}
+                        onClick={onTrustClick}
                         className="companyLink"
                         style={{ marginBottom: "14px" }}
                       >
@@ -146,66 +122,43 @@ class ProfilePageHeader extends Component {
                       </div>
                     </Link>
                     <div className="claimed">
-                      {is_verified ? (
-                        <Tooltip
-                          title={
-                            <React.Fragment>
-                              <h6>This company has a trustsearch account.</h6>
-                            </React.Fragment>
-                          }
-                        >
-                          <div style={{ display: "flex" }}>
-                            <div style={{ alignSelf: "center" }}>
+                      <Tooltip
+                        title={
+                          <React.Fragment>
+                            <h6>
+                              {is_verified
+                                ? "This company has a trustsearch account."
+                                : "This company does not have a trustsearch account."}
+                            </h6>
+                          </React.Fragment>
+                        }
+                      >
+                        <div style={{ display: "flex" }}>
+                          <div style={{ alignSelf: "center" }}>
+                            {is_verified ? (
                               <VerifiedIcon
                                 style={{ color: "green", fontSize: "20px" }}
                               />
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "17px",
-                                fontWeight: "bold",
-                                color: "#555",
-                                marginLeft: "5px",
-                                alignSelf: "center",
-                                letterSpacing: "1px"
-                              }}
-                            >
-                              Verified
-                            </div>
-                          </div>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip
-                          title={
-                            <React.Fragment>
-                              <h6>
-                                This company does not have a trustsearch
-                                account.
-                              </h6>
-                            </React.Fragment>
-                          }
-                        >
-                          <div style={{ display: "flex" }}>
-                            <div style={{ alignSelf: "center" }}>
+                            ) : (
                               <UnVerifiedIcon
                                 style={{ color: "red", fontSize: "20px" }}
                               />
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "17px",
-                                fontWeight: "bold",
-                                color: "#555",
-                                marginLeft: "5px",
-                                alignSelf: "flex-end",
-                                letterSpacing: "1px"
-                              }}
-                            >
-                              Unverified
-                            </div>
+                            )}
                           </div>
-                        </Tooltip>
-                      )}
+                          <div
+                            style={{
+                              fontSize: "17px",
+                              fontWeight: "bold",
+                              color: "#555",
+                              marginLeft: "5px",
+                              alignSelf: "center",
+                              letterSpacing: "1px"
+                            }}
+                          >
+                            {is_verified ? "Verified" : "Unverified"}
+                          </div>
+                        </div>
+                      </Tooltip>
                     </div>
                   </Card>
                 </div>
@@ -226,15 +179,9 @@ class ProfilePageHeader extends Component {
                           style={{ color: "#fcaf16" }}
                         ></i>
                       )}
-                      <span className="claimed">
-                        {/* {is_verified ? "Verified" : "Unverified"} */}
-                        Report this domain
-                      </span>
+                      <span className="claimed">Report this domain</span>
                     </div>
                     <div>
-                      {/* {is_verified
-                        ? "This company has a Trustsearch account but we have no records of them asking their customers for reviews."
-                        : "This company does not have a Trustsearch account"} */}
                       If you think that this domain fraudulent. Please report
                       this domain.
                     </div>
@@ -262,51 +209,23 @@ class ProfilePageHeader extends Component {
 }
 
 const mapStateToProps = state => {
-  const { profileData, googleReviews, aggregateData } = state;
-  const { domainProfileData, isLoading } = profileData;
-  const googleRating = _get(googleReviews, "reviews.data.rating", 0);
-  const trustPilotRating = _get(aggregateData, "18.data.rating", 0);
-  const watchdogRating = _get(
-    profileData,
-    "domainProfileData.watchdogRating",
+  const { domainProfileData, isLoading } = state.profileData || {};
+  const totalReviews = _get(
+    domainProfileData,
+    "overallRatingAndReviews.totalReviews",
     0
   );
-  const googleReviewsData = _get(googleReviews, "reviews.data.reviews", []);
-  const wotReviews = _get(domainProfileData, "wotReviews.data", []);
-  const trustsearchReviews = _get(domainProfileData, "domainReviews.data", []);
+  const averageRating = _get(
+    domainProfileData,
+    "overallRatingAndReviews.averageRating",
+    0
+  );
 
-  let reviewsCount = 0;
-  if (googleReviewsData) {
-    if (Array.isArray(googleReviewsData)) {
-      if (googleReviewsData.length > 0) {
-        reviewsCount = reviewsCount + googleReviewsData.length;
-      }
-    }
-  }
-
-  if (wotReviews) {
-    if (Array.isArray(wotReviews)) {
-      if (wotReviews.length > 0) {
-        reviewsCount = reviewsCount + wotReviews.length;
-      }
-    }
-  }
-
-  if (trustsearchReviews) {
-    if (Array.isArray(trustsearchReviews)) {
-      if (trustsearchReviews.length > 0) {
-        reviewsCount = reviewsCount + trustsearchReviews.length;
-      }
-    }
-  }
   return {
     domainProfileData,
     isLoading,
-    googleRating,
-    trustPilotRating,
-    watchdogRating,
-    googleReviews,
-    reviewsCount
+    totalReviews,
+    averageRating
   };
 };
 

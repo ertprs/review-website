@@ -23,7 +23,6 @@ import {
   FETCH_EMAIL_TEMPLATE_INIT,
   FETCH_EMAIL_TEMPLATE_SUCCESS,
   FETCH_EMAIL_TEMPLATE_FAILURE,
-  SET_GOOGLE_PLACES,
   UPDATE_COMPANY_DETAILS_INIT,
   UPDATE_COMPANY_DETAILS_SUCCESS,
   UPDATE_COMPANY_DETAILS_ERROR,
@@ -199,7 +198,7 @@ export const locatePlaceByPlaceId = (data, token, url) => {
         },
         locatePlaceTemp: {
           isLoading: false,
-          errorMsg: _get(error, "response.data.message", "Some Error Occured!")
+          errorMsg: _get(error, "response.data.message", "Some Error Occurred!")
         }
       });
     }
@@ -450,13 +449,6 @@ export const fetchEmailTemplate = templateId => {
   };
 };
 
-export const setGooglePlaces = data => {
-  return {
-    type: SET_GOOGLE_PLACES,
-    googlePlaces: { ...data }
-  };
-};
-
 export const setReviewsPusherConnect = isReviewsPusherConnected => {
   return {
     type: SET_REVIEWS_PUSHER_CONNECT,
@@ -629,25 +621,36 @@ export const emptyDomainDetails = () => {
 };
 
 //? it is used to update reviews of any particular profile inside socialappid inside dashboarddata/reviews. We can also fetch reviews by socialappid only it will give us it's primary profiles review but we are not allowing as per now because our current data structure doesn't supports that. So all these fields are mandatory.
-export const fetchReviews = (socialAppId, profileId, domainId) => {
+export const fetchReviews = (
+  socialAppId,
+  profileId,
+  domainId,
+  page = 1,
+  perPage = 10
+) => {
+  let token = cookie.get("token");
   //? is we have profile id then we need to send it as query param and we'll get that particular profiles data
   let api = profileId
-    ? `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
-    : `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}`;
+    ? `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}&page=${page}&perPage=${perPage}`
+    : `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&page=${page}&perPage=${perPage}`;
 
   if (socialAppId && profileId && domainId) {
     return async (dispatch, getState) => {
       const state = getState();
-      const dashboardData = _get(state, "dashboardData", {});
-      const reviews = _get(dashboardData, "reviews", {});
+      const reviews = _get(state, "dashboardData.reviews", {});
+      const platformReviewsObj = _get(reviews, socialAppId, {});
+      const profileReviewsObj = _get(platformReviewsObj, profileId, {});
       dispatch({
         type: FETCH_REVIEWS_INIT,
         reviews: {
           ...reviews,
           [socialAppId]: {
-            ..._get(reviews, socialAppId, {}),
+            ...platformReviewsObj,
             [profileId]: {
-              ..._get(reviews, socialAppId.profileId, {}),
+              ...profileReviewsObj,
+              data: {
+                ..._get(profileReviewsObj, "data", {})
+              },
               isLoading: true,
               success: undefined
             }
@@ -655,7 +658,11 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
         }
       });
       try {
-        const result = await axios.get(api);
+        const result = await axios({
+          method: "GET",
+          url: api,
+          headers: { Authorization: `Bearer ${token}` }
+        });
         let success = false;
         let reviewsArray = _get(result, "data.data.reviews", []);
         if (isValidArray(reviewsArray)) {
@@ -663,34 +670,60 @@ export const fetchReviews = (socialAppId, profileId, domainId) => {
         }
         let data = { ..._get(result, "data", {}) };
         dispatch(
-          setReviewsSuccessInReducer(data, success, socialAppId, profileId)
+          setReviewsSuccessInReducer(
+            data,
+            success,
+            reviews,
+            platformReviewsObj,
+            profileReviewsObj,
+            socialAppId,
+            profileId
+          )
         );
       } catch (error) {
-        dispatch(setReviewsFailureInReducer(socialAppId, profileId));
+        dispatch(
+          setReviewsFailureInReducer(
+            reviews,
+            platformReviewsObj,
+            socialAppId,
+            profileId
+          )
+        );
       }
     };
   }
 };
-
+//? in case of success, we are overriding only those keys which comes otherwise preserving old data.
+//? But reviews are always  with new response, they are not preserved
 export const setReviewsSuccessInReducer = (
-  data,
+  result,
   success,
+  reviews,
+  platformReviewsObj,
+  profileReviewsObj,
   socialAppId,
   profileId
 ) => {
   return async (dispatch, getState) => {
-    const state = getState();
-    const dashboardData = _get(state, "dashboardData", {});
-    const reviews = _get(dashboardData, "reviews", {});
     dispatch({
       type: FETCH_REVIEWS_SUCCESS,
       reviews: {
         ...reviews,
         [socialAppId]: {
-          ..._get(reviews, socialAppId, {}),
+          ...platformReviewsObj,
           [profileId]: {
-            ..._get(reviews, socialAppId.profileId, {}),
-            data: { ...data, socialAppId, profileId },
+            ...profileReviewsObj,
+            data: {
+              ..._get(profileReviewsObj, "data", {}),
+              ...result,
+              socialAppId,
+              profileId,
+              data: {
+                ..._get(profileReviewsObj, "data.data", {}),
+                ..._get(result, "data", {}),
+                reviews: [..._get(result, "data.reviews", [])]
+              }
+            },
             isLoading: false,
             success
           }
@@ -700,20 +733,25 @@ export const setReviewsSuccessInReducer = (
   };
 };
 
-export const setReviewsFailureInReducer = (socialAppId, profileId) => {
+//? In case of failure we are removing all data of that profile
+export const setReviewsFailureInReducer = (
+  reviews,
+  platformReviewsObj,
+  socialAppId,
+  profileId
+) => {
   return async (dispatch, getState) => {
-    const state = getState();
-    const dashboardData = _get(state, "dashboardData", {});
-    const reviews = _get(dashboardData, "reviews", {});
     dispatch({
       type: FETCH_REVIEWS_FAILURE,
       reviews: {
         ...reviews,
         [socialAppId]: {
-          ..._get(reviews, socialAppId, {}),
+          ...platformReviewsObj,
           [profileId]: {
-            ..._get(reviews, socialAppId.profileId, {}),
-            data: { socialAppId, profileId },
+            data: {
+              socialAppId,
+              profileId
+            },
             isLoading: false,
             success: false
           }
@@ -1164,6 +1202,7 @@ export const postSplitPlatformConfigForSplitPlatform = (
 
 //? this action creator is used to set reviews in dashboardData after login and on dashboard componentDidMount only
 export const setReviewsAfterLogin = socialArray => {
+  const token = cookie.get("token");
   return async (dispatch, getState) => {
     if (isValidArray(socialArray)) {
       let reviews = {};
@@ -1181,14 +1220,14 @@ export const setReviewsAfterLogin = socialArray => {
             "has_review_aggregator",
             0
           );
-          console.log(has_review_aggregator, "has_review_aggregator");
           let socialAppId = _get(platform, "social_media_app_id", "");
           let profileId = _get(platform, "id", "");
           if (has_review_aggregator === 1) {
-            return axios
-              .get(
-                `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}`
-              )
+            return axios({
+              method: "GET",
+              url: `${process.env.BASE_URL}${thirdPartyDataApi}?domain=${domainId}&socialAppId=${socialAppId}&profileId=${profileId}&page=1&perPage=10`,
+              headers: { Authorization: `Bearer ${token}` }
+            })
               .then(res => {
                 return {
                   ...res.data,
@@ -1473,7 +1512,6 @@ export const toggleWidgetPlatformVisibility = profileData => {
         });
       }
     } catch (error) {
-      console.log(error);
       const errorMsg = _get(
         error,
         "response.data.data.message",
@@ -1547,7 +1585,8 @@ export const whatsAppManualInvitation = data => {
         isLoading: true,
         errorMsg: "",
         campaignId: "",
-        channelName: ""
+        channelName: "",
+        isSessionPresent: false
       }
     });
     try {
@@ -1562,6 +1601,7 @@ export const whatsAppManualInvitation = data => {
       const success = _get(result, "data.success", false);
       const campaignId = _get(result, "data.campaign_id", "");
       const channelName = _get(result, "data.channel_name", "");
+      const isSessionPresent = _get(result, "data.is_session_present", false);
       dispatch({
         type: WHATSAPP_MANUAL_INVITE_SUCCESS,
         whatsAppManualInvite: {
@@ -1569,7 +1609,8 @@ export const whatsAppManualInvitation = data => {
           isLoading: false,
           errorMsg: "",
           campaignId,
-          channelName
+          channelName,
+          isSessionPresent
         }
       });
       if (success && campaignId) {
@@ -1588,7 +1629,8 @@ export const whatsAppManualInvitation = data => {
           isLoading: false,
           errorMsg,
           campaignId: "",
-          channelName: ""
+          channelName: "",
+          isSessionPresent: false
         }
       });
     }

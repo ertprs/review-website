@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Slide from "@material-ui/core/Slide";
 import _get from "lodash/get";
 import styles from "../styles";
+import QRSessionInvalid from "./QRSessionInvalid";
 import QRCode from "./QRCode";
 import QRLoggedInMsg from "./QRLoggedInMsg";
 import CampaignStarted from "./CampaignStartedMsg";
@@ -41,11 +42,11 @@ const QRCodeDialog = props => {
   let title = "";
   const renderComponentByEvent = () => {
     switch (event) {
+      case "qr_session_invalid":
+        return <QRSessionInvalid />;
       case "qr_code_changed":
-        title = "Scan QR Code";
         return <QRCode QRCodeString={value || ""} />;
       case "qr_code_expired":
-        title = "QR Code Expired";
         return (
           <QRCode
             QRCodeString=""
@@ -55,14 +56,10 @@ const QRCodeDialog = props => {
           />
         );
       case "login_successful":
-        console.log("LOGIN SUCCESSS DIALOG");
-        title = "Logged In Successfully!";
         return <QRLoggedInMsg />;
       case "campaign_started":
-        title = "Campaign Started!";
         return <CampaignStarted />;
       case "campaign_finished":
-        title = "Campaign Finished!";
         return <CampaignFinished result={value || {}} />;
       default:
         null;

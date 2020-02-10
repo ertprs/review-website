@@ -5,15 +5,21 @@ import {
   REPORT_DOMAIN_SUCCESS,
   REPORT_DOMAIN_FAILURE,
   REPORT_DOMAIN_AFTER_LOGIN,
-  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL
+  REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL,
+  FETCH_PROFILE_REVIEWS_INIT,
+  FETCH_PROFILE_REVIEWS_SUCCESS,
+  FETCH_PROFILE_REVIEWS_FAILURE,
+  FETCH_PROFILE_REVIEWS_INITIALLY
 } from "./actionTypes";
+import { iconNames } from "../../utility/constants/socialMediaConstants";
+import { reportDomainApi, fetchProfileReviewsApi } from "../../utility/config";
+import { isValidArray } from "../../utility/commonFunctions";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _isNumber from "lodash/isEmpty";
-import { iconNames } from "../../utility/constants/socialMediaConstants";
-import { reportDomainApi } from "../../utility/config";
 import axios from "axios";
 import Router from "next/router";
+import cookie from "js-cookie";
 
 const createHeaderData = data => {
   let willCome = false;
@@ -33,6 +39,7 @@ const createHeaderData = data => {
     ...parsedData,
     domain_name: _get(data, "domain_data.name", ""),
     is_verified: _get(data, "domain_data.is_verified", false),
+    company: _get(data, "domain_data.company", ""),
     screenshot: _get(data, "domain_data.screenshot", ""),
     review_length: _get(data, "reviews.domain.total", 0),
     rating: _get(data, "general_analysis.payload.ratings.watchdog", 0)
@@ -224,7 +231,6 @@ const createDomainReviews = data => {
 };
 
 const createWotReviews = data => {
-  console.log(data, "CREATE_WOT");
   let wotReviews = [];
   let willCome = false;
   let isScheduled = false;
@@ -267,31 +273,76 @@ const createWotReviews = data => {
   };
 };
 
-export const setDomainDataInRedux = profileData => {
-  const domainProfileData = {
-    headerData: createHeaderData(profileData),
-    analysisReports: createAnalysisData(profileData),
-    trafficReports: createTrafficReports(profileData),
-    socialMediaStats: createSocialMediaStats(profileData),
-    domainReviews: createDomainReviews(profileData),
-    wotReviews: createWotReviews(profileData),
-    watchdogRating: _get(
-      profileData,
-      "general_analysis.payload.ratings.watchdog",
-      0
-    ),
-    isNewDomain: _get(profileData, "notifications.payload.is_new_domain", false)
-  };
+const getOverallRatingAndReviews = data => {
+  let totalReviews = 0;
+  let averageRating = 0;
+  let totalReviewsFromPusher = _get(data, "ratings.total", 0);
+  let averageRatingFromPusher = _get(data, "ratings.average", 0);
+  let totalReviewsFromPusherUpdated = _get(data, "ratings_update.total", 0);
+  let averageRatingFromPusherUpdated = _get(data, "ratings_update.average", 0);
+  totalReviews = +totalReviewsFromPusherUpdated
+    ? +totalReviewsFromPusherUpdated
+    : +totalReviewsFromPusher;
+  averageRating = +averageRatingFromPusherUpdated
+    ? +averageRatingFromPusherUpdated
+    : averageRatingFromPusher;
   return {
-    type: SET_DOMAIN_DATA_IN_REDUX,
-    domainProfileData
+    totalReviews,
+    averageRating
+  };
+};
+
+export const setDomainDataInRedux = profileData => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const isLoading = _get(state, "profileData.isLoading", false);
+    const headerData = createHeaderData(profileData, dispatch);
+    const analysisReports = createAnalysisData(profileData, dispatch);
+    const trafficReports = createTrafficReports(profileData, dispatch);
+    const socialMediaStats = createSocialMediaStats(profileData, dispatch);
+    const domainReviews = createDomainReviews(profileData, dispatch);
+    const wotReviews = createWotReviews(profileData, dispatch);
+    const domainProfileData = {
+      headerData,
+      analysisReports,
+      trafficReports,
+      socialMediaStats,
+      domainReviews,
+      wotReviews,
+      overallRatingAndReviews: getOverallRatingAndReviews(profileData),
+      isNewDomain: _get(
+        profileData,
+        "notifications.payload.is_new_domain",
+        false
+      )
+    };
+    //? if loading is true then stop loader if any data is received.
+    if (isLoading) {
+      if (
+        !_isEmpty(headerData) ||
+        !_isEmpty(analysisReports) ||
+        !_isEmpty(trafficReports) ||
+        !_isEmpty(socialMediaStats) ||
+        !_isEmpty(domainReviews) ||
+        !_isEmpty(wotReviews)
+      ) {
+        dispatch({ type: SET_DOMAIN_PROFILE_LOADER, isLoading: false });
+      }
+    }
+    dispatch({ type: SET_DOMAIN_DATA_IN_REDUX, domainProfileData });
   };
 };
 
 export const setLoading = isLoading => {
-  return {
-    type: SET_DOMAIN_PROFILE_LOADER,
-    isLoading
+  return async (dispatch, getState) => {
+    const state = getState();
+    const isLoadingInRedux = _get(state, "profileData.isLoading", false);
+    if (isLoading !== isLoadingInRedux) {
+      dispatch({
+        type: SET_DOMAIN_PROFILE_LOADER,
+        isLoading
+      });
+    }
   };
 };
 
@@ -328,7 +379,7 @@ export const reportDomain = data => {
         reportDomain: {
           isLoading: false,
           success: false,
-          errorMsg: "Some error occured in reporting domain!"
+          errorMsg: "Some error occurred in reporting domain!"
         }
       });
     }
@@ -352,5 +403,224 @@ export const redirectWithDomain = (route, domain) => {
   return {
     type: REDIRECT_TO_REGISTRATION_WITH_DOMAIN_PREFILL,
     domain
+  };
+};
+
+//? verbose true will give complete data like url, followers, rating, review. By default it's false
+//? we are also not passing rating and profileId filters, we are only passing platformId that will fetch reviews of all of it's profiles
+//? replaceReviews will replace the old reviews with new one. When we are coming from broadcast we are replacing it and when we are coming from "show more" we are merging it.
+//?nextUrl will be passed in case of "show more reviews" (e.g: socialPlatformReviews)
+//? we are fetching 30 reviews initial, can be increased from here only
+export const fetchProfileReviews = (
+  domain = "",
+  platformId,
+  replaceReviews = false,
+  nextUrl = "",
+  page = 1,
+  perPage = 30,
+  profileId,
+  rating,
+  verbose = 1
+) => {
+  const token = cookie.get("token") || "";
+  const loginType = cookie.get("loginType") || "";
+  let url = nextUrl
+    ? `${nextUrl}&verbose=${verbose}`
+    : `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`;
+  let axiosConfig = {};
+  if (token && loginType === 4) {
+    axiosConfig = {
+      url,
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    };
+  } else {
+    axiosConfig = {
+      url,
+      method: "GET"
+    };
+  }
+  return async (dispatch, getState) => {
+    const state = getState();
+    let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
+    let platformObj = _get(platformReviews, platformId, {});
+    dispatch({
+      type: FETCH_PROFILE_REVIEWS_INIT,
+      socialPlatformReviews: {
+        ...platformReviews,
+        [platformId]: {
+          ...platformObj,
+          isLoading: true,
+          success: undefined
+        }
+      }
+    });
+    try {
+      const result = await axios({
+        ...axiosConfig
+      });
+      dispatch(
+        setProfileReviewsSuccessInReducer(result, platformId, replaceReviews)
+      );
+    } catch (err) {
+      dispatch(setProfileReviewsFailureInReducer(platformId));
+    }
+  };
+};
+
+export const setProfileReviewsSuccessInReducer = (
+  result,
+  platformId,
+  replaceReviews = false
+) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
+    let platformObj = _get(platformReviews, platformId, {});
+    let success = false;
+    let reviewsArr = _get(result, "data.data.reviews", []);
+    if (isValidArray(reviewsArr)) {
+      success = true;
+    }
+    let socialPlatformReviews = {};
+    if (replaceReviews) {
+      socialPlatformReviews = {
+        ...platformReviews,
+        [platformId]: {
+          data: {
+            ..._get(platformObj, "data", {}),
+            ..._get(result, "data", {}),
+            data: {
+              ..._get(platformObj, "data.data", {}),
+              ..._get(result, "data.data", {}),
+              reviews: [..._get(result, "data.data.reviews", [])]
+            }
+          },
+          isLoading: false,
+          success
+        }
+      };
+    } else if (!replaceReviews) {
+      socialPlatformReviews = {
+        ...platformReviews,
+        [platformId]: {
+          data: {
+            ..._get(platformObj, "data", {}),
+            ..._get(result, "data", {}),
+            data: {
+              ..._get(platformObj, "data.data", {}),
+              ..._get(result, "data.data", {}),
+              reviews: [
+                ..._get(platformObj, "data.data.reviews", []),
+                ..._get(result, "data.data.reviews", [])
+              ]
+            }
+          },
+          isLoading: false,
+          success
+        }
+      };
+    }
+
+    dispatch({
+      type: FETCH_PROFILE_REVIEWS_SUCCESS,
+      socialPlatformReviews: {
+        ...socialPlatformReviews
+      }
+    });
+  };
+};
+
+export const setProfileReviewsFailureInReducer = platformId => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    let platformReviews = _get(state, "profileData.socialPlatformReviews", {});
+    let platformObj = _get(platformReviews, platformId, {});
+    dispatch({
+      type: FETCH_PROFILE_REVIEWS_FAILURE,
+      socialPlatformReviews: {
+        ...platformReviews,
+        [platformId]: {
+          data: { ...platformObj },
+          isLoading: false,
+          success: false
+        }
+      }
+    });
+  };
+};
+
+//? This method will receive an array of socialPlatforms and fetch reviews of all of them one by one by making an array of promise and calling Promise.All(). We'll return a socialPlatformReviews object from this action.
+export const fetchProfileReviewsInitially = (
+  socialPlatformsArr,
+  domain,
+  page = 1,
+  perPage = 30,
+  verbose = 1
+) => {
+  const token = cookie.get("token") || "";
+  const loginType = cookie.get("loginType") || "";
+  return async dispatch => {
+    let socialPlatformReviews = {};
+    Promise.all(
+      socialPlatformsArr.map(socialPlatform => {
+        let platformId = _get(socialPlatform, "id", 0);
+        let platformName = _get(socialPlatform, "name", "");
+        let axiosConfig = {};
+        if (token && loginType === 4) {
+          axiosConfig = {
+            url: `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`,
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` }
+          };
+        } else {
+          axiosConfig = {
+            url: `${process.env.BASE_URL}${fetchProfileReviewsApi}?perPage=${perPage}&page=${page}&domain=${domain}&platform=${platformId}&verbose=${verbose}`,
+            method: "GET"
+          };
+        }
+        return axios({ ...axiosConfig })
+          .then(res => {
+            return {
+              ...res.data,
+              platformId,
+              platformName
+            };
+          })
+          .catch(err => {
+            return {
+              err,
+              platformId,
+              platformName
+            };
+          });
+      })
+    )
+      .then(resArr => {
+        resArr.forEach(res => {
+          let success = false;
+          let platformId = _get(res, "platformId", "");
+          let reviewsArr = _get(res, "data.data.reviews", []);
+          if (isValidArray(reviewsArr)) {
+            success = true;
+          }
+          if (platformId) {
+            socialPlatformReviews = {
+              ...socialPlatformReviews,
+              [platformId]: {
+                data: { ...res },
+                isLoading: false,
+                success
+              }
+            };
+          }
+        });
+      })
+      .then(() => {
+        dispatch({
+          type: FETCH_PROFILE_REVIEWS_INITIALLY,
+          socialPlatformReviews: { ...socialPlatformReviews }
+        });
+      });
   };
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Pusher from "pusher-js";
 import axios from "axios";
+import { profilePageLoadingTimeout } from "../../utility/constants/pusherTimeoutConstants";
 //child component to fetch data and listen to channels and in turn update parent component
 
 class PusherDataComponent extends React.Component {
@@ -35,7 +36,6 @@ class PusherDataComponent extends React.Component {
               }
             },
             () => {
-              console.log(this.state.domainData, "DOMAIN_DATA");
               this.props.onChildStateChange(this.state.domainData);
             }
           );
@@ -58,7 +58,7 @@ class PusherDataComponent extends React.Component {
     pusher.connection.bind("connected", () => {
       console.log("main pusher connected");
       axios
-        .get(`${process.env.BASE_URL}/api/verify?domain=https://${domain}`)
+        .get(`${process.env.BASE_URL}/api/verify?domain=${domain}`)
         .then(res => {
           //set the state and call unbindRecievedKeys
           this.setState(
@@ -73,9 +73,7 @@ class PusherDataComponent extends React.Component {
               else {
                 let intr = setInterval(() => {
                   axios
-                    .get(
-                      `${process.env.BASE_URL}/api/verify?domain=https://${domain}`
-                    )
+                    .get(`${process.env.BASE_URL}/api/verify?domain=${domain}`)
                     .then(res => {
                       this.setState(
                         {
@@ -112,7 +110,7 @@ class PusherDataComponent extends React.Component {
     });
     setTimeout(() => {
       this.pusherCopy.disconnect();
-    }, 60000);
+    }, profilePageLoadingTimeout);
     pusher.connection.bind("disconnected", () => {
       console.log("Main pusher disconnected");
     });

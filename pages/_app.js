@@ -47,6 +47,8 @@ class MyApp extends App {
   render() {
     if (process.env.NODE_ENV === "production") {
       console.log = console.warn = console.error = () => {};
+    } else if (process.env.NODE_ENV === "development") {
+      console.error = console.warn = () => {};
     }
     const { Component, pageProps, reduxStore } = this.props;
     return (

@@ -9,7 +9,6 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {
   locatePlaceByPlaceId,
   setGetStartedShow,
-  setGooglePlaces,
   setReviewsPusherConnect,
   setReviewsAfterLogin
 } from "../../../store/actions/dashboardActions";
@@ -115,7 +114,6 @@ class GetStarted extends Component {
       }
     });
     //setState also
-    // console.log(formData, "dynamic formData");
     if (wipeMode) {
       this.setState({ formData: { ...formData } }, () => {
         this.prefillSocialURLs(fieldsArray);
@@ -169,11 +167,7 @@ class GetStarted extends Component {
 
   handleSavePermanentlyClick = () => {
     const formData = _get(this.state, "formData", {});
-    const {
-      setReviewsPusherConnect,
-      locatePlaceByPlaceId,
-      googlePlaces
-    } = this.props;
+    const { setReviewsPusherConnect, locatePlaceByPlaceId } = this.props;
     let reqBody = {};
     //profiles array to be sent in API call
     let profiles = [];
@@ -392,13 +386,7 @@ class GetStarted extends Component {
   };
 
   componentDidMount() {
-    const {
-      placeId,
-      locatePlace,
-      businessProfile,
-      socialArray,
-      reviewURLToEdit
-    } = this.props;
+    const { socialArray, reviewURLToEdit } = this.props;
     if (socialArray) {
       //! NOT reviewURLToEdit check to only generate form fields for the selected social media platform
       if (socialArray.length > 0 && !reviewURLToEdit) {
@@ -415,10 +403,6 @@ class GetStarted extends Component {
     if (this.props.scrollToTopOfThePage) {
       this.props.scrollToTopOfThePage();
     }
-    //? right now we are not dependent on placeId only, user should see getstarted always
-    // if (placeId !== "" || locatePlace) {
-    //   this.props.changeStepToRender(1);
-    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -427,8 +411,6 @@ class GetStarted extends Component {
       changeStepToRender,
       isLoading,
       errorMsg,
-      setGooglePlaces,
-      googlePlaces,
       reviewURLToEdit
     } = this.props;
     if (this.props !== prevProps) {
@@ -734,7 +716,6 @@ class GetStarted extends Component {
           temp.id = (Number(_get(item, "value", -1)) || -1) == 22 ? _now() : "";
           parsedArray.push(temp);
         });
-        console.log(parsedArray);
         this.generateFormFieldsDynamically(parsedArray, false, true);
         this.setState({ selectedAvailablePlatformItems: [] });
       }
@@ -762,7 +743,7 @@ class GetStarted extends Component {
       socialArray
     } = this.props;
     setIsNewUser(false);
-    //Uncomment when pagination is done on backend
+    //! reviews will be fetched in dashboard cdm
     // if (isValidArray(socialArray)) {
     //   setReviewsAfterLogin(socialArray);
     // }
@@ -951,17 +932,13 @@ const mapStateToProps = state => {
   const token = _get(auth, "logIn.token", "");
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
-  const addressSelected = _get(businessProfile, "google_places.address", "");
-  const googlePlaces = _get(businessProfile, "google_places", {});
   let socialArray = _get(businessProfile, "social", []);
   if (!isValidArray(socialArray)) {
     socialArray = [];
   }
   const isLoading = _get(dashboardData, "locatePlaceTemp.isLoading", undefined);
-  const placeId = _get(businessProfile, "google_places.placeId", "");
   const type = _get(dashboardData, "type", "");
   const success = _get(dashboardData, "locatePlace.success", false);
-  const locatePlace = _get(dashboardData, "locatePlace.success", false);
   const errorMsg = _get(
     dashboardData,
     "locatePlaceTemp.errorMsg",
@@ -984,16 +961,12 @@ const mapStateToProps = state => {
     businessProfile,
     token,
     type,
-    placeId,
-    locatePlace,
     userProfile,
     isLoading,
     errorMsg,
     socialArray,
     showGetStarted,
     reviewURLToEdit,
-    addressSelected,
-    googlePlaces,
     review_platforms,
     isFirstTimeLogin
   };
@@ -1001,7 +974,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   locatePlaceByPlaceId,
-  setGooglePlaces,
   setReviewsPusherConnect,
   setGetStartedShow,
   setIsNewUser,

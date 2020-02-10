@@ -92,7 +92,6 @@ class LeaveReview extends React.Component {
 
   componentDidMount() {
     const { campaignProcessingId, domain_name, token } = this.props;
-    console.log(campaignProcessingId, token);
     axios
       .post(`${process.env.BASE_URL}/api/get-order-data`, {
         campaign_processing_id: campaignProcessingId,
@@ -114,12 +113,8 @@ class LeaveReview extends React.Component {
             }
           }
         });
-        console.log(res.data);
       })
-      .catch(err => {
-        console.log(err);
-        // Router.push("/")
-      });
+      .catch(err => {});
   }
 
   handleRatingChange = (id, newRating) => {
@@ -215,8 +210,6 @@ class LeaveReview extends React.Component {
         review: formData.review.value,
         agreement: true
       };
-      // console.log(dataToSubmit);
-      //clear form data
       this.setState(
         { reviewSubmitted: true, reviewSent: "in-progress" },
         () => {
@@ -234,21 +227,10 @@ class LeaveReview extends React.Component {
             })
             .then(res => {
               this.setState({ reviewSent: "success" });
-              // console.log(res);
             })
             .catch(err => {
               this.setState({ reviewSent: "error" });
-              console.log(err);
             });
-
-          // setTimeout(() => {
-          //   this.setState({ reviewSent: "success" });
-          //   if (this.state.videoReview === "no") {
-          //     // setTimeout(() => {
-          //     //   Router.push("/reviews/google.com");
-          //     // }, 2000);
-          //   }
-          // }, 3000);
         }
       );
     } else {
@@ -335,7 +317,6 @@ class LeaveReview extends React.Component {
   };
 
   renderMainReviewSection = () => {
-    // console.log(this.props.domain_name);
     return (
       <div className="mainReviewSection">
         <style jsx>{newLeaveReviewPageStyles}</style>
@@ -720,7 +701,6 @@ class LeaveReview extends React.Component {
             size: videoFile.size
           })
           .then(res => {
-            // console.log(res);
             this.setState({ videoDataSent: "success" }, () => {
               // let res = res.data;
 
@@ -732,19 +712,14 @@ class LeaveReview extends React.Component {
                 metadata: {},
                 onError: error => {
                   this.setState({ videoUploaded: "error" });
-                  console.log("Failed because: " + error);
                 },
                 onProgress: (bytesUploaded, bytesTotal) => {
                   var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(
                     2
                   );
                   // setState for videoProgress
-                  console.log(bytesUploaded, bytesTotal, percentage + "%");
                 },
                 onSuccess: () => {
-                  console.log(
-                    "Video might take some time to process on Vimeo."
-                  );
                   this.setState({ videoUploaded: "success" });
                 }
               });
