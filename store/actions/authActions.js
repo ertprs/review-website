@@ -664,18 +664,23 @@ export const resendActivationLink = (token, api) => {
   };
 };
 
-export const setUserActivated = (userActivated, activationRequired) => {
+export const setUserActivated = (
+  userActivated,
+  activationRequired,
+  socialArray
+) => {
   let token = cookie.get("token");
   return async dispatch => {
     dispatch({
       type: SET_USER_ACTIVATED,
       userActivated,
-      activationRequired
+      activationRequired: false
     });
     if (activationRequired) {
       dispatch(getAvailableReviewPlatforms(token));
       dispatch(fetchCampaignLanguage(token));
       dispatch(getAvailablePlatforms(token));
+      dispatch(setReviewsAfterLogin(socialArray));
     }
   };
 };

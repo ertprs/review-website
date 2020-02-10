@@ -11,9 +11,15 @@ import Router from "next/router";
 
 class ActivateUser extends Component {
   componentDidMount() {
-    const { success, setUserActivated, type, activationRequired } = this.props;
+    const {
+      success,
+      setUserActivated,
+      type,
+      activationRequired,
+      socialArray
+    } = this.props;
     if (type !== "SET_USER_ACTIVATED") {
-      setUserActivated(success, activationRequired);
+      setUserActivated(success, activationRequired, socialArray);
       setTimeout(() => {
         Router.push("/dashboard");
       }, 2000);
@@ -77,7 +83,12 @@ const mapStateToProps = state => {
     "logIn.userProfile.activation_required",
     false
   );
-  return { activationRequired };
+  const socialArray = _get(
+    auth,
+    "logIn.userProfile.business_profile.social",
+    []
+  );
+  return { activationRequired, socialArray };
 };
 
-export default connect(null, { setUserActivated })(ActivateUser);
+export default connect(mapStateToProps, { setUserActivated })(ActivateUser);
