@@ -33,7 +33,6 @@ import {
   UPDATE_USER_DETAILS_SUCCESS,
   UPDATE_DOMAIN_DETAILS_SUCCESS,
   UPDATE_AUTH_SOCIAL_ARRAY,
-  SET_GOOGLE_PLACES,
   UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
   SET_IS_NEW_USER
@@ -55,12 +54,12 @@ const authReducer = (state = {}, action) => {
     businessSignUpTemp,
     resendActivation,
     userActivated,
+    activationRequired,
     isSubscriptionExpired,
     companyDetails,
     userDetails,
     domainDetails,
     socialArray,
-    googlePlaces,
     ecommerceIntegrations,
     configuredPlatforms,
     isNewUser
@@ -229,7 +228,8 @@ const authReducer = (state = {}, action) => {
           ...state.logIn,
           userProfile: {
             ..._get(state, "logIn.userProfile", {}),
-            activated: userActivated
+            activated: userActivated,
+            activation_required: activationRequired
           }
         }
       };
@@ -302,24 +302,6 @@ const authReducer = (state = {}, action) => {
           }
         },
         type
-      };
-    }
-    case SET_GOOGLE_PLACES: {
-      return {
-        ...state,
-        logIn: {
-          ...state.logIn,
-          userProfile: {
-            ...state.logIn.userProfile,
-            business_profile: {
-              ...state.logIn.userProfile.business_profile,
-              google_places: {
-                ...state.logIn.userProfile.business_profile.google_places,
-                ...googlePlaces
-              }
-            }
-          }
-        }
       };
     }
     case UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS: {

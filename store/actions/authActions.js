@@ -240,7 +240,6 @@ export const logOut = () => {
   cookie.remove("loginType");
   cookie.remove("token");
   cookie.remove("placeLocated");
-  cookie.remove("placeId");
   cookie.remove("domainId");
   localStorage.removeItem("persist:primary");
   localStorage.removeItem("persist:auth");
@@ -537,16 +536,11 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let userProfile = get(res, "data.user", {});
       let status = get(res, "status", 0);
       let token = get(res, "data.token", "");
-      let placeId = get(
-        res,
-        "data.user.business_profile.google_places.placeId",
-        ""
-      );
+
       let socialArray = get(res, "data.user.business_profile.social", []);
       let loginType = 0;
       const businessProfile = get(res, "data.user.business_profile", {});
       const domainId = get(businessProfile, "domainId", 0);
-      let activationRequired = get(res, "data.user.activation_required", false);
       let subscriptionExpired = get(userProfile, "subscription.expired", false);
       if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
@@ -558,7 +552,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
             loginType = 4;
             cookie.set("loginType", loginType, { expires: 7 });
             cookie.set("token", token, { expires: 7 });
-            cookie.set("placeId", placeId, { expires: 7 });
             cookie.set("domainId", domainId, { expires: 7 });
             localStorage.setItem("token", token);
             dispatch(
@@ -566,8 +559,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 get(userProfile, "subscription.quota_details", {})
               )
             );
-            dispatch(getAvailableReviewPlatforms(token));
             dispatch(setSubscription(subscriptionExpired));
+            dispatch(getAvailableReviewPlatforms(token));
             dispatch(fetchCampaignLanguage(token));
             dispatch(getAvailablePlatforms(token));
             dispatch({
@@ -671,10 +664,24 @@ export const resendActivationLink = (token, api) => {
   };
 };
 
-export const setUserActivated = userActivated => {
-  return {
-    type: SET_USER_ACTIVATED,
-    userActivated
+export const setUserActivated = (
+  userActivated,
+  activationRequired,
+  socialArray
+) => {
+  let token = cookie.get("token");
+  return async dispatch => {
+    dispatch({
+      type: SET_USER_ACTIVATED,
+      userActivated,
+      activationRequired: false
+    });
+    if (activationRequired) {
+      dispatch(getAvailableReviewPlatforms(token));
+      dispatch(fetchCampaignLanguage(token));
+      dispatch(getAvailablePlatforms(token));
+      dispatch(setReviewsAfterLogin(socialArray));
+    }
   };
 };
 
