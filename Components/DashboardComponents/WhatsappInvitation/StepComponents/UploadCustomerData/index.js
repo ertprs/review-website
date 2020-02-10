@@ -14,6 +14,7 @@ import Papa from "papaparse";
 import UploadFile from "./UploadFile";
 import CopyPasteData from "./CopyPasteData";
 import validate from "../../../../../utility/validate";
+import WhatsAppAutomaticInvitation from "./WhatsAppAutomaticInvitation";
 
 class UploadCustomerData extends React.Component {
   constructor(props) {
@@ -45,7 +46,8 @@ class UploadCustomerData extends React.Component {
           name: "textbox"
         },
         parseErrors: []
-      }
+      },
+      selectedPlatform: ""
     };
     this.fileInput = React.createRef();
   }
@@ -263,6 +265,7 @@ class UploadCustomerData extends React.Component {
         value={selectedWay}
         onChange={this.handleRadioChange}
       >
+        {/*-------- UPLOAD FILE PANEL -------------*/}
         <ExpansionPanel
           style={{ marginBottom: "15px" }}
           expanded={"uploadFile" === selectedWay}
@@ -312,6 +315,7 @@ class UploadCustomerData extends React.Component {
           </div>
         </ExpansionPanel>
 
+        {/*-------- COPY AND PASTE DATA PANEL -------------*/}
         <ExpansionPanel
           style={{ marginBottom: "15px" }}
           expanded={"copyPaste" === selectedWay}
@@ -345,6 +349,43 @@ class UploadCustomerData extends React.Component {
               handleParseBtnClick={this.handleParseBtnClick}
               setUploadCustomerData={this.props.setUploadCustomerData}
               handleContinueBtnClick={handleNext}
+            />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+
+        {/*-------- AUTOMATIC INVITATION PANEL -------------*/}
+        <ExpansionPanel
+          style={{ marginBottom: "15px" }}
+          expanded={"automatic" === selectedWay}
+          onChange={e => {
+            this.setState({ selectedWay: "automatic" });
+            this.props.setUploadCustomerData([]);
+          }}
+        >
+          <ExpansionPanelSummary
+            onClick={e => {}}
+            // expandIcon={<ExpandMoreIcon />}
+            aria-label="Expand"
+            aria-controls="integration-platforms"
+            id="integration-platforms"
+          >
+            <FormControlLabel
+              aria-label="Acknowledge"
+              control={<Radio />}
+              label="Automatic WhatsApp Invitation"
+              value={"automatic"}
+              onClick={e => {
+                this.setState({ selectedWay: "automatic" });
+                this.props.setUploadCustomerData([]);
+              }}
+            />
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails style={{ width: "100%" }}>
+            <WhatsAppAutomaticInvitation
+              selectedPlatform={this.state.selectedPlatform}
+              setSelectedPlatform={selectedPlatform => {
+                this.setState({ selectedPlatform });
+              }}
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>
