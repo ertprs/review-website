@@ -28,7 +28,7 @@ class UrlHitCount extends Component {
           }
         `}</style>
         <div className="wrapper">
-          <h4>No Of Peoples visited your review URL: {totalUrlHits || 0}</h4>
+          <h4>No of people visited your review URL: {totalUrlHits || 0}</h4>
           <Button
             variant="contained"
             color="primary"
