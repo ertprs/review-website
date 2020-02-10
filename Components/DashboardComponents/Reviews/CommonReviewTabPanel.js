@@ -93,7 +93,7 @@ class CommonReviewTabPanel extends Component {
       let reviews = _get(selectedPlaceReviews, "data.data.reviews", []);
       let reviewUrl =
         _get(selectedPlaceReviews, "data.data.url", "") ||
-        _get(reviewsOfPrimaryPlace, "data.data.businessProfile", "");
+        _get(selectedPlaceReviews, "data.data.businessProfile", "");
       let isLoading = _get(selectedPlaceReviews, "isLoading", false);
       let success = _get(selectedPlaceReviews, "success", undefined);
       const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
