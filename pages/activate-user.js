@@ -11,26 +11,15 @@ import Router from "next/router";
 
 class ActivateUser extends Component {
   componentDidMount() {
-    const { success, setUserActivated, type } = this.props;
+    const { success, setUserActivated, type, activationRequired } = this.props;
     if (type !== "SET_USER_ACTIVATED") {
-      setUserActivated(success);
+      setUserActivated(success, activationRequired);
       setTimeout(() => {
         Router.push("/dashboard");
       }, 2000);
       return;
     } else return;
   }
-
-  showData = () => {
-    const { success } = this.props;
-    let data;
-    if (success === true) {
-      data = <></>;
-    } else if (success === false) {
-      data = <></>;
-    }
-    return data;
-  };
 
   render() {
     const { success } = this.props;
@@ -79,6 +68,16 @@ ActivateUser.getInitialProps = async ({ query }) => {
     }
   }
   return { success };
+};
+
+const mapStateToProps = state => {
+  const { auth } = state;
+  const activationRequired = _get(
+    auth,
+    "logIn.userProfile.activation_required",
+    false
+  );
+  return { activationRequired };
 };
 
 export default connect(null, { setUserActivated })(ActivateUser);

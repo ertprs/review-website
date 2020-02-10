@@ -54,12 +54,12 @@ const authReducer = (state = {}, action) => {
     businessSignUpTemp,
     resendActivation,
     userActivated,
+    activationRequired,
     isSubscriptionExpired,
     companyDetails,
     userDetails,
     domainDetails,
     socialArray,
-    googlePlaces,
     ecommerceIntegrations,
     configuredPlatforms,
     isNewUser
@@ -228,7 +228,8 @@ const authReducer = (state = {}, action) => {
           ...state.logIn,
           userProfile: {
             ..._get(state, "logIn.userProfile", {}),
-            activated: userActivated
+            activated: userActivated,
+            activation_required: activationRequired
           }
         }
       };

@@ -541,7 +541,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let loginType = 0;
       const businessProfile = get(res, "data.user.business_profile", {});
       const domainId = get(businessProfile, "domainId", 0);
-      let activationRequired = get(res, "data.user.activation_required", false);
       let subscriptionExpired = get(userProfile, "subscription.expired", false);
       if (userProfile.subscription !== null) {
         if (userProfile.hasOwnProperty("subscription")) {
@@ -560,8 +559,8 @@ export const businessLogIn = (loginData, api, directLogin) => {
                 get(userProfile, "subscription.quota_details", {})
               )
             );
-            dispatch(getAvailableReviewPlatforms(token));
             dispatch(setSubscription(subscriptionExpired));
+            dispatch(getAvailableReviewPlatforms(token));
             dispatch(fetchCampaignLanguage(token));
             dispatch(getAvailablePlatforms(token));
             dispatch({
@@ -665,10 +664,19 @@ export const resendActivationLink = (token, api) => {
   };
 };
 
-export const setUserActivated = userActivated => {
-  return {
-    type: SET_USER_ACTIVATED,
-    userActivated
+export const setUserActivated = (userActivated, activationRequired) => {
+  let token = cookie.get("token");
+  return async dispatch => {
+    dispatch({
+      type: SET_USER_ACTIVATED,
+      userActivated,
+      activationRequired
+    });
+    if (activationRequired) {
+      dispatch(getAvailableReviewPlatforms(token));
+      dispatch(fetchCampaignLanguage(token));
+      dispatch(getAvailablePlatforms(token));
+    }
   };
 };
 
