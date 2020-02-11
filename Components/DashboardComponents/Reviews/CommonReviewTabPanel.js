@@ -335,25 +335,15 @@ class CommonReviewTabPanel extends Component {
                   let name =
                     _get(review, "user", "") || _get(review, "name", "");
                   let reviewToSend = {
-                    id: _get(review, "id", ""),
-                    name: name === "N/A" ? "" : name,
-                    text: _get(review, "review", ""),
-                    rating: _get(review, "rating", 0),
-                    date: _get(review, "date", ""),
-                    replyURL: _get(review, "review_url", ""),
-                    hideFromWidget: _get(review, "hide_from_widget", 0)
+                    ...review,
+                    name,
+                    text: _get(review, "review", "")
                   };
-                  let provider = "";
-                  if (socialMediaAppId in reviewsPlatforms) {
-                    provider = reviewsPlatforms[socialMediaAppId];
-                  }
-                  //! provider is dynamic
                   return (
-                    //? hideBtn is used to show hide review button on card
                     <ReviewCard
                       review={reviewToSend}
-                      provider={provider}
-                      showToggleBtn={true}
+                      provider={Number(socialMediaAppId) || 0}
+                      parent="dashboard"
                       toggleReviewVisibility={this.toggleReviewVisibility}
                     />
                   );
