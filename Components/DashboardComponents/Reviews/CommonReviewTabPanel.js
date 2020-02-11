@@ -156,17 +156,38 @@ class CommonReviewTabPanel extends Component {
     );
   };
 
-  handleSelectedPlace = selectedObj => {
-    //! handle if someone clears the value from dropdown
-    this.setState(
-      {
-        selectedPlace: selectedObj,
-        pageNo: 1
-      },
-      () => {
-        this.fetchReviewsHandler();
-      }
-    );
+  handleSelectedPlace = selectedPlace => {
+    const { platformReviews } = this.props;
+    let profileId = _get(selectedPlace, "value", "");
+    let selectedPlaceReviews = _get(platformReviews, profileId, {});
+    let reviews = _get(selectedPlaceReviews, "data.data.reviews", []);
+    let reviewUrl =
+      _get(selectedPlaceReviews, "data.data.url", "") ||
+      _get(selectedPlaceReviews, "data.data.businessProfile", "");
+    let isLoading = _get(selectedPlaceReviews, "isLoading", false);
+    let success = _get(selectedPlaceReviews, "success", undefined);
+    const likes = _get(selectedPlaceReviews, "data.data.likes", 0);
+    const followers = _get(selectedPlaceReviews, "data.data.followers", 0);
+    const rating = _get(selectedPlaceReviews, "data.data.rating", 0);
+    let total = _get(selectedPlaceReviews, "data.data.tsTotal", 0);
+    let pageNo = 1;
+    let perPage = 10;
+    if (success && isValidArray(reviews)) {
+      perPage = total >= 10 ? 10 : total;
+    }
+    this.setState({
+      reviews,
+      reviewUrl,
+      isLoading,
+      success,
+      likes,
+      followers,
+      rating,
+      total,
+      perPage,
+      pageNo,
+      selectedPlace
+    });
   };
 
   toggleReviewVisibility = (id, hideFromWidget) => {
@@ -314,25 +335,15 @@ class CommonReviewTabPanel extends Component {
                   let name =
                     _get(review, "user", "") || _get(review, "name", "");
                   let reviewToSend = {
-                    id: _get(review, "id", ""),
-                    name: name === "N/A" ? "" : name,
-                    text: _get(review, "review", ""),
-                    rating: _get(review, "rating", 0),
-                    date: _get(review, "date", ""),
-                    replyURL: _get(review, "review_url", ""),
-                    hideFromWidget: _get(review, "hide_from_widget", 0)
+                    ...review,
+                    name,
+                    text: _get(review, "review", "")
                   };
-                  let provider = "";
-                  if (socialMediaAppId in reviewsPlatforms) {
-                    provider = reviewsPlatforms[socialMediaAppId];
-                  }
-                  //! provider is dynamic
                   return (
-                    //? hideBtn is used to show hide review button on card
                     <ReviewCard
                       review={reviewToSend}
-                      provider={provider}
-                      showToggleBtn={true}
+                      provider={Number(socialMediaAppId) || 0}
+                      parent="dashboard"
                       toggleReviewVisibility={this.toggleReviewVisibility}
                     />
                   );

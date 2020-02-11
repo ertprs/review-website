@@ -557,6 +557,18 @@ class ProfilePageBodyRight extends Component {
                   <div style={{ textAlign: "left" }}>{likes}</div>
                 </div>
               ) : null}
+              {rating ? (
+                <div className="additionalDetails">
+                  <div className="additionalDetailsHeader">Rating :</div>{" "}
+                  <div style={{ textAlign: "left" }}>{rating}</div>
+                </div>
+              ) : null}
+              {total ? (
+                <div className="additionalDetails">
+                  <div className="additionalDetailsHeader">Total Reviews :</div>{" "}
+                  <div style={{ textAlign: "left" }}>{total}</div>
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="learnMoreBtn">
@@ -826,7 +838,9 @@ class ProfilePageBodyRight extends Component {
     if (socialPlatformReviews.hasOwnProperty("1")) {
       if (
         _get(socialPlatformReviews, "1.data.likes", 0) ||
-        _get(socialPlatformReviews, "1.data.followers", 0)
+        _get(socialPlatformReviews, "1.data.followers", 0) ||
+        _get(socialPlatformReviews, "1.data.data.rating", 0) ||
+        _get(socialPlatformReviews, "1.data.data.total", 0)
       ) {
         showFacebook = true;
       } else {
