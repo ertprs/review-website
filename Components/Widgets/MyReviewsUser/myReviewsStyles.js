@@ -45,6 +45,10 @@ export const reviewListStyles = css`
     border-radius: 5px;
   }
 
+  .reviewCard:hover {
+    cursor: pointer;
+  }
+
   .topBox {
     border-bottom: 1px solid #f1f1f1;
     padding: 2%;

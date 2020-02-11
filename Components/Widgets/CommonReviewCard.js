@@ -90,8 +90,15 @@ const ReviewCard = ({
 }) => {
   let { name, text, rating, date, replyURL, id, hideFromWidget } = review;
   name = name === "N/A" ? "Anonymous" : name;
+  //? T
+  let reviewUrl = _get(review, "review_url", "");
   return (
-    <div className="reviewCard">
+    <div
+      className="reviewCard"
+      onClick={() => {
+        window.open(reviewUrl, "_blank");
+      }}
+    >
       <style jsx> {reviewListStyles}</style>
       <style jsx>{`
         .smallDate {
