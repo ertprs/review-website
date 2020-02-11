@@ -50,7 +50,13 @@ const SocialPlatformReviews = props => {
               `}</style>
               {reviews.map(review => {
                 //! will change provider
-                return <ReviewCard review={review} provider={platformId} />;
+                return (
+                  <ReviewCard
+                    review={review}
+                    provider={platformId}
+                    parent="reviewsPage"
+                  />
+                );
               })}{" "}
               {loginType == 4 && token ? (
                 <div className="showMoreContainer">
