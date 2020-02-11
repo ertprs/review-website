@@ -17,7 +17,7 @@ const SocialPlatformReviews = props => {
   const router = useRouter();
   const token = cookie.get("token") || "";
   const loginType = cookie.get("loginType") || "";
-  //?  need to handle pagination, we may create new action creator to which we'll pass next link and it will add new reviews
+
   const renderReviews = () => {
     return reviewsOrder.map(platformId => {
       if (platformId in socialPlatformReviews) {
@@ -50,7 +50,13 @@ const SocialPlatformReviews = props => {
               `}</style>
               {reviews.map(review => {
                 //! will change provider
-                return <ReviewCard review={review} provider={platformId} />;
+                return (
+                  <ReviewCard
+                    review={review}
+                    provider={platformId}
+                    parent="reviewsPage"
+                  />
+                );
               })}{" "}
               {loginType == 4 && token ? (
                 <div className="showMoreContainer">
