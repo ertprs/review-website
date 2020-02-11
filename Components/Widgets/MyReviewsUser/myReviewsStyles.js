@@ -45,7 +45,10 @@ export const reviewListStyles = css`
     border-radius: 5px;
   }
 
-  .reviewCard:hover {
+  .pointerCursor {
+  }
+
+  .pointerCursor:hover {
     cursor: pointer;
   }
 
@@ -162,5 +165,29 @@ export const reviewListStyles = css`
 
   .wordBreak {
     word-break: break-word;
+  }
+
+  .smallDate {
+    display: none;
+  }
+
+  .dateContainer {
+    text-align: right;
+    margin: 20px 40px 0px 0px;
+    font-weight: bold;
+  }
+  .ratingContainer {
+    margin-top: 10px;
+  }
+
+  .userName {
+    font-weight: bold;
+  }
+
+  .mr-10 {
+    margin-right: 10px;
+  }
+  .bottomBtn {
+    padding: 14px;
   }
 `;

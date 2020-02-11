@@ -71,33 +71,13 @@ const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
   };
 
   return (
-    <div className="reviewCard" onClick={redirectToReview}>
+    <div
+      className={`${
+        parent === "reviewsPage" ? "reviewCard pointerCursor" : "reviewCard"
+      }`}
+      onClick={redirectToReview}
+    >
       <style jsx> {reviewListStyles}</style>
-      <style jsx>{`
-        .smallDate {
-          display: none;
-        }
-
-        .dateContainer {
-          text-align: right;
-          margin: 20px 40px 0px 0px;
-          font-weight: bold;
-        }
-        .ratingContainer {
-          margin-top: 10px;
-        }
-
-        .userName {
-          font-weight: bold;
-        }
-
-        .mr-10 {
-          margin-right: 10px;
-        }
-        .bottomBtn {
-          padding: 14px;
-        }
-      `}</style>
       <div></div>
       <div className="row topBox">
         <div className="col-md-6 ratingBox">
