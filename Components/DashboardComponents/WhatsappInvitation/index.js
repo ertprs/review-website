@@ -56,7 +56,10 @@ class WhatsAppInvitation extends Component {
       activeEvent: {},
       //? parsed data from CSV or copy-paste will be stored here
       uploadCustomerData: [],
+      //? selected shop ID
       selectedShop: "",
+      //? selected whatsApp Invitation method
+      selectedWhatsAppInvitationMethod: "",
       //? send after minutes schedule, in case of automatic invitations
       sendAfterMinutes: {
         value: "",
@@ -140,6 +143,10 @@ class WhatsAppInvitation extends Component {
 
   setUploadCustomerData = data => {
     this.setState({ uploadCustomerData: [...data] });
+  };
+
+  setSelectedWhatsAppInvitationMethod = selectedWhatsAppInvitationMethod => {
+    this.setState({ selectedWhatsAppInvitationMethod });
   };
 
   handleNext = (e, stepNo = null) => {
@@ -247,7 +254,13 @@ class WhatsAppInvitation extends Component {
 
   startWhatsAppInvitation = () => {
     const { whatsAppManualInvitation } = this.props;
-    const { uploadCustomerData, createTemplate } = this.state;
+    const {
+      uploadCustomerData,
+      createTemplate,
+      sendAfterMinutes,
+      selectedShop,
+      selectedWhatsAppInvitationMethod
+    } = this.state;
     let salutation = _get(createTemplate, "inputFields.salutation.value", "");
     let customerName = _get(createTemplate, "customerName", "");
     let message = _get(createTemplate, "inputFields.message.value", "");
@@ -264,6 +277,13 @@ class WhatsAppInvitation extends Component {
     }
     reqBody["storeCustomerData"] = saveCampaign;
     reqBody["rememberMe"] = keepMeLoggedIn;
+
+    //!sendAfterMinutes, shop - for automatic campaigns, uncomment the code below when API is available
+    // if (selectedWhatsAppInvitationMethod === "automatic") {
+    //   reqBody["sendAfterMinutes"] = sendAfterMinutes;
+    //   reqBody["shop"] = selectedShop;
+    // }
+
     whatsAppManualInvitation(reqBody);
   };
   handleCheckboxChange = event => {
@@ -282,7 +302,8 @@ class WhatsAppInvitation extends Component {
       createTemplate,
       activeEvent,
       mountWhatsAppPusher,
-      sendAfterMinutes
+      sendAfterMinutes,
+      selectedShop
     } = this.state;
     switch (activeStep) {
       case 1:
@@ -294,6 +315,10 @@ class WhatsAppInvitation extends Component {
             handleSelectedShopChange={this.handleSelectedShopChange}
             sendAfterMinutes={sendAfterMinutes}
             handleSendAfterMinutesChange={this.handleSendAfterMinutesChange}
+            selectedShop={selectedShop}
+            setSelectedWhatsAppInvitationMethod={
+              this.setSelectedWhatsAppInvitationMethod
+            }
           />
         );
       case 2:

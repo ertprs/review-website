@@ -271,12 +271,7 @@ class UploadCustomerData extends React.Component {
     const parseErrors = _get(uploadFileData, "parseErrors", []);
     const selectedWay = _get(this.state, "selectedWay", "");
     return (
-      <RadioGroup
-        aria-label="uploadWay"
-        name="uploadWay"
-        value={selectedWay}
-        onChange={this.handleRadioChange}
-      >
+      <RadioGroup aria-label="uploadWay" name="uploadWay" value={selectedWay}>
         {/*-------- UPLOAD FILE PANEL -------------*/}
         <ExpansionPanel
           style={{ marginBottom: "15px" }}
@@ -284,6 +279,7 @@ class UploadCustomerData extends React.Component {
           onChange={e => {
             this.setState({ selectedWay: "uploadFile" });
             this.props.setUploadCustomerData([]);
+            this.props.setSelectedWhatsAppInvitationMethod("uploadFile");
           }}
         >
           <ExpansionPanelSummary
@@ -340,6 +336,7 @@ class UploadCustomerData extends React.Component {
           expanded={"copyPaste" === selectedWay}
           onChange={e => {
             this.setState({ selectedWay: "copyPaste" });
+            this.props.setSelectedWhatsAppInvitationMethod("copyPaste");
             this.props.setUploadCustomerData([]);
           }}
         >
@@ -383,6 +380,7 @@ class UploadCustomerData extends React.Component {
           onChange={e => {
             this.setState({ selectedWay: "automatic" });
             this.props.setUploadCustomerData([]);
+            this.props.setSelectedWhatsAppInvitationMethod("automatic");
           }}
         >
           <ExpansionPanelSummary
