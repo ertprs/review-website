@@ -49,13 +49,22 @@ class WhatsAppInvitation extends Component {
       activeStep: 1,
       //? when you add any extra step don't forget to increase it here
       totalSteps: 2,
-      //? parsed data from CSV or copy-paste will be stored here
-      uploadCustomerData: [],
       //? mounting pusher when response from commit api is success(inside cdu) and un mounting when qr_code_expired, logout_successful, campaign_failed, campaign_finished
       mountWhatsAppPusher: false,
       openFullScreenDialog: false,
       //? this is always the last broadcast event
       activeEvent: {},
+      //? parsed data from CSV or copy-paste will be stored here
+      uploadCustomerData: [],
+      selectedShop: "",
+      //? send after minutes schedule, in case of automatic invitations
+      sendAfterMinutes: {
+        value: "",
+        valid: false,
+        validationRules: {
+          required: true
+        }
+      },
       createTemplate: {
         templateLanguage: {
           element: "select",
@@ -164,6 +173,20 @@ class WhatsAppInvitation extends Component {
     this.setState({ activeStep });
   };
 
+  handleSelectedShopChange = selectedShop => {
+    this.setState({ selectedShop });
+  };
+
+  handleSendAfterMinutesChange = val => {
+    this.setState({
+      sendAfterMinutes: {
+        ...this.state.sendAfterMinutes,
+        value: val,
+        valid: validate(val, this.state.sendAfterMinutes.validationRules)
+      }
+    });
+  };
+
   handleTemplateLanguageChange = e => {
     const { name, value } = e.target;
     const { companyName } = this.props;
@@ -258,7 +281,8 @@ class WhatsAppInvitation extends Component {
       activeStep,
       createTemplate,
       activeEvent,
-      mountWhatsAppPusher
+      mountWhatsAppPusher,
+      sendAfterMinutes
     } = this.state;
     switch (activeStep) {
       case 1:
@@ -267,6 +291,9 @@ class WhatsAppInvitation extends Component {
             setUploadCustomerData={this.setUploadCustomerData}
             handleNext={this.handleNext}
             handlePrev={this.handlePrev}
+            handleSelectedShopChange={this.handleSelectedShopChange}
+            sendAfterMinutes={sendAfterMinutes}
+            handleSendAfterMinutesChange={this.handleSendAfterMinutesChange}
           />
         );
       case 2:

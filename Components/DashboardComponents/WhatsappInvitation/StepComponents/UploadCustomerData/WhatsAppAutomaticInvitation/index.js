@@ -24,8 +24,9 @@ import TagFacesIcon from "@material-ui/icons/TagFaces";
 import AccessTime from "@material-ui/icons/AccessTime";
 //! we'll get the values to pre-fill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import ScheduleInvitationBtn from "./ScheduleInvitationDialog/ScheduleInvitationBtn/ScheduleInvitationBtn";
 
-class AutomaticInvitation extends Component {
+class WhatsAppAutomaticInvitation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -283,9 +284,20 @@ class AutomaticInvitation extends Component {
     });
   };
 
+  //? Please do carefully read VERY IMPORTANT NOTE on line 317
+
   renderForm = () => {
     const { formName, formData } = this.state;
-    const { isLoading, sendConfigData, selectedPlatform } = this.props;
+    const {
+      handleShowScheduleBtnClick,
+      showScheduleInvitationBtn
+    } = this.props;
+    const {
+      isLoading,
+      sendConfigData,
+      selectedPlatform,
+      handleNext
+    } = this.props;
     let form = <div />;
     if (formName) {
       const FormComponent = Forms[formName];
@@ -301,7 +313,16 @@ class AutomaticInvitation extends Component {
                 sendConfigData(reqBody);
               }}
               {...this.props}
+              // VERY IMPORTANT NOTE : SINCE OUR BCC, WooCommerce, etc, FORMS USE SENDTOSELECTPLATFORMSPLIT NAMED PROP AS THEIR CONTINUE HANDLER, THAT'S WHY WE ARE NAMING THE HANDLENEXT PROP BELOW AS SENDTOSELECTPLATFORMSPLIT
+              sendToSelectPlatformSplit={handleNext}
             />
+            {showScheduleInvitationBtn ? (
+              <div>
+                <ScheduleInvitationBtn
+                  handleClick={handleShowScheduleBtnClick}
+                />
+              </div>
+            ) : null}
           </div>
         );
       }
@@ -393,7 +414,7 @@ class AutomaticInvitation extends Component {
       errorMsg,
       isLoading,
       selectedPlatform,
-      sendToSelectPlatformSplit
+      handleNext
     } = this.props;
     const { formName } = this.state;
     if (success !== prevProps.success) {
@@ -416,9 +437,9 @@ class AutomaticInvitation extends Component {
           snackbarMsg
         },
         () => {
-          //! we are disabling modal for woocommerce and bcc and sending them directly to select platform
+          //! we are disabling modal for woocommerce and bcc and sending them directly to Create Template
           if (success && (formName === "WooCommerce" || formName === "BCC")) {
-            // sendToSelectPlatformSplit();
+            this.props.handleNext();
           }
         }
       );
@@ -445,7 +466,8 @@ class AutomaticInvitation extends Component {
       availablePlatformsData,
       selectedPlatform,
       navigateToCampaignManagement,
-      isCampaignEditMode
+      isCampaignEditMode,
+      handleNext
     } = this.props;
     const particularPlatformData = _get(availablePlatformsData, formName, {});
     const secretKey = _get(particularPlatformData, "secret_key", "");
@@ -510,7 +532,7 @@ class AutomaticInvitation extends Component {
           showModal={this.state.showCredentialModal}
           handleModalClose={this.handleCredentialModalVisibilityToggle}
           saveAndContinue={() => {
-            // this.props.sendToSelectPlatformSplit();
+            this.props.handleNext();
           }}
         >
           <div>
@@ -636,5 +658,5 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, { sendConfigData })(
-  AutomaticInvitation
+  WhatsAppAutomaticInvitation
 );
