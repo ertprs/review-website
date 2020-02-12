@@ -148,14 +148,34 @@ const CreateTemplate = props => {
 
 const mapStateToProps = state => {
   const { dashboardData } = state;
-  let whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
-  let whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
+  let whatsAppManualInvitationInit = _get(
+    dashboardData,
+    "whatsAppManualInvitationInit",
+    {}
+  );
+  let whatsAppManualInvitationCommit = _get(
+    dashboardData,
+    "whatsAppManualInvitationCommit",
+    {}
+  );
+  let whatsAppAutomaticInvitationInit = _get(
+    dashboardData,
+    "whatsAppAutomaticInvitationInit",
+    {}
+  );
+  let whatsAppAutomaticInvitationCommit = _get(
+    dashboardData,
+    "whatsAppAutomaticInvitationCommit",
+    {}
+  );
   const isLoading =
-    _get(whatsAppManualInvite, "isLoading", false) ||
-    _get(whatsAppManualCommit, "isLoading", false);
+    _get(whatsAppManualInvitationInit, "isLoading", false) ||
+    _get(whatsAppManualInvitationCommit, "isLoading", false) ||
+    _get(whatsAppAutomaticInvitationInit, "isLoading", false) ||
+    _get(whatsAppAutomaticInvitationCommit, "isLoading", false);
   const isSessionPresent = _get(
     dashboardData,
-    "whatsAppManualInvite.isSessionPresent",
+    "whatsAppManualInvitationInit.isSessionPresent",
     false
   );
   return {

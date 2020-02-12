@@ -84,7 +84,16 @@ import {
   WHATSAPP_MANUAL_INVITE_FAILURE,
   WHATSAPP_MANUAL_COMMIT_INIT,
   WHATSAPP_MANUAL_COMMIT_SUCCESS,
-  WHATSAPP_MANUAL_COMMIT_FAILURE
+  WHATSAPP_MANUAL_COMMIT_FAILURE,
+  WHATSAPP_AUTOMATIC_INVITE_INIT,
+  WHATSAPP_AUTOMATIC_INVITE_SUCCESS,
+  WHATSAPP_AUTOMATIC_INVITE_FAILURE,
+  WHATSAPP_AUTOMATIC_COMMIT_INIT,
+  WHATSAPP_AUTOMATIC_COMMIT_SUCCESS,
+  WHATSAPP_AUTOMATIC_COMMIT_FAILURE,
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_INIT,
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_SUCCESS,
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -123,8 +132,11 @@ const dashboardReducer = (state = {}, action) => {
     toggleReviewResponse,
     toggleWidgetPlatformVisibilityResponse,
     shortReviewUrl,
-    whatsAppManualInvite,
-    whatsAppManualCommit
+    whatsAppManualInvitationInit,
+    whatsAppManualInvitationCommit,
+    whatsAppAutomaticInvitationInit,
+    whatsAppAutomaticInvitationCommit,
+    whatsAppAutomaticCreateCampaign
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -592,37 +604,94 @@ const dashboardReducer = (state = {}, action) => {
       return {
         ...state,
         type,
-        whatsAppManualInvite
+        whatsAppManualInvitationInit
       };
     case WHATSAPP_MANUAL_INVITE_SUCCESS:
       return {
         ...state,
         type,
-        whatsAppManualInvite
+        whatsAppManualInvitationInit
       };
     case WHATSAPP_MANUAL_INVITE_FAILURE:
       return {
         ...state,
         type,
-        whatsAppManualInvite
+        whatsAppManualInvitationInit
       };
     case WHATSAPP_MANUAL_COMMIT_INIT:
       return {
         ...state,
         type,
-        whatsAppManualCommit
+        whatsAppManualInvitationCommit
       };
     case WHATSAPP_MANUAL_COMMIT_SUCCESS:
       return {
         ...state,
         type,
-        whatsAppManualCommit
+        whatsAppManualInvitationCommit
       };
     case WHATSAPP_MANUAL_COMMIT_FAILURE:
       return {
         ...state,
         type,
-        whatsAppManualCommit
+        whatsAppManualInvitationCommit
+      };
+
+    case WHATSAPP_AUTOMATIC_INVITE_INIT:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticInvitationInit
+      };
+    case WHATSAPP_AUTOMATIC_INVITE_SUCCESS:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticInvitationInit
+      };
+    case WHATSAPP_AUTOMATIC_INVITE_FAILURE:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticInvitationInit
+      };
+
+    case WHATSAPP_AUTOMATIC_COMMIT_INIT:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticInvitationCommit
+      };
+    case WHATSAPP_AUTOMATIC_COMMIT_SUCCESS:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticInvitationCommit
+      };
+    case WHATSAPP_AUTOMATIC_COMMIT_FAILURE:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticInvitationCommit
+      };
+
+    case WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_INIT:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticCreateCampaign
+      };
+    case WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_SUCCESS:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticCreateCampaign
+      };
+    case WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticCreateCampaign
       };
     default:
       return state;

@@ -13,6 +13,7 @@ import QRCode from "./QRCode";
 import QRLoggedInMsg from "./QRLoggedInMsg";
 import CampaignStarted from "./CampaignStartedMsg";
 import CampaignFinished from "./CampaignFinishedMsg";
+import CreateCampaign from "./CreateCampaign";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -35,7 +36,8 @@ const QRCodeDialog = props => {
     handleClose,
     activeEvent,
     reloadQRCode,
-    whatsAppPusherConnected
+    whatsAppPusherConnected,
+    isAutomatic
   } = props;
   const event = _get(activeEvent, "event", "");
   const value = _get(activeEvent, "value", "");
@@ -57,6 +59,9 @@ const QRCodeDialog = props => {
         );
       case "login_successful":
         return <QRLoggedInMsg />;
+      //? We will receive this broadcast in both automatic and manual invitations but we are using this in automatic invitations only to make createCampaign API call. And in case of automatic this will be the last broadcast.
+      case "db_session_updated":
+        return isAutomatic ? <CreateCampaign /> : null;
       case "campaign_started":
         return <CampaignStarted />;
       case "campaign_finished":
@@ -82,6 +87,7 @@ const QRCodeDialog = props => {
             </Typography>
             {event === "campaign_finished" ||
             "qr_code_expired" ||
+            "db_session_updated" ||
             "qr_code_changed" ? (
               <Button autoFocus color="inherit" onClick={handleClose}>
                 Close
