@@ -14,6 +14,9 @@ import Papa from "papaparse";
 import UploadFile from "./UploadFile";
 import CopyPasteData from "./CopyPasteData";
 import validate from "../../../../../utility/validate";
+import WhatsAppAutomaticInvitation from "./WhatsAppAutomaticInvitation";
+import ScheduleInvitationDialog from "./WhatsAppAutomaticInvitation/ScheduleInvitationDialog";
+import ScheduleInvitationBtn from "./WhatsAppAutomaticInvitation/ScheduleInvitationDialog/ScheduleInvitationBtn/ScheduleInvitationBtn";
 
 class UploadCustomerData extends React.Component {
   constructor(props) {
@@ -45,7 +48,10 @@ class UploadCustomerData extends React.Component {
           name: "textbox"
         },
         parseErrors: []
-      }
+      },
+      selectedPlatform: "",
+      //? schedule invitation dialog state
+      openScheduleInvitationDialog: false
     };
     this.fileInput = React.createRef();
   }
@@ -250,25 +256,30 @@ class UploadCustomerData extends React.Component {
     });
   };
 
+  handleScheduleInvitationDialogToggle = () => {
+    this.setState(prevState => {
+      return {
+        openScheduleInvitationDialog: !prevState.openScheduleInvitationDialog
+      };
+    });
+  };
+
   renderExpansionPanel = () => {
-    const { handleNext, handlePrev } = this.props;
+    const { handleNext, handlePrev, handleSelectedShopChange } = this.props;
     const { uploadFileData } = this.state;
     const fileSize = _get(uploadFileData, "csvFile.size", 0);
     const parseErrors = _get(uploadFileData, "parseErrors", []);
     const selectedWay = _get(this.state, "selectedWay", "");
     return (
-      <RadioGroup
-        aria-label="uploadWay"
-        name="uploadWay"
-        value={selectedWay}
-        onChange={this.handleRadioChange}
-      >
+      <RadioGroup aria-label="uploadWay" name="uploadWay" value={selectedWay}>
+        {/*-------- UPLOAD FILE PANEL -------------*/}
         <ExpansionPanel
           style={{ marginBottom: "15px" }}
           expanded={"uploadFile" === selectedWay}
           onChange={e => {
             this.setState({ selectedWay: "uploadFile" });
             this.props.setUploadCustomerData([]);
+            this.props.setSelectedWhatsAppInvitationMethod("uploadFile");
           }}
         >
           <ExpansionPanelSummary
@@ -299,24 +310,33 @@ class UploadCustomerData extends React.Component {
               />
             </div>{" "}
           </ExpansionPanelDetails>
-          <div style={{ textAlign: "right", margin: "0px 25px 25px 0px" }}>
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              onClick={handleNext}
-              disabled={fileSize === 0 || parseErrors.length > 0}
-            >
-              Continue
-            </Button>
+          <div style={{ display: "flex", margin: "0px 25px 25px 25px" }}>
+            <div style={{ flexBasis: "50%", textAlign: "left" }}>
+              <ScheduleInvitationBtn
+                handleClick={this.handleScheduleInvitationDialogToggle}
+              />
+            </div>
+            <div style={{ flexBasis: "50%", textAlign: "right" }}>
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                onClick={handleNext}
+                disabled={fileSize === 0 || parseErrors.length > 0}
+              >
+                Continue
+              </Button>
+            </div>
           </div>
         </ExpansionPanel>
 
+        {/*-------- COPY AND PASTE DATA PANEL -------------*/}
         <ExpansionPanel
           style={{ marginBottom: "15px" }}
           expanded={"copyPaste" === selectedWay}
           onChange={e => {
             this.setState({ selectedWay: "copyPaste" });
+            this.props.setSelectedWhatsAppInvitationMethod("copyPaste");
             this.props.setUploadCustomerData([]);
           }}
         >
@@ -345,6 +365,54 @@ class UploadCustomerData extends React.Component {
               handleParseBtnClick={this.handleParseBtnClick}
               setUploadCustomerData={this.props.setUploadCustomerData}
               handleContinueBtnClick={handleNext}
+              showScheduleInvitationBtn={true}
+              handleShowScheduleBtnClick={
+                this.handleScheduleInvitationDialogToggle
+              }
+            />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+
+        {/*-------- AUTOMATIC INVITATION PANEL -------------*/}
+        <ExpansionPanel
+          style={{ marginBottom: "15px" }}
+          expanded={"automatic" === selectedWay}
+          onChange={e => {
+            this.setState({ selectedWay: "automatic" });
+            this.props.setUploadCustomerData([]);
+            this.props.setSelectedWhatsAppInvitationMethod("automatic");
+          }}
+        >
+          <ExpansionPanelSummary
+            onClick={e => {}}
+            // expandIcon={<ExpandMoreIcon />}
+            aria-label="Expand"
+            aria-controls="integration-platforms"
+            id="integration-platforms"
+          >
+            <FormControlLabel
+              aria-label="Acknowledge"
+              control={<Radio />}
+              label="Automatic WhatsApp Invitation"
+              value={"automatic"}
+              onClick={e => {
+                this.setState({ selectedWay: "automatic" });
+                this.props.setUploadCustomerData([]);
+              }}
+            />
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails style={{ width: "100%" }}>
+            <WhatsAppAutomaticInvitation
+              selectedPlatform={this.state.selectedPlatform}
+              setSelectedPlatform={selectedPlatform => {
+                this.setState({ selectedPlatform });
+                handleSelectedShopChange(selectedPlatform);
+              }}
+              showScheduleInvitationBtn={true}
+              handleShowScheduleBtnClick={
+                this.handleScheduleInvitationDialogToggle
+              }
+              handleNext={handleNext}
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -353,6 +421,8 @@ class UploadCustomerData extends React.Component {
   };
 
   render() {
+    const { openScheduleInvitationDialog } = this.state;
+    const { sendAfterMinutes, handleSendAfterMinutesChange } = this.props;
     return (
       <>
         <style jsx>
@@ -369,6 +439,14 @@ class UploadCustomerData extends React.Component {
           </h5>
         </div>
         {this.renderExpansionPanel()}
+        <ScheduleInvitationDialog
+          open={openScheduleInvitationDialog}
+          handleClose={() => {
+            this.setState({ openScheduleInvitationDialog: false });
+          }}
+          sendAfterMinutes={sendAfterMinutes}
+          handleSendAfterMinutesChange={handleSendAfterMinutesChange}
+        />
       </>
     );
   }

@@ -49,13 +49,25 @@ class WhatsAppInvitation extends Component {
       activeStep: 1,
       //? when you add any extra step don't forget to increase it here
       totalSteps: 2,
-      //? parsed data from CSV or copy-paste will be stored here
-      uploadCustomerData: [],
       //? mounting pusher when response from commit api is success(inside cdu) and un mounting when qr_code_expired, logout_successful, campaign_failed, campaign_finished
       mountWhatsAppPusher: false,
       openFullScreenDialog: false,
       //? this is always the last broadcast event
       activeEvent: {},
+      //? parsed data from CSV or copy-paste will be stored here
+      uploadCustomerData: [],
+      //? selected shop ID
+      selectedShop: "",
+      //? selected whatsApp Invitation method
+      selectedWhatsAppInvitationMethod: "",
+      //? send after minutes schedule, in case of automatic invitations
+      sendAfterMinutes: {
+        value: "",
+        valid: false,
+        validationRules: {
+          required: true
+        }
+      },
       createTemplate: {
         templateLanguage: {
           element: "select",
@@ -133,6 +145,10 @@ class WhatsAppInvitation extends Component {
     this.setState({ uploadCustomerData: [...data] });
   };
 
+  setSelectedWhatsAppInvitationMethod = selectedWhatsAppInvitationMethod => {
+    this.setState({ selectedWhatsAppInvitationMethod });
+  };
+
   handleNext = (e, stepNo = null) => {
     const { totalSteps } = this.state;
     let activeStep = _get(this.state, "activeStep", 1);
@@ -162,6 +178,20 @@ class WhatsAppInvitation extends Component {
       activeStep = activeStep;
     }
     this.setState({ activeStep });
+  };
+
+  handleSelectedShopChange = selectedShop => {
+    this.setState({ selectedShop });
+  };
+
+  handleSendAfterMinutesChange = val => {
+    this.setState({
+      sendAfterMinutes: {
+        ...this.state.sendAfterMinutes,
+        value: val,
+        valid: validate(val, this.state.sendAfterMinutes.validationRules)
+      }
+    });
   };
 
   handleTemplateLanguageChange = e => {
@@ -224,7 +254,13 @@ class WhatsAppInvitation extends Component {
 
   startWhatsAppInvitation = () => {
     const { whatsAppManualInvitation } = this.props;
-    const { uploadCustomerData, createTemplate } = this.state;
+    const {
+      uploadCustomerData,
+      createTemplate,
+      sendAfterMinutes,
+      selectedShop,
+      selectedWhatsAppInvitationMethod
+    } = this.state;
     let salutation = _get(createTemplate, "inputFields.salutation.value", "");
     let customerName = _get(createTemplate, "customerName", "");
     let message = _get(createTemplate, "inputFields.message.value", "");
@@ -241,6 +277,13 @@ class WhatsAppInvitation extends Component {
     }
     reqBody["storeCustomerData"] = saveCampaign;
     reqBody["rememberMe"] = keepMeLoggedIn;
+
+    //?sendAfterMinutes (make sure if the user doesn't schedules the invitation this value must be sent as 0), shop - for automatic campaigns, uncomment the code below when API is available
+    // if (selectedWhatsAppInvitationMethod === "automatic") {
+    //   reqBody["sendAfterMinutes"] = sendAfterMinutes || 0;
+    //   reqBody["shop"] = selectedShop;
+    // }
+
     whatsAppManualInvitation(reqBody);
   };
   handleCheckboxChange = event => {
@@ -258,7 +301,9 @@ class WhatsAppInvitation extends Component {
       activeStep,
       createTemplate,
       activeEvent,
-      mountWhatsAppPusher
+      mountWhatsAppPusher,
+      sendAfterMinutes,
+      selectedShop
     } = this.state;
     switch (activeStep) {
       case 1:
@@ -267,6 +312,13 @@ class WhatsAppInvitation extends Component {
             setUploadCustomerData={this.setUploadCustomerData}
             handleNext={this.handleNext}
             handlePrev={this.handlePrev}
+            handleSelectedShopChange={this.handleSelectedShopChange}
+            sendAfterMinutes={sendAfterMinutes}
+            handleSendAfterMinutesChange={this.handleSendAfterMinutesChange}
+            selectedShop={selectedShop}
+            setSelectedWhatsAppInvitationMethod={
+              this.setSelectedWhatsAppInvitationMethod
+            }
           />
         );
       case 2:

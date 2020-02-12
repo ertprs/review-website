@@ -3,6 +3,8 @@ import Select from "react-select";
 import Button from "@material-ui/core/Button/Button";
 import ArrowLeft from "@material-ui/icons/ArrowLeft";
 import ArrowRight from "@material-ui/icons/ArrowRight";
+import CheckIcon from "@material-ui/icons/Check";
+import CloseIcon from "@material-ui/icons/Close";
 import automaticScheduleList from "../../../utility/automaticScheduleList.json";
 import _get from "lodash/get";
 class CampaignScheduleAutomatic extends Component {
@@ -10,7 +12,12 @@ class CampaignScheduleAutomatic extends Component {
     this.props.handleChange("");
   }
   render() {
-    const { campaignScheduleAutomaticData } = this.props;
+    //? showSaveBtn, captionText is used when we use this component inside whatsApp automatic component.
+    const {
+      campaignScheduleAutomaticData,
+      showSaveBtn,
+      captionText
+    } = this.props;
     const isValid = _get(campaignScheduleAutomaticData, "valid", false);
     const value = _get(campaignScheduleAutomaticData, "value", "");
     return (
@@ -42,31 +49,74 @@ class CampaignScheduleAutomatic extends Component {
               }}
             />
           </div>
-          <div className="col-md-12">
-            <div style={{ marginTop: "45px" }}>
-              <span style={{ marginRight: "25px" }}>
+          {/* Used in automatic whatsApp invitations */}
+          {captionText ? (
+            <div
+              className="col-md-12"
+              style={{ marginTop: "8px", color: "green" }}
+            >
+              <small>{captionText}</small>
+            </div>
+          ) : null}
+          {/* Used in automatic whatsApp invitations */}
+          {showSaveBtn ? (
+            <div className="col-md-12">
+              <div style={{ marginTop: "45px" }}>
+                <span style={{ marginRight: "25px" }}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    startIcon={<CloseIcon />}
+                    onClick={() => {
+                      this.props.handleChange("0");
+                      this.props.handleClose();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </span>
+                <span>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    endIcon={<CheckIcon />}
+                    onClick={this.props.handleSave}
+                    disabled={!isValid}
+                  >
+                    Save
+                  </Button>
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="col-md-12">
+              <div style={{ marginTop: "45px" }}>
+                <span style={{ marginRight: "25px" }}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    endIcon={<CheckIcon />}
+                    onClick={this.props.handleBack}
+                  >
+                    Back
+                  </Button>
+                </span>
                 <Button
                   color="primary"
                   variant="contained"
                   size="small"
-                  startIcon={<ArrowLeft />}
-                  onClick={this.props.handleBack}
+                  endIcon={<ArrowRight />}
+                  onClick={this.props.handleNext}
+                  disabled={!isValid}
                 >
-                  Back
+                  Continue
                 </Button>
-              </span>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                endIcon={<ArrowRight />}
-                onClick={this.props.handleNext}
-                disabled={!isValid}
-              >
-                Continue
-              </Button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );

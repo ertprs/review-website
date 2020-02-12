@@ -3,6 +3,7 @@ import uuid from "uuid/v1";
 import validate from "../../../../../../utility/validate";
 import FormField from "../../../../../Widgets/FormField/FormField";
 import Button from "@material-ui/core/Button";
+import ScheduleInvitationBtn from "../WhatsAppAutomaticInvitation/ScheduleInvitationDialog/ScheduleInvitationBtn/ScheduleInvitationBtn";
 class CopyPasteData extends Component {
   renderHeader = () => {
     return (
@@ -48,13 +49,23 @@ class CopyPasteData extends Component {
   };
 
   renderButtons = () => {
+    const {
+      showScheduleInvitationBtn,
+      handleShowScheduleBtnClick
+    } = this.props;
     return (
       <div className="col-md-12">
         <style jsx>
           {`
             .btnContainer {
               display: flex;
-              justify-content: flex-end;
+            }
+            .btnContainer div:first-child {
+              flex-basis: 70%;
+            }
+            .btnContainer div:last-child {
+              flex-basis: 30%;
+              text-align: right;
             }
             .addBtn {
               flex-basis: 10%;
@@ -100,6 +111,11 @@ class CopyPasteData extends Component {
           `}
         </style>
         <div className="btnContainer">
+          {showScheduleInvitationBtn ? (
+            <div>
+              <ScheduleInvitationBtn handleClick={handleShowScheduleBtnClick} />
+            </div>
+          ) : null}
           <div>
             <Button
               variant="contained"
