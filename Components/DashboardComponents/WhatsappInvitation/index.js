@@ -278,9 +278,9 @@ class WhatsAppInvitation extends Component {
     reqBody["storeCustomerData"] = saveCampaign;
     reqBody["rememberMe"] = keepMeLoggedIn;
 
-    //!sendAfterMinutes, shop - for automatic campaigns, uncomment the code below when API is available
+    //?sendAfterMinutes (make sure if the user doesn't schedules the invitation this value must be sent as 0), shop - for automatic campaigns, uncomment the code below when API is available
     // if (selectedWhatsAppInvitationMethod === "automatic") {
-    //   reqBody["sendAfterMinutes"] = sendAfterMinutes;
+    //   reqBody["sendAfterMinutes"] = sendAfterMinutes || 0;
     //   reqBody["shop"] = selectedShop;
     // }
 
