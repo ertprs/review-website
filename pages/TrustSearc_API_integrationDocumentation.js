@@ -246,7 +246,8 @@ export default function TrustSearc_API_integrationDocumentation() {
       </p>
       <MaterialTable
         options={{
-          pageSize: 10
+          pageSize: 10,
+          pageSizeOptions: [5, 10, 15, 20, 25, 30]
         }}
         title="Endpoint List"
         columns={EndpointListTableColumns}
