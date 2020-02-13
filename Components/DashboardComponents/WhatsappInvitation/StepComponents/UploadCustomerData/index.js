@@ -310,13 +310,8 @@ class UploadCustomerData extends React.Component {
               />
             </div>{" "}
           </ExpansionPanelDetails>
-          <div style={{ display: "flex", margin: "0px 25px 25px 25px" }}>
-            <div style={{ flexBasis: "50%", textAlign: "left" }}>
-              <ScheduleInvitationBtn
-                handleClick={this.handleScheduleInvitationDialogToggle}
-              />
-            </div>
-            <div style={{ flexBasis: "50%", textAlign: "right" }}>
+          <div style={{ margin: "0px 25px 25px 25px" }}>
+            <div style={{ textAlign: "right" }}>
               <Button
                 color="primary"
                 variant="contained"
@@ -365,10 +360,6 @@ class UploadCustomerData extends React.Component {
               handleParseBtnClick={this.handleParseBtnClick}
               setUploadCustomerData={this.props.setUploadCustomerData}
               handleContinueBtnClick={handleNext}
-              showScheduleInvitationBtn={true}
-              handleShowScheduleBtnClick={
-                this.handleScheduleInvitationDialogToggle
-              }
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>

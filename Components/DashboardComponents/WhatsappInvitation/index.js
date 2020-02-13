@@ -7,10 +7,17 @@ import {
 } from "../../../utility/whatsAppTemplate";
 import { isValidArray } from "../../../utility/commonFunctions";
 import validate from "../../../utility/validate";
-import { whatsAppManualInvitation } from "../../../store/actions/dashboardActions";
+import {
+  whatsAppManualInvitationInit,
+  whatsAppAutomaticInvitationInit,
+  whatsAppAutomaticCreateCampaign
+} from "../../../store/actions/dashboardActions";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import _get from "lodash/get";
+import _find from "lodash/find";
+import _isEmpty from "lodash/isEmpty";
+
 //Components
 const UploadCustomerData = dynamic(
   () => import("./StepComponents/UploadCustomerData"),
@@ -251,9 +258,14 @@ class WhatsAppInvitation extends Component {
       }
     });
   };
-
-  startWhatsAppInvitation = () => {
-    const { whatsAppManualInvitation } = this.props;
+  //? This function will be called from three places: 1-) Submit button in create template page in case of automatic campaign 2-) Submit button in create template page in case of manual campaign 3-) When db_session_updated is broadcasted in case of automatic.
+  startWhatsAppInvitation = (e, isCreateCampaign) => {
+    const {
+      whatsAppManualInvitationInit,
+      whatsAppAutomaticInvitationInit,
+      whatsAppAutomaticCreateCampaign,
+      ecommerceIntegrations
+    } = this.props;
     const {
       uploadCustomerData,
       createTemplate,
@@ -278,13 +290,28 @@ class WhatsAppInvitation extends Component {
     reqBody["storeCustomerData"] = saveCampaign;
     reqBody["rememberMe"] = keepMeLoggedIn;
 
-    //!sendAfterMinutes, shop - for automatic campaigns, uncomment the code below when API is available
-    // if (selectedWhatsAppInvitationMethod === "automatic") {
-    //   reqBody["sendAfterMinutes"] = sendAfterMinutes;
-    //   reqBody["shop"] = selectedShop;
-    // }
-
-    whatsAppManualInvitation(reqBody);
+    //?(sendAfterMinutes (make sure if the user doesn't schedules the invitation this value must be sent as 0), shop) - for automatic campaigns
+    if (selectedWhatsAppInvitationMethod === "automatic") {
+      reqBody["sendAfterMinutes"] = _get(sendAfterMinutes, "value", 0) || 0;
+      let shopId = "";
+      if (isValidArray(ecommerceIntegrations)) {
+        let foundPlatform = _find(ecommerceIntegrations, [
+          "type_id",
+          selectedShop
+        ]);
+        if (foundPlatform) {
+          shopId = _get(foundPlatform, "id", "");
+        }
+      }
+      reqBody["shop"] = shopId;
+      if (isCreateCampaign) {
+        whatsAppAutomaticCreateCampaign(reqBody);
+      } else {
+        whatsAppAutomaticInvitationInit();
+      }
+    } else {
+      whatsAppManualInvitationInit(reqBody);
+    }
   };
   handleCheckboxChange = event => {
     const { checked, name } = event.target;
@@ -359,6 +386,9 @@ class WhatsAppInvitation extends Component {
       case "login_successful":
         this.loginSuccessful(data);
         break;
+      case "db_session_updated":
+        this.dbSessionUpdated(data);
+        break;
       case "logout_successful":
         this.logoutSuccessful(data);
         break;
@@ -420,6 +450,16 @@ class WhatsAppInvitation extends Component {
     });
   };
 
+  //? We will receive this broadcast in both automatic and manual invitations but we are using this in automatic invitations only to make createCampaign API call. And in case of automatic this will be the last broadcast.
+  dbSessionUpdated = data => {
+    const { selectedWhatsAppInvitationMethod } = this.state;
+    if (selectedWhatsAppInvitationMethod === "automatic") {
+      //?In whatsApp automatic invitation case we are calling this function to hit createCampaign API, true is used to identify that it is being called to create campaign.
+      this.startWhatsAppInvitation(e, true);
+    }
+    this.setState({ activeEvent: data });
+  };
+
   campaignStarted = data => {
     this.setState({ activeEvent: data });
   };
@@ -440,31 +480,61 @@ class WhatsAppInvitation extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    //? we are showing snackbar only when any of two api calls (invite and commit) fails
-    const { whatsAppManualInvite, whatsAppManualCommit } = this.props;
+    //? we are showing snackbar only when any of two api calls (invite and commit for both manual and automatic) fails
+    const {
+      whatsAppManualInvitationInitData,
+      whatsAppManualInvitationCommitData,
+      whatsAppAutomaticInvitationInitData,
+      whatsAppAutomaticInvitationCommitData
+    } = this.props;
     const whatsAppManualInviteErrorMsg = _get(
-      whatsAppManualInvite,
+      whatsAppManualInvitationInitData,
       "errorMsg",
       "Some Error Occurred !"
     );
     const whatsAppManualInviteSuccess = _get(
-      whatsAppManualInvite,
+      whatsAppManualInvitationInitData,
       "success",
       undefined
     );
     const whatsAppManualCommitErrorMsg = _get(
-      whatsAppManualCommit,
+      whatsAppManualInvitationCommitData,
       "errorMsg",
       "Some Error Occurred !"
     );
     const whatsAppManualCommitSuccess = _get(
-      whatsAppManualCommit,
+      whatsAppManualInvitationCommitData,
       "success",
       undefined
     );
+    const whatsAppAutomaticInviteInitSuccess = _get(
+      whatsAppAutomaticInvitationInitData,
+      "success",
+      undefined
+    );
+    const whatsAppAutomaticInviteInitErrorMsg = _get(
+      whatsAppAutomaticInvitationInitData,
+      "errorMsg",
+      "Some error ocurred"
+    );
+
+    const whatsAppAutomaticInviteCommitSuccess = _get(
+      whatsAppAutomaticInvitationCommitData,
+      "success",
+      undefined
+    );
+    const whatsAppAutomaticInviteCommitErrorMsg = _get(
+      whatsAppAutomaticInvitationCommitData,
+      "errorMsg",
+      "Some error ocurred"
+    );
+
+    //? snackbar on error of  whatsAppManualInvite || whatsAppManualCommit
     if (
-      whatsAppManualInviteSuccess !== prevProps.whatsAppManualInvite.success ||
-      whatsAppManualCommitSuccess !== prevProps.whatsAppManualCommit.success
+      whatsAppManualInviteSuccess !==
+        prevProps.whatsAppManualInvitationInitData.success ||
+      whatsAppManualCommitSuccess !==
+        prevProps.whatsAppManualInvitationCommitData.success
     ) {
       if (whatsAppManualInviteSuccess === false) {
         this.setState({
@@ -480,10 +550,43 @@ class WhatsAppInvitation extends Component {
         });
       }
     }
+
+    //? snackbar on error of  whatsAppAutomaticInvitationInit || whatsAppAutomaticInvitationCommit
+    if (
+      whatsAppAutomaticInviteInitSuccess !==
+        prevProps.whatsAppAutomaticInvitationInitData.success ||
+      whatsAppAutomaticInviteCommitSuccess !==
+        prevProps.whatsAppAutomaticInvitationCommitData.success
+    ) {
+      if (whatsAppAutomaticInviteInitSuccess === false) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMsg: whatsAppAutomaticInviteInitErrorMsg,
+          snackbarVariant: "error"
+        });
+      } else if (whatsAppAutomaticInviteCommitSuccess === false) {
+        this.setState({
+          openSnackbar: true,
+          snackbarMsg: whatsAppAutomaticInviteCommitErrorMsg,
+          snackbarVariant: "error"
+        });
+      }
+    }
+
     //? mounting pusher on success of commit(2nd) api
     if (
       whatsAppManualCommitSuccess !==
-      _get(prevProps, "whatsAppManualCommit.success", undefined)
+        _get(
+          prevProps,
+          "whatsAppManualInvitationCommitData.success",
+          undefined
+        ) ||
+      whatsAppAutomaticInviteCommitSuccess !==
+        _get(
+          prevProps,
+          "whatsAppAutomaticInvitationCommitData.success",
+          undefined
+        )
     ) {
       this.setState({
         mountWhatsAppPusher: whatsAppManualCommitSuccess
@@ -525,7 +628,8 @@ class WhatsAppInvitation extends Component {
       activeEvent,
       openSnackbar,
       snackbarMsg,
-      snackbarVariant
+      snackbarVariant,
+      selectedWhatsAppInvitationMethod
     } = this.state;
     const { channelName } = this.props;
     return (
@@ -543,6 +647,7 @@ class WhatsAppInvitation extends Component {
           handleClose={this.handleQuitCampaign}
           reloadQRCode={this.startWhatsAppInvitation}
           whatsAppPusherConnected={mountWhatsAppPusher}
+          isAutomatic={selectedWhatsAppInvitationMethod === "automatic"}
         />
         <Snackbar
           open={openSnackbar}
@@ -567,22 +672,48 @@ const mapStateToProps = state => {
     }
   ]);
   const companyName = _get(auth, "logIn.userProfile.company.name", "");
-  const channelName = _get(
+  const channelName =
+    _get(dashboardData, "whatsAppManualInvitationInit.channelName", "") ||
+    _get(dashboardData, "whatsAppAutomaticInvitationInit.channelName", "");
+  const whatsAppManualInvitationInitData = _get(
     dashboardData,
-    "whatsAppManualInvite.channelName",
-    ""
+    "whatsAppManualInvitationInit",
+    {}
   );
-  const whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
-  const whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
+  const whatsAppManualInvitationCommitData = _get(
+    dashboardData,
+    "whatsAppManualInvitationCommit",
+    {}
+  );
+  const whatsAppAutomaticInvitationInitData = _get(
+    dashboardData,
+    "whatsAppAutomaticInvitationInit",
+    {}
+  );
+  const whatsAppAutomaticInvitationCommitData = _get(
+    dashboardData,
+    "whatsAppAutomaticInvitationCommit",
+    {}
+  );
+  const ecommerceIntegrations = _get(
+    auth,
+    "logIn.userProfile.business_profile.integrations.ecommerce",
+    []
+  );
   return {
     templateLanguage,
     companyName,
     channelName,
-    whatsAppManualInvite,
-    whatsAppManualCommit
+    whatsAppManualInvitationInitData,
+    whatsAppManualInvitationCommitData,
+    whatsAppAutomaticInvitationInitData,
+    whatsAppAutomaticInvitationCommitData,
+    ecommerceIntegrations
   };
 };
 
-export default connect(mapStateToProps, { whatsAppManualInvitation })(
-  WhatsAppInvitation
-);
+export default connect(mapStateToProps, {
+  whatsAppManualInvitationInit,
+  whatsAppAutomaticInvitationInit,
+  whatsAppAutomaticCreateCampaign
+})(WhatsAppInvitation);
