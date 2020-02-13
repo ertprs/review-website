@@ -142,11 +142,8 @@ export const calTotalReviewsAndRating = reviews => {
     let platformObj = reviews[platform];
     for (let place in platformObj) {
       let placeObj = platformObj[place];
-      let reviews = get(placeObj, "data.data.reviews", []);
-      let rating = get(placeObj, "data.data.rating", 0);
-      if (isValidArray(reviews)) {
-        totalReviews += reviews.length;
-      }
+      totalReviews += get(placeObj, "data.data.tsTotal", 0);
+      let rating = get(placeObj, "data.data.tsRating", 0);
       if (rating) {
         totalRating += Number(rating);
         noOfPlatforms++;
@@ -201,3 +198,8 @@ export const convertToTimeStamp = date => {
   }
   return timestamp;
 };
+
+//? screenshot layer: copied here to use in future
+// const screenshotLayer = `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
+//       Math.random() * 10 + 1
+//     )}`;

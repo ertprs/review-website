@@ -1,4 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
+import { connect } from "react-redux";
+import Router from "next/router";
+import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -9,15 +13,11 @@ import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
 import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import Tooltip from "@material-ui/core/Tooltip";
 import ReviewsPusher from "../../Components/ReviewsPusher/ReviewsPusher";
 import NotificationPusher from "../../Components/NotificationPusherComponent/NotificationPusherComponent";
 import {
@@ -25,6 +25,7 @@ import {
   SecondaryListItems,
   DashboardLogo
 } from "../../Components/MaterialComponents/listItems";
+//? Actions
 import { logOut } from "../../store/actions/authActions";
 import {
   upgradeToPremium,
@@ -33,20 +34,15 @@ import {
   setReviewsAfterLogin,
   setReviewsPusherConnect
 } from "../../store/actions/dashboardActions";
-import { connect } from "react-redux";
-import Router from "next/router";
-import { useRouter } from "next/router";
 import Snackbar from "../../Components/Widgets/Snackbar";
+//? Lodash
 import _get from "lodash/get";
+import _findKey from "lodash/findKey";
+//? Utilities
 import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
 import { isValidArray } from "../../utility/commonFunctions";
-import dynamic from "next/dynamic";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
-import Tooltip from "@material-ui/core/Tooltip";
-import nextCookie from "next-cookies";
-import _findKey from "lodash/findKey";
-
-//Dynamic imported components
+//? Dynamic imported components
 const Home = dynamic(() =>
   import("../../Components/DashboardComponents/Home/Home")
 );
@@ -54,15 +50,7 @@ const GetStarted = dynamic(
   () => import("../../Components/DashboardComponents/GetStarted/GetStarted"),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -72,15 +60,7 @@ const GetReviews = dynamic(
   () => import("../../Components/DashboardComponents/GetReviews/GetReviews"),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -90,15 +70,7 @@ const Reviews = dynamic(
   () => import("../../Components/DashboardComponents/Reviews"),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -108,15 +80,7 @@ const InvitationHistory = dynamic(
   () => import("../../Components/DashboardComponents/InvitationHistory"),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -129,15 +93,7 @@ const WidgetsShowCase = dynamic(
     ),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -148,15 +104,7 @@ const UserProfile = dynamic(
   () => import("../../Components/DashboardComponents/UserProfile"),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -167,15 +115,7 @@ const CampaignManagement = dynamic(
   () => import("../../Components/DashboardComponents/CampaignManagement"),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -186,15 +126,7 @@ const ReviewUrl = dynamic(
   () => import("../../Components/DashboardComponents/SmartUrl"),
   {
     loading: () => (
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
+      <div className="dynamicImport">
         <p>Loading.....</p>
       </div>
     )
@@ -295,19 +227,14 @@ const useStyles = makeStyles(theme => ({
 
 function Dashboard(props) {
   const classes = useStyles();
-  const router = useRouter();
-  const { upgradeToPremiumRes, placeLocated, token, isFirstTimeLogin } = props;
-  const { pathname, query } = router;
-  const [open, setOpen] = React.useState(true);
-  const [stepToRender, setStepToRender] = React.useState(
-    isFirstTimeLogin ? 0 : 1
-  );
-  const [showSnackbar, setShowSnackbar] = React.useState(false);
-  const [snackbarVariant, setSnackbarVariant] = React.useState("success");
-  const [snackbarMsg, setSnackbarMsg] = React.useState("");
-  const [reviewsSelectedTab, setReviewsSelectedTab] = React.useState(0);
+  const { upgradeToPremiumRes, isFirstTimeLogin } = props;
+  const [open, setOpen] = useState(true);
+  const [stepToRender, setStepToRender] = useState(isFirstTimeLogin ? 0 : 1);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarVariant, setSnackbarVariant] = useState("success");
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [reviewsSelectedTab, setReviewsSelectedTab] = useState(0);
   const initState = {};
-  const [parentState, setParentState] = useState(initState);
 
   let userName = "";
   if (_get(props, "userName", "")) {
@@ -331,7 +258,6 @@ function Dashboard(props) {
     homeDisabled = true;
     menuItemsDisabled = true;
   }
-
   if (_get(props, "isSubscriptionExpired", false) === true) {
     getStartedHide = false;
     homeDisabled = false;
@@ -436,7 +362,6 @@ function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const changeStepToRender = index => {
     const step = dashboardSteps[index].name;
@@ -552,7 +477,6 @@ function Dashboard(props) {
     setShowSnackbar(true);
     setSnackbarVariant("success");
     setSnackbarMsg("Logout Successfully!");
-    // Router.push("/");
     props.logOut();
   };
 
@@ -573,13 +497,7 @@ function Dashboard(props) {
     setShowSnackbar(false);
   };
 
-  const {
-    domainId,
-    fetchReviews,
-    subscriptionId,
-    setInvitationQuota,
-    domain
-  } = props;
+  const { domainId, subscriptionId, setInvitationQuota, domain } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -705,14 +623,10 @@ Dashboard.getInitialProps = async ctx => {
 
 const mapStateToProps = state => {
   const { auth, dashboardData } = state;
-  const authorized = _get(auth, "logIn.authorized", false);
-  const loginType = _get(auth, "logIn.loginType", 0);
   const userName = _get(auth, "logIn.userProfile.name", "");
   const userEmail = _get(auth, "logIn.userProfile.email", "");
   const userPhone = _get(auth, "logIn.userProfile.phone", "");
   const domain = _get(auth, "logIn.userProfile.business_profile.domain", "");
-  // const reviews = _get(dashboardData, "reviews.data.reviews", []);
-  const token = _get(auth, "logIn.token", "");
   const domainId = _get(auth, "logIn.userProfile.business_profile.domainId", 0);
   const isFirstTimeLogin = _get(auth, "logIn.userProfile.isNew", false);
   const socialArray = _get(
@@ -732,8 +646,6 @@ const mapStateToProps = state => {
     0
   );
   const userActivated = _get(auth, "logIn.userProfile.activated", false);
-  const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
-  const placeLocated = _get(dashboardData, "locatePlace.success", false);
   const upgradeToPremiumRes = _get(
     dashboardData,
     "upgradePremium.success",
@@ -752,19 +664,15 @@ const mapStateToProps = state => {
   );
   const subscriptionId = _get(auth, "logIn.userProfile.subscription.id", "");
   return {
-    authorized,
-    loginType,
     userName,
     userEmail,
     userPhone,
     activation_required,
     subscriptionPlan,
     userActivated,
-    placeLocated,
     upgradeToPremiumRes,
     upgradeToPremiumIsLoading,
     domain,
-    token,
     isSubscriptionExpired,
     isReviewsPusherConnected,
     domainId,
