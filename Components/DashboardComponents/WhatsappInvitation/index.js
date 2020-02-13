@@ -174,6 +174,10 @@ class WhatsAppInvitation extends Component {
   handlePrev = (e, stepNo = null) => {
     const { totalSteps } = this.state;
     let activeStep = _get(this.state, "activeStep", 1);
+    //? if we are on create template page and someone wants to go back then we are disconnecting pusher
+    if (activeStep === 2) {
+      this.setState({ mountWhatsAppPusher: false });
+    }
     //? If step no is greater than total no of steps or less than one then we are setting it to 1
     if (stepNo > totalSteps || stepNo < 1) {
       stepNo = 1;
@@ -185,11 +189,6 @@ class WhatsAppInvitation extends Component {
       activeStep = activeStep;
     }
     this.setState({ activeStep });
-
-    //? if we are on create template page and someone wants to go back then we are disconnecting pusher
-    if (activeStep === 2) {
-      this.setState({ mountWhatsAppPusher: false });
-    }
   };
 
   handleSelectedShopChange = selectedShop => {
