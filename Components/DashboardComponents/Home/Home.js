@@ -35,10 +35,7 @@ const styles = theme => ({
   }
 });
 const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
-import {
-  utcToTimezone,
-  removeSubDomain
-} from "../../../utility/commonFunctions";
+import { utcToTimezone } from "../../../utility/commonFunctions";
 
 class Home extends Component {
   state = {
@@ -264,7 +261,7 @@ class Home extends Component {
   };
 
   renderBusinessDetails = () => {
-    const { businessProfile, userProfile, showGetStarted } = this.props;
+    const { businessProfile, userProfile } = this.props;
     const domain = _get(businessProfile, "domain", "");
     const companyName = _get(userProfile, "company.name", "");
     const subscriptionPlan = _get(userProfile, "subscription.plan_type_id", "");
@@ -329,20 +326,10 @@ class Home extends Component {
       isSubscriptionExpired,
       activated,
       showGetStarted,
-      businessProfile,
       screenshot
     } = this.props;
-    const domain = _get(businessProfile, "domain", "");
-    let parsed_domain_name = removeSubDomain(domain);
-    const screenshotLayer = `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
-      Math.random() * 10 + 1
-    )}`;
     const noImgFound = "/static/images/noimageavailable.jpg";
-    const domainScreenshot = screenshot
-      ? screenshot
-      : screenshotLayer
-      ? screenshotLayer
-      : noImgFound;
+    const domainScreenshot = screenshot ? screenshot : noImgFound;
     return (
       <>
         <Head>
