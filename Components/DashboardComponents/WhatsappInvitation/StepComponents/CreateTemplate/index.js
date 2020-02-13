@@ -130,6 +130,7 @@ const CreateTemplate = props => {
               {isLoading ? (
                 <CircularProgress size={25} color={"#fff"} />
               ) : whatsAppPusherConnected ? (
+                // isSessionPresent: if session exists in db of that user
                 isSessionPresent ? (
                   "Trying to login using existing session!"
                 ) : (
@@ -147,37 +148,23 @@ const CreateTemplate = props => {
 };
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
-  let whatsAppManualInvitationInit = _get(
-    dashboardData,
-    "whatsAppManualInvitationInit",
-    {}
-  );
-  let whatsAppManualInvitationCommit = _get(
-    dashboardData,
-    "whatsAppManualInvitationCommit",
-    {}
-  );
-  let whatsAppAutomaticInvitationInit = _get(
-    dashboardData,
-    "whatsAppAutomaticInvitationInit",
-    {}
-  );
-  let whatsAppAutomaticInvitationCommit = _get(
-    dashboardData,
-    "whatsAppAutomaticInvitationCommit",
-    {}
-  );
+  const {
+    whatsAppManualInvitationInit,
+    whatsAppManualInvitationCommit,
+    whatsAppAutomaticInvitationInit,
+    whatsAppAutomaticInvitationCommit
+  } = state.dashboardData || {};
+
   const isLoading =
     _get(whatsAppManualInvitationInit, "isLoading", false) ||
     _get(whatsAppManualInvitationCommit, "isLoading", false) ||
     _get(whatsAppAutomaticInvitationInit, "isLoading", false) ||
     _get(whatsAppAutomaticInvitationCommit, "isLoading", false);
-  const isSessionPresent = _get(
-    dashboardData,
-    "whatsAppManualInvitationInit.isSessionPresent",
-    false
-  );
+
+  const isSessionPresent =
+    _get(whatsAppManualInvitationInit, "isSessionPresent", false) ||
+    _get(whatsAppAutomaticInvitationInit, "isSessionPresent", false);
+
   return {
     isLoading,
     isSessionPresent

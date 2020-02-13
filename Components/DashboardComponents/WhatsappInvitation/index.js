@@ -20,8 +20,8 @@ import _isEmpty from "lodash/isEmpty";
 import { emptyWhatsAppData } from "../../../store/actions/dashboardActions";
 
 //Components
-const UploadCustomerData = dynamic(
-  () => import("./StepComponents/UploadCustomerData"),
+const InvitationType = dynamic(
+  () => import("./StepComponents/InvitationType"),
   {
     loading: () => (
       <div className="dynamicImport">
@@ -55,15 +55,15 @@ class WhatsAppInvitation extends Component {
     this.containerRef = React.createRef();
     this.state = {
       activeStep: 1,
-      //? when you add any extra step don't forget to increase it here
+      //? when you add any extra step don't forget to increase totalSteps
       totalSteps: 2,
       //? mounting pusher when response from commit api is success(inside cdu) and un mounting when qr_code_expired, logout_successful, campaign_failed, campaign_finished
       mountWhatsAppPusher: false,
       openFullScreenDialog: false,
-      //? this is always the last broadcast event
+      //? latest broadcasted event
       activeEvent: {},
       //? parsed data from CSV or copy-paste will be stored here
-      uploadCustomerData: [],
+      customerData: [],
       //? selected shop ID
       selectedShop: "",
       //? selected whatsApp Invitation method
@@ -148,14 +148,6 @@ class WhatsAppInvitation extends Component {
       snackbarMsg: ""
     };
   }
-
-  setUploadCustomerData = data => {
-    this.setState({ uploadCustomerData: [...data] });
-  };
-
-  setSelectedWhatsAppInvitationMethod = selectedWhatsAppInvitationMethod => {
-    this.setState({ selectedWhatsAppInvitationMethod });
-  };
 
   handleNext = (e, stepNo = null) => {
     const { totalSteps } = this.state;
@@ -266,7 +258,9 @@ class WhatsAppInvitation extends Component {
       }
     });
   };
-  //? This function will be called from three places: 1-) Submit button in create template page in case of automatic campaign 2-) Submit button in create template page in case of manual campaign 3-) When db_session_updated is broadcasted in case of automatic.
+  //? In automatic campaign: Initially it will be called on click of "Start Sending Invitations" at that time it will call "whatsAppAutomaticInvitationInit" then it will be called on event db_session_updated that time it will call "whatsAppAutomaticCreateCampaign" with reqBody(add sendAfterMinutes and shop)
+
+  //? In manual campaign it will be called only once on click of "Start Sending Invitations" and will call "whatsAppManualInvitationInit" with req body(without sendAfterMinutes and shop)
   startWhatsAppInvitation = (e, isCreateCampaign) => {
     const {
       whatsAppManualInvitationInit,
@@ -275,9 +269,10 @@ class WhatsAppInvitation extends Component {
       ecommerceIntegrations
     } = this.props;
     const {
-      uploadCustomerData,
+      customerData,
       createTemplate,
       sendAfterMinutes,
+      //?selectedShop: this is type_id not the id we are sending
       selectedShop,
       selectedWhatsAppInvitationMethod
     } = this.state;
@@ -289,8 +284,8 @@ class WhatsAppInvitation extends Component {
     let keepMeLoggedIn = _get(createTemplate, "keepMeLoggedIn", false);
     let template = `${salutation} ${customerName}, ${message} ${reviewUrl}`;
     let reqBody = {};
-    if (isValidArray(uploadCustomerData)) {
-      reqBody["customers"] = [...uploadCustomerData];
+    if (isValidArray(customerData)) {
+      reqBody["customers"] = [...customerData];
     }
     if (template) {
       reqBody["template"] = template;
@@ -298,9 +293,13 @@ class WhatsAppInvitation extends Component {
     reqBody["storeCustomerData"] = saveCampaign;
     reqBody["rememberMe"] = keepMeLoggedIn;
 
-    //?(sendAfterMinutes (make sure if the user doesn't schedules the invitation this value must be sent as 0), shop) - for automatic campaigns
+    //* If selectedWhatsAppInvitationMethod is automatic we are considering it as automatic campaign
+
+    //? In autmatic campaign case
     if (selectedWhatsAppInvitationMethod === "automatic") {
+      //?sendAfterMinutes:- make sure if the user doesn't schedules the invitation this value must be sent as 0
       reqBody["sendAfterMinutes"] = _get(sendAfterMinutes, "value", 0) || 0;
+      //? We are sending id of that shop which is available in business_profile>integrations>ecommerce
       let shopId = "";
       if (isValidArray(ecommerceIntegrations)) {
         let foundPlatform = _find(ecommerceIntegrations, [
@@ -317,7 +316,9 @@ class WhatsAppInvitation extends Component {
       } else {
         whatsAppAutomaticInvitationInit();
       }
-    } else {
+    }
+    //? In manual campaign case
+    else {
       whatsAppManualInvitationInit(reqBody);
     }
   };
@@ -343,17 +344,19 @@ class WhatsAppInvitation extends Component {
     switch (activeStep) {
       case 1:
         return (
-          <UploadCustomerData
-            setUploadCustomerData={this.setUploadCustomerData}
+          <InvitationType
+            setCustomerData={data => {
+              this.setState({ customerData: [...data] });
+            }}
             handleNext={this.handleNext}
             handlePrev={this.handlePrev}
             handleSelectedShopChange={this.handleSelectedShopChange}
             sendAfterMinutes={sendAfterMinutes}
             handleSendAfterMinutesChange={this.handleSendAfterMinutesChange}
             selectedShop={selectedShop}
-            setSelectedWhatsAppInvitationMethod={
-              this.setSelectedWhatsAppInvitationMethod
-            }
+            setSelectedWhatsAppInvitationMethod={selectedWhatsAppInvitationMethod => {
+              this.setState({ selectedWhatsAppInvitationMethod });
+            }}
           />
         );
       case 2:
@@ -420,7 +423,8 @@ class WhatsAppInvitation extends Component {
     }
   };
 
-  //? We open QRCode dialog in "login_successful" or "qr_code_changed" event, we receive "qr_code_changed" event when QRCode string is generated, and "login_successful" if session is already exist in DB so he can directly send campaigns without scanning QRCode
+  //? We open QRCode dialog in qr_code_changed, "qrSessionInvalid", "login_successful" event
+  //? To open dialog there may be three cases: qr_code_changed, qr_session_invalid or login_successful
 
   qrSessionInvalid = data => {
     this.setState({
@@ -436,6 +440,7 @@ class WhatsAppInvitation extends Component {
     });
   };
 
+  //? We are unmounting whatsapp pusher and on click of reload button we are calling startWhatsAppInvitation to mount it again
   qrCodeExpired = data => {
     this.setState({
       mountWhatsAppPusher: false,
