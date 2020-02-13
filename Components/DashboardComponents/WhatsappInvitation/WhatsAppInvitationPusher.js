@@ -28,7 +28,7 @@ class WhatsAppInvitationPusher extends Component {
     });
 
     pusher.connection.bind("disconnected", () => {
-      console.log("WhatsAppInvitationPusher pusher disconnected");
+      console.log("WhatsApp pusher disconnected");
     });
   };
 
