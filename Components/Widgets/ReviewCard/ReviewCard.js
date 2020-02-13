@@ -205,12 +205,7 @@ const renderReviewCard = (
       );
 
     case "profileHeaderCard":
-      let imgSrc = "";
-      image === ""
-        ? fallbackImage !== ""
-          ? (imgSrc = fallbackImage)
-          : (imgSrc = "/static/images/noimageavailable.jpg")
-        : (imgSrc = image);
+      let imgSrc = image ? image : fallbackImage;
       return (
         <div className="productCardContainer">
           <style jsx>{reviewCardStyles}</style>

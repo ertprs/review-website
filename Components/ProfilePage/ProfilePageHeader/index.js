@@ -60,9 +60,7 @@ class ProfilePageHeader extends Component {
               <div className="col-md-8" style={{ marginTop: "25px" }}>
                 <ReviewCard
                   variant="profileHeaderCard"
-                  fallbackImage={`https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
-                    Math.random() * 10 + 1
-                  )}`}
+                  fallbackImage="/static/images/noimageavailable.jpg"
                   image={screenshotUrl}
                   imgContainerStyles={{
                     maxWidth: "300px"
