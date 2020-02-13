@@ -502,6 +502,12 @@ function Dashboard(props) {
       )
     },
     4: {
+      name: "whatsAppInvitation",
+      componentToRender: (
+        <WhatsAppInvitation scrollToTopOfThePage={scrollToTopOfThePage} />
+      )
+    },
+    5: {
       name: "campaignManagement",
       componentToRender: (
         <CampaignManagement
@@ -510,30 +516,25 @@ function Dashboard(props) {
         />
       )
     },
-    5: {
+    6: {
       name: "invitationHistory",
       componentToRender: (
         <InvitationHistory scrollToTopOfThePage={scrollToTopOfThePage} />
       )
     },
-    6: {
+    7: {
       name: "widgets",
       componentToRender: (
         <WidgetsShowCase scrollToTopOfThePage={scrollToTopOfThePage} />
       )
     },
-    7: {
+    8: {
       name: "reviewUrl",
       componentToRender: (
         <ReviewUrl scrollToTopOfThePage={scrollToTopOfThePage} />
       )
     },
-    8: {
-      name: "whatsAppInvitation",
-      componentToRender: (
-        <WhatsAppInvitation scrollToTopOfThePage={scrollToTopOfThePage} />
-      )
-    },
+
     9: {
       name: "userProfile",
       componentToRender: (
