@@ -328,7 +328,7 @@ class Home extends Component {
       showGetStarted,
       screenshot
     } = this.props;
-    const noImgFound = "/static/images/noimageavailable.jpg";
+    const noImgFound = "/static/images/noimageavailable.png";
     const domainScreenshot = screenshot ? screenshot : noImgFound;
     return (
       <>

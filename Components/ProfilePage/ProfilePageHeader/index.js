@@ -60,7 +60,7 @@ class ProfilePageHeader extends Component {
               <div className="col-md-8" style={{ marginTop: "25px" }}>
                 <ReviewCard
                   variant="profileHeaderCard"
-                  fallbackImage="/static/images/noimageavailable.jpg"
+                  fallbackImage="/static/images/noimageavailable.png"
                   image={screenshotUrl}
                   imgContainerStyles={{
                     maxWidth: "300px"
