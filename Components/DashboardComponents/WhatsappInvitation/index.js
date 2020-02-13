@@ -19,8 +19,8 @@ import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
 
 //Components
-const UploadCustomerData = dynamic(
-  () => import("./StepComponents/UploadCustomerData"),
+const InvitationType = dynamic(
+  () => import("./StepComponents/InvitationType"),
   {
     loading: () => (
       <div className="dynamicImport">
@@ -62,7 +62,7 @@ class WhatsAppInvitation extends Component {
       //? latest broadcasted event
       activeEvent: {},
       //? parsed data from CSV or copy-paste will be stored here
-      uploadCustomerData: [],
+      customerData: [],
       //? selected shop ID
       selectedShop: "",
       //? selected whatsApp Invitation method
@@ -147,14 +147,6 @@ class WhatsAppInvitation extends Component {
       snackbarMsg: ""
     };
   }
-
-  setUploadCustomerData = data => {
-    this.setState({ uploadCustomerData: [...data] });
-  };
-
-  setSelectedWhatsAppInvitationMethod = selectedWhatsAppInvitationMethod => {
-    this.setState({ selectedWhatsAppInvitationMethod });
-  };
 
   handleNext = (e, stepNo = null) => {
     const { totalSteps } = this.state;
@@ -273,7 +265,7 @@ class WhatsAppInvitation extends Component {
       ecommerceIntegrations
     } = this.props;
     const {
-      uploadCustomerData,
+      customerData,
       createTemplate,
       sendAfterMinutes,
       //?selectedShop: this is type_id not the id we are sending
@@ -288,8 +280,8 @@ class WhatsAppInvitation extends Component {
     let keepMeLoggedIn = _get(createTemplate, "keepMeLoggedIn", false);
     let template = `${salutation} ${customerName}, ${message} ${reviewUrl}`;
     let reqBody = {};
-    if (isValidArray(uploadCustomerData)) {
-      reqBody["customers"] = [...uploadCustomerData];
+    if (isValidArray(customerData)) {
+      reqBody["customers"] = [...customerData];
     }
     if (template) {
       reqBody["template"] = template;
@@ -348,17 +340,19 @@ class WhatsAppInvitation extends Component {
     switch (activeStep) {
       case 1:
         return (
-          <UploadCustomerData
-            setUploadCustomerData={this.setUploadCustomerData}
+          <InvitationType
+            setCustomerData={data => {
+              this.setState({ customerData: [...data] });
+            }}
             handleNext={this.handleNext}
             handlePrev={this.handlePrev}
             handleSelectedShopChange={this.handleSelectedShopChange}
             sendAfterMinutes={sendAfterMinutes}
             handleSendAfterMinutesChange={this.handleSendAfterMinutesChange}
             selectedShop={selectedShop}
-            setSelectedWhatsAppInvitationMethod={
-              this.setSelectedWhatsAppInvitationMethod
-            }
+            setSelectedWhatsAppInvitationMethod={selectedWhatsAppInvitationMethod => {
+              this.setState({ selectedWhatsAppInvitationMethod });
+            }}
           />
         );
       case 2:
