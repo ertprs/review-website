@@ -142,11 +142,8 @@ export const calTotalReviewsAndRating = reviews => {
     let platformObj = reviews[platform];
     for (let place in platformObj) {
       let placeObj = platformObj[place];
-      let reviews = get(placeObj, "data.data.reviews", []);
-      let rating = get(placeObj, "data.data.rating", 0);
-      if (isValidArray(reviews)) {
-        totalReviews += reviews.length;
-      }
+      totalReviews += get(placeObj, "data.data.tsTotal", 0);
+      let rating = get(placeObj, "data.data.tsRating", 0);
       if (rating) {
         totalRating += Number(rating);
         noOfPlatforms++;

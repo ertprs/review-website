@@ -39,7 +39,7 @@ class ReviewPlatformCard extends React.Component {
       if (reviews[socialMediaAppId][profileId]) {
         primaryReviewData = reviews[socialMediaAppId][profileId];
         isLoading = _get(primaryReviewData, "isLoading", false);
-        ratings = _get(primaryReviewData, "data.data.rating", "");
+        ratings = _get(primaryReviewData, "data.data.tsRating", "");
         maxRating = _get(primaryReviewData, "data.data.max_rating", 5);
         likes = _get(primaryReviewData, "data.data.likes", "");
         followers = _get(primaryReviewData, "data.data.followers", "");
@@ -192,7 +192,7 @@ const mapStateToProps = (state, ownProps) => {
       let isPrimary = _get(profile, "is_primary", 0);
       let platformReviewObj = _get(reviews, socialMediaAppId, {});
       let profileReviewObj = _get(platformReviewObj, profileId, {});
-      let rating = Number(_get(profileReviewObj, "data.data.rating", 0));
+      let rating = Number(_get(profileReviewObj, "data.data.tsRating", 0));
       let totalReviews = _get(profileReviewObj, "data.data.tsTotal", 0);
       let isFetching = _get(profileReviewObj, "isLoading", false);
       return {

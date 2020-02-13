@@ -255,11 +255,6 @@ class Home extends Component {
               <p style={{ fontWeight: "bold", fontSize: "1rem" }}>
                 Total Invitations Sent :{" "}
               </p>
-              {/* <span
-              style={{ fontWeight: "bold", fontSize: "20px", color: "green" }}
-              >
-                {sent}
-              </span> */}
               <h1>{sent}</h1>
             </div>
           </div>
@@ -405,27 +400,6 @@ class Home extends Component {
             <ReviewFetchStatus {...this.props} />
             {this.renderInvitationsCard()}
             <ReviewPlatforms />
-            {/* <>
-              <Grid item xs={6} md={6} lg={6}>
-                <h4 style={{ marginLeft: "5px" }}>Review Platforms : </h4>
-              </Grid>
-              <Grid item xs={6} md={6} lg={6}>
-                <div style={{ textAlign: "right" }}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    // startIcon={<EditIcon />}
-                    onClick={() => {
-                      this.props.setGetStartedShow(!showGetStarted);
-                    }}
-                  >
-                    Add/Edit Review Platforms
-                  </Button>
-                </div>
-              </Grid>
-            </> */}
-            {/* {this.renderReviewURLBoxes()} */}
           </Grid>
         ) : (
           <div>
@@ -454,7 +428,6 @@ const mapStateToProps = state => {
     "logIn.userProfile.activation_required",
     false
   );
-  const allReviews = _get(dashboardData, "reviews", {});
   const quotaDetails = _get(dashboardData, "quotaDetails", {});
   const token = _get(auth, "logIn.token", "");
   const success = _get(auth, "resendActivation.success", "undefiend");
