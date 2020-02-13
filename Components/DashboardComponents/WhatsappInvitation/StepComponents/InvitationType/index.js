@@ -6,17 +6,13 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Button from "@material-ui/core/Button";
-import ForwardIcon from "@material-ui/icons/ArrowRightAlt";
-import BackwardIcon from "@material-ui/icons/ArrowBack";
 import _get from "lodash/get";
 import Papa from "papaparse";
-
 import UploadFile from "./UploadFile";
 import CopyPasteData from "./CopyPasteData";
 import validate from "../../../../../utility/validate";
 import WhatsAppAutomaticInvitation from "./WhatsAppAutomaticInvitation";
 import ScheduleInvitationDialog from "./WhatsAppAutomaticInvitation/ScheduleInvitationDialog";
-import ScheduleInvitationBtn from "./WhatsAppAutomaticInvitation/ScheduleInvitationDialog/ScheduleInvitationBtn/ScheduleInvitationBtn";
 
 class UploadCustomerData extends React.Component {
   constructor(props) {
@@ -159,7 +155,7 @@ class UploadCustomerData extends React.Component {
       }
     });
     if (newTableData.length > 0 && valid) {
-      this.props.setUploadCustomerData(newTableData);
+      this.props.setCustomerData(newTableData);
       this.setState(
         {
           tableData: [...newTableData],
@@ -173,7 +169,7 @@ class UploadCustomerData extends React.Component {
         }
       );
     } else {
-      this.props.setUploadCustomerData([]);
+      this.props.setCustomerData([]);
       this.setState({
         copyPasteFormData: {
           ...this.state.copyPasteFormData,
@@ -239,12 +235,12 @@ class UploadCustomerData extends React.Component {
           }
         });
         if (newTableData.length > 0 && valid) {
-          this.props.setUploadCustomerData(newTableData);
+          this.props.setCustomerData(newTableData);
           this.setState({
             tableData: [...newTableData]
           });
         } else {
-          this.props.setUploadCustomerData([]);
+          this.props.setCustomerData([]);
           this.setState({
             uploadFileData: {
               ...this.state.uploadFileData,
@@ -278,7 +274,7 @@ class UploadCustomerData extends React.Component {
           expanded={"uploadFile" === selectedWay}
           onChange={e => {
             this.setState({ selectedWay: "uploadFile" });
-            this.props.setUploadCustomerData([]);
+            this.props.setCustomerData([]);
             this.props.setSelectedWhatsAppInvitationMethod("uploadFile");
           }}
         >
@@ -296,7 +292,7 @@ class UploadCustomerData extends React.Component {
               value={"uploadFile"}
               onClick={e => {
                 this.setState({ selectedWay: "uploadFile" });
-                this.props.setUploadCustomerData([]);
+                this.props.setCustomerData([]);
               }}
             />
           </ExpansionPanelSummary>
@@ -306,17 +302,11 @@ class UploadCustomerData extends React.Component {
                 ref={this.fileInput}
                 handleChange={this.handleChange}
                 formData={this.state.uploadFileData}
-                setUploadCustomerData={this.props.setUploadCustomerData}
               />
             </div>{" "}
           </ExpansionPanelDetails>
-          <div style={{ display: "flex", margin: "0px 25px 25px 25px" }}>
-            <div style={{ flexBasis: "50%", textAlign: "left" }}>
-              <ScheduleInvitationBtn
-                handleClick={this.handleScheduleInvitationDialogToggle}
-              />
-            </div>
-            <div style={{ flexBasis: "50%", textAlign: "right" }}>
+          <div style={{ margin: "0px 25px 25px 25px" }}>
+            <div style={{ textAlign: "right" }}>
               <Button
                 color="primary"
                 variant="contained"
@@ -337,7 +327,7 @@ class UploadCustomerData extends React.Component {
           onChange={e => {
             this.setState({ selectedWay: "copyPaste" });
             this.props.setSelectedWhatsAppInvitationMethod("copyPaste");
-            this.props.setUploadCustomerData([]);
+            this.props.setCustomerData([]);
           }}
         >
           <ExpansionPanelSummary
@@ -354,21 +344,16 @@ class UploadCustomerData extends React.Component {
               value={"copyPaste"}
               onClick={e => {
                 this.setState({ selectedWay: "copyPaste" });
-                this.props.setUploadCustomerData([]);
+                this.props.setCustomerData([]);
               }}
             />
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{ width: "100%" }}>
             <CopyPasteData
-              formData={this.state.copyPasteFormData}
+              formData={_get(this.state, "copyPasteFormData", {})}
               handleChange={this.handleChange}
               handleParseBtnClick={this.handleParseBtnClick}
-              setUploadCustomerData={this.props.setUploadCustomerData}
               handleContinueBtnClick={handleNext}
-              showScheduleInvitationBtn={true}
-              handleShowScheduleBtnClick={
-                this.handleScheduleInvitationDialogToggle
-              }
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -379,7 +364,7 @@ class UploadCustomerData extends React.Component {
           expanded={"automatic" === selectedWay}
           onChange={e => {
             this.setState({ selectedWay: "automatic" });
-            this.props.setUploadCustomerData([]);
+            this.props.setCustomerData([]);
             this.props.setSelectedWhatsAppInvitationMethod("automatic");
           }}
         >
@@ -397,7 +382,7 @@ class UploadCustomerData extends React.Component {
               value={"automatic"}
               onClick={e => {
                 this.setState({ selectedWay: "automatic" });
-                this.props.setUploadCustomerData([]);
+                this.props.setCustomerData([]);
               }}
             />
           </ExpansionPanelSummary>

@@ -48,3 +48,8 @@ export const whatsAppManualInvitationApi =
   "/api/my-business/invitations/whatsapp/manual/init";
 export const whatsAppManualInvitationCommitApi =
   "/api/my-business/invitations/whatsapp/manual/commit";
+
+export const whatsAppAutomaticInvitationInitApi =
+  "/api/my-business/profile/whatsapp/check-session/init";
+export const whatsAppAutomaticInvitationCommitApi =
+  "/api/my-business/profile/whatsapp/check-session/commit";
