@@ -13,16 +13,20 @@ const CreateCampaign = props => {
   return (
     <div>
       {createCampaignIsLoading ? (
-        <>
+        <div style={{ textAlign: "center", marginTop: "45px" }}>
           <h3>Creating your campaign</h3>
           <div style={{ textAlign: "center" }}>
             <CircularProgress />
           </div>
-        </>
+        </div>
       ) : createCampaignSuccess ? (
-        <h3>Campaign created successfully</h3>
+        <div style={{ textAlign: "center", marginTop: "45px" }}>
+          <h3>Campaign created successfully</h3>
+        </div>
       ) : (
-        <h3>{createCampaignErrorMsg}</h3>
+        <div style={{ textAlign: "center", marginTop: "45px" }}>
+          <h3>{createCampaignErrorMsg}</h3>
+        </div>
       )}
     </div>
   );

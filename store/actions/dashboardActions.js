@@ -94,7 +94,8 @@ import {
   WHATSAPP_AUTOMATIC_COMMIT_FAILURE,
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_INIT,
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_SUCCESS,
-  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE,
+  EMPTY_WHATSAPP_DATA
 } from "./actionTypes";
 import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
 import cookie from "js-cookie";
@@ -1847,4 +1848,10 @@ export const whatsAppAutomaticCreateCampaign = data => {
       });
     }
   };
+};
+
+//EMPTY WHATSAPP DATA
+
+export const emptyWhatsAppData = () => {
+  return { type: EMPTY_WHATSAPP_DATA };
 };

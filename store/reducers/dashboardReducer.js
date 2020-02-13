@@ -93,7 +93,8 @@ import {
   WHATSAPP_AUTOMATIC_COMMIT_FAILURE,
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_INIT,
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_SUCCESS,
-  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE,
+  EMPTY_WHATSAPP_DATA
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -692,6 +693,16 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         whatsAppAutomaticCreateCampaign
+      };
+    case EMPTY_WHATSAPP_DATA:
+      return {
+        ...state,
+        type,
+        whatsAppAutomaticCreateCampaign: {},
+        whatsAppAutomaticInvitationCommit: {},
+        whatsAppAutomaticInvitationInit: {},
+        whatsAppManualInvitationCommit: {},
+        whatsAppManualInvitationInit: {}
       };
     default:
       return state;

@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
+import { emptyWhatsAppData } from "../../../store/actions/dashboardActions";
 
 //Components
 const UploadCustomerData = dynamic(
@@ -173,7 +174,14 @@ class WhatsAppInvitation extends Component {
 
   handlePrev = (e, stepNo = null) => {
     const { totalSteps } = this.state;
+    const { emptyWhatsAppData } = this.props;
     let activeStep = _get(this.state, "activeStep", 1);
+    //? if we are on create template page and someone wants to go back then we are disconnecting pusher
+    if (activeStep === 2) {
+      this.setState({ mountWhatsAppPusher: false }, () => {
+        emptyWhatsAppData();
+      });
+    }
     //? If step no is greater than total no of steps or less than one then we are setting it to 1
     if (stepNo > totalSteps || stepNo < 1) {
       stepNo = 1;
@@ -455,7 +463,7 @@ class WhatsAppInvitation extends Component {
     const { selectedWhatsAppInvitationMethod } = this.state;
     if (selectedWhatsAppInvitationMethod === "automatic") {
       //?In whatsApp automatic invitation case we are calling this function to hit createCampaign API, true is used to identify that it is being called to create campaign.
-      this.startWhatsAppInvitation(e, true);
+      this.startWhatsAppInvitation("", true);
     }
     this.setState({ activeEvent: data });
   };
@@ -589,37 +597,49 @@ class WhatsAppInvitation extends Component {
         )
     ) {
       this.setState({
-        mountWhatsAppPusher: whatsAppManualCommitSuccess
+        mountWhatsAppPusher:
+          whatsAppManualCommitSuccess || whatsAppAutomaticInviteCommitSuccess
       });
     }
   }
 
   //! Closing dialog box, setting to first step and initializing values in createTemplate
   handleQuitCampaign = () => {
-    this.setState({
-      openFullScreenDialog: false,
-      mountWhatsAppPusher: false,
-      activeStep: 1,
-      createTemplate: {
-        ..._get(this.state, "createTemplate", {}),
-        templateLanguage: {
-          ..._get(this.state, "createTemplate.templateLanguage", {}),
-          value: "",
-          valid: false,
-          touched: false
-        },
-        inputFields: {
-          ..._get(this.state, "createTemplate.inputFields", {}),
-          reviewUrl: {
-            ..._get(this.state, "createTemplate.inputFields.reviewUrl", {}),
+    const { emptyWhatsAppData } = this.props;
+    this.setState(
+      {
+        openFullScreenDialog: false,
+        mountWhatsAppPusher: false,
+        activeStep: 1,
+        createTemplate: {
+          ..._get(this.state, "createTemplate", {}),
+          templateLanguage: {
+            ..._get(this.state, "createTemplate.templateLanguage", {}),
             value: "",
             valid: false,
             touched: false
+          },
+          inputFields: {
+            ..._get(this.state, "createTemplate.inputFields", {}),
+            reviewUrl: {
+              ..._get(this.state, "createTemplate.inputFields.reviewUrl", {}),
+              value: "",
+              valid: false,
+              touched: false
+            }
           }
         }
+      },
+      () => {
+        emptyWhatsAppData();
       }
-    });
+    );
   };
+
+  componentWillUnMount() {
+    const { emptyWhatsAppData } = this.props;
+    emptyWhatsAppData();
+  }
 
   render() {
     const {
@@ -715,5 +735,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   whatsAppManualInvitationInit,
   whatsAppAutomaticInvitationInit,
-  whatsAppAutomaticCreateCampaign
+  whatsAppAutomaticCreateCampaign,
+  emptyWhatsAppData
 })(WhatsAppInvitation);
