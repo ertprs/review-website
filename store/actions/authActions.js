@@ -37,7 +37,11 @@ import {
   SET_IS_NEW_USER
 } from "./actionTypes";
 import _get from "lodash/get";
-import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
+import {
+  loginApiOAuth,
+  getAvailablePlatformsApi,
+  resendActivationLinkApi
+} from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import {
@@ -48,7 +52,7 @@ import {
 } from "./dashboardActions";
 import { sendTrustVote } from "./trustAction";
 import { reportDomain } from "./domainProfileActions";
-import { get, find, isEmpty, omit, uniqBy } from "lodash";
+import { get, isEmpty } from "lodash";
 import cookie from "js-cookie";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
@@ -632,26 +636,29 @@ export const businessLogIn = (loginData, api, directLogin) => {
   };
 };
 
-export const resendActivationLink = (token, api) => {
+export const resendActivationLink = () => {
+  let token = cookie.get("token");
   return async dispatch => {
     dispatch({
       type: RESEND_ACTIVATION_LINK_INIT,
       resendActivation: {
-        success: "undefined",
-        isLoading: true
+        success: undefined,
+        isLoading: true,
+        errorMsg: ""
       }
     });
     try {
       const result = await axios({
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}${api}`
+        url: `${process.env.BASE_URL}${resendActivationLinkApi}`
       });
       dispatch({
         type: RESEND_ACTIVATION_LINK_SUCCESS,
         resendActivation: {
           success: get(result, "data.success", false),
-          isLoading: false
+          isLoading: false,
+          errorMsg: ""
         }
       });
     } catch (err) {
@@ -659,7 +666,8 @@ export const resendActivationLink = (token, api) => {
         type: RESEND_ACTIVATION_LINK_FAILURE,
         resendActivation: {
           success: get(err, "response.data.success", false),
-          isLoading: false
+          isLoading: false,
+          errorMsg: get(err, "response.data.error", "Some Error Occurred!")
         }
       });
     }

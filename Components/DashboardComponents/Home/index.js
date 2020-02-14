@@ -15,102 +15,28 @@ import {
   setGetStartedShow
 } from "../../../store/actions/dashboardActions";
 import withStyles from "@material-ui/styles/withStyles";
-import Snackbar from "../../Widgets/Snackbar";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
-import EditIcon from "@material-ui/icons/Edit";
-
 import { ratingColor, ratingType } from "../../../utility/ratingTypeColor";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-const SimpleBar = dynamic(() => import("simplebar-react"), {
-  ssr: false
-});
 import OverallPerformance from "./OverallPerformance";
 import ReviewFetchStatus from "./ReviewsFetchStatus";
+import ActivationInfo from "./ActivationInfo";
+import { utcToTimezone } from "../../../utility/commonFunctions";
+const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
+
 const styles = theme => ({
   button: {
     width: "150px"
   }
 });
-const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
-import { utcToTimezone } from "../../../utility/commonFunctions";
 
 class Home extends Component {
-  state = {
-    showSnackbar: false,
-    variant: "success",
-    snackbarMsg: ""
-  };
-
   componentDidMount() {
     this.props.scrollToTopOfThePage();
   }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { success, socialArray } = this.props;
-    if (success !== prevProps.success) {
-      let snackbarMsg = "";
-      if (success === true) {
-        snackbarMsg = "Mail sent successfully, Please verify your email.";
-        this.setState({
-          showSnackbar: true,
-          variant: "success",
-          snackbarMsg
-        });
-      } else if (success === false) {
-        snackbarMsg = "Some error occured.";
-        this.setState({
-          showSnackbar: true,
-          variant: "error",
-          snackbarMsg
-        });
-      }
-    }
-  }
-
-  sendActivationLink = () => {
-    const { token, resendActivationLink } = this.props;
-    resendActivationLink(token, resendActivationLinkApi);
-  };
-
-  renderActivationInfo = classes => {
-    const { activated, isLoading, activation_required } = this.props;
-    if (activated == false) {
-      return (
-        <Grid item xs={12} md={12} lg={12}>
-          <SimpleCard>
-            <Typography>
-              Your account is not activated.&nbsp;
-              {activation_required
-                ? "Please activate your account to use our features."
-                : null}
-              &nbsp;&nbsp;
-              {isLoading ? (
-                <Button
-                  className={classes.button}
-                  variant="contained"
-                  color="primary"
-                >
-                  <CircularProgress size={25} color={"fff"} />
-                </Button>
-              ) : (
-                <Button
-                  className={classes.button}
-                  variant="contained"
-                  onClick={this.sendActivationLink}
-                  color="primary"
-                >
-                  Activate now
-                </Button>
-              )}
-            </Typography>
-          </SimpleCard>
-        </Grid>
-      );
-    }
-  };
 
   clickToUpgradeHandler = () => {
     const { upgradeToPremium, userName, userEmail, userPhone } = this.props;
@@ -366,11 +292,13 @@ class Home extends Component {
         </style>
         {!showGetStarted ? (
           <Grid container spacing={3}>
-            {isSubscriptionExpired === true
-              ? this.renderSubscriptionInfo(classes)
-              : activated === false
-              ? this.renderActivationInfo(classes)
-              : ""}
+            {isSubscriptionExpired === true ? (
+              this.renderSubscriptionInfo(classes)
+            ) : activated === false ? (
+              <ActivationInfo />
+            ) : (
+              ""
+            )}
             <Grid item xs={12} md={12} lg={12}>
               <SimpleCard>
                 <div className="businessDetailsContainer">
@@ -396,12 +324,6 @@ class Home extends Component {
             />
           </div>
         )}
-        <Snackbar
-          open={this.state.showSnackbar}
-          variant={this.state.variant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={this.state.snackbarMsg}
-        />
       </>
     );
   }
@@ -416,9 +338,6 @@ const mapStateToProps = state => {
     false
   );
   const quotaDetails = _get(dashboardData, "quotaDetails", {});
-  const token = _get(auth, "logIn.token", "");
-  const success = _get(auth, "resendActivation.success", "undefiend");
-  const isLoading = _get(auth, "resendActivation.isLoading", false);
   const userProfile = _get(auth, "logIn.userProfile", {});
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const socialArray = _get(businessProfile, "social", []);
@@ -430,11 +349,6 @@ const mapStateToProps = state => {
     dashboardData,
     "upgradePremium.isLoading",
     false
-  );
-  const googleDirectReviewUrl = _get(
-    auth,
-    "logIn.userProfile.business_profile.google_places.directReviewUrl",
-    ""
   );
   const businessAddress = _get(
     auth,
@@ -452,9 +366,6 @@ const mapStateToProps = state => {
     quotaDetails,
     activated,
     activation_required,
-    token,
-    success,
-    isLoading,
     userProfile,
     businessProfile,
     isSubscriptionExpired,
@@ -462,7 +373,6 @@ const mapStateToProps = state => {
     userEmail,
     userPhone,
     upgradeToPremiumIsLoading,
-    googleDirectReviewUrl,
     businessAddress,
     reviewsObject,
     socialArray,
