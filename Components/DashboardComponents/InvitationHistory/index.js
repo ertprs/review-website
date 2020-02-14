@@ -9,9 +9,9 @@ import { utcToTimezone } from "../../../utility/commonFunctions";
 import cookie from "js-cookie";
 
 const columns = [
-  { title: "Created", field: "created" },
-  { title: "Email", field: "email" },
   { title: "Campaign Name", field: "campaign_name" },
+  { title: "Created", field: "created" },
+  { title: "Email/Phone", field: "contactDetails" },
   { title: "Status", field: "status" },
   { title: "Reference", field: "reference" }
 ];
@@ -28,15 +28,17 @@ const parseTableData = (tableData, timezone) => {
     created = utcToTimezone(created, timezone);
     let campaign_name = _get(data, "campaign_name", "");
     campaign_name = campaign_type === 2 ? "WhatsApp" : campaign_name;
-    let email = _get(data, "email", "");
-    email = campaign_type === 2 ? "--" : email;
+    let email = _get(data, "email", "--");
+    let phoneNo = _get(data, "phone", "--");
+    //? campaignType 1 means email campaigns
+    let contactDetails = campaign_type === 1 ? email : phoneNo;
     return {
       ...data,
       status: statusInWords,
       reference,
       created,
       campaign_name,
-      email
+      contactDetails
     };
   });
   return result;
