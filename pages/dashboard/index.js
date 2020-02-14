@@ -43,9 +43,7 @@ import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
 import { isValidArray } from "../../utility/commonFunctions";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
 //? Dynamic imported components
-const Home = dynamic(() =>
-  import("../../Components/DashboardComponents/Home/Home")
-);
+const Home = dynamic(() => import("../../Components/DashboardComponents/Home"));
 const GetStarted = dynamic(
   () => import("../../Components/DashboardComponents/GetStarted/GetStarted"),
   {
