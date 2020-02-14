@@ -5,19 +5,10 @@ import StarRatings from "react-star-ratings";
 import Title from "../../MaterialComponents/Title";
 import { connect } from "react-redux";
 import _get from "lodash/get";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import { resendActivationLink } from "../../../store/actions/authActions";
-import { resendActivationLinkApi } from "../../../utility/config";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import {
-  upgradeToPremium,
-  setGetStartedShow
-} from "../../../store/actions/dashboardActions";
-import withStyles from "@material-ui/styles/withStyles";
+import { setGetStartedShow } from "../../../store/actions/dashboardActions";
 import getSubscriptionPlan from "../../../utility/getSubscriptionPlan";
 import GetStarted from "../GetStarted/GetStarted";
-import { ratingColor, ratingType } from "../../../utility/ratingTypeColor";
+import { ratingColor } from "../../../utility/ratingTypeColor";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -28,29 +19,10 @@ import SubscriptionInfo from "./SubscriptionInfo";
 import { utcToTimezone } from "../../../utility/commonFunctions";
 const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
 
-const styles = theme => ({
-  button: {
-    width: "150px"
-  }
-});
-
 class Home extends Component {
   componentDidMount() {
     this.props.scrollToTopOfThePage();
   }
-
-  clickToUpgradeHandler = () => {
-    const { upgradeToPremium, userName, userEmail, userPhone } = this.props;
-    const data = {
-      email: userEmail || "",
-      name: userName || "",
-      type: "some_random_form",
-      objective: "get things done now",
-      phone: userPhone || "123456789",
-      websiteOwner: true
-    };
-    upgradeToPremium(data);
-  };
 
   renderReviewSnippets = topThreeReviews => {
     return topThreeReviews.map(item => {
@@ -215,7 +187,6 @@ class Home extends Component {
 
   render() {
     const {
-      classes,
       isSubscriptionExpired,
       activated,
       showGetStarted,
@@ -309,11 +280,6 @@ const mapStateToProps = state => {
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const socialArray = _get(businessProfile, "social", []);
   const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
-  const upgradeToPremiumIsLoading = _get(
-    dashboardData,
-    "upgradePremium.isLoading",
-    false
-  );
   const businessAddress = _get(
     auth,
     "logIn.userProfile.business_profile.google_places.address",
@@ -333,7 +299,6 @@ const mapStateToProps = state => {
     userProfile,
     businessProfile,
     isSubscriptionExpired,
-    upgradeToPremiumIsLoading,
     businessAddress,
     reviewsObject,
     socialArray,
@@ -344,7 +309,5 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-  resendActivationLink,
-  upgradeToPremium,
   setGetStartedShow
-})(withStyles(styles)(Home));
+})(Home);
