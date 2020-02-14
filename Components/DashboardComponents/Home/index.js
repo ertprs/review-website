@@ -24,6 +24,7 @@ import Head from "next/head";
 import OverallPerformance from "./OverallPerformance";
 import ReviewFetchStatus from "./ReviewsFetchStatus";
 import ActivationInfo from "./ActivationInfo";
+import SubscriptionInfo from "./SubscriptionInfo";
 import { utcToTimezone } from "../../../utility/commonFunctions";
 const ReviewPlatforms = dynamic(() => import("./ReviewPlatforms"));
 
@@ -49,40 +50,6 @@ class Home extends Component {
       websiteOwner: true
     };
     upgradeToPremium(data);
-  };
-
-  renderSubscriptionInfo = classes => {
-    const { upgradeToPremiumIsLoading, activated } = this.props;
-    if (activated == false) {
-      return (
-        <Grid item xs={12} md={12} lg={12}>
-          <SimpleCard>
-            <Typography>
-              You don't have any active subscription. Please subscribe to use
-              our features. &nbsp;&nbsp;
-              {upgradeToPremiumIsLoading ? (
-                <Button
-                  className={classes.button}
-                  variant="contained"
-                  color="primary"
-                >
-                  <CircularProgress size={25} color={"fff"} />
-                </Button>
-              ) : (
-                <Button
-                  className={classes.button}
-                  variant="contained"
-                  onClick={this.clickToUpgradeHandler}
-                  color="primary"
-                >
-                  Upgrade Now
-                </Button>
-              )}
-            </Typography>
-          </SimpleCard>
-        </Grid>
-      );
-    }
   };
 
   renderReviewSnippets = topThreeReviews => {
@@ -293,7 +260,7 @@ class Home extends Component {
         {!showGetStarted ? (
           <Grid container spacing={3}>
             {isSubscriptionExpired === true ? (
-              this.renderSubscriptionInfo(classes)
+              <SubscriptionInfo />
             ) : activated === false ? (
               <ActivationInfo />
             ) : (
@@ -342,9 +309,6 @@ const mapStateToProps = state => {
   const businessProfile = _get(auth, "logIn.userProfile.business_profile", {});
   const socialArray = _get(businessProfile, "social", []);
   const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
-  const userName = _get(auth, "logIn.userProfile.name", "");
-  const userEmail = _get(auth, "logIn.userProfile.email", "");
-  const userPhone = _get(auth, "logIn.userProfile.phone", "");
   const upgradeToPremiumIsLoading = _get(
     dashboardData,
     "upgradePremium.isLoading",
@@ -369,9 +333,6 @@ const mapStateToProps = state => {
     userProfile,
     businessProfile,
     isSubscriptionExpired,
-    userName,
-    userEmail,
-    userPhone,
     upgradeToPremiumIsLoading,
     businessAddress,
     reviewsObject,

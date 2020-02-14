@@ -225,7 +225,11 @@ const useStyles = makeStyles(theme => ({
 
 function Dashboard(props) {
   const classes = useStyles();
-  const { upgradeToPremiumRes, isFirstTimeLogin } = props;
+  const {
+    upgradeToPremiumRes,
+    isFirstTimeLogin,
+    upgradeToPremiumErrorMsg
+  } = props;
   const [open, setOpen] = useState(true);
   const [stepToRender, setStepToRender] = useState(isFirstTimeLogin ? 0 : 1);
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -315,8 +319,8 @@ function Dashboard(props) {
       setSnackbarMsg("Request Sent Successfully!");
     } else if (upgradeToPremiumRes === false) {
       setShowSnackbar(true);
-      setSnackbarVariant("success");
-      setSnackbarMsg("Request Sent Successfully!");
+      setSnackbarVariant("error");
+      setSnackbarMsg(upgradeToPremiumErrorMsg);
     }
   }, [upgradeToPremiumRes]);
 
@@ -478,24 +482,17 @@ function Dashboard(props) {
     props.logOut();
   };
 
-  const clickToUpgradeHandler = () => {
-    const { upgradeToPremium, userName, userEmail, userPhone } = props;
-    const data = {
-      email: userEmail || "",
-      name: userName || "",
-      type: "some_random_form",
-      objective: "get things done now",
-      phone: userPhone || "123456789",
-      websiteOwner: true
-    };
-    upgradeToPremium(data);
-  };
-
   const handleSnackbarClose = () => {
     setShowSnackbar(false);
   };
 
-  const { domainId, subscriptionId, setInvitationQuota, domain } = props;
+  const {
+    domainId,
+    subscriptionId,
+    setInvitationQuota,
+    domain,
+    upgradeToPremium
+  } = props;
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -587,7 +584,7 @@ function Dashboard(props) {
             subscriptionPlan={getSubscriptionPlan(
               _get(props, "subscriptionPlan", 0)
             )}
-            handleClick={clickToUpgradeHandler}
+            handleClick={upgradeToPremium}
             isLoading={props.upgradeToPremiumIsLoading || false}
           />
         </List>
@@ -647,12 +644,17 @@ const mapStateToProps = state => {
   const upgradeToPremiumRes = _get(
     dashboardData,
     "upgradePremium.success",
-    "undefined"
+    undefined
   );
   const upgradeToPremiumIsLoading = _get(
     dashboardData,
     "upgradePremium.isLoading",
     false
+  );
+  const upgradeToPremiumErrorMsg = _get(
+    dashboardData,
+    "upgradePremium.errorMsg",
+    "Some Error Occurred!"
   );
   const isSubscriptionExpired = _get(auth, "isSubscriptionExpired", false);
   const isReviewsPusherConnected = _get(
@@ -670,6 +672,7 @@ const mapStateToProps = state => {
     userActivated,
     upgradeToPremiumRes,
     upgradeToPremiumIsLoading,
+    upgradeToPremiumErrorMsg,
     domain,
     isSubscriptionExpired,
     isReviewsPusherConnected,

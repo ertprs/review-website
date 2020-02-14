@@ -217,15 +217,25 @@ export const locatePlaceByPlaceId = (data, token, url) => {
   };
 };
 
-export const upgradeToPremium = data => {
+export const upgradeToPremium = () => {
   return async (dispatch, getState) => {
-    const { auth } = getState() | {};
-    let token = _get(auth, "logIn.token", "");
+    const { auth } = getState();
+    const { name, email, phone } = _get(auth, "logIn.userProfile", {});
+    let token = cookie.get("token");
+    const data = {
+      email: email || "",
+      name: name || "",
+      type: "some_random_form",
+      objective: "get things done now",
+      phone: phone || "123456789",
+      websiteOwner: true
+    };
     dispatch({
       type: UPGRADE_TO_PREMIUM_INIT,
       upgradePremium: {
-        success: "undefined",
-        isLoading: true
+        success: undefined,
+        isLoading: true,
+        errorMsg: ""
       }
     });
     try {
@@ -240,16 +250,23 @@ export const upgradeToPremium = data => {
         type: UPGRADE_TO_PREMIUM_SUCCESS,
         upgradePremium: {
           success: success,
-          isLoading: false
+          isLoading: false,
+          errorMsg: ""
         }
       });
     } catch (error) {
       const success = await _get(error, "response.data.success", false);
+      const errorMsg = await _get(
+        error,
+        "response.data.message",
+        "Some Error Occurred!"
+      );
       dispatch({
         type: UPGRADE_TO_PREMIUM_FAILURE,
         upgradePremium: {
           success: success,
-          isLoading: false
+          isLoading: false,
+          errorMsg
         }
       });
     }
