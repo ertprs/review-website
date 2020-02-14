@@ -1578,7 +1578,7 @@ export const getShortReviewUrl = data => {
           isLoading: false,
           errorMsg: _get(
             error,
-            "response.data.message",
+            "response.data.error",
             "Unable to generate review Url!"
           )
         }
@@ -1631,7 +1631,7 @@ export const whatsAppManualInvitationInit = data => {
     } catch (error) {
       const errorMsg = _get(
         error,
-        "response.data.message",
+        "response.data.error",
         "Some error ocurred !"
       );
       dispatch({
