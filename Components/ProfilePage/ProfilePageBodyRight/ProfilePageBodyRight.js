@@ -124,7 +124,7 @@ class ProfilePageBodyRight extends Component {
     const trustPilotDataInner = _get(socialPlatformReviews, "18.data.data", {});
     const profile_url = _get(trustPilotDataInner, "url", "");
     const verified = _get(trustPilotDataOuter, "verified", false);
-    const total = _get(trustPilotDataInner, "total", 0);
+    const total = _get(trustPilotDataInner, "tsTotal", 0);
     const claimed = _get(trustPilotDataInner, "claimed", false);
     const rating = _get(trustPilotDataInner, "rating", 0);
     const max_rating = _get(trustPilotDataInner, "max_rating", 0);
@@ -444,7 +444,7 @@ class ProfilePageBodyRight extends Component {
     const followers = _get(facebookData, "followers", "");
     const username = _get(facebookData, "username", "");
     const rating = _get(facebookData, "data.rating", 0);
-    const total = _get(facebookData, "data.total", 0);
+    const total = _get(facebookData, "data.tsTotal", 0);
     return (
       <div>
         <style jsx>
