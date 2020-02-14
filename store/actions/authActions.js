@@ -493,6 +493,8 @@ export const businessSignUp = (signupData, api) => {
             errorMsg =
               "Your domain isn't supported yet. Please, check the website given or contact support.";
             break;
+          case "Activation required.":
+            errorMsg = "Your account is not activated. Please activate!";
           default:
             errorMsg = "Some Error Occurred while Registration!";
         }
