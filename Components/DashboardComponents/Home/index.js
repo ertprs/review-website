@@ -24,57 +24,6 @@ class Home extends Component {
     this.props.scrollToTopOfThePage();
   }
 
-  renderReviewSnippets = topThreeReviews => {
-    return topThreeReviews.map(item => {
-      let reviewText = "";
-      if (item.hasOwnProperty("text")) {
-        if (item.text) {
-          if (item.text.length > 26) {
-            reviewText = _get(item, "text", "").substring(0, 26) + "...";
-          } else {
-            reviewText = _get(item, "text", "");
-          }
-        }
-      }
-      return (
-        <div className="reviewSnippetContainer">
-          <style jsx>
-            {`
-              .reviewSnippetContainer {
-                margin-bottom: 25px;
-              }
-              .reviewBody {
-                display: flex;
-                justify-content: space-between;
-              }
-              .reviewBodyText {
-                margin-top: 1.5px;
-                color: #999;
-                font-size: 0.8rem;
-              }
-            `}
-          </style>
-          <div className="reviewText">{reviewText}</div>
-          <div className="reviewBody">
-            <div>
-              <StarRatings
-                rating={Number(item.rating)}
-                starRatedColor={
-                  ratingColor[Math.round(Number(item.rating)) || 0]
-                }
-                starDimension="17px"
-                starSpacing="0.5px"
-                numberOfStars={5}
-                name="rating"
-              />
-            </div>
-            <div className="reviewBodyText">{item.name}</div>
-          </div>
-        </div>
-      );
-    });
-  };
-
   renderInvitationsCard = () => {
     const { quotaDetails } = this.props;
     const total = _get(quotaDetails, "invitations.total", 0);
