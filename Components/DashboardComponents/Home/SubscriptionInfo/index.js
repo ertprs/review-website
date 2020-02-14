@@ -36,50 +36,55 @@ class SubscriptionInfo extends Component {
   }
 
   render() {
-    const { isLoading, upgradeToPremium } = this.props;
+    const { isLoading, upgradeToPremium, activated } = this.props;
     const { showSnackbar, snackbarVariant, snackbarMsg } = this.state;
 
     return (
-      <Grid item xs={12} md={12} lg={12}>
-        <SimpleCard>
-          <Typography>
-            You don't have any active subscription. Please subscribe to use our
-            features. &nbsp;&nbsp;
-            {isLoading ? (
-              <Button size="large" variant="contained" color="primary">
-                <CircularProgress size={25} color={"fff"} />
-              </Button>
-            ) : (
-              <Button
-                size="large"
-                variant="contained"
-                onClick={upgradeToPremium}
-                color="primary"
-              >
-                Upgrade Now
-              </Button>
-            )}
-          </Typography>
-        </SimpleCard>
-        <Snackbar
-          open={showSnackbar}
-          variant={snackbarVariant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={snackbarMsg}
-        />
-      </Grid>
+      <>
+        {activated === false ? (
+          <Grid item xs={12} md={12} lg={12}>
+            <SimpleCard>
+              <Typography>
+                You don't have any active subscription. Please subscribe to use
+                our features. &nbsp;&nbsp;
+                {isLoading ? (
+                  <Button size="large" variant="contained" color="primary">
+                    <CircularProgress size={25} color={"fff"} />
+                  </Button>
+                ) : (
+                  <Button
+                    size="large"
+                    variant="contained"
+                    onClick={upgradeToPremium}
+                    color="primary"
+                  >
+                    Upgrade Now
+                  </Button>
+                )}
+              </Typography>
+            </SimpleCard>
+            <Snackbar
+              open={showSnackbar}
+              variant={snackbarVariant}
+              handleClose={() => this.setState({ showSnackbar: false })}
+              message={snackbarMsg}
+            />
+          </Grid>
+        ) : null}
+      </>
     );
   }
 }
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
+  const { auth, dashboardData } = state;
   const { upgradePremium } = dashboardData || {};
   const isLoading = _get(upgradePremium, "isLoading", false);
   const success = _get(upgradePremium, "success", undefined);
   const errorMsg = _get(upgradePremium, "errorMsg", "Some Error Occurred!");
+  const activated = _get(auth, "logIn.userProfile.activated", false);
   return {
-    activation_required,
+    activated,
     isLoading,
     success,
     errorMsg
