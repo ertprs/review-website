@@ -263,34 +263,29 @@ class GetStarted extends Component {
     const url = _get(reqBody, "url", "");
     const formDataItemKey = _get(reqBody, "formDataItemKey", "");
     if (formData && formData[formDataItemKey]) {
-      this.setState(
-        {
-          formData: {
-            ...formData,
-            [formDataItemKey]: {
-              ...formData[formDataItemKey],
-              value: url,
-              touched: true,
-              identity: placeId,
-              identity_data: {
-                ...formData[formDataItemKey].identity_data,
-                address: address,
-                directReviewUrl: url
-              },
-              extraPayload: {
-                ...formData[formDataItemKey].extraPayload,
-                placeId: placeId,
-                address: address,
-                directReviewUrl: url
-              },
-              valid: validate(url, formData[formDataItemKey].validationRules)
-            }
+      this.setState({
+        formData: {
+          ...formData,
+          [formDataItemKey]: {
+            ...formData[formDataItemKey],
+            value: url,
+            touched: true,
+            identity: placeId,
+            identity_data: {
+              ...formData[formDataItemKey].identity_data,
+              address: address,
+              directReviewUrl: url
+            },
+            extraPayload: {
+              ...formData[formDataItemKey].extraPayload,
+              placeId: placeId,
+              address: address,
+              directReviewUrl: url
+            },
+            valid: validate(url, formData[formDataItemKey].validationRules)
           }
         }
-        // () => {
-        //   console.log("state set");
-        // }
-      );
+      });
     }
   };
 
@@ -298,26 +293,21 @@ class GetStarted extends Component {
   handleGooglePlaceNameChange = (newName, formDataItemKey) => {
     const formDataLocal = _get(this.state, "formData", {});
     if (formDataLocal[formDataItemKey]) {
-      this.setState(
-        {
-          formData: {
-            ...formDataLocal,
-            [formDataItemKey]: {
-              ...formDataLocal[formDataItemKey],
-              name: newName,
-              profile_name: newName,
-              touched: true,
-              valid: validate(
-                formDataLocal[formDataItemKey].value,
-                formDataLocal[formDataItemKey].validationRules
-              )
-            }
+      this.setState({
+        formData: {
+          ...formDataLocal,
+          [formDataItemKey]: {
+            ...formDataLocal[formDataItemKey],
+            name: newName,
+            profile_name: newName,
+            touched: true,
+            valid: validate(
+              formDataLocal[formDataItemKey].value,
+              formDataLocal[formDataItemKey].validationRules
+            )
           }
         }
-        // () => {
-        //   console.log("Google review URL state set with latest name");
-        // }
-      );
+      });
     }
   };
 
