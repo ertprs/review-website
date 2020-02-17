@@ -66,7 +66,9 @@ const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
 
   const redirectToReview = () => {
     if (parent === "reviewsPage") {
-      window.open(review_url, "_blank");
+      if (review_url) {
+        window.open(review_url, "_blank");
+      }
     }
   };
 
