@@ -230,14 +230,18 @@ const createDomainReviews = data => {
   };
 };
 
-const createWotReviews = data => {
+const createWotReviews = (data, wotReviewsData) => {
   let wotReviews = [];
   let willCome = false;
   let isScheduled = false;
+  let needs_pull = false;
   if (Array.isArray(data.sch)) {
     isScheduled = data.sch.includes("wot");
   }
   if (isScheduled || data.hasOwnProperty("wot")) {
+    needs_pull = _get(data, "wot", {}).hasOwnProperty("needs_pull")
+      ? _get(data, "wot.needs_pull", false)
+      : false;
     if (
       _get(data, "wot.payload.comments", []) !== null &&
       Array.isArray(_get(data, "wot.payload.comments", []))
@@ -247,7 +251,8 @@ const createWotReviews = data => {
       }
     }
   }
-  if (_get(data, "wot.payload.comments", []) !== null) {
+  //? needs pull comes true when some new reviews are available. Backend says that in that case make verify-domain call again but we are not doing that as it will affect all other data so we are preserving old reviews.
+  if (_get(data, "wot.payload.comments", []) !== null && !needs_pull) {
     _get(data, "wot.payload.comments", []).map(review => {
       let rating = _get(review, "score", 0);
       if (rating) {
@@ -266,6 +271,8 @@ const createWotReviews = data => {
       };
       wotReviews = [...wotReviews, temp];
     });
+  } else if (needs_pull) {
+    wotReviews = [...wotReviewsData];
   }
   return {
     data: wotReviews,
@@ -296,12 +303,17 @@ export const setDomainDataInRedux = profileData => {
   return async (dispatch, getState) => {
     const state = getState();
     const isLoading = _get(state, "profileData.isLoading", false);
-    const headerData = createHeaderData(profileData, dispatch);
-    const analysisReports = createAnalysisData(profileData, dispatch);
-    const trafficReports = createTrafficReports(profileData, dispatch);
-    const socialMediaStats = createSocialMediaStats(profileData, dispatch);
-    const domainReviews = createDomainReviews(profileData, dispatch);
-    const wotReviews = createWotReviews(profileData, dispatch);
+    const wotReviewsData = _get(
+      state,
+      "profileData.domainProfileData.wotReviews.data",
+      []
+    );
+    const headerData = createHeaderData(profileData);
+    const analysisReports = createAnalysisData(profileData);
+    const trafficReports = createTrafficReports(profileData);
+    const socialMediaStats = createSocialMediaStats(profileData);
+    const domainReviews = createDomainReviews(profileData);
+    const wotReviews = createWotReviews(profileData, wotReviewsData);
     const domainProfileData = {
       headerData,
       analysisReports,
@@ -409,7 +421,7 @@ export const redirectWithDomain = (route, domain) => {
 //? verbose true will give complete data like url, followers, rating, review. By default it's false
 //? we are also not passing rating and profileId filters, we are only passing platformId that will fetch reviews of all of it's profiles
 //? replaceReviews will replace the old reviews with new one. When we are coming from broadcast we are replacing it and when we are coming from "show more" we are merging it.
-//?nextUrl will be passed in case of "show more reviews" (e.g: socialPlatformReviews)
+//?nextUrl will be passed in case c "show more reviews" (e.g: socialPlatformReviews)
 //? we are fetching 30 reviews initial, can be increased from here only
 export const fetchProfileReviews = (
   domain = "",
