@@ -11,7 +11,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import CheckBox from "@material-ui/icons/CheckBox";
 import Button from "@material-ui/core/Button/Button";
 import ArrowRight from "@material-ui/icons/ArrowForward";
-import GetSchemaCode from "./GetSchemaCode/GetSchemaCode";
 import uuid from "uuid/v1";
 import { connect } from "react-redux";
 import _get from "lodash/get";
@@ -198,8 +197,6 @@ class WidgetsShowCase extends Component {
                 return this.renderWidgetBox(item, index);
               })}
             </div>
-            {/* uncomment when schema code API is ready */}
-            {/* <GetSchemaCode /> */}
           </>
         ) : (
           <GetWidget

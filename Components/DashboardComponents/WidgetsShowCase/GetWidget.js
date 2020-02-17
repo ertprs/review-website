@@ -20,6 +20,7 @@ import { toggleWidgetPlatformVisibility } from "../../../store/actions/dashboard
 import ShowInWidgetList from "./CombinedReviewsWidgetConfigurations/ShowInWidgetList/ShowInWidgetList";
 import PremiumBrandingToggle from "./CombinedReviewsWidgetConfigurations/PremiumBrandingToggle/PremiumBrandingToggle";
 import BackgroundColorToggler from "./CombinedReviewsWidgetConfigurations/BackgroundColorToggler/BackgroundColorToggler";
+import GetSchemaCode from "./GetSchemaCode";
 
 class GetWidget extends Component {
   constructor(props) {
@@ -55,6 +56,15 @@ class GetWidget extends Component {
         checked: true,
         label: "Turn off the switch to get widget with transparent background",
         disabled: false
+      },
+      //? this state object will handle the state of getSchemaCode switch and also will hold the schemaCodeValue that we will use in the code.
+      getSchemaCodeData: {
+        value: "",
+        checked: false,
+        label:
+          "Turn on the switch to get schema.org code also for your webpage",
+        disabled: false,
+        schemaCodeValue: ""
       }
     };
   }
@@ -432,6 +442,36 @@ class GetWidget extends Component {
     );
   };
 
+  //!Handler to toggle schema code visibility
+  handleGetSchemaCodeToggle = e => {
+    const checked = _get(e, "target.checked", false);
+    const getSchemaCodeData = _get(this.state, "getSchemaCodeData", {});
+    this.setState({
+      getSchemaCodeData: {
+        ...getSchemaCodeData,
+        value: checked ? 1 : "",
+        checked,
+        label: checked
+          ? "Turn off the switch to remove schema.org code from below"
+          : "Turn on the switch to add schema.org code below to get widget code",
+        schemaCodeValue: checked
+          ? _get(getSchemaCodeData, "schemaCodeValue", "")
+          : ""
+      }
+    });
+  };
+
+  //!Handler to set value of schema code (schemaCodeValue), that we receive from API
+  handleSchemaCodeValueChange = schemaCodeValue => {
+    const getSchemaCodeData = _get(this.state, "getSchemaCodeData", {});
+    this.setState({
+      getSchemaCodeData: {
+        ...getSchemaCodeData,
+        schemaCodeValue
+      }
+    });
+  };
+
   renderInput = () => {
     const { widgetHeight, platforms, selectedPlatform } = this.state;
     return (
@@ -479,9 +519,11 @@ class GetWidget extends Component {
       selectedNewerThanMonths,
       selectedRatingCount,
       premiumBrandingToggleData,
-      backgroundColorTogglerData
+      backgroundColorTogglerData,
+      getSchemaCodeData
     } = this.state;
     const widgetId = _get(widget, "id", "");
+    const schemaCodeValue = _get(getSchemaCodeData, "schemaCodeValue", "");
     return (
       <>
         <style jsx>
@@ -491,6 +533,7 @@ class GetWidget extends Component {
             }
             .blue {
               color: blue;
+              word-break: break-all;
             }
             .body {
               margin-top: 25px;
@@ -506,6 +549,11 @@ class GetWidget extends Component {
             }
             .inputContainer {
               margin: 25px 0 25px 0;
+            }
+            .schemaOrgContainer {
+              height: 150px;
+              overflow-y: auto;
+              padding: 5px;
             }
           `}
         </style>
@@ -539,6 +587,13 @@ class GetWidget extends Component {
                         backgroundColorTogglerData={backgroundColorTogglerData}
                         handleChange={this.handleBackgroundColorTogglerChange}
                       />
+                      <GetSchemaCode
+                        getSchemaCodeData={getSchemaCodeData}
+                        handleChange={this.handleGetSchemaCodeToggle}
+                        handleSchemaCodeValueChange={
+                          this.handleSchemaCodeValueChange
+                        }
+                      />
                     </div>
                   </>
                 ) : (
@@ -569,6 +624,13 @@ class GetWidget extends Component {
                     backgroundColorTogglerData={
                       this.state.backgroundColorTogglerData
                     }
+                    getSchemaCodeData={getSchemaCodeData}
+                    handleGetSchemaCodeDataChange={
+                      this.handleGetSchemaCodeToggle
+                    }
+                    handleSchemaCodeValueChange={
+                      this.handleSchemaCodeValueChange
+                    }
                   />
                 )}
               </div>
@@ -591,6 +653,17 @@ class GetWidget extends Component {
             `}</code>
                 )}
                 <pre className="comment">{`<!-- End TrustBox script -->`}</pre>
+                {schemaCodeValue ? (
+                  <>
+                    <pre className="comment">{`<!-- Schema.org script -->`}</pre>
+                    <div className="schemaOrgContainer">
+                      <code className="blue">
+                        {`<script type="application/ld+json" data-business-unit-json-ld>${schemaCodeValue}</script>`}
+                      </code>
+                    </div>
+                    <pre className="comment">{`<!-- End Schema.org script -->`}</pre>
+                  </>
+                ) : null}
               </div>
             </div>
             <div className="body">
