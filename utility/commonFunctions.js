@@ -199,6 +199,24 @@ export const convertToTimeStamp = date => {
   return timestamp;
 };
 
+export const getSubscriptionPlan = planId => {
+  const BUSINESS_FREE = 1;
+  const BUSINESS_PREMIUM = 2;
+  const BUSINESS_PROFESSIONAL = 3;
+  let subscriptionPlan = "";
+  switch (planId) {
+    case 1:
+      return (subscriptionPlan = "Free");
+    case 2:
+      return (subscriptionPlan = "Premium");
+    case 3:
+      return (subscriptionPlan = "Professional");
+    default:
+      return (subscriptionPlan = "Invalid Plan");
+  }
+  return subscriptionPlan;
+};
+
 //? screenshot layer: copied here to use in future
 // const screenshotLayer = `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
 //       Math.random() * 10 + 1

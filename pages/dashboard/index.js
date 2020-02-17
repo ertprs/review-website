@@ -39,8 +39,10 @@ import Snackbar from "../../Components/Widgets/Snackbar";
 import _get from "lodash/get";
 import _findKey from "lodash/findKey";
 //? Utilities
-import getSubscriptionPlan from "../../utility/getSubscriptionPlan";
-import { isValidArray } from "../../utility/commonFunctions";
+import {
+  isValidArray,
+  getSubscriptionPlan
+} from "../../utility/commonFunctions";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
 //? Dynamic imported components
 const Home = dynamic(() => import("../../Components/DashboardComponents/Home"));
