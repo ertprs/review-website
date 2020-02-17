@@ -411,7 +411,7 @@ export const fetchCampaignLanguage = token => {
           errorMsg: _get(
             error,
             "response.data.error",
-            "Some error occured! Please try again later."
+            "Some error occurred! Please try again later."
           )
         }
       });
