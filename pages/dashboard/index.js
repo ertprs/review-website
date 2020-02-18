@@ -487,7 +487,7 @@ class Dashboard extends Component {
           ) : null}
 
           <DashboardLayout
-            ref={this.mainContainer}
+            refHack={this.mainContainer}
             userName={updatedUserName}
             handleLogout={this.handleLogout}
             open={openDrawer}
