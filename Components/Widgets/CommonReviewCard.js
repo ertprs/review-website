@@ -12,43 +12,19 @@ import Avatar from "react-avatar";
 
 const renderIcon = provider => {
   let src = "";
-  //? will replace the names with socialAppId
+  //? we don't have platform if for trustsearch and wot(in profile page), rest are being displayed from their platformId
   switch (provider) {
     case "trustsearch":
       src = "/static/images/logo_footer.png";
       break;
-    case "google":
-      src = "/static/images/googleIcon.png";
-      break;
-    case "Google Business":
-      src = "/static/images/googleIcon.png";
-      break;
     case 22:
       src = "/static/images/googleIcon.png";
-      break;
-    case "facebook":
-      src = "/static/images/facebookicon.png";
-      break;
-    case "Facebook":
-      src = "/static/images/facebookicon.png";
       break;
     case 1:
       src = "/static/images/facebookicon.png";
       break;
-    case "trustpilot":
-      src = "/static/images/trustpiloticon.png";
-      break;
-    case "TrustPilot":
-      src = "/static/images/trustpiloticon.png";
-      break;
     case 18:
       src = "/static/images/trustpiloticon.png";
-      break;
-    case "trustedshops":
-      src = "/static/images/trustedShopLogo.jpg";
-      break;
-    case "TrustedShops":
-      src = "/static/images/trustedShopLogo.jpg";
       break;
     case 19:
       src = "/static/images/trustedShopLogo.jpg";
@@ -56,7 +32,7 @@ const renderIcon = provider => {
     case "wot":
       src = "/static/images/wotLogo.png";
       break;
-    case "Web Of Trust":
+    case 21:
       src = "/static/images/wotLogo.png";
       break;
     default:
@@ -82,42 +58,28 @@ const renderIcon = provider => {
   );
 };
 
-const ReviewCard = ({
-  review,
-  provider,
-  showToggleBtn,
-  toggleReviewVisibility
-}) => {
-  let { name, text, rating, date, replyURL, id, hideFromWidget } = review;
+//? we are passing parent to show/hide something conditionally like if we are coming from dashboard we want to show footer. There are two parents only reviewsPage and dashboard
+const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
+  let { id, name, text, rating, date, review_url, hide_from_widget } =
+    review || {};
   name = name === "N/A" ? "Anonymous" : name;
+
+  const redirectToReview = () => {
+    if (parent === "reviewsPage") {
+      if (review_url) {
+        window.open(review_url, "_blank");
+      }
+    }
+  };
+
   return (
-    <div className="reviewCard">
+    <div
+      className={`${
+        parent === "reviewsPage" ? "reviewCard pointerCursor" : "reviewCard"
+      }`}
+      onClick={redirectToReview}
+    >
       <style jsx> {reviewListStyles}</style>
-      <style jsx>{`
-        .smallDate {
-          display: none;
-        }
-
-        .dateContainer {
-          text-align: right;
-          margin: 20px 40px 0px 0px;
-          font-weight: bold;
-        }
-        .ratingContainer {
-          margin-top: 10px;
-        }
-
-        .userName {
-          font-weight: bold;
-        }
-
-        .mr-10 {
-          margin-right: 10px;
-        }
-        .bottomBtn {
-          padding: 14px;
-        }
-      `}</style>
       <div></div>
       <div className="row topBox">
         <div className="col-md-6 ratingBox">
@@ -165,33 +127,31 @@ const ReviewCard = ({
           </div>
         </div>
       </div>
-      {replyURL || showToggleBtn ? (
+      {parent === "dashboard" ? (
         <div className="row">
-          {showToggleBtn ? (
-            <div className="col-md-6">
-              <div className="bottomBtn">
-                <Button
-                  color="primary"
-                  startIcon={hideFromWidget === 0 ? <HideIcon /> : <ShowIcon />}
-                  onClick={() => toggleReviewVisibility(id, hideFromWidget)}
-                >
-                  {hideFromWidget === 0
-                    ? "Hide"
-                    : hideFromWidget === 1
-                    ? "Show"
-                    : null}
-                </Button>
-              </div>
+          <div className="col-md-6">
+            <div className="bottomBtn">
+              <Button
+                color="primary"
+                startIcon={hide_from_widget === 0 ? <HideIcon /> : <ShowIcon />}
+                onClick={() => toggleReviewVisibility(id, hide_from_widget)}
+              >
+                {hide_from_widget === 0
+                  ? "Hide"
+                  : hide_from_widget === 1
+                  ? "Show"
+                  : null}
+              </Button>
             </div>
-          ) : null}
-          {replyURL ? (
+          </div>
+          {review_url ? (
             <div className="col-md-6">
               <div className="bottomBtn">
                 <Button
                   color="primary"
                   startIcon={<ReplyIcon />}
                   onClick={() => {
-                    window.open(replyURL, "_blank");
+                    window.open(review_url, "_blank");
                   }}
                 >
                   Reply

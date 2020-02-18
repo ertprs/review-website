@@ -34,21 +34,26 @@ import {
   GET_AVAILABLE_PLATFORMS_INIT,
   GET_AVAILABLE_PLATFORMS_SUCCESS,
   GET_AVAILABLE_PLATFORMS_FAILURE,
-  SET_IS_NEW_USER
+  SET_IS_NEW_USER,
+  SHOW_WHATSAPP_NOTIFICATION_BAR,
+  SET_QUOTA_DETAILS
 } from "./actionTypes";
 import _get from "lodash/get";
-import { loginApiOAuth, getAvailablePlatformsApi } from "../../utility/config";
+import {
+  loginApiOAuth,
+  getAvailablePlatformsApi,
+  resendActivationLinkApi
+} from "../../utility/config";
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import {
-  setInvitationQuota,
   fetchCampaignLanguage,
   getAvailableReviewPlatforms,
   setReviewsAfterLogin
 } from "./dashboardActions";
 import { sendTrustVote } from "./trustAction";
 import { reportDomain } from "./domainProfileActions";
-import { get, find, isEmpty, omit, uniqBy } from "lodash";
+import { get, isEmpty } from "lodash";
 import cookie from "js-cookie";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
@@ -493,6 +498,8 @@ export const businessSignUp = (signupData, api) => {
             errorMsg =
               "Your domain isn't supported yet. Please, check the website given or contact support.";
             break;
+          case "Activation required.":
+            errorMsg = "Your account is not activated. Please activate!";
           default:
             errorMsg = "Some Error Occurred while Registration!";
         }
@@ -536,7 +543,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let userProfile = get(res, "data.user", {});
       let status = get(res, "status", 0);
       let token = get(res, "data.token", "");
-
       let socialArray = get(res, "data.user.business_profile.social", []);
       let loginType = 0;
       const businessProfile = get(res, "data.user.business_profile", {});
@@ -554,11 +560,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("token", token, { expires: 7 });
             cookie.set("domainId", domainId, { expires: 7 });
             localStorage.setItem("token", token);
-            dispatch(
-              setInvitationQuota(
-                get(userProfile, "subscription.quota_details", {})
-              )
-            );
             dispatch(setSubscription(subscriptionExpired));
             dispatch(getAvailableReviewPlatforms(token));
             dispatch(fetchCampaignLanguage(token));
@@ -630,26 +631,29 @@ export const businessLogIn = (loginData, api, directLogin) => {
   };
 };
 
-export const resendActivationLink = (token, api) => {
+export const resendActivationLink = () => {
+  let token = cookie.get("token");
   return async dispatch => {
     dispatch({
       type: RESEND_ACTIVATION_LINK_INIT,
       resendActivation: {
-        success: "undefined",
-        isLoading: true
+        success: undefined,
+        isLoading: true,
+        errorMsg: ""
       }
     });
     try {
       const result = await axios({
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
-        url: `${process.env.BASE_URL}${api}`
+        url: `${process.env.BASE_URL}${resendActivationLinkApi}`
       });
       dispatch({
         type: RESEND_ACTIVATION_LINK_SUCCESS,
         resendActivation: {
           success: get(result, "data.success", false),
-          isLoading: false
+          isLoading: false,
+          errorMsg: ""
         }
       });
     } catch (err) {
@@ -657,7 +661,8 @@ export const resendActivationLink = (token, api) => {
         type: RESEND_ACTIVATION_LINK_FAILURE,
         resendActivation: {
           success: get(err, "response.data.success", false),
-          isLoading: false
+          isLoading: false,
+          errorMsg: get(err, "response.data.error", "Some Error Occurred!")
         }
       });
     }
@@ -758,5 +763,19 @@ export const setIsNewUser = isNewUser => {
   return {
     type: SET_IS_NEW_USER,
     isNewUser
+  };
+};
+
+export const showWhatsAppNotificationBar = showWhatsAppNotification => {
+  return {
+    type: SHOW_WHATSAPP_NOTIFICATION_BAR,
+    showWhatsAppNotification
+  };
+};
+
+export const setInvitationQuota = quotaDetails => {
+  return {
+    type: SET_QUOTA_DETAILS,
+    quotaDetails: { ...quotaDetails }
   };
 };

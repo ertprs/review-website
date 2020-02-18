@@ -15,7 +15,6 @@ import {
   FETCH_CAMPAIGN_LANGUAGE_INIT,
   FETCH_CAMPAIGN_LANGUAGE_SUCCESS,
   FETCH_CAMPAIGN_LANGUAGE_FAILURE,
-  SET_QUOTA_DETAILS,
   CREATE_CAMPAIGN_INIT,
   CREATE_CAMPAIGN_SUCCESS,
   CREATE_CAMPAIGN_FAILURE,
@@ -85,9 +84,23 @@ import {
   WHATSAPP_MANUAL_INVITE_FAILURE,
   WHATSAPP_MANUAL_COMMIT_INIT,
   WHATSAPP_MANUAL_COMMIT_SUCCESS,
-  WHATSAPP_MANUAL_COMMIT_FAILURE
+  WHATSAPP_MANUAL_COMMIT_FAILURE,
+  WHATSAPP_AUTOMATIC_INVITE_INIT,
+  WHATSAPP_AUTOMATIC_INVITE_SUCCESS,
+  WHATSAPP_AUTOMATIC_INVITE_FAILURE,
+  WHATSAPP_AUTOMATIC_COMMIT_INIT,
+  WHATSAPP_AUTOMATIC_COMMIT_SUCCESS,
+  WHATSAPP_AUTOMATIC_COMMIT_FAILURE,
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_INIT,
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_SUCCESS,
+  WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE,
+  EMPTY_WHATSAPP_DATA
 } from "./actionTypes";
-import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
+import {
+  updateAuthSocialArray,
+  setIsNewUser,
+  setInvitationQuota
+} from "../actions/authActions";
 import cookie from "js-cookie";
 import axios from "axios";
 import _find from "lodash/find";
@@ -117,7 +130,9 @@ import {
   toggleWidgetPlatformVisibilityApi,
   shortReviewUrlApi,
   whatsAppManualInvitationApi,
-  whatsAppManualInvitationCommitApi
+  whatsAppManualInvitationCommitApi,
+  whatsAppAutomaticInvitationInitApi,
+  whatsAppAutomaticInvitationCommitApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -205,15 +220,25 @@ export const locatePlaceByPlaceId = (data, token, url) => {
   };
 };
 
-export const upgradeToPremium = data => {
+export const upgradeToPremium = () => {
   return async (dispatch, getState) => {
-    const { auth } = getState() | {};
-    let token = _get(auth, "logIn.token", "");
+    const { auth } = getState();
+    const { name, email, phone } = _get(auth, "logIn.userProfile", {});
+    let token = cookie.get("token");
+    const data = {
+      email: email || "",
+      name: name || "",
+      type: "some_random_form",
+      objective: "get things done now",
+      phone: phone || "123456789",
+      websiteOwner: true
+    };
     dispatch({
       type: UPGRADE_TO_PREMIUM_INIT,
       upgradePremium: {
-        success: "undefined",
-        isLoading: true
+        success: undefined,
+        isLoading: true,
+        errorMsg: ""
       }
     });
     try {
@@ -228,16 +253,23 @@ export const upgradeToPremium = data => {
         type: UPGRADE_TO_PREMIUM_SUCCESS,
         upgradePremium: {
           success: success,
-          isLoading: false
+          isLoading: false,
+          errorMsg: ""
         }
       });
     } catch (error) {
       const success = await _get(error, "response.data.success", false);
+      const errorMsg = await _get(
+        error,
+        "response.data.message",
+        "Some Error Occurred!"
+      );
       dispatch({
         type: UPGRADE_TO_PREMIUM_FAILURE,
         upgradePremium: {
           success: success,
-          isLoading: false
+          isLoading: false,
+          errorMsg
         }
       });
     }
@@ -294,7 +326,7 @@ export const clearCampaignData = data => {
 };
 
 export const createCampaign = data => {
-  const token = localStorage.getItem("token");
+  const token = cookie.get("token");
   return async dispatch => {
     dispatch({
       type: CREATE_CAMPAIGN_INIT,
@@ -322,7 +354,9 @@ export const createCampaign = data => {
           success: _get(result, "data.success", false)
         }
       });
-      dispatch(setInvitationQuota(quotaDetails));
+      dispatch(
+        setInvitationQuota({ ..._get(quotaDetails, "invitations", {}) })
+      );
     } catch (error) {
       dispatch({
         type: CREATE_CAMPAIGN_FAILURE,
@@ -382,18 +416,11 @@ export const fetchCampaignLanguage = token => {
           errorMsg: _get(
             error,
             "response.data.error",
-            "Some error occured! Please try again later."
+            "Some error occurred! Please try again later."
           )
         }
       });
     }
-  };
-};
-
-export const setInvitationQuota = quotaDetails => {
-  return {
-    type: SET_QUOTA_DETAILS,
-    quotaDetails
   };
 };
 
@@ -1566,7 +1593,7 @@ export const getShortReviewUrl = data => {
           isLoading: false,
           errorMsg: _get(
             error,
-            "response.data.message",
+            "response.data.error",
             "Unable to generate review Url!"
           )
         }
@@ -1576,11 +1603,11 @@ export const getShortReviewUrl = data => {
 };
 
 //WHATSAPP MANUAL INVITE INIT
-export const whatsAppManualInvitation = data => {
+export const whatsAppManualInvitationInit = data => {
   return async (dispatch, getState) => {
     dispatch({
       type: WHATSAPP_MANUAL_INVITE_INIT,
-      whatsAppManualInvite: {
+      whatsAppManualInvitationInit: {
         success: undefined,
         isLoading: true,
         errorMsg: "",
@@ -1604,7 +1631,7 @@ export const whatsAppManualInvitation = data => {
       const isSessionPresent = _get(result, "data.is_session_present", false);
       dispatch({
         type: WHATSAPP_MANUAL_INVITE_SUCCESS,
-        whatsAppManualInvite: {
+        whatsAppManualInvitationInit: {
           success,
           isLoading: false,
           errorMsg: "",
@@ -1619,12 +1646,12 @@ export const whatsAppManualInvitation = data => {
     } catch (error) {
       const errorMsg = _get(
         error,
-        "response.data.message",
+        "response.data.error",
         "Some error ocurred !"
       );
       dispatch({
         type: WHATSAPP_MANUAL_INVITE_FAILURE,
-        whatsAppManualInvite: {
+        whatsAppManualInvitationInit: {
           success: false,
           isLoading: false,
           errorMsg,
@@ -1642,7 +1669,7 @@ export const whatsAppManualInvitationCommit = campaignId => {
   return async (dispatch, getState) => {
     dispatch({
       type: WHATSAPP_MANUAL_COMMIT_INIT,
-      whatsAppManualCommit: {
+      whatsAppManualInvitationCommit: {
         success: undefined,
         isLoading: true,
         errorMsg: ""
@@ -1650,7 +1677,11 @@ export const whatsAppManualInvitationCommit = campaignId => {
     });
     try {
       const token = cookie.get("token");
-      const url = `${process.env.BASE_URL}${whatsAppManualInvitationCommitApi}/${campaignId}`;
+
+      //? in case of automatic invitations we will not receive campaignId
+      const url = campaignId
+        ? `${process.env.BASE_URL}${whatsAppManualInvitationCommitApi}/${campaignId}`
+        : `${process.env.BASE_URL}${whatsAppManualInvitationCommitApi}`;
       const result = await axios({
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -1659,7 +1690,7 @@ export const whatsAppManualInvitationCommit = campaignId => {
       const success = _get(result, "data.success", false);
       dispatch({
         type: WHATSAPP_MANUAL_COMMIT_SUCCESS,
-        whatsAppManualCommit: {
+        whatsAppManualInvitationCommit: {
           success,
           isLoading: false,
           errorMsg: ""
@@ -1673,7 +1704,7 @@ export const whatsAppManualInvitationCommit = campaignId => {
       );
       dispatch({
         type: WHATSAPP_MANUAL_COMMIT_FAILURE,
-        whatsAppManualCommit: {
+        whatsAppManualInvitationCommit: {
           success: false,
           isLoading: false,
           errorMsg
@@ -1681,4 +1712,161 @@ export const whatsAppManualInvitationCommit = campaignId => {
       });
     }
   };
+};
+
+//WHATSAPP AUTOMATIC INVITE INIT
+export const whatsAppAutomaticInvitationInit = () => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: WHATSAPP_AUTOMATIC_INVITE_INIT,
+      whatsAppAutomaticInvitationInit: {
+        success: undefined,
+        isLoading: true,
+        errorMsg: "",
+        channelName: "",
+        isSessionPresent: false
+      }
+    });
+    try {
+      const token = cookie.get("token");
+      const url = `${process.env.BASE_URL}${whatsAppAutomaticInvitationInitApi}`;
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        url
+      });
+      const success = _get(result, "data.success", false);
+      const channelName = _get(result, "data.channel_name", "");
+      const isSessionPresent = _get(result, "data.is_session_present", false);
+      dispatch({
+        type: WHATSAPP_AUTOMATIC_INVITE_SUCCESS,
+        whatsAppAutomaticInvitationInit: {
+          success,
+          isLoading: false,
+          errorMsg: "",
+          channelName,
+          isSessionPresent
+        }
+      });
+      if (success) {
+        dispatch(whatsAppAutomaticInvitationCommit());
+      }
+    } catch (error) {
+      const errorMsg = _get(
+        error,
+        "response.data.error",
+        "Some error ocurred !"
+      );
+      dispatch({
+        type: WHATSAPP_AUTOMATIC_INVITE_FAILURE,
+        whatsAppAutomaticInvitationInit: {
+          success: false,
+          isLoading: false,
+          errorMsg,
+          channelName: "",
+          isSessionPresent: false
+        }
+      });
+    }
+  };
+};
+
+//WHATSAPP AUTOMATIC INVITE COMMIT
+export const whatsAppAutomaticInvitationCommit = () => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: WHATSAPP_AUTOMATIC_COMMIT_INIT,
+      whatsAppAutomaticInvitationCommit: {
+        success: undefined,
+        isLoading: true,
+        errorMsg: ""
+      }
+    });
+    try {
+      const token = cookie.get("token");
+      const url = `${process.env.BASE_URL}${whatsAppAutomaticInvitationCommitApi}`;
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        url
+      });
+      const success = _get(result, "data.success", false);
+      dispatch({
+        type: WHATSAPP_AUTOMATIC_COMMIT_SUCCESS,
+        whatsAppAutomaticInvitationCommit: {
+          success,
+          isLoading: false,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      const errorMsg = _get(
+        error,
+        "response.data.error",
+        "Some error ocurred !"
+      );
+      dispatch({
+        type: WHATSAPP_AUTOMATIC_COMMIT_FAILURE,
+        whatsAppAutomaticInvitationCommit: {
+          success: false,
+          isLoading: false,
+          errorMsg
+        }
+      });
+    }
+  };
+};
+
+//WHATSAPP AUTOMATIC CAMPAIGN CREATE
+//? This is similar to whatsApp manual init but, in whatsApp automatic case it will be used only to create campaign and will return only success = true/false.
+export const whatsAppAutomaticCreateCampaign = data => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_INIT,
+      whatsAppAutomaticCreateCampaign: {
+        success: undefined,
+        isLoading: true,
+        errorMsg: ""
+      }
+    });
+    try {
+      const token = cookie.get("token");
+      const url = `${process.env.BASE_URL}${whatsAppManualInvitationApi}`;
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url
+      });
+      const success = _get(result, "data.success", false);
+      dispatch({
+        type: WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_SUCCESS,
+        whatsAppAutomaticCreateCampaign: {
+          success,
+          isLoading: false,
+          errorMsg: ""
+        }
+      });
+    } catch (error) {
+      const errorMsg = _get(
+        error,
+        "response.data.message",
+        "Some error ocurred !"
+      );
+      dispatch({
+        type: WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE,
+        whatsAppAutomaticCreateCampaign: {
+          success: false,
+          isLoading: false,
+          errorMsg
+        }
+      });
+    }
+  };
+};
+
+//EMPTY WHATSAPP DATA
+
+export const emptyWhatsAppData = () => {
+  return { type: EMPTY_WHATSAPP_DATA };
 };

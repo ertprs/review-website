@@ -124,7 +124,7 @@ class ProfilePageBodyRight extends Component {
     const trustPilotDataInner = _get(socialPlatformReviews, "18.data.data", {});
     const profile_url = _get(trustPilotDataInner, "url", "");
     const verified = _get(trustPilotDataOuter, "verified", false);
-    const total = _get(trustPilotDataInner, "total", 0);
+    const total = _get(trustPilotDataInner, "tsTotal", 0);
     const claimed = _get(trustPilotDataInner, "claimed", false);
     const rating = _get(trustPilotDataInner, "rating", 0);
     const max_rating = _get(trustPilotDataInner, "max_rating", 0);
@@ -444,7 +444,7 @@ class ProfilePageBodyRight extends Component {
     const followers = _get(facebookData, "followers", "");
     const username = _get(facebookData, "username", "");
     const rating = _get(facebookData, "data.rating", 0);
-    const total = _get(facebookData, "data.total", 0);
+    const total = _get(facebookData, "data.tsTotal", 0);
     return (
       <div>
         <style jsx>
@@ -555,6 +555,18 @@ class ProfilePageBodyRight extends Component {
                 <div className="additionalDetails">
                   <div className="additionalDetailsHeader">Likes :</div>{" "}
                   <div style={{ textAlign: "left" }}>{likes}</div>
+                </div>
+              ) : null}
+              {rating ? (
+                <div className="additionalDetails">
+                  <div className="additionalDetailsHeader">Rating :</div>{" "}
+                  <div style={{ textAlign: "left" }}>{rating}</div>
+                </div>
+              ) : null}
+              {total ? (
+                <div className="additionalDetails">
+                  <div className="additionalDetailsHeader">Total Reviews :</div>{" "}
+                  <div style={{ textAlign: "left" }}>{total}</div>
                 </div>
               ) : null}
             </div>
@@ -826,7 +838,9 @@ class ProfilePageBodyRight extends Component {
     if (socialPlatformReviews.hasOwnProperty("1")) {
       if (
         _get(socialPlatformReviews, "1.data.likes", 0) ||
-        _get(socialPlatformReviews, "1.data.followers", 0)
+        _get(socialPlatformReviews, "1.data.followers", 0) ||
+        _get(socialPlatformReviews, "1.data.data.rating", 0) ||
+        _get(socialPlatformReviews, "1.data.data.total", 0)
       ) {
         showFacebook = true;
       } else {

@@ -2,7 +2,6 @@ import React from "react";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import Home from "@material-ui/icons/Home";
 import RateReview from "@material-ui/icons/RateReview";
 import InsertInvitation from "@material-ui/icons/InsertInvitation";
@@ -11,7 +10,6 @@ import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import UserProfileIcon from "@material-ui/icons/AccountCircleSharp";
 import WidgetsOutlined from "@material-ui/icons/WidgetsOutlined";
 import CampaignHistory from "@material-ui/icons/List";
-import AssignmentIcon from "@material-ui/icons/Assignment";
 import VerticalAlignTopIcon from "@material-ui/icons/VerticalAlignTop";
 import HistoryIcon from "@material-ui/icons/History";
 import URLIcon from "@material-ui/icons/Link";
@@ -108,21 +106,39 @@ export const MainListItems = ({
         disabled={menuItemDisabled}
       >
         <Tooltip
-          title={<span style={{ fontSize: "14px" }}>Create Campaign</span>}
+          title={<span style={{ fontSize: "14px" }}>Email Invite</span>}
           placement="right"
         >
           <ListItemIcon>
             <InsertInvitation />
           </ListItemIcon>
         </Tooltip>
-        <ListItemText primary="Create Campaign" />
+        <ListItemText primary="Email Invite" />
       </ListItem>
       <ListItem
         button
         onClick={() => {
           handleMainListItemClick(4);
         }}
+        disabled={menuItemDisabled}
         className={stepToRender === 4 ? "grayBg pb_0" : "pb_0"}
+      >
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>WhatsApp Invite</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <WhatsAppIcon />
+          </ListItemIcon>
+        </Tooltip>
+        <ListItemText primary="WhatsApp Invite" />
+      </ListItem>
+      <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(5);
+        }}
+        className={stepToRender === 5 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -138,9 +154,9 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(5);
+          handleMainListItemClick(6);
         }}
-        className={stepToRender === 5 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 6 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -156,10 +172,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(6);
+          handleMainListItemClick(7);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 6 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 7 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>Widgets</span>}
@@ -174,10 +190,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(7);
+          handleMainListItemClick(8);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 7 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 8 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>Review URL</span>}
@@ -188,24 +204,6 @@ export const MainListItems = ({
           </ListItemIcon>
         </Tooltip>
         <ListItemText primary="Review URL" />
-      </ListItem>
-      <ListItem
-        button
-        onClick={() => {
-          handleMainListItemClick(8);
-        }}
-        disabled={menuItemDisabled}
-        className={stepToRender === 8 ? "grayBg pb_0" : "pb_0"}
-      >
-        <Tooltip
-          title={<span style={{ fontSize: "14px" }}>WhatsApp Invite</span>}
-          placement="right"
-        >
-          <ListItemIcon>
-            <WhatsAppIcon />
-          </ListItemIcon>
-        </Tooltip>
-        <ListItemText primary="WhatsApp Invite" />
       </ListItem>
       <ListItem
         button

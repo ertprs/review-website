@@ -7,6 +7,7 @@ import ShowInWidgetList from "./ShowInWidgetList/ShowInWidgetList";
 import _get from "lodash/get";
 import PremiumBrandingToggle from "./PremiumBrandingToggle/PremiumBrandingToggle";
 import BackgroundColorToggler from "./BackgroundColorToggler/BackgroundColorToggler";
+import GetSchemaCode from "../GetSchemaCode";
 
 class CombinedReviewsWidgetConfigurations extends Component {
   render() {
@@ -27,7 +28,10 @@ class CombinedReviewsWidgetConfigurations extends Component {
       premiumBrandingToggleData,
       planTypeId,
       handleBackgroundColorTogglerChange,
-      backgroundColorTogglerData
+      backgroundColorTogglerData,
+      getSchemaCodeData,
+      handleGetSchemaCodeDataChange,
+      handleSchemaCodeValueChange
     } = this.props;
     const hideDashboardParticularSettings = _get(
       this.props,
@@ -102,6 +106,15 @@ class CombinedReviewsWidgetConfigurations extends Component {
               </div>
             </div>
           )}
+          {/* <div className="row">
+            <div className="col-md-12">
+              <GetSchemaCode
+                getSchemaCodeData={getSchemaCodeData}
+                handleChange={handleGetSchemaCodeDataChange}
+                handleSchemaCodeValueChange={handleSchemaCodeValueChange}
+              />
+            </div>
+          </div> */}
         </div>
       </div>
     );

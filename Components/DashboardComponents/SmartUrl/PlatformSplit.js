@@ -94,6 +94,7 @@ const PlatformSplit = ({
                       }}
                       min={_get(platform, "min", 0)}
                       max={_get(platform, "max", 0)}
+                      step={10}
                     />
                   </div>
                   <div className="col-md-2">

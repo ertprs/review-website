@@ -35,7 +35,8 @@ const CreateTemplate = props => {
     handleCheckboxChange,
     isLoading,
     whatsAppPusherConnected,
-    isSessionPresent
+    isSessionPresent,
+    isAutomatic
   } = props;
   const isLanguageSelected = _get(createTemplate, "templateLanguage.value", "");
   const saveCampaign = _get(createTemplate, "saveCampaign", false);
@@ -98,22 +99,26 @@ const CreateTemplate = props => {
               />
             </div>
           </div>
-          <div className="checkboxContainer">
-            <Checkbox
-              color="primary"
-              checked={saveCampaign}
-              onChange={handleCheckboxChange}
-              name="saveCampaign"
-            />
-            I want to save this campaign
-            <Checkbox
-              color="primary"
-              checked={keepMeLoggedIn}
-              onChange={handleCheckboxChange}
-              name="keepMeLoggedIn"
-            />
-            Keep me logged in
-          </div>
+          {/* In automatic campaigns these will be true by default and we are
+          sending there hardcoded value */}
+          {isAutomatic ? null : (
+            <div className="checkboxContainer">
+              <Checkbox
+                color="primary"
+                checked={saveCampaign}
+                onChange={handleCheckboxChange}
+                name="saveCampaign"
+              />
+              I want to save this campaign
+              <Checkbox
+                color="primary"
+                checked={keepMeLoggedIn}
+                onChange={handleCheckboxChange}
+                name="keepMeLoggedIn"
+              />
+              Keep me logged in
+            </div>
+          )}
           <div className="submitBtn">
             <Button
               variant="contained"
@@ -130,6 +135,7 @@ const CreateTemplate = props => {
               {isLoading ? (
                 <CircularProgress size={25} color={"#fff"} />
               ) : whatsAppPusherConnected ? (
+                // isSessionPresent: if session exists in db of that user
                 isSessionPresent ? (
                   "Trying to login using existing session!"
                 ) : (
@@ -147,17 +153,23 @@ const CreateTemplate = props => {
 };
 
 const mapStateToProps = state => {
-  const { dashboardData } = state;
-  let whatsAppManualInvite = _get(dashboardData, "whatsAppManualInvite", {});
-  let whatsAppManualCommit = _get(dashboardData, "whatsAppManualCommit", {});
+  const {
+    whatsAppManualInvitationInit,
+    whatsAppManualInvitationCommit,
+    whatsAppAutomaticInvitationInit,
+    whatsAppAutomaticInvitationCommit
+  } = state.dashboardData || {};
+
   const isLoading =
-    _get(whatsAppManualInvite, "isLoading", false) ||
-    _get(whatsAppManualCommit, "isLoading", false);
-  const isSessionPresent = _get(
-    dashboardData,
-    "whatsAppManualInvite.isSessionPresent",
-    false
-  );
+    _get(whatsAppManualInvitationInit, "isLoading", false) ||
+    _get(whatsAppManualInvitationCommit, "isLoading", false) ||
+    _get(whatsAppAutomaticInvitationInit, "isLoading", false) ||
+    _get(whatsAppAutomaticInvitationCommit, "isLoading", false);
+
+  const isSessionPresent =
+    _get(whatsAppManualInvitationInit, "isSessionPresent", false) ||
+    _get(whatsAppAutomaticInvitationInit, "isSessionPresent", false);
+
   return {
     isLoading,
     isSessionPresent

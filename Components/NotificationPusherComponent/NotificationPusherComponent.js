@@ -19,11 +19,10 @@ class NotificationPusherComponent extends Component {
     });
   }
   bindToKey = (pusher, channel) => {
-    channel.bind("invite_stats", data => {
-      this.props.onCampaignInvitesDataChange(data);
-      console.log(data, "Response from invites notification");
+    channel.bind("account_notifications", data => {
+      this.props.onNotificationPusherDataChange(data);
+      console.log(data, "Response from notification pusher");
     });
-
     pusher.connection.bind("disconnected", () => {
       console.log("Notification pusher disconnected");
     });

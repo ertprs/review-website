@@ -3,6 +3,7 @@ import uuid from "uuid/v1";
 import validate from "../../../../../../utility/validate";
 import FormField from "../../../../../Widgets/FormField/FormField";
 import Button from "@material-ui/core/Button";
+import ScheduleInvitationBtn from "../WhatsAppAutomaticInvitation/ScheduleInvitationDialog/ScheduleInvitationBtn/ScheduleInvitationBtn";
 class CopyPasteData extends Component {
   renderHeader = () => {
     return (
@@ -53,8 +54,7 @@ class CopyPasteData extends Component {
         <style jsx>
           {`
             .btnContainer {
-              display: flex;
-              justify-content: flex-end;
+              text-align: right;
             }
             .addBtn {
               flex-basis: 10%;
