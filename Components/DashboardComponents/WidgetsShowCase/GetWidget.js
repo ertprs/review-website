@@ -587,13 +587,13 @@ class GetWidget extends Component {
                         backgroundColorTogglerData={backgroundColorTogglerData}
                         handleChange={this.handleBackgroundColorTogglerChange}
                       />
-                      <GetSchemaCode
+                      {/* <GetSchemaCode
                         getSchemaCodeData={getSchemaCodeData}
                         handleChange={this.handleGetSchemaCodeToggle}
                         handleSchemaCodeValueChange={
                           this.handleSchemaCodeValueChange
                         }
-                      />
+                      /> */}
                     </div>
                   </>
                 ) : (

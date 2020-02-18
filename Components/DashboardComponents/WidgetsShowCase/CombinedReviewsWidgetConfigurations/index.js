@@ -106,7 +106,7 @@ class CombinedReviewsWidgetConfigurations extends Component {
               </div>
             </div>
           )}
-          <div className="row">
+          {/* <div className="row">
             <div className="col-md-12">
               <GetSchemaCode
                 getSchemaCodeData={getSchemaCodeData}
@@ -114,7 +114,7 @@ class CombinedReviewsWidgetConfigurations extends Component {
                 handleSchemaCodeValueChange={handleSchemaCodeValueChange}
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );
