@@ -117,7 +117,8 @@ const DashboardLayout = props => {
     menuItemsDisabled,
     handleMenuItemClicked,
     stepToRender,
-    handleDrawerOpen
+    handleDrawerOpen,
+    refHack
   } = props;
   return (
     <>
@@ -198,7 +199,7 @@ const DashboardLayout = props => {
           <DashboardLogo />
         </List>
       </Drawer>
-      <main className={classes.content} ref={props.refHack}>
+      <main className={classes.content} ref={refHack}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           {props.children}
