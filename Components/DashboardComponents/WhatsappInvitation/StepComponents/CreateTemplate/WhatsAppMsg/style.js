@@ -75,7 +75,7 @@ const whatsAppMsgStyle = css`
     right: 0;
     bottom: 0;
     opacity: 0.06;
-    background: url(http://res.cloudinary.com/keiwo/image/upload/v1498803497/whatsapp-bg_dpw6kf.png);
+    background: url("/static/images/whatsapp_bg.png");
   }
 
   .link {
