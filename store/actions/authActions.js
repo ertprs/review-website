@@ -34,7 +34,9 @@ import {
   GET_AVAILABLE_PLATFORMS_INIT,
   GET_AVAILABLE_PLATFORMS_SUCCESS,
   GET_AVAILABLE_PLATFORMS_FAILURE,
-  SET_IS_NEW_USER
+  SET_IS_NEW_USER,
+  SHOW_WHATSAPP_NOTIFICATION_BAR,
+  SET_QUOTA_DETAILS
 } from "./actionTypes";
 import _get from "lodash/get";
 import {
@@ -45,7 +47,6 @@ import {
 import { loginApi } from "../../utility/config";
 import axios from "axios";
 import {
-  setInvitationQuota,
   fetchCampaignLanguage,
   getAvailableReviewPlatforms,
   setReviewsAfterLogin
@@ -542,7 +543,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
       let userProfile = get(res, "data.user", {});
       let status = get(res, "status", 0);
       let token = get(res, "data.token", "");
-
       let socialArray = get(res, "data.user.business_profile.social", []);
       let loginType = 0;
       const businessProfile = get(res, "data.user.business_profile", {});
@@ -560,11 +560,6 @@ export const businessLogIn = (loginData, api, directLogin) => {
             cookie.set("token", token, { expires: 7 });
             cookie.set("domainId", domainId, { expires: 7 });
             localStorage.setItem("token", token);
-            dispatch(
-              setInvitationQuota(
-                get(userProfile, "subscription.quota_details", {})
-              )
-            );
             dispatch(setSubscription(subscriptionExpired));
             dispatch(getAvailableReviewPlatforms(token));
             dispatch(fetchCampaignLanguage(token));
@@ -768,5 +763,19 @@ export const setIsNewUser = isNewUser => {
   return {
     type: SET_IS_NEW_USER,
     isNewUser
+  };
+};
+
+export const showWhatsAppNotificationBar = showWhatsAppNotification => {
+  return {
+    type: SHOW_WHATSAPP_NOTIFICATION_BAR,
+    showWhatsAppNotification
+  };
+};
+
+export const setInvitationQuota = quotaDetails => {
+  return {
+    type: SET_QUOTA_DETAILS,
+    quotaDetails: { ...quotaDetails }
   };
 };

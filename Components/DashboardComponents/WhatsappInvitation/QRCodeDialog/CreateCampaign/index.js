@@ -21,7 +21,7 @@ const CreateCampaign = props => {
         </div>
       ) : createCampaignSuccess ? (
         <div style={{ textAlign: "center", marginTop: "45px" }}>
-          <h3>Campaign created successfully</h3>
+          <h3>Campaign created successfully!</h3>
         </div>
       ) : (
         <div style={{ textAlign: "center", marginTop: "45px" }}>
@@ -46,7 +46,7 @@ const mapStateToProps = state => {
   );
   const createCampaignErrorMsg = _get(
     dashboardData,
-    "whatsAppAutomaticCreateCampaign.errorMessage",
+    "whatsAppAutomaticCreateCampaign.errorMsg",
     "Some error ocurred !"
   );
   return {

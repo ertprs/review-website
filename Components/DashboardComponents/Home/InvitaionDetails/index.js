@@ -52,8 +52,12 @@ const InvitationDetails = props => {
 };
 
 const mapStateToProps = state => {
-  const { dashboardData } = state || {};
-  const quotaDetails = _get(dashboardData, "quotaDetails", {});
+  const { auth } = state || {};
+  const quotaDetails = _get(
+    auth,
+    "logIn.userProfile.subscription.quota_details",
+    {}
+  );
   const created = _get(quotaDetails, "invitations.created", 0);
   const sent = _get(quotaDetails, "invitations.sent", 0);
   return {

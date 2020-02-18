@@ -5,7 +5,7 @@ import Head from "next/head";
 const OverallPerformance = dynamic(() => import("./OverallPerformance"));
 const BusinessDetails = dynamic(() => import("./BusinessDetails"));
 const GetStarted = dynamic(() => import("../GetStarted/GetStarted"));
-const InvitationDetails = dynamic(() => import("./InvittaionDetails"));
+const InvitationDetails = dynamic(() => import("./InvitaionDetails"));
 const ReviewFetchStatus = dynamic(() => import("./ReviewsFetchStatus"));
 const ActivationInfo = dynamic(() => import("./ActivationInfo"));
 const SubscriptionInfo = dynamic(() => import("./SubscriptionInfo"));

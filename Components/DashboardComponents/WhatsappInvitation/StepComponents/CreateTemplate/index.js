@@ -35,7 +35,8 @@ const CreateTemplate = props => {
     handleCheckboxChange,
     isLoading,
     whatsAppPusherConnected,
-    isSessionPresent
+    isSessionPresent,
+    isAutomatic
   } = props;
   const isLanguageSelected = _get(createTemplate, "templateLanguage.value", "");
   const saveCampaign = _get(createTemplate, "saveCampaign", false);
@@ -98,22 +99,26 @@ const CreateTemplate = props => {
               />
             </div>
           </div>
-          <div className="checkboxContainer">
-            <Checkbox
-              color="primary"
-              checked={saveCampaign}
-              onChange={handleCheckboxChange}
-              name="saveCampaign"
-            />
-            I want to save this campaign
-            <Checkbox
-              color="primary"
-              checked={keepMeLoggedIn}
-              onChange={handleCheckboxChange}
-              name="keepMeLoggedIn"
-            />
-            Keep me logged in
-          </div>
+          {/* In automatic campaigns these will be true by default and we are
+          sending there hardcoded value */}
+          {isAutomatic ? null : (
+            <div className="checkboxContainer">
+              <Checkbox
+                color="primary"
+                checked={saveCampaign}
+                onChange={handleCheckboxChange}
+                name="saveCampaign"
+              />
+              I want to save this campaign
+              <Checkbox
+                color="primary"
+                checked={keepMeLoggedIn}
+                onChange={handleCheckboxChange}
+                name="keepMeLoggedIn"
+              />
+              Keep me logged in
+            </div>
+          )}
           <div className="submitBtn">
             <Button
               variant="contained"
