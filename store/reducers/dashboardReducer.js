@@ -18,7 +18,6 @@ import {
   CREATE_CAMPAIGN_INIT,
   CREATE_CAMPAIGN_SUCCESS,
   CREATE_CAMPAIGN_FAILURE,
-  SET_QUOTA_DETAILS,
   FETCH_CAMPAIGN_LANGUAGE_INIT,
   FETCH_CAMPAIGN_LANGUAGE_SUCCESS,
   FETCH_CAMPAIGN_LANGUAGE_FAILURE,
@@ -108,7 +107,6 @@ const dashboardReducer = (state = {}, action) => {
     upgradePremium,
     transactionHistory,
     createCampaign,
-    quotaDetails,
     campaignLanguage,
     parsedCampaignLanguage,
     emailTemplate,
@@ -137,7 +135,8 @@ const dashboardReducer = (state = {}, action) => {
     whatsAppManualInvitationCommit,
     whatsAppAutomaticInvitationInit,
     whatsAppAutomaticInvitationCommit,
-    whatsAppAutomaticCreateCampaign
+    whatsAppAutomaticCreateCampaign,
+    showWhatsAppNotification
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -257,13 +256,6 @@ const dashboardReducer = (state = {}, action) => {
         type,
         campaignLanguage
       };
-    case SET_QUOTA_DETAILS: {
-      return {
-        ...state,
-        type,
-        quotaDetails
-      };
-    }
     case SET_CAMPAIGN_LANGUAGE: {
       return {
         ...state,

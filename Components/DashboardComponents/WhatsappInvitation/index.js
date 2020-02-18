@@ -10,14 +10,15 @@ import validate from "../../../utility/validate";
 import {
   whatsAppManualInvitationInit,
   whatsAppAutomaticInvitationInit,
-  whatsAppAutomaticCreateCampaign
+  whatsAppAutomaticCreateCampaign,
+  emptyWhatsAppData
 } from "../../../store/actions/dashboardActions";
+import { showWhatsAppNotificationBar } from "../../../store/actions/authActions";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _isEmpty from "lodash/isEmpty";
-import { emptyWhatsAppData } from "../../../store/actions/dashboardActions";
 
 //Components
 const InvitationType = dynamic(
@@ -290,12 +291,15 @@ class WhatsAppInvitation extends Component {
     if (template) {
       reqBody["template"] = template;
     }
-    reqBody["storeCustomerData"] = saveCampaign;
-    reqBody["rememberMe"] = keepMeLoggedIn;
+    //? We will receive this broadcast in both automatic and manual invitations but we are using this in automatic invitations only to make createCampaign API call. And in case of automatic this will be the last broadcast.
+    reqBody["storeCustomerData"] =
+      selectedWhatsAppInvitationMethod === "automatic" ? true : saveCampaign;
+    reqBody["rememberMe"] =
+      selectedWhatsAppInvitationMethod === "automatic" ? true : keepMeLoggedIn;
 
     //* If selectedWhatsAppInvitationMethod is automatic we are considering it as automatic campaign
 
-    //? In autmatic campaign case
+    //? In automatic campaign case
     if (selectedWhatsAppInvitationMethod === "automatic") {
       //?sendAfterMinutes:- make sure if the user doesn't schedules the invitation this value must be sent as 0
       reqBody["sendAfterMinutes"] = _get(sendAfterMinutes, "value", 0) || 0;
@@ -311,6 +315,7 @@ class WhatsAppInvitation extends Component {
         }
       }
       reqBody["shop"] = shopId;
+      //? if it is coming from db_session_updated broadcast
       if (isCreateCampaign) {
         whatsAppAutomaticCreateCampaign(reqBody);
       } else {
@@ -339,7 +344,8 @@ class WhatsAppInvitation extends Component {
       activeEvent,
       mountWhatsAppPusher,
       sendAfterMinutes,
-      selectedShop
+      selectedShop,
+      selectedWhatsAppInvitationMethod
     } = this.state;
     switch (activeStep) {
       case 1:
@@ -370,7 +376,8 @@ class WhatsAppInvitation extends Component {
             handleSubmit={this.startWhatsAppInvitation}
             handleCheckboxChange={this.handleCheckboxChange}
             whatsAppPusherConnected={mountWhatsAppPusher}
-            scrollToTopOfThePage={this.props.scrollToTopOfThePage}
+            scrollToTopOfThePage={_get(this.props, "scrollToTopOfThePage", "")}
+            isAutomatic={selectedWhatsAppInvitationMethod === "automatic"}
           />
         );
       default:
@@ -466,9 +473,14 @@ class WhatsAppInvitation extends Component {
   //? We will receive this broadcast in both automatic and manual invitations but we are using this in automatic invitations only to make createCampaign API call. And in case of automatic this will be the last broadcast.
   dbSessionUpdated = data => {
     const { selectedWhatsAppInvitationMethod } = this.state;
+    const { showWhatsAppNotificationBar } = this.props;
     if (selectedWhatsAppInvitationMethod === "automatic") {
       //?In whatsApp automatic invitation case we are calling this function to hit createCampaign API, true is used to identify that it is being called to create campaign.
       this.startWhatsAppInvitation("", true);
+    }
+    //? this will hide whatsApp notification bar
+    if (_get(data, "value", false)) {
+      showWhatsAppNotificationBar(false);
     }
     this.setState({ activeEvent: data });
   };
@@ -741,5 +753,6 @@ export default connect(mapStateToProps, {
   whatsAppManualInvitationInit,
   whatsAppAutomaticInvitationInit,
   whatsAppAutomaticCreateCampaign,
-  emptyWhatsAppData
+  emptyWhatsAppData,
+  showWhatsAppNotificationBar
 })(WhatsAppInvitation);

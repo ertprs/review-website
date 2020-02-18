@@ -35,9 +35,12 @@ import {
   UPDATE_AUTH_SOCIAL_ARRAY,
   UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS,
   FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
-  SET_IS_NEW_USER
+  SET_IS_NEW_USER,
+  SHOW_WHATSAPP_NOTIFICATION_BAR,
+  SET_QUOTA_DETAILS
 } from "../actions/actionTypes";
 import _get from "lodash/get";
+import get from "lodash/get";
 
 const authReducer = (state = {}, action) => {
   const {
@@ -62,7 +65,9 @@ const authReducer = (state = {}, action) => {
     socialArray,
     ecommerceIntegrations,
     configuredPlatforms,
-    isNewUser
+    isNewUser,
+    showWhatsAppNotification,
+    quotaDetails
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -346,6 +351,49 @@ const authReducer = (state = {}, action) => {
           userProfile: {
             ...state.logIn.userProfile,
             isNew: isNewUser
+          }
+        }
+      };
+    }
+    case SHOW_WHATSAPP_NOTIFICATION_BAR: {
+      return {
+        ...state,
+        type,
+        logIn: {
+          ...state.logIn,
+          userProfile: {
+            ..._get(state, "logIn.userProfile", {}),
+            whatsapp_login_required: showWhatsAppNotification
+          }
+        }
+      };
+    }
+    case SET_QUOTA_DETAILS: {
+      return {
+        ...state,
+        type,
+        logIn: {
+          ..._get(state, "logIn", {}),
+          userProfile: {
+            ..._get(state, "logIn.userProfile", {}),
+            subscription: {
+              ...get(state, "logIn.userProfile.subscription", {}),
+              quota_details: {
+                ...get(
+                  state,
+                  "logIn.userProfile.subscription.quota_details",
+                  {}
+                ),
+                invitations: {
+                  ...get(
+                    state,
+                    "logIn.userProfile.subscription.quota_details.invitations",
+                    {}
+                  ),
+                  ...quotaDetails
+                }
+              }
+            }
           }
         }
       };

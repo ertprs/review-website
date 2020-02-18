@@ -3,14 +3,18 @@ import { connect } from "react-redux";
 import Router from "next/router";
 import dynamic from "next/dynamic";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Slide from "@material-ui/core/Slide";
 import ReviewsPusher from "../../Components/ReviewsPusher/ReviewsPusher";
 import NotificationPusher from "../../Components/NotificationPusherComponent/NotificationPusherComponent";
 import Snackbar from "../../Components/Widgets/Snackbar";
 //? Actions
-import { logOut } from "../../store/actions/authActions";
+import {
+  logOut,
+  setInvitationQuota,
+  showWhatsAppNotificationBar
+} from "../../store/actions/authActions";
 import {
   fetchReviews,
-  setInvitationQuota,
   setReviewsAfterLogin,
   setReviewsPusherConnect
 } from "../../store/actions/dashboardActions";
@@ -22,7 +26,21 @@ import { isValidArray } from "../../utility/commonFunctions";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
 //? Dynamic imported components
 const DashboardLayout = dynamic(() => import("./DashboardLayout"));
-const Home = dynamic(() => import("../../Components/DashboardComponents/Home"));
+const NotificationBar = dynamic(() =>
+  import(
+    "../../Components/DashboardComponents/WhatsappInvitation/ReloginNotificationBar"
+  )
+);
+const Home = dynamic(
+  () => import("../../Components/DashboardComponents/Home"),
+  {
+    loading: () => (
+      <div className="dynamicImport">
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
 const GetStarted = dynamic(
   () => import("../../Components/DashboardComponents/GetStarted/GetStarted"),
   {
@@ -130,7 +148,7 @@ class Dashboard extends Component {
     this.menuItemsDisabled = false;
     this.getStartedDisabled = false;
     this.state = {
-      openDrawer: false,
+      openDrawer: true,
       stepToRender: _get(this.props, "isFirstTimeLogin", false) ? 0 : 1,
       showSnackbar: false,
       snackbarVariant: "success",
@@ -370,6 +388,23 @@ class Dashboard extends Component {
     logOut();
   };
 
+  notificationPusherHandler = data => {
+    const { showWhatsAppNotificationBar, setInvitationQuota } = this.props;
+    const { eventType } = data || {};
+    switch (eventType) {
+      case "invite_stats":
+        setInvitationQuota({
+          ..._get(data, "invitations", {})
+        });
+        break;
+      case "whatsapp_login_required":
+        showWhatsAppNotificationBar(_get(data, "success", false));
+        break;
+      default:
+        console.log("new event", data);
+    }
+  };
+
   render() {
     const {
       userName,
@@ -383,7 +418,8 @@ class Dashboard extends Component {
       domainId,
       domain,
       subscriptionPlan,
-      upgradeToPremiumIsLoading
+      upgradeToPremiumIsLoading,
+      showWhatsAppNotification
     } = this.props;
     const {
       showSnackbar,
@@ -425,63 +461,77 @@ class Dashboard extends Component {
     //? *****************************************************/
 
     return (
-      <div className="dFlex">
-        <style jsx>{`
-          .dFlex {
-            display: flex;
-          }
-        `}</style>
-        <CssBaseline />
-        {subscriptionId ? (
-          <NotificationPusher
-            subscriptionId={subscriptionId}
-            onCampaignInvitesDataChange={data => {
-              setInvitationQuota({ ...data });
+      <>
+        <div className="dFlex">
+          <style jsx>{`
+            .dFlex {
+              display: flex;
+            }
+          `}</style>
+          <CssBaseline />
+          {subscriptionId ? (
+            <NotificationPusher
+              subscriptionId={subscriptionId}
+              onNotificationPusherDataChange={this.notificationPusherHandler}
+            />
+          ) : null}
+          {isReviewsPusherConnected === true ? (
+            <ReviewsPusher
+              domain={domain}
+              onAggregatorDataChange={data => {
+                let socialAppId = _get(data, "response.socialAppId", "");
+                let profileId = _get(data, "response.profileId", "");
+                fetchReviews(socialAppId, profileId, domainId);
+              }}
+            />
+          ) : null}
+
+          <DashboardLayout
+            ref={this.mainContainer}
+            userName={updatedUserName}
+            handleLogout={this.handleLogout}
+            open={openDrawer}
+            handleDrawerClose={() => {
+              this.setState({ openDrawer: false });
             }}
-          />
-        ) : null}
-        {isReviewsPusherConnected === true ? (
-          <ReviewsPusher
+            handleDrawerOpen={() => {
+              this.setState({ openDrawer: true });
+            }}
+            subscriptionPlan={subscriptionPlan}
+            upgradeToPremiumIsLoading={upgradeToPremiumIsLoading}
             domain={domain}
-            onAggregatorDataChange={data => {
-              let socialAppId = _get(data, "response.socialAppId", "");
-              let profileId = _get(data, "response.profileId", "");
-              fetchReviews(socialAppId, profileId, domainId);
+            getStartedDisabled={this.getStartedDisabled}
+            getStartedHide={this.getStartedHide}
+            homeDisabled={this.homeDisabled}
+            menuItemsDisabled={this.menuItemsDisabled}
+            handleMenuItemClicked={this.handleMenuItemClicked}
+            stepToRender={stepToRender}
+          >
+            {this.renderAppropriateComponent()}
+          </DashboardLayout>
+          <Snackbar
+            open={showSnackbar}
+            variant={snackbarVariant}
+            handleClose={() => {
+              this.setState({ showSnackbar: false });
             }}
+            message={snackbarMsg}
           />
+        </div>
+        {/* <Slide
+          direction="up"
+          in={showWhatsAppNotification}
+          mountOnEnter
+          unmountOnExit
+        > */}
+        {showWhatsAppNotification ? (
+          // ? hiding this if we are in whatsApp invitation tab
+          stepToRender !== 4 ? (
+            <NotificationBar />
+          ) : null
         ) : null}
-        <DashboardLayout
-          ref={this.mainContainer}
-          userName={updatedUserName}
-          handleLogout={this.handleLogout}
-          open={openDrawer}
-          handleDrawerClose={() => {
-            this.setState({ openDrawer: false });
-          }}
-          handleDrawerOpen={() => {
-            this.setState({ openDrawer: true });
-          }}
-          subscriptionPlan={subscriptionPlan}
-          upgradeToPremiumIsLoading={upgradeToPremiumIsLoading}
-          domain={domain}
-          getStartedDisabled={this.getStartedDisabled}
-          getStartedHide={this.getStartedHide}
-          homeDisabled={this.homeDisabled}
-          menuItemsDisabled={this.menuItemsDisabled}
-          handleMenuItemClicked={this.handleMenuItemClicked}
-          stepToRender={stepToRender}
-        >
-          {this.renderAppropriateComponent()}
-        </DashboardLayout>
-        <Snackbar
-          open={showSnackbar}
-          variant={snackbarVariant}
-          handleClose={() => {
-            this.setState({ showSnackbar: false });
-          }}
-          message={snackbarMsg}
-        />
-      </div>
+        {/* </Slide> */}
+      </>
     );
   }
 }
@@ -537,6 +587,11 @@ const mapStateToProps = state => {
     "undefined"
   );
   const subscriptionId = _get(auth, "logIn.userProfile.subscription.id", "");
+  const showWhatsAppNotification = _get(
+    auth,
+    "logIn.userProfile.whatsapp_login_required",
+    false
+  );
   return {
     userName,
     activation_required,
@@ -552,7 +607,8 @@ const mapStateToProps = state => {
     subscriptionId,
     socialArray,
     reviews,
-    isFirstTimeLogin
+    isFirstTimeLogin,
+    showWhatsAppNotification
   };
 };
 
@@ -560,6 +616,7 @@ export default connect(mapStateToProps, {
   logOut,
   fetchReviews,
   setInvitationQuota,
+  showWhatsAppNotificationBar,
   setReviewsAfterLogin,
   setReviewsPusherConnect
 })(Dashboard);

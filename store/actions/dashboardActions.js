@@ -15,7 +15,6 @@ import {
   FETCH_CAMPAIGN_LANGUAGE_INIT,
   FETCH_CAMPAIGN_LANGUAGE_SUCCESS,
   FETCH_CAMPAIGN_LANGUAGE_FAILURE,
-  SET_QUOTA_DETAILS,
   CREATE_CAMPAIGN_INIT,
   CREATE_CAMPAIGN_SUCCESS,
   CREATE_CAMPAIGN_FAILURE,
@@ -97,7 +96,11 @@ import {
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE,
   EMPTY_WHATSAPP_DATA
 } from "./actionTypes";
-import { updateAuthSocialArray, setIsNewUser } from "../actions/authActions";
+import {
+  updateAuthSocialArray,
+  setIsNewUser,
+  setInvitationQuota
+} from "../actions/authActions";
 import cookie from "js-cookie";
 import axios from "axios";
 import _find from "lodash/find";
@@ -351,7 +354,9 @@ export const createCampaign = data => {
           success: _get(result, "data.success", false)
         }
       });
-      dispatch(setInvitationQuota(quotaDetails));
+      dispatch(
+        setInvitationQuota({ ..._get(quotaDetails, "invitations", {}) })
+      );
     } catch (error) {
       dispatch({
         type: CREATE_CAMPAIGN_FAILURE,
@@ -416,13 +421,6 @@ export const fetchCampaignLanguage = token => {
         }
       });
     }
-  };
-};
-
-export const setInvitationQuota = quotaDetails => {
-  return {
-    type: SET_QUOTA_DETAILS,
-    quotaDetails
   };
 };
 
