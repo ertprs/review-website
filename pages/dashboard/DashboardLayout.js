@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { connect } from "react-redux";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -100,7 +100,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DashboardLayout = React.forwardRef((props, ref) => {
+const DashboardLayout = props => {
   const classes = useStyles();
   const {
     userName,
@@ -198,7 +198,7 @@ const DashboardLayout = React.forwardRef((props, ref) => {
           <DashboardLogo />
         </List>
       </Drawer>
-      <main className={classes.content} ref={ref}>
+      <main className={classes.content} ref={props.refHack}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           {props.children}
@@ -206,6 +206,6 @@ const DashboardLayout = React.forwardRef((props, ref) => {
       </main>
     </>
   );
-});
+};
 
 export default connect(null, { upgradeToPremium })(DashboardLayout);
