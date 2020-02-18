@@ -98,7 +98,7 @@ class CampaignScheduleAutomatic extends Component {
                     color="primary"
                     variant="contained"
                     size="small"
-                    endIcon={<CheckIcon />}
+                    startIcon={<CheckIcon />}
                     onClick={this.props.handleBack}
                   >
                     Back
