@@ -70,13 +70,12 @@ class MyApp extends App {
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
           />
-
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+            rel="stylesheet"
+          ></link>
           <script src="/static/polyfills/polyfill.min.js"></script>
-
           <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0yD1Nm-2HeTnWMZUSXN8CzvzejmGKEXk&libraries=places"></script>
-
-          <script src="https://fonts.googleapis.com/css?family=Roboto"></script>
-
           {process.env.NODE_ENV === "production" ? (
             <script
               dangerouslySetInnerHTML={{
