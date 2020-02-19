@@ -22,13 +22,13 @@ class ActivationInfo extends Component {
       if (success === true) {
         this.setState({
           showSnackbar: true,
-          variant: "success",
+          snackbarVariant: "success",
           snackbarMsg: "Mail sent successfully, Please verify your email."
         });
       } else if (success === false) {
         this.setState({
           showSnackbar: true,
-          variant: "error",
+          snackbarVariant: "error",
           snackbarMsg: errorMsg
         });
       }

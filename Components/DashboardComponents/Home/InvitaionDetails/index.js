@@ -27,9 +27,7 @@ const InvitationDetails = props => {
       `}</style>
       <SimpleCard style={{ height: "298px" }}>
         <div className="header">
-          <Title>
-            <h5>Invitations Summary</h5>
-          </Title>
+          <Title>Invitations Summary</Title>
           <span>You can send unlimited invitations to your customers.</span>
         </div>
         <div className="body">
