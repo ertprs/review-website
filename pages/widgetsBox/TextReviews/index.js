@@ -330,15 +330,10 @@ class TextReviews extends React.Component {
               {_get(requiredData, "totalReviews", 0)}
             </span>{" "}
             reviews at{" "}
-            <Link href="https://thetrustsearch.com">
-              <a target="_blank">
-                <img src="/static/images/small_logo.png" alt="logoImg" />
-              </a>
-            </Link>
+            <a href="https://thetrustsearch.com" target="_blank">
+              <img src="/static/images/small_logo.png" alt="logoImg" />
+            </a>
           </div>
-          {/* <div className="flexImgContainer">
-            
-          </div> */}
         </div>
       </div>
     );

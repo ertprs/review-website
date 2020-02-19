@@ -215,14 +215,13 @@ const renderFooterBottomSection = () => {
           className="col-md-4"
           style={{ textAlign: "center", color: "#fff" }}
         >
-          <Link href="https://thetrustsearch.com/termsAndConditions">
-            <a
-              target="_blank"
-              style={{ color: "#fff", textDecoration: "none" }}
-            >
-              Terms of use
-            </a>
-          </Link>
+          <a
+            href="https://thetrustsearch.com/termsAndConditions"
+            target="_blank"
+            style={{ color: "#fff", textDecoration: "none" }}
+          >
+            Terms of use
+          </a>
         </div>
         <div className="col-md-4">
           <div style={{ textAlign: "center" }}>

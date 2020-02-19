@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import Link from "next/link";
 import Grid from "@material-ui/core/Grid";
 import SimpleCard from "../../../MaterialComponents/Card";
 import _get from "lodash/get";
@@ -78,9 +77,9 @@ const BusinessDetails = props => {
                 <div className="businessDetailsFlexItem">
                   <div className="bold">Domain :</div>
                   <div>
-                    <Link href={`https://www.${domain}`}>
-                      <a target="_blank">{domain}</a>
-                    </Link>
+                    <a href={`https://www.${domain}`} target="_blank">
+                      {domain}
+                    </a>
                   </div>
                 </div>
                 <div className="businessDetailsFlexItem">

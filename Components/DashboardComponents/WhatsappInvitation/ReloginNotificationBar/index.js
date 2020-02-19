@@ -169,7 +169,8 @@ class NotificationBar extends Component {
 
   handleQuitCampaign = () => {
     const { emptyWhatsAppData, showWhatsAppNotificationBar } = this.props;
-    const { activeEvent } = this.state;
+    // const { activeEvent } = this.state;
+    const event = _get(this.state, "activeEvent.event", "");
     this.setState(
       {
         openFullScreenDialog: false,
@@ -177,7 +178,7 @@ class NotificationBar extends Component {
       },
       () => {
         emptyWhatsAppData();
-        if (_get(activeEvent, "event", "") === "db_session_updated") {
+        if (event === "db_session_updated" || event === "login_successful") {
           showWhatsAppNotificationBar(false);
         }
       }
@@ -281,18 +282,11 @@ const mapStateToProps = state => {
   const isLoading =
     _get(whatsAppAutomaticInvitationInit, "isLoading", false) ||
     _get(whatsAppAutomaticInvitationCommit, "isLoading", false);
-  const whatsAppAutomaticInvitationCommitSuccess = _get(
-    whatsAppAutomaticInvitationInit,
-    "success",
-    false
-  );
   return {
     isLoading,
     channelName,
     whatsAppAutomaticInvitationInit,
-    whatsAppAutomaticInvitationCommit,
-    //? remove this295
-    whatsAppAutomaticInvitationCommitSuccess
+    whatsAppAutomaticInvitationCommit
   };
 };
 
