@@ -177,7 +177,7 @@ class NotificationBar extends Component {
       },
       () => {
         emptyWhatsAppData();
-        if ((activeEvent, "event", "" === "db_session_updated")) {
+        if (_get(activeEvent, "event", "") === "db_session_updated") {
           showWhatsAppNotificationBar(false);
         }
       }

@@ -11,23 +11,50 @@ const CreateCampaign = props => {
   } = props;
 
   return (
-    <div>
-      {createCampaignIsLoading ? (
-        <div style={{ textAlign: "center", marginTop: "45px" }}>
-          <h3>Creating your campaign</h3>
-          <div style={{ textAlign: "center" }}>
-            <CircularProgress />
-          </div>
+    <div className="container">
+      <style jsx>
+        {`
+          .campaignStartedContainer {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+          }
+          .imageContainer {
+            max-width: 400px;
+            height: auto;
+          }
+          .imageContainer img {
+            max-width: 100%;
+            height: auto;
+          }
+        `}
+      </style>
+      <div className="campaignStartedContainer">
+        <div className="imageContainer">
+          <img src="/static/images/check-mark-animated.gif" />
         </div>
-      ) : createCampaignSuccess ? (
-        <div style={{ textAlign: "center", marginTop: "45px" }}>
-          <h3>Campaign created successfully!</h3>
+        <div>
+          {createCampaignIsLoading ? (
+            <div style={{ textAlign: "center", marginTop: "45px" }}>
+              <h3>Creating your campaign</h3>
+              <div style={{ textAlign: "center" }}>
+                <CircularProgress />
+              </div>
+            </div>
+          ) : createCampaignSuccess ? (
+            <div style={{ textAlign: "center", marginTop: "45px" }}>
+              <h3>Campaign created successfully!</h3>
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", marginTop: "45px" }}>
+              <h3>{createCampaignErrorMsg}</h3>
+            </div>
+          )}
         </div>
-      ) : (
-        <div style={{ textAlign: "center", marginTop: "45px" }}>
-          <h3>{createCampaignErrorMsg}</h3>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
