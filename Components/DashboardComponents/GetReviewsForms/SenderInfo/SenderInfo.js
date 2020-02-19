@@ -90,9 +90,7 @@ class SenderInfoForm extends Component {
                 Reply-to Email is the address you’d like your customers to use
                 when replying to your email.{" "}
                 <span>
-                  <Link href="#">
-                    <a>Need more info?</a>
-                  </Link>
+                  <a href="#">Need more info?</a>
                 </span>
               </span>
               <p className="formText">
