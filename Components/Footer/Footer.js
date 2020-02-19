@@ -8,7 +8,7 @@ const renderFooterTopSection = () => {
       <style jsx>{footerStyles}</style>
       <div className="footerContainerInner">
         <div className="footerTopLogoContainer">
-          <div style={{ width: "176.04px"}}>
+          <div style={{ width: "176.04px" }}>
             <img
               src="/static/images/logo_footer.png"
               alt="trustsearchlogo"
@@ -20,18 +20,17 @@ const renderFooterTopSection = () => {
 
         <div className="footerTopSocialLinksContainer">
           <div className="footerTopSocialLink">
-            <Link href="https://www.facebook.com/CryptoPolicecom/">
-              <a target="_blank">
-                <i className="fa fa-facebook" />
-              </a>
-            </Link>
+            <a href="https://www.facebook.com/CryptoPolicecom/" target="_blank">
+              <i className="fa fa-facebook" />
+            </a>
           </div>
           <div className="footerTopSocialLink">
-            <Link href="https://www.linkedin.com/company/trustsearch/">
-              <a target="_blank">
-                <i className="fa fa-linkedin" />
-              </a>
-            </Link>
+            <a
+              href="https://www.linkedin.com/company/trustsearch/"
+              target="_blank"
+            >
+              <i className="fa fa-linkedin" />
+            </a>
           </div>
           {/* <div className="footerTopSocialLink">
             <a href="/">
@@ -51,14 +50,13 @@ const renderFooterTopSection = () => {
           </button>
         </div> */}
         <div className="footerTopLocalizationContainer">
-          <Link href="https://thetrustsearch.com/termsAndConditions">
-            <a
-              target="_blank"
-              style={{ color: "#fff", textDecoration: "none" }}
-            >
-              Terms and Conditions
-            </a>
-          </Link>
+          <a
+            href="https://thetrustsearch.com/termsAndConditions"
+            target="_blank"
+            style={{ color: "#fff", textDecoration: "none" }}
+          >
+            Terms and Conditions
+          </a>
         </div>
       </div>
     </div>
@@ -79,9 +77,12 @@ const renderFooterMiddleSection = () => {
                 </div>
                 <div className="footerMiddleSectionLinks">
                   <div>
-                    <Link href="https://thetrustsearch.com/registration#business">
-                      <a target="_blank">Claim your ownership</a>
-                    </Link>
+                    <a
+                      href="https://thetrustsearch.com/registration#business"
+                      target="_blank"
+                    >
+                      Claim your ownership
+                    </a>
                   </div>
                   {/* <div>
                   <a href="/">Engage your community</a>
@@ -90,9 +91,12 @@ const renderFooterMiddleSection = () => {
                   <a href="/">Receive alerts</a>
                 </div> */}
                   <div>
-                    <Link href="https://thetrustsearch.com/business">
-                      <a target="_blank">Plans &amp; Pricing</a>
-                    </Link>
+                    <a
+                      href="https://thetrustsearch.com/business"
+                      target="_blank"
+                    >
+                      Plans &amp; Pricing
+                    </a>
                   </div>
                 </div>
               </div>
@@ -106,9 +110,9 @@ const renderFooterMiddleSection = () => {
                 </div>
                 <div className="footerMiddleSectionLinks">
                   <div>
-                    <Link href="https://thetrustsearch.com">
-                      <a target="_blank">Check website reputation</a>
-                    </Link>
+                    <a href="https://thetrustsearch.com" target="_blank">
+                      Check website reputation
+                    </a>
                   </div>
                   {/* <div>
                   <a href="/">Get rewards</a>
@@ -129,9 +133,9 @@ const renderFooterMiddleSection = () => {
                 </div>
                 <div className="footerMiddleSectionLinks">
                   <div>
-                    <Link href="https://thetrustsearch.com/about">
-                      <a target="_blank">Contact</a>
-                    </Link>
+                    <a href="https://thetrustsearch.com/about" target="_blank">
+                      Contact
+                    </a>
                   </div>
                   <div>
                     <Link href="/termsAndConditions">

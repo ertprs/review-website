@@ -315,18 +315,20 @@ const Home = props => {
                   TrustSearch, Ltd
                 </div>
                 <div className="col-md-4 col-lg-4 col-xl-4 second">
-                  <NextLink href="tel:+37128632492">
-                    <a style={{ color: "#000", textDecoration: "none" }}>
-                      +371 28632492
-                    </a>
-                  </NextLink>
+                  <a
+                    href="tel:+37128632492"
+                    style={{ color: "#000", textDecoration: "none" }}
+                  >
+                    +371 28632492
+                  </a>
                 </div>
                 <div className="col-md-4 col-lg-4 col-xl-4 third">
-                  <NextLink href="mailto:info@thetrustsearch.com">
-                    <a style={{ color: "#000", textDecoration: "none" }}>
-                      info@thetrustsearch.com
-                    </a>
-                  </NextLink>
+                  <a
+                    href="mailto:info@thetrustsearch.com"
+                    style={{ color: "#000", textDecoration: "none" }}
+                  >
+                    info@thetrustsearch.com
+                  </a>
                 </div>
               </div>
             </div>
@@ -1230,18 +1232,22 @@ const Home = props => {
               <a className="mobileLink">About us</a>
             </MenuItem>
           </NextLink>
-          <NextLink href="https://b2b.thetrustsearch.com/en/">
-            <a target="_blank" className="mobileLink">
-              <MenuItem onClick={handleMobileMenuLeftClose}>Business</MenuItem>
-            </a>
-          </NextLink>
-          <NextLink href="https://thetrustsearch.com/termsAndConditions">
-            <a target="_blank" className="mobileLink">
-              <MenuItem onClick={handleMobileMenuLeftClose}>
-                Terms &amp; Conditions
-              </MenuItem>
-            </a>
-          </NextLink>
+          <a
+            href="https://b2b.thetrustsearch.com/en/"
+            target="_blank"
+            className="mobileLink"
+          >
+            <MenuItem onClick={handleMobileMenuLeftClose}>Business</MenuItem>
+          </a>
+          <a
+            href="https://thetrustsearch.com/termsAndConditions"
+            target="_blank"
+            className="mobileLink"
+          >
+            <MenuItem onClick={handleMobileMenuLeftClose}>
+              Terms &amp; Conditions
+            </MenuItem>
+          </a>
           <div>
             {!authorized || cookie.get("token") !== undefined ? (
               <>
@@ -1429,12 +1435,12 @@ const Home = props => {
       ) : null}
       {(loginType === 1 || loginType === 2) &&
       cookie.get("token") !== undefined ? (
-        <NextLink href="">
-          <MenuItem onClick={() => handleLogout()}>
-            <a>Logout</a>
-          </MenuItem>
-        </NextLink>
+        // <NextLink href="">
+        <MenuItem onClick={() => handleLogout()}>
+          <a>Logout</a>
+        </MenuItem>
       ) : (
+        // </NextLink>
         ""
       )}
       {loginType === 3 && cookie.get("token") !== undefined ? (
@@ -1442,11 +1448,11 @@ const Home = props => {
           clientId={process.env.GOOGLE_CLIENT_ID}
           buttonText="Logout"
           render={renderProps => (
-            <NextLink href="">
-              <MenuItem onClick={() => handleLogout()}>
-                <a>Logout</a>
-              </MenuItem>
-            </NextLink>
+            // <NextLink href="">
+            <MenuItem onClick={() => handleLogout()}>
+              <a>Logout</a>
+            </MenuItem>
+            // </NextLink>
           )}
           // onLogoutSuccess={logout}
         ></GoogleLogout>
@@ -1454,12 +1460,12 @@ const Home = props => {
         ""
       )}
       {loginType === 4 && cookie.get("token") !== undefined ? (
-        <NextLink href="">
-          <MenuItem onClick={() => handleLogout()}>
-            <a>Logout</a>
-          </MenuItem>
-        </NextLink>
+        // <NextLink href="">
+        <MenuItem onClick={() => handleLogout()}>
+          <a>Logout</a>
+        </MenuItem>
       ) : (
+        // </NextLink>
         ""
       )}
     </Menu>
@@ -1626,18 +1632,22 @@ const Home = props => {
             </NextLink>
           </div>
           <div className="hide-sm">
-            <NextLink href="https://b2b.thetrustsearch.com/en/">
-              <a className={classes.navLinkMobile} target="_blank">
-                Business
-              </a>
-            </NextLink>
+            <a
+              href="https://b2b.thetrustsearch.com/en/"
+              className={classes.navLinkMobile}
+              target="_blank"
+            >
+              Business
+            </a>
           </div>
           <div className="hide-sm">
-            <NextLink href="https://thetrustsearch.com/termsAndConditions">
-              <a className={classes.navLinkMobile} target="_blank">
-                Terms &amp; Conditions
-              </a>
-            </NextLink>
+            <a
+              href="https://thetrustsearch.com/termsAndConditions"
+              className={classes.navLinkMobile}
+              target="_blank"
+            >
+              Terms &amp; Conditions
+            </a>
           </div>
           {!authorized || cookie.get("token") === undefined ? (
             <>
