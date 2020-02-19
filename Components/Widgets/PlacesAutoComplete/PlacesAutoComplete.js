@@ -23,19 +23,15 @@ class PlacesAutoComplete extends Component {
     this.setState({ address });
   };
 
-  handleSelect = address => {
-    geocodeByAddress(address)
-      .then(results => {
-        if (Array.isArray(results) && !_isEmpty(results)) {
-          let reqBody = {
-            placeId: results[0].place_id,
-            address: results[0].formatted_address,
-            url: `https://search.google.com/local/writereview?placeid=${results[0].place_id}`
-          };
-          this.props.handleAddressSelect(reqBody);
-        }
-      })
-      .catch(error => console.error("Error", error));
+  handleSelect = (address, placeId) => {
+    if (address && placeId) {
+      let reqBody = {
+        placeId,
+        address,
+        url: `https://search.google.com/local/writereview?placeid=${placeId}`
+      };
+      this.props.handleAddressSelect(reqBody);
+    }
   };
 
   render() {
