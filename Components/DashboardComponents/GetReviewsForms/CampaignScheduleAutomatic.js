@@ -98,7 +98,7 @@ class CampaignScheduleAutomatic extends Component {
                     color="primary"
                     variant="contained"
                     size="small"
-                    startIcon={<CheckIcon />}
+                    startIcon={<ArrowLeft />}
                     onClick={this.props.handleBack}
                   >
                     Back
