@@ -41,9 +41,7 @@ class OverallPerformanceCard extends Component {
           `}</style>
           <SimpleCard style={{ height: "298px" }}>
             <div className="header">
-              <Title>
-                <h5>Overall performance</h5>
-              </Title>
+              <Title>Overall performance</Title>
             </div>
             <div className="body">
               <div className="bodyHeader">
