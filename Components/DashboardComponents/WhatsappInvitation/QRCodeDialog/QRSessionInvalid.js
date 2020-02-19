@@ -27,12 +27,12 @@ export default function QRSessionInvalid() {
       </style>
       <div className="campaignStartedContainer">
         <div>
-          <h4 className="redText">
+          <h4>
             Your session has expired! Please wait while we load new QR code for
             you
           </h4>
           <div className="textCenter mt_10">
-            <CircularProgress color="secondary" />
+            <CircularProgress color="primary" />
           </div>
         </div>
       </div>

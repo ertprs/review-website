@@ -479,9 +479,7 @@ class WhatsAppInvitation extends Component {
       this.startWhatsAppInvitation("", true);
     }
     //? this will hide whatsApp notification bar
-    if (_get(data, "value", false)) {
-      showWhatsAppNotificationBar(false);
-    }
+    showWhatsAppNotificationBar(false);
     this.setState({ activeEvent: data });
   };
 
