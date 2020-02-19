@@ -87,15 +87,13 @@ const renderStandAloneWidget = (requiredData, domain) => {
 
       <div>
         <div className="widgetImgContainer">
-          <Link href="https://thetrustsearch.com">
-            <a target="_blank">
-              <img
-                src="/static/business/index/images/gradientLogo.png"
-                alt="logo"
-                className="widgetImg"
-              />
-            </a>
-          </Link>
+          <a target="_blank" href="https://thetrustsearch.com">
+            <img
+              src="/static/business/index/images/gradientLogo.png"
+              alt="logo"
+              className="widgetImg"
+            />
+          </a>
         </div>
       </div>
     </div>
@@ -198,18 +196,16 @@ const renderCarouselVariant = (requiredData, textReviews, domain) => {
               : "carouselWidgetImgContainerV"
           }`}
         >
-          <Link href="https://thetrustsearch.com">
-            <a target="_blank">
-              <img
-                src="/static/business/index/images/gradientLogo.png"
-                alt="logo"
-                style={{
-                  maxWidth: "100%",
-                  height: "100%"
-                }}
-              />
-            </a>
-          </Link>
+          <a target="_blank" href="https://thetrustsearch.com">
+            <img
+              src="/static/business/index/images/gradientLogo.png"
+              alt="logo"
+              style={{
+                maxWidth: "100%",
+                height: "100%"
+              }}
+            />
+          </a>
         </div>
       </div>
     </div>

@@ -249,14 +249,13 @@ const renderReviewCard = (
           </div>
           <div className="productCardDetails">
             <div className="productCardTitle">
-              <Link href={`https://${title}`}>
-                <a
-                  style={{ color: "black", textDecoration: "none" }}
-                  target="_blank"
-                >
-                  <h4 style={{ textTransform: "lowercase" }}>{title}</h4>
-                </a>
-              </Link>
+              <a
+                href={`https://${title}`}
+                style={{ color: "black", textDecoration: "none" }}
+                target="_blank"
+              >
+                <h4 style={{ textTransform: "lowercase" }}>{title}</h4>
+              </a>
             </div>
             <div className="productSubTitle  profileHeaderText">
               <div style={{ ...subTitleStyles }}>{subTitle}</div>
