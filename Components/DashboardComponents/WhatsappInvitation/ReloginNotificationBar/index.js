@@ -153,10 +153,7 @@ class NotificationBar extends Component {
 
   //? We will receive this broadcast in both automatic and manual invitations but we are using this in automatic invitations only to make createCampaign API call. And in case of automatic this will be the last broadcast.
   dbSessionUpdated = data => {
-    const { showWhatsAppNotificationBar } = this.props;
-    this.setState({ activeEvent: data }, () => {
-      showWhatsAppNotificationBar(false);
-    });
+    this.setState({ activeEvent: data });
   };
 
   campaignFailed = data => {
