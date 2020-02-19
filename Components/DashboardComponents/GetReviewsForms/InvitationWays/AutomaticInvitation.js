@@ -420,11 +420,11 @@ class AutomaticInvitation extends Component {
           if (success && (formName === "WooCommerce" || formName === "BCC")) {
             sendToSelectPlatformSplit();
           }
+          if (success && formName !== "WooCommerce" && formName !== "BCC") {
+            this.setState({ showCredentialModal: true });
+          }
         }
       );
-      if (formName !== "WooCommerce" && formName !== "BCC") {
-        this.setState({ showCredentialModal: true });
-      }
     }
     if (selectedPlatform !== prevProps.selectedPlatform) {
     }
@@ -447,7 +447,8 @@ class AutomaticInvitation extends Component {
       navigateToCampaignManagement,
       isCampaignEditMode
     } = this.props;
-    const particularPlatformData = _get(availablePlatformsData, formName, {});
+    let shopName = (formName || "").replace("_", " ");
+    const particularPlatformData = _get(availablePlatformsData, shopName, {});
     const secretKey = _get(particularPlatformData, "secret_key", "");
     const systemIdentifier = _get(
       particularPlatformData,

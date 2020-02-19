@@ -441,11 +441,11 @@ class WhatsAppAutomaticInvitation extends Component {
           if (success && (formName === "WooCommerce" || formName === "BCC")) {
             this.props.handleNext();
           }
+          if (success && formName !== "WooCommerce" && formName !== "BCC") {
+            this.setState({ showCredentialModal: true });
+          }
         }
       );
-      if (formName !== "WooCommerce" && formName !== "BCC") {
-        this.setState({ showCredentialModal: true });
-      }
     }
     if (selectedPlatform !== prevProps.selectedPlatform) {
     }
@@ -469,7 +469,8 @@ class WhatsAppAutomaticInvitation extends Component {
       isCampaignEditMode,
       handleNext
     } = this.props;
-    const particularPlatformData = _get(availablePlatformsData, formName, {});
+    let shopName = (formName || "").replace("_", " ");
+    const particularPlatformData = _get(availablePlatformsData, shopName, {});
     const secretKey = _get(particularPlatformData, "secret_key", "");
     const systemIdentifier = _get(
       particularPlatformData,
@@ -638,7 +639,7 @@ const mapStateToProps = state => {
   const domainName = _get(auth, "logIn.userProfile.company.name", "");
   let availablePlatformsData = {};
 
-  //! we are looping over the array of integration/ecommerce and creating a object with they key(type in array) that matches with our form key in formdata state. So that we can prefill it.
+  //! we are looping over the array of integration/ecommerce and creating a object with the key(type in array) that matches with our form key in formdata state. So that we can prefill it.
 
   ecommerceIntegrations.map((data, index) => {
     let platformName = _get(data, "type", "");
