@@ -1563,6 +1563,8 @@ class GetReviews extends Component {
                   required: true
                 }
               }
+            }, () => {
+              this.props.setCampaignEditMode({}, false);
             });
           }}
         />
