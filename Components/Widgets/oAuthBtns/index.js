@@ -18,7 +18,7 @@ class OAuthButtons extends Component {
         reqBody = {
           provider: name,
           data: {
-            id_token: _get(response, "Zi.id_token", "")
+            id_token: _get(response, "tokenObj.id_token", "")
           }
         };
         signUp(reqBody, registerApiOAuth, signupType);
