@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
 import cookie from "js-cookie";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
@@ -8,6 +9,7 @@ import createReqBody from "../../../../utility/createReqBody";
 import _get from "lodash/get";
 import { getSchemaCodeDashboard } from "../../../../utility/config";
 import { isFormValid } from "../../../../utility/commonFunctions";
+import { updatedSchemaData } from "../../../../store/actions/authActions";
 class FetchSchemaCode extends Component {
   state = {
     schemaCodeData: {
@@ -20,6 +22,7 @@ class FetchSchemaCode extends Component {
 
   fetchData = async () => {
     this.setState({ schemaCodeData: { ...schemaCodeData, isLoading: true } });
+    const { updatedSchemaData } = this.props;
     const { schemaCodeData } = this.state;
     const { schemaFormData } = this.props;
     const reqBody = createReqBody(schemaFormData);
@@ -35,6 +38,8 @@ class FetchSchemaCode extends Component {
       });
       const success = _get(result, "data.success", false);
       const value = _get(result, "data.node", "");
+      const schema = _get(result, "data.schema", {});
+      updatedSchemaData(schema);
       this.setState(
         {
           schemaCodeData: {
@@ -145,4 +150,4 @@ class FetchSchemaCode extends Component {
   }
 }
 
-export default FetchSchemaCode;
+export default connect(null, { updatedSchemaData })(FetchSchemaCode);
