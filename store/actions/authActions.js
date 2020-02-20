@@ -36,7 +36,8 @@ import {
   GET_AVAILABLE_PLATFORMS_FAILURE,
   SET_IS_NEW_USER,
   SHOW_WHATSAPP_NOTIFICATION_BAR,
-  SET_QUOTA_DETAILS
+  SET_QUOTA_DETAILS,
+  UPDATED_SCHEMA_DATA_IN_AUTH
 } from "./actionTypes";
 import _get from "lodash/get";
 import {
@@ -777,5 +778,12 @@ export const setInvitationQuota = quotaDetails => {
   return {
     type: SET_QUOTA_DETAILS,
     quotaDetails: { ...quotaDetails }
+  };
+};
+
+export const updatedSchemaData = schemaObj => {
+  return {
+    type: UPDATED_SCHEMA_DATA_IN_AUTH,
+    schemaObj: { ...schemaObj }
   };
 };

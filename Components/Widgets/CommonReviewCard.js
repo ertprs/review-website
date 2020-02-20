@@ -101,15 +101,19 @@ const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
                 widgetSpacings="1px"
               />
               <p className="userName">{name || ""}</p>
-              {date ? (
-                <div>
+              <div>
+                {date ? (
                   <span className="mr-10">
                     {moment(date).format("DD/MM/YYYY")}
                   </span>
-                  <span className="mr-10">on</span>
-                  <span>{renderIcon(provider)}</span>
-                </div>
-              ) : null}
+                ) : null}
+                {provider ? (
+                  <>
+                    <span className="mr-10">on</span>
+                    <span>{renderIcon(provider)}</span>
+                  </>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>

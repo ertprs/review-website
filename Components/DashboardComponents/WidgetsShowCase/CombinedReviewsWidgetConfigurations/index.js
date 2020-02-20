@@ -31,7 +31,9 @@ class CombinedReviewsWidgetConfigurations extends Component {
       backgroundColorTogglerData,
       getSchemaCodeData,
       handleGetSchemaCodeDataChange,
-      handleSchemaCodeValueChange
+      handleSchemaCodeValueChange,
+      schemaFormData,
+      handleSchemaFormChange
     } = this.props;
     const hideDashboardParticularSettings = _get(
       this.props,
@@ -106,15 +108,17 @@ class CombinedReviewsWidgetConfigurations extends Component {
               </div>
             </div>
           )}
-          {/* <div className="row">
+          <div className="row">
             <div className="col-md-12">
               <GetSchemaCode
                 getSchemaCodeData={getSchemaCodeData}
                 handleChange={handleGetSchemaCodeDataChange}
                 handleSchemaCodeValueChange={handleSchemaCodeValueChange}
+                schemaFormData={schemaFormData || {}}
+                handleSchemaFormChange={handleSchemaFormChange}
               />
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     );

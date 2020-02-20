@@ -68,12 +68,19 @@ const QRCode = ({
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { dashboardData } = state;
-  let whatsAppManualInvitationInit = _get(dashboardData, "whatsAppManualInvitationInit", {});
-  let whatsAppManualInvitationCommit = _get(dashboardData, "whatsAppManualInvitationCommit", {});
+  const {
+    whatsAppManualInvitationInit,
+    whatsAppManualInvitationCommit,
+    whatsAppAutomaticInvitationInit,
+    whatsAppAutomaticInvitationCommit
+  } = state.dashboardData || {};
+
   const isLoading =
     _get(whatsAppManualInvitationInit, "isLoading", false) ||
-    _get(whatsAppManualInvitationCommit, "isLoading", false);
+    _get(whatsAppManualInvitationCommit, "isLoading", false) ||
+    _get(whatsAppAutomaticInvitationInit, "isLoading", false) ||
+    _get(whatsAppAutomaticInvitationCommit, "isLoading", false);
+
   return {
     isLoading
   };

@@ -6,7 +6,6 @@ import BackArrowIcon from "@material-ui/icons/ArrowBack";
 import Input from "@material-ui/core/Input/Input";
 import uuid from "uuid/v1";
 import { connect } from "react-redux";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Head from "next/head";
 import _get from "lodash/get";
 import _find from "lodash/find";
@@ -16,6 +15,7 @@ import CombinedReviewsWidgetConfigurations from "./CombinedReviewsWidgetConfigur
 import { newerThanMonthsOptions } from "../../../utility/constants/newerThanMonthsConstants";
 import { maxReviewsOptions } from "../../../utility/constants/maxReviewsConstants";
 import { ratingCountOptions } from "../../../utility/constants/ratingCountConstants";
+import validate from "../../../utility/validate";
 import { toggleWidgetPlatformVisibility } from "../../../store/actions/dashboardActions";
 import ShowInWidgetList from "./CombinedReviewsWidgetConfigurations/ShowInWidgetList/ShowInWidgetList";
 import PremiumBrandingToggle from "./CombinedReviewsWidgetConfigurations/PremiumBrandingToggle/PremiumBrandingToggle";
@@ -25,6 +25,11 @@ import GetSchemaCode from "./GetSchemaCode";
 class GetWidget extends Component {
   constructor(props) {
     super(props);
+    const name = _get(this.props, "schemaObj.name", "");
+    const profileUrl = _get(this.props, "schemaObj.profileUrl", "");
+    const imageUrl = _get(this.props, "schemaObj.imageUrl", "");
+    const address = _get(this.props, "schemaObj.address", "");
+
     this.state = {
       widgetHeight: this.props.widget.minHeight,
       refreshWidget: false,
@@ -65,6 +70,61 @@ class GetWidget extends Component {
           "Turn on the switch to get schema.org code also for your webpage",
         disabled: false,
         schemaCodeValue: ""
+      },
+      schemaFormData: {
+        name: {
+          element: "input",
+          name: "name",
+          labelText: "Enter name (required)*:",
+          type: "text",
+          value: name || "",
+          valid: name ? true : false,
+          touched: name ? true : false,
+          errorMessage: "Please enter name!",
+          placeholder: "Enter name",
+          validationRules: {
+            required: true
+          }
+        },
+        profileUrl: {
+          element: "input",
+          name: "profileUrl",
+          labelText: "Enter your profile url (required)*:",
+          type: "text",
+          value: profileUrl || "",
+          valid: profileUrl ? true : false,
+          touched: profileUrl ? true : false,
+          errorMessage: "Please enter your profile url!",
+          placeholder: "Enter your profile url",
+          validationRules: {
+            required: true
+          }
+        },
+        imageUrl: {
+          element: "input",
+          name: "imageUrl",
+          labelText: "Enter image url (required)*:",
+          type: "text",
+          value: imageUrl || "",
+          valid: imageUrl ? true : false,
+          touched: imageUrl ? true : false,
+          errorMessage: "Please enter a valid image url!",
+          placeholder: "Enter Review image url",
+          validationRules: {
+            required: true,
+            isDomain: true
+          }
+        },
+        address: {
+          element: "textarea",
+          name: "address",
+          labelText: "Enter your address:",
+          type: "text",
+          value: address || "",
+          valid: true,
+          touched: true,
+          placeholder: "Enter your address"
+        }
       }
     };
   }
@@ -520,7 +580,8 @@ class GetWidget extends Component {
       selectedRatingCount,
       premiumBrandingToggleData,
       backgroundColorTogglerData,
-      getSchemaCodeData
+      getSchemaCodeData,
+      schemaFormData
     } = this.state;
     const widgetId = _get(widget, "id", "");
     const schemaCodeValue = _get(getSchemaCodeData, "schemaCodeValue", "");
@@ -587,13 +648,15 @@ class GetWidget extends Component {
                         backgroundColorTogglerData={backgroundColorTogglerData}
                         handleChange={this.handleBackgroundColorTogglerChange}
                       />
-                      {/* <GetSchemaCode
+                      <GetSchemaCode
                         getSchemaCodeData={getSchemaCodeData}
                         handleChange={this.handleGetSchemaCodeToggle}
                         handleSchemaCodeValueChange={
                           this.handleSchemaCodeValueChange
                         }
-                      /> */}
+                        schemaFormData={schemaFormData || {}}
+                        handleSchemaFormChange={this.handleSchemaFormChange}
+                      />
                     </div>
                   </>
                 ) : (
@@ -631,6 +694,8 @@ class GetWidget extends Component {
                     handleSchemaCodeValueChange={
                       this.handleSchemaCodeValueChange
                     }
+                    schemaFormData={schemaFormData || {}}
+                    handleSchemaFormChange={this.handleSchemaFormChange}
                   />
                 )}
               </div>
@@ -658,7 +723,7 @@ class GetWidget extends Component {
                     <pre className="comment">{`<!-- Schema.org script -->`}</pre>
                     <div className="schemaOrgContainer">
                       <code className="blue">
-                        {`<script type="application/ld+json" data-business-unit-json-ld>${schemaCodeValue}</script>`}
+                        {`<script type="application/ld+json" data-business-unit-json-ld>${JSON.stringify(schemaCodeValue)}</script>`}
                       </code>
                     </div>
                     <pre className="comment">{`<!-- End Schema.org script -->`}</pre>
@@ -828,6 +893,22 @@ class GetWidget extends Component {
     );
   };
 
+  handleSchemaFormChange = e => {
+    const { name, value } = e.target;
+    const objData = _get(this.state, "schemaFormData", {});
+    this.setState({
+      schemaFormData: {
+        ...objData,
+        [name]: {
+          ..._get(objData, name, {}),
+          value,
+          touched: true,
+          valid: validate(value, objData[name].validationRules)
+        }
+      }
+    });
+  };
+
   render() {
     const { domainName, widget } = this.props;
     const widgetId = _get(widget, "id", "");
@@ -883,7 +964,12 @@ const mapStateToProps = state => {
     "auth.logIn.userProfile.subscription.plan_type_id",
     1
   );
-  return { reviews, socialArray, review_platforms, planTypeId };
+  const schemaObj = _get(
+    state,
+    "auth.logIn.userProfile.business_profile.integrations.schema",
+    {}
+  );
+  return { reviews, socialArray, review_platforms, planTypeId, schemaObj };
 };
 
 export default connect(mapStateToProps, { toggleWidgetPlatformVisibility })(
