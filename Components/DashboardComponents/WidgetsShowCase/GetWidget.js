@@ -723,7 +723,7 @@ class GetWidget extends Component {
                     <pre className="comment">{`<!-- Schema.org script -->`}</pre>
                     <div className="schemaOrgContainer">
                       <code className="blue">
-                        {`<script type="application/ld+json" data-business-unit-json-ld>${schemaCodeValue}</script>`}
+                        {`<script type="application/ld+json" data-business-unit-json-ld>${JSON.stringify(schemaCodeValue)}</script>`}
                       </code>
                     </div>
                     <pre className="comment">{`<!-- End Schema.org script -->`}</pre>

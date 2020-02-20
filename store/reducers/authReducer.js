@@ -38,7 +38,7 @@ import {
   SET_IS_NEW_USER,
   SHOW_WHATSAPP_NOTIFICATION_BAR,
   SET_QUOTA_DETAILS,
-  UPDATE_SCHEMA_DATA_IN_AUTH
+  UPDATED_SCHEMA_DATA_IN_AUTH
 } from "../actions/actionTypes";
 import _get from "lodash/get";
 import get from "lodash/get";
@@ -401,7 +401,7 @@ const authReducer = (state = {}, action) => {
         }
       };
     }
-    case UPDATE_SCHEMA_DATA_IN_AUTH:
+    case UPDATED_SCHEMA_DATA_IN_AUTH:
       return {
         ...state,
         type,
