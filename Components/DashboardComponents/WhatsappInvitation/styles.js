@@ -21,7 +21,7 @@ const styles = css`
     height: 300px;
     width: 300px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
   }
 

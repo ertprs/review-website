@@ -42,6 +42,7 @@ const GetSchemaCode = props => {
           {checked ? (
             <FetchSchemaCode
               handleSchemaCodeValueChange={handleSchemaCodeValueChange}
+              {...props}
             />
           ) : null}
         </div>

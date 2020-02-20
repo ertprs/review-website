@@ -137,9 +137,15 @@ const CreateTemplate = props => {
               ) : whatsAppPusherConnected ? (
                 // isSessionPresent: if session exists in db of that user
                 isSessionPresent ? (
-                  "Trying to login using existing session!"
+                  <>
+                    Trying to login using existing session!
+                    <CircularProgress size={25} color={"#fff"} />
+                  </>
                 ) : (
-                  "Loading QR code"
+                  <>
+                    Loading QR code
+                    <CircularProgress size={25} color={"#fff"} />
+                  </>
                 )
               ) : (
                 "Start Sending Invitations"

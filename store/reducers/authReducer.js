@@ -37,7 +37,8 @@ import {
   FETCH_CONFIGURED_REVIEW_PLATFORMS_SUCCESS,
   SET_IS_NEW_USER,
   SHOW_WHATSAPP_NOTIFICATION_BAR,
-  SET_QUOTA_DETAILS
+  SET_QUOTA_DETAILS,
+  UPDATE_SCHEMA_DATA_IN_AUTH
 } from "../actions/actionTypes";
 import _get from "lodash/get";
 import get from "lodash/get";
@@ -67,7 +68,8 @@ const authReducer = (state = {}, action) => {
     configuredPlatforms,
     isNewUser,
     showWhatsAppNotification,
-    quotaDetails
+    quotaDetails,
+    schemaObj
   } = action;
   switch (type) {
     case SIGNUP_INIT:
@@ -312,6 +314,7 @@ const authReducer = (state = {}, action) => {
     case UPDATE_AUTH_STATE_WITH_CONFIG_DETAILS: {
       return {
         ...state,
+        type,
         logIn: {
           ...state.logIn,
           userProfile: {
@@ -398,6 +401,28 @@ const authReducer = (state = {}, action) => {
         }
       };
     }
+    case UPDATE_SCHEMA_DATA_IN_AUTH:
+      return {
+        ...state,
+        type,
+        logIn: {
+          ..._get(state, "logIn", {}),
+          userProfile: {
+            ..._get(state, "logIn.userProfile", {}),
+            business_profile: {
+              ..._get(state, "logIn.userProfile.business_profile", {}),
+              integrations: {
+                ..._get(
+                  state,
+                  "logIn.userProfile.business_profile.integrations",
+                  {}
+                ),
+                schema: { ...schemaObj }
+              }
+            }
+          }
+        }
+      };
     case LOGOUT:
       state = undefined;
       return { type: type, payload: {} };
