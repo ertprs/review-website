@@ -191,8 +191,7 @@ class SendInvitations extends Component {
     const templateObj = emailTemplates[templateId] || {};
     const templateLang = _get(templateObj, "templateLanguage", "");
     const salutation = _get(templateObj, "salutation", "");
-    const exampleText = _get(templateObj, "exampleText", []);
-    const leaveReviewText = _get(templateObj, "leaveReviewText", "");
+    const message = _get(templateObj, "message", []);
     const regards = _get(templateObj, "regards", []);
     const footer = _get(templateObj, "footer", "");
     return (
@@ -269,35 +268,30 @@ class SendInvitations extends Component {
               </span>
             </p>
             <p>
-              {exampleText[0] !== undefined
-                ? formData.exampleText.value.length > 0
-                  ? formData.exampleText.value
-                  : exampleText[0] || ""
+              {message[0] !== undefined
+                ? formData.message.value.length > 0
+                  ? formData.message.value
+                  : message[0] || ""
                 : ""}{" "}
               <span className="bold">
-                {formData.exampleText.value.length > 0
+                {formData.message.value.length > 0
                   ? ""
                   : formData.entity.value !== ""
                   ? formData.entity.value + " "
                   : "entity domain "}
               </span>
-              {exampleText[1] !== undefined
-                ? formData.exampleText.value.length > 0 || ""
+              {message[1] !== undefined
+                ? formData.message.value.length > 0 || ""
                   ? ""
-                  : exampleText[1] || ""
+                  : message[1] || ""
                 : ""}
-            </p>
-            <p>
-              {formData.leaveReviewText.value.length > 0
-                ? formData.leaveReviewText.value
-                : leaveReviewText}
             </p>
             <p className="ratings">
               <StarRatings
                 rating={0}
                 starRatedColor="#21bc61"
-                starDimension="24px"
-                starSpacing="0.5px"
+                starDimension="42px"
+                starSpacing="0.8px"
                 numberOfStars={5}
                 name="rating"
               />

@@ -1,6 +1,8 @@
 import React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { connect } from "react-redux";
+import CheckSign from "@material-ui/icons/CloudDoneRounded";
+import ErrorSign from "@material-ui/icons/Error";
 import _get from "lodash/get";
 
 const CreateCampaign = props => {
@@ -17,40 +19,38 @@ const CreateCampaign = props => {
           .campaignStartedContainer {
             display: flex;
             width: 100%;
-            height: 100%;
+            height: 80vh;
             justify-content: center;
             align-items: center;
             flex-direction: column;
           }
-          .imageContainer {
-            max-width: 400px;
-            height: auto;
-          }
-          .imageContainer img {
-            max-width: 100%;
-            height: auto;
+          .centerText {
+            text-align: center;
           }
         `}
       </style>
       <div className="campaignStartedContainer">
-        <div className="imageContainer">
-          <img src="/static/images/check-mark-animated.gif" />
-        </div>
         <div>
           {createCampaignIsLoading ? (
-            <div style={{ textAlign: "center", marginTop: "45px" }}>
-              <h3>Creating your campaign</h3>
-              <div style={{ textAlign: "center" }}>
+            <div className="centerText">
+              <div className="centerText">
                 <CircularProgress />
               </div>
+              <h3>Creating your campaign</h3>
             </div>
           ) : createCampaignSuccess ? (
-            <div style={{ textAlign: "center", marginTop: "45px" }}>
-              <h3>Campaign created successfully!</h3>
+            <div className="centerText">
+              <CheckSign
+                style={{ height: "6em", width: "6em", color: "green" }}
+              />
+              <h1 style={{ color: "green" }}>Campaign created successfully!</h1>
             </div>
           ) : (
-            <div style={{ textAlign: "center", marginTop: "45px" }}>
-              <h3>{createCampaignErrorMsg}</h3>
+            <div className="centerText">
+              <ErrorSign
+                style={{ height: "6em", width: "6em", color: "red" }}
+              />
+              <h3 style={{ color: "red" }}>{createCampaignErrorMsg}</h3>
             </div>
           )}
         </div>
@@ -74,7 +74,7 @@ const mapStateToProps = state => {
   const createCampaignErrorMsg = _get(
     dashboardData,
     "whatsAppAutomaticCreateCampaign.errorMsg",
-    "Some error ocurred !"
+    "Some error ocurred! Please try again."
   );
   return {
     createCampaignIsLoading,

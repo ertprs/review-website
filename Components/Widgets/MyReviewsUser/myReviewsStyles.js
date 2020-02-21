@@ -30,9 +30,6 @@ export const reviewListStyles = css`
     text-align: center;
   }
 
-  .userName {
-  }
-
   .countryName {
     font-size: 14px;
   }
@@ -178,10 +175,6 @@ export const reviewListStyles = css`
   }
   .ratingContainer {
     margin-top: 10px;
-  }
-
-  .userName {
-    font-weight: bold;
   }
 
   .mr-10 {
