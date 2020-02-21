@@ -1850,8 +1850,8 @@ export const whatsAppAutomaticCreateCampaign = data => {
     } catch (error) {
       const errorMsg = _get(
         error,
-        "response.data.message",
-        "Some error ocurred !"
+        "response.data.error",
+        "Some error ocurred! Please try again."
       );
       dispatch({
         type: WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE,

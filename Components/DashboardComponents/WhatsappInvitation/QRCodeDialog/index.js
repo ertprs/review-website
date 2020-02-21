@@ -13,7 +13,7 @@ import QRCode from "./QRCode";
 import QRLoggedInMsg from "./QRLoggedInMsg";
 import CampaignStarted from "./CampaignStartedMsg";
 import CampaignFinished from "./CampaignFinishedMsg";
-import CreateCampaign from "./CreateCampaign";
+import CreateCampaign from "./CampaignCreatedMsg";
 import Relogin from "./Relogin";
 
 const useStyles = makeStyles(theme => ({
