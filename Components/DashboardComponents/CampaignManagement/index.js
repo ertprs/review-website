@@ -146,7 +146,7 @@ class CampaignManagement extends Component {
                 onClick={() => this.handleEditClick(rowData)}
                 //? disabled when if manual, if whatsApp or if has_custom_flow == true
                 disabled={
-                  is_automatic !== 1 || has_custom_flow || campaign_type === 2
+                  is_automatic === 0 || has_custom_flow || campaign_type === 2
                 }
               >
                 <EditIcon />

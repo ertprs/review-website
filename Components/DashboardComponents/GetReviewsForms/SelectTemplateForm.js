@@ -141,9 +141,6 @@ class SelectTemplateForm extends Component {
               }}
             />
           </div>
-          {/* {formData.subject.value !== ""
-                ? formData.subject.value + " "
-                : "Leave a review on Entity and get a gift!"} */}
         </div>
         <div className="templateContainer">
           <p>
@@ -156,12 +153,11 @@ class SelectTemplateForm extends Component {
           </p>
           <span>
             <FormField
-              {...formData["exampleText"]}
-              id="exampleText"
+              {...formData["message"]}
+              id="message"
               handleChange={e => {
-                this.props.handleChange(e, "exampleText", "selectTemplateData");
+                this.props.handleChange(e, "message", "selectTemplateData");
               }}
-              rows={2}
               parentStyles={{
                 display: "inline-block",
                 width: "91%",
@@ -173,55 +169,13 @@ class SelectTemplateForm extends Component {
                 lineHeight: "1.2"
               }}
             />
-            {/* {exampleText[0] !== undefined
-              ? formData.exampleText.value.length > 0
-                ? formData.exampleText.value
-                : exampleText[0] || ""
-              : ""}{" "}
-            <span className="bold">
-              {formData.exampleText.value.length > 0
-                ? ""
-                : formData.entity.value !== ""
-                ? formData.entity.value + " "
-                : "entity domain "}
-            </span>
-            {exampleText[1] !== undefined
-              ? formData.exampleText.value.length > 0 || ""
-                ? ""
-                : exampleText[1] || ""
-              : ""} */}
-          </span>
-          <span>
-            <FormField
-              {...formData["leaveReviewText"]}
-              id="leaveReviewText"
-              handleChange={e => {
-                this.props.handleChange(
-                  e,
-                  "leaveReviewText",
-                  "selectTemplateData"
-                );
-              }}
-              parentStyles={{
-                display: "inline-block",
-                width: "91%",
-                margin: "0px 10px",
-                padding: "0"
-              }}
-              styles={{
-                border: "1px dotted grey"
-              }}
-            />
-            {/* {formData.leaveReviewText.value.length > 0
-              ? formData.leaveReviewText.value
-              : leaveReviewText} */}
           </span>
           <p className="ratings">
             <StarRatings
               rating={0}
               starRatedColor="#21bc61"
-              starDimension="24px"
-              starSpacing="0.5px"
+              starDimension="42px"
+              starSpacing="0.8px"
               numberOfStars={5}
               name="rating"
             />

@@ -278,40 +278,35 @@ class GetReviews extends Component {
             required: true
           }
         },
-        exampleText: {
-          labelText: "Example Text",
+        message: {
+          labelText: "Message",
           element: "textarea",
-          value: get(
-            this.props,
-            "selectedCampaignData.campaign_structure.template_vars.exampleText",
-            " "
-          ),
+          //? exampleText and leaveReviewText is to support old campaigns
+          value:
+            get(
+              this.props,
+              "selectedCampaignData.campaign_structure.template_vars.exampleText",
+              ""
+            ) +
+            get(
+              this.props,
+              "selectedCampaignData.campaign_structure.template_vars.leaveReviewText",
+              ""
+            ) +
+            get(
+              this.props,
+              "selectedCampaignData.campaign_structure.template_vars.message",
+              " "
+            ),
           valid: true,
-          touched: false,
+          touched: true,
           // errorMessage: "Required",
-          placeholder: "Enter template body",
+          placeholder: "Enter message",
           validationRules: {
             required: true
           },
           name: "textbox",
           rows: "5"
-        },
-        leaveReviewText: {
-          labelText: "Leave review text",
-          element: "input",
-          type: "text",
-          value: get(
-            this.props,
-            "selectedCampaignData.campaign_structure.template_vars.leaveReviewText",
-            " "
-          ),
-          valid: true,
-          touched: false,
-          // errorMessage: "Required",
-          placeholder: "Enter leave review text",
-          validationRules: {
-            required: true
-          }
         }
       },
       copyPasteFormData: {
@@ -743,8 +738,7 @@ class GetReviews extends Component {
     const senderEmail = get(campaign, "senderEmail.value", "");
     const clientName = get(selectTemplateData, "clientName.value", "");
     const Entity = get(selectTemplateData, "entity.value", "");
-    const exampleText = get(selectTemplateData, "exampleText.value");
-    const leaveReviewText = get(selectTemplateData, "leaveReviewText.value");
+    const message = get(selectTemplateData, "message.value");
     const percentageSplit = this.generatePercentageSplitData();
     const selectedDate = get(campaignSchedule, "selectedDate", "");
     const formattedDate = get(campaignSchedule, "formattedDate", "");
@@ -785,8 +779,7 @@ class GetReviews extends Component {
         vars: {
           clientName,
           Entity,
-          exampleText,
-          leaveReviewText,
+          message,
           subject
         }
       }
@@ -905,19 +898,11 @@ class GetReviews extends Component {
           this.setState({
             selectTemplateData: {
               ...this.state.selectTemplateData,
-              exampleText: {
-                ...this.state.selectTemplateData.exampleText,
+              message: {
+                ...this.state.selectTemplateData.message,
                 value: getEmailTemplateData(
                   get(this.state, "createCampaign.campaignLanguage.value", ""),
-                  "exampleText",
-                  get(this.props, "companyName", "")
-                )
-              },
-              leaveReviewText: {
-                ...get(this.state, "selectTemplateData.leaveReviewText", ""),
-                value: getEmailTemplateData(
-                  get(this.state, "createCampaign.campaignLanguage.value", ""),
-                  "leaveReviewText",
+                  "message",
                   get(this.props, "companyName", "")
                 )
               },
@@ -1330,242 +1315,232 @@ class GetReviews extends Component {
           changeStepToRender={this.props.changeStepToRender}
           scrollToTopOfThePage={this.props.scrollToTopOfThePage}
           handleInviteMoreClick={() => {
-            this.setState({
-              activeStep: 0,
-              getReviewsActiveSubStep: -2,
-              tableData: [],
-              addInvitesData: {
-                email: {
-                  element: "input",
-                  type: "email",
-                  value: "",
-                  valid: false,
-                  touched: false,
-                  errorMessage: "Enter valid email address",
-                  placeholder: "Enter customer email",
-                  validationRules: {
-                    required: true,
-                    isEmail: true
+            this.setState(
+              {
+                activeStep: 0,
+                getReviewsActiveSubStep: -2,
+                tableData: [],
+                addInvitesData: {
+                  email: {
+                    element: "input",
+                    type: "email",
+                    value: "",
+                    valid: false,
+                    touched: false,
+                    errorMessage: "Enter valid email address",
+                    placeholder: "Enter customer email",
+                    validationRules: {
+                      required: true,
+                      isEmail: true
+                    },
+                    label: "Email"
                   },
-                  label: "Email"
-                },
-                name: {
-                  element: "input",
-                  type: "text",
-                  value: "",
-                  valid: false,
-                  touched: false,
-                  errorMessage: "Enter valid name",
-                  placeholder: "Enter customer name",
-                  validationRules: {
-                    required: true
+                  name: {
+                    element: "input",
+                    type: "text",
+                    value: "",
+                    valid: false,
+                    touched: false,
+                    errorMessage: "Enter valid name",
+                    placeholder: "Enter customer name",
+                    validationRules: {
+                      required: true
+                    },
+                    label: "Customer name"
                   },
-                  label: "Customer name"
-                },
-                referenceNumber: {
-                  element: "input",
-                  type: "text",
-                  value: "",
-                  valid: true,
-                  touched: false,
-                  errorMessage: "Enter valid data",
-                  placeholder: "Enter reference number",
-                  validationRules: {
-                    required: false
-                  },
-                  label: "Reference number"
-                }
-              },
-              selectTemplateData: {
-                subject: {
-                  element: "input",
-                  labelText: "Subject",
-                  type: "text",
-                  value: "Leave a review on Entity ",
-                  valid: true,
-                  touched: true,
-                  errorMessage: "Enter valid subject",
-                  placeholder: "",
-                  validationRules: {
-                    required: true
+                  referenceNumber: {
+                    element: "input",
+                    type: "text",
+                    value: "",
+                    valid: true,
+                    touched: false,
+                    errorMessage: "Enter valid data",
+                    placeholder: "Enter reference number",
+                    validationRules: {
+                      required: false
+                    },
+                    label: "Reference number"
                   }
                 },
-                clientName: {
-                  element: "input",
-                  type: "text",
-                  labelText: "Client Name",
-                  value: "Name",
-                  valid: true,
-                  touched: true,
-                  errorMessage: "Enter valid name",
-                  placeholder: "Enter client name",
-                  validationRules: {
-                    required: true
-                  }
-                },
-                entity: {
-                  element: "input",
-                  type: "text",
-                  labelText: "Entity",
-                  value: this.props.companyName + " " || " ",
-                  valid: true,
-                  touched: false,
-                  errorMessage: "Required",
-                  placeholder: "Enter entity domain",
-                  validationRules: {
-                    required: true
-                  }
-                },
-                exampleText: {
-                  labelText: "Example Text",
-                  element: "textarea",
-                  value: "",
-                  valid: true,
-                  touched: false,
-                  errorMessage: "Required",
-                  placeholder: "some text",
-                  validationRules: {
-                    required: true
-                  },
-                  name: "textbox",
-                  rows: "5"
-                },
-                leaveReviewText: {
-                  labelText: "Leave review text",
-                  element: "input",
-                  type: "text",
-                  value: "",
-                  valid: true,
-                  touched: false,
-                  errorMessage: "Required",
-                  placeholder: "Please leave a review here",
-                  validationRules: {
-                    required: true
-                  }
-                }
-              },
-              copyPasteFormData: {
-                textbox: {
-                  element: "textarea",
-                  readOnly: false,
-                  value: "",
-                  valid: false,
-                  touched: false,
-                  errorMessage: "Enter valid records",
-                  placeholder: "example@gmail.com, Peter Jones, 1234567890",
-                  validationRules: {
-                    required: true
-                  },
-                  rows: 10,
-                  cols: 10,
-                  name: "textbox"
-                },
-                parseErrors: []
-              },
-              uploadCSVFormData: {
-                csvFile: {
-                  filename: "",
-                  size: 0,
-                  uploadProgress: 0
-                },
-                parseErrors: []
-              },
-              createCampaign: {
-                campaignName: {
-                  element: "input",
-                  value: "",
-                  placeholder: "Enter campaign name",
-                  errorMessage: "",
-                  valid: false,
-                  touched: false,
-                  validationRules: {
-                    required: true,
-                    minLength: 4
-                  },
-                  name: "campaignName"
-                },
-                campaignLanguage: {
-                  element: "select",
-                  value: "",
-                  options: get(this.props, "campaignLanguage", [
-                    {
-                      name: "English",
-                      value: "d-be60fd9faf074996b23625429aa1dffd"
+                selectTemplateData: {
+                  subject: {
+                    element: "input",
+                    labelText: "Subject",
+                    type: "text",
+                    value: "Leave a review on Entity ",
+                    valid: true,
+                    touched: true,
+                    errorMessage: "Enter valid subject",
+                    placeholder: "",
+                    validationRules: {
+                      required: true
                     }
-                  ]),
-                  placeholder: "Select your campaign language",
-                  errorMessage: "",
-                  valid: false,
-                  touched: false,
-                  validationRules: {
-                    required: true
                   },
-                  name: "campaignLanguage"
-                },
-                senderName: {
-                  element: "input",
-                  value: "",
-                  placeholder: "Enter sender's name",
-                  errorMessage: "",
-                  valid: false,
-                  touched: false,
-                  validationRules: {
-                    required: true,
-                    minLength: 5
+                  clientName: {
+                    element: "input",
+                    type: "text",
+                    labelText: "Client Name",
+                    value: "Name",
+                    valid: true,
+                    touched: true,
+                    errorMessage: "Enter valid name",
+                    placeholder: "Enter client name",
+                    validationRules: {
+                      required: true
+                    }
+                  },
+                  entity: {
+                    element: "input",
+                    type: "text",
+                    labelText: "Entity",
+                    value: this.props.companyName + " " || " ",
+                    valid: true,
+                    touched: false,
+                    errorMessage: "Required",
+                    placeholder: "Enter entity domain",
+                    validationRules: {
+                      required: true
+                    }
+                  },
+                  message: {
+                    labelText: "Enter message",
+                    element: "textarea",
+                    value: "",
+                    valid: true,
+                    touched: false,
+                    errorMessage: "Required",
+                    placeholder: "Enter message",
+                    validationRules: {
+                      required: true
+                    },
+                    name: "textbox",
+                    rows: "5"
                   }
                 },
-                senderEmail: {
-                  element: "input",
-                  value: "noreply@thetrustsearch.com",
-                  placeholder: "Enter sender's email",
-                  errorMessage: "",
-                  valid: true,
-                  touched: true,
-                  validationRules: {
-                    required: true,
-                    isEmail: true
+                copyPasteFormData: {
+                  textbox: {
+                    element: "textarea",
+                    readOnly: false,
+                    value: "",
+                    valid: false,
+                    touched: false,
+                    errorMessage: "Enter valid records",
+                    placeholder: "example@gmail.com, Peter Jones, 1234567890",
+                    validationRules: {
+                      required: true
+                    },
+                    rows: 10,
+                    cols: 10,
+                    name: "textbox"
                   },
-                  name: "senderEmail"
+                  parseErrors: []
                 },
-                campaignInvitationMethod: {
-                  valid: false,
+                uploadCSVFormData: {
+                  csvFile: {
+                    filename: "",
+                    size: 0,
+                    uploadProgress: 0
+                  },
+                  parseErrors: []
+                },
+                createCampaign: {
+                  campaignName: {
+                    element: "input",
+                    value: "",
+                    placeholder: "Enter campaign name",
+                    errorMessage: "",
+                    valid: false,
+                    touched: false,
+                    validationRules: {
+                      required: true,
+                      minLength: 4
+                    },
+                    name: "campaignName"
+                  },
+                  campaignLanguage: {
+                    element: "select",
+                    value: "",
+                    options: get(this.props, "campaignLanguage", [
+                      {
+                        name: "English",
+                        value: "d-be60fd9faf074996b23625429aa1dffd"
+                      }
+                    ]),
+                    placeholder: "Select your campaign language",
+                    errorMessage: "",
+                    valid: false,
+                    touched: false,
+                    validationRules: {
+                      required: true
+                    },
+                    name: "campaignLanguage"
+                  },
+                  senderName: {
+                    element: "input",
+                    value: "",
+                    placeholder: "Enter sender's name",
+                    errorMessage: "",
+                    valid: false,
+                    touched: false,
+                    validationRules: {
+                      required: true,
+                      minLength: 5
+                    }
+                  },
+                  senderEmail: {
+                    element: "input",
+                    value: "noreply@thetrustsearch.com",
+                    placeholder: "Enter sender's email",
+                    errorMessage: "",
+                    valid: true,
+                    touched: true,
+                    validationRules: {
+                      required: true,
+                      isEmail: true
+                    },
+                    name: "senderEmail"
+                  },
+                  campaignInvitationMethod: {
+                    valid: false,
+                    value: "",
+                    validationRules: {
+                      required: true
+                    }
+                  }
+                  // replyToEmail: {
+                  //   element: "select",
+                  //   value: "",
+                  //   placeholder: "email@gmail.com",
+                  //   errorMessage: "",
+                  //   options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
+                  //   valid: true,
+                  //   touched: false,
+                  //   validationRules: {
+                  //     required: false
+                  //     // isEmail: true
+                  //   }
+                  // }
+                },
+                campaignSchedule: {
+                  selectedDate: null,
+                  formattedDate: "",
+                  isValid: false,
+                  touched: false,
+                  errorMessage:
+                    "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
+                },
+                campaignScheduleAutomatic: {
                   value: "",
+                  valid: false,
                   validationRules: {
                     required: true
                   }
                 }
-                // replyToEmail: {
-                //   element: "select",
-                //   value: "",
-                //   placeholder: "email@gmail.com",
-                //   errorMessage: "",
-                //   options: [{ name: "arturs@gmail.com", value: "arturs@gmail.com" }],
-                //   valid: true,
-                //   touched: false,
-                //   validationRules: {
-                //     required: false
-                //     // isEmail: true
-                //   }
-                // }
               },
-              campaignSchedule: {
-                selectedDate: null,
-                formattedDate: "",
-                isValid: false,
-                touched: false,
-                errorMessage:
-                  "Scheduled time must be atleast 15 minutes or more from now (current time - in 24hrs format), if you want to send campaigns immediately, please choose the first option."
-              },
-              campaignScheduleAutomatic: {
-                value: "",
-                valid: false,
-                validationRules: {
-                  required: true
-                }
+              () => {
+                this.props.setCampaignEditMode({}, false);
               }
-            }, () => {
-              this.props.setCampaignEditMode({}, false);
-            });
+            );
           }}
         />
       );
