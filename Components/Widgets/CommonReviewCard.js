@@ -93,14 +93,31 @@ const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
               />
             </div>
             <div className="col-md-8 ratingContainer">
-              <RatingIndicators
-                rating={Number(rating) || 0}
-                typeOfWidget="star"
-                widgetRatedColors={ratingColor[Math.round(Number(rating)) || 0]}
-                widgetDimensions="21px"
-                widgetSpacings="1px"
-              />
-              <p className="userName">{name || ""}</p>
+              {rating === true ? (
+                <>
+                  <p className="userName">
+                    <span style={{ fontWeight: "bold" }}>{name || ""}</span>{" "}
+                    <span> recommends</span>.
+                  </p>
+                </>
+              ) : rating === false ? (
+                <>
+                  <p className="userName">{name || ""}</p> doesn't recommend.
+                </>
+              ) : (
+                <>
+                  <RatingIndicators
+                    rating={Number(rating) || 0}
+                    typeOfWidget="star"
+                    widgetRatedColors={
+                      ratingColor[Math.round(Number(rating)) || 0]
+                    }
+                    widgetDimensions="21px"
+                    widgetSpacings="1px"
+                  />
+                  <p className="userName">{name || ""}</p>
+                </>
+              )}
               <div>
                 {date ? (
                   <span className="mr-10">
