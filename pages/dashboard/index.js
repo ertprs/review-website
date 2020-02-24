@@ -235,7 +235,7 @@ class Dashboard extends Component {
       name: "getReviews",
       componentToRender: (
         <GetReviews
-          navigateToCampaignManagement={() => this.handleMenuItemClicked(5)}
+          navigateToCampaignManagement={() => this.handleMenuItemClicked(6)}
           changeStepToRender={this.changeStepToRender}
           scrollToTopOfThePage={this.scrollToTopOfThePage}
         />
