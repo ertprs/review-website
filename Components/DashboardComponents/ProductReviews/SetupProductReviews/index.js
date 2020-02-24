@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import AvailableProductPlatforms from "./AvailableProductPlatforms";
 class SetupProductReviews extends Component {
   render() {
     //render the component <AvailableProductPlatforms />
-    return <div></div>;
+    return <div> Set up product here and fuck off</div>;
   }
 }
 
