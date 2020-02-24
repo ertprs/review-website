@@ -1,8 +1,9 @@
 import React from "react";
 import styles from "./styles";
-import { renderFormFields } from "../../../../utility/commonFunctions";
+import FormField from "../../../Widgets/FormField/FormField";
+import _get from "lodash/get";
 
-const PlatformCard = ({ formData, handleFormDataChange }) => {
+const PlatformCard = ({ formData, handleURLChange, id }) => {
   return (
     <div className="row">
       <style jsx>{styles}</style>
@@ -14,7 +15,12 @@ const PlatformCard = ({ formData, handleFormDataChange }) => {
         </div>
       </div>
       <div className="col-md-8">
-        {renderFormFields(formData, handleFormDataChange)}
+        <FormField
+          {..._get(formData, "url", {})}
+          handleChange={e => {
+            handleURLChange(e, id, _get(formData, "id", ""));
+          }}
+        />
       </div>
     </div>
   );

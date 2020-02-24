@@ -1,4 +1,4 @@
-import css from "styled-jsx";
+import css from "styled-jsx/css";
 
 export default css`
   /* ---- Logo styles ----*/
