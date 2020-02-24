@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import _now from "lodash/now";
 import { connect } from "react-redux";
 import SetUpProductCard from "./SetUpProductCard";
-import uuid from "uuid/v1";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
 import validate from "../../../../utility/validate";
+import Button from "@material-ui/core/Button";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import Zoom from "@material-ui/core/Zoom";
 
 class SetupProductReviews extends Component {
   state = {
@@ -136,15 +138,28 @@ class SetupProductReviews extends Component {
       <>
         {(data || []).map(formData => {
           return (
-            <SetUpProductCard
-              formData={formData}
-              key={_get(formData, "id", "")}
-              handleProductNameChange={this.handleProductNameChange}
-              handleURLChange={this.handleURLChange}
-            />
+            <Zoom in={true}>
+              <div
+                style={{ margin: "15px 0 15px 0" }}
+                key={_get(formData, "id", "")}
+              >
+                <SetUpProductCard
+                  formData={formData}
+                  handleProductNameChange={this.handleProductNameChange}
+                  handleURLChange={this.handleURLChange}
+                />
+              </div>
+            </Zoom>
           );
         })}
-        <button onClick={this.addProduct}>Add Product</button>
+        <Button
+          onClick={this.addProduct}
+          color="primary"
+          variant="contained"
+          startIcon={<AddCircleOutlineIcon />}
+        >
+          Add More Products
+        </Button>
       </>
     );
   }

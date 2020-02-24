@@ -18,16 +18,19 @@ function SetUpProductCard({
           handleProductNameChange(e, _get(formData, "id", ""));
         }}
       />
-
-      {platformURLs.map(platform => {
-        return (
-          <PlatformCard
-            id={_get(formData, "id", "")}
-            formData={platform || {}}
-            handleURLChange={handleURLChange}
-          />
-        );
-      })}
+      <div className="row">
+        {platformURLs.map(platform => {
+          return (
+            <div className="col-md-4">
+              <PlatformCard
+                id={_get(formData, "id", "")}
+                formData={platform || {}}
+                handleURLChange={handleURLChange}
+              />
+            </div>
+          );
+        })}
+      </div>
     </Card>
   );
 }

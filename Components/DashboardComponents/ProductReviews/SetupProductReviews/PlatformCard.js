@@ -7,14 +7,14 @@ const PlatformCard = ({ formData, handleURLChange, id }) => {
   return (
     <div className="row">
       <style jsx>{styles}</style>
-      <div className="col-md-4">
+      <div className="col-md-2">
         <div className="logoFlex">
           <div className="logoContainer">
             <img src="/static/images/googleIcon.png" alt="google icon" />
           </div>
         </div>
       </div>
-      <div className="col-md-8">
+      <div className="col-md-10">
         <FormField
           {..._get(formData, "url", {})}
           handleChange={e => {

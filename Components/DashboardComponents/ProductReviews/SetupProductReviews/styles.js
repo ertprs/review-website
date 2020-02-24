@@ -2,18 +2,11 @@ import css from "styled-jsx/css";
 
 export default css`
   /* ---- Logo styles ----*/
-  .logoFlex {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-  }
   .logoContainer {
-    height: 50px;
-    width: 50px;
+    height: 30px;
+    width: 30px;
     text-align: center;
-    margin: 0 auto;
+    margin: 2px auto 0 auto;
   }
   .logoContainer img {
     max-width: 100%;
