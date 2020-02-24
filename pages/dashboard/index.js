@@ -71,6 +71,17 @@ const Reviews = dynamic(
     )
   }
 );
+
+const ProductReviews = dynamic(
+  () => import("../../Components/DashboardComponents/ProductReviews"),
+  {
+    loading: () => (
+      <div className="dynamicImport">
+        <p>Loading.....</p>
+      </div>
+    )
+  }
+);
 const InvitationHistory = dynamic(
   () => import("../../Components/DashboardComponents/InvitationHistory"),
   {
@@ -202,6 +213,7 @@ class Dashboard extends Component {
         />
       )
     },
+
     2: {
       name: "reviews",
       componentToRender: (
@@ -211,7 +223,15 @@ class Dashboard extends Component {
         />
       )
     },
+
     3: {
+      name: "productReviews",
+      componentToRender: (
+        <ProductReviews scrollToTopOfThePage={this.scrollToTopOfThePage} />
+      )
+    },
+
+    4: {
       name: "getReviews",
       componentToRender: (
         <GetReviews
@@ -221,13 +241,13 @@ class Dashboard extends Component {
         />
       )
     },
-    4: {
+    5: {
       name: "whatsAppInvitation",
       componentToRender: (
         <WhatsAppInvitation scrollToTopOfThePage={this.scrollToTopOfThePage} />
       )
     },
-    5: {
+    6: {
       name: "campaignManagement",
       componentToRender: (
         <CampaignManagement
@@ -236,26 +256,26 @@ class Dashboard extends Component {
         />
       )
     },
-    6: {
+    7: {
       name: "invitationHistory",
       componentToRender: (
         <InvitationHistory scrollToTopOfThePage={this.scrollToTopOfThePage} />
       )
     },
-    7: {
+    8: {
       name: "widgets",
       componentToRender: (
         <WidgetsShowCase scrollToTopOfThePage={this.scrollToTopOfThePage} />
       )
     },
-    8: {
+    9: {
       name: "reviewUrl",
       componentToRender: (
         <ReviewUrl scrollToTopOfThePage={this.scrollToTopOfThePage} />
       )
     },
 
-    9: {
+    10: {
       name: "userProfile",
       componentToRender: (
         <UserProfile scrollToTopOfThePage={this.scrollToTopOfThePage} />

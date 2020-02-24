@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import SetupProductReviews from "./SetupProductReviews";
+import ShowProductReviews from "./ShowProductReviews";
 
 // state transition diagram for this component :
 // ProductReviews =>  Already configured  => yes => SetupProductReviews
@@ -6,7 +8,11 @@ import React, { Component } from "react";
 
 class ProductReviews extends Component {
   render() {
-    return <div></div>;
+    return (
+      <div>
+        <ShowProductReviews />
+      </div>
+    );
   }
 }
 
