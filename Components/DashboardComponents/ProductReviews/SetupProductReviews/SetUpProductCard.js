@@ -12,12 +12,14 @@ function SetUpProductCard({
   const platformURLs = _get(formData, "platformURLs", {});
   return (
     <Card>
-      <FormField
-        {..._get(formData, "productName", {})}
-        handleChange={e => {
-          handleProductNameChange(e, _get(formData, "id", ""));
-        }}
-      />
+      <div style={{ marginBottom: "10px" }}>
+        <FormField
+          {..._get(formData, "productName", {})}
+          handleChange={e => {
+            handleProductNameChange(e, _get(formData, "id", ""));
+          }}
+        />
+      </div>
       <div className="row">
         {platformURLs.map(platform => {
           return (

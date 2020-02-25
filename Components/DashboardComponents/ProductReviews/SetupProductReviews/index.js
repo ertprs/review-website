@@ -8,7 +8,9 @@ import _findIndex from "lodash/findIndex";
 import validate from "../../../../utility/validate";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import ArrowRight from "@material-ui/icons/ArrowRight";
 import Zoom from "@material-ui/core/Zoom";
+import { isValidArray } from "../../../../utility/commonFunctions";
 
 class SetupProductReviews extends Component {
   state = {
@@ -100,6 +102,53 @@ class SetupProductReviews extends Component {
     this.setState({ data: [...updatedData] });
   };
 
+  //? Handle submission of products
+
+  handleSaveBtnClick = () => {
+    const data = _get(this.state, "data", []);
+    let reqBody = [];
+    if (isValidArray(data)) {
+      data.forEach(product => {
+        let productId = _get(product, "id", "");
+        let validProductName = _get(product, "productName.valid", "");
+        let productName = _get(product, "productName.value", "");
+        let platformsArray = _get(product, "platformURLs", []);
+        let validPlatformsArray =
+          this.getValidPlatformsWithURLs(platformsArray) || [];
+        //if valid productName && at least one platform URL is added push into request Body
+        if (validProductName && validPlatformsArray.length > 0) {
+          reqBody = [
+            ...reqBody,
+            { name: productName, platforms: [...validPlatformsArray] }
+          ];
+        }
+      });
+    }
+
+    if (isValidArray(reqBody)) {
+      console.log(reqBody);
+    }
+  };
+
+  //?Utility function to return platforms having URLs for a particular product
+  getValidPlatformsWithURLs = platformsArray => {
+    let validPlatformsArray = [];
+    if (isValidArray(platformsArray)) {
+      platformsArray.forEach(platform => {
+        let validPlatformURL = _get(platform, "url.valid", false);
+        if (validPlatformURL) {
+          let platformId = _get(platform, "id", "");
+          let platformURL = _get(platform, "url.value", "");
+          validPlatformsArray = [
+            ...validPlatformsArray,
+            { platform: platformId, url: platformURL }
+          ];
+        }
+      });
+    }
+    return validPlatformsArray;
+  };
+
   handleURLChange = (e, id, platformId) => {
     const value = _get(e, "target.value", {});
     const { data } = this.state;
@@ -152,14 +201,31 @@ class SetupProductReviews extends Component {
             </Zoom>
           );
         })}
-        <Button
-          onClick={this.addProduct}
-          color="primary"
-          variant="contained"
-          startIcon={<AddCircleOutlineIcon />}
-        >
-          Add More Products
-        </Button>
+        <div className="row">
+          <div className="col-md-6">
+            <Button
+              onClick={this.addProduct}
+              color="primary"
+              size="medium"
+              startIcon={<AddCircleOutlineIcon />}
+            >
+              Add More Products
+            </Button>
+          </div>
+          <div className="col-md-6">
+            <div style={{ textAlign: "right" }}>
+              <Button
+                onClick={this.handleSaveBtnClick}
+                color="primary"
+                variant="contained"
+                size="medium"
+                endIcon={<ArrowRight />}
+              >
+                Save and continue
+              </Button>
+            </div>
+          </div>
+        </div>
       </>
     );
   }
@@ -172,7 +238,7 @@ const mapStateToProps = state => {
       { id: 2, name: "Yandex" },
       { id: 3, name: "Walmart" },
       { id: 4, name: "Google Shopping" },
-      { id: 5, name: "Ideona" }
+      { id: 5, name: "Idealo" }
     ]
   };
 };
