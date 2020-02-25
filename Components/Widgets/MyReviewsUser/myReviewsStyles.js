@@ -12,6 +12,10 @@ export const reviewListStyles = css`
     display: flex;
   }
 
+  .displayBlock {
+    display: block;
+  }
+
   .displayFlex img {
     height: auto;
     width: 20%;
