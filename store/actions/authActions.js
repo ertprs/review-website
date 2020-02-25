@@ -43,9 +43,9 @@ import _get from "lodash/get";
 import {
   loginApiOAuth,
   getAvailablePlatformsApi,
-  resendActivationLinkApi
+  resendActivationLinkApi,
+  loginApi
 } from "../../utility/config";
-import { loginApi } from "../../utility/config";
 import axios from "axios";
 import {
   fetchCampaignLanguage,
@@ -446,7 +446,7 @@ export const businessSignUp = (signupData, api) => {
           email: signupData.email,
           password: signupData.password
         };
-        dispatch(businessLogIn(loginData, loginApi));
+        dispatch(businessLogIn(loginData));
       }
       dispatch({
         type: BUSINESS_SIGNUP_SUCCESS,
@@ -520,7 +520,7 @@ export const businessSignUp = (signupData, api) => {
   };
 };
 
-export const businessLogIn = (loginData, api, directLogin) => {
+export const businessLogIn = loginData => {
   return async dispatch => {
     dispatch({
       type: BUSINESS_LOGIN_INIT,
@@ -539,7 +539,10 @@ export const businessLogIn = (loginData, api, directLogin) => {
       }
     });
     try {
-      const res = await axios.post(`${process.env.BASE_URL}${api}`, loginData);
+      const res = await axios.post(
+        `${process.env.BASE_URL}${loginApi}`,
+        loginData
+      );
       let success = get(res, "data.success", false);
       let userProfile = get(res, "data.user", {});
       let status = get(res, "status", 0);

@@ -4,7 +4,6 @@ import FormField from "../Widgets/FormField/FormField";
 import validate from "../../utility/validate";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import { loginApi } from "../../utility/config";
 import Router from "next/router";
 import { connect } from "react-redux";
 import { businessLogIn } from "../../store/actions/authActions";
@@ -89,7 +88,7 @@ class BusinessUserLogin extends Component {
     const { formData } = this.state;
     const { businessLogIn } = this.props;
     let reqBody = this.createReqBody(formData);
-    businessLogIn(reqBody, loginApi);
+    businessLogIn(reqBody);
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -99,7 +98,7 @@ class BusinessUserLogin extends Component {
     const isLoginFailed = _get(logInTemp, "isLoginFailed", false);
     const authorized = _get(logIn, "authorized", false);
     const isLoggingIn = _get(logInTemp, "isLoggingIn", false);
-    const error = _get(logInTemp, "error", "Some Error Occured.");
+    const error = _get(logInTemp, "error", "Some Error Occurred.");
     const isWrongCredentials = _get(logInTemp, "isWrongCredentials", false);
     if (this.props.auth !== prevProps.auth) {
       this.setState({ isLoading: isLoggingIn });
