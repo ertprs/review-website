@@ -391,7 +391,6 @@ class AutomaticInvitation extends Component {
     const {
       success,
       errorMsg,
-      isLoading,
       selectedPlatform,
       sendToSelectPlatformSplit
     } = this.props;
@@ -417,10 +416,17 @@ class AutomaticInvitation extends Component {
         },
         () => {
           //! we are disabling modal for woocommerce and bcc and sending them directly to select platform
-          if (success && (formName === "WooCommerce" || formName === "BCC")) {
+          if (
+            success === true &&
+            (formName === "WooCommerce" || formName === "BCC")
+          ) {
             sendToSelectPlatformSplit();
           }
-          if (success && formName !== "WooCommerce" && formName !== "BCC") {
+          if (
+            success === true &&
+            formName !== "WooCommerce" &&
+            formName !== "BCC"
+          ) {
             this.setState({ showCredentialModal: true });
           }
         }
@@ -591,12 +597,14 @@ class AutomaticInvitation extends Component {
             </div>
           </div>
         </CredentialModal>
-        <Snackbar
-          open={showSnackbar}
-          variant={variant}
-          handleClose={() => this.setState({ showSnackbar: false })}
-          message={snackbarMsg}
-        />
+        {showSnackbar ? (
+          <Snackbar
+            open={showSnackbar}
+            variant={variant}
+            handleClose={() => this.setState({ showSnackbar: false })}
+            message={snackbarMsg}
+          />
+        ) : null}
       </div>
     );
   }
@@ -607,7 +615,11 @@ const mapStateToProps = state => {
   const availablePlatforms = _get(dashboardData, "availablePlatforms.data", []);
   const shopId = _get(dashboardData, "configDetails.data.id");
   const isLoading = _get(dashboardData, "configDetails.isLoading", false);
-  const errorMsg = _get(dashboardData, "configDetails.errorMsg", "");
+  const errorMsg = _get(
+    dashboardData,
+    "configDetails.errorMsg",
+    "Some error occurred!"
+  );
   const success = _get(dashboardData, "configDetails.success", undefined);
   const ecommerceIntegrations = _get(
     auth,
