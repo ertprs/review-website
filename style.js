@@ -1,6 +1,25 @@
 import css from "styled-jsx/css";
 import { global } from "styled-jsx/css";
 export const layoutStyles = css.global`
+    #style-2::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 0px;
+	background-color: #F5F5F5;
+}
+
+#style-2::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+#style-2::-webkit-scrollbar-thumb
+{
+	border-radius: 0px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #666;
+}
     :root {
             --breakpoint-xs: 0;
             --breakpoint-sm: 576px;
@@ -23,6 +42,9 @@ export const layoutStyles = css.global`
             line-height: 1.15;
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: transparent;
+            height:100%;
+            width:100%;
+            overflow:hidden;
           }
           body {
             margin: 0;
@@ -35,6 +57,9 @@ export const layoutStyles = css.global`
             color: #212529;
             text-align: left;
             background-color: #fff;
+            height:100%;
+            width:100;
+            overflow:hidden;
           }
           [tabindex="-1"]:focus {
             outline: 0 ;
