@@ -65,7 +65,6 @@ class DirectLogin extends Component {
   }
 
   render() {
-    const isLoggingIn = _get(this.props, "auth.logInTemp.isLoggingIn", false);
     return (
       <div className="center">
         <style jsx>{`
@@ -77,7 +76,7 @@ class DirectLogin extends Component {
             align-items: center;
           }
         `}</style>
-        {isLoggingIn ? <CircularProgress color="primary" /> : null}
+        <CircularProgress color="primary" />
       </div>
     );
   }
