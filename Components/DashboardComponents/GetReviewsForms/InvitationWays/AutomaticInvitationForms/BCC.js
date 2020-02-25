@@ -12,6 +12,7 @@ class BCC extends Component {
     const { formData, handleFormDataChange } = this.props;
     for (let item in formData) {
       if (item === "bccSender") {
+        let labelText = (formData[item] || {}).labelText || "";
         output = [
           ...output,
           <div>
@@ -26,7 +27,7 @@ class BCC extends Component {
             </style>
             <div className="form-group">
               <div className="label">
-                <label>{formData[item].labelText}</label>
+                <label>{labelText}</label>
               </div>
               <FormField
                 {...formData[item]}
@@ -46,18 +47,12 @@ class BCC extends Component {
   };
 
   handleSave = () => {
-    const {
-      handleSaveAndContinue,
-      type,
-      formData,
-      campaignLanguage,
-      domainName
-    } = this.props;
+    const { handleSaveAndContinue, type, formData, domainName } = this.props;
     let reqBody = {
       type,
       name: `${domainName}-${type}`,
       bccSender: _get(formData, "bccSender.value", ""),
-      locale: campaignLanguage || "en"
+      locale: "en"
     };
     handleSaveAndContinue(reqBody);
   };
