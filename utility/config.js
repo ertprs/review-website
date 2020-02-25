@@ -53,5 +53,5 @@ export const whatsAppAutomaticInvitationInitApi =
   "/api/my-business/profile/whatsapp/check-session/init";
 export const whatsAppAutomaticInvitationCommitApi =
   "/api/my-business/profile/whatsapp/check-session/commit";
-export const getSchemaCodeDashboard = "/api/my-business/profile/schema-org";
-export const getSchemaCodeProfilePage = "/api/profile/schema-org";
+export const getSchemaCodeDashboardApi = "/api/my-business/profile/schema-org";
+export const getSchemaCodeReviewsPageApi = "/api/profile/schema-org";
