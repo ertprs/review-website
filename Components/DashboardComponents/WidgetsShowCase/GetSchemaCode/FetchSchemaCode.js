@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import SchemaForm from "./SchemaForm";
 import createReqBody from "../../../../utility/createReqBody";
 import _get from "lodash/get";
-import { getSchemaCodeDashboard } from "../../../../utility/config";
+import { getSchemaCodeDashboardApi } from "../../../../utility/config";
 import { isFormValid } from "../../../../utility/commonFunctions";
 import { updatedSchemaData } from "../../../../store/actions/authActions";
 class FetchSchemaCode extends Component {
@@ -34,7 +34,7 @@ class FetchSchemaCode extends Component {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         data: { ...reqBody },
-        url: `${process.env.BASE_URL}${getSchemaCodeDashboard}/${domainId}`
+        url: `${process.env.BASE_URL}${getSchemaCodeDashboardApi}/${domainId}`
       });
       const success = _get(result, "data.success", false);
       const value = _get(result, "data.node", "");
