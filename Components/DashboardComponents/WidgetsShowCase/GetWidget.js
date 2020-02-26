@@ -109,7 +109,7 @@ class GetWidget extends Component {
           valid: imageUrl ? true : false,
           touched: imageUrl ? true : false,
           errorMessage: "Please enter a valid image url!",
-          placeholder: "Enter Review image url",
+          placeholder: "Enter image url",
           validationRules: {
             required: true,
             isDomain: true
@@ -723,7 +723,9 @@ class GetWidget extends Component {
                     <pre className="comment">{`<!-- Schema.org script -->`}</pre>
                     <div className="schemaOrgContainer">
                       <code className="blue">
-                        {`<script type="application/ld+json" data-business-unit-json-ld>${JSON.stringify(schemaCodeValue)}</script>`}
+                        {`<script type="application/ld+json" data-business-unit-json-ld>${JSON.stringify(
+                          schemaCodeValue
+                        )}</script>`}
                       </code>
                     </div>
                     <pre className="comment">{`<!-- End Schema.org script -->`}</pre>
