@@ -121,7 +121,6 @@ class GetStarted extends Component {
         };
       }
     });
-    //setState also
     if (wipeMode) {
       this.setState(
         { formData: { ...formData }, formDataKeys: [...formDataKeys] },
@@ -143,7 +142,10 @@ class GetStarted extends Component {
       this.setState(
         {
           formData: { ...this.state.formData, ...formData },
-          formDataKeys: [...formDataKeys]
+          formDataKeys:
+            (formDataKeys || []).length > 0
+              ? [...formDataKeys]
+              : [..._get(this.state, "formDataKeys", [])]
         },
         () => {
           this.prefillSocialURLs(fieldsArray);
@@ -452,7 +454,7 @@ class GetStarted extends Component {
               changeStepToRender(1);
             }
           );
-        } else if (isLoading === false && !success) {
+        } else if (isLoading === false && success === false) {
           this.setState({
             showSnackbar: true,
             variant: "error",
