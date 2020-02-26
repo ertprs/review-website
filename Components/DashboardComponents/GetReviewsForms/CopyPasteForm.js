@@ -7,7 +7,7 @@ import uuid from "uuid/v1";
 import validate from "../../../utility/validate";
 
 export default class CopyPasteForm extends Component {
-  componentDidMount(){
+  componentDidMount() {
     this.props.scrollToTopOfThePage();
   }
   renderHeader = () => {
@@ -34,23 +34,17 @@ export default class CopyPasteForm extends Component {
 
   renderFormFields = () => {
     const { formData } = this.props;
-    let output = [];
-    for (let item in formData) {
-      if (item !== "parseErrors") {
-        output = [
-          ...output,
-          <FormField
-            {...formData[item]}
-            handleChange={e => {
-              this.props.handleChange(e, item, "copyPasteFormData");
-            }}
-            onkeyDown={(e, id) => {}}
-            id={item}
-          />
-        ];
-      }
-    }
-    return [...output];
+    let formDataKeys = Object.keys(formData).sort();
+    return (formDataKeys || []).map(item => (
+      <FormField
+        {...formData[item]}
+        handleChange={e => {
+          this.props.handleChange(e, item, "copyPasteFormData");
+        }}
+        onkeyDown={(e, id) => {}}
+        id={item}
+      />
+    ));
   };
 
   renderButtons = () => {

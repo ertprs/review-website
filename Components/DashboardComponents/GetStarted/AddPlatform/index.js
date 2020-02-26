@@ -94,10 +94,9 @@ class AddPlatform extends Component {
 
   renderFormFields = () => {
     const { formData } = this.state;
-    let output = [];
-    for (let item in formData) {
-      output = [
-        ...output,
+    const formDataKeys = Object.keys(formData).sort();
+    return (formDataKeys || []).map(item => {
+      return (
         <div>
           <style jsx>
             {`
@@ -123,9 +122,8 @@ class AddPlatform extends Component {
             />
           </div>
         </div>
-      ];
-    }
-    return output;
+      );
+    });
   };
 
   validFormData = () => {
