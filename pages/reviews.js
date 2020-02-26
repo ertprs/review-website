@@ -1,5 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
+import Head from "next/head";
+import axios from "axios";
 import dynamic from "next/dynamic";
 import AggregatorPusherComponent from "../Components/AggregatorPusherComponent";
 import PusherDataComponent from "../Components/PusherDataComponent/PusherDataComponent";
@@ -25,6 +27,7 @@ import {
   fetchProfileReviews,
   fetchProfileReviewsInitially
 } from "../store/actions/domainProfileActions";
+import { getSchemaCodeReviewsPageApi } from "../utility/config";
 const Navbar = dynamic(() => import("../Components/MaterialComponents/NavBar"));
 const ProfilePageHeader = dynamic(
   () => import("../Components/ProfilePage/ProfilePageHeader"),
@@ -66,6 +69,7 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
+    const { schemaCodeValue } = this.props;
     this.props.setLoading(true);
     setTimeout(() => {
       this.setState({ waitingTimeOut: false });
@@ -320,9 +324,16 @@ class Profile extends React.Component {
   render() {
     const { domain } = this.props;
     const { waitingTimeOut, isNewDomain } = this.state;
-
+    const { schemaCode } = this.props;
     return (
       <>
+        <Head>
+          <script
+            type="application/ld+json"
+            data-business-unit-json-ld
+            dangerouslySetInnerHTML={schemaCode}
+          />
+        </Head>
         {/* This hits verify_domain api twice in interval of 500ms(if we don’t get data in first call).Then we receive a array of scheduled keys inside sch key and then bind for each key to listen for it. Then we pass all that data to parent component. */}
         <PusherDataComponent
           domain={domain}
@@ -333,7 +344,6 @@ class Profile extends React.Component {
           domain={domain}
           onAggregatorDataChange={this.handleAggregatorDataChange}
         />
-
         <>
           <Navbar />
           {/* UnicornLoader starts when domain is new and no reviews available, it stops when any reviews found or after 5 minutes */}
@@ -359,7 +369,6 @@ class Profile extends React.Component {
           </Element>
           <Footer />
         </>
-
         <Snackbar
           open={this.state.showSnackbar}
           variant={this.state.variant}
@@ -373,7 +382,17 @@ class Profile extends React.Component {
 
 Profile.getInitialProps = async ({ query }) => {
   const domain = query.domain ? query.domain : "google.com";
-  return { domain };
+  const url = `${process.env.BASE_URL}${getSchemaCodeReviewsPageApi}/${domain}`;
+  let schemaCode = "";
+  try {
+    const response = await axios.get(url);
+    let node = JSON.stringify(_get(response, "data.node", ""));
+    schemaCode = {
+      __html: node
+    };
+  } catch (error) {}
+
+  return { domain, schemaCode };
 };
 
 const mapStateToProps = state => {
