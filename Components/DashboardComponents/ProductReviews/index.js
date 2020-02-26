@@ -10,7 +10,7 @@ class ProductReviews extends Component {
   render() {
     return (
       <div>
-        <SetupProductReviews />
+        <ShowProductReviews />
       </div>
     );
   }
