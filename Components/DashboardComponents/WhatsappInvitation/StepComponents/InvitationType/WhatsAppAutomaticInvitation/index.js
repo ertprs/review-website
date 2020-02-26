@@ -24,7 +24,7 @@ import TagFacesIcon from "@material-ui/icons/TagFaces";
 import AccessTime from "@material-ui/icons/AccessTime";
 //! we'll get the values to pre-fill from props in availableformdata object with key similar to formname and then manually need to set the values of each individual key
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import ScheduleInvitationBtn from "./ScheduleInvitationDialog/ScheduleInvitationBtn/ScheduleInvitationBtn";
+import CampaignScheduleAutomatic from "../../../../GetReviewsForms/CampaignScheduleAutomatic";
 
 class WhatsAppAutomaticInvitation extends Component {
   constructor(props) {
@@ -288,10 +288,7 @@ class WhatsAppAutomaticInvitation extends Component {
 
   renderForm = () => {
     const { formName, formData } = this.state;
-    const {
-      handleShowScheduleBtnClick,
-      showScheduleInvitationBtn
-    } = this.props;
+    const { handleSendAfterMinutesChange, sendAfterMinutes } = this.props;
     const {
       isLoading,
       sendConfigData,
@@ -316,13 +313,14 @@ class WhatsAppAutomaticInvitation extends Component {
               // VERY IMPORTANT NOTE : SINCE OUR BCC, WooCommerce, etc, FORMS USE SENDTOSELECTPLATFORMSPLIT NAMED PROP AS THEIR CONTINUE HANDLER, THAT'S WHY WE ARE NAMING THE HANDLENEXT PROP BELOW AS SENDTOSELECTPLATFORMSPLIT
               sendToSelectPlatformSplit={handleNext}
             />
-            {showScheduleInvitationBtn ? (
-              <div>
-                <ScheduleInvitationBtn
-                  handleClick={handleShowScheduleBtnClick}
-                />
-              </div>
-            ) : null}
+            <div style={{ marginTop: "-37px", marginLeft: "-14px" }}>
+              <CampaignScheduleAutomatic
+                handleChange={handleSendAfterMinutesChange}
+                campaignScheduleAutomaticData={sendAfterMinutes}
+                captionText="* If you do not select a time from above, it will automatically be set to sent immediately"
+                comingFromWhatsApp={true}
+              />
+            </div>
           </div>
         );
       }

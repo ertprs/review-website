@@ -12,10 +12,10 @@ class CampaignScheduleAutomatic extends Component {
     this.props.handleChange("");
   }
   render() {
-    //? showSaveBtn, captionText is used when we use this component inside whatsApp automatic component.
+    //? comingFromWhatsApp, captionText is used when we use this component inside whatsApp automatic component.
     const {
       campaignScheduleAutomaticData,
-      showSaveBtn,
+      comingFromWhatsApp,
       captionText
     } = this.props;
     const isValid = _get(campaignScheduleAutomaticData, "valid", false);
@@ -23,17 +23,20 @@ class CampaignScheduleAutomatic extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-md-12">
-            <h2>Schedule your automatic invitation</h2>
-            <div>
-              <div style={{ margin: "20px 0 20px 0" }}>
-                <h6>
-                  Please select from below the schedule for your automatic
-                  invitations :
-                </h6>
+          {comingFromWhatsApp ? null : (
+            <div className="col-md-12">
+              <h2>Schedule your automatic invitation</h2>
+
+              <div>
+                <div style={{ margin: "20px 0 20px 0" }}>
+                  <h6>
+                    Please select from below the schedule for your automatic
+                    invitations :
+                  </h6>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="col-md-6">
             <Select
               className="basic-single"
@@ -59,38 +62,7 @@ class CampaignScheduleAutomatic extends Component {
             </div>
           ) : null}
           {/* Used in automatic whatsApp invitations */}
-          {showSaveBtn ? (
-            <div className="col-md-12">
-              <div style={{ marginTop: "45px" }}>
-                <span style={{ marginRight: "25px" }}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    startIcon={<CloseIcon />}
-                    onClick={() => {
-                      this.props.handleChange("0");
-                      this.props.handleClose();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </span>
-                <span>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    endIcon={<CheckIcon />}
-                    onClick={this.props.handleSave}
-                    disabled={!isValid}
-                  >
-                    Save
-                  </Button>
-                </span>
-              </div>
-            </div>
-          ) : (
+          {comingFromWhatsApp ? null : (
             <div className="col-md-12">
               <div style={{ marginTop: "45px" }}>
                 <span style={{ marginRight: "25px" }}>
