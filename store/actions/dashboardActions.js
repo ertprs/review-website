@@ -859,7 +859,7 @@ export const sendConfigData = data => {
     } catch (error) {
       let errorMsg = _get(
         error,
-        "response.data.message",
+        "response.data.error",
         "Some error occurred! Please choose another method of invitation."
       );
       if (errorMsg === "duplicate_bcc_sender") {
