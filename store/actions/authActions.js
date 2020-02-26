@@ -501,6 +501,7 @@ export const businessSignUp = (signupData, api) => {
             break;
           case "Activation required.":
             errorMsg = "Your account is not activated. Please activate!";
+            break;
           default:
             errorMsg = "Some Error Occurred while Registration!";
         }
