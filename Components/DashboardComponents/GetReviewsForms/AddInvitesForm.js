@@ -7,7 +7,7 @@ import _isEmpty from "lodash/isEmpty";
 import ArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 export default class AddInvitesForm extends Component {
-  componentDidMount(){
+  componentDidMount() {
     this.props.scrollToTopOfThePage();
   }
   renderButtons = valid => {
@@ -94,11 +94,11 @@ export default class AddInvitesForm extends Component {
   };
 
   renderFormFields = valid => {
-    const { formData, tableData } = this.props;
-    let output = [];
-    for (let item in formData) {
-      output = [
-        ...output,
+    const { formData } = this.props;
+    // safari fix
+    let formDataKeys = Object.keys(formData).sort();
+    return (formDataKeys || []).map(item => {
+      return (
         <div className="col-md-4">
           <h6>
             {formData[item].label}{" "}
@@ -116,9 +116,31 @@ export default class AddInvitesForm extends Component {
             }}
           />
         </div>
-      ];
-    }
-    return [...output];
+      );
+    });
+    // for (let item in formData) {
+    //   output = [
+    //     ...output,
+    //     <div className="col-md-4">
+    //       <h6>
+    //         {formData[item].label}{" "}
+    //         {formData[item].label.trim() !== "Reference number" ? (
+    //           <sup style={{ color: "red" }}>*</sup>
+    //         ) : (
+    //           ""
+    //         )}
+    //       </h6>
+    //       <FormField
+    //         {...formData[item]}
+    //         id={item}
+    //         handleChange={e => {
+    //           this.props.handleChange(e, item, "addInvitesData");
+    //         }}
+    //       />
+    //     </div>
+    //   ];
+    // }
+    // return [...output];
   };
   render() {
     const { formData } = this.props;
@@ -135,18 +157,18 @@ export default class AddInvitesForm extends Component {
             }
           `}
         </style>
-        <div style={{textAlign:"right", marginBottom:"35px"}}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              endIcon={<ArrowRight />}
-              onClick={this.props.onContinueClick}
-              disabled={_isEmpty(this.props.tableData)}
-            >
-              Continue
-            </Button>
-          </div>
+        <div style={{ textAlign: "right", marginBottom: "35px" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            endIcon={<ArrowRight />}
+            onClick={this.props.onContinueClick}
+            disabled={_isEmpty(this.props.tableData)}
+          >
+            Continue
+          </Button>
+        </div>
         <div className="row">{this.renderFormFields(valid)}</div>
         <div className="row">{this.renderButtons(valid)}</div>
         <Button

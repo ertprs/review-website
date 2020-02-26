@@ -723,7 +723,9 @@ class GetWidget extends Component {
                     <pre className="comment">{`<!-- Schema.org script -->`}</pre>
                     <div className="schemaOrgContainer">
                       <code className="blue">
-                        {`<script type="application/ld+json" data-business-unit-json-ld>${JSON.stringify(schemaCodeValue)}</script>`}
+                        {`<script type="application/ld+json" data-business-unit-json-ld>${JSON.stringify(
+                          schemaCodeValue
+                        )}</script>`}
                       </code>
                     </div>
                     <pre className="comment">{`<!-- End Schema.org script -->`}</pre>
@@ -936,7 +938,7 @@ class GetWidget extends Component {
             {this.state.platforms.length > 0 ? (
               this.getYourWidgetBox()
             ) : (
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: "center", fontSize: "16px" }}>
                 <p>
                   Either the reviews have not be fetched till yet, or the
                   platforms you have set have zero (0) reviews, please check the
