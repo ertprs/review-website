@@ -123,7 +123,6 @@ class GetStarted extends Component {
     });
     //setState also
     if (wipeMode) {
-      console.log("wipe mode");
       this.setState(
         { formData: { ...formData }, formDataKeys: [...formDataKeys] },
         () => {
@@ -131,8 +130,6 @@ class GetStarted extends Component {
         }
       );
     } else if (updateMode) {
-      console.log("update mode");
-
       this.setState(
         {
           formData: { ...formData, ...this.state.formData },
@@ -143,7 +140,6 @@ class GetStarted extends Component {
         }
       );
     } else {
-      console.log("end mode");
       this.setState(
         {
           formData: { ...this.state.formData, ...formData },
