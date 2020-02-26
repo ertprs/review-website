@@ -3,7 +3,7 @@ import uuid from "uuid/v1";
 import validate from "../../../../../../utility/validate";
 import FormField from "../../../../../Widgets/FormField/FormField";
 import Button from "@material-ui/core/Button";
-import ScheduleInvitationBtn from "../WhatsAppAutomaticInvitation/ScheduleInvitationDialog/ScheduleInvitationBtn/ScheduleInvitationBtn";
+import _get from "lodash/get";
 class CopyPasteData extends Component {
   renderHeader = () => {
     return (
@@ -29,11 +29,10 @@ class CopyPasteData extends Component {
 
   renderFormFields = () => {
     const { formData } = this.props;
-    let output = [];
-    for (let item in formData) {
+    const formDataKeys = Object.keys(formData).sort();
+    return (formDataKeys || []).map(item => {
       if (item !== "parseErrors") {
-        output = [
-          ...output,
+        return (
           <FormField
             {...formData[item]}
             handleChange={e => {
@@ -42,10 +41,9 @@ class CopyPasteData extends Component {
             onkeyDown={(e, id) => {}}
             id={item}
           />
-        ];
+        );
       }
-    }
-    return [...output];
+    });
   };
 
   renderButtons = () => {
@@ -184,7 +182,7 @@ class CopyPasteData extends Component {
   };
 
   render() {
-    const { parseErrors } = this.props.formData;
+    const { parseErrors } = _get(this.props, "formData", {});
     return (
       <div>
         {this.renderHeader()}

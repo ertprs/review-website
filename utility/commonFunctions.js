@@ -54,37 +54,35 @@ export const isFormValid = formDataObject => {
 // };
 
 //! This method can be used to render form fields if you pass form data object make sure to import <FormField />
-
-export const renderFormFields = (formData, handleFormDataChange) => {
-  let output = [];
-  if (Object.keys(formData).length > 0 && handleFormDataChange) {
-    for (let item in formData) {
-      output = [
-        ...output,
-        <div>
-          <style jsx>
-            {`
-              .label {
-                font-weight: bold;
-                margin-bottom: 5px;
-                font-size: 15px;
-              }
-            `}
-          </style>
-          <div className="form-group">
-            <div className="label">
-              <label>{formData[item].labelText}</label>
-            </div>
-            <FormField
-              {...formData[item]}
-              handleChange={handleFormDataChange}
-            />
-          </div>
-        </div>
-      ];
-    }
+//? you may pass an array of keys if you have a defined order for forms that you don't want to change
+export const renderFormFields = (formData, handleFormDataChange, order) => {
+  let formDataKeys = [];
+  if (order) {
+    formDataKeys = order;
+  } else {
+    formDataKeys = Object.keys(formData).sort();
   }
-  return output;
+  return (formDataKeys || []).map(item => {
+    return (
+      <div>
+        <style jsx>
+          {`
+            .label {
+              font-weight: bold;
+              margin-bottom: 5px;
+              font-size: 15px;
+            }
+          `}
+        </style>
+        <div className="form-group">
+          <div className="label">
+            <label>{formData[item].labelText}</label>
+          </div>
+          <FormField {...formData[item]} handleChange={handleFormDataChange} />
+        </div>
+      </div>
+    );
+  });
 };
 
 export const areFieldsTouched = formData => {

@@ -35,8 +35,16 @@ class editCompany extends Component {
 
   renderFormFields = () => {
     const { companyDetails, handleChange } = this.props;
-    let formFields = [];
-    for (let formField in companyDetails) {
+    let formDataKeys = [
+      "name",
+      "regNumber",
+      "taxNumber",
+      "legalAddress",
+      "actualAddress",
+      "country",
+      "description"
+    ];
+    return (formDataKeys || []).map(formField => {
       if (formField === "country") {
         let options = [];
         let value = "";
@@ -48,8 +56,7 @@ class editCompany extends Component {
           //? converting selectedCountry to integer as value in options is in integer
           value = _find(options, ["value", +selectedCountry]);
         }
-        formFields = [
-          ...formFields,
+        return (
           <div className="col-md-6">
             <Select
               className="basic-single"
@@ -72,10 +79,9 @@ class editCompany extends Component {
               }}
             />
           </div>
-        ];
+        );
       } else {
-        formFields = [
-          ...formFields,
+        return (
           <div className="col-md-6">
             <FormField
               {...companyDetails[formField]}
@@ -89,10 +95,9 @@ class editCompany extends Component {
               }}
             />
           </div>
-        ];
+        );
       }
-    }
-    return [...formFields];
+    });
   };
 
   render() {

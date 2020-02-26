@@ -938,7 +938,7 @@ class GetWidget extends Component {
             {this.state.platforms.length > 0 ? (
               this.getYourWidgetBox()
             ) : (
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: "center", fontSize: "16px" }}>
                 <p>
                   Either the reviews have not be fetched till yet, or the
                   platforms you have set have zero (0) reviews, please check the

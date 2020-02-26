@@ -93,12 +93,13 @@ class AutomaticInvitation extends Component {
               ""
             ),
             validationRules: {
-              required: true
+              required: true,
+              isDomain: true
             },
             placeholder: "your platform url",
             touched: false,
             valid: false,
-            errorMessage: "",
+            errorMessage: "Please enter valid domain!",
             name: "url",
             id: "url",
             labelText: "Your platform url *"
@@ -191,45 +192,52 @@ class AutomaticInvitation extends Component {
           }
         },
         BCC: {
-          name: {
-            element: "input",
-            type: "text",
-            value: _get(this.props, "availablePlatformsData.BCC.name", ""),
-            placeholder: "Name",
-            touched: false,
-            valid: false,
-            errorMessage: "",
-            name: "name",
-            id: "name",
-            labelText: "Enter name *"
-          },
+          //?not being used
+          // name: {
+          //   element: "input",
+          //   type: "text",
+          //   value: _get(this.props, "availablePlatformsData.BCC.name", ""),
+          //   placeholder: "Name",
+          //   touched: false,
+          //   valid: false,
+          //   errorMessage: "",
+          //   name: "name",
+          //   id: "name",
+          //   labelText: "Enter name *"
+          // },
+          //? this is used only
           bccSender: {
             element: "input",
             type: "email",
             value: _get(this.props, "availablePlatformsData.BCC.bccSender", ""),
-            placeholder: "Bcc email",
+            placeholder: "BCC email",
             touched: false,
             valid: false,
-            errorMessage: "",
+            errorMessage: "Please enter valid email!",
             name: "bccSender",
             id: "bccSender",
-            labelText: "2. Enter your ecommcerce system's sender email : *"
-          },
-          locale: {
-            element: "select",
-            name: "locale",
-            value: _get(this.props, "availablePlatformsData.BCC.locale", ""),
-            options: [...Languages],
-            placeholder: "Select your language",
-            valid: false,
-            touched: false,
-            errorMessage: "",
-            id: "locale",
-            labelText: "Select your locale *",
+            labelText: "2. Enter your ecommerce system's sender email : *",
             validationRules: {
-              required: true
+              required: true,
+              isEmail: true
             }
           }
+          //?not being used
+          // locale: {
+          //   element: "select",
+          //   name: "locale",
+          //   value: _get(this.props, "availablePlatformsData.BCC.locale", ""),
+          //   options: [...Languages],
+          //   placeholder: "Select your language",
+          //   valid: false,
+          //   touched: false,
+          //   errorMessage: "",
+          //   id: "locale",
+          //   labelText: "Select your locale *",
+          //   validationRules: {
+          //     required: true
+          //   }
+          // }
         },
         showCredentialModal: false
       }
