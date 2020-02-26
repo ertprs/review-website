@@ -69,7 +69,6 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
-    const { schemaCodeValue } = this.props;
     this.props.setLoading(true);
     setTimeout(() => {
       this.setState({ waitingTimeOut: false });
