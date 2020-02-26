@@ -34,6 +34,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import IconButton from "@material-ui/core/IconButton";
 import _omit from "lodash/omit";
+import _remove from "lodash/remove";
 import _now from "lodash/now";
 import GoogleReviewURLBox from "./GoogleReviewURLBox/GoogleReviewURLBox";
 import SetAsPrimaryModal from "./SetAsPrimaryModal/SetAsPrimaryModal";
@@ -47,6 +48,7 @@ class GetStarted extends Component {
     variant: "success",
     snackbarMsg: "",
     formData: {},
+    formDataKeys: [],
     generatedCardsFormData: {},
     selectedAvailablePlatformItems: [],
     disabledSave: true,
@@ -58,11 +60,15 @@ class GetStarted extends Component {
 
   handleRemoveTemporaryCard = formDataItemKey => {
     let key = formDataItemKey;
-    const { formData } = this.state;
+    const { formData, formDataKeys } = this.state;
     if (formData[formDataItemKey]) {
       const formDataAfterOmission = _omit(formData, key);
+      const formDataKeysAfterOmission = _remove(formDataKeys, element => {
+        return element !== key;
+      });
       this.setState({
-        formData: { ...formDataAfterOmission }
+        formData: { ...formDataAfterOmission },
+        formDataKeys: [...formDataKeysAfterOmission]
       });
     }
   };
@@ -76,6 +82,7 @@ class GetStarted extends Component {
     wipeMode = false
   ) => {
     let formData = {};
+    let formDataKeys = [];
     fieldsArray.forEach((item, index) => {
       let name = _get(item, "name", "");
       let url = _get(item, "url", "");
@@ -85,6 +92,7 @@ class GetStarted extends Component {
       if (name && social_media_app_id) {
         let formFieldKey =
           social_media_app_id.toString() + "ReviewUrl_" + id + "_" + index;
+        formDataKeys = [...formDataKeys, formFieldKey];
         formData = {
           ...formData,
           [formFieldKey]: {
@@ -115,19 +123,32 @@ class GetStarted extends Component {
     });
     //setState also
     if (wipeMode) {
-      this.setState({ formData: { ...formData } }, () => {
-        this.prefillSocialURLs(fieldsArray);
-      });
-    } else if (updateMode) {
+      console.log("wipe mode");
       this.setState(
-        { formData: { ...formData, ...this.state.formData } },
+        { formData: { ...formData }, formDataKeys: [...formDataKeys] },
+        () => {
+          this.prefillSocialURLs(fieldsArray);
+        }
+      );
+    } else if (updateMode) {
+      console.log("update mode");
+
+      this.setState(
+        {
+          formData: { ...formData, ...this.state.formData },
+          formDataKeys: [...formDataKeys, ...this.state.formDataKeys]
+        },
         () => {
           this.prefillSocialURLs(fieldsArray);
         }
       );
     } else {
+      console.log("end mode");
       this.setState(
-        { formData: { ...this.state.formData, ...formData } },
+        {
+          formData: { ...this.state.formData, ...formData },
+          formDataKeys: [...formDataKeys]
+        },
         () => {
           this.prefillSocialURLs(fieldsArray);
         }
@@ -417,11 +438,11 @@ class GetStarted extends Component {
               if (Array.isArray(socialArray)) {
                 if (socialArray.length > 0 && !reviewURLToEdit) {
                   if (socialArray.reverse()) {
-                    this.setState({ formData: {} }, () => {
+                    this.setState({ formData: {}, formDataKeys: [] }, () => {
                       this.generateFormFieldsDynamically(socialArray.reverse());
                     });
                   } else {
-                    this.setState({ formData: {} }, () => {
+                    this.setState({ formData: {}, formDataKeys: [] }, () => {
                       this.generateFormFieldsDynamically(socialArray);
                     });
                   }
@@ -524,9 +545,7 @@ class GetStarted extends Component {
 
   renderReviewURLBoxes = () => {
     const formData = _get(this.state, "formData", {});
-    let formDataKeys = Object.keys(formData || {})
-      .sort()
-      .reverse();
+    let formDataKeys = _get(this.state, "formDataKeys", []);
     return formDataKeys.map(item => {
       let formField = _get(formData, item, {});
       let platformId = _get(formField, "social_media_app_id", "");
@@ -548,10 +567,17 @@ class GetStarted extends Component {
                           size="small"
                           onClick={() => {
                             let key = item;
-                            const { formData } = this.state;
+                            const { formData, formDataKeys } = this.state;
                             const formDataAfterOmission = _omit(formData, item);
+                            const formDataKeysAfterOmission = _remove(
+                              formDataKeys,
+                              element => {
+                                return element !== item;
+                              }
+                            );
                             this.setState({
-                              formData: { ...formDataAfterOmission }
+                              formData: { ...formDataAfterOmission },
+                              formDataKeys: [...formDataKeysAfterOmission]
                             });
                           }}
                         >
