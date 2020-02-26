@@ -859,8 +859,8 @@ export const sendConfigData = data => {
     } catch (error) {
       let errorMsg = _get(
         error,
-        "response.data.error",
-        "Some error occured! Please choose another method of invitation."
+        "response.data.message",
+        "Some error occurred! Please choose another method of invitation."
       );
       if (errorMsg === "duplicate_bcc_sender") {
         errorMsg = "This email is already in use.";
