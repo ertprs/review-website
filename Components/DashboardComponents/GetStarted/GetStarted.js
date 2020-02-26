@@ -523,16 +523,15 @@ class GetStarted extends Component {
   };
 
   renderReviewURLBoxes = () => {
-    const { formData } = this.state;
-    let output = [];
-    for (let item in formData) {
-      //special case for google since the BOX is different from other reviewURL boxes.
-      //check if the item contains platformId as 22
+    const formData = _get(this.state, "formData", {});
+    let formDataKeys = Object.keys(formData || {})
+      .sort()
+      .reverse();
+    return formDataKeys.map(item => {
       let formField = _get(formData, item, {});
       let platformId = _get(formField, "social_media_app_id", "");
       if (platformId !== 22) {
-        output = [
-          ...output,
+        return (
           <Grid item xs={12} md={6} lg={6}>
             <Paper>
               <style jsx>{reviewURLBoxStyles}</style>
@@ -592,10 +591,9 @@ class GetStarted extends Component {
               </div>
             </Paper>
           </Grid>
-        ];
+        );
       } else if (platformId == 22) {
-        output = [
-          ...output,
+        return (
           <Grid item xs={12} md={6} lg={6}>
             <GoogleReviewURLBox
               formData={formData}
@@ -609,10 +607,9 @@ class GetStarted extends Component {
               showSetAsPrimaryModal={this.state.showSetAsPrimaryModal}
             />
           </Grid>
-        ];
+        );
       }
-    }
-    return output;
+    });
   };
 
   //!Generate form fields dynamically only for selected social_media_app_id to edit

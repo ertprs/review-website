@@ -9,39 +9,35 @@ import Link from "next/link";
 
 class Generic extends Component {
   renderFormFields = () => {
-    let output = [];
     const { formData, handleFormDataChange } = this.props;
-    for (let item in formData) {
-      output = [
-        ...output,
-        <div>
-          <style jsx>
-            {`
-              .label {
-                font-weight: bold;
-                margin-bottom: 5px;
-                font-size: 15px;
-              }
-            `}
-          </style>
-          <div className="form-group">
-            <div className="label">
-              <label>{formData[item].labelText}</label>
-            </div>
-            <FormField
-              {...formData[item]}
-              handleChange={(e, id) => {
-                handleFormDataChange(e, id, "TrustSearch_API");
-              }}
-              styles={{
-                height: "38px"
-              }}
-            />
+    let formDataKeys = Object.keys(formData).sort();
+    return (formDataKeys || []).map(item => (
+      <div>
+        <style jsx>
+          {`
+            .label {
+              font-weight: bold;
+              margin-bottom: 5px;
+              font-size: 15px;
+            }
+          `}
+        </style>
+        <div className="form-group">
+          <div className="label">
+            <label>{formData[item].labelText}</label>
           </div>
+          <FormField
+            {...formData[item]}
+            handleChange={(e, id) => {
+              handleFormDataChange(e, id, "TrustSearch_API");
+            }}
+            styles={{
+              height: "38px"
+            }}
+          />
         </div>
-      ];
-    }
-    return output;
+      </div>
+    ));
   };
 
   handleSave = () => {

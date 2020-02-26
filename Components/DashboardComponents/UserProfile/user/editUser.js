@@ -35,8 +35,17 @@ class editUser extends Component {
 
   renderFormFields = () => {
     const { userDetails, handleChange } = this.props;
-    let formFields = [];
-    for (let formField in userDetails) {
+    const userFieldsKeys = [
+      "name",
+      "city",
+      "phone",
+      "address",
+      "zip",
+      "country",
+      "lang",
+      "timezone"
+    ];
+    return (userFieldsKeys || []).map(formField => {
       if (formField === "country" || formField === "timezone") {
         let options = [];
         let selectedOption = userDetails[formField].value;
@@ -50,8 +59,7 @@ class editUser extends Component {
         } else if (formField === "timezone") {
           value = _find(options, ["value", selectedOption]);
         }
-        formFields = [
-          ...formFields,
+        return (
           <div className="col-md-6">
             <Select
               {...userDetails[formField]}
@@ -74,10 +82,9 @@ class editUser extends Component {
               }}
             />
           </div>
-        ];
+        );
       } else {
-        formFields = [
-          ...formFields,
+        return (
           <div className="col-md-6">
             <FormField
               {...userDetails[formField]}
@@ -91,10 +98,9 @@ class editUser extends Component {
               }}
             />
           </div>
-        ];
+        );
       }
-    }
-    return [...formFields];
+    });
   };
 
   render() {
