@@ -2,6 +2,10 @@ import css from "styled-jsx/css";
 
 export default css`
   /* ---- Logo styles ----*/
+  .addProductText {
+    margin: 20px 0px;
+    text-decoration: underline;
+  }
   .logoContainer {
     height: 30px;
     width: 30px;

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _now from "lodash/now";
 import { connect } from "react-redux";
-import SetUpProductCard from "./SetUpProductCard";
+import AddProductCard from "./AddProductCard";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
@@ -9,36 +9,41 @@ import validate from "../../../../utility/validate";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import ArrowRight from "@material-ui/icons/ArrowRight";
+import ArrowBack from "@material-ui/icons/ArrowBack";
 import Zoom from "@material-ui/core/Zoom";
 import { isValidArray } from "../../../../utility/commonFunctions";
+import { addProductInProductReviews } from "../../../../store/actions/dashboardActions";
+import styles from "./styles";
 
-class SetupProductReviews extends Component {
+class AddProduct extends Component {
   state = {
     data: []
   };
 
+  componentDidMount() {
+    this.addProduct();
+  }
+
   generatePlatformsArray = () => {
-    //extract from mapStateToProps
-    const platformsArray = _get(this.props, "platformsArray", []);
+    const { platformsArray } = this.props;
     return platformsArray.map(item => {
-      const id = _get(item, "id", "");
-      const platformName = _get(item, "name", "");
-      const urlVal = _get(item, "url", "");
+      const id = _get(item, "_id", "");
+      const name = _get(item, "name", "");
       return {
         id,
         url: {
           element: "input",
           type: "text",
           value: "",
-          placeholder: `Enter ${platformName} URL`,
+          placeholder: `Enter ${name} URL`,
           touched: false,
           valid: false,
           errorMessage: "Please enter a valid URL",
           validationRules: {
             isDomain: true
           },
-          name: platformName,
-          id: platformName,
+          name: name,
+          id: name,
           labelText: ""
         }
       };
@@ -74,10 +79,6 @@ class SetupProductReviews extends Component {
     });
   };
 
-  componentDidMount() {
-    this.addProduct();
-  }
-
   handleProductNameChange = (e, id) => {
     const { data } = this.state;
     const value = _get(e, "target.value", "");
@@ -105,6 +106,7 @@ class SetupProductReviews extends Component {
   //? Handle submission of products
 
   handleSaveBtnClick = () => {
+    const { addProductInProductReviews, setActiveComponent } = this.props;
     const data = _get(this.state, "data", []);
     let reqBody = [];
     if (isValidArray(data)) {
@@ -126,7 +128,8 @@ class SetupProductReviews extends Component {
     }
 
     if (isValidArray(reqBody)) {
-      console.log(reqBody);
+      addProductInProductReviews(reqBody);
+      setActiveComponent("list");
     }
   };
 
@@ -183,8 +186,10 @@ class SetupProductReviews extends Component {
 
   render() {
     const { data } = this.state;
+    const { setActiveComponent } = this.props;
     return (
       <>
+        <style jsx>{styles}</style>
         {(data || []).map(formData => {
           return (
             <Zoom in={true}>
@@ -192,7 +197,7 @@ class SetupProductReviews extends Component {
                 style={{ margin: "15px 0 15px 0" }}
                 key={_get(formData, "id", "")}
               >
-                <SetUpProductCard
+                <AddProductCard
                   formData={formData}
                   handleProductNameChange={this.handleProductNameChange}
                   handleURLChange={this.handleURLChange}
@@ -215,6 +220,18 @@ class SetupProductReviews extends Component {
           <div className="col-md-6">
             <div style={{ textAlign: "right" }}>
               <Button
+                onClick={() => {
+                  setActiveComponent("list");
+                }}
+                color="primary"
+                variant="contained"
+                size="medium"
+                startIcon={<ArrowBack />}
+                style={{ marginRight: "10px" }}
+              >
+                Back
+              </Button>
+              <Button
                 onClick={this.handleSaveBtnClick}
                 color="primary"
                 variant="contained"
@@ -232,15 +249,20 @@ class SetupProductReviews extends Component {
 }
 
 const mapStateToProps = state => {
+  const { dashboardData } = state;
+  const productReviewsPlatforms = _get(
+    dashboardData,
+    "productReviewsPlatforms",
+    {}
+  );
+  const platformsArray = _get(productReviewsPlatforms, "platforms", []);
+  const platformsSuccess = _get(productReviewsPlatforms, "success", undefined);
   return {
-    platformsArray: [
-      { id: 1, name: "Amazon" },
-      { id: 2, name: "Yandex" },
-      { id: 3, name: "Walmart" },
-      { id: 4, name: "Google Shopping" },
-      { id: 5, name: "Idealo" }
-    ]
+    platformsArray,
+    platformsSuccess
   };
 };
 
-export default connect(mapStateToProps)(SetupProductReviews);
+export default connect(mapStateToProps, { addProductInProductReviews })(
+  AddProduct
+);

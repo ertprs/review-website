@@ -93,7 +93,19 @@ import {
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_INIT,
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_SUCCESS,
   WHATSAPP_AUTOMATIC_CREATE_CAMPAIGN_FAILURE,
-  EMPTY_WHATSAPP_DATA
+  EMPTY_WHATSAPP_DATA,
+  GET_PRODUCT_REVIEWS_PLATFORMS_INIT,
+  GET_PRODUCT_REVIEWS_PLATFORMS_SUCCESS,
+  GET_PRODUCT_REVIEWS_PLATFORMS_FAILURE,
+  ADD_PRODUCT_REVIEWS_PRODUCT_INIT,
+  ADD_PRODUCT_REVIEWS_PRODUCT_SUCCESS,
+  ADD_PRODUCT_REVIEWS_PRODUCT_FAILURE,
+  GET_ALL_PRODUCTS_INIT,
+  GET_ALL_PRODUCTS_SUCCESS,
+  GET_ALL_PRODUCTS_FAILURE,
+  DELETE_PRODUCT_INIT,
+  DELETE_PRODUCT_SUCCESS,
+  DELETE_PRODUCT_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -136,7 +148,10 @@ const dashboardReducer = (state = {}, action) => {
     whatsAppAutomaticInvitationInit,
     whatsAppAutomaticInvitationCommit,
     whatsAppAutomaticCreateCampaign,
-    showWhatsAppNotification
+    productReviewsPlatforms,
+    addProductInProductReviewsResponse,
+    products,
+    deleteProductResponse
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -695,6 +710,78 @@ const dashboardReducer = (state = {}, action) => {
         whatsAppAutomaticInvitationInit: {},
         whatsAppManualInvitationCommit: {},
         whatsAppManualInvitationInit: {}
+      };
+    case GET_PRODUCT_REVIEWS_PLATFORMS_INIT:
+      return {
+        ...state,
+        type,
+        productReviewsPlatforms
+      };
+    case GET_PRODUCT_REVIEWS_PLATFORMS_SUCCESS:
+      return {
+        ...state,
+        type,
+        productReviewsPlatforms
+      };
+    case GET_PRODUCT_REVIEWS_PLATFORMS_FAILURE:
+      return {
+        ...state,
+        type,
+        productReviewsPlatforms
+      };
+    case ADD_PRODUCT_REVIEWS_PRODUCT_INIT:
+      return {
+        ...state,
+        type,
+        addProductInProductReviewsResponse
+      };
+    case ADD_PRODUCT_REVIEWS_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        type,
+        addProductInProductReviewsResponse
+      };
+    case ADD_PRODUCT_REVIEWS_PRODUCT_FAILURE:
+      return {
+        ...state,
+        type,
+        addProductInProductReviewsResponse
+      };
+    case GET_ALL_PRODUCTS_INIT:
+      return {
+        ...state,
+        type,
+        products
+      };
+    case GET_ALL_PRODUCTS_SUCCESS:
+      return {
+        ...state,
+        type,
+        products
+      };
+    case GET_ALL_PRODUCTS_FAILURE:
+      return {
+        ...state,
+        type,
+        products
+      };
+    case DELETE_PRODUCT_INIT:
+      return {
+        ...state,
+        type,
+        deleteProductResponse
+      };
+    case DELETE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        type,
+        deleteProductResponse
+      };
+    case DELETE_PRODUCT_FAILURE:
+      return {
+        ...state,
+        type,
+        deleteProductResponse
       };
     default:
       return state;

@@ -4,7 +4,7 @@ import PlatformCard from "./PlatformCard";
 import FormField from "../../../Widgets/FormField/FormField";
 import _get from "lodash/get";
 
-function SetUpProductCard({
+function AddProductCard({
   formData,
   handleURLChange,
   handleProductNameChange
@@ -21,7 +21,7 @@ function SetUpProductCard({
         />
       </div>
       <div className="row">
-        {platformURLs.map(platform => {
+        {(platformURLs || []).map(platform => {
           return (
             <div className="col-md-4">
               <PlatformCard
@@ -36,4 +36,4 @@ function SetUpProductCard({
     </Card>
   );
 }
-export default SetUpProductCard;
+export default AddProductCard;

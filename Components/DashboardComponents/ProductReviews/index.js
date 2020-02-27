@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import SetupProductReviews from "./SetupProductReviews";
+import { connect } from "react-redux";
+import AddProduct from "./AddProduct";
 import ShowProductReviews from "./ShowProductReviews";
-
-// state transition diagram for this component :
-// ProductReviews =>  Already configured  => yes => SetupProductReviews
-//                                           no  => ShowProductReviews
-
+import { getAllProductReviewsPlatforms } from "../../../store/actions/dashboardActions";
 class ProductReviews extends Component {
+  componentDidMount() {
+    const { getAllProductReviewsPlatforms } = this.props;
+    getAllProductReviewsPlatforms();
+  }
   render() {
     return (
       <div>
@@ -16,4 +17,4 @@ class ProductReviews extends Component {
   }
 }
 
-export default ProductReviews;
+export default connect(null, { getAllProductReviewsPlatforms })(ProductReviews);

@@ -4,7 +4,7 @@ import ReviewsFilter from "./ReviewsFilter";
 import ProductsFilter from "./ProductsFilter";
 import Button from "@material-ui/core/Button";
 import SettingsIcon from "@material-ui/icons/Settings";
-import ProductManagementDialog from "./ProductManagement/ProductManagementDialog";
+import ProductCRUDDialog from "../ProductCRUDDialog";
 
 class ShowProductReviews extends Component {
   state = {
@@ -44,7 +44,7 @@ class ShowProductReviews extends Component {
             <ProductReviewCard />
           </div>
         </div>
-        <ProductManagementDialog
+        <ProductCRUDDialog
           open={dialogOpen}
           handleClose={this.handleDialogClose}
         />
