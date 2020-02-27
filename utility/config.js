@@ -60,3 +60,4 @@ export const addProductReviewsPlatformApi = "/api/platforms";
 export const addProductApi = "/api/products";
 export const getAllProductsApi = "/api/products";
 export const deleteProductApi = "/api/delete-platform";
+export const fetchProductsApi = "/api/reviews";

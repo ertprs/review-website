@@ -5,7 +5,10 @@ import ShowProductReviews from "./ShowProductReviews";
 import { getAllProductReviewsPlatforms } from "../../../store/actions/dashboardActions";
 class ProductReviews extends Component {
   componentDidMount() {
-    const { getAllProductReviewsPlatforms } = this.props;
+    const { getAllProductReviewsPlatforms, scrollToTopOfThePage } = this.props;
+    if (scrollToTopOfThePage) {
+      scrollToTopOfThePage();
+    }
     getAllProductReviewsPlatforms();
   }
   render() {

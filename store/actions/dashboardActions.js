@@ -106,7 +106,10 @@ import {
   GET_ALL_PRODUCTS_FAILURE,
   DELETE_PRODUCT_INIT,
   DELETE_PRODUCT_SUCCESS,
-  DELETE_PRODUCT_FAILURE
+  DELETE_PRODUCT_FAILURE,
+  FETCH_PRODUCT_REVIEWS_INIT,
+  FETCH_PRODUCT_REVIEWS_SUCCESS,
+  FETCH_PRODUCT_REVIEWS_FAILURE
 } from "./actionTypes";
 import {
   updateAuthSocialArray,
@@ -149,7 +152,8 @@ import {
   addProductReviewsPlatformApi,
   addProductApi,
   getAllProductsApi,
-  deleteProductApi
+  deleteProductApi,
+  fetchProductsApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -1965,19 +1969,21 @@ export const fetchAllProducts = () => {
       });
       let success = false;
       const products = _get(result, "data.data", []);
-      if (isValidArray(platforms)) {
+      //? if products is empty wrong value of success is being passed below
+      if (isValidArray(products)) {
         success = true;
       }
       dispatch({
         type: GET_ALL_PRODUCTS_SUCCESS,
         products: {
-          success,
+          success: true,
           isLoading: false,
           errorMsg: "",
           data: [...products]
         }
       });
     } catch (error) {
+      console.log(error);
       const errorMsg = _get(
         error,
         "response.data.message",
@@ -2021,6 +2027,7 @@ export const addProductInProductReviews = data => {
       let success = false;
       if (isValidArray(addedProduct)) {
         success = true;
+        dispatch(fetchAllProducts());
       }
       dispatch({
         type: ADD_PRODUCT_REVIEWS_PRODUCT_SUCCESS,
@@ -2097,6 +2104,57 @@ export const deleteProduct = productId => {
           isLoading: false,
           errorMsg,
           response: {}
+        }
+      });
+    }
+  };
+};
+
+//? fetch product reviews
+/* @params  */
+/* productId : required, platformId : nullable */
+// make changes according to pagination when ready
+
+export const fetchProductReviews = (productId, platformId) => {
+  return async (dispatch, getState) => {
+    const token = cookie.get("token");
+    const url = platformId
+      ? `${process.env.CORE_BASE_URL}${fetchProductsApi}/${productId}/${platformId}`
+      : `${process.env.CORE_BASE_URL}${fetchProductsApi}/${productId}`;
+    dispatch({
+      type: FETCH_PRODUCT_REVIEWS_INIT,
+      productReviews: {
+        isLoading: true,
+        success: undefined,
+        errorMsg: "",
+        data: {}
+      }
+    });
+    try {
+      const result = await axios({
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        url
+      });
+      //hard coding success for now, need to remove later
+      dispatch({
+        type: FETCH_PRODUCT_REVIEWS_SUCCESS,
+        productReviews: {
+          isLoading: false,
+          success: true,
+          errorMsg: "",
+          data: { ..._get(result, "data", {}) }
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      dispatch({
+        type: FETCH_PRODUCT_REVIEWS_FAILURE,
+        productReviews: {
+          isLoading: false,
+          success: false,
+          errorMsg: "",
+          data: {}
         }
       });
     }

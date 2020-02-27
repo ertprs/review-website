@@ -1,39 +1,54 @@
 import React from "react";
 import _get from "lodash/get";
 import dynamic from "next/dynamic";
+import { connect } from "react-redux";
+import { isValidArray } from "../../../../../utility/commonFunctions";
 
 const Select = dynamic(() => import("react-select"), {
   ssr: false
 });
 
+const generateOptionsFromProducts = products => {
+  let options = [];
+  if (isValidArray(products)) {
+    for (let product of products) {
+      let productId = _get(product, "_id", "");
+      let productName = _get(product, "name", "");
+      if (productId && productName) {
+        options = [...options, { value: productId, label: productName }];
+      }
+    }
+    return options;
+  }
+};
+
 const ProductsFilter = props => {
   //Extracted in mapStateToProps
-  const availableProductPlatforms = _get(
-    props,
-    "availableProductPlatforms",
-    []
-  );
-  const { handleProductPlatformsChange, selectedProductPlatforms } = props;
+  const products = _get(props, "products", []);
+  const { handleSelectedProductChange } = props;
   return (
     <div>
       <Select
-        isMulti
-        isLoading={availableProductPlatforms.length === 0 ? true : false}
+        isLoading={products.length === 0 ? true : false}
         loadingMessage={() => {
           return "Fetching available products...";
         }}
         name="products"
-        options={availableProductPlatforms}
+        options={generateOptionsFromProducts(products)}
         className="basic-multi-select"
         classNamePrefix="select"
-        onChange={arr => {
-          handleProductPlatformsChange(arr);
+        onChange={obj => {
+          handleSelectedProductChange(obj);
         }}
-        value={selectedProductPlatforms}
-        placeholder="Filter by products"
+        placeholder="Select a product to see reviews"
       />
     </div>
   );
 };
 
-export default ProductsFilter;
+const mapStateToProps = state => {
+  const products = _get(state, "dashboardData.products.data", []);
+  return { products };
+};
+
+export default connect(mapStateToProps)(ProductsFilter);

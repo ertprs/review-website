@@ -105,7 +105,10 @@ import {
   GET_ALL_PRODUCTS_FAILURE,
   DELETE_PRODUCT_INIT,
   DELETE_PRODUCT_SUCCESS,
-  DELETE_PRODUCT_FAILURE
+  DELETE_PRODUCT_FAILURE,
+  FETCH_PRODUCT_REVIEWS_INIT,
+  FETCH_PRODUCT_REVIEWS_SUCCESS,
+  FETCH_PRODUCT_REVIEWS_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -151,7 +154,8 @@ const dashboardReducer = (state = {}, action) => {
     productReviewsPlatforms,
     addProductInProductReviewsResponse,
     products,
-    deleteProductResponse
+    deleteProductResponse,
+    productReviews
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -782,6 +786,24 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         deleteProductResponse
+      };
+    case FETCH_PRODUCT_REVIEWS_INIT:
+      return {
+        ...state,
+        type,
+        productReviews
+      };
+    case FETCH_PRODUCT_REVIEWS_SUCCESS:
+      return {
+        ...state,
+        type,
+        productReviews
+      };
+    case FETCH_PRODUCT_REVIEWS_FAILURE:
+      return {
+        ...state,
+        type,
+        productReviews
       };
     default:
       return state;

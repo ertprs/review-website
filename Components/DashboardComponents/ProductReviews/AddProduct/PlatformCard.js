@@ -6,7 +6,6 @@ import _get from "lodash/get";
 const renderIcon = platformName => {
   let src = "";
   //? we don't have platform if for trustsearch and wot(in profile page), rest are being displayed from their platformId
-  console.log(platformName, "platformName");
   switch (platformName) {
     case 1:
       src = "/static/images/amazonLogo.png";
@@ -25,6 +24,7 @@ const renderIcon = platformName => {
       break;
     case "ebay":
       src = "/static/images/ebayLogo.png";
+      break;
     default:
       src = "";
   }
@@ -32,7 +32,7 @@ const renderIcon = platformName => {
     <>
       {src ? (
         <img
-          title={provider}
+          title={platformName}
           src={src}
           alt="icon"
           style={{ maxWidth: "100%", height: "auto" }}
