@@ -12,7 +12,6 @@ import UploadFile from "./UploadFile";
 import CopyPasteData from "./CopyPasteData";
 import validate from "../../../../../utility/validate";
 import WhatsAppAutomaticInvitation from "./WhatsAppAutomaticInvitation";
-import ScheduleInvitationDialog from "./WhatsAppAutomaticInvitation/ScheduleInvitationDialog";
 
 class UploadCustomerData extends React.Component {
   constructor(props) {
@@ -45,9 +44,7 @@ class UploadCustomerData extends React.Component {
         },
         parseErrors: []
       },
-      selectedPlatform: "",
-      //? schedule invitation dialog state
-      openScheduleInvitationDialog: false
+      selectedPlatform: ""
     };
     this.fileInput = React.createRef();
   }
@@ -252,16 +249,13 @@ class UploadCustomerData extends React.Component {
     });
   };
 
-  handleScheduleInvitationDialogToggle = () => {
-    this.setState(prevState => {
-      return {
-        openScheduleInvitationDialog: !prevState.openScheduleInvitationDialog
-      };
-    });
-  };
-
   renderExpansionPanel = () => {
-    const { handleNext, handlePrev, handleSelectedShopChange } = this.props;
+    const {
+      handleNext,
+      handleSelectedShopChange,
+      sendAfterMinutes,
+      handleSendAfterMinutesChange
+    } = this.props;
     const { uploadFileData } = this.state;
     const fileSize = _get(uploadFileData, "csvFile.size", 0);
     const parseErrors = _get(uploadFileData, "parseErrors", []);
@@ -393,11 +387,9 @@ class UploadCustomerData extends React.Component {
                 this.setState({ selectedPlatform });
                 handleSelectedShopChange(selectedPlatform);
               }}
-              showScheduleInvitationBtn={true}
-              handleShowScheduleBtnClick={
-                this.handleScheduleInvitationDialogToggle
-              }
               handleNext={handleNext}
+              sendAfterMinutes={sendAfterMinutes}
+              handleSendAfterMinutesChange={handleSendAfterMinutesChange}
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -406,8 +398,6 @@ class UploadCustomerData extends React.Component {
   };
 
   render() {
-    const { openScheduleInvitationDialog } = this.state;
-    const { sendAfterMinutes, handleSendAfterMinutesChange } = this.props;
     return (
       <>
         <style jsx>
@@ -424,14 +414,6 @@ class UploadCustomerData extends React.Component {
           </h5>
         </div>
         {this.renderExpansionPanel()}
-        <ScheduleInvitationDialog
-          open={openScheduleInvitationDialog}
-          handleClose={() => {
-            this.setState({ openScheduleInvitationDialog: false });
-          }}
-          sendAfterMinutes={sendAfterMinutes}
-          handleSendAfterMinutesChange={handleSendAfterMinutesChange}
-        />
       </>
     );
   }

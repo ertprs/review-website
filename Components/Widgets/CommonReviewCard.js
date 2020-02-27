@@ -60,8 +60,16 @@ const renderIcon = provider => {
 
 //? we are passing parent to show/hide something conditionally like if we are coming from dashboard we want to show footer. There are two parents only reviewsPage and dashboard
 const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
-  let { id, name, text, rating, date, review_url, hide_from_widget } =
-    review || {};
+  let {
+    id,
+    name,
+    text,
+    rating,
+    date,
+    review_url,
+    hide_from_widget,
+    recommended
+  } = review || {};
   name = name === "N/A" ? "Anonymous" : name;
 
   const redirectToReview = () => {
@@ -93,16 +101,33 @@ const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
               />
             </div>
             <div className="col-md-8 ratingContainer">
-              {rating === true ? (
+              {recommended === true ? (
                 <>
                   <p className="userName">
                     <span style={{ fontWeight: "bold" }}>{name || ""}</span>{" "}
-                    <span> recommends</span>.
+                    <span
+                      className={`${
+                        parent === "reviewsPage" ? "displayBlock" : ""
+                      }`}
+                    >
+                      {" "}
+                      recommends.
+                    </span>
                   </p>
                 </>
-              ) : rating === false ? (
+              ) : recommended === false ? (
                 <>
-                  <p className="userName">{name || ""}</p> doesn't recommend.
+                  <p className="userName">
+                    <span style={{ fontWeight: "bold" }}>{name || ""}</span>{" "}
+                    <span
+                      className={`${
+                        parent === "reviewsPage" ? "displayBlock" : ""
+                      }`}
+                    >
+                      {" "}
+                      doesn't recommend.
+                    </span>
+                  </p>
                 </>
               ) : (
                 <>
@@ -115,7 +140,9 @@ const ReviewCard = ({ review, provider, parent, toggleReviewVisibility }) => {
                     widgetDimensions="21px"
                     widgetSpacings="1px"
                   />
-                  <p className="userName">{name || ""}</p>
+                  <p className="userName">
+                    <span style={{ fontWeight: "bold" }}>{name || ""}</span>
+                  </p>
                 </>
               )}
               <div>

@@ -3,6 +3,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Home from "@material-ui/icons/Home";
+import ProductReviewsIcon from "@material-ui/icons/ShoppingCart";
 import RateReview from "@material-ui/icons/RateReview";
 import InsertInvitation from "@material-ui/icons/InsertInvitation";
 import PublicIcon from "@material-ui/icons/Public";
@@ -88,7 +89,7 @@ export const MainListItems = ({
         disabled={menuItemDisabled}
       >
         <Tooltip
-          title={<span style={{ fontSize: "14px" }}>Reviews</span>}
+          title={<span style={{ fontSize: "14px" }}>Company Reviews</span>}
           placement="right"
         >
           <ListItemIcon>
@@ -97,12 +98,32 @@ export const MainListItems = ({
         </Tooltip>
         <ListItemText primary="Reviews" />
       </ListItem>
+
       <ListItem
         button
         onClick={() => {
           handleMainListItemClick(3);
         }}
         className={stepToRender === 3 ? "grayBg pb_0" : "pb_0"}
+        disabled={menuItemDisabled}
+      >
+        <Tooltip
+          title={<span style={{ fontSize: "14px" }}>Product Reviews</span>}
+          placement="right"
+        >
+          <ListItemIcon>
+            <ProductReviewsIcon />
+          </ListItemIcon>
+        </Tooltip>
+        <ListItemText primary="Product Reviews" />
+      </ListItem>
+
+      <ListItem
+        button
+        onClick={() => {
+          handleMainListItemClick(4);
+        }}
+        className={stepToRender === 4 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -118,10 +139,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(4);
+          handleMainListItemClick(5);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 4 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 5 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>WhatsApp Invite</span>}
@@ -136,9 +157,9 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(5);
+          handleMainListItemClick(6);
         }}
-        className={stepToRender === 5 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 6 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -154,9 +175,9 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(6);
+          handleMainListItemClick(7);
         }}
-        className={stepToRender === 6 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 7 ? "grayBg pb_0" : "pb_0"}
         disabled={menuItemDisabled}
       >
         <Tooltip
@@ -172,10 +193,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(7);
+          handleMainListItemClick(8);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 7 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 8 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>Widgets</span>}
@@ -190,10 +211,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(8);
+          handleMainListItemClick(9);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 8 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 9 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>Review URL</span>}
@@ -208,10 +229,10 @@ export const MainListItems = ({
       <ListItem
         button
         onClick={() => {
-          handleMainListItemClick(9);
+          handleMainListItemClick(10);
         }}
         disabled={menuItemDisabled}
-        className={stepToRender === 9 ? "grayBg pb_0" : "pb_0"}
+        className={stepToRender === 10 ? "grayBg pb_0" : "pb_0"}
       >
         <Tooltip
           title={<span style={{ fontSize: "14px" }}>My Profile</span>}
@@ -292,6 +313,7 @@ export const DashboardLogo = () => {
           align-items: baseline;
           height: 40px;
           width: auto;
+          margin-bottom: 50px;
         }
         .imgStyle {
           max-width: 100%;

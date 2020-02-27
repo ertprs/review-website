@@ -55,3 +55,9 @@ export const whatsAppAutomaticInvitationCommitApi =
   "/api/my-business/profile/whatsapp/check-session/commit";
 export const getSchemaCodeDashboardApi = "/api/my-business/profile/schema-org";
 export const getSchemaCodeReviewsPageApi = "/api/profile/schema-org";
+export const getAllProductReviewPlatformsApi = "/api/platforms";
+export const addProductReviewsPlatformApi = "/api/platforms";
+export const addProductApi = "/api/products";
+export const getAllProductsApi = "/api/products";
+export const deleteProductApi = "/api/delete-platform";
+export const fetchProductsApi = "/api/reviews";

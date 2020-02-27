@@ -109,7 +109,7 @@ class GetWidget extends Component {
           valid: imageUrl ? true : false,
           touched: imageUrl ? true : false,
           errorMessage: "Please enter a valid image url!",
-          placeholder: "Enter Review image url",
+          placeholder: "Enter image url",
           validationRules: {
             required: true,
             isDomain: true
