@@ -501,7 +501,7 @@ class BusinessIndexPage extends React.Component {
                 <span className="symbol">%</span>
               </div>
               <div className="whyToText">
-                of dissatisfied cutomers will come back if their issue is
+                of dissatisfied customers will come back if their issue is
                 solved.
               </div>
             </div>
