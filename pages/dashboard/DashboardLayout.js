@@ -62,6 +62,7 @@ const useStyles = makeStyles(theme => ({
   drawerPaper: {
     position: "relative",
     whiteSpace: "nowrap",
+    height: "90%",
     width: drawerWidth,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
@@ -199,7 +200,7 @@ const DashboardLayout = props => {
           <DashboardLogo />
         </List>
       </Drawer>
-      <main className={classes.content} ref={refHack}>
+      <main className={classes.content} ref={refHack} id="style-2">
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           {props.children}
