@@ -42,9 +42,6 @@ export const layoutStyles = css.global`
             line-height: 1.15;
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: transparent;
-            height:100%;
-            width:100%;
-            overflow:hidden;
           }
           body {
             margin: 0;
@@ -57,9 +54,6 @@ export const layoutStyles = css.global`
             color: #212529;
             text-align: left;
             background-color: #fff;
-            height:100%;
-            width:100;
-            overflow:hidden;
           }
           [tabindex="-1"]:focus {
             outline: 0 ;
