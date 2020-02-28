@@ -56,10 +56,6 @@ import { sendTrustVote } from "./trustAction";
 import { reportDomain } from "./domainProfileActions";
 import { get, isEmpty } from "lodash";
 import cookie from "js-cookie";
-import _find from "lodash/find";
-import _isEmpty from "lodash/isEmpty";
-import _omit from "lodash/omit";
-import _uniqBy from "lodash/uniqBy";
 import { isValidArray } from "../../utility/commonFunctions";
 
 export const signUp = (signupData, registerApi, signUpType) => {

@@ -1,42 +1,85 @@
 import React, { Component } from "react";
 import _now from "lodash/now";
+import Snackbar from "../../../Widgets/Snackbar";
 import { connect } from "react-redux";
 import ProductCard from "./ProductCard";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
+import _remove from "lodash/remove";
+import _uniqBy from "lodash/uniqBy";
 import validate from "../../../../utility/validate";
 import Button from "@material-ui/core/Button";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import Zoom from "@material-ui/core/Zoom";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   isValidArray,
   uniqueIdGenerator
 } from "../../../../utility/commonFunctions";
-import { updateProductInProductReviews } from "../../../../store/actions/dashboardActions";
+import {
+  updateProductInProductReviews,
+  emptyProductUpdateResponse
+} from "../../../../store/actions/dashboardActions";
 import styles from "./styles";
 
 class EditProduct extends Component {
   state = {
-    productData: {}
+    productData: {},
+    showSnackbar: false,
+    snackbarVariant: "success",
+    snackbarMessage: ""
   };
 
   componentDidMount() {
     this.addProduct();
   }
 
+  componentWillUnmount() {
+    const { emptyProductUpdateResponse } = this.props;
+    emptyProductUpdateResponse();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {
+      productUpdateSuccess,
+      productUpdateErrorMsg,
+      setActiveComponent
+    } = this.props;
+    if (productUpdateSuccess !== prevProps.productUpdateSuccess) {
+      if (productUpdateSuccess === true) {
+        this.setState(
+          {
+            showSnackbar: true,
+            snackbarMessage: "Product Update Successfully!",
+            snackbarVariant: "success"
+          },
+          () => {
+            setActiveComponent("list");
+          }
+        );
+      } else if (productUpdateSuccess === false) {
+        this.setState({
+          showSnackbar: true,
+          snackbarMessage: productUpdateErrorMsg,
+          snackbarVariant: "error"
+        });
+      }
+    }
+  }
+
   generatePlatformsArray = () => {
-    const { updatedPlatformArray } = this.props;
-    return updatedPlatformArray.map(item => {
+    const { reviewPlatformsArray } = this.props;
+    return reviewPlatformsArray.map(item => {
       const id = _get(item, "_id", "");
       const name = _get(item, "name", "");
       const url = _get(item, "url", "");
+      const platformId = _get(item, "platform", "");
       return {
         id,
         uniqueId: uniqueIdGenerator(),
-        showAddBtn: true,
+        platformId,
         url: {
           element: "input",
           type: "text",
@@ -50,10 +93,33 @@ class EditProduct extends Component {
           },
           name,
           id: name,
-          labelText: ""
+          labelText: "",
+          disabled: id ? true : false
         }
       };
     });
+  };
+
+  //? this method will add showAddBtn = true to all unique platforms
+  addShowAddBtnPropertyInPlatformUrls = () => {
+    let platformsArray = this.generatePlatformsArray();
+    let uniquePlatforms = _uniqBy(platformsArray, "platformId");
+    if (isValidArray(platformsArray)) {
+      return (platformsArray || []).map(platform => {
+        let isThisUniquePlatform = _findIndex(uniquePlatforms, [
+          "uniqueId",
+          _get(platform, "uniqueId", "")
+        ]);
+        if (isThisUniquePlatform !== -1) {
+          return {
+            ...platform,
+            showAddBtn: true
+          };
+        } else {
+          return { ...platform, showAddBtn: false };
+        }
+      });
+    }
   };
 
   addProduct = () => {
@@ -61,6 +127,7 @@ class EditProduct extends Component {
     const productName = _get(productToEdit, "name", "");
     const productId = _get(productToEdit, "_id", "");
     const platformURLs = this.generatePlatformsArray();
+    const platformURLsWithShowAddBtn = this.addShowAddBtnPropertyInPlatformUrls();
     this.setState({
       productData: {
         id: productId,
@@ -71,15 +138,15 @@ class EditProduct extends Component {
           placeholder: "Enter product name",
           touched: productName ? true : false,
           valid: productName ? true : false,
-          errorMessage: "Please enter a valid name",
+          errorMessage: "Please enter product name",
           validationRules: {
-            isRequired: true
+            required: true
           },
           name: "productName",
           id: "productName",
           labelText: ""
         },
-        platformURLs: [...platformURLs]
+        platformURLs: [...platformURLsWithShowAddBtn]
       }
     });
   };
@@ -116,10 +183,12 @@ class EditProduct extends Component {
       url: {
         ..._get(platformURLToUpdate, "url", {}),
         value,
-        valid: validate(
-          value,
-          _get(platformURLToUpdate, "url.validationRules", {})
-        ),
+        valid: value
+          ? validate(
+              value,
+              _get(platformURLToUpdate, "url.validationRules", {})
+            )
+          : true,
         touched: true
       }
     };
@@ -132,16 +201,17 @@ class EditProduct extends Component {
     });
   };
 
-  addMorePlatform = platformId => {
+  addMorePlatform = (productId, platformId) => {
     const { productData } = this.state;
     const platforms = _get(productData, "platformURLs", []);
     const platformIndex = _findIndex(platforms, ["id", platformId]);
     if (platformIndex !== -1) {
       const platform = platforms[platformIndex];
-      const platformId = _get(platform, "id", "");
+      const platformId = _get(platform, "platformId", "");
       const platformName = _get(platform, "url.name", "");
       const newPlatform = {
-        id: platformId,
+        id: "",
+        platformId,
         uniqueId: uniqueIdGenerator(),
         url: {
           element: "input",
@@ -169,48 +239,79 @@ class EditProduct extends Component {
   };
 
   //?Utility function to return platforms having URLs for a particular product
-  getValidPlatformsWithURLs = platformsArray => {
-    let validPlatformsArray = [];
+  getValidPlatformsURLs = platformsArray => {
+    let validPlatformUrls = [];
+    let areAllUrlsValid = true;
     if (isValidArray(platformsArray)) {
-      (platformsArray || []).forEach(platform => {
+      validPlatformUrls = (platformsArray || []).map(platform => {
         let platformUrlIsValid = _get(platform, "url.valid", false);
         if (platformUrlIsValid) {
-          let platformId = _get(platform, "id", "");
-          let platformURL = _get(platform, "url.value", "");
-          validPlatformsArray = [
-            ...validPlatformsArray,
-            { platform: platformId, url: platformURL }
-          ];
+          let _id = _get(platform, "id", "");
+
+          if (_id) {
+            return {
+              _id: _get(platform, "id", ""),
+              platform: _get(platform, "platformId", ""),
+              url: _get(platform, "url.value", "")
+            };
+          } else {
+            return {
+              platform: _get(platform, "platformId"),
+              url: _get(platform, "url.value", "")
+            };
+          }
+        } else {
+          areAllUrlsValid = false;
         }
       });
     }
-    return validPlatformsArray;
+    return {
+      validPlatformUrls,
+      areAllUrlsValid
+    };
   };
 
   //? Handle submission of products
-  handleSaveBtnClick = () => {
-    const { updateProductInProductReviews, setActiveComponent } = this.props;
+  handleProductUpdate = () => {
+    const { updateProductInProductReviews } = this.props;
     const { productData } = this.state;
-    let platformsArray = _get(productData, "platformURLs", []);
-    let productName = _get(productData, "productName.value", "");
-    let productId = _get(productData, "id");
-    let validPlatformsArray =
-      this.getValidPlatformsWithURLs(platformsArray) || {};
-    let reqBody = {
-      _id: productId,
-      name: productName,
-      platforms: [...validPlatformsArray]
-    };
-    updateProductInProductReviews(reqBody);
-    setActiveComponent("list");
+    const platformsArray = _get(productData, "platformURLs", []);
+    const productName = _get(productData, "productName.value", "");
+    const productId = _get(productData, "id");
+    const isValidProductName = _get(productData, "productName.valid", false);
+    let { validPlatformUrls, areAllUrlsValid } =
+      this.getValidPlatformsURLs(platformsArray) || {};
+    if (!isValidProductName) {
+      alert("Please enter a valid product name");
+    }
+    if (!areAllUrlsValid) {
+      alert("Please check if all the entered urls are valid!");
+    }
+    if (isValidProductName && areAllUrlsValid) {
+      let reqBody = {
+        _id: productId,
+        name: productName,
+        platforms: [...validPlatformUrls]
+      };
+      updateProductInProductReviews(reqBody);
+    }
   };
 
   render() {
-    const { productData } = this.state;
-    const { setActiveComponent } = this.props;
+    const {
+      productData,
+      showSnackbar,
+      snackbarMessage,
+      snackbarVariant
+    } = this.state;
+    const { setActiveComponent, productUpdateIsLoading } = this.props;
     return (
       <>
         <style jsx>{styles}</style>
+        <h3 style={{ margin: "30px 0px" }}>
+          You may add new product urls by clicking on the add icon adjacent to
+          the respective platforms.
+        </h3>
         <Zoom in={true}>
           <div
             style={{ margin: "15px 0 15px 0" }}
@@ -235,22 +336,35 @@ class EditProduct extends Component {
                 variant="contained"
                 size="medium"
                 startIcon={<ArrowBack />}
-                style={{ marginRight: "10px" }}
+                style={{ marginRight: "20px" }}
               >
                 Back
               </Button>
-              <Button
-                onClick={this.handleSaveBtnClick}
-                color="primary"
-                variant="contained"
-                size="medium"
-                endIcon={<ArrowRight />}
-              >
-                Save and continue
-              </Button>
+              {productUpdateIsLoading ? (
+                <Button variant="contained" size="medium" color="primary">
+                  <CircularProgress size={25} color="#fff" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={this.handleProductUpdate}
+                  color="primary"
+                  variant="contained"
+                  size="medium"
+                >
+                  Update Product
+                </Button>
+              )}
             </div>
           </div>
         </div>
+        <Snackbar
+          variant={snackbarVariant}
+          message={snackbarMessage}
+          open={showSnackbar}
+          handleClose={() => {
+            this.setState({ showSnackbar: false });
+          }}
+        />
       </>
     );
   }
@@ -259,38 +373,63 @@ class EditProduct extends Component {
 const mapStateToProps = (state, ownProps) => {
   const { dashboardData } = state;
   const { productToEdit } = ownProps;
-  const productConfiguredPlatforms = _get(productToEdit, "platforms", []);
-  const productReviewsPlatforms = _get(
+  let configuredPlatforms = _get(productToEdit, "platforms", []);
+  const platformsFromApi = _get(
     dashboardData,
-    "productReviewsPlatforms",
+    "productReviewsPlatforms.platforms",
     {}
   );
-  const platformsArray = _get(productReviewsPlatforms, "platforms", []);
+  let nonConfiguredPlatforms = [...platformsFromApi];
+  if (isValidArray(configuredPlatforms)) {
+    configuredPlatforms = configuredPlatforms.map(platform => {
+      let platformId = _get(platform, "platform", "");
+      let platformName =
+        (_find(platformsFromApi, ["_id", platformId]) || {}).name || "";
+      nonConfiguredPlatforms = _remove(nonConfiguredPlatforms, platform => {
+        return _get(platform, "_id", "") !== platformId;
+      });
 
-  const updatedPlatformArray = platformsArray.map(platform => {
-    let platformId = _get(platform, "_id", "");
-    let configuredPlatformIndex = _findIndex(productConfiguredPlatforms, [
-      "platform",
-      platformId
-    ]);
-    if (configuredPlatformIndex !== -1) {
       return {
         ...platform,
-        url:
-          (productConfiguredPlatforms[configuredPlatformIndex] || {}).url || ""
+        name: platformName
       };
-    }
-    return { ...platform };
+    });
+  }
+  nonConfiguredPlatforms = nonConfiguredPlatforms.map(platform => {
+    return {
+      name: _get(platform, "name", ""),
+      platform: _get(platform, "_id", ""),
+      url: ""
+    };
   });
-
-  const platformsSuccess = _get(productReviewsPlatforms, "success", undefined);
-  console.log(updatedPlatformArray, "updatedPlatformArray");
+  const reviewPlatformsArray = [
+    ...configuredPlatforms,
+    ...nonConfiguredPlatforms
+  ];
+  const productUpdateSuccess = _get(
+    dashboardData,
+    "updateProductResponse.success",
+    undefined
+  );
+  const productUpdateErrorMsg = _get(
+    dashboardData,
+    "updateProductResponse.errorMsg",
+    "Some Error Occurred!"
+  );
+  const productUpdateIsLoading = _get(
+    dashboardData,
+    "updateProductResponse.isLoading",
+    false
+  );
   return {
-    updatedPlatformArray,
-    platformsSuccess
+    reviewPlatformsArray,
+    productUpdateSuccess,
+    productUpdateErrorMsg,
+    productUpdateIsLoading
   };
 };
 
-export default connect(mapStateToProps, { updateProductInProductReviews })(
-  EditProduct
-);
+export default connect(mapStateToProps, {
+  updateProductInProductReviews,
+  emptyProductUpdateResponse
+})(EditProduct);

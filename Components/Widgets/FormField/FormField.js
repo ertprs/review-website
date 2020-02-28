@@ -61,7 +61,11 @@ const FormField = ({
             onKeyDown={onkeyDown}
             name={name}
             className={
-              !valid && touched ? "formField invalidField" : "formField"
+              !valid && touched
+                ? "formField invalidField"
+                : disabled
+                ? "disabledInput formField"
+                : "formField"
             }
             style={{ ...styles }}
           />

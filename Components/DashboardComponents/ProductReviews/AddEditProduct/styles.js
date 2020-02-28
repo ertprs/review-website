@@ -26,4 +26,8 @@ export default css`
   .eightyPerWidth {
     width: 80%;
   }
+
+  .logoFlex {
+    margin-top: 10px;
+  }
 `;
