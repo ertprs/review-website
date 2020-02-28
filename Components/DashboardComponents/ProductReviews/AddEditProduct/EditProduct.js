@@ -15,7 +15,7 @@ import {
   isValidArray,
   uniqueIdGenerator
 } from "../../../../utility/commonFunctions";
-import { addProductInProductReviews } from "../../../../store/actions/dashboardActions";
+import { updateProductInProductReviews } from "../../../../store/actions/dashboardActions";
 import styles from "./styles";
 
 class EditProduct extends Component {
@@ -110,7 +110,6 @@ class EditProduct extends Component {
       "uniqueId",
       platformUniqueId
     ]);
-    console.log(platformUniqueId, "platformUniqueId");
     let platformURLToUpdate = platformURLs[indexOfPlatformURLToUpdate] || {};
     platformURLToUpdate = {
       ...platformURLToUpdate,
@@ -190,29 +189,20 @@ class EditProduct extends Component {
 
   //? Handle submission of products
   handleSaveBtnClick = () => {
-    const { addProductInProductReviews, setActiveComponent } = this.props;
+    const { updateProductInProductReviews, setActiveComponent } = this.props;
     const { productData } = this.state;
-    let reqBody = [];
-    if (isValidArray(productData)) {
-      (productData || []).forEach(product => {
-        let productNameIsValid = _get(product, "productName.valid", "");
-        let productName = _get(product, "productName.value", "");
-        let platformsArray = _get(product, "platformURLs", []);
-        let validPlatformsArray =
-          this.getValidPlatformsWithURLs(platformsArray) || [];
-        //if valid productName && at least one platform URL is added push into request Body
-        if (productNameIsValid && (validPlatformsArray || []).length > 0) {
-          reqBody = [
-            ...reqBody,
-            { name: productName, platforms: [...validPlatformsArray] }
-          ];
-        }
-      });
-    }
-    if (isValidArray(reqBody)) {
-      addProductInProductReviews(reqBody);
-      setActiveComponent("list");
-    }
+    let platformsArray = _get(productData, "platformURLs", []);
+    let productName = _get(productData, "productName.value", "");
+    let productId = _get(productData, "id");
+    let validPlatformsArray =
+      this.getValidPlatformsWithURLs(platformsArray) || {};
+    let reqBody = {
+      _id: productId,
+      name: productName,
+      platforms: [...validPlatformsArray]
+    };
+    updateProductInProductReviews(reqBody);
+    setActiveComponent("list");
   };
 
   render() {
@@ -301,6 +291,6 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { addProductInProductReviews })(
+export default connect(mapStateToProps, { updateProductInProductReviews })(
   EditProduct
 );

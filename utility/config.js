@@ -58,6 +58,7 @@ export const getSchemaCodeReviewsPageApi = "/api/profile/schema-org";
 export const getAllProductReviewPlatformsApi = "/api/platforms";
 export const addProductReviewsPlatformApi = "/api/platforms";
 export const addProductApi = "/api/products";
+export const updateProductApi = "/api/products/update";
 export const getAllProductsApi = "/api/products";
 export const deleteProductApi = "/api/delete-platform";
 export const fetchProductReviewsApi = "/api/reviews";
