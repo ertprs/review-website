@@ -11,13 +11,16 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import Zoom from "@material-ui/core/Zoom";
-import { isValidArray } from "../../../../utility/commonFunctions";
+import {
+  isValidArray,
+  uniqueIdGenerator
+} from "../../../../utility/commonFunctions";
 import { addProductInProductReviews } from "../../../../store/actions/dashboardActions";
 import styles from "./styles";
 
-class AddProduct extends Component {
+class EditProduct extends Component {
   state = {
-    productData: []
+    productData: {}
   };
 
   componentDidMount() {
@@ -25,21 +28,22 @@ class AddProduct extends Component {
   }
 
   generatePlatformsArray = () => {
-    const { platformsArray } = this.props;
-    return platformsArray.map(item => {
+    const { updatedPlatformArray } = this.props;
+    return updatedPlatformArray.map(item => {
       const id = _get(item, "_id", "");
       const name = _get(item, "name", "");
+      const url = _get(item, "url", "");
       return {
         id,
-        uniqueId: _now(),
+        uniqueId: uniqueIdGenerator(),
         showAddBtn: true,
         url: {
           element: "input",
           type: "text",
-          value: "",
+          value: url,
           placeholder: `Enter ${name} URL`,
-          touched: false,
-          valid: false,
+          touched: url ? true : false,
+          valid: url ? true : false,
           errorMessage: "Please enter a valid URL",
           validationRules: {
             isDomain: true
@@ -54,133 +58,115 @@ class AddProduct extends Component {
 
   addProduct = () => {
     const { productData } = this.state;
+    const { productToEdit } = this.props;
+    const productName = _get(productToEdit, "name", "");
+    const productId = _get(productToEdit, "_id", "");
     const platformURLs = this.generatePlatformsArray();
     this.setState({
-      productData: [
-        ...productData,
-        {
-          id: _now(),
-          productName: {
-            element: "input",
-            type: "text",
-            value: "",
-            placeholder: "Enter product name",
-            touched: false,
-            valid: false,
-            errorMessage: "Please enter a valid name",
-            validationRules: {
-              isRequired: true
-            },
-            name: "productName",
-            id: "productName",
-            labelText: ""
+      productData: {
+        id: productId,
+        productName: {
+          element: "input",
+          type: "text",
+          value: productName,
+          placeholder: "Enter product name",
+          touched: productName ? true : false,
+          valid: productName ? true : false,
+          errorMessage: "Please enter a valid name",
+          validationRules: {
+            isRequired: true
           },
-          platformURLs: [...platformURLs]
-        }
-      ]
+          name: "productName",
+          id: "productName",
+          labelText: ""
+        },
+        platformURLs: [...platformURLs]
+      }
     });
   };
 
   handleProductNameChange = (e, id) => {
     const { productData } = this.state;
     const value = _get(e, "target.value", "");
-    let formDataIndex = _findIndex(productData, ["id", id]);
-    if (formDataIndex !== -1) {
-      let formData = productData[formDataIndex] || [];
-      if (formData) {
-        formData = {
-          ...formData,
-          productName: {
-            ..._get(formData, "productName", {}),
-            value,
-            valid: validate(
-              value,
-              _get(formData, "productName.validationRules", {})
-            ),
-            touched: true
-          }
-        };
+    let updatedProductData = {
+      ...productData,
+      productName: {
+        ..._get(productData, "productName", {}),
+        value,
+        valid: validate(
+          value,
+          _get(productData, "productName.validationRules", {})
+        ),
+        touched: true
       }
-      let updatedData = [...productData];
-      updatedData[formDataIndex] = { ...formData };
-      this.setState({ productData: [...updatedData] });
-    }
+    };
+    this.setState({ productData: { ...updatedProductData } });
   };
 
-  handleURLChange = (e, productId, platformUniqueId) => {
+  handleURLChange = (e, platformUniqueId) => {
     const value = _get(e, "target.value", {});
     const { productData } = this.state;
-    let productIndex = _findIndex(productData, ["id", productId]);
-    if (productIndex !== -1) {
-      let product = productData[productIndex] || [];
-      if (product) {
-        let platformURLs = _get(product, "platformURLs", []);
-        let indexOfPlatformURLToUpdate = _findIndex(platformURLs, [
-          "uniqueId",
-          platformUniqueId
-        ]);
-        let platformURLToUpdate =
-          platformURLs[indexOfPlatformURLToUpdate] || {};
-        platformURLToUpdate = {
-          ...platformURLToUpdate,
-          url: {
-            ..._get(platformURLToUpdate, "url", {}),
-            value,
-            valid: validate(
-              value,
-              _get(platformURLToUpdate, "url.validationRules", {})
-            ),
-            touched: true
-          }
-        };
-        platformURLs[indexOfPlatformURLToUpdate] = { ...platformURLToUpdate };
-        product = { ...product, platformURLs: [...platformURLs] };
+    let platformURLs = _get(productData, "platformURLs", []);
+    let indexOfPlatformURLToUpdate = _findIndex(platformURLs, [
+      "uniqueId",
+      platformUniqueId
+    ]);
+    console.log(platformUniqueId, "platformUniqueId");
+    let platformURLToUpdate = platformURLs[indexOfPlatformURLToUpdate] || {};
+    platformURLToUpdate = {
+      ...platformURLToUpdate,
+      url: {
+        ..._get(platformURLToUpdate, "url", {}),
+        value,
+        valid: validate(
+          value,
+          _get(platformURLToUpdate, "url.validationRules", {})
+        ),
+        touched: true
       }
-      let updatedData = [...productData];
-      updatedData[productIndex] = { ...product };
-      this.setState({ productData: [...updatedData] });
-    }
+    };
+    const updatedPlatformURLs = [...platformURLs];
+    updatedPlatformURLs[indexOfPlatformURLToUpdate] = {
+      ...platformURLToUpdate
+    };
+    this.setState({
+      productData: { ...productData, platformURLs: [...updatedPlatformURLs] }
+    });
   };
 
-  addMorePlatform = (productId, platformId) => {
+  addMorePlatform = platformId => {
     const { productData } = this.state;
-    const productIndex = _findIndex(productData, ["id", productId]);
-    if (productIndex !== -1) {
-      const product = productData[productIndex];
-      const platforms = _get(product, "platformURLs", []);
-      const platformIndex = _findIndex(platforms, ["id", platformId]);
-      if (platformIndex !== -1) {
-        const platform = platforms[platformIndex];
-        const platformId = _get(platform, "id", "");
-        const platformName = _get(platform, "url.name", "");
-        const newPlatform = {
-          id: platformId,
-          uniqueId: _now(),
-          url: {
-            element: "input",
-            type: "text",
-            value: "",
-            placeholder: `Enter ${platformName} URL`,
-            touched: false,
-            valid: false,
-            errorMessage: "Please enter a valid URL",
-            validationRules: {
-              isDomain: true
-            },
-            platformName,
-            name: platformName,
-            id: platformName,
-            labelText: ""
+    const platforms = _get(productData, "platformURLs", []);
+    const platformIndex = _findIndex(platforms, ["id", platformId]);
+    if (platformIndex !== -1) {
+      const platform = platforms[platformIndex];
+      const platformId = _get(platform, "id", "");
+      const platformName = _get(platform, "url.name", "");
+      const newPlatform = {
+        id: platformId,
+        uniqueId: uniqueIdGenerator(),
+        url: {
+          element: "input",
+          type: "text",
+          value: "",
+          placeholder: `Enter ${platformName} URL`,
+          touched: false,
+          valid: false,
+          errorMessage: "Please enter a valid URL",
+          validationRules: {
+            isDomain: true
           },
-          showAddBtn: false
-        };
-        let updatedPlatforms = [...platforms];
-        updatedPlatforms.splice(platformIndex + 1, 0, newPlatform);
-        const updatedProduct = { ...product, platformURLs: updatedPlatforms };
-        let updatedProductData = [...productData];
-        updatedProductData[productIndex] = { ...updatedProduct };
-        this.setState({ productData: updatedProductData });
-      }
+          platformName,
+          name: platformName,
+          id: platformName,
+          labelText: ""
+        },
+        showAddBtn: false
+      };
+      let updatedPlatforms = [...platforms];
+      updatedPlatforms.splice(platformIndex + 1, 0, newPlatform);
+      const updatedProduct = { ...productData, platformURLs: updatedPlatforms };
+      this.setState({ productData: updatedProduct });
     }
   };
 
@@ -236,35 +222,21 @@ class AddProduct extends Component {
     return (
       <>
         <style jsx>{styles}</style>
-        {(productData || []).map(product => {
-          return (
-            <Zoom in={true}>
-              <div
-                style={{ margin: "15px 0 15px 0" }}
-                key={_get(product, "id", "")}
-              >
-                <ProductCard
-                  product={product}
-                  handleProductNameChange={this.handleProductNameChange}
-                  handleURLChange={this.handleURLChange}
-                  addMorePlatform={this.addMorePlatform}
-                />
-              </div>
-            </Zoom>
-          );
-        })}
-        <div className="row">
-          <div className="col-md-6">
-            <Button
-              onClick={this.addProduct}
-              color="primary"
-              size="medium"
-              startIcon={<AddCircleOutlineIcon />}
-            >
-              Add More Products
-            </Button>
+        <Zoom in={true}>
+          <div
+            style={{ margin: "15px 0 15px 0" }}
+            key={_get(productData, "_id", "")}
+          >
+            <ProductCard
+              product={productData}
+              handleProductNameChange={this.handleProductNameChange}
+              handleURLChange={this.handleURLChange}
+              addMorePlatform={this.addMorePlatform}
+            />
           </div>
-          <div className="col-md-6">
+        </Zoom>
+        <div className="row">
+          <div className="col-md-6 offset-md-6">
             <div style={{ textAlign: "right" }}>
               <Button
                 onClick={() => {
@@ -295,21 +267,41 @@ class AddProduct extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   const { dashboardData } = state;
+  const { productToEdit } = ownProps;
+  const productConfiguredPlatforms = _get(productToEdit, "platforms", []);
   const productReviewsPlatforms = _get(
     dashboardData,
     "productReviewsPlatforms",
     {}
   );
   const platformsArray = _get(productReviewsPlatforms, "platforms", []);
+
+  const updatedPlatformArray = platformsArray.map(platform => {
+    let platformId = _get(platform, "_id", "");
+    let configuredPlatformIndex = _findIndex(productConfiguredPlatforms, [
+      "platform",
+      platformId
+    ]);
+    if (configuredPlatformIndex !== -1) {
+      return {
+        ...platform,
+        url:
+          (productConfiguredPlatforms[configuredPlatformIndex] || {}).url || ""
+      };
+    }
+    return { ...platform };
+  });
+
   const platformsSuccess = _get(productReviewsPlatforms, "success", undefined);
+  console.log(updatedPlatformArray, "updatedPlatformArray");
   return {
-    platformsArray,
+    updatedPlatformArray,
     platformsSuccess
   };
 };
 
 export default connect(mapStateToProps, { addProductInProductReviews })(
-  AddProduct
+  EditProduct
 );

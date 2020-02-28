@@ -10,7 +10,7 @@ function AddProductCard({
   handleProductNameChange,
   addMorePlatform
 }) {
-  const platformURLs = _get(product, "platformURLs", {});
+  const platformURLs = _get(product, "platformURLs", []);
   return (
     <Card>
       <div style={{ marginBottom: "10px" }}>

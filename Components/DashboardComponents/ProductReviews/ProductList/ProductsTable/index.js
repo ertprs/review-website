@@ -32,7 +32,7 @@ class ProductsTable extends Component {
           id: _get(row, "_id", ""),
           name: _get(row, "name", ""),
           originalData: {
-            ...tableData
+            ...row
           }
         };
       });
@@ -48,6 +48,7 @@ class ProductsTable extends Component {
 
   render() {
     const { openDialog } = this.state;
+    const { handleProductToEdit } = this.props;
     return (
       <div>
         <MaterialTable
@@ -92,7 +93,8 @@ class ProductsTable extends Component {
             {
               icon: "edit",
               tooltip: "Edit Product",
-              onClick: (event, rowData) => alert("You edited " + rowData.name)
+              onClick: (event, rowData) =>
+                handleProductToEdit(_get(rowData, "originalData", {}))
             },
             {
               icon: "delete",
