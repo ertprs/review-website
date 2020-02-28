@@ -21,6 +21,7 @@ import {
 //? Lodash
 import _get from "lodash/get";
 import _findKey from "lodash/findKey";
+import Head from "next/head";
 //? Utilities
 import { isValidArray } from "../../utility/commonFunctions";
 import isAuthenticatedBusiness from "../../utility/isAuthenticated/isAuthenticatedBusiness";
@@ -482,6 +483,13 @@ class Dashboard extends Component {
 
     return (
       <>
+        <Head>
+          <link
+            href="/static/css/dashboardHomeCSS.css"
+            type="text/css"
+            rel="stylesheet"
+          />
+        </Head>
         <div className="dFlex">
           <style jsx>{`
             .dFlex {
