@@ -215,6 +215,13 @@ export const getSubscriptionPlan = planId => {
   return subscriptionPlan;
 };
 
+export const uniqueIdGenerator = ()=>{
+    // Math.random should be unique because of its seeding algorithm.
+    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+    // after the decimal.
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+
 //? screenshot layer: copied here to use in future
 // const screenshotLayer = `https://api.screenshotlayer.com/api/capture?access_key=1ed89e56fa17fe2bd7cc86f2a0e6a209&url=https://www.${parsed_domain_name}&viewport=1440x900&width=250&random=${Math.floor(
 //       Math.random() * 10 + 1

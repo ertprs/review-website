@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import _now from "lodash/now";
 import { connect } from "react-redux";
-import AddProductCard from "./AddProductCard";
+import ProductCard from "./ProductCard";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
@@ -11,7 +10,10 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import Zoom from "@material-ui/core/Zoom";
-import { isValidArray } from "../../../../utility/commonFunctions";
+import {
+  isValidArray,
+  uniqueIdGenerator
+} from "../../../../utility/commonFunctions";
 import { addProductInProductReviews } from "../../../../store/actions/dashboardActions";
 import styles from "./styles";
 
@@ -31,7 +33,7 @@ class AddProduct extends Component {
       const name = _get(item, "name", "");
       return {
         id,
-        uniqueId: _now(),
+        uniqueId: uniqueIdGenerator(),
         showAddBtn: true,
         url: {
           element: "input",
@@ -59,7 +61,7 @@ class AddProduct extends Component {
       productData: [
         ...productData,
         {
-          id: _now(),
+          id: uniqueIdGenerator(),
           productName: {
             element: "input",
             type: "text",
@@ -155,7 +157,7 @@ class AddProduct extends Component {
         const platformName = _get(platform, "url.name", "");
         const newPlatform = {
           id: platformId,
-          uniqueId: _now(),
+          uniqueId: uniqueIdGenerator(),
           url: {
             element: "input",
             type: "text",
@@ -243,7 +245,7 @@ class AddProduct extends Component {
                 style={{ margin: "15px 0 15px 0" }}
                 key={_get(product, "id", "")}
               >
-                <AddProductCard
+                <ProductCard
                   product={product}
                   handleProductNameChange={this.handleProductNameChange}
                   handleURLChange={this.handleURLChange}

@@ -9,7 +9,8 @@ import Slide from "@material-ui/core/Slide";
 import Container from "@material-ui/core/Container";
 import _get from "lodash/get";
 import ProductList from "../ProductList";
-import AddProduct from "../AddProduct";
+import AddProduct from "../AddEditProduct/AddProduct";
+import EditProduct from "../AddEditProduct/EditProduct";
 
 const styles = theme => ({
   appBar: {
@@ -42,21 +43,39 @@ const components = {
 
 class ProductCRUDDialog extends Component {
   state = {
-    activeComponent: "list"
+    activeComponent: "list",
+    productToEdit: {}
   };
 
-  setActiveComponent = (componentName = null, appBarText = "") => {
-    this.setState({ activeComponent: componentName, appBarText });
+  setActiveComponent = (componentName = null) => {
+    this.setState({ activeComponent: componentName });
   };
 
   renderActiveComponent = () => {
-    const { activeComponent } = this.state;
+    const { activeComponent, productToEdit } = this.state;
     const componentName = (components[activeComponent] || {}).name;
     switch (componentName) {
       case "ProductList":
-        return <ProductList setActiveComponent={this.setActiveComponent} />;
+        return (
+          <ProductList
+            setActiveComponent={this.setActiveComponent}
+            handleProductToEdit={productToEdit => {
+              this.setState({
+                productToEdit: { ...productToEdit },
+                activeComponent: "update"
+              });
+            }}
+          />
+        );
       case "AddProduct":
         return <AddProduct setActiveComponent={this.setActiveComponent} />;
+      case "UpdateProduct":
+        return (
+          <EditProduct
+            setActiveComponent={this.setActiveComponent}
+            productToEdit={productToEdit}
+          />
+        );
       default:
         null;
     }
