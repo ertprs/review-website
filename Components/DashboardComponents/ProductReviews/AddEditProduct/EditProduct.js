@@ -57,7 +57,6 @@ class EditProduct extends Component {
   };
 
   addProduct = () => {
-    const { productData } = this.state;
     const { productToEdit } = this.props;
     const productName = _get(productToEdit, "name", "");
     const productId = _get(productToEdit, "_id", "");
@@ -85,7 +84,7 @@ class EditProduct extends Component {
     });
   };
 
-  handleProductNameChange = (e, id) => {
+  handleProductNameChange = (e, productId, platformUniqueId) => {
     const { productData } = this.state;
     const value = _get(e, "target.value", "");
     let updatedProductData = {
@@ -103,7 +102,7 @@ class EditProduct extends Component {
     this.setState({ productData: { ...updatedProductData } });
   };
 
-  handleURLChange = (e, platformUniqueId) => {
+  handleURLChange = (e, productId, platformUniqueId) => {
     const value = _get(e, "target.value", {});
     const { productData } = this.state;
     let platformURLs = _get(productData, "platformURLs", []);

@@ -78,13 +78,15 @@ const PlatformCard = ({
             <FormField
               {...formData}
               handleChange={e => {
-                handleURLChange(e, platformUniqueId);
+                handleURLChange(e, productId, platformUniqueId);
               }}
             />
           </div>
           <div className="inlineBlock">
             {showAddBtn ? (
-              <IconButton onClick={() => addMorePlatform(platformId)}>
+              <IconButton
+                onClick={() => addMorePlatform(productId, platformId)}
+              >
                 <AddIcon />
               </IconButton>
             ) : null}
