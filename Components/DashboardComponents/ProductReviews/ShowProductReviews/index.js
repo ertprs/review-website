@@ -19,7 +19,7 @@ class ShowProductReviews extends Component {
   state = {
     dialogOpen: false,
     selectedProduct: {},
-    selectedProductPlatform: {}
+    selectedProductPlatform: { value: "", label: "All platforms" }
   };
 
   componentDidMount() {
@@ -53,16 +53,27 @@ class ShowProductReviews extends Component {
   };
 
   render() {
-    const { dialogOpen, selectedProduct } = this.state;
+    const { dialogOpen, selectedProduct, selectedProductPlatform } = this.state;
     const { productReviews, isLoadingProductReviews } = this.props;
     return (
       <>
         <div>
           <div className="row">
-            <div className="col-md-8" style={{ textAlign: "center" }}>
+            <div className="col-md-4" style={{ textAlign: "center" }}>
               <ProductsFilter
                 handleSelectedProductChange={this.handleSelectedProductChange}
+                selectedProduct={selectedProduct}
               />
+            </div>
+            <div className="col-md-4">
+              {(Object.keys(selectedProduct) || []).length > 0 ? (
+                <ReviewsFilter
+                  handleSelectedProductPlatformChange={
+                    this.handleSelectedProductPlatformChange
+                  }
+                  selectedProductPlatform={selectedProductPlatform}
+                />
+              ) : null}
             </div>
             <div className="col-md-4" style={{ textAlign: "right" }}>
               <Button
@@ -77,17 +88,6 @@ class ShowProductReviews extends Component {
               </Button>
             </div>
           </div>
-          {(Object.keys(selectedProduct) || []).length > 0 ? (
-            <div className="row">
-              <div className="col-md-4" style={{ margin: "25px 0 25px 0" }}>
-                <ReviewsFilter
-                  handleSelectedProductPlatformChange={
-                    this.handleSelectedProductPlatformChange
-                  }
-                />
-              </div>
-            </div>
-          ) : null}
           <div style={{ margin: "25px 0 15px 0" }}>
             {isLoadingProductReviews ? (
               <div style={{ textAlign: "center", marginTop: "75px" }}>
@@ -95,7 +95,8 @@ class ShowProductReviews extends Component {
               </div>
             ) : (Object.keys(selectedProduct) || []).length === 0 ? (
               <h5 style={{ textAlign: "left" }}>
-                Please select the product from above to see reviews
+                Trying to fetch products, please wait and if it takes longer,
+                please refresh or visit this page later
               </h5>
             ) : productReviews.length > 0 ? (
               productReviews.map(review => (
@@ -108,7 +109,9 @@ class ShowProductReviews extends Component {
                 </div>
               ))
             ) : (
-              <h5>No reviews found !</h5>
+              <h4 style={{ textAlign: "center", marginTop: "40px" }}>
+                No reviews found !
+              </h4>
             )}
           </div>
         </div>
@@ -137,7 +140,21 @@ const mapStateToProps = state => {
   if (!isValidArray(productReviews)) {
     productReviews = [];
   }
-  return { products, productReviews, isLoadingProductReviews };
+  let slicedProductReviews = [];
+  if ((productReviews || []).length > 100) {
+    slicedProductReviews = productReviews.slice(0, 100);
+    return {
+      products,
+      productReviews: slicedProductReviews,
+      isLoadingProductReviews
+    };
+  }
+
+  return {
+    products,
+    productReviews,
+    isLoadingProductReviews
+  };
 };
 
 export default connect(mapStateToProps, {
