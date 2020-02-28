@@ -95,7 +95,8 @@ class ShowProductReviews extends Component {
               </div>
             ) : (Object.keys(selectedProduct) || []).length === 0 ? (
               <h5 style={{ textAlign: "left" }}>
-                Please select the product from above to see reviews
+                Trying to fetch products, please wait and if it takes longer,
+                please refresh or visit this page later
               </h5>
             ) : productReviews.length > 0 ? (
               productReviews.map(review => (
@@ -139,7 +140,21 @@ const mapStateToProps = state => {
   if (!isValidArray(productReviews)) {
     productReviews = [];
   }
-  return { products, productReviews, isLoadingProductReviews };
+  let slicedProductReviews = [];
+  if ((productReviews || []).length > 100) {
+    slicedProductReviews = productReviews.slice(0, 100);
+    return {
+      products,
+      productReviews: slicedProductReviews,
+      isLoadingProductReviews
+    };
+  }
+
+  return {
+    products,
+    productReviews,
+    isLoadingProductReviews
+  };
 };
 
 export default connect(mapStateToProps, {

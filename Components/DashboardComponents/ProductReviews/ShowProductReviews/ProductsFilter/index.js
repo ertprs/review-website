@@ -31,7 +31,6 @@ const ProductsFilter = props => {
     handleSelectedProductChange(
       (generateOptionsFromProducts(products) || [])[0] || []
     );
-    console.log("called");
   }, [products]);
 
   return (
