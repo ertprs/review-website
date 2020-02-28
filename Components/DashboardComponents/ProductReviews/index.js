@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import AddProduct from "./AddProduct";
+import ProductCard from "./AddEditProduct/ProductCard";
 import ShowProductReviews from "./ShowProductReviews";
 import { getAllProductReviewsPlatforms } from "../../../store/actions/dashboardActions";
 class ProductReviews extends Component {

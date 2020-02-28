@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _now from "lodash/now";
 import { connect } from "react-redux";
-import AddProductCard from "./AddProductCard";
+import ProductCard from "./ProductCard";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
@@ -243,7 +243,7 @@ class AddProduct extends Component {
                 style={{ margin: "15px 0 15px 0" }}
                 key={_get(product, "id", "")}
               >
-                <AddProductCard
+                <ProductCard
                   product={product}
                   handleProductNameChange={this.handleProductNameChange}
                   handleURLChange={this.handleURLChange}

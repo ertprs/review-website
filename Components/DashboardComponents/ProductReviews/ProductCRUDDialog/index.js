@@ -9,7 +9,7 @@ import Slide from "@material-ui/core/Slide";
 import Container from "@material-ui/core/Container";
 import _get from "lodash/get";
 import ProductList from "../ProductList";
-import AddProduct from "../AddProduct";
+import AddProduct from "../AddEditProduct/AddProduct";
 
 const styles = theme => ({
   appBar: {
