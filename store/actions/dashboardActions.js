@@ -112,7 +112,9 @@ import {
   FETCH_PRODUCT_REVIEWS_FAILURE,
   UPDATE_PRODUCT_INIT,
   UPDATE_PRODUCT_SUCCESS,
-  UPDATE_PRODUCT_FAILURE
+  UPDATE_PRODUCT_FAILURE,
+  EMPTY_PRODUCT_ADD_RESPONSE,
+  EMPTY_PRODUCT_UPDATE_RESPONSE
 } from "./actionTypes";
 import {
   updateAuthSocialArray,
@@ -2216,5 +2218,17 @@ export const fetchProductReviews = (productId, platformId) => {
         }
       });
     }
+  };
+};
+
+export const emptyProductAddResponse = () => {
+  return {
+    type: EMPTY_PRODUCT_ADD_RESPONSE
+  };
+};
+
+export const emptyProductUpdateResponse = () => {
+  return {
+    type: EMPTY_PRODUCT_UPDATE_RESPONSE
   };
 };

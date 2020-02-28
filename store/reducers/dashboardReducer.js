@@ -111,7 +111,9 @@ import {
   FETCH_PRODUCT_REVIEWS_FAILURE,
   UPDATE_PRODUCT_INIT,
   UPDATE_PRODUCT_SUCCESS,
-  UPDATE_PRODUCT_FAILURE
+  UPDATE_PRODUCT_FAILURE,
+  EMPTY_PRODUCT_ADD_RESPONSE,
+  EMPTY_PRODUCT_UPDATE_RESPONSE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -755,6 +757,12 @@ const dashboardReducer = (state = {}, action) => {
         type,
         addProductInProductReviewsResponse
       };
+    case EMPTY_PRODUCT_ADD_RESPONSE:
+      return {
+        ...state,
+        type,
+        addProductInProductReviewsResponse: {}
+      };
     case UPDATE_PRODUCT_INIT:
       return {
         ...state,
@@ -772,6 +780,12 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         updateProductResponse
+      };
+    case EMPTY_PRODUCT_UPDATE_RESPONSE:
+      return {
+        ...state,
+        type,
+        updateProductResponse: {}
       };
     case GET_ALL_PRODUCTS_INIT:
       return {

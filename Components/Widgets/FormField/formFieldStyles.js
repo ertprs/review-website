@@ -32,4 +32,8 @@ export const formFieldStyles = css`
     font-size: 0.8rem;
     margin-bottom: 1%;
   }
+
+  .disabledInput {
+    background: #f1f1f1;
+  }
 `;

@@ -10,10 +10,10 @@ const renderIcon = platformName => {
   let src = "";
   //? In the cases the name should match with the platform name that we get in "/api/platforms" this api
   switch (platformName) {
-    case 1:
+    case "amazon":
       src = "/static/images/amazonLogo.png";
       break;
-    case 2:
+    case "yandex":
       src = "/static/images/yandexLogo.png";
       break;
     case 3:

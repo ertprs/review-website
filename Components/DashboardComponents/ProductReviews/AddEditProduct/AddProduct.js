@@ -71,7 +71,7 @@ class AddProduct extends Component {
             valid: false,
             errorMessage: "Please enter a valid name",
             validationRules: {
-              isRequired: true
+              required: true
             },
             name: "productName",
             id: "productName",

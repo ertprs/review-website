@@ -25,6 +25,12 @@ class ProductsTable extends Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props !== prevProps) {
+      this.tableRef.current.onQueryChange();
+    }
+  }
+
   parseTableData = tableData => {
     if (isValidArray(tableData)) {
       return tableData.map(row => {
@@ -53,18 +59,37 @@ class ProductsTable extends Component {
       <div>
         <MaterialTable
           title="Products List"
+          options={{
+            search: false,
+            pageSize: 10,
+            pageSizeOptions: [5, 10, 15, 20, 25, 30],
+            actionsColumnIndex: -1
+          }}
+          tableRef={this.tableRef}
           columns={[
             { title: "Id", field: "id" },
             { title: "Product Name", field: "name" }
+          ]}
+          actions={[
+            {
+              icon: "refresh",
+              tooltip: "Refresh Data",
+              isFreeAction: true,
+              onClick: () =>
+                this.tableRef.current && this.tableRef.current.onQueryChange()
+            },
+            {
+              icon: "edit",
+              tooltip: "Edit Product",
+              onClick: (event, rowData) =>
+                handleProductToEdit(_get(rowData, "originalData", {}))
+            }
             // {
-            //   title: "URL",
-            //   field: "url",
-            //   render: rowData => (
-            //     <a href={rowData.url} target="_blank" alt="prod_url">
-            //       {rowData.url}
-            //     </a>
-            //   )
-            // },
+            //   icon: "delete",
+            //   tooltip: "Delete Product",
+            //   onClick: (event, rowData) =>
+            //     this.setState({ openDialog: true, productToDelete: rowData })
+            // }
           ]}
           data={query =>
             new Promise((resolve, reject) => {
@@ -89,23 +114,6 @@ class ProductsTable extends Component {
               });
             })
           }
-          actions={[
-            {
-              icon: "edit",
-              tooltip: "Edit Product",
-              onClick: (event, rowData) =>
-                handleProductToEdit(_get(rowData, "originalData", {}))
-            },
-            {
-              icon: "delete",
-              tooltip: "Delete Product",
-              onClick: (event, rowData) =>
-                this.setState({ openDialog: true, productToDelete: rowData })
-            }
-          ]}
-          options={{
-            actionsColumnIndex: -1
-          }}
         />
         <ConfirmDialog
           open={openDialog}
