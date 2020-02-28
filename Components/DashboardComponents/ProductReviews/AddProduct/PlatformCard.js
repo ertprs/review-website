@@ -2,10 +2,13 @@ import React from "react";
 import styles from "./styles";
 import FormField from "../../../Widgets/FormField/FormField";
 import _get from "lodash/get";
+//! Material UI imports
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from "@material-ui/icons/AddCircleOutline";
 
 const renderIcon = platformName => {
   let src = "";
-  //? we don't have platform if for trustsearch and wot(in profile page), rest are being displayed from their platformId
+  //? In the cases the name should match with the platform name that we get in "/api/platforms" this api
   switch (platformName) {
     case 1:
       src = "/static/images/amazonLogo.png";
@@ -44,8 +47,17 @@ const renderIcon = platformName => {
   );
 };
 
-const PlatformCard = ({ formData, handleURLChange, id }) => {
-  const platformName = _get(formData, "url.name", "");
+const PlatformCard = ({
+  platform,
+  handleURLChange,
+  productId,
+  addMorePlatform
+}) => {
+  const platformName = _get(platform, "url.name", "");
+  const formData = _get(platform, "url", {});
+  const showAddBtn = _get(platform, "showAddBtn", false);
+  const platformId = _get(platform, "id", "");
+  const platformUniqueId = _get(platform, "uniqueId", "");
   return (
     <div className="row">
       <style jsx>{styles}</style>
@@ -55,12 +67,31 @@ const PlatformCard = ({ formData, handleURLChange, id }) => {
         </div>
       </div>
       <div className="col-md-10">
-        <FormField
-          {..._get(formData, "url", {})}
-          handleChange={e => {
-            handleURLChange(e, id, _get(formData, "id", ""));
-          }}
-        />
+        <div>
+          <div
+            className={
+              showAddBtn
+                ? "inlineBlock eightyPerWidth"
+                : "inlineBlock fullWidth"
+            }
+          >
+            <FormField
+              {...formData}
+              handleChange={e => {
+                handleURLChange(e, productId, platformUniqueId);
+              }}
+            />
+          </div>
+          <div className="inlineBlock">
+            {showAddBtn ? (
+              <IconButton
+                onClick={() => addMorePlatform(productId, platformId)}
+              >
+                <AddIcon />
+              </IconButton>
+            ) : null}
+          </div>
+        </div>
       </div>
     </div>
   );

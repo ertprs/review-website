@@ -5,18 +5,19 @@ import FormField from "../../../Widgets/FormField/FormField";
 import _get from "lodash/get";
 
 function AddProductCard({
-  formData,
+  product,
   handleURLChange,
-  handleProductNameChange
+  handleProductNameChange,
+  addMorePlatform
 }) {
-  const platformURLs = _get(formData, "platformURLs", {});
+  const platformURLs = _get(product, "platformURLs", {});
   return (
     <Card>
       <div style={{ marginBottom: "10px" }}>
         <FormField
-          {..._get(formData, "productName", {})}
+          {..._get(product, "productName", {})}
           handleChange={e => {
-            handleProductNameChange(e, _get(formData, "id", ""));
+            handleProductNameChange(e, _get(product, "id", ""));
           }}
         />
       </div>
@@ -25,9 +26,10 @@ function AddProductCard({
           return (
             <div className="col-md-4">
               <PlatformCard
-                id={_get(formData, "id", "")}
-                formData={platform || {}}
+                productId={_get(product, "id", "")}
+                platform={platform || {}}
                 handleURLChange={handleURLChange}
+                addMorePlatform={addMorePlatform}
               />
             </div>
           );
