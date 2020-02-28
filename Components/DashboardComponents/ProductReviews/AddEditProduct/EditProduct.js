@@ -183,10 +183,12 @@ class EditProduct extends Component {
       url: {
         ..._get(platformURLToUpdate, "url", {}),
         value,
-        valid: validate(
-          value,
-          _get(platformURLToUpdate, "url.validationRules", {})
-        ),
+        valid: value
+          ? validate(
+              value,
+              _get(platformURLToUpdate, "url.validationRules", {})
+            )
+          : true,
         touched: true
       }
     };
