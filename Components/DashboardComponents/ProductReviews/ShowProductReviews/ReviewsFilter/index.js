@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import dynamic from "next/dynamic";
 import _get from "lodash/get";
 import { connect } from "react-redux";
@@ -26,9 +26,16 @@ const generateOptionsFromPlatforms = productReviewsPlatforms => {
 const ReviewsFilter = props => {
   //Extracted in mapStateToProps
   const productReviewsPlatforms = _get(props, "productReviewsPlatforms", []);
-  const { handleSelectedProductPlatformChange } = props;
+  const {
+    handleSelectedProductPlatformChange,
+    selectedProductPlatform
+  } = props;
+
   return (
     <div>
+      <div style={{ textAlign: "left", margin: "0 0 7px 0" }}>
+        Select a platform :
+      </div>
       <Select
         isLoading={productReviewsPlatforms.length === 0 ? true : false}
         loadingMessage={() => {
@@ -41,6 +48,7 @@ const ReviewsFilter = props => {
         onChange={obj => {
           handleSelectedProductPlatformChange(obj);
         }}
+        value={selectedProductPlatform}
         placeholder="Filter by review platforms"
       />
     </div>

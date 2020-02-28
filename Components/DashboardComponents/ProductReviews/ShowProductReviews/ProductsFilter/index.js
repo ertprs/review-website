@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import _get from "lodash/get";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
@@ -25,9 +25,20 @@ const generateOptionsFromProducts = products => {
 const ProductsFilter = props => {
   //Extracted in mapStateToProps
   const products = _get(props, "products", []);
-  const { handleSelectedProductChange } = props;
+  const { handleSelectedProductChange, selectedProduct } = props;
+
+  useEffect(() => {
+    handleSelectedProductChange(
+      (generateOptionsFromProducts(products) || [])[0] || []
+    );
+    console.log("called");
+  }, [products]);
+
   return (
     <div>
+      <div style={{ textAlign: "left", margin: "0 0 7px 0" }}>
+        Select a product :
+      </div>
       <Select
         isLoading={products.length === 0 ? true : false}
         loadingMessage={() => {
@@ -40,6 +51,7 @@ const ProductsFilter = props => {
         onChange={obj => {
           handleSelectedProductChange(obj);
         }}
+        value={selectedProduct}
         placeholder="Select a product to see reviews"
       />
     </div>
