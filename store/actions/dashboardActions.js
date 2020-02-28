@@ -109,7 +109,10 @@ import {
   DELETE_PRODUCT_FAILURE,
   FETCH_PRODUCT_REVIEWS_INIT,
   FETCH_PRODUCT_REVIEWS_SUCCESS,
-  FETCH_PRODUCT_REVIEWS_FAILURE
+  FETCH_PRODUCT_REVIEWS_FAILURE,
+  UPDATE_PRODUCT_INIT,
+  UPDATE_PRODUCT_SUCCESS,
+  UPDATE_PRODUCT_FAILURE
 } from "./actionTypes";
 import {
   updateAuthSocialArray,
@@ -153,7 +156,8 @@ import {
   addProductApi,
   getAllProductsApi,
   deleteProductApi,
-  fetchProductReviewsApi
+  fetchProductReviewsApi,
+  updateProductApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -2047,6 +2051,60 @@ export const addProductInProductReviews = data => {
       dispatch({
         type: ADD_PRODUCT_REVIEWS_PRODUCT_FAILURE,
         addProductInProductReviewsResponse: {
+          success: false,
+          isLoading: false,
+          errorMsg,
+          response: {}
+        }
+      });
+    }
+  };
+};
+
+//? UPDATE PRODUCT IN PRODUCT REVIEWS
+export const updateProductInProductReviews = data => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: UPDATE_PRODUCT_INIT,
+      updateProductResponse: {
+        success: undefined,
+        isLoading: true,
+        errorMsg: "",
+        response: {}
+      }
+    });
+    try {
+      const token = cookie.get("token");
+      const url = `${process.env.CORE_BASE_URL}${updateProductApi}`;
+      const result = await axios({
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        data,
+        url
+      });
+      const addedProduct = _get(result, "data.data", []);
+      let success = false;
+      if (addedProduct) {
+        success = true;
+      }
+      dispatch({
+        type: UPDATE_PRODUCT_SUCCESS,
+        updateProductResponse: {
+          success,
+          isLoading: false,
+          errorMsg: "",
+          response: _get(result, "data", {})
+        }
+      });
+    } catch (error) {
+      const errorMsg = _get(
+        error,
+        "response.data.message",
+        "Some error ocurred! Please try again."
+      );
+      dispatch({
+        type: UPDATE_PRODUCT_FAILURE,
+        updateProductResponse: {
           success: false,
           isLoading: false,
           errorMsg,
