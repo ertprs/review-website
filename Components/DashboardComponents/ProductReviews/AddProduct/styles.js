@@ -16,4 +16,14 @@ export default css`
     max-width: 100%;
     height: auto;
   }
+  .inlineBlock {
+    display: inline-block;
+  }
+  .fullWidth {
+    width: 100%;
+  }
+
+  .eightyPerWidth {
+    width: 80%;
+  }
 `;

@@ -31,6 +31,8 @@ class AddProduct extends Component {
       const name = _get(item, "name", "");
       return {
         id,
+        uniqueId: _now(),
+        showAddBtn: true,
         url: {
           element: "input",
           type: "text",
@@ -105,17 +107,17 @@ class AddProduct extends Component {
     }
   };
 
-  handleURLChange = (e, id, platformId) => {
+  handleURLChange = (e, productId, platformUniqueId) => {
     const value = _get(e, "target.value", {});
     const { productData } = this.state;
-    let formDataIndex = _findIndex(productData, ["id", id]);
-    if (formDataIndex !== -1) {
-      let formData = productData[formDataIndex] || [];
-      if (formData) {
-        let platformURLs = _get(formData, "platformURLs", []);
+    let productIndex = _findIndex(productData, ["id", productId]);
+    if (productIndex !== -1) {
+      let product = productData[productIndex] || [];
+      if (product) {
+        let platformURLs = _get(product, "platformURLs", []);
         let indexOfPlatformURLToUpdate = _findIndex(platformURLs, [
-          "id",
-          platformId
+          "uniqueId",
+          platformUniqueId
         ]);
         let platformURLToUpdate =
           platformURLs[indexOfPlatformURLToUpdate] || {};
@@ -132,11 +134,53 @@ class AddProduct extends Component {
           }
         };
         platformURLs[indexOfPlatformURLToUpdate] = { ...platformURLToUpdate };
-        formData = { ...formData, platformURLs: [...platformURLs] };
+        product = { ...product, platformURLs: [...platformURLs] };
       }
       let updatedData = [...productData];
-      updatedData[formDataIndex] = { ...formData };
+      updatedData[productIndex] = { ...product };
       this.setState({ productData: [...updatedData] });
+    }
+  };
+
+  addMorePlatform = (productId, platformId) => {
+    const { productData } = this.state;
+    const productIndex = _findIndex(productData, ["id", productId]);
+    if (productIndex !== -1) {
+      const product = productData[productIndex];
+      const platforms = _get(product, "platformURLs", []);
+      const platformIndex = _findIndex(platforms, ["id", platformId]);
+      if (platformIndex !== -1) {
+        const platform = platforms[platformIndex];
+        const platformId = _get(platform, "id", "");
+        const platformName = _get(platform, "url.name", "");
+        const newPlatform = {
+          id: platformId,
+          uniqueId: _now(),
+          url: {
+            element: "input",
+            type: "text",
+            value: "",
+            placeholder: `Enter ${platformName} URL`,
+            touched: false,
+            valid: false,
+            errorMessage: "Please enter a valid URL",
+            validationRules: {
+              isDomain: true
+            },
+            platformName,
+            name: platformName,
+            id: platformName,
+            labelText: ""
+          },
+          showAddBtn: false
+        };
+        let updatedPlatforms = [...platforms];
+        updatedPlatforms.splice(platformIndex + 1, 0, newPlatform);
+        const updatedProduct = { ...product, platformURLs: updatedPlatforms };
+        let updatedProductData = [...productData];
+        updatedProductData[productIndex] = { ...updatedProduct };
+        this.setState({ productData: updatedProductData });
+      }
     }
   };
 
@@ -192,17 +236,18 @@ class AddProduct extends Component {
     return (
       <>
         <style jsx>{styles}</style>
-        {(productData || []).map(formData => {
+        {(productData || []).map(product => {
           return (
             <Zoom in={true}>
               <div
                 style={{ margin: "15px 0 15px 0" }}
-                key={_get(formData, "id", "")}
+                key={_get(product, "id", "")}
               >
                 <AddProductCard
-                  formData={formData}
+                  product={product}
                   handleProductNameChange={this.handleProductNameChange}
                   handleURLChange={this.handleURLChange}
+                  addMorePlatform={this.addMorePlatform}
                 />
               </div>
             </Zoom>
