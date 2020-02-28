@@ -5,7 +5,7 @@ import _get from "lodash/get";
 
 const renderIcon = platformName => {
   let src = "";
-  //? we don't have platform if for trustsearch and wot(in profile page), rest are being displayed from their platformId
+  //? In the cases the name should match with the platform name that we get in "/api/platforms" this api
   switch (platformName) {
     case 1:
       src = "/static/images/amazonLogo.png";
@@ -44,7 +44,7 @@ const renderIcon = platformName => {
   );
 };
 
-const PlatformCard = ({ formData, handleURLChange, id }) => {
+const PlatformCard = ({ formData, handleURLChange, productId }) => {
   const platformName = _get(formData, "url.name", "");
   return (
     <div className="row">
@@ -58,7 +58,7 @@ const PlatformCard = ({ formData, handleURLChange, id }) => {
         <FormField
           {..._get(formData, "url", {})}
           handleChange={e => {
-            handleURLChange(e, id, _get(formData, "id", ""));
+            handleURLChange(e, productId, _get(formData, "id", ""));
           }}
         />
       </div>

@@ -153,7 +153,7 @@ import {
   addProductApi,
   getAllProductsApi,
   deleteProductApi,
-  fetchProductsApi
+  fetchProductReviewsApi
 } from "../../utility/config";
 import createCampaignLanguage from "../../utility/createCampaignLang";
 import { isValidArray } from "../../utility/commonFunctions";
@@ -2119,8 +2119,8 @@ export const fetchProductReviews = (productId, platformId) => {
   return async (dispatch, getState) => {
     const token = cookie.get("token");
     const url = platformId
-      ? `${process.env.CORE_BASE_URL}${fetchProductsApi}/${productId}/${platformId}`
-      : `${process.env.CORE_BASE_URL}${fetchProductsApi}/${productId}`;
+      ? `${process.env.CORE_BASE_URL}${fetchProductReviewsApi}/${productId}/${platformId}`
+      : `${process.env.CORE_BASE_URL}${fetchProductReviewsApi}/${productId}`;
     dispatch({
       type: FETCH_PRODUCT_REVIEWS_INIT,
       productReviews: {

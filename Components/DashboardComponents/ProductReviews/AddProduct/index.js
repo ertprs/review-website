@@ -17,7 +17,7 @@ import styles from "./styles";
 
 class AddProduct extends Component {
   state = {
-    data: []
+    productData: []
   };
 
   componentDidMount() {
@@ -42,7 +42,7 @@ class AddProduct extends Component {
           validationRules: {
             isDomain: true
           },
-          name: name,
+          name,
           id: name,
           labelText: ""
         }
@@ -51,11 +51,11 @@ class AddProduct extends Component {
   };
 
   addProduct = () => {
-    const { data } = this.state;
+    const { productData } = this.state;
     const platformURLs = this.generatePlatformsArray();
     this.setState({
-      data: [
-        ...data,
+      productData: [
+        ...productData,
         {
           id: _now(),
           productName: {
@@ -80,56 +80,63 @@ class AddProduct extends Component {
   };
 
   handleProductNameChange = (e, id) => {
-    const { data } = this.state;
+    const { productData } = this.state;
     const value = _get(e, "target.value", "");
-    let formDataIndex = _findIndex(data, ["id", id]);
-    let formData = data[formDataIndex] || [];
-    if (formData) {
-      formData = {
-        ...formData,
-        productName: {
-          ..._get(formData, "productName", {}),
-          value,
-          valid: validate(
+    let formDataIndex = _findIndex(productData, ["id", id]);
+    if (formDataIndex !== -1) {
+      let formData = productData[formDataIndex] || [];
+      if (formData) {
+        formData = {
+          ...formData,
+          productName: {
+            ..._get(formData, "productName", {}),
             value,
-            _get(formData, "productName.validationRules", {})
-          ),
-          touched: true
-        }
-      };
+            valid: validate(
+              value,
+              _get(formData, "productName.validationRules", {})
+            ),
+            touched: true
+          }
+        };
+      }
+      let updatedData = [...productData];
+      updatedData[formDataIndex] = { ...formData };
+      this.setState({ productData: [...updatedData] });
     }
-    let updatedData = [...data];
-    updatedData[formDataIndex] = { ...formData };
-    this.setState({ data: [...updatedData] });
   };
 
-  //? Handle submission of products
-
-  handleSaveBtnClick = () => {
-    const { addProductInProductReviews, setActiveComponent } = this.props;
-    const data = _get(this.state, "data", []);
-    let reqBody = [];
-    if (isValidArray(data)) {
-      data.forEach(product => {
-        let productId = _get(product, "id", "");
-        let validProductName = _get(product, "productName.valid", "");
-        let productName = _get(product, "productName.value", "");
-        let platformsArray = _get(product, "platformURLs", []);
-        let validPlatformsArray =
-          this.getValidPlatformsWithURLs(platformsArray) || [];
-        //if valid productName && at least one platform URL is added push into request Body
-        if (validProductName && validPlatformsArray.length > 0) {
-          reqBody = [
-            ...reqBody,
-            { name: productName, platforms: [...validPlatformsArray] }
-          ];
-        }
-      });
-    }
-
-    if (isValidArray(reqBody)) {
-      addProductInProductReviews(reqBody);
-      setActiveComponent("list");
+  handleURLChange = (e, id, platformId) => {
+    const value = _get(e, "target.value", {});
+    const { productData } = this.state;
+    let formDataIndex = _findIndex(productData, ["id", id]);
+    if (formDataIndex !== -1) {
+      let formData = productData[formDataIndex] || [];
+      if (formData) {
+        let platformURLs = _get(formData, "platformURLs", []);
+        let indexOfPlatformURLToUpdate = _findIndex(platformURLs, [
+          "id",
+          platformId
+        ]);
+        let platformURLToUpdate =
+          platformURLs[indexOfPlatformURLToUpdate] || {};
+        platformURLToUpdate = {
+          ...platformURLToUpdate,
+          url: {
+            ..._get(platformURLToUpdate, "url", {}),
+            value,
+            valid: validate(
+              value,
+              _get(platformURLToUpdate, "url.validationRules", {})
+            ),
+            touched: true
+          }
+        };
+        platformURLs[indexOfPlatformURLToUpdate] = { ...platformURLToUpdate };
+        formData = { ...formData, platformURLs: [...platformURLs] };
+      }
+      let updatedData = [...productData];
+      updatedData[formDataIndex] = { ...formData };
+      this.setState({ productData: [...updatedData] });
     }
   };
 
@@ -137,9 +144,9 @@ class AddProduct extends Component {
   getValidPlatformsWithURLs = platformsArray => {
     let validPlatformsArray = [];
     if (isValidArray(platformsArray)) {
-      platformsArray.forEach(platform => {
-        let validPlatformURL = _get(platform, "url.valid", false);
-        if (validPlatformURL) {
+      (platformsArray || []).forEach(platform => {
+        let platformUrlIsValid = _get(platform, "url.valid", false);
+        if (platformUrlIsValid) {
           let platformId = _get(platform, "id", "");
           let platformURL = _get(platform, "url.value", "");
           validPlatformsArray = [
@@ -152,45 +159,40 @@ class AddProduct extends Component {
     return validPlatformsArray;
   };
 
-  handleURLChange = (e, id, platformId) => {
-    const value = _get(e, "target.value", {});
-    const { data } = this.state;
-    let formDataIndex = _findIndex(data, ["id", id]);
-    let formData = data[formDataIndex] || [];
-    if (formData) {
-      let platformURLs = _get(formData, "platformURLs", []);
-      let indexOfPlatformURLToUpdate = _findIndex(platformURLs, [
-        "id",
-        platformId
-      ]);
-      let platformURLToUpdate = platformURLs[indexOfPlatformURLToUpdate] || {};
-      platformURLToUpdate = {
-        ...platformURLToUpdate,
-        url: {
-          ..._get(platformURLToUpdate, "url", {}),
-          value,
-          valid: validate(
-            value,
-            _get(platformURLToUpdate, "url.validationRules", {})
-          ),
-          touched: true
+  //? Handle submission of products
+  handleSaveBtnClick = () => {
+    const { addProductInProductReviews, setActiveComponent } = this.props;
+    const { productData } = this.state;
+    let reqBody = [];
+    if (isValidArray(productData)) {
+      (productData || []).forEach(product => {
+        let productNameIsValid = _get(product, "productName.valid", "");
+        let productName = _get(product, "productName.value", "");
+        let platformsArray = _get(product, "platformURLs", []);
+        let validPlatformsArray =
+          this.getValidPlatformsWithURLs(platformsArray) || [];
+        //if valid productName && at least one platform URL is added push into request Body
+        if (productNameIsValid && (validPlatformsArray || []).length > 0) {
+          reqBody = [
+            ...reqBody,
+            { name: productName, platforms: [...validPlatformsArray] }
+          ];
         }
-      };
-      platformURLs[indexOfPlatformURLToUpdate] = { ...platformURLToUpdate };
-      formData = { ...formData, platformURLs: [...platformURLs] };
+      });
     }
-    let updatedData = [...data];
-    updatedData[formDataIndex] = { ...formData };
-    this.setState({ data: [...updatedData] });
+    if (isValidArray(reqBody)) {
+      addProductInProductReviews(reqBody);
+      setActiveComponent("list");
+    }
   };
 
   render() {
-    const { data } = this.state;
+    const { productData } = this.state;
     const { setActiveComponent } = this.props;
     return (
       <>
         <style jsx>{styles}</style>
-        {(data || []).map(formData => {
+        {(productData || []).map(formData => {
           return (
             <Zoom in={true}>
               <div

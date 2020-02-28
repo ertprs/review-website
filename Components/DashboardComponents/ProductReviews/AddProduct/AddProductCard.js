@@ -25,7 +25,7 @@ function AddProductCard({
           return (
             <div className="col-md-4">
               <PlatformCard
-                id={_get(formData, "id", "")}
+                productId={_get(formData, "id", "")}
                 formData={platform || {}}
                 handleURLChange={handleURLChange}
               />
