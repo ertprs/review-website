@@ -1,25 +1,30 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import ProductCard from "./ProductCard";
+import Snackbar from "../../../Widgets/Snackbar";
 import _get from "lodash/get";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
 import validate from "../../../../utility/validate";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import Zoom from "@material-ui/core/Zoom";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   isValidArray,
   uniqueIdGenerator
 } from "../../../../utility/commonFunctions";
-import { addProductInProductReviews } from "../../../../store/actions/dashboardActions";
+import { addProduct } from "../../../../store/actions/dashboardActions";
 import styles from "./styles";
 
 class AddProduct extends Component {
   state = {
-    productData: []
+    productData: [],
+    showSnackbar: false,
+    snackbarVariant: "success",
+    snackbarMessage: "",
+    isLoading: false
   };
 
   componentDidMount() {
@@ -206,9 +211,11 @@ class AddProduct extends Component {
   };
 
   //? Handle submission of products
-  handleSaveBtnClick = () => {
-    const { addProductInProductReviews, setActiveComponent } = this.props;
+  saveProductHandler = () => {
+    this.setState({ isLoading: true });
+    const { addProduct } = this.props;
     const { productData } = this.state;
+    const initSetup = _get(this.props, "initSetup", false);
     let reqBody = [];
     if (isValidArray(productData)) {
       (productData || []).forEach(product => {
@@ -227,17 +234,50 @@ class AddProduct extends Component {
       });
     }
     if (isValidArray(reqBody)) {
-      addProductInProductReviews(reqBody);
-      setActiveComponent("list");
+      addProduct(reqBody, this.addProductResponse);
+    }
+  };
+
+  addProductResponse = (success, msg) => {
+    const { setActiveComponent, initSetup } = this.props;
+    if (success === true) {
+      this.setState(
+        {
+          showSnackbar: true,
+          snackbarMessage: msg,
+          snackbarVariant: "success",
+          isLoading: false
+        },
+        () => {
+          if (initSetup !== true) {
+            setActiveComponent("list");
+          }
+        }
+      );
+    } else if (success === false) {
+      this.setState({
+        showSnackbar: true,
+        snackbarMessage: msg,
+        snackbarVariant: "error",
+        isLoading: false
+      });
     }
   };
 
   render() {
-    const { productData } = this.state;
+    const {
+      showSnackbar,
+      snackbarMessage,
+      snackbarVariant,
+      isLoading,
+      productData
+    } = this.state;
     const { setActiveComponent } = this.props;
+    const initSetup = _get(this.props, "initSetup", false);
     return (
       <>
         <style jsx>{styles}</style>
+        {initSetup ? <h3>Please setup a product </h3> : null}
         {(productData || []).map(product => {
           return (
             <Zoom in={true}>
@@ -268,30 +308,45 @@ class AddProduct extends Component {
           </div>
           <div className="col-md-6">
             <div style={{ textAlign: "right" }}>
-              <Button
-                onClick={() => {
-                  setActiveComponent("list");
-                }}
-                color="primary"
-                variant="contained"
-                size="medium"
-                startIcon={<ArrowBack />}
-                style={{ marginRight: "10px" }}
-              >
-                Back
-              </Button>
-              <Button
-                onClick={this.handleSaveBtnClick}
-                color="primary"
-                variant="contained"
-                size="medium"
-                endIcon={<ArrowRight />}
-              >
-                Save and continue
-              </Button>
+              {initSetup ? null : (
+                <Button
+                  onClick={() => {
+                    setActiveComponent("list");
+                  }}
+                  color="primary"
+                  variant="contained"
+                  size="medium"
+                  startIcon={<ArrowBack />}
+                  style={{ marginRight: "10px" }}
+                >
+                  Back
+                </Button>
+              )}
+              {isLoading ? (
+                <Button variant="contained" size="medium" color="primary">
+                  <CircularProgress size={25} color="#fff" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={this.saveProductHandler}
+                  color="primary"
+                  variant="contained"
+                  size="medium"
+                >
+                  Save Product
+                </Button>
+              )}
             </div>
           </div>
         </div>
+        <Snackbar
+          variant={snackbarVariant}
+          message={snackbarMessage}
+          open={showSnackbar}
+          handleClose={() => {
+            this.setState({ showSnackbar: false });
+          }}
+        />
       </>
     );
   }
@@ -305,13 +360,9 @@ const mapStateToProps = state => {
     {}
   );
   const platformsArray = _get(productReviewsPlatforms, "platforms", []);
-  const platformsSuccess = _get(productReviewsPlatforms, "success", undefined);
   return {
-    platformsArray,
-    platformsSuccess
+    platformsArray
   };
 };
 
-export default connect(mapStateToProps, { addProductInProductReviews })(
-  AddProduct
-);
+export default connect(mapStateToProps, { addProduct })(AddProduct);

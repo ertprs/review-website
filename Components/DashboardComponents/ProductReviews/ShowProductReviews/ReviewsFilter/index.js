@@ -33,7 +33,9 @@ const ReviewsFilter = props => {
 
   return (
     <div>
-      <div style={{ textAlign: "left", margin: "0 0 7px 0" }}>
+      <div
+        style={{ textAlign: "left", margin: "0 0 7px 0", fontWeight: "bold" }}
+      >
         Select a platform :
       </div>
       <Select

@@ -98,9 +98,9 @@ import {
   GET_PRODUCT_REVIEWS_PLATFORMS_INIT,
   GET_PRODUCT_REVIEWS_PLATFORMS_SUCCESS,
   GET_PRODUCT_REVIEWS_PLATFORMS_FAILURE,
-  ADD_PRODUCT_REVIEWS_PRODUCT_INIT,
-  ADD_PRODUCT_REVIEWS_PRODUCT_SUCCESS,
-  ADD_PRODUCT_REVIEWS_PRODUCT_FAILURE,
+  ADD_PRODUCT_INIT,
+  ADD_PRODUCT_SUCCESS,
+  ADD_PRODUCT_FAILURE,
   GET_ALL_PRODUCTS_INIT,
   GET_ALL_PRODUCTS_SUCCESS,
   GET_ALL_PRODUCTS_FAILURE,
@@ -112,9 +112,7 @@ import {
   FETCH_PRODUCT_REVIEWS_FAILURE,
   UPDATE_PRODUCT_INIT,
   UPDATE_PRODUCT_SUCCESS,
-  UPDATE_PRODUCT_FAILURE,
-  EMPTY_PRODUCT_ADD_RESPONSE,
-  EMPTY_PRODUCT_UPDATE_RESPONSE
+  UPDATE_PRODUCT_FAILURE
 } from "./actionTypes";
 import {
   updateAuthSocialArray,
@@ -1955,14 +1953,16 @@ export const getAllProductReviewsPlatforms = () => {
 
 //? fetch all products
 export const fetchAllProducts = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const productsArray = _get(state, "dashboardData.products.data", []);
     dispatch({
       type: GET_ALL_PRODUCTS_INIT,
       products: {
         success: undefined,
         isLoading: true,
         errorMsg: "",
-        data: []
+        data: [...productsArray]
       }
     });
     try {
@@ -1982,7 +1982,7 @@ export const fetchAllProducts = () => {
       dispatch({
         type: GET_ALL_PRODUCTS_SUCCESS,
         products: {
-          success: true,
+          success,
           isLoading: false,
           errorMsg: "",
           data: [...products]
@@ -2001,7 +2001,7 @@ export const fetchAllProducts = () => {
           success: false,
           isLoading: false,
           errorMsg,
-          data: []
+          data: [...productsArray]
         }
       });
     }
@@ -2009,11 +2009,11 @@ export const fetchAllProducts = () => {
 };
 
 //? ADD PRODUCT IN PRODUCT REVIEWS
-export const addProductInProductReviews = data => {
+export const addProduct = (data, cb) => {
   return async (dispatch, getState) => {
     dispatch({
-      type: ADD_PRODUCT_REVIEWS_PRODUCT_INIT,
-      addProductInProductReviewsResponse: {
+      type: ADD_PRODUCT_INIT,
+      addProductResponse: {
         success: undefined,
         isLoading: true,
         errorMsg: "",
@@ -2035,9 +2035,10 @@ export const addProductInProductReviews = data => {
         success = true;
         dispatch(fetchAllProducts());
       }
+      cb(success, "Product Added Successfully!");
       dispatch({
-        type: ADD_PRODUCT_REVIEWS_PRODUCT_SUCCESS,
-        addProductInProductReviewsResponse: {
+        type: ADD_PRODUCT_SUCCESS,
+        addProductResponse: {
           success,
           isLoading: false,
           errorMsg: "",
@@ -2050,9 +2051,10 @@ export const addProductInProductReviews = data => {
         "response.data.message",
         "Some error ocurred! Please try again."
       );
+      cb(false, errorMsg);
       dispatch({
-        type: ADD_PRODUCT_REVIEWS_PRODUCT_FAILURE,
-        addProductInProductReviewsResponse: {
+        type: ADD_PRODUCT_FAILURE,
+        addProductResponse: {
           success: false,
           isLoading: false,
           errorMsg,
@@ -2064,7 +2066,7 @@ export const addProductInProductReviews = data => {
 };
 
 //? UPDATE PRODUCT IN PRODUCT REVIEWS
-export const updateProductInProductReviews = data => {
+export const updateProduct = (data, cb) => {
   return async (dispatch, getState) => {
     dispatch({
       type: UPDATE_PRODUCT_INIT,
@@ -2089,6 +2091,7 @@ export const updateProductInProductReviews = data => {
       if (addedProduct) {
         success = true;
       }
+      cb(success, "Product Updated Successfully!");
       dispatch({
         type: UPDATE_PRODUCT_SUCCESS,
         updateProductResponse: {
@@ -2104,6 +2107,7 @@ export const updateProductInProductReviews = data => {
         "response.data.message",
         "Some error ocurred! Please try again."
       );
+      cb(false, errorMsg);
       dispatch({
         type: UPDATE_PRODUCT_FAILURE,
         updateProductResponse: {
@@ -2218,17 +2222,5 @@ export const fetchProductReviews = (productId, platformId) => {
         }
       });
     }
-  };
-};
-
-export const emptyProductAddResponse = () => {
-  return {
-    type: EMPTY_PRODUCT_ADD_RESPONSE
-  };
-};
-
-export const emptyProductUpdateResponse = () => {
-  return {
-    type: EMPTY_PRODUCT_UPDATE_RESPONSE
   };
 };
