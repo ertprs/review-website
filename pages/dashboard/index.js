@@ -252,7 +252,7 @@ class Dashboard extends Component {
       name: "campaignManagement",
       componentToRender: (
         <CampaignManagement
-          navigateToCreateCampaign={() => this.handleMenuItemClicked(3)}
+          navigateToCreateCampaign={() => this.handleMenuItemClicked(4)}
           scrollToTopOfThePage={this.scrollToTopOfThePage}
         />
       )
