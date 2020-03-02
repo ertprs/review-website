@@ -10,7 +10,6 @@ import _remove from "lodash/remove";
 import _uniqBy from "lodash/uniqBy";
 import validate from "../../../../utility/validate";
 import Button from "@material-ui/core/Button";
-import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import Zoom from "@material-ui/core/Zoom";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -33,7 +32,32 @@ class EditProduct extends Component {
   };
 
   componentDidMount() {
-    this.addProduct();
+    //? creating data for product depending upon the product data received
+    const { productToEdit } = this.props;
+    const productName = _get(productToEdit, "name", "");
+    const productId = _get(productToEdit, "_id", "");
+    const platformURLsWithShowAddBtn = this.addShowAddBtnPropertyInPlatformUrls();
+    this.setState({
+      productData: {
+        id: productId,
+        productName: {
+          element: "input",
+          type: "text",
+          value: productName,
+          placeholder: "Enter product name",
+          touched: productName ? true : false,
+          valid: productName ? true : false,
+          errorMessage: "Please enter product name",
+          validationRules: {
+            required: true
+          },
+          name: "productName",
+          id: "productName",
+          labelText: ""
+        },
+        platformURLs: [...platformURLsWithShowAddBtn]
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -47,6 +71,7 @@ class EditProduct extends Component {
       productUpdateErrorMsg,
       setActiveComponent
     } = this.props;
+    //? to display snackbar for success and error
     if (productUpdateSuccess !== prevProps.productUpdateSuccess) {
       if (productUpdateSuccess === true) {
         this.setState(
@@ -69,6 +94,7 @@ class EditProduct extends Component {
     }
   }
 
+  //? this will generate the array of platforms by adding formFields and some other dara by "reviewPlatformsArray"
   generatePlatformsArray = () => {
     const { reviewPlatformsArray } = this.props;
     return reviewPlatformsArray.map(item => {
@@ -120,35 +146,6 @@ class EditProduct extends Component {
         }
       });
     }
-  };
-
-  addProduct = () => {
-    const { productToEdit } = this.props;
-    const productName = _get(productToEdit, "name", "");
-    const productId = _get(productToEdit, "_id", "");
-    const platformURLs = this.generatePlatformsArray();
-    const platformURLsWithShowAddBtn = this.addShowAddBtnPropertyInPlatformUrls();
-    this.setState({
-      productData: {
-        id: productId,
-        productName: {
-          element: "input",
-          type: "text",
-          value: productName,
-          placeholder: "Enter product name",
-          touched: productName ? true : false,
-          valid: productName ? true : false,
-          errorMessage: "Please enter product name",
-          validationRules: {
-            required: true
-          },
-          name: "productName",
-          id: "productName",
-          labelText: ""
-        },
-        platformURLs: [...platformURLsWithShowAddBtn]
-      }
-    });
   };
 
   handleProductNameChange = (e, productId, platformUniqueId) => {
@@ -241,27 +238,33 @@ class EditProduct extends Component {
   //?Utility function to return platforms having URLs for a particular product
   getValidPlatformsURLs = platformsArray => {
     let validPlatformUrls = [];
+    //? this will be used to show alert if any of the url is invalid
     let areAllUrlsValid = true;
     if (isValidArray(platformsArray)) {
-      validPlatformUrls = (platformsArray || []).map(platform => {
-        let platformUrlIsValid = _get(platform, "url.valid", false);
-        if (platformUrlIsValid) {
-          let _id = _get(platform, "id", "");
-
-          if (_id) {
-            return {
-              _id: _get(platform, "id", ""),
-              platform: _get(platform, "platformId", ""),
-              url: _get(platform, "url.value", "")
-            };
+      (platformsArray || []).map(platform => {
+        const platformUrlIsValid = _get(platform, "url.valid", false);
+        const platformUrl = _get(platform, "url.value", "");
+        if (platformUrl) {
+          if (platformUrlIsValid) {
+            let _id = _get(platform, "id", "");
+            //? these are the existing urls, we don't have option to edit this url right now
+            if (_id) {
+              validPlatformUrls.push({
+                _id: _get(platform, "id", ""),
+                platform: _get(platform, "platformId", ""),
+                url: platformUrl
+              });
+            }
+            //? this will be the new url that user has added for a platform, it gets identified because it doesn't have _id
+            else {
+              validPlatformUrls.push({
+                platform: _get(platform, "platformId"),
+                url: platformUrl
+              });
+            }
           } else {
-            return {
-              platform: _get(platform, "platformId"),
-              url: _get(platform, "url.value", "")
-            };
+            areAllUrlsValid = false;
           }
-        } else {
-          areAllUrlsValid = false;
         }
       });
     }
@@ -272,7 +275,7 @@ class EditProduct extends Component {
   };
 
   //? Handle submission of products
-  handleProductUpdate = () => {
+  updateProduct = () => {
     const { updateProductInProductReviews } = this.props;
     const { productData } = this.state;
     const platformsArray = _get(productData, "platformURLs", []);
@@ -346,7 +349,7 @@ class EditProduct extends Component {
                 </Button>
               ) : (
                 <Button
-                  onClick={this.handleProductUpdate}
+                  onClick={this.updateProduct}
                   color="primary"
                   variant="contained"
                   size="medium"

@@ -26,6 +26,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+//? the key names (e.g list) will be used to render that component
 const components = {
   list: {
     name: "ProductList",
@@ -47,10 +48,12 @@ class ProductCRUDDialog extends Component {
     productToEdit: {}
   };
 
+  //? this is the callback that is passes to the components to show
   setActiveComponent = (componentName = null) => {
     this.setState({ activeComponent: componentName });
   };
 
+  //? this will render component depending upon the key in state activeComponent and the value of that key is coming from "components" object
   renderActiveComponent = () => {
     const { activeComponent, productToEdit } = this.state;
     const componentName = (components[activeComponent] || {}).name;
@@ -91,7 +94,11 @@ class ProductCRUDDialog extends Component {
         <Dialog
           fullScreen
           open={open}
-          onClose={handleClose}
+          onClose={() => {
+            //? this will always show the list component first
+            this.setActiveComponent("list");
+            handleClose();
+          }}
           TransitionComponent={Transition}
         >
           <AppBar className={classes.appBar}>
@@ -100,7 +107,15 @@ class ProductCRUDDialog extends Component {
                 {appBarText}
               </Typography>
               {
-                <Button autoFocus color="inherit" onClick={handleClose}>
+                <Button
+                  autoFocus
+                  color="inherit"
+                  onClick={() => {
+                    //? this will always show the list component first
+                    this.setActiveComponent("list");
+                    handleClose();
+                  }}
+                >
                   Close
                 </Button>
               }
