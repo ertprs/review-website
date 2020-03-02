@@ -1953,14 +1953,16 @@ export const getAllProductReviewsPlatforms = () => {
 
 //? fetch all products
 export const fetchAllProducts = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const productsArray = _get(state, "dashboardData.products.data", []);
     dispatch({
       type: GET_ALL_PRODUCTS_INIT,
       products: {
         success: undefined,
         isLoading: true,
         errorMsg: "",
-        data: []
+        data: [...productsArray]
       }
     });
     try {
@@ -1980,7 +1982,7 @@ export const fetchAllProducts = () => {
       dispatch({
         type: GET_ALL_PRODUCTS_SUCCESS,
         products: {
-          success: true,
+          success,
           isLoading: false,
           errorMsg: "",
           data: [...products]
@@ -1999,7 +2001,7 @@ export const fetchAllProducts = () => {
           success: false,
           isLoading: false,
           errorMsg,
-          data: []
+          data: [...productsArray]
         }
       });
     }

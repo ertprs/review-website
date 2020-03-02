@@ -25,7 +25,7 @@ class ShowProductReviews extends Component {
   componentDidMount() {
     const products = _get(this.props, "products", []);
     //!side effect for fetching all products if it's currently empty on mount
-    if (products.length === 0) {
+    if ((products || []).length === 0) {
       this.props.fetchAllProducts();
     }
   }

@@ -8,7 +8,6 @@ import _findIndex from "lodash/findIndex";
 import validate from "../../../../utility/validate";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import ArrowRight from "@material-ui/icons/ArrowRight";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import Zoom from "@material-ui/core/Zoom";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -216,6 +215,7 @@ class AddProduct extends Component {
     this.setState({ isLoading: true });
     const { addProduct } = this.props;
     const { productData } = this.state;
+    const initSetup = _get(this.props, "initSetup", false);
     let reqBody = [];
     if (isValidArray(productData)) {
       (productData || []).forEach(product => {
@@ -239,7 +239,7 @@ class AddProduct extends Component {
   };
 
   addProductResponse = (success, msg) => {
-    const { setActiveComponent } = this.props;
+    const { setActiveComponent, initSetup } = this.props;
     if (success === true) {
       this.setState(
         {
@@ -249,7 +249,9 @@ class AddProduct extends Component {
           isLoading: false
         },
         () => {
-          setActiveComponent("list");
+          if (initSetup !== true) {
+            setActiveComponent("list");
+          }
         }
       );
     } else if (success === false) {
@@ -271,9 +273,11 @@ class AddProduct extends Component {
       productData
     } = this.state;
     const { setActiveComponent } = this.props;
+    const initSetup = _get(this.props, "initSetup", false);
     return (
       <>
         <style jsx>{styles}</style>
+        {initSetup ? <h3>Please setup a product </h3> : null}
         {(productData || []).map(product => {
           return (
             <Zoom in={true}>
@@ -304,18 +308,20 @@ class AddProduct extends Component {
           </div>
           <div className="col-md-6">
             <div style={{ textAlign: "right" }}>
-              <Button
-                onClick={() => {
-                  setActiveComponent("list");
-                }}
-                color="primary"
-                variant="contained"
-                size="medium"
-                startIcon={<ArrowBack />}
-                style={{ marginRight: "10px" }}
-              >
-                Back
-              </Button>
+              {initSetup ? null : (
+                <Button
+                  onClick={() => {
+                    setActiveComponent("list");
+                  }}
+                  color="primary"
+                  variant="contained"
+                  size="medium"
+                  startIcon={<ArrowBack />}
+                  style={{ marginRight: "10px" }}
+                >
+                  Back
+                </Button>
+              )}
               {isLoading ? (
                 <Button variant="contained" size="medium" color="primary">
                   <CircularProgress size={25} color="#fff" />
