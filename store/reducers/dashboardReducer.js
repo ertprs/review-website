@@ -97,9 +97,6 @@ import {
   GET_PRODUCT_REVIEWS_PLATFORMS_INIT,
   GET_PRODUCT_REVIEWS_PLATFORMS_SUCCESS,
   GET_PRODUCT_REVIEWS_PLATFORMS_FAILURE,
-  ADD_PRODUCT_REVIEWS_PRODUCT_INIT,
-  ADD_PRODUCT_REVIEWS_PRODUCT_SUCCESS,
-  ADD_PRODUCT_REVIEWS_PRODUCT_FAILURE,
   GET_ALL_PRODUCTS_INIT,
   GET_ALL_PRODUCTS_SUCCESS,
   GET_ALL_PRODUCTS_FAILURE,
@@ -108,12 +105,7 @@ import {
   DELETE_PRODUCT_FAILURE,
   FETCH_PRODUCT_REVIEWS_INIT,
   FETCH_PRODUCT_REVIEWS_SUCCESS,
-  FETCH_PRODUCT_REVIEWS_FAILURE,
-  UPDATE_PRODUCT_INIT,
-  UPDATE_PRODUCT_SUCCESS,
-  UPDATE_PRODUCT_FAILURE,
-  EMPTY_PRODUCT_ADD_RESPONSE,
-  EMPTY_PRODUCT_UPDATE_RESPONSE
+  FETCH_PRODUCT_REVIEWS_FAILURE
 } from "../actions/actionTypes";
 
 const dashboardReducer = (state = {}, action) => {
@@ -157,11 +149,9 @@ const dashboardReducer = (state = {}, action) => {
     whatsAppAutomaticInvitationCommit,
     whatsAppAutomaticCreateCampaign,
     productReviewsPlatforms,
-    addProductInProductReviewsResponse,
     products,
     deleteProductResponse,
-    productReviews,
-    updateProductResponse
+    productReviews
   } = action;
   switch (type) {
     case SET_GET_REVIEWS_DATA:
@@ -738,54 +728,6 @@ const dashboardReducer = (state = {}, action) => {
         ...state,
         type,
         productReviewsPlatforms
-      };
-    case ADD_PRODUCT_REVIEWS_PRODUCT_INIT:
-      return {
-        ...state,
-        type,
-        addProductInProductReviewsResponse
-      };
-    case ADD_PRODUCT_REVIEWS_PRODUCT_SUCCESS:
-      return {
-        ...state,
-        type,
-        addProductInProductReviewsResponse
-      };
-    case ADD_PRODUCT_REVIEWS_PRODUCT_FAILURE:
-      return {
-        ...state,
-        type,
-        addProductInProductReviewsResponse
-      };
-    case EMPTY_PRODUCT_ADD_RESPONSE:
-      return {
-        ...state,
-        type,
-        addProductInProductReviewsResponse: {}
-      };
-    case UPDATE_PRODUCT_INIT:
-      return {
-        ...state,
-        type,
-        updateProductResponse
-      };
-    case UPDATE_PRODUCT_SUCCESS:
-      return {
-        ...state,
-        type,
-        updateProductResponse
-      };
-    case UPDATE_PRODUCT_FAILURE:
-      return {
-        ...state,
-        type,
-        updateProductResponse
-      };
-    case EMPTY_PRODUCT_UPDATE_RESPONSE:
-      return {
-        ...state,
-        type,
-        updateProductResponse: {}
       };
     case GET_ALL_PRODUCTS_INIT:
       return {

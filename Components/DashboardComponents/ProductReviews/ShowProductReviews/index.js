@@ -84,7 +84,7 @@ class ShowProductReviews extends Component {
                   this.setState({ dialogOpen: true });
                 }}
               >
-                Setup product reviews
+                Manage Products
               </Button>
             </div>
           </div>

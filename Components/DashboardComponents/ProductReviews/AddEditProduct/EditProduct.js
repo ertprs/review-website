@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import _now from "lodash/now";
 import Snackbar from "../../../Widgets/Snackbar";
-import { connect } from "react-redux";
 import ProductCard from "./ProductCard";
 import _get from "lodash/get";
 import _find from "lodash/find";
@@ -17,10 +17,7 @@ import {
   isValidArray,
   uniqueIdGenerator
 } from "../../../../utility/commonFunctions";
-import {
-  updateProductInProductReviews,
-  emptyProductUpdateResponse
-} from "../../../../store/actions/dashboardActions";
+import { updateProduct } from "../../../../store/actions/dashboardActions";
 import styles from "./styles";
 
 class EditProduct extends Component {
@@ -28,7 +25,8 @@ class EditProduct extends Component {
     productData: {},
     showSnackbar: false,
     snackbarVariant: "success",
-    snackbarMessage: ""
+    snackbarMessage: "",
+    isLoading: false
   };
 
   componentDidMount() {
@@ -58,40 +56,6 @@ class EditProduct extends Component {
         platformURLs: [...platformURLsWithShowAddBtn]
       }
     });
-  }
-
-  componentWillUnmount() {
-    const { emptyProductUpdateResponse } = this.props;
-    emptyProductUpdateResponse();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const {
-      productUpdateSuccess,
-      productUpdateErrorMsg,
-      setActiveComponent
-    } = this.props;
-    //? to display snackbar for success and error
-    if (productUpdateSuccess !== prevProps.productUpdateSuccess) {
-      if (productUpdateSuccess === true) {
-        this.setState(
-          {
-            showSnackbar: true,
-            snackbarMessage: "Product Update Successfully!",
-            snackbarVariant: "success"
-          },
-          () => {
-            setActiveComponent("list");
-          }
-        );
-      } else if (productUpdateSuccess === false) {
-        this.setState({
-          showSnackbar: true,
-          snackbarMessage: productUpdateErrorMsg,
-          snackbarVariant: "error"
-        });
-      }
-    }
   }
 
   //? this will generate the array of platforms by adding formFields and some other dara by "reviewPlatformsArray"
@@ -275,8 +239,9 @@ class EditProduct extends Component {
   };
 
   //? Handle submission of products
-  updateProduct = () => {
-    const { updateProductInProductReviews } = this.props;
+  updateProductHandler = () => {
+    this.setState({ isLoading: true });
+    const { updateProduct } = this.props;
     const { productData } = this.state;
     const platformsArray = _get(productData, "platformURLs", []);
     const productName = _get(productData, "productName.value", "");
@@ -296,7 +261,31 @@ class EditProduct extends Component {
         name: productName,
         platforms: [...validPlatformUrls]
       };
-      updateProductInProductReviews(reqBody);
+      updateProduct(reqBody, this.updateProductResponse);
+    }
+  };
+
+  updateProductResponse = (success, msg) => {
+    const { setActiveComponent } = this.props;
+    if (success === true) {
+      this.setState(
+        {
+          showSnackbar: true,
+          snackbarMessage: msg,
+          snackbarVariant: "success",
+          isLoading: false
+        },
+        () => {
+          setActiveComponent("list");
+        }
+      );
+    } else if (success === false) {
+      this.setState({
+        showSnackbar: true,
+        snackbarMessage: msg,
+        snackbarVariant: "error",
+        isLoading: false
+      });
     }
   };
 
@@ -305,9 +294,10 @@ class EditProduct extends Component {
       productData,
       showSnackbar,
       snackbarMessage,
-      snackbarVariant
+      snackbarVariant,
+      isLoading
     } = this.state;
-    const { setActiveComponent, productUpdateIsLoading } = this.props;
+    const { setActiveComponent } = this.props;
     return (
       <>
         <style jsx>{styles}</style>
@@ -343,13 +333,13 @@ class EditProduct extends Component {
               >
                 Back
               </Button>
-              {productUpdateIsLoading ? (
+              {isLoading ? (
                 <Button variant="contained" size="medium" color="primary">
                   <CircularProgress size={25} color="#fff" />
                 </Button>
               ) : (
                 <Button
-                  onClick={this.updateProduct}
+                  onClick={this.updateProductHandler}
                   color="primary"
                   variant="contained"
                   size="medium"
@@ -409,30 +399,12 @@ const mapStateToProps = (state, ownProps) => {
     ...configuredPlatforms,
     ...nonConfiguredPlatforms
   ];
-  const productUpdateSuccess = _get(
-    dashboardData,
-    "updateProductResponse.success",
-    undefined
-  );
-  const productUpdateErrorMsg = _get(
-    dashboardData,
-    "updateProductResponse.errorMsg",
-    "Some Error Occurred!"
-  );
-  const productUpdateIsLoading = _get(
-    dashboardData,
-    "updateProductResponse.isLoading",
-    false
-  );
+
   return {
-    reviewPlatformsArray,
-    productUpdateSuccess,
-    productUpdateErrorMsg,
-    productUpdateIsLoading
+    reviewPlatformsArray
   };
 };
 
 export default connect(mapStateToProps, {
-  updateProductInProductReviews,
-  emptyProductUpdateResponse
+  updateProduct
 })(EditProduct);
