@@ -209,6 +209,7 @@ class AddProduct extends Component {
   handleSaveBtnClick = () => {
     const { addProductInProductReviews, setActiveComponent } = this.props;
     const { productData } = this.state;
+    const initSetup = _get(this.props, "initSetup", false);
     let reqBody = [];
     if (isValidArray(productData)) {
       (productData || []).forEach(product => {
@@ -228,16 +229,20 @@ class AddProduct extends Component {
     }
     if (isValidArray(reqBody)) {
       addProductInProductReviews(reqBody);
-      setActiveComponent("list");
+      if (!initSetup) {
+        setActiveComponent("list");
+      }
     }
   };
 
   render() {
     const { productData } = this.state;
     const { setActiveComponent } = this.props;
+    const initSetup = _get(this.props, "initSetup", false);
     return (
       <>
         <style jsx>{styles}</style>
+        {initSetup ? <h3>Please setup a product </h3> : null}
         {(productData || []).map(product => {
           return (
             <Zoom in={true}>
@@ -268,18 +273,20 @@ class AddProduct extends Component {
           </div>
           <div className="col-md-6">
             <div style={{ textAlign: "right" }}>
-              <Button
-                onClick={() => {
-                  setActiveComponent("list");
-                }}
-                color="primary"
-                variant="contained"
-                size="medium"
-                startIcon={<ArrowBack />}
-                style={{ marginRight: "10px" }}
-              >
-                Back
-              </Button>
+              {initSetup ? null : (
+                <Button
+                  onClick={() => {
+                    setActiveComponent("list");
+                  }}
+                  color="primary"
+                  variant="contained"
+                  size="medium"
+                  startIcon={<ArrowBack />}
+                  style={{ marginRight: "10px" }}
+                >
+                  Back
+                </Button>
+              )}
               <Button
                 onClick={this.handleSaveBtnClick}
                 color="primary"

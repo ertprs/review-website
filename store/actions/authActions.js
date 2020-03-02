@@ -50,7 +50,8 @@ import axios from "axios";
 import {
   fetchCampaignLanguage,
   getAvailableReviewPlatforms,
-  setReviewsAfterLogin
+  setReviewsAfterLogin,
+  fetchAllProducts
 } from "./dashboardActions";
 import { sendTrustVote } from "./trustAction";
 import { reportDomain } from "./domainProfileActions";
@@ -565,6 +566,7 @@ export const businessLogIn = loginData => {
             dispatch(getAvailableReviewPlatforms(token));
             dispatch(fetchCampaignLanguage(token));
             dispatch(getAvailablePlatforms(token));
+            dispatch(fetchAllProducts());
             dispatch({
               type: BUSINESS_LOGIN_SUCCESS,
               logIn: {
@@ -682,10 +684,11 @@ export const setUserActivated = (
       userActivated,
       activationRequired: false
     });
-    if (activationRequired) {
+    if (userActivated) {
       dispatch(getAvailableReviewPlatforms(token));
       dispatch(fetchCampaignLanguage(token));
       dispatch(getAvailablePlatforms(token));
+      dispatch(fetchAllProducts());
       dispatch(setReviewsAfterLogin(socialArray));
     }
   };
