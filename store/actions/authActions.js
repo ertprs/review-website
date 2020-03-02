@@ -684,9 +684,10 @@ export const setUserActivated = (
     dispatch({
       type: SET_USER_ACTIVATED,
       userActivated,
-      activationRequired: false
+      activationRequired: userActivated ? false : activationRequired
     });
-    if (userActivated) {
+    //? is user is activated successfully and activationRequired was true(means 3 days are over and all the features all disabled) then we fetch all these data as they were failed after login
+    if (userActivated && activationRequired) {
       dispatch(getAvailableReviewPlatforms(token));
       dispatch(fetchCampaignLanguage(token));
       dispatch(getAvailablePlatforms(token));
