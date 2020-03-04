@@ -264,6 +264,17 @@ class AddProduct extends Component {
     }
   };
 
+  removeProduct = id => {
+    console.log(id, "id");
+    const { productData } = this.state;
+    if (id) {
+      let updatedProductData = productData.filter(product => {
+        return product.id !== id;
+      });
+      this.setState({ productData: [...updatedProductData] });
+    }
+  };
+
   render() {
     const {
       showSnackbar,
@@ -278,7 +289,7 @@ class AddProduct extends Component {
       <>
         <style jsx>{styles}</style>
         {initSetup ? <h3>Please setup a product </h3> : null}
-        {(productData || []).map(product => {
+        {(productData || []).map((product, index) => {
           return (
             <Zoom in={true}>
               <div
@@ -286,10 +297,12 @@ class AddProduct extends Component {
                 key={_get(product, "id", "")}
               >
                 <ProductCard
+                  index={index}
                   product={product}
                   handleProductNameChange={this.handleProductNameChange}
                   handleURLChange={this.handleURLChange}
                   addMorePlatform={this.addMorePlatform}
+                  removeProduct={this.removeProduct}
                 />
               </div>
             </Zoom>
