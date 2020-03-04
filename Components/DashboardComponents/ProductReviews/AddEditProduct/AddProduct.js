@@ -275,6 +275,29 @@ class AddProduct extends Component {
     }
   };
 
+  removePlatform = (productId, platformUniqueId) => {
+    const { productData } = this.state;
+    if (productId && platformUniqueId) {
+      const productIndexToUpdate = _findIndex(productData, ["id", productId]);
+      const productToUpdate = productData[productIndexToUpdate];
+      if (productToUpdate) {
+        let updatedPlatformUrls = _get(
+          productToUpdate,
+          "platformURLs",
+          []
+        ).filter(platform => {
+          return _get(platform, "uniqueId", "") !== platformUniqueId;
+        });
+        let updatedProductData = [...productData];
+        updatedProductData[productIndexToUpdate] = {
+          ...updatedProductData[productIndexToUpdate],
+          platformURLs: [...updatedPlatformUrls]
+        };
+        this.setState({ productData: [...updatedProductData] });
+      }
+    }
+  };
+
   render() {
     const {
       showSnackbar,
@@ -303,12 +326,13 @@ class AddProduct extends Component {
                   handleURLChange={this.handleURLChange}
                   addMorePlatform={this.addMorePlatform}
                   removeProduct={this.removeProduct}
+                  removePlatform={this.removePlatform}
                 />
               </div>
             </Zoom>
           );
         })}
-        <div className="row">
+        <div className="row mt_fifty mb_fifty">
           <div className="col-md-6">
             <Button
               onClick={this.addProduct}

@@ -240,7 +240,6 @@ class EditProduct extends Component {
 
   //? Handle submission of products
   updateProductHandler = () => {
-    this.setState({ isLoading: true });
     const { updateProduct } = this.props;
     const { productData } = this.state;
     const platformsArray = _get(productData, "platformURLs", []);
@@ -256,6 +255,7 @@ class EditProduct extends Component {
       alert("Please check if all the entered urls are valid!");
     }
     if (isValidProductName && areAllUrlsValid) {
+      this.setState({ isLoading: true });
       let reqBody = {
         _id: productId,
         name: productName,

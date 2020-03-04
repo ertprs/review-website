@@ -5,6 +5,7 @@ import _get from "lodash/get";
 //! Material UI imports
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
+import RemoveIcon from "@material-ui/icons/CancelOutlined";
 
 const renderIcon = platformName => {
   let src = "";
@@ -51,7 +52,8 @@ const PlatformCard = ({
   platform,
   handleURLChange,
   productId,
-  addMorePlatform
+  addMorePlatform,
+  removePlatform
 }) => {
   const platformName = _get(platform, "url.name", "");
   const formData = _get(platform, "url", {});
@@ -67,14 +69,8 @@ const PlatformCard = ({
         </div>
       </div>
       <div className="col-md-10">
-        <div>
-          <div
-            className={
-              showAddBtn
-                ? "inlineBlock eightyPerWidth"
-                : "inlineBlock fullWidth"
-            }
-          >
+        <div className="row">
+          <div className="col-md-10">
             <FormField
               {...formData}
               handleChange={e => {
@@ -82,14 +78,20 @@ const PlatformCard = ({
               }}
             />
           </div>
-          <div className="inlineBlock">
+          <div className="col-md-2 mb_seven">
             {showAddBtn ? (
               <IconButton
                 onClick={() => addMorePlatform(productId, platformId)}
               >
                 <AddIcon />
               </IconButton>
-            ) : null}
+            ) : (
+              <IconButton
+                onClick={() => removePlatform(productId, platformUniqueId)}
+              >
+                <RemoveIcon />
+              </IconButton>
+            )}
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "../../../MaterialComponents/Card";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
+import RemoveIcon from "@material-ui/icons/CancelOutlined";
 import PlatformCard from "./PlatformCard";
 import FormField from "../../../Widgets/FormField/FormField";
 import _get from "lodash/get";
@@ -12,7 +12,8 @@ function AddProductCard({
   handleURLChange,
   handleProductNameChange,
   addMorePlatform,
-  removeProduct
+  removeProduct,
+  removePlatform
 }) {
   const platformURLs = _get(product, "platformURLs", []);
   return (
@@ -20,7 +21,7 @@ function AddProductCard({
       {index === 0 ? null : (
         <div style={{ textAlign: "right" }}>
           <IconButton onClick={() => removeProduct(_get(product, "id", ""))}>
-            <CloseIcon />
+            <RemoveIcon />
           </IconButton>
         </div>
       )}
@@ -41,6 +42,7 @@ function AddProductCard({
                 platform={platform || {}}
                 handleURLChange={handleURLChange}
                 addMorePlatform={addMorePlatform}
+                removePlatform={removePlatform}
               />
             </div>
           );
