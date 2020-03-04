@@ -7,7 +7,7 @@ definitions:
             - pip        
           script:
             - pip install "https://github.com/ansible/awx/archive/$AWX_VERSION.tar.gz#egg=awxkit&subdirectory=awxkit"
-            - /bin/bash deploy.bash
+            - /bin/bash deploy/deploy.bash
 pipelines:
   custom:
     deploy-to-production: 
@@ -19,3 +19,7 @@ pipelines:
       - step:
           <<: *DeployStep
           deployment: Staging
+    '{development,dev}':
+      - step:
+          <<: *DeployStep
+          deployment: Development
