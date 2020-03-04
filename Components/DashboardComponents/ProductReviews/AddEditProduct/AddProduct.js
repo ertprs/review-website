@@ -133,10 +133,12 @@ class AddProduct extends Component {
           url: {
             ..._get(platformURLToUpdate, "url", {}),
             value,
-            valid: validate(
-              value,
-              _get(platformURLToUpdate, "url.validationRules", {})
-            ),
+            valid: value
+              ? validate(
+                  value,
+                  _get(platformURLToUpdate, "url.validationRules", {})
+                )
+              : true,
             touched: true
           }
         };
@@ -192,40 +194,49 @@ class AddProduct extends Component {
   };
 
   //?Utility function to return platforms having URLs for a particular product
-  getValidPlatformsWithURLs = platformsArray => {
+  getValidPlatformsURLs = platformsArray => {
     let validPlatformsArray = [];
+    let areAllUrlsValid = true;
     if (isValidArray(platformsArray)) {
       (platformsArray || []).forEach(platform => {
         let platformUrlIsValid = _get(platform, "url.valid", false);
-        if (platformUrlIsValid) {
-          let platformId = _get(platform, "id", "");
-          let platformURL = _get(platform, "url.value", "");
+        let platformId = _get(platform, "id", "");
+        let platformURL = _get(platform, "url.value", "");
+        if (platformURL && platformUrlIsValid) {
           validPlatformsArray = [
             ...validPlatformsArray,
             { platform: platformId, url: platformURL }
           ];
+        } else {
+          if (platformURL) {
+            areAllUrlsValid = false;
+          }
         }
       });
     }
-    return validPlatformsArray;
+    return { validPlatformsArray, areAllUrlsValid };
   };
 
   //? Handle submission of products
   saveProductHandler = () => {
-    this.setState({ isLoading: true });
     const { addProduct } = this.props;
     const { productData } = this.state;
-    const initSetup = _get(this.props, "initSetup", false);
     let reqBody = [];
+    let isValid = true;
     if (isValidArray(productData)) {
       (productData || []).forEach(product => {
         let productNameIsValid = _get(product, "productName.valid", "");
         let productName = _get(product, "productName.value", "");
         let platformsArray = _get(product, "platformURLs", []);
-        let validPlatformsArray =
-          this.getValidPlatformsWithURLs(platformsArray) || [];
+        let { validPlatformsArray, areAllUrlsValid } =
+          this.getValidPlatformsURLs(platformsArray) || [];
+        isValid = isValid && productNameIsValid && areAllUrlsValid;
         //if valid productName && at least one platform URL is added push into request Body
-        if (productNameIsValid && (validPlatformsArray || []).length > 0) {
+        if (
+          productNameIsValid &&
+          areAllUrlsValid &&
+          (validPlatformsArray || []).length > 0
+        ) {
           reqBody = [
             ...reqBody,
             { name: productName, platforms: [...validPlatformsArray] }
@@ -233,8 +244,13 @@ class AddProduct extends Component {
         }
       });
     }
-    if (isValidArray(reqBody)) {
+    if (isValidArray(reqBody) && isValid) {
+      this.setState({ isLoading: true });
       addProduct(reqBody, this.addProductResponse);
+    } else if ((reqBody || []).length === 0) {
+      alert("Please add at-least one product!");
+    } else {
+      alert("Please check if all the fields are valid!");
     }
   };
 

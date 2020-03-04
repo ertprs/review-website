@@ -60,6 +60,7 @@ const PlatformCard = ({
   const showAddBtn = _get(platform, "showAddBtn", false);
   const platformId = _get(platform, "id", "");
   const platformUniqueId = _get(platform, "uniqueId", "");
+  const isDisabled = _get(platform, "url.disabled", false);
   return (
     <div className="row">
       <style jsx>{styles}</style>
@@ -85,7 +86,7 @@ const PlatformCard = ({
               >
                 <AddIcon />
               </IconButton>
-            ) : (
+            ) : isDisabled ? null : (
               <IconButton
                 onClick={() => removePlatform(productId, platformUniqueId)}
               >

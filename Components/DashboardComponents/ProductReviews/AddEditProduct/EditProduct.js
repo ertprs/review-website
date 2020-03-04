@@ -204,6 +204,7 @@ class EditProduct extends Component {
     let validPlatformUrls = [];
     //? this will be used to show alert if any of the url is invalid
     let areAllUrlsValid = true;
+    let anyNewUrlAdded = false;
     if (isValidArray(platformsArray)) {
       (platformsArray || []).map(platform => {
         const platformUrlIsValid = _get(platform, "url.valid", false);
@@ -221,6 +222,7 @@ class EditProduct extends Component {
             }
             //? this will be the new url that user has added for a platform, it gets identified because it doesn't have _id
             else {
+              anyNewUrlAdded = true;
               validPlatformUrls.push({
                 platform: _get(platform, "platformId"),
                 url: platformUrl
@@ -234,7 +236,8 @@ class EditProduct extends Component {
     }
     return {
       validPlatformUrls,
-      areAllUrlsValid
+      areAllUrlsValid,
+      anyNewUrlAdded
     };
   };
 
@@ -246,15 +249,9 @@ class EditProduct extends Component {
     const productName = _get(productData, "productName.value", "");
     const productId = _get(productData, "id");
     const isValidProductName = _get(productData, "productName.valid", false);
-    let { validPlatformUrls, areAllUrlsValid } =
+    let { validPlatformUrls, areAllUrlsValid, anyNewUrlAdded } =
       this.getValidPlatformsURLs(platformsArray) || {};
-    if (!isValidProductName) {
-      alert("Please enter a valid product name");
-    }
-    if (!areAllUrlsValid) {
-      alert("Please check if all the entered urls are valid!");
-    }
-    if (isValidProductName && areAllUrlsValid) {
+    if (isValidProductName && areAllUrlsValid && anyNewUrlAdded) {
       this.setState({ isLoading: true });
       let reqBody = {
         _id: productId,
@@ -262,6 +259,13 @@ class EditProduct extends Component {
         platforms: [...validPlatformUrls]
       };
       updateProduct(reqBody, this.updateProductResponse);
+    } else if (!isValidProductName) {
+      alert("Please enter a valid product name");
+    } else if (!areAllUrlsValid) {
+      alert("Please check if all the entered urls are valid!");
+    }
+    if (!anyNewUrlAdded) {
+      alert("Please add any new url!");
     }
   };
 
@@ -289,6 +293,23 @@ class EditProduct extends Component {
     }
   };
 
+  removePlatform = (productId, platformUniqueId) => {
+    const { productData } = this.state;
+    if (platformUniqueId) {
+      let updatedPlatformUrls = _get(productData, "platformURLs", []).filter(
+        platform => {
+          return _get(platform, "uniqueId", "") !== platformUniqueId;
+        }
+      );
+      let updatedProductData = {
+        ...productData,
+        platformURLs: [...updatedPlatformUrls]
+      };
+
+      this.setState({ productData: { ...updatedProductData } });
+    }
+  };
+
   render() {
     const {
       productData,
@@ -311,10 +332,13 @@ class EditProduct extends Component {
             key={_get(productData, "_id", "")}
           >
             <ProductCard
+              //? this index prop will be used to hide close button
+              index={0}
               product={productData}
               handleProductNameChange={this.handleProductNameChange}
               handleURLChange={this.handleURLChange}
               addMorePlatform={this.addMorePlatform}
+              removePlatform={this.removePlatform}
             />
           </div>
         </Zoom>
