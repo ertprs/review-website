@@ -28,9 +28,13 @@ class AddProduct extends Component {
   };
 
   componentDidMount() {
+    //? initially add one product
     this.addProduct();
   }
 
+  //? it will create the platforms array based upon the platformsArray coming from api
+  //? is the platformId from backend and uniqueId is for us to uniquely identify and do modifications
+  //? showAddBtn will be true for all the first card of each platform
   generatePlatformsArray = () => {
     const { platformsArray } = this.props;
     return platformsArray.map(item => {
@@ -59,6 +63,7 @@ class AddProduct extends Component {
     });
   };
 
+  //? this will add one product object in productData array
   addProduct = () => {
     const { productData } = this.state;
     const platformURLs = this.generatePlatformsArray();
@@ -133,10 +138,12 @@ class AddProduct extends Component {
           url: {
             ..._get(platformURLToUpdate, "url", {}),
             value,
-            valid: validate(
-              value,
-              _get(platformURLToUpdate, "url.validationRules", {})
-            ),
+            valid: value
+              ? validate(
+                  value,
+                  _get(platformURLToUpdate, "url.validationRules", {})
+                )
+              : true,
             touched: true
           }
         };
@@ -151,18 +158,23 @@ class AddProduct extends Component {
 
   addMorePlatform = (productId, platformId) => {
     const { productData } = this.state;
+    //? find product to edit
     const productIndex = _findIndex(productData, ["id", productId]);
     if (productIndex !== -1) {
       const product = productData[productIndex];
       const platforms = _get(product, "platformURLs", []);
+      //? find platform to edit
       const platformIndex = _findIndex(platforms, ["id", platformId]);
       if (platformIndex !== -1) {
         const platform = platforms[platformIndex];
         const platformId = _get(platform, "id", "");
         const platformName = _get(platform, "url.name", "");
+        //? created new platform
         const newPlatform = {
           id: platformId,
           uniqueId: uniqueIdGenerator(),
+          //? showAddBtn will be true only for first platform and if we are here that means we are adding one more card of same platform
+          showAddBtn: false,
           url: {
             element: "input",
             type: "text",
@@ -178,10 +190,10 @@ class AddProduct extends Component {
             name: platformName,
             id: platformName,
             labelText: ""
-          },
-          showAddBtn: false
+          }
         };
         let updatedPlatforms = [...platforms];
+        //? added the new platform just after the old platform
         updatedPlatforms.splice(platformIndex + 1, 0, newPlatform);
         const updatedProduct = { ...product, platformURLs: updatedPlatforms };
         let updatedProductData = [...productData];
@@ -191,41 +203,52 @@ class AddProduct extends Component {
     }
   };
 
-  //?Utility function to return platforms having URLs for a particular product
-  getValidPlatformsWithURLs = platformsArray => {
+  //? It will return platformUrls array if platformUrl is not empty and is valid
+  getValidPlatformsURLs = platformsArray => {
     let validPlatformsArray = [];
+    //? areAllUrlsValid will be false if any of the url is invalid
+    let areAllUrlsValid = true;
     if (isValidArray(platformsArray)) {
       (platformsArray || []).forEach(platform => {
         let platformUrlIsValid = _get(platform, "url.valid", false);
-        if (platformUrlIsValid) {
-          let platformId = _get(platform, "id", "");
-          let platformURL = _get(platform, "url.value", "");
+        let platformId = _get(platform, "id", "");
+        let platformURL = _get(platform, "url.value", "");
+        if (platformURL && platformUrlIsValid) {
           validPlatformsArray = [
             ...validPlatformsArray,
             { platform: platformId, url: platformURL }
           ];
+        } else {
+          if (platformURL) {
+            areAllUrlsValid = false;
+          }
         }
       });
     }
-    return validPlatformsArray;
+    return { validPlatformsArray, areAllUrlsValid };
   };
 
   //? Handle submission of products
   saveProductHandler = () => {
-    this.setState({ isLoading: true });
     const { addProduct } = this.props;
     const { productData } = this.state;
-    const initSetup = _get(this.props, "initSetup", false);
     let reqBody = [];
+    //? isValid will be used to to check overall validation, it will be false if any of the product name or platformUrl is invalid
+    let isValid = true;
     if (isValidArray(productData)) {
       (productData || []).forEach(product => {
         let productNameIsValid = _get(product, "productName.valid", "");
         let productName = _get(product, "productName.value", "");
         let platformsArray = _get(product, "platformURLs", []);
-        let validPlatformsArray =
-          this.getValidPlatformsWithURLs(platformsArray) || [];
-        //if valid productName && at least one platform URL is added push into request Body
-        if (productNameIsValid && (validPlatformsArray || []).length > 0) {
+        let { validPlatformsArray, areAllUrlsValid } =
+          this.getValidPlatformsURLs(platformsArray) || [];
+        isValid = isValid && productNameIsValid && areAllUrlsValid;
+        //? product will be added if product name is valid, all the urls of the product are valid and at-least one url is added
+        if (
+          productNameIsValid &&
+          areAllUrlsValid &&
+          (validPlatformsArray || []).length > 0
+        ) {
           reqBody = [
             ...reqBody,
             { name: productName, platforms: [...validPlatformsArray] }
@@ -233,11 +256,22 @@ class AddProduct extends Component {
         }
       });
     }
-    if (isValidArray(reqBody)) {
+    //? will make api call when at-least one product is added, the product name and url is valid, and there is no invalid field in the entire form
+    if (isValidArray(reqBody) && isValid) {
+      this.setState({ isLoading: true });
       addProduct(reqBody, this.addProductResponse);
+    }
+    //? if the user hasn't added any product i.e product name and at-least one url should be valid
+    else if ((reqBody || []).length === 0) {
+      alert("Please add at-least one product!");
+    }
+    //?if there is any invalid field it will show this msg
+    else {
+      alert("Please check if all the fields are valid!");
     }
   };
 
+  //? response of add product api call, showing snackbar only
   addProductResponse = (success, msg) => {
     const { setActiveComponent, initSetup } = this.props;
     if (success === true) {
@@ -264,6 +298,40 @@ class AddProduct extends Component {
     }
   };
 
+  removeProduct = id => {
+    console.log(id, "id");
+    const { productData } = this.state;
+    if (id) {
+      let updatedProductData = productData.filter(product => {
+        return product.id !== id;
+      });
+      this.setState({ productData: [...updatedProductData] });
+    }
+  };
+
+  removePlatform = (productId, platformUniqueId) => {
+    const { productData } = this.state;
+    if (productId && platformUniqueId) {
+      const productIndexToUpdate = _findIndex(productData, ["id", productId]);
+      const productToUpdate = productData[productIndexToUpdate];
+      if (productToUpdate) {
+        let updatedPlatformUrls = _get(
+          productToUpdate,
+          "platformURLs",
+          []
+        ).filter(platform => {
+          return _get(platform, "uniqueId", "") !== platformUniqueId;
+        });
+        let updatedProductData = [...productData];
+        updatedProductData[productIndexToUpdate] = {
+          ...updatedProductData[productIndexToUpdate],
+          platformURLs: [...updatedPlatformUrls]
+        };
+        this.setState({ productData: [...updatedProductData] });
+      }
+    }
+  };
+
   render() {
     const {
       showSnackbar,
@@ -277,8 +345,9 @@ class AddProduct extends Component {
     return (
       <>
         <style jsx>{styles}</style>
+        {/* this will be displayed when user will setup product for first time */}
         {initSetup ? <h3>Please setup a product </h3> : null}
-        {(productData || []).map(product => {
+        {(productData || []).map((product, index) => {
           return (
             <Zoom in={true}>
               <div
@@ -286,16 +355,20 @@ class AddProduct extends Component {
                 key={_get(product, "id", "")}
               >
                 <ProductCard
+                  //? index will be used to show remove button when index !== 0
+                  index={index}
                   product={product}
                   handleProductNameChange={this.handleProductNameChange}
                   handleURLChange={this.handleURLChange}
                   addMorePlatform={this.addMorePlatform}
+                  removeProduct={this.removeProduct}
+                  removePlatform={this.removePlatform}
                 />
               </div>
             </Zoom>
           );
         })}
-        <div className="row">
+        <div className="row mt_fifty mb_fifty">
           <div className="col-md-6">
             <Button
               onClick={this.addProduct}
@@ -308,7 +381,9 @@ class AddProduct extends Component {
           </div>
           <div className="col-md-6">
             <div style={{ textAlign: "right" }}>
+              {/* back button will be hidden for first time product setup */}
               {initSetup ? null : (
+                // back button onclick will redirect to product list
                 <Button
                   onClick={() => {
                     setActiveComponent("list");

@@ -30,7 +30,7 @@ class EditProduct extends Component {
   };
 
   componentDidMount() {
-    //? creating data for product depending upon the product data received
+    //? creating data for product based upon the product data received
     const { productToEdit } = this.props;
     const productName = _get(productToEdit, "name", "");
     const productId = _get(productToEdit, "_id", "");
@@ -58,16 +58,18 @@ class EditProduct extends Component {
     });
   }
 
-  //? this will generate the array of platforms by adding formFields and some other dara by "reviewPlatformsArray"
+  //? this will generate array of objects where each object will represent each url and the data is in format to be used in form fields
   generatePlatformsArray = () => {
     const { reviewPlatformsArray } = this.props;
     return reviewPlatformsArray.map(item => {
+      //? if of this obj for backend
       const id = _get(item, "_id", "");
       const name = _get(item, "name", "");
       const url = _get(item, "url", "");
       const platformId = _get(item, "platform", "");
       return {
         id,
+        //? we are using this unique identifier
         uniqueId: uniqueIdGenerator(),
         platformId,
         url: {
@@ -90,16 +92,19 @@ class EditProduct extends Component {
     });
   };
 
-  //? this method will add showAddBtn = true to all unique platforms
+  //? this method will add showAddBtn = true for first platform and in all unique platforms, as there can be multiple objects for same platform
   addShowAddBtnPropertyInPlatformUrls = () => {
     let platformsArray = this.generatePlatformsArray();
+    //? getting all unique Platforms
     let uniquePlatforms = _uniqBy(platformsArray, "platformId");
     if (isValidArray(platformsArray)) {
       return (platformsArray || []).map(platform => {
+        //? if this exists in uniquePlatformsArray we'll add showAddBtn property to true
         let isThisUniquePlatform = _findIndex(uniquePlatforms, [
           "uniqueId",
           _get(platform, "uniqueId", "")
         ]);
+        //?
         if (isThisUniquePlatform !== -1) {
           return {
             ...platform,
@@ -112,6 +117,7 @@ class EditProduct extends Component {
     }
   };
 
+  //? we only need e. productId and platformUniqueId are being passed for add product, we are not using them
   handleProductNameChange = (e, productId, platformUniqueId) => {
     const { productData } = this.state;
     const value = _get(e, "target.value", "");
@@ -130,6 +136,7 @@ class EditProduct extends Component {
     this.setState({ productData: { ...updatedProductData } });
   };
 
+  //? productId is being passed for add product we are not using it
   handleURLChange = (e, productId, platformUniqueId) => {
     const value = _get(e, "target.value", {});
     const { productData } = this.state;
@@ -199,11 +206,12 @@ class EditProduct extends Component {
     }
   };
 
-  //?Utility function to return platforms having URLs for a particular product
+  //? this method will return array of platforms, conditions are: (a) platformUrl should not be empty and valid (b) if it has _id that means it is existing url and if not that means new url. (c) if any url is invalid areAllUrlsValid will be false (d) if there is any url then only anyNewUrlAdded will be true
   getValidPlatformsURLs = platformsArray => {
     let validPlatformUrls = [];
     //? this will be used to show alert if any of the url is invalid
     let areAllUrlsValid = true;
+    let anyNewUrlAdded = false;
     if (isValidArray(platformsArray)) {
       (platformsArray || []).map(platform => {
         const platformUrlIsValid = _get(platform, "url.valid", false);
@@ -221,6 +229,7 @@ class EditProduct extends Component {
             }
             //? this will be the new url that user has added for a platform, it gets identified because it doesn't have _id
             else {
+              anyNewUrlAdded = true;
               validPlatformUrls.push({
                 platform: _get(platform, "platformId"),
                 url: platformUrl
@@ -234,37 +243,44 @@ class EditProduct extends Component {
     }
     return {
       validPlatformUrls,
-      areAllUrlsValid
+      areAllUrlsValid,
+      anyNewUrlAdded
     };
   };
 
   //? Handle submission of products
   updateProductHandler = () => {
-    this.setState({ isLoading: true });
+    const { productData, productToEdit } = this.state;
     const { updateProduct } = this.props;
-    const { productData } = this.state;
+    const oldProductName = _get(productToEdit, "name", "");
     const platformsArray = _get(productData, "platformURLs", []);
     const productName = _get(productData, "productName.value", "");
-    const productId = _get(productData, "id");
     const isValidProductName = _get(productData, "productName.valid", false);
-    let { validPlatformUrls, areAllUrlsValid } =
+    const productId = _get(productData, "id");
+    let { validPlatformUrls, areAllUrlsValid, anyNewUrlAdded } =
       this.getValidPlatformsURLs(platformsArray) || {};
-    if (!isValidProductName) {
-      alert("Please enter a valid product name");
-    }
-    if (!areAllUrlsValid) {
-      alert("Please check if all the entered urls are valid!");
-    }
-    if (isValidProductName && areAllUrlsValid) {
+    //? will make api call if product name is valid and changed and all the urls are valid and any url is added
+    if (
+      (isValidProductName && areAllUrlsValid && anyNewUrlAdded) ||
+      productName !== oldProductName
+    ) {
+      this.setState({ isLoading: true });
       let reqBody = {
         _id: productId,
         name: productName,
         platforms: [...validPlatformUrls]
       };
       updateProduct(reqBody, this.updateProductResponse);
+    } else if (!isValidProductName) {
+      alert("Please enter a valid product name");
+    } else if (!areAllUrlsValid) {
+      alert("Please check if all the entered urls are valid!");
+    } else if (!anyNewUrlAdded) {
+      alert("Please add any new url!");
     }
   };
 
+  //? response of update product api call to show snackbar
   updateProductResponse = (success, msg) => {
     const { setActiveComponent } = this.props;
     if (success === true) {
@@ -286,6 +302,24 @@ class EditProduct extends Component {
         snackbarVariant: "error",
         isLoading: false
       });
+    }
+  };
+
+  //? not using productId
+  removePlatform = (productId, platformUniqueId) => {
+    const { productData } = this.state;
+    if (platformUniqueId) {
+      let updatedPlatformUrls = _get(productData, "platformURLs", []).filter(
+        platform => {
+          return _get(platform, "uniqueId", "") !== platformUniqueId;
+        }
+      );
+      let updatedProductData = {
+        ...productData,
+        platformURLs: [...updatedPlatformUrls]
+      };
+
+      this.setState({ productData: { ...updatedProductData } });
     }
   };
 
@@ -311,10 +345,13 @@ class EditProduct extends Component {
             key={_get(productData, "_id", "")}
           >
             <ProductCard
+              //? this index prop will be used to hide close button
+              index={0}
               product={productData}
               handleProductNameChange={this.handleProductNameChange}
               handleURLChange={this.handleURLChange}
               addMorePlatform={this.addMorePlatform}
+              removePlatform={this.removePlatform}
             />
           </div>
         </Zoom>
@@ -366,28 +403,34 @@ class EditProduct extends Component {
 const mapStateToProps = (state, ownProps) => {
   const { dashboardData } = state;
   const { productToEdit } = ownProps;
+  //? existing platforms
   let configuredPlatforms = _get(productToEdit, "platforms", []);
+  //? platform array from backend
   const platformsFromApi = _get(
     dashboardData,
     "productReviewsPlatforms.platforms",
     {}
   );
+  //? copying in different variable
   let nonConfiguredPlatforms = [...platformsFromApi];
   if (isValidArray(configuredPlatforms)) {
     configuredPlatforms = configuredPlatforms.map(platform => {
       let platformId = _get(platform, "platform", "");
+      //? finding platformName from platformArray list of api
       let platformName =
         (_find(platformsFromApi, ["_id", platformId]) || {}).name || "";
+      //? remove the platform from platformArray(api) if it is already configured, so that it will not repeat because in the end we'll merge both platformArray(api) and configuredPlatforms
       nonConfiguredPlatforms = _remove(nonConfiguredPlatforms, platform => {
         return _get(platform, "_id", "") !== platformId;
       });
-
+      //? this is our updated configuredPlatformsArray with new property name that we have find from platformsArray(Api)
       return {
         ...platform,
         name: platformName
       };
     });
   }
+  //? transforming platformsArray(api) in the similar format as alreafy configuredPlatforms
   nonConfiguredPlatforms = nonConfiguredPlatforms.map(platform => {
     return {
       name: _get(platform, "name", ""),
@@ -395,11 +438,29 @@ const mapStateToProps = (state, ownProps) => {
       url: ""
     };
   });
-  const reviewPlatformsArray = [
+
+  //? was trying to group same platforms together but it was having some unexpected behaviour that's why put this in pending
+  // let configuredPlatformsCopy = [...configuredPlatforms];
+  // (configuredPlatformsCopy || []).forEach((platform, index, array) => {
+  //   let platformIndex = _findIndex(configuredPlatformsCopy, [
+  //     "platform",
+  //     _get(platform, "platform", "")
+  //   ]);
+  //   if (platformIndex >= 0) {
+  //     configuredPlatformsCopy.splice(platformIndex + 1, 0, platform);
+  //     configuredPlatformsCopy.splice(index, 1);
+  //   } else {
+  //     configuredPlatformsCopy.push(platform);
+  //   }
+  // });
+
+  //? merging both allReady configured platforms and platformsArray(api)
+  let reviewPlatformsArray = [
     ...configuredPlatforms,
     ...nonConfiguredPlatforms
   ];
 
+  //? this reviewPlatformsArray contains both configuredPlatforms and platformsArray(api), we have transformed both the array to suit our need
   return {
     reviewPlatformsArray
   };

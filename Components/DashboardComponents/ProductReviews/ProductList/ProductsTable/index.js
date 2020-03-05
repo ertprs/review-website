@@ -25,12 +25,6 @@ class ProductsTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props !== prevProps) {
-      this.tableRef.current.onQueryChange();
-    }
-  }
-
   parseTableData = tableData => {
     if (isValidArray(tableData)) {
       return tableData.map(row => {

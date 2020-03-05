@@ -5,6 +5,7 @@ import _get from "lodash/get";
 //! Material UI imports
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/AddCircleOutline";
+import RemoveIcon from "@material-ui/icons/CancelOutlined";
 
 const renderIcon = platformName => {
   let src = "";
@@ -51,13 +52,17 @@ const PlatformCard = ({
   platform,
   handleURLChange,
   productId,
-  addMorePlatform
+  addMorePlatform,
+  removePlatform
 }) => {
   const platformName = _get(platform, "url.name", "");
   const formData = _get(platform, "url", {});
-  const showAddBtn = _get(platform, "showAddBtn", false);
   const platformId = _get(platform, "id", "");
   const platformUniqueId = _get(platform, "uniqueId", "");
+  //? in product update case the input field is disabled for existing urls, so we can't remove them
+  const isDisabled = _get(platform, "url.disabled", false);
+  //? this will show a add platform button on each platform's first card
+  const showAddBtn = _get(platform, "showAddBtn", false);
   return (
     <div className="row">
       <style jsx>{styles}</style>
@@ -67,14 +72,8 @@ const PlatformCard = ({
         </div>
       </div>
       <div className="col-md-10">
-        <div>
-          <div
-            className={
-              showAddBtn
-                ? "inlineBlock eightyPerWidth"
-                : "inlineBlock fullWidth"
-            }
-          >
+        <div className="row">
+          <div className="col-md-10">
             <FormField
               {...formData}
               handleChange={e => {
@@ -82,14 +81,23 @@ const PlatformCard = ({
               }}
             />
           </div>
-          <div className="inlineBlock">
+          {/* will show add platform button on each platforms first card and
+          then if it is not existing url in product update case then it will
+          show remove platform option */}
+          <div className="col-md-2 mb_seven">
             {showAddBtn ? (
               <IconButton
                 onClick={() => addMorePlatform(productId, platformId)}
               >
                 <AddIcon />
               </IconButton>
-            ) : null}
+            ) : isDisabled ? null : (
+              <IconButton
+                onClick={() => removePlatform(productId, platformUniqueId)}
+              >
+                <RemoveIcon />
+              </IconButton>
+            )}
           </div>
         </div>
       </div>

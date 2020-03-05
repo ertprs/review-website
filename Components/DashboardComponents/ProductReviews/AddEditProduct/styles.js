@@ -16,18 +16,18 @@ export default css`
     max-width: 100%;
     height: auto;
   }
-  .inlineBlock {
-    display: inline-block;
-  }
-  .fullWidth {
-    width: 100%;
-  }
-
-  .eightyPerWidth {
-    width: 80%;
-  }
-
   .logoFlex {
     margin-top: 10px;
+  }
+  .mb_seven {
+    margin-bottom: 7px;
+  }
+
+  .mb_fifty {
+    margin-bottom: 50px;
+  }
+
+  .mt_fifty {
+    margin-top: 50px;
   }
 `;

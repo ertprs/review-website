@@ -99,6 +99,7 @@ class ProductCRUDDialog extends Component {
             this.setActiveComponent("list");
             handleClose();
           }}
+          disableEscapeKeyDown={true}
           TransitionComponent={Transition}
         >
           <AppBar className={classes.appBar}>
