@@ -18,7 +18,7 @@ class ProductReviews extends Component {
     const { products } = this.props;
     return (
       <div>
-        {isValidArray(products) && products.length > 0 ? (
+        {isValidArray(products) && (products || []).length > 0 ? (
           <ShowProductReviews />
         ) : (
           <AddProduct initSetup={true} />

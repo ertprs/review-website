@@ -1989,7 +1989,6 @@ export const fetchAllProducts = () => {
         }
       });
     } catch (error) {
-      console.log(error);
       const errorMsg = _get(
         error,
         "response.data.message",
@@ -2033,8 +2032,8 @@ export const addProduct = (data, cb) => {
       let success = false;
       if (isValidArray(addedProduct)) {
         success = true;
-        dispatch(fetchAllProducts());
       }
+      dispatch(fetchAllProducts());
       cb(success, "Product Added Successfully!");
       dispatch({
         type: ADD_PRODUCT_SUCCESS,

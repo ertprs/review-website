@@ -18,6 +18,7 @@ function AddProductCard({
   const platformURLs = _get(product, "platformURLs", []);
   return (
     <Card>
+      {/* it will show remove product button in cards (except 1st one) in add product flow  */}
       {index === 0 ? null : (
         <div style={{ textAlign: "right" }}>
           <IconButton onClick={() => removeProduct(_get(product, "id", ""))}>
