@@ -8,6 +8,7 @@ import _get from "lodash/get";
 import PremiumBrandingToggle from "./PremiumBrandingToggle/PremiumBrandingToggle";
 import BackgroundColorToggler from "./BackgroundColorToggler/BackgroundColorToggler";
 import GetSchemaCode from "../GetSchemaCode";
+import SelectLanguage from "./SelectLanguage";
 
 class CombinedReviewsWidgetConfigurations extends Component {
   render() {
@@ -33,7 +34,9 @@ class CombinedReviewsWidgetConfigurations extends Component {
       handleGetSchemaCodeDataChange,
       handleSchemaCodeValueChange,
       schemaFormData,
-      handleSchemaFormChange
+      handleSchemaFormChange,
+      selectedLanguageData,
+      handleSelectedLanguageChange
     } = this.props;
     const hideDashboardParticularSettings = _get(
       this.props,
@@ -44,6 +47,12 @@ class CombinedReviewsWidgetConfigurations extends Component {
       <div>
         <div className="container">
           <div className="row">
+            <div className="col-md-12" style={{ marginBottom: "10px" }}>
+              <SelectLanguage
+                value={selectedLanguageData}
+                handleChange={handleSelectedLanguageChange}
+              />
+            </div>
             <div className="col-md-6" style={{ marginBottom: "10px" }}>
               <MaxReviewsSelector
                 value={selectedMaxReviews}
