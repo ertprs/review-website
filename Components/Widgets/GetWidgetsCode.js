@@ -13,7 +13,8 @@ import CombinedReviewsWidgetConfigurations from "../DashboardComponents/WidgetsS
 import { newerThanMonthsOptions } from "../../utility/constants/newerThanMonthsConstants";
 import { maxReviewsOptions } from "../../utility/constants/maxReviewsConstants";
 import { ratingCountOptions } from "../../utility/constants/ratingCountConstants";
-
+import widgetTranslationLanguages from "../../utility/constants/widgetTranslationLanguages";
+import SelectLanguage from "../DashboardComponents/WidgetsShowCase/CombinedReviewsWidgetConfigurations/SelectLanguage";
 const platforms = [
   {
     value: "22",
@@ -39,6 +40,7 @@ class GetWidgetsCode extends Component {
     this.state = {
       widgetHeight: _get(this.props, "widget.minHeight", 0),
       refreshWidget: false,
+      selectedLanguage: widgetTranslationLanguages[0],
       platforms: {
         element: "select",
         name: "platforms",
@@ -214,6 +216,21 @@ class GetWidgetsCode extends Component {
     );
   };
 
+  handleSelectedLanguageChange = valObj => {
+    this.setState(
+      {
+        selectedLanguage: { ...valObj },
+        refreshWidget: true
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ refreshWidget: false });
+          this.props.scrollToTopOfThePage();
+        }, 1000);
+      }
+    );
+  };
+
   getYourWidgetBox = () => {
     const { domainName, widget } = this.props;
     const widgetId = _get(widget, "id", "");
@@ -268,13 +285,23 @@ class GetWidgetsCode extends Component {
             <div className="body">
               <h6 style={{ lineHeight: "2" }}>1-)</h6>
               {widgetId !== 0 ? (
-                <div className="inputContainer">{this.renderInput()}</div>
+                <>
+                  <div className="inputContainer">{this.renderInput()}</div>
+                  <SelectLanguage
+                    value={this.state.selectedLanguage}
+                    handleChange={this.handleSelectedLanguageChange}
+                  />
+                </>
               ) : (
                 <CombinedReviewsWidgetConfigurations
                   selectedMaxReviews={selectedMaxReviews}
                   selectedNewerThanMonths={selectedNewerThanMonths}
                   selectedRatingCount={selectedRatingCount}
                   handleChange={this.handleWidgetConfigurationChange}
+                  selectedLanguageData={this.state.selectedLanguage}
+                  handleSelectedLanguageChange={
+                    this.handleSelectedLanguageChange
+                  }
                   hideDashboardParticularSettings={true}
                 />
               )}
@@ -310,7 +337,7 @@ class GetWidgetsCode extends Component {
                 {widgetId === 0 ? (
                   <code className="blue">{`
                     <div class="trustsearch-widget" 
-                    data-locale="en-US"
+                    data-locale="${this.state.selectedLanguage.value}"
                     data-template-id="${this.props.widget.dataTempID}" 
                     data-businessunit-id="${this.props.domainName ||
                       "google.com"}"
@@ -341,7 +368,7 @@ class GetWidgetsCode extends Component {
                 ) : (
                   <code className="blue">{`
                 <div class="trustsearch-widget" 
-                data-locale="en-US"
+                data-locale="${this.state.selectedLanguage.value}"
                 data-template-id="${this.props.widget.dataTempID}" 
                 data-businessunit-id="${this.props.domainName || "google.com"}"
                 data-style-height="${this.state.widgetHeight}px"
@@ -401,7 +428,7 @@ class GetWidgetsCode extends Component {
         </Head>
         <div
           className="trustsearch-widget"
-          data-locale="en-US"
+          data-locale={_get(this.state, "selectedLanguage.value", "EN")}
           data-template-id={_get(this.props, "widget.dataTempID", "")}
           data-businessunit-id={_get(this.props, "domainName", "")}
           data-style-height={`${_get(this.state, "widgetHeight", "")}px`}

@@ -15,12 +15,14 @@ import CombinedReviewsWidgetConfigurations from "./CombinedReviewsWidgetConfigur
 import { newerThanMonthsOptions } from "../../../utility/constants/newerThanMonthsConstants";
 import { maxReviewsOptions } from "../../../utility/constants/maxReviewsConstants";
 import { ratingCountOptions } from "../../../utility/constants/ratingCountConstants";
+import widgetTranslationLanguages from "../../../utility/constants/widgetTranslationLanguages";
 import validate from "../../../utility/validate";
 import { toggleWidgetPlatformVisibility } from "../../../store/actions/dashboardActions";
 import ShowInWidgetList from "./CombinedReviewsWidgetConfigurations/ShowInWidgetList/ShowInWidgetList";
 import PremiumBrandingToggle from "./CombinedReviewsWidgetConfigurations/PremiumBrandingToggle/PremiumBrandingToggle";
 import BackgroundColorToggler from "./CombinedReviewsWidgetConfigurations/BackgroundColorToggler/BackgroundColorToggler";
 import GetSchemaCode from "./GetSchemaCode";
+import SelectLanguage from "./CombinedReviewsWidgetConfigurations/SelectLanguage";
 
 class GetWidget extends Component {
   constructor(props) {
@@ -35,6 +37,7 @@ class GetWidget extends Component {
       refreshWidget: false,
       platforms: [],
       selectedPlatform: {},
+      selectedLanguage: widgetTranslationLanguages[0],
       selectedMaxReviews: {
         ...(maxReviewsOptions[0] || {
           value: 24,
@@ -570,6 +573,21 @@ class GetWidget extends Component {
     );
   };
 
+  handleSelectedLanguageChange = valObj => {
+    this.setState(
+      {
+        selectedLanguage: { ...valObj },
+        refreshWidget: true
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ refreshWidget: false });
+          this.props.scrollToTopOfThePage();
+        }, 1000);
+      }
+    );
+  };
+
   getYourWidgetBox = () => {
     const { domainName, widget } = this.props;
     const planTypeId = _get(this.props, "planTypeId", 1);
@@ -630,6 +648,10 @@ class GetWidget extends Component {
                   <>
                     {this.renderInput()}
                     <div style={{ margin: "25px 0 15px 0" }}>
+                      <SelectLanguage
+                        value={this.state.selectedLanguage}
+                        handleChange={this.handleSelectedLanguageChange}
+                      />
                       <ShowInWidgetList
                         refreshWidgetOnDemand={this.refreshWidgetOnDemand}
                         showHidePlatformsList={this.state.showHidePlatformsList}
@@ -696,6 +718,10 @@ class GetWidget extends Component {
                     }
                     schemaFormData={schemaFormData || {}}
                     handleSchemaFormChange={this.handleSchemaFormChange}
+                    selectedLanguageData={this.state.selectedLanguage}
+                    handleSelectedLanguageChange={
+                      this.handleSelectedLanguageChange
+                    }
                   />
                 )}
               </div>
@@ -744,7 +770,7 @@ class GetWidget extends Component {
                 {widgetId === 0 ? (
                   <code className="blue">{`
                     <div class="trustsearch-widget" 
-                    data-locale="en-US"
+                    data-locale="${this.state.selectedLanguage.value}"
                     data-template-id="${this.props.widget.dataTempID}" 
                     data-businessunit-id="${this.props.domainName ||
                       "google.com"}"
@@ -789,7 +815,7 @@ class GetWidget extends Component {
                 ) : (
                   <code className="blue">{`
                 <div class="trustsearch-widget" 
-                data-locale="en-US"
+                data-locale="${this.state.selectedLanguage.value}"
                 data-template-id="${this.props.widget.dataTempID}" 
                 data-businessunit-id="${this.props.domainName || "google.com"}"
                 data-style-height="${this.state.widgetHeight}px"
@@ -855,7 +881,7 @@ class GetWidget extends Component {
         </Head>
         <div
           className="trustsearch-widget"
-          data-locale="en-US"
+          data-locale={_get(this.state, "selectedLanguage.value", "EN")}
           data-template-id={_get(this.props, "widget.dataTempID", "")}
           data-businessunit-id={_get(this.props, "domainName", "")}
           data-style-height={`${_get(this.state, "widgetHeight", "")}px`}
